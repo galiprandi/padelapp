@@ -5,12 +5,16 @@ import { mockTurns } from "@/lib/mock-data";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+type TurnPageParams = { id: string };
+
 interface TurnPageProps {
-  params: { id: string };
+  params: Promise<TurnPageParams>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({ params }: TurnPageProps): Promise<Metadata> {
-  const turn = mockTurns.find((item) => item.id === params.id);
+  const { id } = await params;
+  const turn = mockTurns.find((item) => item.id === id);
   const title = turn ? `Turno en ${turn.club}` : "Turno de PadelApp";
   const description = turn
     ? `${turn.date} · ${turn.time} · Nivel ${turn.level}`
@@ -22,14 +26,15 @@ export async function generateMetadata({ params }: TurnPageProps): Promise<Metad
     openGraph: {
       title,
       description,
-      url: `https://padelapp.app/t/${params.id}`,
+      url: `https://padelapp.app/t/${id}`,
       type: "website",
     },
   };
 }
 
-export default function TurnPublicPage({ params }: TurnPageProps) {
-  const turn = mockTurns.find((item) => item.id === params.id);
+export default async function TurnPublicPage({ params }: TurnPageProps) {
+  const { id } = await params;
+  const turn = mockTurns.find((item) => item.id === id);
 
   if (!turn) {
     return (

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
+
 const highlights = [
   {
     title: "Organiza turnos abiertos",
@@ -41,7 +43,7 @@ export default function MarketingLanding() {
             className="w-full border border-border bg-background sm:w-auto"
             asChild
           >
-            <Link href="/(app)/dashboard">Ver prototipo</Link>
+            <Link href="/login">Ingresar ahora</Link>
           </Button>
         </div>
       </header>

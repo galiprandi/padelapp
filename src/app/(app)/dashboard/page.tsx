@@ -1,14 +1,18 @@
+import Link from "next/link";
+import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockMatches, mockReputation, mockTurns } from "@/lib/mock-data";
-import Link from "next/link";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth();
+  const alias = session?.user.alias ?? "Jugador";
+
   return (
     <div className="flex flex-col gap-6">
       <section className="space-y-2">
-        <h1 className="text-2xl font-bold">Hola, Martina 👋</h1>
+        <h1 className="text-2xl font-bold">Hola, {alias} 👋</h1>
         <p className="text-sm text-muted-foreground">
           Agenda turnos, registra partidos y mira tu progreso en el ranking.
         </p>

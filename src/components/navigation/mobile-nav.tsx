@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { CalendarPlus, Home, LogOut, Sparkles, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CalendarPlus, Home, Sparkles, Trophy } from "lucide-react";
 
 const items = [
   { href: "/(app)/dashboard", label: "Inicio", icon: Home },
@@ -35,6 +36,14 @@ export function MobileNav() {
           </Link>
         );
       })}
+      <button
+        type="button"
+        onClick={() => void signOut({ callbackUrl: "/" })}
+        className="flex flex-1 flex-col items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <LogOut className="h-5 w-5" aria-hidden />
+        <span>Salir</span>
+      </button>
     </nav>
   );
 }
