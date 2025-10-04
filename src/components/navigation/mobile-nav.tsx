@@ -10,7 +10,7 @@ const items = [
   { href: "/me", label: "Inicio", icon: Home },
   { href: "/turnos", label: "Turnos", icon: CalendarPlus },
   { href: "/ranking", label: "Ranking", icon: Trophy },
-  { href: "/registro", label: "Partido", icon: Sparkles },
+  { href: "/match", label: "Partido", icon: Sparkles },
 ];
 
 export function MobileNav() {

@@ -33,7 +33,7 @@ npm run db:studio       # abre Prisma Studio
 - `/(app)/dashboard` Resumen de reputación, turnos y últimos partidos.
 - `/(app)/turnos` + `/(app)/turnos/nuevo` Listado y formulario de creación.
 - `/(app)/ranking` Ranking individual y placeholder para parejas.
-- `/(app)/registro` Formulario de registro de partido.
+- `/(app)/match` Formulario de registro de partido.
 - `/t/[id]` Vista pública con datos mock del turno compartible.
 
 ## Base de datos local (PostgreSQL + Prisma)

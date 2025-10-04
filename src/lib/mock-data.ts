@@ -53,3 +53,14 @@ export const levelOptions = [
   { value: "7", label: "Nivel 7 · Principiante Plus" },
   { value: "8", label: "Nivel 8 · Principiante" },
 ];
+
+export const mockFriends = [
+  { id: "user-juan", name: "Juan Pérez" },
+  { id: "user-maria", name: "María López" },
+  { id: "user-lucas", name: "Lucas Fernández" },
+  { id: "user-paula", name: "Paula Díaz" },
+  { id: "user-nico", name: "Nicolás Gómez" },
+  { id: "user-agus", name: "Agustina Romero" },
+  { id: "user-vale", name: "Valentina Ortiz" },
+  { id: "user-javi", name: "Javier Molina" },
+];

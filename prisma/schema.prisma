@@ -5,13 +5,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // directUrl = env("DATABASE_URL_DIRECT") // enable for read replicas
 }
 
 model User {
   id            String    @id @default(cuid())
   displayName   String
   email         String    @unique
-  name          String?
   image         String?
   level         Int       @default(6)
   emailVerified DateTime?
@@ -19,6 +19,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  matches       Match[]   @relation("MatchCreator")
+  matchPlayers  MatchPlayer[]
 }
 
 model Account {
@@ -53,4 +55,58 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Match {
+  id          String       @id @default(cuid())
+  creatorId   String
+  creator     User         @relation("MatchCreator", fields: [creatorId], references: [id])
+  status      MatchStatus  @default(PENDING)
+  sets        Int          @default(2)
+  matchType   MatchType    @default(FRIENDLY)
+  club        String?
+  courtNumber String?
+  score       String?
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  players     MatchPlayer[]
+  invitations MatchInvitation[]
+}
+
+model MatchPlayer {
+  id        String  @id @default(cuid())
+  matchId   String
+  match     Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id])
+  position  Int
+  confirmed Boolean @default(false)
+  score     String?
+
+  @@unique([matchId, position])
+}
+
+model MatchInvitation {
+  id        String   @id @default(cuid())
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  email     String
+  token     String   @unique
+  position  Int
+  accepted  Boolean  @default(false)
+  expiresAt DateTime @default(dbgenerated("now() + interval '7 days'"))
+
+  @@unique([matchId, position])
+}
+
+enum MatchStatus {
+  PENDING
+  CONFIRMED
+  DISPUTED
+}
+
+enum MatchType {
+  FRIENDLY
+  LOCAL_TOURNAMENT
 }

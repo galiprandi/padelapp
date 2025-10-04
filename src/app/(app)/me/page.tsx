@@ -67,7 +67,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Últimos partidos</h2>
           <Button size="sm" variant="ghost" className="gap-2" asChild>
-            <Link href="/registro">Registrar resultado</Link>
+            <Link href="/match">Registrar resultado</Link>
           </Button>
         </div>
         <div className="space-y-3">

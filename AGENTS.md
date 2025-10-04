@@ -34,6 +34,9 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 3. Adoptar componentes y estilos de shadcn/ui con paleta amarilla personalizada.
 4. Documentar supuestos y decisiones en `README.md` o archivos específicos según la funcionalidad.
 5. Validar que cualquier flujo crítico funcione en mobile y soporte instalación como PWA.
+6. Mantener el código, comentarios y URLs escritos en inglés.
+7. Preferir formularios estándar del sistema en mobile para que iOS o Android adapten la interfaz, priorizando la usabilidad por sobre el diseño visual.
+8. Mantener las especificaciones de vistas o secciones en la carpeta `specs/` con su estado (Not Implemented / Implemented) y desarrollar exactamente lo definido allí.
 
 ## 6. Próximos pasos generales
 1. Crear esqueleto Next.js 15 con Tailwind + shadcn (tema amarillo) y configuración PWA básica.
@@ -45,4 +48,3 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - Documento de requisitos: `padelapp-product-brief.md`.
 - Repositorio: `github.com/galiprandi/padelapp`.
 - Dominio objetivo: `padelapp.app`.
-

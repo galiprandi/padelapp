@@ -16,12 +16,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://padelapp.app"),
   title: {
-    default: "🎾 PadelApp",
-    template: "%s | 🎾 PadelApp",
+    default: "Padel App",
+    template: "%s | Padel App",
   },
   description:
-    "PadelApp es una PWA mobile-first para organizar turnos, registrar partidos y escalar en el ranking con tu comunidad de pádel.",
-  applicationName: "🎾 PadelApp",
+    "Padel App es una PWA mobile-first para organizar turnos, registrar partidos y escalar en el ranking con tu comunidad de pádel.",
+  applicationName: "Padel App",
   manifest: "/manifest.json",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -52,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="bg-background">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-foreground`}
         suppressHydrationWarning
