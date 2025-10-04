@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { MatchStatus, MatchType } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink, generateMagicToken } from "@/lib/magic-link";
@@ -22,6 +22,10 @@ export type SlotPayload =
       displayName: string;
       token?: string;
     };
+
+type MatchType = (typeof $Enums.MatchType)[keyof typeof $Enums.MatchType];
+const MATCH_STATUS = $Enums.MatchStatus;
+const MATCH_TYPE = $Enums.MatchType;
 
 export interface CreateMatchInput {
   matchId?: string;
@@ -49,7 +53,7 @@ export interface CreateMatchResponse {
 }
 
 function isValidMatchType(value: string): value is MatchType {
-  return Object.values(MatchType).includes(value as MatchType);
+  return Object.values(MATCH_TYPE).includes(value as MatchType);
 }
 
 export async function createMatchAction(input: CreateMatchInput): Promise<CreateMatchResponse> {
@@ -138,7 +142,7 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
     const match = await prisma.match.create({
       data: {
         creatorId: session.user.id,
-        status: MatchStatus.PENDING,
+        status: MATCH_STATUS.PENDING,
         sets: input.sets,
         matchType: input.matchType,
         club: input.club?.trim() || null,
@@ -266,18 +270,18 @@ export async function submitMatchResultAction(
       const teamAConfirmed = baseMatch.players.some((matchPlayer) => matchPlayer.position < 2 && matchPlayer.confirmed);
       const teamBConfirmed = baseMatch.players.some((matchPlayer) => matchPlayer.position >= 2 && matchPlayer.confirmed);
 
-      if (teamAConfirmed && teamBConfirmed && baseMatch.status !== MatchStatus.CONFIRMED) {
+      if (teamAConfirmed && teamBConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
         return tx.match.update({
           where: { id: input.matchId },
-          data: { status: MatchStatus.CONFIRMED },
+          data: { status: MATCH_STATUS.CONFIRMED },
           include: { players: true },
         });
       }
 
-      if ((!teamAConfirmed || !teamBConfirmed) && baseMatch.status !== MatchStatus.PENDING) {
+      if ((!teamAConfirmed || !teamBConfirmed) && baseMatch.status !== MATCH_STATUS.PENDING) {
         return tx.match.update({
           where: { id: input.matchId },
-          data: { status: MatchStatus.PENDING },
+          data: { status: MATCH_STATUS.PENDING },
           include: { players: true },
         });
       }
@@ -410,10 +414,10 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
 
       const everyoneConfirmed = updated.players.every((current) => current.confirmed);
 
-      if (everyoneConfirmed && updated.status !== MatchStatus.CONFIRMED) {
+      if (everyoneConfirmed && updated.status !== MATCH_STATUS.CONFIRMED) {
         return tx.match.update({
           where: { id: matchId },
-          data: { status: MatchStatus.CONFIRMED },
+          data: { status: MATCH_STATUS.CONFIRMED },
           include: { players: true },
         });
       }
@@ -478,7 +482,7 @@ export async function finalizeMatchAction(matchId: string): Promise<MatchActionR
       await tx.match.update({
         where: { id: matchId },
         data: {
-          status: MatchStatus.CONFIRMED,
+          status: MATCH_STATUS.CONFIRMED,
           players: {
             updateMany: {
               where: { matchId },

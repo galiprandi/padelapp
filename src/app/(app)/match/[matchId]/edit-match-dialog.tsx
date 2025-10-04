@@ -56,7 +56,7 @@ export function EditMatchDetailsDialog({ matchId, initialClub, initialCourtNumbe
 
   return (
     <>
-      <Button type="button" variant="outline" onClick={() => setOpen(true)}>
+      <Button type="button" variant="ghost" onClick={() => setOpen(true)}>
         Editar detalles
       </Button>
 

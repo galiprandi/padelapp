@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import type { AdapterUser } from "next-auth/adapters";
 import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
@@ -58,7 +59,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         ? emailVerifiedField === "true"
         : Boolean(emailVerifiedField);
 
-      if (!isEmailVerified || user.emailVerified) {
+      const adapterUser = user as AdapterUser;
+
+      if (!isEmailVerified || adapterUser.emailVerified) {
         return;
       }
 
@@ -67,7 +70,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         where: { id: user.id },
         data: { emailVerified: emailVerifiedAt },
       });
-      user.emailVerified = emailVerifiedAt;
+      adapterUser.emailVerified = emailVerifiedAt;
     },
   },
 });

@@ -1,4 +1,4 @@
-import { MatchStatus } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { ShareButton } from "@/components/share/share-button";
@@ -14,12 +14,14 @@ import { createMagicLink } from "@/lib/magic-link";
 import { prisma } from "@/lib/prisma";
 import { ConfirmResultButton } from "./confirm-result-button";
 import { EditMatchDetailsDialog } from "./edit-match-dialog";
-import { FinalizeMatchButton } from "./finalize-match-button";
 import { ResultDialog } from "./result-dialog";
 
 interface MatchDetailPageParams {
   matchId: string;
 }
+
+type MatchStatus = (typeof $Enums.MatchStatus)[keyof typeof $Enums.MatchStatus];
+const MATCH_STATUS = $Enums.MatchStatus;
 
 interface MatchDetailPageProps {
   params: Promise<MatchDetailPageParams>;
@@ -28,11 +30,11 @@ interface MatchDetailPageProps {
 
 function formatStatus(status: MatchStatus): string {
   switch (status) {
-    case MatchStatus.CONFIRMED:
+    case MATCH_STATUS.CONFIRMED:
       return "Confirmado";
-    case MatchStatus.DISPUTED:
+    case MATCH_STATUS.DISPUTED:
       return "En disputa";
-    case MatchStatus.PENDING:
+    case MATCH_STATUS.PENDING:
     default:
       return "Pendiente";
   }
@@ -80,9 +82,10 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
 
   const shareUrl = createMagicLink({ resource: "match", identifier: match.id }).url;
 
-  const canSubmitResult = isParticipant && match.status !== MatchStatus.CONFIRMED;
+  const canSubmitResult = isParticipant && match.status !== MATCH_STATUS.CONFIRMED;
   const canConfirmResult = isParticipant && !viewerConfirmed && Boolean(match.score);
-  const canFinalizeMatch = isCreator && match.status !== MatchStatus.CONFIRMED && Boolean(match.score);
+
+  const showViewOnlyNotice = !isCreator && !canSubmitResult && !canConfirmResult;
 
   return (
     <div className="flex flex-col gap-6">
@@ -94,36 +97,6 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
           Organizado por {match.creator.displayName}. Compartí el link para sumar a tu equipo y cerrar el resultado.
         </p>
       </header>
-
-      <div className="flex flex-wrap items-center gap-3">
-        {canSubmitResult ? (
-          <ResultDialog
-            matchId={match.id}
-            initialScore={match.score}
-            initialNotes={match.notes}
-            triggerLabel={match.score && isCreator ? "Modificar resultado" : "Cargar resultado"}
-          />
-        ) : null}
-
-        {canConfirmResult ? (
-          <ConfirmResultButton matchId={match.id} alreadyConfirmed={viewerConfirmed} />
-        ) : null}
-
-        {isCreator ? (
-          <EditMatchDetailsDialog
-            matchId={match.id}
-            initialClub={match.club}
-            initialCourtNumber={match.courtNumber}
-            initialNotes={match.notes}
-          />
-        ) : null}
-
-        {isCreator ? <FinalizeMatchButton matchId={match.id} disabled={!canFinalizeMatch} /> : null}
-
-        {!isCreator && !canSubmitResult && !canConfirmResult ? (
-          <span className="text-sm text-muted-foreground">Solo podés ver el detalle de este partido.</span>
-        ) : null}
-      </div>
 
       <Card className="rounded-lg">
         <CardHeader className="rounded-lg bg-muted/30">
@@ -245,10 +218,44 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
         <p className="text-sm text-muted-foreground">
           Los resultados impactarán en tu reputación una vez confirmados por ambos equipos.
         </p>
-      ) : match.status !== MatchStatus.CONFIRMED ? (
+      ) : match.status !== MATCH_STATUS.CONFIRMED ? (
         <p className="text-sm text-muted-foreground">
           Aguardando confirmaciones de los jugadores para cerrar el encuentro.
         </p>
+      ) : null}
+
+      {canSubmitResult || canConfirmResult || isCreator || showViewOnlyNotice ? (
+        <footer className="mt-2 space-y-3 pb-4">
+          <div className="flex flex-col gap-2">
+            {canSubmitResult ? (
+              <ResultDialog
+                matchId={match.id}
+                initialScore={match.score}
+                initialNotes={match.notes}
+                triggerLabel={match.score && isCreator ? "Modificar resultado" : "Cargar resultado"}
+              />
+            ) : null}
+
+            {canConfirmResult ? (
+              <ConfirmResultButton matchId={match.id} alreadyConfirmed={viewerConfirmed} />
+            ) : null}
+          </div>
+
+          {isCreator ? (
+            <div className="pt-1">
+              <EditMatchDetailsDialog
+                matchId={match.id}
+                initialClub={match.club}
+                initialCourtNumber={match.courtNumber}
+                initialNotes={match.notes}
+              />
+            </div>
+          ) : null}
+
+          {showViewOnlyNotice ? (
+            <p className="text-xs text-muted-foreground">Solo podés ver el detalle de este partido.</p>
+          ) : null}
+        </footer>
       ) : null}
     </div>
   );
