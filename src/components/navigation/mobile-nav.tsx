@@ -7,10 +7,10 @@ import { CalendarPlus, Home, LogOut, Sparkles, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { href: "/(app)/dashboard", label: "Inicio", icon: Home },
-  { href: "/(app)/turnos", label: "Turnos", icon: CalendarPlus },
-  { href: "/(app)/ranking", label: "Ranking", icon: Trophy },
-  { href: "/(app)/registro", label: "Partido", icon: Sparkles },
+  { href: "/me", label: "Inicio", icon: Home },
+  { href: "/turnos", label: "Turnos", icon: CalendarPlus },
+  { href: "/ranking", label: "Ranking", icon: Trophy },
+  { href: "/registro", label: "Partido", icon: Sparkles },
 ];
 
 export function MobileNav() {

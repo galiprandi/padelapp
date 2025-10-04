@@ -8,12 +8,12 @@ export default async function LoginPage() {
   const session = await auth();
 
   if (session?.user) {
-    redirect("/(app)/dashboard");
+    redirect("/me");
   }
 
   async function handleSignIn() {
     "use server";
-    await signIn("google", { redirectTo: "/(app)/dashboard" });
+    await signIn("google", { redirectTo: "/me" });
   }
 
   return (

@@ -30,7 +30,7 @@ export default function TurnsPage() {
           <Input placeholder="Buscar club o ciudad" />
         </CardContent>
         <Button asChild className="w-full rounded-full">
-          <Link href="/(app)/turnos/nuevo">Crear turno</Link>
+          <Link href="/turnos/nuevo">Crear turno</Link>
         </Button>
       </Card>
 

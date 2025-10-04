@@ -2,14 +2,14 @@ import type { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface User {
-    alias: string;
+    displayName: string;
     level: number;
   }
 
   interface Session {
     user: DefaultSession["user"] & {
       id: string;
-      alias: string;
+      displayName: string;
       level: number;
     };
   }

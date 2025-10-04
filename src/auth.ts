@@ -3,17 +3,14 @@ import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
-function buildAlias(name?: string | null, identifier?: string | null): string {
-  const baseCandidate = name?.trim() || identifier?.split("@")[0] || "jugador";
-  const normalized = baseCandidate
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  const suffix = identifier?.slice(-4) || Math.random().toString(36).slice(-4);
-  const safeBase = normalized.length > 0 ? normalized : "jugador";
-  return `${safeBase}-${suffix}`;
+function resolveDisplayName(profile: GoogleProfile): string {
+  const trimmedName = profile.name?.trim() || profile.given_name?.trim();
+  if (trimmedName && trimmedName.length > 0) {
+    return trimmedName;
+  }
+
+  const emailUser = profile.email?.split("@")[0];
+  return emailUser && emailUser.length > 0 ? emailUser : "Jugador";
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -25,7 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       profile(profile: GoogleProfile) {
-        const alias = buildAlias(profile.given_name ?? profile.name, profile.email ?? profile.sub);
+        const displayName = resolveDisplayName(profile);
 
         return {
           id: profile.sub,
@@ -33,7 +30,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: profile.email,
           emailVerified: profile.email_verified ? new Date() : null,
           image: profile.picture,
-          alias,
+          displayName,
           level: 6,
         };
       },
@@ -43,7 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        session.user.alias = user.alias;
+        session.user.displayName = user.displayName;
         session.user.level = user.level;
         session.user.name = user.name;
         session.user.email = user.email;

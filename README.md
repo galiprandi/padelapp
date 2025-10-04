@@ -48,7 +48,7 @@ El cliente se expone desde `src/lib/prisma.ts` para reutilizar la conexión dent
 ## Próximos pasos sugeridos
 
 1. Conectar Prisma + Supabase para persistir turnos, partidos y ranking.
-2. Afinar naming de alias/usuarios y permitir edición desde la app.
+2. Afinar naming del displayName de los usuarios y permitir edición desde la app.
 3. Activar Firebase Cloud Messaging utilizando el `firebase-messaging-sw.js` placeholder.
 4. Añadir testing (Playwright/Vitest) para flujos críticos y CI en Vercel.
 

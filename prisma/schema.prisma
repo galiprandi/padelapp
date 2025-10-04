@@ -3,13 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id            String    @id @default(cuid())
-  alias         String    @unique
+  displayName   String
   email         String    @unique
   name          String?
   image         String?
