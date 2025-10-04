@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { $Enums } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink, generateMagicToken } from "@/lib/magic-link";
@@ -23,9 +22,18 @@ export type SlotPayload =
       token?: string;
     };
 
-type MatchType = (typeof $Enums.MatchType)[keyof typeof $Enums.MatchType];
-const MATCH_STATUS = $Enums.MatchStatus;
-const MATCH_TYPE = $Enums.MatchType;
+const MATCH_STATUS = {
+  PENDING: "PENDING",
+  CONFIRMED: "CONFIRMED",
+  DISPUTED: "DISPUTED",
+} as const;
+
+const MATCH_TYPE = {
+  FRIENDLY: "FRIENDLY",
+  LOCAL_TOURNAMENT: "LOCAL_TOURNAMENT",
+} as const;
+
+type MatchType = (typeof MATCH_TYPE)[keyof typeof MATCH_TYPE];
 
 export interface CreateMatchInput {
   matchId?: string;

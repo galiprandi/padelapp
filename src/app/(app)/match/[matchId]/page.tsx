@@ -1,4 +1,3 @@
-import { $Enums } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { ShareButton } from "@/components/share/share-button";
@@ -20,8 +19,13 @@ interface MatchDetailPageParams {
   matchId: string;
 }
 
-type MatchStatus = (typeof $Enums.MatchStatus)[keyof typeof $Enums.MatchStatus];
-const MATCH_STATUS = $Enums.MatchStatus;
+const MATCH_STATUS = {
+  PENDING: "PENDING",
+  CONFIRMED: "CONFIRMED",
+  DISPUTED: "DISPUTED",
+} as const;
+
+type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
 
 interface MatchDetailPageProps {
   params: Promise<MatchDetailPageParams>;
