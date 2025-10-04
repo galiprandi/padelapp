@@ -20,7 +20,7 @@ export default async function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-5 py-10">
       <Card className="w-full max-w-sm border border-border/80">
         <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-2xl font-bold">Bienvenido a PadelApp</CardTitle>
+          <CardTitle className="text-2xl font-bold">🎾 Bienvenido a PadelApp</CardTitle>
           <CardDescription>
             Ingresa con tu cuenta de Google para abrir turnos, registrar partidos y seguir tu ranking.
           </CardDescription>

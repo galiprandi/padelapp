@@ -51,7 +51,7 @@ export function InstallPrompt() {
       <div className="pointer-events-auto w-full max-w-md px-5">
         <div className="flex items-start gap-3 rounded-3xl border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
           <div className="flex-1 space-y-1 text-sm">
-            <p className="text-base font-semibold text-foreground">Instala PadelApp</p>
+            <p className="text-base font-semibold text-foreground">🎾 Instala PadelApp</p>
             <p className="text-muted-foreground">
               Añade la app a tu pantalla de inicio para abrirla como si fuera nativa.
             </p>

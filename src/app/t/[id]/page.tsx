@@ -15,10 +15,10 @@ interface TurnPageProps {
 export async function generateMetadata({ params }: TurnPageProps): Promise<Metadata> {
   const { id } = await params;
   const turn = mockTurns.find((item) => item.id === id);
-  const title = turn ? `Turno en ${turn.club}` : "Turno de PadelApp";
+  const title = turn ? `Turno en ${turn.club}` : "Turno de 🎾 PadelApp";
   const description = turn
     ? `${turn.date} · ${turn.time} · Nivel ${turn.level}`
-    : "Anótate a un turno abierto organizado con PadelApp.";
+    : "Anótate a un turno abierto organizado con 🎾 PadelApp.";
 
   return {
     title,
@@ -44,7 +44,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           El link puede haber expirado o el organizador lo eliminó.
         </p>
         <Button asChild className="rounded-full">
-          <Link href="/">Ir a PadelApp</Link>
+          <Link href="/">Ir a 🎾 PadelApp</Link>
         </Button>
       </main>
     );
@@ -86,7 +86,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
-        Al unirte aceptas compartir tu perfil de PadelApp con los participantes.
+        Al unirte aceptas compartir tu perfil de 🎾 PadelApp con los participantes.
       </p>
     </main>
   );
