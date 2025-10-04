@@ -86,6 +86,7 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
   const canConfirmResult = isParticipant && !viewerConfirmed && Boolean(match.score);
 
   const showViewOnlyNotice = !isCreator && !canSubmitResult && !canConfirmResult;
+  const showActionBar = canSubmitResult || canConfirmResult || isCreator || showViewOnlyNotice;
 
   return (
     <div className="flex flex-col gap-6">
@@ -97,6 +98,40 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
           Organizado por {match.creator.displayName}. Compartí el link para sumar a tu equipo y cerrar el resultado.
         </p>
       </header>
+
+      {showActionBar ? (
+        <section className="space-y-3">
+          <div className="flex flex-col gap-2">
+            {canSubmitResult ? (
+              <ResultDialog
+                matchId={match.id}
+                initialScore={match.score}
+                initialNotes={match.notes}
+                triggerLabel={match.score && isCreator ? "Modificar resultado" : "Cargar resultado"}
+              />
+            ) : null}
+
+            {canConfirmResult ? (
+              <ConfirmResultButton matchId={match.id} alreadyConfirmed={viewerConfirmed} />
+            ) : null}
+          </div>
+
+          {isCreator ? (
+            <div className="pt-1">
+              <EditMatchDetailsDialog
+                matchId={match.id}
+                initialClub={match.club}
+                initialCourtNumber={match.courtNumber}
+                initialNotes={match.notes}
+              />
+            </div>
+          ) : null}
+
+          {showViewOnlyNotice ? (
+            <p className="text-xs text-muted-foreground">Solo podés ver el detalle de este partido.</p>
+          ) : null}
+        </section>
+      ) : null}
 
       <Card className="rounded-lg">
         <CardHeader className="rounded-lg bg-muted/30">
@@ -222,40 +257,6 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
         <p className="text-sm text-muted-foreground">
           Aguardando confirmaciones de los jugadores para cerrar el encuentro.
         </p>
-      ) : null}
-
-      {canSubmitResult || canConfirmResult || isCreator || showViewOnlyNotice ? (
-        <footer className="mt-2 space-y-3 pb-4">
-          <div className="flex flex-col gap-2">
-            {canSubmitResult ? (
-              <ResultDialog
-                matchId={match.id}
-                initialScore={match.score}
-                initialNotes={match.notes}
-                triggerLabel={match.score && isCreator ? "Modificar resultado" : "Cargar resultado"}
-              />
-            ) : null}
-
-            {canConfirmResult ? (
-              <ConfirmResultButton matchId={match.id} alreadyConfirmed={viewerConfirmed} />
-            ) : null}
-          </div>
-
-          {isCreator ? (
-            <div className="pt-1">
-              <EditMatchDetailsDialog
-                matchId={match.id}
-                initialClub={match.club}
-                initialCourtNumber={match.courtNumber}
-                initialNotes={match.notes}
-              />
-            </div>
-          ) : null}
-
-          {showViewOnlyNotice ? (
-            <p className="text-xs text-muted-foreground">Solo podés ver el detalle de este partido.</p>
-          ) : null}
-        </footer>
       ) : null}
     </div>
   );

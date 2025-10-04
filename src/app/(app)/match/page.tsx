@@ -13,9 +13,6 @@ export default function MatchListPage() {
             Revisá tus partidos jugados y compartí el marcador con tu equipo.
           </p>
         </div>
-        <Button asChild className="w-full sm:w-auto">
-          <Link href="/match/new">Crear match</Link>
-        </Button>
       </header>
 
       <div className="grid gap-3">
@@ -49,6 +46,12 @@ export default function MatchListPage() {
           </Card>
         )}
       </div>
+
+      <footer className="mt-2 pb-4">
+        <Button asChild className="w-full">
+          <Link href="/match/new">Crear match</Link>
+        </Button>
+      </footer>
     </div>
   );
 }
