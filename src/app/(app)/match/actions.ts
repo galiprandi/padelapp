@@ -210,6 +210,11 @@ export interface SubmitResultResponse {
   message?: string;
 }
 
+export interface MatchActionResponse {
+  status: "ok" | "error";
+  message?: string;
+}
+
 export async function submitMatchResultAction(
   input: SubmitResultInput,
 ): Promise<SubmitResultResponse> {
@@ -295,6 +300,203 @@ export async function submitMatchResultAction(
     return {
       status: "error",
       message: "We could not save the result. Please try again.",
+    };
+  }
+}
+
+interface UpdateMatchDetailsInput {
+  matchId: string;
+  club?: string | null;
+  courtNumber?: string | null;
+  notes?: string | null;
+}
+
+export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "You must be signed in to update the match." };
+  }
+
+  if (!input.matchId || input.matchId.trim().length === 0) {
+    return { status: "error", message: "Invalid match identifier." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: input.matchId },
+      select: { creatorId: true },
+    });
+
+    if (!match) {
+      return { status: "error", message: "Match not found." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return { status: "error", message: "Only the creator can edit the match." };
+    }
+
+    await prisma.match.update({
+      where: { id: input.matchId },
+      data: {
+        club: input.club === undefined ? undefined : input.club?.trim() || null,
+        courtNumber: input.courtNumber === undefined ? undefined : input.courtNumber?.trim() || null,
+        notes: input.notes === undefined ? undefined : input.notes?.trim() || null,
+      },
+    });
+
+    revalidatePath(`/match/${input.matchId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("updateMatchDetailsAction failed", error);
+    return {
+      status: "error",
+      message: "We could not update the match details.",
+    };
+  }
+}
+
+export async function confirmMatchResultAction(matchId: string): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "You must be signed in to confirm the result." };
+  }
+
+  if (!matchId || matchId.trim().length === 0) {
+    return { status: "error", message: "Invalid match identifier." };
+  }
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const player = await tx.matchPlayer.findFirst({
+        where: { matchId, userId: session.user.id },
+      });
+
+      if (!player) {
+        throw new Error("not-authorized");
+      }
+
+      const match = await tx.match.findUnique({
+        where: { id: matchId },
+        include: { players: true },
+      });
+
+      if (!match) {
+        throw new Error("match-not-found");
+      }
+
+      if (!match.score || match.score.trim().length === 0) {
+        throw new Error("missing-score");
+      }
+
+      if (player.confirmed) {
+        return match;
+      }
+
+      const updated = await tx.match.update({
+        where: { id: matchId },
+        data: {
+          players: {
+            update: {
+              where: { id: player.id },
+              data: { confirmed: true },
+            },
+          },
+        },
+        include: { players: true },
+      });
+
+      const everyoneConfirmed = updated.players.every((current) => current.confirmed);
+
+      if (everyoneConfirmed && updated.status !== MatchStatus.CONFIRMED) {
+        return tx.match.update({
+          where: { id: matchId },
+          data: { status: MatchStatus.CONFIRMED },
+          include: { players: true },
+        });
+      }
+
+      return updated;
+    });
+
+    revalidatePath(`/match/${matchId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "not-authorized") {
+        return { status: "error", message: "Solo los jugadores pueden confirmar el resultado." };
+      }
+      if (error.message === "match-not-found") {
+        return { status: "error", message: "No encontramos este partido." };
+      }
+      if (error.message === "missing-score") {
+        return { status: "error", message: "Primero cargá el resultado antes de confirmarlo." };
+      }
+    }
+
+    console.error("confirmMatchResultAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos confirmar tu asistencia. Intentá de nuevo.",
+    };
+  }
+}
+
+export async function finalizeMatchAction(matchId: string): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "You must be signed in to finalize the match." };
+  }
+
+  if (!matchId || matchId.trim().length === 0) {
+    return { status: "error", message: "Invalid match identifier." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: matchId },
+      include: { players: true },
+    });
+
+    if (!match) {
+      return { status: "error", message: "Match not found." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return { status: "error", message: "Only the creator can finalize the match." };
+    }
+
+    if (!match.score || match.score.trim().length === 0) {
+      return { status: "error", message: "Cargá el resultado antes de finalizar el partido." };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.match.update({
+        where: { id: matchId },
+        data: {
+          status: MatchStatus.CONFIRMED,
+          players: {
+            updateMany: {
+              where: { matchId },
+              data: { confirmed: true },
+            },
+          },
+        },
+      });
+    });
+
+    revalidatePath(`/match/${matchId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("finalizeMatchAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos finalizar el partido. Intentá nuevamente.",
     };
   }
 }

@@ -11,9 +11,10 @@ interface SubmitResultFormProps {
   matchId: string;
   initialScore?: string | null;
   initialNotes?: string | null;
+  onSuccess?: () => void;
 }
 
-export function SubmitResultForm({ matchId, initialScore, initialNotes }: SubmitResultFormProps) {
+export function SubmitResultForm({ matchId, initialScore, initialNotes, onSuccess }: SubmitResultFormProps) {
   const [score, setScore] = useState(initialScore ?? "");
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +40,7 @@ export function SubmitResultForm({ matchId, initialScore, initialNotes }: Submit
 
       if (response.status === "ok") {
         setSuccessMessage("Result submitted. Waiting for other players to confirm.");
+        onSuccess?.();
       } else {
         setError(response.message ?? "We could not save the result.");
       }

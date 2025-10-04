@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { ShareButton } from "@/components/share/share-button";
 import { createMatchAction, type CreateMatchInput, type CreateMatchResponse, type SlotPayload } from "../actions";
 import { generateMagicToken } from "@/lib/magic-link";
@@ -590,9 +591,12 @@ export default function RegisterMatchPage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3">
             <Button type="button" className="w-full" onClick={goToNextStep}>
               Siguiente
+            </Button>
+            <Button asChild type="button" variant="ghost" className="w-full">
+              <Link href="/match">Cancelar</Link>
             </Button>
           </div>
         </section>
@@ -636,11 +640,10 @@ export default function RegisterMatchPage() {
               <div className="space-y-2">
                 <Label htmlFor="counts-ranking">Ranking</Label>
                 <div className="flex items-center gap-3">
-                  <input
+                  <Switch
                     id="counts-ranking"
-                    type="checkbox"
                     checked={countsForRanking}
-                    onChange={(event) => setCountsForRanking(event.target.checked)}
+                    onCheckedChange={(checked) => setCountsForRanking(checked)}
                   />
                   <span className="text-sm text-foreground">Acumula ranking</span>
                 </div>
