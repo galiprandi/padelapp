@@ -6,13 +6,13 @@ import { prisma } from "@/lib/prisma";
 import { acceptInvitationAction } from "./actions";
 
 interface InvitationPageProps {
-  params: { matchId: string };
-  searchParams: { token?: string };
+  params: Promise<{ matchId: string }>;
+  searchParams: Promise<{ token?: string } | undefined>;
 }
 
 export default async function InvitationPage({ params, searchParams }: InvitationPageProps) {
-  const { matchId } = params;
-  const token = searchParams.token;
+  const { matchId } = await params;
+  const { token } = (await searchParams) ?? {};
 
   if (!token) {
     notFound();

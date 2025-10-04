@@ -44,7 +44,15 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 3. Integrar placeholders para futuros módulos (auth Google, Prisma/Supabase, FCM) sin bloquear el build.
 4. Establecer linting, formatos y scripts de build/deploy.
 
-## 7. Referencias
+## 7. Guía de diseño para nuevas vistas
+- **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
+- **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
+- **Tarjetas interactivas**: usar contenedores con bordes redondeados, estados hover/active/focus visibles y accesibles (`focus-visible:ring`), replicando el patrón de selección de jugadores.
+- **Acciones primarias/secundarias**: botón principal lleno arriba, seguido por acciones secundarias variante `ghost` u `outline`; mantener mínimo 44px de alto y full width en mobile.
+- **Accesibilidad y estados**: definir `aria-label`, `aria-current` o roles según corresponda, asegurar contraste ≥4.5:1, y contemplar validaciones visuales claras antes de avanzar.
+- **Iconografía y microcopy**: iconos de `lucide-react`, etiquetas cortas en español y mensajes directos tipo “Tocá el botón…”. Fallback a iniciales o emojis cuando falte imagen.
+
+## 8. Referencias
 - Documento de requisitos: `padelapp-product-brief.md`.
 - Repositorio: `github.com/galiprandi/padelapp`.
 - Dominio objetivo: `padelapp.app`.

@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import appSettings from "@/config/app-settings.json";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,9 @@ const PLACEHOLDER_SLOTS: Array<{ team: TeamKey; index: 0 | 1; name: string }> = 
   { team: "B", index: 0, name: "Jugador 3" },
   { team: "B", index: 1, name: "Jugador 4" },
 ];
+
+const appUrl = new URL(appSettings.baseUrl);
+const shareEmailDomain = `share.${appUrl.hostname}`;
 
 type MatchTypeValue = CreateMatchInput["matchType"];
 type TeamKey = "A" | "B";
@@ -175,7 +179,7 @@ function buildShareEmail(name: string): string {
     .replace(/^-+|-+$/g, "");
   const slug = normalized.length > 0 ? normalized : "player";
   const random = Math.random().toString(36).slice(2, 8);
-  return `${slug}-${random}@share.padelapp.app`;
+  return `${slug}-${random}@${shareEmailDomain}`;
 }
 
 export default function RegisterMatchPage() {
@@ -390,9 +394,9 @@ export default function RegisterMatchPage() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: "Invitación PadelApp",
+          title: appSettings.share.inviteTitle,
           text: `Sumate al partido como ${trimmed}`,
-          url: "https://padelapp.app",
+          url: appSettings.baseUrl,
         });
         return;
       } catch (error) {
@@ -403,7 +407,7 @@ export default function RegisterMatchPage() {
     }
 
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(`Sumate al partido en PadelApp: https://padelapp.app`).catch(() => undefined);
+      navigator.clipboard.writeText(appSettings.share.clipboardCopy).catch(() => undefined);
     }
   }
 
@@ -468,7 +472,7 @@ export default function RegisterMatchPage() {
                         <Button type="button" size="sm" variant="secondary" asChild>
                           <Link
                             href={`https://wa.me/?text=${encodeURIComponent(
-                              `¡Hola ${invite.displayName}! Confirmá tu lugar en PadelApp: ${invite.link}`,
+                              `¡Hola ${invite.displayName}! Confirmá tu lugar en ${appSettings.shortName}: ${invite.link}`,
                             )}`}
                             target="_blank"
                           >

@@ -1,0 +1,17 @@
+{
+  "name": "Padel App",
+  "shortName": "PadelApp",
+  "titleTemplate": "%s | Padel App",
+  "description": "Padel App es una PWA mobile-first para organizar turnos, registrar partidos y escalar en el ranking con tu comunidad de p\u00e1del.",
+  "applicationName": "Padel App",
+  "baseUrl": "https://padelapp.app",
+  "manifestPath": "/manifest.json",
+  "keywords": ["padel", "ranking", "turnos", "pwa"],
+  "category": "sports",
+  "appleWebAppTitle": "PadelApp",
+  "share": {
+    "inviteTitle": "Invitaci\u00f3n PadelApp",
+    "inviteMessage": "Sumate al partido en PadelApp",
+    "clipboardCopy": "Sumate al partido en PadelApp: https://padelapp.app"
+  }
+}

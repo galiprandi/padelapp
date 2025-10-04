@@ -369,7 +369,7 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
   }
 
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const player = await tx.matchPlayer.findFirst({
         where: { matchId, userId: session.user.id },
       });

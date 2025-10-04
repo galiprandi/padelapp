@@ -1,3 +1,4 @@
+import appSettings from "@/config/app-settings.json";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -14,15 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://padelapp.app"),
+  metadataBase: new URL(appSettings.baseUrl),
   title: {
-    default: "Padel App",
-    template: "%s | Padel App",
+    default: appSettings.name,
+    template: appSettings.titleTemplate,
   },
-  description:
-    "Padel App es una PWA mobile-first para organizar turnos, registrar partidos y escalar en el ranking con tu comunidad de pádel.",
-  applicationName: "Padel App",
-  manifest: "/manifest.json",
+  description: appSettings.description,
+  applicationName: appSettings.applicationName,
+  manifest: appSettings.manifestPath,
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/apple-icon.svg", sizes: "180x180", type: "image/svg+xml" }],
@@ -31,10 +31,10 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "PadelApp",
+    title: appSettings.appleWebAppTitle,
   },
-  category: "sports",
-  keywords: ["padel", "ranking", "turnos", "pwa"],
+  category: appSettings.category,
+  keywords: appSettings.keywords,
 };
 
 export const viewport: Viewport = {
