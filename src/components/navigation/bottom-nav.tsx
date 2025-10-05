@@ -12,6 +12,7 @@ interface BottomNavItem {
   href: string;
   label: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
+  activeIcon?: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 const TennisBallIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
@@ -33,10 +34,36 @@ const TennisBallIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
+const TennisBallSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+    <path d="M12 4a8 8 0 1 1-5.657 13.657A7.96 7.96 0 0 1 8.2 12 7.96 7.96 0 0 1 6.343 6.343 7.96 7.96 0 0 1 12 4Z" />
+    <path
+      d="M6 8.25a7 7 0 0 0 4 3.75M6 15.75a7 7 0 0 1 4-3.75M18 8.25a7 7 0 0 1-4 3.75M18 15.75a7 7 0 0 0-4-3.75"
+      fill="none"
+      stroke="rgba(24,24,27,0.65)"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const TrophySolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+    <path d="M6 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1h2a1 1 0 0 1 1 1v1.5a4.5 4.5 0 0 1-3.8 4.437A6 6 0 0 1 13 15.74V17h2.5a1.5 1.5 0 0 1 0 3H8.5a1.5 1.5 0 0 1 0-3H11v-1.26a6 6 0 0 1-4.2-4.803A4.5 4.5 0 0 1 3 6.5V5a1 1 0 0 1 1-1h2Zm0 2H5v1.5A2.5 2.5 0 0 0 7.5 9h.119A4.5 4.5 0 0 1 6 5Zm12 0a4.5 4.5 0 0 1-1.619 4H16.5A2.5 2.5 0 0 0 19 6.5V5h-1Z" />
+  </svg>
+);
+
+const UserSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+    <path d="M4 19.25A7.25 7.25 0 0 1 11.25 12h1.5A7.25 7.25 0 0 1 20 19.25V21H4Z" />
+  </svg>
+);
+
 const NAV_ITEMS: BottomNavItem[] = [
-  { href: "/ranking", label: "Ranking", icon: Trophy },
-  { href: "/match", label: "Partidos", icon: TennisBallIcon },
-  { href: "/me", label: "Perfil", icon: User },
+  { href: "/ranking", label: "Ranking", icon: Trophy, activeIcon: TrophySolidIcon },
+  { href: "/match", label: "Partidos", icon: TennisBallIcon, activeIcon: TennisBallSolidIcon },
+  { href: "/me", label: "Perfil", icon: User, activeIcon: UserSolidIcon },
 ];
 
 export interface BottomNavProps {
@@ -103,8 +130,8 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
     >
       <div className="relative flex h-12 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
         {NAV_ITEMS.map((item) => {
-          const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const Icon = isActive && item.activeIcon ? item.activeIcon : item.icon;
 
           return (
             <Link
