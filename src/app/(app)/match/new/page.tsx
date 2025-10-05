@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { ShareButton } from "@/components/share/share-button";
 import { createMatchAction, type CreateMatchInput, type CreateMatchResponse, type SlotPayload } from "../actions";
 import { Share2, UsersRound } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 
 const MATCH_TYPE_OPTIONS = [
   { value: "FRIENDLY", label: "Amistoso" },
@@ -66,8 +67,8 @@ function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, onClose
         slot?.kind === "user"
           ? slot.player.displayName
           : slot?.kind === "placeholder"
-          ? slot.displayName
-          : placeholderName;
+            ? slot.displayName
+            : placeholderName;
       setName(initialName);
       setError(null);
     }
@@ -397,83 +398,84 @@ export default function RegisterMatchPage() {
     return (
       <div className="flex min-h-[calc(100dvh-140px)] flex-col justify-center gap-8 px-5">
         <div className="space-y-6">
-          <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-bold text-foreground">Partido creado</h1>
-            <p className="text-sm text-muted-foreground">Compartí el enlace para que los demás confirmen asistencia.</p>
-          </div>
+          <PageHeader
+            title="Partido creado"
+            description="Compartí el enlace para que los demás confirmen asistencia."
+            className="text-center"
+          />
 
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Link principal</p>
-              <div className="rounded-lg border border-border/70 bg-background p-3">
-                <p className="break-words text-sm text-foreground">{success.shareUrl}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <ShareButton
-                    url={success.shareUrl ?? ""}
-                    size="sm"
-                    variant="secondary"
-                    copyMessage="Link principal copiado"
-                    successMessage="Link compartido"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Share2 className="h-4 w-4" />
-                      <span>Compartir</span>
-                    </span>
-                  </ShareButton>
-                  <Button type="button" size="sm" variant="secondary" asChild>
-                    <Link href={`https://wa.me/?text=${encodeURIComponent(success.shareUrl ?? "")}`} target="_blank">
-                      Compartir por WhatsApp
-                    </Link>
-                  </Button>
-                </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">Link principal</p>
+            <div className="rounded-lg border border-border/70 bg-background p-3">
+              <p className="break-words text-sm text-foreground">{success.shareUrl}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <ShareButton
+                  url={success.shareUrl ?? ""}
+                  size="sm"
+                  variant="secondary"
+                  copyMessage="Link principal copiado"
+                  successMessage="Link compartido"
+                >
+                  <span className="flex items-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    <span>Compartir</span>
+                  </span>
+                </ShareButton>
+                <Button type="button" size="sm" variant="secondary" asChild>
+                  <Link href={`https://wa.me/?text=${encodeURIComponent(success.shareUrl ?? "")}`} target="_blank">
+                    Compartir por WhatsApp
+                  </Link>
+                </Button>
               </div>
             </div>
+          </div>
 
-            {success.slots && success.slots.length > 0 ? (
-              <div className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary">Links por cupo</p>
-                <div className="space-y-2">
-                  {success.slots.map((slot) => (
-                    <div
-                      key={slot.playerId}
-                      className="space-y-1 rounded-lg border border-dashed border-border/70 bg-muted/20 p-3 text-sm"
-                    >
-                      <p className="font-medium text-foreground">{slot.teamLabel}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {describeSlot(slot.team, (slot.position % 2) as 0 | 1)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {slot.occupied
-                          ? slot.displayName ?? "Ocupado"
-                          : slot.displayName ?? "Pendiente de confirmar"}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <ShareButton
-                          url={slot.link}
-                          size="sm"
-                          variant="secondary"
-                          copyMessage="Link copiado"
-                          successMessage="Invitación compartida"
-                        />
-                        <Button type="button" size="sm" variant="secondary" asChild>
-                          <Link
-                            href={`https://wa.me/?text=${encodeURIComponent(
-                              `¡Sumate al partido desde este enlace: ${slot.link}`,
-                            )}`}
-                            target="_blank"
-                          >
-                            Enviar por WhatsApp
-                          </Link>
-                        </Button>
-                      </div>
+          {success.slots && success.slots.length > 0 ? (
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Links por cupo</p>
+              <div className="space-y-2">
+                {success.slots.map((slot) => (
+                  <div
+                    key={slot.playerId}
+                    className="space-y-1 rounded-lg border border-dashed border-border/70 bg-muted/20 p-3 text-sm"
+                  >
+                    <p className="font-medium text-foreground">{slot.teamLabel}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {describeSlot(slot.team, (slot.position % 2) as 0 | 1)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {slot.occupied
+                        ? slot.displayName ?? "Ocupado"
+                        : slot.displayName ?? "Pendiente de confirmar"}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <ShareButton
+                        url={slot.link}
+                        size="sm"
+                        variant="secondary"
+                        copyMessage="Link copiado"
+                        successMessage="Invitación compartida"
+                      />
+                      <Button type="button" size="sm" variant="secondary" asChild>
+                        <Link
+                          href={`https://wa.me/?text=${encodeURIComponent(
+                            `¡Sumate al partido desde este enlace: ${slot.link}`,
+                          )}`}
+                          target="_blank"
+                        >
+                          Enviar por WhatsApp
+                        </Link>
+                      </Button>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ) : null}
+            </div>
+          ) : null}
 
-            <Button asChild variant="outline">
-              <Link href={`/match/${success.matchId}`}>Ver partido</Link>
-            </Button>
+          <Button asChild variant="outline">
+            <Link href={`/match/${success.matchId}`}>Ver partido</Link>
+          </Button>
         </div>
       </div>
     );
@@ -490,10 +492,10 @@ export default function RegisterMatchPage() {
       slot?.kind === "user"
         ? slot.player.displayName
         : slot?.kind === "placeholder"
-        ? slot.displayName
-        : isPrimary
-        ? userDisplayName
-        : placeholderName;
+          ? slot.displayName
+          : isPrimary
+            ? userDisplayName
+            : placeholderName;
 
     return (
       <div
@@ -507,9 +509,8 @@ export default function RegisterMatchPage() {
             setActiveSlot({ team, index });
           }
         }}
-        className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 ${
-          isActive ? "border-primary bg-primary/10" : "border-border bg-muted/40"
-        }`}
+        className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 ${isActive ? "border-primary bg-primary/10" : "border-border bg-muted/40"
+          }`}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary">
           {slot?.kind === "user" && slot.player.image ? (
@@ -536,10 +537,10 @@ export default function RegisterMatchPage() {
               slot?.kind === "placeholder"
                 ? "Gestionar nombre del cupo"
                 : slot?.kind === "user"
-                ? "Cambiar jugador"
-                : isPrimary
-                ? "Seleccionar jugador principal"
-                : "Asignar jugador"
+                  ? "Cambiar jugador"
+                  : isPrimary
+                    ? "Seleccionar jugador principal"
+                    : "Asignar jugador"
             }
             onClick={(event) => {
               event.stopPropagation();
@@ -561,9 +562,12 @@ export default function RegisterMatchPage() {
       return (
         <section className={baseClass}>
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold">Seleccioná los jugadores</h1>
+            <PageHeader
+              title="Seleccioná los jugadores"
+              className="mb-6"
+            />
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4">
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-muted-foreground">Pareja A</p>
                 {([0, 1] as const).map((index) => renderSlot("A", index))}

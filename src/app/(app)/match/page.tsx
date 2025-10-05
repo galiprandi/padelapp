@@ -1,11 +1,12 @@
-import Link from "next/link";
-
+import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
-import { auth } from "@/auth";
+import { PageHeader } from "@/components/page-header";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -41,10 +42,10 @@ async function getUserMatches(userId: string): Promise<MatchResultCompactMatch[]
       position: player.position,
       user: player.user
         ? {
-            id: player.user.id,
-            displayName: player.user.displayName,
-            image: player.user.image,
-          }
+          id: player.user.id,
+          displayName: player.user.displayName,
+          image: player.user.image,
+        }
         : null,
     })),
   }));
@@ -58,18 +59,16 @@ export default async function MatchListPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="space-y-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Partidos</h1>
-          <p className="text-sm text-muted-foreground">
-            Revisá tus partidos jugados y compartí el marcador con tu equipo.
-          </p>
-        </div>
-
-        <Button asChild className="w-full">
-          <Link href="/match/new">Crear Partido</Link>
-        </Button>
-      </header>
+      <PageHeader
+        title="Partidos"
+        description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
+        action={
+          <Button className="w-full justify-center py-2 text-base">
+            <PlusCircle className="mr-2 h-5 w-5" />
+            <Link href="/match/new">Crear Partido</Link>
+          </Button>
+        }
+      />
 
       <div className="grid gap-3">
         {viewerId ? (

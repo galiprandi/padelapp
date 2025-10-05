@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   PairInline,
   PairPreview,
@@ -9,10 +9,15 @@ import {
   PlayerPreviewProps,
   PlayerWithRanking,
 } from "@/components/players/player-cards";
-import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import {
+  MatchResultCompact,
+  type MatchResultCompactMatch,
+} from "@/components/matches/match-result-card";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
+import { PlusCircle, Settings, Users, Trophy, Activity } from "lucide-react";
 import { mockPlayers } from "@/lib/mock-data";
 
 const SAMPLE_PLAYERS = mockPlayers as PlayerPreviewProps[];
@@ -62,26 +67,29 @@ const SAMPLE_MATCH: MatchResultCompactMatch = {
 };
 
 export default function ComponentCatalogPage() {
-  const [activeCategory, setActiveCategory] = useState('players');
-  const [viewportMode, setViewportMode] = useState<'mobile' | 'desktop'>('desktop');
+  const [activeCategory, setActiveCategory] = useState("players");
+  const [viewportMode, setViewportMode] = useState<"mobile" | "desktop">(
+    "mobile"
+  );
 
   const scrollToSection = (sectionId: string) => {
     setActiveCategory(sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   const sections = [
-    { id: 'players', name: 'Jugadores', icon: '👥' },
-    { id: 'ranking', name: 'Con ranking', icon: '🏆' },
-    { id: 'compact', name: 'Compactos', icon: '📱' },
-    { id: 'pairs', name: 'Parejas', icon: '👫' },
-    { id: 'inline', name: 'En línea', icon: '➡️' },
-    { id: 'matches', name: 'Partidos', icon: '🎾' },
-    { id: 'states', name: 'Estados', icon: '📋' },
-    { id: 'navigation', name: 'Navegación', icon: '🧭' },
+    { id: "headers", name: "Encabezados", icon: "📝" },
+    { id: "players", name: "Jugadores", icon: "👥" },
+    { id: "ranking", name: "Con ranking", icon: "🏆" },
+    { id: "compact", name: "Compactos", icon: "📱" },
+    { id: "pairs", name: "Parejas", icon: "👫" },
+    { id: "inline", name: "En línea", icon: "➡️" },
+    { id: "matches", name: "Partidos", icon: "🎾" },
+    { id: "states", name: "Estados", icon: "📋" },
+    { id: "navigation", name: "Navegación", icon: "🧭" },
   ];
 
   return (
@@ -92,37 +100,41 @@ export default function ComponentCatalogPage() {
           <div className="sticky top-6 space-y-6">
             {/* Viewport Toggle */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground">Vista</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground">
+                Vista
+              </h3>
               <div className="flex bg-muted rounded-lg p-1">
                 <button
-                  onClick={() => setViewportMode('mobile')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                    viewportMode === 'mobile'
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  onClick={() => setViewportMode("mobile")}
+                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${viewportMode === "mobile"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   📱 Mobile
                 </button>
                 <button
-                  onClick={() => setViewportMode('desktop')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                    viewportMode === 'desktop'
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  onClick={() => setViewportMode("desktop")}
+                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${viewportMode === "desktop"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   🖥️ Desktop
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                {viewportMode === 'mobile' ? '📱 Componentes en vista mobile' : '🖥️ Componentes en vista desktop'}
+                {viewportMode === "mobile"
+                  ? "📱 Componentes en vista mobile"
+                  : "🖥️ Componentes en vista desktop"}
               </p>
             </div>
 
             {/* Navigation - Always visible */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground">Secciones</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground">
+                Secciones
+              </h3>
               <nav className="space-y-2">
                 {sections.map((section) => (
                   <button
@@ -130,8 +142,8 @@ export default function ComponentCatalogPage() {
                     onClick={() => scrollToSection(section.id)}
                     className={
                       activeCategory === section.id
-                        ? 'w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors bg-primary text-primary-foreground'
-                        : 'w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors hover:bg-muted text-muted-foreground hover:text-foreground'
+                        ? "w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors bg-primary text-primary-foreground"
+                        : "w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
                     }
                   >
                     <span className="text-lg">{section.icon}</span>
@@ -149,25 +161,76 @@ export default function ComponentCatalogPage() {
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-3xl font-bold">Catálogo de componentes</h1>
             </div>
-            
+
             <p className="text-muted-foreground">
-              Centralizamos ejemplos reutilizables para mantener consistencia en las vistas.
+              Centralizamos ejemplos reutilizables para mantener consistencia en
+              las vistas.
               <span className="ml-2 text-xs bg-muted px-2 py-1 rounded">
-                {viewportMode === 'mobile' ? '📱 Modo Mobile' : '🖥️ Modo Desktop'}
+                {viewportMode === "mobile"
+                  ? "📱 Modo Mobile"
+                  : "🖥️ Modo Desktop"}
               </span>
             </p>
           </header>
 
           {/* Components Container - Only this changes with viewport mode */}
-          <div className={`space-y-12 ${
-            viewportMode === 'mobile' 
-              ? 'max-w-sm mx-auto' // Mobile: contenido limitado pero sidebar oculto
-              : 'w-full' // Desktop: contenido completo
-          }`}>
+          <div
+            className={`space-y-12 ${viewportMode === "mobile"
+                ? "max-w-sm mx-auto" // Mobile: contenido limitado
+                : "w-full" // Desktop: contenido completo
+              }`}
+          >
+            {/* Sección de Encabezados */}
+            <section id="headers" className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold">
+                  📝 Encabezado de Página
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Componente para títulos de sección con descripción y acciones
+                  opcionales.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Básico
+                  </h3>
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <PageHeader
+                      title="Título de la Página"
+                      description="Descripción opcional que puede incluir más detalles sobre la sección."
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Con Acción
+                  </h3>
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <PageHeader
+                      title="Mis Partidos"
+                      description="Revisa el historial de tus partidos y estadísticas"
+                      action={
+                        <Button className="w-full justify-center py-2 text-base">
+                          <PlusCircle className="mr-2 h-5 w-5" />
+                          Nuevo Partido
+                        </Button>
+                      }
+                      className="text-center"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <section id="players" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">👥 Jugadores</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Patrón base utilizado en `/match/new` para invitar o gestionar jugadores dentro de un turno.
+                Patrón base utilizado en `/match/new` para invitar o gestionar
+                jugadores dentro de un turno.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
@@ -180,7 +243,8 @@ export default function ComponentCatalogPage() {
             <section id="ranking" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">🏆 Con ranking</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Útil para listados donde el CTA se reemplaza por la posición actual del jugador.
+                Útil para listados donde el CTA se reemplaza por la posición
+                actual del jugador.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
@@ -206,23 +270,34 @@ export default function ComponentCatalogPage() {
             <section id="pairs" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">👫 Parejas</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Agrupa fichas de jugadores bajo un encabezado para representar Pareja A/B.
+                Agrupa fichas de jugadores bajo un encabezado para representar
+                Pareja A/B.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50 space-y-4">
-                <PairPreview label="Pareja A" players={SAMPLE_PLAYERS.slice(0, 2)} />
-                <PairPreview label="Pareja B" players={SAMPLE_PLAYERS.slice(2, 4)} />
+                <PairPreview
+                  label="Pareja A"
+                  players={SAMPLE_PLAYERS.slice(0, 2)}
+                />
+                <PairPreview
+                  label="Pareja B"
+                  players={SAMPLE_PLAYERS.slice(2, 4)}
+                />
               </div>
             </section>
 
             <section id="inline" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">➡️ En línea</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Presentación compacta para resúmenes de partidos o historial, sin botones de acción.
+                Presentación compacta para resúmenes de partidos o historial,
+                sin botones de acción.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
-                <PairInline label="Pareja A" players={SAMPLE_PLAYERS.slice(0, 2)} />
+                <PairInline
+                  label="Pareja A"
+                  players={SAMPLE_PLAYERS.slice(0, 2)}
+                />
               </div>
             </section>
 
@@ -233,14 +308,19 @@ export default function ComponentCatalogPage() {
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
-                <MatchResultCompact label="Resultado ejemplo" match={SAMPLE_MATCH} detailUrl={`/match/${SAMPLE_MATCH.id}`} />
+                <MatchResultCompact
+                  label="Resultado ejemplo"
+                  match={SAMPLE_MATCH}
+                  detailUrl={`/match/${SAMPLE_MATCH.id}`}
+                />
               </div>
             </section>
 
             <section id="states" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">📋 Estados</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Bloques neutrales para comunicar que una sección no tiene datos y sugerir el siguiente paso.
+                Bloques neutrales para comunicar que una sección no tiene datos
+                y sugerir el siguiente paso.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50 space-y-4">
@@ -263,11 +343,16 @@ export default function ComponentCatalogPage() {
             <section id="navigation" className="space-y-4">
               <h2 className="text-lg font-semibold mb-3">🧭 Navegación</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Barra persistente en mobile, plana sobre el fondo y centrada en íconos. Incluye un ejemplo de badge de notificaciones.
+                Barra persistente en mobile, plana sobre el fondo y centrada en
+                íconos. Incluye un ejemplo de badge de notificaciones.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
-                <BottomNav position="static" notificationsCount={3} notificationsHref="/notifications" />
+                <BottomNav
+                  position="static"
+                  notificationsCount={3}
+                  notificationsHref="/notifications"
+                />
               </div>
             </section>
           </div>
