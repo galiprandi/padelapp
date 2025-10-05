@@ -1,5 +1,7 @@
 import { Fragment } from "react";
 
+import { UserCheck, UserPlus } from "lucide-react";
+
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { Button } from "@/components/ui/button";
 
@@ -32,8 +34,8 @@ export function PlayerPreview({ name, role, image, isConfirmed, category }: Play
         ) : null}
       </div>
 
-      <Button type="button" variant="ghost" size="sm" aria-label={isConfirmed ? "Gestionar jugador" : "Invitar jugador"}>
-        {isConfirmed ? "Gestionar" : "Invitar"}
+      <Button type="button" variant="ghost" size="icon" aria-label={isConfirmed ? "Gestionar jugador" : "Invitar jugador"}>
+        {isConfirmed ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
       </Button>
     </div>
   );
