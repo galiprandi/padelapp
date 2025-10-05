@@ -21,7 +21,7 @@ Ofrecer navegación principal en mobile para usuarios autenticados, enlazando a 
 ## Diseño y estilo
 - Altura fija: 48 px; ancho completo.
 - Fondo plano y oscuro (`bg-zinc-900` o equivalente), conservar borde superior sutil y padding inferior con `env(safe-area-inset-bottom)`.
-- Íconos de `lucide-react` (`Trophy` para Ranking, `User` para Perfil); ícono personalizado con paletas cruzadas para Partidos; fallback a emoji si falla la carga. Usar `text-primary` para el color base de los íconos y variantes sólidas para el estado activo.
+- Íconos de `lucide-react` (`Trophy` para Ranking, `User` para Perfil); ícono personalizado con silueta circular de match (svg provisto) para Partidos; fallback a emoji si falla la carga. Usar `text-primary` para el color base de los íconos y variantes sólidas para el estado activo.
 - Solo íconos visibles (sin labels); mantener nombres accesibles mediante `aria-label` o contenido `sr-only`.
 - Estado activo: ícono en alto contraste (`text-foreground`) y barra superior de 2 px en color de contraste; inactivos usan `text-muted-foreground` con cambio a `text-foreground` al focus/hover.
 - Estética flat: evitar elevación o sombras volumétricas y mantener bordes rectos (sin `rounded`).

@@ -15,28 +15,24 @@ interface BottomNavItem {
   activeIcon?: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
-const MatchPaddlesIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+const MatchGlyphIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
   <svg
-    viewBox="0 0 24 24"
+    viewBox="0 0 2048 2048"
     fill="none"
     stroke="currentColor"
-    strokeWidth={1.8}
+    strokeWidth={120}
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden
     {...props}
   >
-    <circle cx={9} cy={9} r={3.2} />
-    <circle cx={15} cy={9} r={3.2} />
-    <path d="M7.1 11.9 11.5 16.3" />
-    <path d="M12.5 13 16.9 17.4" />
+    <path d="M1024 0q141 0 272 36t245 103t207 160t160 208t103 245t37 272q0 141-36 272t-103 245t-160 207t-208 160t-245 103t-272 37q-141 0-272-36t-245-103t-207-160t-160-208t-103-244t-37-273q0-141 36-272t103-245t160-207t208-160T751 37t273-37m0 128q-123 0-237 32t-214 90t-182 141t-140 181t-91 214t-32 238q0 65 9 128q122-2 219-49t174-123t131-174t95-203q24-66 54-130t68-125t81-116t98-103q-8-1-16-1t-17 0M165 1279q32 108 90 204t136 174t174 136t204 90q8-140 62-252t141-199t198-151t233-109q66-24 138-60t139-82t123-103t90-121q-30-120-90-225t-146-190t-190-145t-225-91q-65 34-121 90t-102 123t-83 139t-60 138q-45 122-109 233t-151 197t-199 141t-252 63m859 641q123 0 237-32t214-90t182-141t140-181t91-214t32-238v-16q0-8-1-17q-47 53-102 97t-116 82t-125 67t-131 55q-105 39-203 94t-174 132t-123 173t-49 220q63 9 128 9" />
   </svg>
 );
 
-const MatchPaddlesSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
-    <path d="M9 5.25a3.75 3.75 0 1 1-2.651 6.4l3.931 3.931a1.2 1.2 0 1 1-1.697 1.697l-3.95-3.95A3.75 3.75 0 0 1 9 5.25Z" />
-    <path d="M15 5.25a3.75 3.75 0 1 1-2.651 6.4l3.931 3.931a1.2 1.2 0 0 1-1.697 1.697l-3.95-3.95A3.75 3.75 0 0 1 15 5.25Z" />
+const MatchGlyphSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 2048 2048" fill="currentColor" aria-hidden {...props}>
+    <path d="M1024 0q141 0 272 36t245 103t207 160t160 208t103 245t37 272q0 141-36 272t-103 245t-160 207t-208 160t-245 103t-272 37q-141 0-272-36t-245-103t-207-160t-160-208t-103-244t-37-273q0-141 36-272t103-245t160-207t208-160T751 37t273-37m0 128q-123 0-237 32t-214 90t-182 141t-140 181t-91 214t-32 238q0 65 9 128q122-2 219-49t174-123t131-174t95-203q24-66 54-130t68-125t81-116t98-103q-8-1-16-1t-17 0M165 1279q32 108 90 204t136 174t174 136t204 90q8-140 62-252t141-199t198-151t233-109q66-24 138-60t139-82t123-103t90-121q-30-120-90-225t-146-190t-190-145t-225-91q-65 34-121 90t-102 123t-83 139t-60 138q-45 122-109 233t-151 197t-199 141t-252 63m859 641q123 0 237-32t214-90t182-141t140-181t91-214t32-238v-16q0-8-1-17q-47 53-102 97t-116 82t-125 67t-131 55q-105 39-203 94t-174 132t-123 173t-49 220q63 9 128 9" />
   </svg>
 );
 
@@ -55,7 +51,7 @@ const UserSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
 
 const NAV_ITEMS: BottomNavItem[] = [
   { href: "/ranking", label: "Ranking", icon: Trophy, activeIcon: TrophySolidIcon },
-  { href: "/match", label: "Partidos", icon: MatchPaddlesIcon, activeIcon: MatchPaddlesSolidIcon },
+  { href: "/match", label: "Partidos", icon: MatchGlyphIcon, activeIcon: MatchGlyphSolidIcon },
   { href: "/me", label: "Perfil", icon: User, activeIcon: UserSolidIcon },
 ];
 
