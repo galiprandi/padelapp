@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 async function getUserMatches(userId: string): Promise<MatchResultCompactMatch[]> {
   const matches = await prisma.match.findMany({
     where: {

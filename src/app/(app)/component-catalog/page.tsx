@@ -6,11 +6,11 @@ import {
   PlayerPreviewProps,
   PlayerWithRanking,
 } from "@/components/players/player-cards";
-import { MatchResultCompact } from "@/components/matches/match-result-card";
+import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { mockPlayers } from "@/lib/mock-data";
 
 const SAMPLE_PLAYERS = mockPlayers as PlayerPreviewProps[];
-const SAMPLE_MATCH = {
+const SAMPLE_MATCH: MatchResultCompactMatch = {
   id: "match-sample",
   createdAt: "2025-01-18T18:00:00.000Z",
   score: "7-3, 3-7, 7-5",
@@ -53,7 +53,7 @@ const SAMPLE_MATCH = {
       },
     },
   ],
-} as const;
+};
 
 export default function ComponentCatalogPage() {
   return (
