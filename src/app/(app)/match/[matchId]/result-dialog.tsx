@@ -10,9 +10,10 @@ interface ResultDialogProps {
   initialScore?: string | null;
   initialNotes?: string | null;
   triggerLabel?: string;
+  sets: number;
 }
 
-export function ResultDialog({ matchId, initialScore, initialNotes, triggerLabel }: ResultDialogProps) {
+export function ResultDialog({ matchId, initialScore, initialNotes, triggerLabel, sets }: ResultDialogProps) {
   const [open, setOpen] = useState(false);
   const { showToast } = useToast();
 
@@ -36,6 +37,7 @@ export function ResultDialog({ matchId, initialScore, initialNotes, triggerLabel
               matchId={matchId}
               initialScore={initialScore}
               initialNotes={initialNotes}
+              sets={sets}
               onSuccess={() => {
                 showToast("Resultado enviado. Esperando confirmaciones.");
                 setOpen(false);

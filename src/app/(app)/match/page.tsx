@@ -1,9 +1,58 @@
 import Link from "next/link";
+
+import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockMatches } from "@/lib/mock-data";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
-export default function MatchListPage() {
+async function getUserMatches(userId: string): Promise<MatchResultCompactMatch[]> {
+  const matches = await prisma.match.findMany({
+    where: {
+      players: {
+        some: {
+          userId,
+        },
+      },
+    },
+    include: {
+      players: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+    take: 20,
+  });
+
+  return matches.map((match) => ({
+    id: match.id,
+    createdAt: match.updatedAt ?? match.createdAt,
+    score: match.score,
+    status: match.status,
+    players: match.players.map((player) => ({
+      id: player.id,
+      position: player.position,
+      user: player.user
+        ? {
+            id: player.user.id,
+            displayName: player.user.displayName,
+            image: player.user.image,
+          }
+        : null,
+    })),
+  }));
+}
+
+export default async function MatchListPage() {
+  const session = await auth();
+  const viewerId = session?.user?.id;
+
+  const matches = viewerId ? await getUserMatches(viewerId) : [];
+
   return (
     <div className="flex flex-col gap-6">
       <header className="space-y-4">
@@ -13,45 +62,45 @@ export default function MatchListPage() {
             Revisá tus partidos jugados y compartí el marcador con tu equipo.
           </p>
         </div>
+
+        <Button asChild className="w-full">
+          <Link href="/match/new">Crear Partido</Link>
+        </Button>
       </header>
 
       <div className="grid gap-3">
-        {mockMatches.length > 0 ? (
-          mockMatches.map((match) => (
-            <Card key={match.id}>
+        {viewerId ? (
+          matches.length > 0 ? (
+            matches.map((match) => (
+              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
+            ))
+          ) : (
+            <Card>
               <CardHeader className="space-y-1">
-                <CardTitle className="text-base">{match.score}</CardTitle>
-                <CardDescription>
-                  {match.winners} vs {match.losers}
-                </CardDescription>
+                <CardTitle className="text-base">Aún no tenés partidos</CardTitle>
+                <CardDescription>Creá tu primer match para invitar a tus compañeros.</CardDescription>
               </CardHeader>
-              <CardContent className="flex justify-end">
-                <Button asChild size="sm" variant="outline">
-                  <Link href={`/match/${match.id}`}>Ver detalles</Link>
+              <CardContent>
+                <Button asChild>
+                  <Link href="/match/new">Crear Partido</Link>
                 </Button>
               </CardContent>
             </Card>
-          ))
+          )
         ) : (
           <Card>
             <CardHeader className="space-y-1">
-              <CardTitle className="text-base">Aún no tenés partidos</CardTitle>
-              <CardDescription>Creá tu primer match para invitar a tus compañeros.</CardDescription>
+              <CardTitle className="text-base">Iniciá sesión</CardTitle>
+              <CardDescription>Ingresá con Google para ver tus partidos recientes.</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild>
-                <Link href="/match/new">Crear match ahora</Link>
+                <Link href="/login">Ir al login</Link>
               </Button>
             </CardContent>
           </Card>
         )}
       </div>
-
-      <footer className="mt-2 pb-4">
-        <Button asChild className="w-full">
-          <Link href="/match/new">Crear match</Link>
-        </Button>
-      </footer>
     </div>
   );
 }

@@ -112,6 +112,7 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
                 initialScore={match.score}
                 initialNotes={match.notes}
                 triggerLabel={match.score && isCreator ? "Modificar resultado" : "Cargar resultado"}
+                sets={match.sets}
               />
             ) : null}
 
