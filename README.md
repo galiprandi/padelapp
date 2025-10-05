@@ -11,6 +11,7 @@ npm run start           # ejecuta el build en modo producción
 npm run lint            # valida el código con las reglas base de Next.js
 npm run db:up           # levanta Postgres local (docker compose)
 npm run db:down         # detiene el contenedor de Postgres
+npm run db:drop         # elimina todas las tablas usando DATABASE_URL_DIRECT
 npm run prisma:migrate  # aplica migraciones en la base definida en .env
 npm run prisma:generate # regenera el cliente de Prisma tras cambios en el schema
 npm run db:studio       # abre Prisma Studio
@@ -40,7 +41,7 @@ npm run db:studio       # abre Prisma Studio
 
 1. Copia `.env.example` a `.env` y ajusta la `DATABASE_URL` si lo necesitas.
 2. Levanta la base con `npm run db:up` (usa `docker compose` con Postgres 16).
-3. Ejecuta `npm run prisma:migrate` o `npm run db:push` para crear las tablas de Auth (`User`, `Account`, `Session`, `VerificationToken`).
+3. Ejecuta `npm run prisma:migrate` o `npm run db:push` para crear las tablas de Auth (`User`, `Account`, `Session`, `VerificationToken`). Si necesitás limpiar la base por completo, definí `DATABASE_URL_DIRECT` en tu `.env` y corre `npm run db:drop` (usa la URL directa para evitar conflictos con Prisma Client).
 4. Abre `npm run db:studio` para explorar datos.
 
 El cliente se expone desde `src/lib/prisma.ts` para reutilizar la conexión dentro del proyecto.
