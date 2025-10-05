@@ -145,13 +145,6 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
               )}
               aria-label={item.label}
             >
-              <span
-                className={cn(
-                  "pointer-events-none absolute inset-x-1/3 top-0 h-0.5 transform-gpu bg-primary transition-transform duration-150",
-                  isActive ? "scale-x-100" : "scale-x-0",
-                )}
-                aria-hidden
-              />
               <Icon className="h-6 w-6" aria-hidden />
               <span className="sr-only">{item.label}</span>
             </Link>
