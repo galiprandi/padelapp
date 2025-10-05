@@ -102,7 +102,7 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
         ? { transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined, transition: "transform 150ms ease" }
         : undefined}
     >
-      <div className="relative flex h-16 w-full max-w-xl flex-1 items-center justify-evenly rounded-3xl bg-primary text-primary-foreground shadow-lg">
+      <div className="relative flex h-16 w-full max-w-xl items-stretch justify-evenly border-t border-border/80 bg-background">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -113,19 +113,21 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "group relative flex h-full min-w-[84px] flex-1 flex-col items-center justify-center gap-1 px-3 text-xs font-semibold capitalize tracking-wide transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground/70",
-                isActive ? "text-primary-foreground" : "text-primary-foreground/70",
+                "group relative flex flex-1 items-center justify-center text-muted-foreground transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary",
+                "min-h-[64px]",
+                isActive ? "text-foreground" : "hover:text-foreground",
               )}
+              aria-label={item.label}
             >
               <span
                 className={cn(
-                  "pointer-events-none absolute inset-x-[24%] top-0 h-0.5 rounded-full opacity-0 transition-opacity duration-150",
-                  isActive ? "bg-primary-foreground opacity-100" : "bg-transparent",
+                  "pointer-events-none absolute inset-x-1/3 top-0 h-0.5 transform-gpu bg-foreground transition-transform duration-150",
+                  isActive ? "scale-x-100" : "scale-x-0",
                 )}
                 aria-hidden
               />
               <Icon className="h-6 w-6" aria-hidden />
-              <span className="text-sm">{item.label}</span>
+              <span className="sr-only">{item.label}</span>
             </Link>
           );
         })}
@@ -133,7 +135,8 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
         {displayBadge ? (
           <Link
             href={notificationsTarget ?? "#"}
-            className="absolute -top-3 right-4 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary-foreground px-2 text-xs font-bold text-primary shadow-lg transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground"
+            aria-label="Notificaciones"
+            className="absolute -top-3 right-4 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <Bell className="mr-1 h-4 w-4" aria-hidden />
             <span>{notificationsCount}</span>

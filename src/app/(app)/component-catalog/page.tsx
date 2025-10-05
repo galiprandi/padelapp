@@ -148,7 +148,7 @@ export default function ComponentCatalogPage() {
           Barra de navegación inferior
         </h2>
         <p className="text-sm text-muted-foreground">
-          Barra persistente en mobile con soporte para badge de notificaciones. La vista previa se muestra en modo &quot;static&quot; para evitar superponer la interfaz.
+          Barra persistente en mobile, plana sobre el fondo y centrada en íconos. Incluye un ejemplo de badge de notificaciones.
         </p>
 
         <BottomNav position="static" notificationsCount={3} notificationsHref="/notifications" />
