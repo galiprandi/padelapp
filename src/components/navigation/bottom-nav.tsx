@@ -101,7 +101,7 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
         ? { transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined, transition: "transform 150ms ease" }
         : undefined}
     >
-      <div className="relative flex h-14 w-full max-w-xl items-stretch justify-evenly border-t border-border/80 bg-zinc-900 text-primary-foreground">
+      <div className="relative flex h-12 w-full max-w-xl items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -113,14 +113,14 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "group relative flex flex-1 items-center justify-center transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary",
-                "min-h-[56px]",
-                isActive ? "text-primary-foreground" : "text-primary-foreground/70 hover:text-primary-foreground",
+                "min-h-[48px]",
+                isActive ? "text-primary" : "text-primary/70 hover:text-primary",
               )}
               aria-label={item.label}
             >
               <span
                 className={cn(
-                  "pointer-events-none absolute inset-x-1/3 top-0 h-0.5 transform-gpu bg-primary-foreground transition-transform duration-150",
+                  "pointer-events-none absolute inset-x-1/3 top-0 h-0.5 transform-gpu bg-primary transition-transform duration-150",
                   isActive ? "scale-x-100" : "scale-x-0",
                 )}
                 aria-hidden
