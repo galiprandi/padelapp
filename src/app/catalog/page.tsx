@@ -1,18 +1,17 @@
 "use client";
-
 import { useState } from "react";
 import {
   PairInline,
   PairPreview,
   PlayerCompact,
   PlayerPreview,
-  PlayerPreviewProps,
   PlayerWithRanking,
 } from "@/components/players/player-cards";
 import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
+import { MatchNavigation } from "@/components/matches/match-navigation";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
@@ -312,6 +311,26 @@ export default function ComponentCatalogPage() {
                   label="Resultado ejemplo"
                   match={SAMPLE_MATCH}
                   detailUrl={`/match/${SAMPLE_MATCH.id}`}
+                />
+              </div>
+            </section>
+
+            <section id="navigation" className="space-y-4">
+              <h2 className="text-lg font-semibold mb-3">🧭 Navegación de Formularios</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Componente reutilizable para navegación en pasos de formularios.
+                Ocupa todo el espacio disponible debajo del contenido con botones de acción.
+              </p>
+
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <MatchNavigation
+                  primaryButtonText="Crear partido"
+                  onPrimaryClick={() => {}}
+                  primaryDisabled={false}
+                  secondaryButtonText="Cancelar"
+                  onSecondaryClick={() => {}}
+                  secondaryIsLink={true}
+                  secondaryHref="/match"
                 />
               </div>
             </section>
