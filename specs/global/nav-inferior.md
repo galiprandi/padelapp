@@ -1,7 +1,7 @@
 # Especificación barra de navegación inferior
 
 - Camino: componente móvil persistente (`BottomNav`).
-- Estado: Not Implemented
+- Estado: Implemented
 
 ## Objetivo
 Ofrecer navegación principal en mobile para usuarios autenticados, enlazando a `/ranking`, `/match` y `/me` con interacción táctil clara y soporte PWA.
