@@ -86,6 +86,8 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   }
 
   const viewerId = session?.user?.id ?? null;
+  const viewerPlayer = viewerId ? match.players.find((player) => player.userId === viewerId) : null;
+  const viewerPlayerId = viewerPlayer?.id;
   const isParticipant = viewerId ? match.players.some((slot) => slot.userId === viewerId) : false;
 
   return (
@@ -184,7 +186,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </Button>
           ) : !isParticipant ? (
             <p className="text-xs text-muted-foreground">
-              Pedile al organizador el enlace directo de tu cupo (`/j/{playerId}`) para confirmar tu asistencia.
+              Pedile al organizador el enlace directo de tu cupo (`/j/${viewerPlayerId}`) para confirmar tu asistencia.
             </p>
           ) : (
             <p className="text-xs text-muted-foreground">Ya formás parte de este partido.</p>
