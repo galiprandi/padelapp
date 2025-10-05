@@ -7,6 +7,7 @@ import {
   PlayerWithRanking,
 } from "@/components/players/player-cards";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import { BottomNav } from "@/components/navigation/bottom-nav";
 import { mockPlayers } from "@/lib/mock-data";
 
 const SAMPLE_PLAYERS = mockPlayers as PlayerPreviewProps[];
@@ -140,6 +141,17 @@ export default function ComponentCatalogPage() {
         </h2>
 
         <MatchResultCompact label="Resultado ejemplo" match={SAMPLE_MATCH} detailUrl={`/match/${SAMPLE_MATCH.id}`} />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Barra de navegación inferior
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Barra persistente en mobile, plana sobre el fondo y centrada en íconos. Incluye un ejemplo de badge de notificaciones.
+        </p>
+
+        <BottomNav position="static" notificationsCount={3} notificationsHref="/notifications" />
       </section>
     </div>
   );

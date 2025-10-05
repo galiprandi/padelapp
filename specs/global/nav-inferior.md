@@ -1,7 +1,7 @@
 # Especificación barra de navegación inferior
 
 - Camino: componente móvil persistente (`BottomNav`).
-- Estado: Not Implemented
+- Estado: Implemented
 
 ## Objetivo
 Ofrecer navegación principal en mobile para usuarios autenticados, enlazando a `/ranking`, `/match` y `/me` con interacción táctil clara y soporte PWA.
@@ -19,12 +19,12 @@ Ofrecer navegación principal en mobile para usuarios autenticados, enlazando a 
 - Badge de notificaciones global opcional, mostrando ícono de campana (`Bell`) + contador de pendientes; anclar arriba a la derecha de la barra o del ítem que corresponda según UX final.
 
 ## Diseño y estilo
-- Altura fija: 64 px; ancho completo.
-- Fondo sólido usando color primario definido en el tema shadcn amarillo; aplicar padding inferior con `env(safe-area-inset-bottom)`.
-- Íconos de `lucide-react` (`Trophy` para Ranking, `Racket` para Partidos, `User` para Perfil, `Bell` para badge); fallback a emoji si falla la carga.
-- Etiquetas en español con mayúscula inicial (`Ranking`, `Partidos`, `Perfil`).
-- Estado activo: texto e ícono en color de contraste (`text-primary-foreground`) y barra superior de 2 px en color de contraste; inactivos usan variante secundaria (`text-muted-foreground`).
-- Aplicar sombra suave (`shadow-lg`) para separar del contenido.
+- Altura fija: 48 px; ancho completo.
+- Fondo plano y oscuro (`bg-zinc-900` o equivalente), conservar borde superior sutil y padding inferior con `env(safe-area-inset-bottom)`.
+- Íconos de `lucide-react` (`Trophy` para Ranking, `User` para Perfil); ícono personalizado con silueta circular de match (svg provisto) para Partidos; fallback a emoji si falla la carga. Usar `text-primary` para el color base de los íconos y variantes sólidas para el estado activo.
+- Solo íconos visibles (sin labels); mantener nombres accesibles mediante `aria-label` o contenido `sr-only`.
+- Estado activo: ícono en alto contraste (`text-foreground`) y barra superior de 2 px en color de contraste; inactivos usan `text-muted-foreground` con cambio a `text-foreground` al focus/hover.
+- Estética flat: evitar elevación o sombras volumétricas y mantener bordes rectos (sin `rounded`).
 
 ## Comportamiento
 - Contenedor `position: fixed` en `bottom: 0` y `left: 0`, `right: 0`; z-index por encima del contenido principal.
