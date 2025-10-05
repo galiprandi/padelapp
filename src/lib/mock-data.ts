@@ -64,3 +64,42 @@ export const mockFriends = [
   { id: "user-vale", name: "Valentina Ortiz" },
   { id: "user-javi", name: "Javier Molina" },
 ];
+
+export const mockPlayers = [
+  {
+    id: "player-1",
+    name: "Germán Aliprandi",
+    role: "Pareja A · Jugadora 1",
+    image: "https://lh3.googleusercontent.com/a/ACg8ocKQQbUOpdcWM2l5uGjq5gtLt1Lnmzyi-F4iWWWNzIj38QdLkrN9pA=s96-c",
+    isConfirmed: true,
+    ranking: 2,
+    category: 2,
+  },
+  {
+    id: "player-2",
+    name: "Diego Morales",
+    role: "Pareja A · Jugador 2",
+    image: "",
+    isConfirmed: false,
+    ranking: 5,
+    category: 4,
+  },
+  {
+    id: "player-3",
+    name: "María López",
+    role: "Pareja B · Jugadora 1",
+    image: "",
+    isConfirmed: true,
+    ranking: 3,
+    category: 3,
+  },
+  {
+    id: "player-4",
+    name: "Lucas Fernández",
+    role: "Pareja B · Jugador 2",
+    image: "",
+    isConfirmed: true,
+    ranking: 4,
+    category: 4,
+  },
+];
