@@ -1,5 +1,6 @@
 const MAGIC_LINK_PATHS = {
   match: "m",
+  player: "j",
   turn: "t",
   user: "u",
   ranking: "ranking",

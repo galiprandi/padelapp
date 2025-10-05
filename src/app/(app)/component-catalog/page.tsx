@@ -8,6 +8,8 @@ import {
 } from "@/components/players/player-cards";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { BottomNav } from "@/components/navigation/bottom-nav";
+import { EmptyState } from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
 import { mockPlayers } from "@/lib/mock-data";
 
 const SAMPLE_PLAYERS = mockPlayers as PlayerPreviewProps[];
@@ -141,6 +143,29 @@ export default function ComponentCatalogPage() {
         </h2>
 
         <MatchResultCompact label="Resultado ejemplo" match={SAMPLE_MATCH} detailUrl={`/match/${SAMPLE_MATCH.id}`} />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Estados vacíos</h2>
+        <p className="text-sm text-muted-foreground">
+          Bloques neutrales para comunicar que una sección no tiene datos y sugerir el siguiente paso.
+        </p>
+
+        <div className="space-y-3">
+          <EmptyState
+            title="Sin partidos todavía"
+            description="Cuando quieras, creá un partido nuevo y administralo desde tu tablero."
+            action={
+              <Button size="sm" className="w-full">
+                Crear partido
+              </Button>
+            }
+          />
+          <EmptyState
+            title="No hay turnos próximos"
+            description="Publicá un turno abierto para invitar a la comunidad."
+          />
+        </div>
       </section>
 
       <section className="space-y-3">

@@ -87,3 +87,10 @@ Referencias primarias: `src/app/(app)/match/actions.ts`, `src/app/(app)/match/[m
 
 ## Preguntas abiertas
 - Ninguna para esta iteración; los ajustes futuros (renombrado por integrantes, hand preference, ranking) se documentarán en specs específicas.
+
+## Validaciones y tests requeridos
+- **Server Actions**: pruebas unitarias o de integración sobre `join` y `liberar` para garantizar que solo usuarios autenticados pueden mutar `MatchPlayer` y que la regla `matchId + userId` impide tomar dos cupos.
+- **Estado del partido**: verificación de que `/j/:playerId` rechaza uniones cuando `match.status !== PENDING`.
+- **Mensaje de cupo ocupado**: test UI/e2e que confirme que se muestra exactamente “Cupo ocupado, hablá con el organizador del partido.” cuando el slot ya está asignado.
+- **Edición de displayName**: cobertura que asegura que solo el owner puede actualizar `displayName` de slots libres y que el valor persiste.
+- **Confirmación de resultado**: prueba que valide la transición de `resultConfirmed` y que ambos equipos deben confirmar para habilitar el cálculo de ranking.

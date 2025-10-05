@@ -71,33 +71,33 @@ model Match {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   players     MatchPlayer[]
-  invitations MatchInvitation[]
 }
 
 model MatchPlayer {
-  id        String  @id @default(cuid())
-  matchId   String
-  match     Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  userId    String?
-  user      User?   @relation(fields: [userId], references: [id])
-  position  Int
-  confirmed Boolean @default(false)
-  score     String?
+  id             String   @id @default(cuid())
+  matchId        String
+  match          Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  position       Int
+  resultConfirmed Boolean @default(false)
+  displayName    String?
+  teamId         String?
+  team           Team?    @relation(fields: [teamId], references: [id])
+  joinedAt       DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@unique([matchId, position])
+  @@unique([matchId, userId])
 }
 
-model MatchInvitation {
-  id        String   @id @default(cuid())
-  matchId   String
-  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  email     String
-  token     String   @unique
-  position  Int
-  accepted  Boolean  @default(false)
-  expiresAt DateTime @default(dbgenerated("now() + interval '7 days'"))
-
-  @@unique([matchId, position])
+model Team {
+  id          String        @id @default(cuid())
+  label       String
+  matchPlayers MatchPlayer[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 enum MatchStatus {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -77,17 +78,10 @@ export default async function MatchListPage() {
               <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
             ))
           ) : (
-            <Card>
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-base">Aún no tenés partidos</CardTitle>
-                <CardDescription>Creá tu primer match para invitar a tus compañeros.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild>
-                  <Link href="/match/new">Crear Partido</Link>
-                </Button>
-              </CardContent>
-            </Card>
+            <EmptyState
+              title="Sin partidos todavía"
+              description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
+            />
           )
         ) : (
           <Card>

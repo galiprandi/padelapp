@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ShareButton } from "@/components/share/share-button";
 import { createMatchAction, type CreateMatchInput, type CreateMatchResponse, type SlotPayload } from "../actions";
-import { generateMagicToken } from "@/lib/magic-link";
 import { Share2, UsersRound } from "lucide-react";
 
 const MATCH_TYPE_OPTIONS = [
@@ -29,9 +28,6 @@ const PLACEHOLDER_SLOTS: Array<{ team: TeamKey; index: 0 | 1; name: string }> = 
   { team: "B", index: 1, name: "Jugador 4" },
 ];
 
-const appUrl = new URL(appSettings.baseUrl);
-const shareEmailDomain = `share.${appUrl.hostname}`;
-
 type MatchTypeValue = CreateMatchInput["matchType"];
 type TeamKey = "A" | "B";
 type PlayerOption = {
@@ -43,7 +39,7 @@ type PlayerOption = {
 
 type SlotValue =
   | { kind: "user"; player: PlayerOption }
-  | { kind: "invite"; email: string; displayName: string; token: string };
+  | { kind: "placeholder"; displayName: string };
 
 type TeamState = Record<TeamKey, [SlotValue | null, SlotValue | null]>;
 
@@ -69,7 +65,7 @@ function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, onClose
       const initialName =
         slot?.kind === "user"
           ? slot.player.displayName
-          : slot?.kind === "invite"
+          : slot?.kind === "placeholder"
           ? slot.displayName
           : placeholderName;
       setName(initialName);
@@ -133,12 +129,10 @@ function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, onClose
   );
 }
 
-function createInvitePlaceholder(name: string): SlotValue {
+function createPlaceholderSlot(name: string): SlotValue {
   return {
-    kind: "invite",
+    kind: "placeholder",
     displayName: name,
-    email: buildShareEmail(name),
-    token: generateMagicToken(),
   };
 }
 
@@ -149,7 +143,7 @@ function buildInitialState(): TeamState {
   };
 
   PLACEHOLDER_SLOTS.forEach(({ team, index, name }) => {
-    state[team][index] = createInvitePlaceholder(name);
+    state[team][index] = createPlaceholderSlot(name);
   });
 
   return state;
@@ -170,16 +164,6 @@ function avatarFallback(name: string): string {
     .map((part) => part[0]?.toUpperCase())
     .join("")
     .slice(0, 2);
-}
-
-function buildShareEmail(name: string): string {
-  const normalized = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  const slug = normalized.length > 0 ? normalized : "player";
-  const random = Math.random().toString(36).slice(2, 8);
-  return `${slug}-${random}@${shareEmailDomain}`;
 }
 
 export default function RegisterMatchPage() {
@@ -236,7 +220,7 @@ export default function RegisterMatchPage() {
             const placeholderName =
               PLACEHOLDER_SLOTS.find((candidate) => candidate.team === team && candidate.index === index)?.name ??
               `Jugador ${positionFromTeam(team, index) + 1}`;
-            next[team][index] = createInvitePlaceholder(placeholderName);
+            next[team][index] = createPlaceholderSlot(placeholderName);
           }
         });
       });
@@ -246,7 +230,7 @@ export default function RegisterMatchPage() {
       // Ensure placeholders remain for empty slots.
       PLACEHOLDER_SLOTS.forEach(({ team, index, name }) => {
         if (!next[team][index]) {
-          next[team][index] = createInvitePlaceholder(name);
+          next[team][index] = createPlaceholderSlot(name);
         }
       });
 
@@ -268,13 +252,10 @@ export default function RegisterMatchPage() {
     });
   }
 
-  function handleInvite({ email, displayName, token }: { email: string; displayName: string; token?: string }) {
-    const safeToken = token && token.length > 0 ? token : generateMagicToken();
+  function handlePlaceholder(displayName: string) {
     updateSlot(manageModal.team, manageModal.index, {
-      kind: "invite",
-      email,
+      kind: "placeholder",
       displayName,
-      token: safeToken,
     });
     setManageModal((previous) => ({ ...previous, open: false }));
   }
@@ -325,14 +306,13 @@ export default function RegisterMatchPage() {
 
         const position = positionFromTeam(team, index);
         if (slot.kind === "user") {
-          slotsPayload.push({ kind: "user", position, userId: slot.player.id });
+          slotsPayload.push({ kind: "user", position, team, userId: slot.player.id });
         } else {
           slotsPayload.push({
-            kind: "invite",
+            kind: "placeholder",
             position,
-            email: slot.email,
+            team,
             displayName: slot.displayName,
-            token: slot.token,
           });
         }
       });
@@ -344,6 +324,11 @@ export default function RegisterMatchPage() {
         sets: setsValue,
         matchType,
         countsForRanking,
+        format: "DOUBLES",
+        teamLabels: {
+          A: "Pareja A",
+          B: "Pareja B",
+        },
         club: club.trim().length > 0 ? club.trim() : null,
         courtNumber: courtNumber.trim().length > 0 ? courtNumber.trim() : null,
         score: null,
@@ -377,12 +362,7 @@ export default function RegisterMatchPage() {
       return;
     }
 
-    const existingSlot = teamState[manageModal.team][manageModal.index];
-    handleInvite({
-      email: buildShareEmail(trimmed),
-      displayName: trimmed,
-      token: existingSlot?.kind === "invite" ? existingSlot.token : undefined,
-    });
+    handlePlaceholder(trimmed);
   }
 
   async function handleShareIntent(nameToShare: string) {
@@ -448,31 +428,36 @@ export default function RegisterMatchPage() {
               </div>
             </div>
 
-            {success.invitations && success.invitations.length > 0 ? (
+            {success.slots && success.slots.length > 0 ? (
               <div className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary">Invitaciones</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-primary">Links por cupo</p>
                 <div className="space-y-2">
-                  {success.invitations.map((invite) => (
+                  {success.slots.map((slot) => (
                     <div
-                      key={invite.position}
+                      key={slot.playerId}
                       className="space-y-1 rounded-lg border border-dashed border-border/70 bg-muted/20 p-3 text-sm"
                     >
-                      <p className="font-medium text-foreground">{invite.displayName}</p>
+                      <p className="font-medium text-foreground">{slot.teamLabel}</p>
                       <p className="text-xs text-muted-foreground">
-                        {describeSlot(invite.position < 2 ? "A" : "B", (invite.position % 2) as 0 | 1)}
+                        {describeSlot(slot.team, (slot.position % 2) as 0 | 1)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {slot.occupied
+                          ? slot.displayName ?? "Ocupado"
+                          : slot.displayName ?? "Pendiente de confirmar"}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         <ShareButton
-                          url={invite.link}
+                          url={slot.link}
                           size="sm"
                           variant="secondary"
-                          copyMessage={`Link para ${invite.displayName} copiado`}
+                          copyMessage="Link copiado"
                           successMessage="Invitación compartida"
                         />
                         <Button type="button" size="sm" variant="secondary" asChild>
                           <Link
                             href={`https://wa.me/?text=${encodeURIComponent(
-                              `¡Hola ${invite.displayName}! Confirmá tu lugar en ${appSettings.shortName}: ${invite.link}`,
+                              `¡Sumate al partido desde este enlace: ${slot.link}`,
                             )}`}
                             target="_blank"
                           >
@@ -505,7 +490,7 @@ export default function RegisterMatchPage() {
     const displayName =
       slot?.kind === "user"
         ? slot.player.displayName
-        : slot?.kind === "invite"
+        : slot?.kind === "placeholder"
         ? slot.displayName
         : isPrimary
         ? userDisplayName
@@ -549,8 +534,8 @@ export default function RegisterMatchPage() {
             variant="ghost"
             size="icon"
             aria-label={
-              slot?.kind === "invite"
-                ? "Gestionar enlace compartido"
+              slot?.kind === "placeholder"
+                ? "Gestionar nombre del cupo"
                 : slot?.kind === "user"
                 ? "Cambiar jugador"
                 : isPrimary
