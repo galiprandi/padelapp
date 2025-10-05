@@ -14,7 +14,7 @@ interface BottomNavItem {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
-const PadelRacketIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+const PadelBallIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -25,18 +25,15 @@ const PadelRacketIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
     aria-hidden
     {...props}
   >
-    <path d="M11 2a7 7 0 0 1 7 7c0 1.93-.77 3.68-2 4.95L11 19l-3-3 5-5.08A4.5 4.5 0 0 0 11 4.5" />
-    <circle cx={9.5} cy={6.5} r={0.5} />
-    <circle cx={12} cy={6} r={0.5} />
-    <circle cx={9.5} cy={9} r={0.5} />
-    <circle cx={12} cy={8.5} r={0.5} />
-    <path d="m9 19 2 2" />
+    <circle cx={12} cy={12} r={8} />
+    <path d="M8.5 5.75a9 9 0 0 0 0 12.5" />
+    <path d="M15.5 5.75a9 9 0 0 1 0 12.5" />
   </svg>
 );
 
 const NAV_ITEMS: BottomNavItem[] = [
   { href: "/ranking", label: "Ranking", icon: Trophy },
-  { href: "/match", label: "Partidos", icon: PadelRacketIcon },
+  { href: "/match", label: "Partidos", icon: PadelBallIcon },
   { href: "/me", label: "Perfil", icon: User },
 ];
 
