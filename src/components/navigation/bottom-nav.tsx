@@ -15,35 +15,28 @@ interface BottomNavItem {
   activeIcon?: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
-const TennisBallIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+const MatchPaddlesIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth={2}
+    strokeWidth={1.8}
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden
     {...props}
   >
-    <circle cx={12} cy={12} r={8} />
-    <path d="M5 8a7 7 0 0 0 4 4" />
-    <path d="M5 16a7 7 0 0 1 4-4" />
-    <path d="M19 8a7 7 0 0 1-4 4" />
-    <path d="M19 16a7 7 0 0 0-4-4" />
+    <circle cx={9} cy={9} r={3.2} />
+    <circle cx={15} cy={9} r={3.2} />
+    <path d="M7.1 11.9 11.5 16.3" />
+    <path d="M12.5 13 16.9 17.4" />
   </svg>
 );
 
-const TennisBallSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
+const MatchPaddlesSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
-    <path d="M12 4a8 8 0 1 1-5.657 13.657A7.96 7.96 0 0 1 8.2 12 7.96 7.96 0 0 1 6.343 6.343 7.96 7.96 0 0 1 12 4Z" />
-    <path
-      d="M6 8.25a7 7 0 0 0 4 3.75M6 15.75a7 7 0 0 1 4-3.75M18 8.25a7 7 0 0 1-4 3.75M18 15.75a7 7 0 0 0-4-3.75"
-      fill="none"
-      stroke="rgba(24,24,27,0.65)"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-    />
+    <path d="M9 5.25a3.75 3.75 0 1 1-2.651 6.4l3.931 3.931a1.2 1.2 0 1 1-1.697 1.697l-3.95-3.95A3.75 3.75 0 0 1 9 5.25Z" />
+    <path d="M15 5.25a3.75 3.75 0 1 1-2.651 6.4l3.931 3.931a1.2 1.2 0 0 1-1.697 1.697l-3.95-3.95A3.75 3.75 0 0 1 15 5.25Z" />
   </svg>
 );
 
@@ -62,7 +55,7 @@ const UserSolidIcon: ComponentType<SVGProps<SVGSVGElement>> = (props) => (
 
 const NAV_ITEMS: BottomNavItem[] = [
   { href: "/ranking", label: "Ranking", icon: Trophy, activeIcon: TrophySolidIcon },
-  { href: "/match", label: "Partidos", icon: TennisBallIcon, activeIcon: TennisBallSolidIcon },
+  { href: "/match", label: "Partidos", icon: MatchPaddlesIcon, activeIcon: MatchPaddlesSolidIcon },
   { href: "/me", label: "Perfil", icon: User, activeIcon: UserSolidIcon },
 ];
 
