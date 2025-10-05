@@ -19,12 +19,12 @@ Ofrecer navegación principal en mobile para usuarios autenticados, enlazando a 
 - Badge de notificaciones global opcional, mostrando ícono de campana (`Bell`) + contador de pendientes; anclar arriba a la derecha de la barra o del ítem que corresponda según UX final.
 
 ## Diseño y estilo
-- Altura fija: 64 px; ancho completo.
-- Fondo plano en color de superficie (`bg-background` o equivalente), borde superior sutil y padding inferior con `env(safe-area-inset-bottom)`.
+- Altura fija: 56 px; ancho completo.
+- Fondo plano y oscuro (`bg-zinc-900` o equivalente), conservar borde superior sutil y padding inferior con `env(safe-area-inset-bottom)`.
 - Íconos de `lucide-react` (`Trophy` para Ranking, `User` para Perfil); ícono personalizado tipo paleta/racket para Partidos; fallback a emoji si falla la carga.
 - Solo íconos visibles (sin labels); mantener nombres accesibles mediante `aria-label` o contenido `sr-only`.
 - Estado activo: ícono en alto contraste (`text-foreground`) y barra superior de 2 px en color de contraste; inactivos usan `text-muted-foreground` con cambio a `text-foreground` al focus/hover.
-- Estética flat: evitar elevación o sombras volumétricas.
+- Estética flat: evitar elevación o sombras volumétricas y mantener bordes rectos (sin `rounded`).
 
 ## Comportamiento
 - Contenedor `position: fixed` en `bottom: 0` y `left: 0`, `right: 0`; z-index por encima del contenido principal.
