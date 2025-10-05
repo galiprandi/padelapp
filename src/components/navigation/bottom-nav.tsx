@@ -101,7 +101,7 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
         ? { transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined, transition: "transform 150ms ease" }
         : undefined}
     >
-      <div className="relative flex h-12 w-full max-w-xl items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
+      <div className="relative flex h-12 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
