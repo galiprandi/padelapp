@@ -396,12 +396,12 @@ export default function RegisterMatchPage() {
   if (success?.status === "ok") {
     return (
       <div className="flex min-h-[calc(100dvh-140px)] flex-col justify-center gap-8 px-5">
-        <Card className="border-primary/40 bg-primary/5">
-          <CardHeader>
-            <CardTitle>Partido creado</CardTitle>
-            <CardDescription>Compartí el enlace para que los demás confirmen asistencia.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="space-y-6">
+          <div className="space-y-2 text-center">
+            <h1 className="text-2xl font-bold text-foreground">Partido creado</h1>
+            <p className="text-sm text-muted-foreground">Compartí el enlace para que los demás confirmen asistencia.</p>
+          </div>
+
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Link principal</p>
               <div className="rounded-lg border border-border/70 bg-background p-3">
@@ -474,8 +474,7 @@ export default function RegisterMatchPage() {
             <Button asChild variant="outline">
               <Link href={`/match/${success.matchId}`}>Ver partido</Link>
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     );
   }
