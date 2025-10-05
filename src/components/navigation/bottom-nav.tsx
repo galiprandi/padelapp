@@ -93,8 +93,8 @@ export function BottomNav({ className, notificationsCount = 0, notificationsHref
       aria-label="Barra de navegación inferior"
       className={cn(
         position === "fixed"
-          ? "fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[env(safe-area-inset-bottom,0px)] sm:px-6 md:px-8"
-          : "mx-auto flex w-full justify-center px-4 sm:px-6 md:px-8",
+          ? "fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[env(safe-area-inset-bottom,0px)]"
+          : "mx-auto flex w-full justify-center",
         className,
       )}
       style={position === "fixed"
