@@ -5,6 +5,7 @@ import {
   PairPreview,
   PlayerCompact,
   PlayerPreview,
+  PlayerPreviewProps,
   PlayerWithRanking,
 } from "@/components/players/player-cards";
 import {
@@ -106,8 +107,8 @@ export default function ComponentCatalogPage() {
                 <button
                   onClick={() => setViewportMode("mobile")}
                   className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${viewportMode === "mobile"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
                   📱 Mobile
@@ -115,8 +116,8 @@ export default function ComponentCatalogPage() {
                 <button
                   onClick={() => setViewportMode("desktop")}
                   className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${viewportMode === "desktop"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
                   🖥️ Desktop
@@ -175,8 +176,8 @@ export default function ComponentCatalogPage() {
           {/* Components Container - Only this changes with viewport mode */}
           <div
             className={`space-y-12 ${viewportMode === "mobile"
-                ? "max-w-sm mx-auto" // Mobile: contenido limitado
-                : "w-full" // Desktop: contenido completo
+              ? "max-w-sm mx-auto" // Mobile: contenido limitado
+              : "w-full" // Desktop: contenido completo
               }`}
           >
             {/* Sección de Encabezados */}
@@ -325,10 +326,10 @@ export default function ComponentCatalogPage() {
               <div className="p-4 border rounded-lg bg-muted/50">
                 <MatchNavigation
                   primaryButtonText="Crear partido"
-                  onPrimaryClick={() => {}}
+                  onPrimaryClick={() => { }}
                   primaryDisabled={false}
                   secondaryButtonText="Cancelar"
-                  onSecondaryClick={() => {}}
+                  onSecondaryClick={() => { }}
                   secondaryIsLink={true}
                   secondaryHref="/match"
                 />
