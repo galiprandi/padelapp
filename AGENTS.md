@@ -46,6 +46,26 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 3. Integrar placeholders para futuros módulos (auth Google, Prisma/Supabase, FCM) sin bloquear el build.
 4. Establecer linting, formatos y scripts de build/deploy.
 
+## 6.1. Estado actual del desarrollo
+### ✅ Página de resultados de partidos (`/match/[matchId]/result`)
+- **Estado**: Implementada y funcional
+- **Funcionalidades**:
+  - Visualización de parejas participantes con avatares
+  - Formulario de ingreso de resultados por set (hasta 3 sets)
+  - Validación y normalización de datos de scores existentes
+  - Botón CTA de ancho completo según reglas mobile-first
+  - Estados: partido abierto (permite editar) vs cerrado (solo lectura)
+- **Errores corregidos**: Indexación de arrays, manejo de scores existentes, compatibilidad Next.js 15
+- **Archivos relacionados**: 
+  - `src/app/(app)/match/[matchId]/result/page.tsx`
+  - `src/app/(app)/match/actions.ts` (saveMatchResultAction)
+- **Pendiente**: Integración con autenticación y base de datos
+
+### 🗑️ Limpieza de código
+- **Estado**: Completado
+- Eliminado componente no usado: `match-result-input.tsx` (2.3KB ahorrados)
+- Build optimizado sin dependencias rotas
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

@@ -32,6 +32,8 @@ const MATCH_STATUS = {
   DISPUTED: "DISPUTED",
 } as const;
 
+type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
+
 const MATCH_TYPE = {
   FRIENDLY: "FRIENDLY",
   LOCAL_TOURNAMENT: "LOCAL_TOURNAMENT",
@@ -781,6 +783,198 @@ export async function updateTeamLabelAction(input: UpdateTeamLabelInput): Promis
     return {
       status: "error",
       message: "No pudimos actualizar el equipo. Intentá nuevamente.",
+    };
+  }
+}
+
+export interface SaveMatchResultInput {
+  matchId: string;
+  score: string;
+  status?: string;
+}
+
+export async function saveMatchResultAction(input: SaveMatchResultInput): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "Debes iniciar sesión para guardar resultados." };
+  }
+
+  if (!input.matchId || input.matchId.trim().length === 0) {
+    return { status: "error", message: "Identificador de partido inválido." };
+  }
+
+  const score = input.score.trim();
+  if (score.length === 0) {
+    return { status: "error", message: "Por favor, ingresa el resultado del partido." };
+  }
+
+  try {
+    const updatedMatch = await prisma.$transaction(async (tx) => {
+      // Verify the user is part of the match
+      const player = await tx.matchPlayer.findFirst({
+        where: {
+          matchId: input.matchId,
+          userId: session.user.id,
+        },
+      });
+
+      if (!player) {
+        throw new Error("not-authorized");
+      }
+
+      // Update the match score and status
+      const baseMatch = await tx.match.update({
+        where: { id: input.matchId },
+        data: {
+          score,
+          status: (input.status as MatchStatus) || MATCH_STATUS.CONFIRMED,
+          players: {
+            update: {
+              where: { id: player.id },
+              data: { resultConfirmed: true },
+            },
+          },
+        },
+        include: {
+          players: true,
+        },
+      });
+
+      // Check if all players have confirmed the result
+      const allConfirmed = baseMatch.players.every(p => p.resultConfirmed);
+      
+      // If all players confirmed, update status to CONFIRMED
+      if (allConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
+        return tx.match.update({
+          where: { id: input.matchId },
+          data: { status: MATCH_STATUS.CONFIRMED },
+          include: { players: true },
+        });
+      }
+
+      return baseMatch;
+    });
+
+    if (!updatedMatch) {
+      throw new Error("match-update-failed");
+    }
+
+    revalidatePath(`/match/${input.matchId}`);
+    revalidatePath(`/match/${input.matchId}/result`);
+
+    return { status: "ok" };
+  } catch (error) {
+    if (error instanceof Error && error.message === "not-authorized") {
+      return { status: "error", message: "No puedes actualizar un partido en el que no participas." };
+    }
+    console.error("saveMatchResultAction failed", error);
+    return {
+      status: "error",
+      message: "No se pudo guardar el resultado. Por favor, inténtalo de nuevo.",
+    };
+  }
+}
+
+export async function getMatchByIdAction(matchId: string): Promise<{
+  status: "ok" | "error";
+  match?: {
+    id: string;
+    status: string;
+    sets: number;
+    matchType: string;
+    club: string | null;
+    courtNumber: string | null;
+    notes: string | null;
+    score: string | null;
+    createdAt: Date;
+    creator?: {
+      id: string;
+      displayName: string | null;
+      image: string | null;
+    } | null;
+    players: Array<{
+      id: string;
+      position: number;
+      userId: string | null;
+      displayName: string | null;
+      teamId: string | null;
+      resultConfirmed: boolean;
+      joinedAt: Date | null;
+      user?: {
+        id: string;
+        displayName: string | null;
+        image: string | null;
+      } | null;
+      team?: {
+        id: string;
+        label: string;
+      } | null;
+    }>;
+  };
+  message?: string;
+}> {
+  if (!matchId || matchId.trim().length === 0) {
+    return { status: "error", message: "Invalid match identifier." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: matchId },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            displayName: true,
+            image: true,
+          },
+        },
+        players: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                image: true,
+              },
+            },
+            team: {
+              select: {
+                id: true,
+                label: true,
+              },
+            },
+          },
+          orderBy: { position: "asc" },
+        },
+      },
+    });
+
+    if (!match) {
+      return { status: "error", message: "Match not found." };
+    }
+
+    return {
+      status: "ok",
+      match: {
+        id: match.id,
+        status: match.status,
+        sets: match.sets,
+        matchType: match.matchType,
+        club: match.club,
+        courtNumber: match.courtNumber,
+        notes: match.notes,
+        score: match.score,
+        createdAt: match.createdAt,
+        creator: match.creator,
+        players: match.players,
+      },
+    };
+  } catch (error) {
+    console.error("getMatchByIdAction failed", error);
+    return {
+      status: "error",
+      message: "Could not fetch match data. Please try again.",
     };
   }
 }

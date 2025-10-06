@@ -89,7 +89,7 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
   const hasConnector = players.length > 1;
 
   return (
-    <div className="relative rounded-xl border border-border/80 bg-muted/30">
+    <div className="relative rounded-xl border border-border/80 bg-muted/30 mt-6">
       <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </span>
