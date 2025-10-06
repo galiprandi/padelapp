@@ -70,44 +70,42 @@ export function StepContent({
   if (currentStep === 0) {
     return (
       <section className={baseClass}>
-        <div className="space-y-6">
-          <PageHeader
-            title="Nuevo Partido"
-            description="Armá tu partido seleccionando las parejas. Tocá el botón de cada jugador para gestionar nombres y enlaces de invitación."
-            className="mb-6"
-          />
+        <PageHeader
+          title="Nuevo Partido"
+          description="Armá tu partido seleccionando las parejas. Tocá el botón de cada jugador para gestionar nombres y enlaces de invitación."
+          className="mb-6"
+        />
 
-          <div className="grid gap-4">
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-muted-foreground">Pareja A</p>
-              {([0, 1] as const).map((index) => (
-                <SlotDisplay
-                  key={`A-${index}`}
-                  team="A"
-                  index={index}
-                  slot={teamState.A[index]}
-                  userDisplayName={userDisplayName}
-                  isActive={activeSlot.team === "A" && activeSlot.index === index}
-                  onSlotClick={onSlotClick}
-                  onManageClick={onManageClick}
-                />
-              ))}
-            </div>
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-muted-foreground">Pareja B</p>
-              {([0, 1] as const).map((index) => (
-                <SlotDisplay
-                  key={`B-${index}`}
-                  team="B"
-                  index={index}
-                  slot={teamState.B[index]}
-                  userDisplayName={userDisplayName}
-                  isActive={activeSlot.team === "B" && activeSlot.index === index}
-                  onSlotClick={onSlotClick}
-                  onManageClick={onManageClick}
-                />
-              ))}
-            </div>
+        <div className="grid gap-4">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-muted-foreground">Pareja A</p>
+            {([0, 1] as const).map((index) => (
+              <SlotDisplay
+                key={`A-${index}`}
+                team="A"
+                index={index}
+                slot={teamState.A[index]}
+                userDisplayName={userDisplayName}
+                isActive={activeSlot.team === "A" && activeSlot.index === index}
+                onSlotClick={onSlotClick}
+                onManageClick={onManageClick}
+              />
+            ))}
+          </div>
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-muted-foreground">Pareja B</p>
+            {([0, 1] as const).map((index) => (
+              <SlotDisplay
+                key={`B-${index}`}
+                team="B"
+                index={index}
+                slot={teamState.B[index]}
+                userDisplayName={userDisplayName}
+                isActive={activeSlot.team === "B" && activeSlot.index === index}
+                onSlotClick={onSlotClick}
+                onManageClick={onManageClick}
+              />
+            ))}
           </div>
         </div>
 
@@ -115,7 +113,7 @@ export function StepContent({
           primaryButtonText="Siguiente"
           onPrimaryClick={onNextStep}
           secondaryButtonText="Cancelar"
-          onSecondaryClick={() => {}}
+          onSecondaryClick={() => { }}
           secondaryIsLink={true}
           secondaryHref="/match"
         />
