@@ -28,7 +28,7 @@ interface MatchPlayersManagerProps {
 export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
   const router = useRouter();
   const { showToast } = useToast();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [manageModal, setManageModal] = useState<{
     open: boolean;
     playerId: string | null;
