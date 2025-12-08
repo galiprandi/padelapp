@@ -49,7 +49,7 @@ interface MatchData {
 export default function MatchResultPage({ params }: { params: Promise<{ matchId: string }> }) {
     const [match, setMatch] = useState<MatchData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [scores, setScores] = useState<number[][]>([[0, 0], [0, 0], [0, 0]]);
+    const [scores, setScores] = useState<number[][]>([]);
     const [pending, startTransition] = useTransition();
     const router = useRouter();
     const { showToast } = useToast();
@@ -58,22 +58,27 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
         params.then(({ matchId }) => {
             getMatchByIdAction(matchId).then(result => {
                 if (result.status === 'ok' && result.match) {
+                    const setsCount = Math.max(1, result.match.sets || 1);
                     setMatch(result.match);
                     if (result.match.score) {
-                        const parsedScores = result.match.score.split(',').map(s => s.trim().split('-').map(Number));
-                        // Ensure we always have at least 3 sets
-                        while (parsedScores.length < 3) {
+                        const parsedScores = result.match.score
+                            .split(',')
+                            .map(s => s.trim().split('-').map(Number));
+
+                        while (parsedScores.length < setsCount) {
                             parsedScores.push([0, 0]);
                         }
-                        // Ensure each set has exactly 2 scores (for 2 teams)
+
                         const normalizedScores = parsedScores.map(set => {
                             const normalizedSet = [...set];
                             while (normalizedSet.length < 2) {
                                 normalizedSet.push(0);
                             }
-                            return normalizedSet.slice(0, 2); // Ensure max 2 scores per set
+                            return normalizedSet.slice(0, 2);
                         });
-                        setScores(normalizedScores);
+                        setScores(normalizedScores.slice(0, setsCount));
+                    } else {
+                        setScores(Array.from({ length: setsCount }, () => [0, 0]));
                     }
                 } else {
                     notFound();
@@ -110,7 +115,11 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
     const teams = Array.from(teamsMap.values());
 
     const save = () => {
-        const scoreStr = scores.map(set => `${set[0]}-${set[1]}`).join(', ');
+        const setsCount = Math.max(1, match.sets || 1);
+        const scoreStr = scores
+            .slice(0, setsCount)
+            .map(set => `${set[0]}-${set[1]}`)
+            .join(', ');
         startTransition(async () => {
             const res = await saveMatchResultAction({ matchId: match.id, score: scoreStr });
             if (res.status === 'ok') {
@@ -161,7 +170,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                         </span>
                                         <div className="p-4 pt-6">
                                             <div className="flex items-center justify-center gap-6">
-                                                {[0, 1, 2].map((setIndex) => (
+                                                {Array.from({ length: Math.max(1, match.sets || 1) }, (_, setIndex) => (
                                                     <div key={setIndex} className="flex flex-col items-center gap-2">
                                                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                                             Set {setIndex + 1}
@@ -172,11 +181,14 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                                             max={7}
                                                             placeholder="0"
                                                             className="w-12 h-12 text-center text-lg font-semibold"
-                                                            value={scores[setIndex][index]}
+                                                            value={scores[setIndex]?.[index] ?? 0}
                                                             onChange={(e) => {
                                                                 const val = parseInt(e.target.value) || 0;
                                                                 setScores(prev => {
                                                                     const newScores = prev.map(s => [...s]);
+                                                                    if (!newScores[setIndex]) {
+                                                                        newScores[setIndex] = [0, 0];
+                                                                    }
                                                                     newScores[setIndex][index] = val;
                                                                     return newScores;
                                                                 });
