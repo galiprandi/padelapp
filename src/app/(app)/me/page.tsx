@@ -86,9 +86,6 @@ export default async function DashboardPage() {
           <Button size="sm" variant="outline" asChild>
             <Link href="/me/profile">Editar perfil</Link>
           </Button>
-          <Button size="sm" variant="ghost" asChild>
-            <Link href="/match/new">Crear partido</Link>
-          </Button>
         </div>
       </section>
 

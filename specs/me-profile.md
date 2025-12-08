@@ -1,7 +1,7 @@
 # Especificación vista de edición de perfil
 
 - Path: `/me/profile`
-- Estado: Not Implemented
+- Estado: Implemented
 
 ## Objetivo
 - Permitir que el usuario autenticado ajuste su identidad visible en la app (alias) y revise datos básicos (nombre de Google, nivel).
@@ -21,7 +21,7 @@
 3) **Bloque Alias**:
    - Input de texto controlado para `alias`.
    - Placeholder: “Ej: Gero, La Muralla”.
-   - Helper: “Usaremos tu alias en partidos, rankings y listados.”
+   - Helper: “Usaremos tu alias para identificarte en partidos, rankings y listados. Este será el nombre que tus rivales verán.”
 4) **Acciones**:
    - Botón primario `Guardar cambios` (full width).
    - Botón secundario `Volver` (ghost) para regresar a `/me`.
@@ -35,7 +35,7 @@
 
 ## Comportamiento
 - Al guardar, invocar `updateUserAliasAction` (server action) y revalidar `/me` y `/me/profile`.
-- Toast de éxito: “Alias actualizado”.
+- Toast de éxito: “Alias actualizado correctamente”.
 - Toast de error: mensaje genérico y conservar valor ingresado.
 - Al cancelar/volver, no descartar cambios automáticamente; solo navegar.
 

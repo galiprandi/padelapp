@@ -1,5 +1,5 @@
 # Player aliases (nickname system)
-**Estado**: Not Implemented  
+**Estado**: Implemented (MVP)  
 **Ámbito**: Todos los views donde se muestra el nombre de un jugador (partidos, listas, invitaciones, confirmación).  
 
 ## Objetivo
@@ -40,9 +40,7 @@ Permitir que cada jugador autenticado defina un alias (nickname) propio, distint
   - Usarlo en componentes que renderizan nombres (MatchResultCompact, MatchPlayersManager, etc.).
 
 ## Pendientes/Integración
-- Añadir UI para editar alias en `/me` (o modal accesible desde bottom nav).  
-- Migración Prisma para `alias` en `User`.  
-- Actualizar specs de invitación una vez se soporte alias en `/j/[playerId]` y listados.
+- Ajustar specs de invitación una vez se soporte alias en `/j/[playerId]` y listados.
 
 ## Estado futuro
 - Cuando exista ranking, usar alias en tablas, pero mostrar `displayName` en tooltip secundario (opcional).
