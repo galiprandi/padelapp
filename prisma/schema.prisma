@@ -11,6 +11,7 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   displayName   String
+  alias         String?
   email         String    @unique
   image         String?
   level         Int       @default(6)
