@@ -1,12 +1,13 @@
 "use client";
 
 import { Fragment, useState, useTransition, useEffect } from 'react';
-import { notFound, redirect } from 'next/navigation';
+import { notFound, redirect, useRouter } from 'next/navigation';
 import { getMatchByIdAction, saveMatchResultAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PairInline } from "@/components/players/player-cards";
+import { useToast } from "@/components/toast/use-toast";
 
 interface MatchPlayer {
     id: string;
@@ -50,6 +51,8 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
     const [loading, setLoading] = useState(true);
     const [scores, setScores] = useState<number[][]>([[0, 0], [0, 0], [0, 0]]);
     const [pending, startTransition] = useTransition();
+    const router = useRouter();
+    const { showToast } = useToast();
 
     useEffect(() => {
         params.then(({ matchId }) => {
@@ -111,7 +114,9 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
         startTransition(async () => {
             const res = await saveMatchResultAction({ matchId: match.id, score: scoreStr });
             if (res.status === 'ok') {
-                alert('Resultado guardado');
+                showToast('Resultado guardado');
+                router.push('/match');
+                router.refresh();
             } else {
                 alert(res.message || 'Error');
             }
