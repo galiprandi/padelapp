@@ -36,6 +36,7 @@ export function SlotDisplay({
         : team === "A" && index === 0
           ? userDisplayName
           : placeholderName;
+  const isOwnerSlot = team === "A" && index === 0;
 
   return (
     <div
@@ -68,28 +69,28 @@ export function SlotDisplay({
         )}
       </div>
       <p className="flex-1 truncate text-sm font-semibold text-foreground">{displayName}</p>
-      <div className="flex items-center gap-1">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={
-            slot?.kind === "placeholder"
-              ? "Gestionar nombre del cupo"
-              : slot?.kind === "user"
-                ? "Cambiar jugador"
-                : team === "A" && index === 0
-                  ? "Seleccionar jugador principal"
+      {isOwnerSlot ? null : (
+        <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={
+              slot?.kind === "placeholder"
+                ? "Gestionar nombre del cupo"
+                : slot?.kind === "user"
+                  ? "Cambiar jugador"
                   : "Asignar jugador"
-          }
-          onClick={(event) => {
-            event.stopPropagation();
-            onManageClick(team, index);
-          }}
-        >
-          <UsersRound className="h-4 w-4" />
-        </Button>
-      </div>
+            }
+            onClick={(event) => {
+              event.stopPropagation();
+              onManageClick(team, index);
+            }}
+          >
+            <UsersRound className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

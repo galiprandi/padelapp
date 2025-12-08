@@ -5,7 +5,7 @@ import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
-import { positionFromTeam } from "@/lib/match-utils";
+import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
 import type { TeamKey } from "@/lib/match-types";
 import appSettings from "@/config/app-settings.json";
 
@@ -17,7 +17,7 @@ export default function RegisterMatchPage() {
     index: 1,
   });
 
-  const { teamState } = useTeamManagement();
+  const { teamState, updateSlot } = useTeamManagement();
   const {
     currentStep,
     matchType,
@@ -55,7 +55,7 @@ export default function RegisterMatchPage() {
       return;
     }
 
-    // For now, just close the modal since slot management is handled by hooks
+    updateSlot(manageModal.team, manageModal.index, createPlaceholderSlot(trimmed));
     handleCloseManageModal();
   }
 

@@ -4,6 +4,8 @@ import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
+type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
+
 function resolveDisplayName(profile: GoogleProfile): string {
   const trimmedName = profile.name?.trim() || profile.given_name?.trim();
   if (trimmedName && trimmedName.length > 0) {
@@ -39,11 +41,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id;
-        session.user.displayName = user.displayName;
-        session.user.level = user.level;
-        session.user.email = user.email;
-        session.user.image = user.image;
+        const adapterUser = user as AdapterUserWithAlias;
+        session.user.id = adapterUser.id;
+        session.user.displayName = adapterUser.displayName;
+        session.user.alias = adapterUser.alias;
+        session.user.level = adapterUser.level;
+        session.user.email = adapterUser.email;
+        session.user.image = adapterUser.image;
       }
       return session;
     },
