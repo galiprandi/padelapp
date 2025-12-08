@@ -108,9 +108,6 @@ export default async function DashboardPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Próximos partidos</h2>
-          <Button size="sm" variant="ghost" className="gap-2" asChild>
-            <Link href="/match/new">Crear partido</Link>
-          </Button>
         </div>
         <div className="grid gap-3">
           {viewerId && upcomingMatches.length > 0 ? (
@@ -136,9 +133,6 @@ export default async function DashboardPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Últimos partidos</h2>
-          <Button size="sm" variant="ghost" className="gap-2" asChild>
-            <Link href="/match">Registrar resultado</Link>
-          </Button>
         </div>
         <div className="space-y-3">
           {viewerId && recentMatches.length > 0 ? (
