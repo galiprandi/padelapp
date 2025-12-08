@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState, useTransition, useEffect } from 'react';
-import { notFound, redirect, useRouter } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { getMatchByIdAction, saveMatchResultAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";

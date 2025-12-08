@@ -1,7 +1,7 @@
 # Especificación flujo invitación y unión a partido
 
 - Rutas implicadas: `/match/[matchId]`, `/j/[playerId]`
-- Estado: Not Implemented
+- Estado: Parcialmente implementado
 
 ## Objetivo
 Unificar el flujo de invitación y confirmación de jugadores utilizando el propio registro `MatchPlayer` como cupo compartible. El enlace `/j/:playerId` se entrega a cada invitado. Cuando un usuario autenticado accede y el cupo sigue libre, se vincula al partido y se marca su fecha de unión. Si el cupo ya está ocupado se devuelve el mensaje en español: “Cupo ocupado, hablá con el organizador del partido.”
