@@ -17,7 +17,7 @@ import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import { PlusCircle, Settings, Users, Trophy, Activity } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { mockPlayers } from "@/lib/mock-data";
 
 const SAMPLE_PLAYERS = mockPlayers as PlayerPreviewProps[];

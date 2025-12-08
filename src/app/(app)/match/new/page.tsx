@@ -32,7 +32,6 @@ export default function RegisterMatchPage() {
     courtNumber,
     setCourtNumber,
     formError,
-    success,
     isSubmitting,
     goToNextStep,
     goToPreviousStep,

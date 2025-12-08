@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -27,10 +28,11 @@ export async function updateUserAliasAction(aliasInput: string | null): Promise<
 
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
 
+  const data = { alias: aliasToSave } as Prisma.UserUncheckedUpdateInput;
+
   await prisma.user.update({
     where: { id: session.user.id },
-    // Cast to any to avoid issues if the generated client is stale; schema includes alias.
-    data: { alias: aliasToSave } as any,
+    data,
   });
 
   revalidatePath("/me");

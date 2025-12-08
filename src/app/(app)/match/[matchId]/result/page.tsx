@@ -86,7 +86,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                 setLoading(false);
             });
         });
-    }, []);
+    }, [params]);
 
     if (loading) return <div>Cargando...</div>;
     if (!match) return <div>No encontrado</div>;

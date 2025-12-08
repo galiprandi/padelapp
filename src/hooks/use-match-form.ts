@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { redirect } from "next/navigation";
-import { createMatchAction, type CreateMatchInput, type CreateMatchResponse, type SlotPayload } from "@/app/(app)/match/actions";
-import type { TeamState, MatchTypeValue, StepIndex, TeamKey } from "@/lib/match-types";
+import { createMatchAction, type CreateMatchInput, type SlotPayload } from "@/app/(app)/match/actions";
+import type { TeamState, MatchTypeValue, StepIndex } from "@/lib/match-types";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
@@ -16,7 +16,6 @@ export function useMatchForm(teamState: TeamState) {
   const [club, setClub] = useState("");
   const [courtNumber, setCourtNumber] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<CreateMatchResponse | null>(null);
   const [isSubmitting, startSubmit] = useTransition();
 
   const setsValue = Number.parseInt(sets, 10);
@@ -122,7 +121,6 @@ export function useMatchForm(teamState: TeamState) {
     courtNumber,
     setCourtNumber,
     formError,
-    success,
     isSubmitting,
     goToNextStep,
     goToPreviousStep,
