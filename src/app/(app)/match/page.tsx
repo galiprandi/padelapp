@@ -40,6 +40,7 @@ async function getUserMatches(userId: string): Promise<MatchResultCompactMatch[]
     players: match.players.map((player) => ({
       id: player.id,
       position: player.position,
+      displayName: player.displayName,
       user: player.user
         ? {
           id: player.user.id,

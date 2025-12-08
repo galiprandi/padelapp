@@ -719,6 +719,7 @@ export async function renamePlaceholderAction(input: RenamePlaceholderInput): Pr
     });
 
     revalidatePath(`/match/${player.matchId}`);
+    revalidatePath(`/match`);
 
     return { status: "ok" };
   } catch (error) {

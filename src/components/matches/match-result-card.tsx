@@ -25,6 +25,7 @@ export function MatchResultCard({ label = "Resultado", children, footer }: Match
 export interface MatchResultCompactPlayer {
   id: string;
   position: number;
+  displayName?: string | null;
   user?: {
     id: string;
     displayName: string | null;
@@ -100,7 +101,7 @@ export function MatchResultCompact({ label = "Resultado", match, matchDate, deta
     id: `${match.id}-team-${index}`,
     players: teamPlayers.map((player) => ({
       id: player.id,
-      name: player.user?.displayName ?? `Jugador ${player.position + 1}`,
+      name: player.displayName ?? player.user?.displayName ?? `Jugador ${player.position + 1}`,
       image: player.user?.image ?? undefined,
     })),
     isWinner: winnerIndex === index,

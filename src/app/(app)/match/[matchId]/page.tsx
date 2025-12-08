@@ -1,8 +1,8 @@
 import { getMatchByIdAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { PairPreview } from "@/components/players/player-cards";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
+import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlusCircle, FileText } from "lucide-react";
 import Link from "next/link";
 
@@ -53,12 +53,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
           players: []
         });
       }
+      const displayName = player.displayName || player.user?.displayName || `Jugador ${player.position + 1}`;
       teamsMap.get(player.teamId).players.push({
         id: player.id,
-        name: player.displayName || player.user?.displayName || 'Jugador',
+        name: displayName,
         image: player.user?.image,
         isConfirmed: player.resultConfirmed,
-        category: player.user ? 5 : undefined // Placeholder para categoría
+        category: player.user ? 5 : undefined, // Placeholder para categoría
+        placeholderName: player.displayName || displayName,
       });
     }
   });
@@ -111,13 +113,25 @@ export default async function MatchPage({ params }: MatchPageProps) {
           detailUrl={`/match/${match.id}`}
         />
       ) : (
-        teams.map((team) => (
-          <PairPreview
-            key={team.id}
-            players={team.players}
-            label={team.label}
-          />
-        ))
+        <MatchPlayersManager
+          teams={teams.map((team) => ({
+            id: team.id,
+            label: team.label,
+            players: team.players.map((player: {
+              id: string;
+              name: string;
+              image?: string | null;
+              isConfirmed?: boolean;
+              placeholderName: string;
+            }) => ({
+              matchPlayerId: player.id,
+              name: player.name,
+              image: player.image,
+              isConfirmed: player.isConfirmed,
+              placeholderName: player.placeholderName,
+            })),
+          }))}
+        />
       )}
     </>
   );

@@ -13,9 +13,11 @@ export interface PlayerPreviewProps {
   isConfirmed?: boolean;
   ranking?: number;
   category?: number;
+  onManageClick?: () => void;
+  manageAriaLabel?: string;
 }
 
-export function PlayerPreview({ name, role, image, isConfirmed, category }: PlayerPreviewProps) {
+export function PlayerPreview({ name, role, image, isConfirmed, category, onManageClick, manageAriaLabel }: PlayerPreviewProps) {
   return (
     <div
       role="button"
@@ -34,9 +36,23 @@ export function PlayerPreview({ name, role, image, isConfirmed, category }: Play
         ) : null}
       </div>
 
-      <Button type="button" variant="ghost" size="icon" aria-label={isConfirmed ? "Gestionar jugador" : "Invitar jugador"}>
-        {isConfirmed ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-      </Button>
+      {onManageClick ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={
+            manageAriaLabel ||
+            (isConfirmed ? "Gestionar jugador" : "Invitar jugador")
+          }
+          onClick={(event) => {
+            event.stopPropagation();
+            onManageClick();
+          }}
+        >
+          {isConfirmed ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+        </Button>
+      ) : null}
     </div>
   );
 }
