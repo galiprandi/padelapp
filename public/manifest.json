@@ -9,13 +9,8 @@
   "description": "Organiza turnos, registra partidos y escala en el ranking de pádel desde tu móvil.",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/icons/logo.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "/apple-icon.svg",
-      "sizes": "180x180",
       "type": "image/svg+xml"
     },
     {
@@ -23,6 +18,12 @@
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
