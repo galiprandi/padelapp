@@ -10,6 +10,7 @@
 - Prioridad mobile-first, CTA y affordances claros.
 
 ## Alcance (MVP)
+- Ranking **individual** por jugador (no contempla parejas todavía).
 - Tabla global de ranking (sin filtros por club/zona aún).
 - Cada fila: posición, nombre preferido (alias > displayName), nivel, puntos, delta reciente (+/-).
 - Sticky highlight para el usuario logueado si está fuera del viewport.
@@ -55,8 +56,8 @@
   - Devuelve array ordenado con: userId, displayNamePreferido, score, position, positionChange, level, attendanceScore, wins, losses, matchesPlayed, lastMatchAt.
   - Incluye posición del usuario actual aunque esté fuera del top N (append “tu posición”).
 
-## UI / UX `/ranking`
-- Estructura:
+## UI / UX
+- **Vista Ranking** (`/ranking`):
   1) Header: título “Ranking” + descripción corta “Posiciones actualizadas según resultados confirmados”.
   2) Banner del usuario actual (card compacta) mostrando posición, puntos y delta; si no está en ranking, mostrar “Aún sin posición, jugá tu primer partido”.
   3) Tabla / lista:
@@ -66,6 +67,12 @@
      - Botón “Ver mis partidos” → `/match`
      - Botón “Crear partido” → `/match/new`
   5) Empty state: “Sin partidas confirmadas aún. Registrá resultados para entrar al ranking.”
+- **Vista Reputación** (sección separada o `tabs` dentro de `/ranking`):
+  1) Header corto: “Reputación” + copy: “Basada en asistencia y no-shows, no afecta tu ranking deportivo.”
+  2) Card del usuario actual: reputación (0–100), asistencias vs confirmaciones, no-shows y última incidencia.
+  3) Lista opcional: top usuarios por reputación (si se habilita) con avatar, alias, repScore%, matchesConfirmed, no-shows.
+  4) CTA secundario: “Ver mis partidos” → `/match` para mejorar asistencia.
+  5) Empty state: “Sin datos de asistencia aún.”
 - Mobile-first: usar layout en tarjetas apiladas o tabla responsiva con tipografía clara; en desktop se puede mostrar tabla densa.
 - Colores: mantener tema amarillo (primario) y uso de `text-muted-foreground` para subtítulos.
 - Accesibilidad: `aria-sort` en headers si se habilita orden; roles `row`/`cell`; texto alternativo en avatares (iniciales).
