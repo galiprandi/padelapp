@@ -6,6 +6,7 @@ import { getMatchByIdAction, saveMatchResultAction } from '@/app/(app)/match/act
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import { PairInline } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -88,7 +89,14 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
         });
     }, [params]);
 
-    if (loading) return <div>Cargando...</div>;
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-muted-foreground animate-pulse">Cargando datos del partido...</p>
+            </div>
+        );
+    }
     if (!match) return <div>No encontrado</div>;
 
     const isClosed = Boolean(match.score) || match.status === 'CONFIRMED';
@@ -127,7 +135,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                 router.push('/match');
                 router.refresh();
             } else {
-                alert(res.message || 'Error');
+                showToast(res.message || 'No se pudo guardar el resultado', { duration: 4000 });
             }
         });
     };
@@ -138,7 +146,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                 title="Resultado del partido"
                 description={isClosed
                     ? `El resultado ya fue registrado: ${match.score}`
-                    : "La funcionalidad de registro de resultados estará disponible próximamente"
+                    : "Ingresá los juegos ganados en cada set por cada equipo."
                 }
             />
 
@@ -177,6 +185,8 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                                         </span>
                                                         <Input
                                                             type="number"
+                                                            inputMode="numeric"
+                                                            aria-label={`Juegos del equipo ${team.label} en set ${setIndex + 1}`}
                                                             min={0}
                                                             max={7}
                                                             placeholder="0"
