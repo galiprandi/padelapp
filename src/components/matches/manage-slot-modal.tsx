@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Share2 } from "lucide-react";
 
 interface ManageSlotModalProps {
@@ -67,10 +68,18 @@ export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5">
-      <div className="w-full max-w-sm space-y-6 rounded-2xl border border-border/60 bg-card p-6 shadow-lg">
-        <h2 className="text-xl font-semibold text-foreground">Gestionar jugador</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="w-full max-w-sm space-y-6 rounded-2xl border border-border/60 bg-card p-6 shadow-lg"
+      >
+        <h2 id="modal-title" className="text-xl font-semibold text-foreground">
+          Gestionar jugador
+        </h2>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
+          <Label htmlFor="slot-name">Nombre del jugador</Label>
           <div className="flex items-center gap-2">
             <Input
               id="slot-name"
