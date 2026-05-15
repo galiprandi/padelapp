@@ -44,7 +44,7 @@ export function BottomNav({
               href={item.href}
               className={cn(
                 "group relative flex flex-1 flex-col items-center justify-center transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-[48px]",
-                isActive ? "text-primary" : "text-foreground/70 hover:text-foreground/90"
+                isActive ? "text-primary" : "text-white/50 hover:text-white/70"
               )}
               aria-label={item.label}
               aria-current={isActive ? "page" : undefined}
