@@ -378,7 +378,7 @@ export default function ComponentCatalogPage() {
               <h2 className="text-lg font-semibold mb-3">🧭 Navegación</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Barra persistente en mobile, plana sobre el fondo y centrada en
-                íconos. Incluye un ejemplo de badge de notificaciones.
+                íconos. Incluye etiquetas de texto, estado activo destacado y badge de notificaciones.
               </p>
 
               <div className="p-4 border rounded-lg bg-muted/50">
