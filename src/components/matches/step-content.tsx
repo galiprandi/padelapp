@@ -220,6 +220,7 @@ export function StepContent({
         primaryButtonText={isSubmitting ? "Creando..." : "Crear partido"}
         onPrimaryClick={onCreateMatch}
         primaryDisabled={isSubmitting}
+        primaryLoading={isSubmitting}
         secondaryButtonText="Atrás"
         onSecondaryClick={onPreviousStep}
       />
