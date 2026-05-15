@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { mockRanking } from "@/lib/mock-data";
+import { mockRanking, mockCurrentUserRanking } from "@/lib/mock-data";
 
 export default function RankingPage() {
   return (
@@ -12,6 +12,31 @@ export default function RankingPage() {
           Puntos actualizados con decay mensual, categorías 1-8 y reputación por asistencia.
         </p>
       </header>
+
+      {mockCurrentUserRanking.hasPosition ? (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardHeader className="flex items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-base font-semibold">
+                Tu posición: #{mockCurrentUserRanking.position}
+              </CardTitle>
+              <CardDescription>
+                {mockCurrentUserRanking.points} pts · Nivel {mockCurrentUserRanking.level}
+              </CardDescription>
+            </div>
+            <Badge variant="default">{mockCurrentUserRanking.trend}</Badge>
+          </CardHeader>
+        </Card>
+      ) : (
+        <Card className="bg-muted/50">
+          <CardHeader>
+            <CardTitle className="text-base">Aún sin posición</CardTitle>
+            <CardDescription>
+              Jugá tu primer partido para entrar al ranking.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
 
       <Tabs defaultValue="individual" className="w-full">
         <TabsList>

@@ -43,6 +43,15 @@ export const mockReputation = {
   message: "¡Excelente! Ninguna ausencia en tus últimos 8 turnos.",
 };
 
+export const mockCurrentUserRanking = {
+  position: 7,
+  name: "Germán Aliprandi",
+  level: 6,
+  points: 950,
+  trend: "+3",
+  hasPosition: true,
+};
+
 export const levelOptions = [
   { value: "1", label: "Nivel 1 · Profesional" },
   { value: "2", label: "Nivel 2 · Alta Competición" },
