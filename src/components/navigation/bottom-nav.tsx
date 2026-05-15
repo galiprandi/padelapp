@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Trophy, Calendar, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +16,14 @@ export function BottomNav({
   notificationsCount = 0,
   notificationsHref = "/notifications",
 }: BottomNavProps) {
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/ranking", icon: Trophy, label: "Ranking" },
+    { href: "/match", icon: Calendar, label: "Partidos" },
+    { href: "/me", icon: User, label: "Perfil" },
+  ];
+
   return (
     <nav
       role="navigation"
@@ -22,31 +33,44 @@ export function BottomNav({
         position === "fixed" && "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]"
       )}
     >
-      <div className="relative flex h-12 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
-        <Link
-          href="/ranking"
-          className="group relative flex flex-1 items-center justify-center transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-[48px] text-primary/70 hover:text-primary"
-          aria-label="Ranking"
-        >
-          <Trophy className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Ranking</span>
-        </Link>
-        <Link
-          href="/match"
-          className="group relative flex flex-1 items-center justify-center transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-[48px] text-primary/70 hover:text-primary"
-          aria-label="Partidos"
-        >
-          <Calendar className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Partidos</span>
-        </Link>
-        <Link
-          href="/me"
-          className="group relative flex flex-1 items-center justify-center transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-[48px] text-primary/70 hover:text-primary"
-          aria-label="Perfil"
-        >
-          <User className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Perfil</span>
-        </Link>
+      <div className="relative flex h-14 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
+        {navItems.map((item) => {
+          // Check if active: exact match or starts with segment (for subpages)
+          const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href + "/"));
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "group relative flex flex-1 flex-col items-center justify-center transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-[48px]",
+                isActive ? "text-primary" : "text-primary/50 hover:text-primary/80"
+              )}
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {/* Active indicator bar at the top */}
+              {isActive && (
+                <span className="absolute top-0 h-0.5 w-10 rounded-b-full bg-primary animate-in fade-in zoom-in duration-300" />
+              )}
+
+              <item.icon
+                className={cn(
+                  "h-5 w-5 transition-transform duration-200",
+                  isActive ? "scale-110" : "group-hover:scale-105"
+                )}
+                aria-hidden="true"
+              />
+              <span className={cn(
+                "mt-1 text-[10px] font-bold tracking-tight transition-opacity duration-200",
+                isActive ? "opacity-100" : "opacity-70"
+              )}>
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+
         {notificationsCount > 0 && (
           <Link
             href={notificationsHref}
