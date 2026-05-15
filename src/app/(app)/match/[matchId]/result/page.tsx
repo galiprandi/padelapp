@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { MatchNavigation } from "@/components/matches/match-navigation";
 import { PairInline } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -190,8 +191,9 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                                             min={0}
                                                             max={7}
                                                             placeholder="0"
-                                                            className="w-12 h-12 text-center text-lg font-semibold"
+                                                            className="w-12 h-12 text-center text-lg font-semibold px-0"
                                                             value={scores[setIndex]?.[index] ?? 0}
+                                                            onFocus={(e) => e.currentTarget.select()}
                                                             onChange={(e) => {
                                                                 const val = parseInt(e.target.value) || 0;
                                                                 setScores(prev => {
@@ -212,8 +214,15 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                 </Fragment>
                             ))}
                         </div>
-                        <div className="flex justify-center mt-6">
-                            <Button onClick={save} disabled={pending || isClosed} className="w-full">Guardar</Button>
+                        <div className="mt-6">
+                            <MatchNavigation
+                                primaryButtonText={pending ? "Guardando..." : "Guardar resultado"}
+                                onPrimaryClick={save}
+                                primaryDisabled={pending || isClosed}
+                                primaryLoading={pending}
+                                secondaryButtonText="Volver al partido"
+                                onSecondaryClick={() => router.push(`/match/${match.id}`)}
+                            />
                         </div>
                     </Fragment>
                 )}

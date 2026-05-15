@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface MatchNavigationProps {
   /** Texto del botón principal (Siguiente/Continuar/Crear) */
@@ -8,6 +9,8 @@ interface MatchNavigationProps {
   onPrimaryClick: () => void;
   /** Si el botón principal debe estar deshabilitado */
   primaryDisabled?: boolean;
+  /** Si el botón principal está en estado de carga */
+  primaryLoading?: boolean;
   /** Texto del botón secundario (Cancelar/Atrás) */
   secondaryButtonText: string;
   /** Acción del botón secundario */
@@ -41,6 +44,7 @@ export function MatchNavigation({
   primaryButtonText,
   onPrimaryClick,
   primaryDisabled = false,
+  primaryLoading = false,
   secondaryButtonText,
   onSecondaryClick,
   secondaryIsLink = false,
@@ -64,8 +68,9 @@ export function MatchNavigation({
         type="button"
         className="w-full"
         onClick={onPrimaryClick}
-        disabled={primaryDisabled}
+        disabled={primaryDisabled || primaryLoading}
       >
+        {primaryLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {primaryButtonText}
       </Button>
 

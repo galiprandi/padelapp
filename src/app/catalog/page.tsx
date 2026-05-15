@@ -323,16 +323,30 @@ export default function ComponentCatalogPage() {
                 Ocupa todo el espacio disponible debajo del contenido con botones de acción.
               </p>
 
-              <div className="p-4 border rounded-lg bg-muted/50">
-                <MatchNavigation
-                  primaryButtonText="Crear partido"
-                  onPrimaryClick={() => { }}
-                  primaryDisabled={false}
-                  secondaryButtonText="Cancelar"
-                  onSecondaryClick={() => { }}
-                  secondaryIsLink={true}
-                  secondaryHref="/match"
-                />
+              <div className="space-y-6">
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-4">Estado normal</h3>
+                  <MatchNavigation
+                    primaryButtonText="Crear partido"
+                    onPrimaryClick={() => { }}
+                    primaryDisabled={false}
+                    secondaryButtonText="Cancelar"
+                    onSecondaryClick={() => { }}
+                    secondaryIsLink={true}
+                    secondaryHref="/match"
+                  />
+                </div>
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-4">Estado de carga</h3>
+                  <MatchNavigation
+                    primaryButtonText="Creando..."
+                    onPrimaryClick={() => { }}
+                    primaryDisabled={true}
+                    primaryLoading={true}
+                    secondaryButtonText="Atrás"
+                    onSecondaryClick={() => { }}
+                  />
+                </div>
               </div>
             </section>
 
