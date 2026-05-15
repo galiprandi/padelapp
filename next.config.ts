@@ -1,4 +1,3 @@
-import type { NextConfig } from "next";
 import createNextPwa from "next-pwa";
 
 const withPWA = createNextPwa({
@@ -8,7 +7,8 @@ const withPWA = createNextPwa({
   disable: process.env.NODE_ENV === "development",
 });
 
-const nextConfig: NextConfig = {
+const nextConfig = {
+  turbopack: {},
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
