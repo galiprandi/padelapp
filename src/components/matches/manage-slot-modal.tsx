@@ -86,7 +86,7 @@ export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, 
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Ej: Diego Morales"
-              onDoubleClick={(event) => event.currentTarget.select()}
+              onFocus={(event) => event.currentTarget.select()}
             />
             <Button type="button" size="icon" variant="ghost" aria-label="Compartir enlace" onClick={handleShare}>
               <Share2 className="h-4 w-4" />

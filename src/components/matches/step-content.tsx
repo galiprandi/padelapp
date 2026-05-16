@@ -155,6 +155,7 @@ export function StepContent({
                 max={MAX_SETS}
                 value={sets}
                 onChange={(event) => onSetsChange(event.target.value)}
+                onFocus={(e) => e.currentTarget.select()}
               />
             </div>
             <div className="space-y-2">
