@@ -81,6 +81,11 @@ export default async function MatchListPage() {
             <EmptyState
               title="Sin partidos todavía"
               description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
+              action={
+                <Button asChild size="sm" className="w-full max-w-xs">
+                  <Link href="/match/new">Crear partido</Link>
+                </Button>
+              }
             />
           )
         ) : (

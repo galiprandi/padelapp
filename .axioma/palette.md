@@ -9,3 +9,7 @@
 ## 2025-05-14 - [Input Selection and Standardized Loading Feedback]
 **Learning:** For numeric-only inputs on mobile, adding `onFocus={(e) => e.currentTarget.select()}` drastically reduces friction by allowing users to overwrite values immediately. Additionally, standardizing the `MatchNavigation` component with a `primaryLoading` state ensures consistent, professional feedback across all form-based flows.
 **Action:** Always implement auto-select on focus for small numeric inputs and use the standardized `primaryLoading` prop in `MatchNavigation` for async actions.
+
+## 2025-05-15 - [Guiding Users with Empty State Actions]
+**Learning:** An empty state without a clear call-to-action (CTA) is a dead end for users. Providing a relevant action (e.g., "Create Match" when the list is empty) reduces cognitive load and keeps users in the flow.
+**Action:** Always include an `action` button in `EmptyState` components to guide the user toward the next logical step.
