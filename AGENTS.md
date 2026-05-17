@@ -66,6 +66,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - Eliminado componente no usado: `match-result-input.tsx` (2.3KB ahorrados)
 - Build optimizado sin dependencias rotas
 
+### ✅ Mejora UX en Gestión de Partidos
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Invitación directa por slot via `/j/[playerId]`.
+  - Botón "Liberar" para que el organizador pueda reabrir cupos ocupados.
+  - Bloqueo de edición de nombres para jugadores ya unidos.
+  - Banner de ranking personalizado para el usuario actual.
+- **Archivos relacionados**:
+  - `src/components/matches/match-players-manager.tsx`
+  - `src/components/matches/manage-slot-modal.tsx`
+  - `src/app/(app)/ranking/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

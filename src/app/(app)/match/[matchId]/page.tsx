@@ -56,6 +56,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
       const displayName = player.displayName || player.user?.displayName || `Jugador ${player.position + 1}`;
       teamsMap.get(player.teamId).players.push({
         id: player.id,
+        userId: player.userId,
         name: displayName,
         image: player.user?.image,
         isConfirmed: player.resultConfirmed,
@@ -119,12 +120,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
             label: team.label,
             players: team.players.map((player: {
               id: string;
+              userId?: string | null;
               name: string;
               image?: string | null;
               isConfirmed?: boolean;
               placeholderName: string;
             }) => ({
               matchPlayerId: player.id,
+              userId: player.userId,
               name: player.name,
               image: player.image,
               isConfirmed: player.isConfirmed,

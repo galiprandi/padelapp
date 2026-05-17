@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2 } from "lucide-react";
+import { Share2, UserMinus } from "lucide-react";
 
 interface ManageSlotModalProps {
   open: boolean;
@@ -12,6 +12,7 @@ interface ManageSlotModalProps {
   placeholderName: string;
   onSave: (name: string) => void;
   onShare: (name: string) => void;
+  onRelease?: () => void;
   onClose: () => void;
 }
 
@@ -26,7 +27,15 @@ type PlayerOption = {
   image: string | null;
 };
 
-export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, onClose }: ManageSlotModalProps) {
+export function ManageSlotModal({
+  open,
+  slot,
+  placeholderName,
+  onSave,
+  onShare,
+  onRelease,
+  onClose,
+}: ManageSlotModalProps) {
   const [name, setName] = useState(placeholderName);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,6 +75,8 @@ export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, 
     onShare(trimmed);
   }
 
+  const isUserSlot = slot?.kind === "user";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5">
       <div
@@ -74,9 +85,23 @@ export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, 
         aria-labelledby="modal-title"
         className="w-full max-w-sm space-y-6 rounded-2xl border border-border/60 bg-card p-6 shadow-lg"
       >
-        <h2 id="modal-title" className="text-xl font-semibold text-foreground">
-          Gestionar jugador
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 id="modal-title" className="text-xl font-semibold text-foreground">
+            Gestionar jugador
+          </h2>
+          {onRelease && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={onRelease}
+            >
+              <UserMinus className="mr-2 h-4 w-4" />
+              Liberar
+            </Button>
+          )}
+        </div>
 
         <div className="space-y-3">
           <Label htmlFor="slot-name">Nombre del jugador</Label>
@@ -87,11 +112,19 @@ export function ManageSlotModal({ open, slot, placeholderName, onSave, onShare, 
               onChange={(event) => setName(event.target.value)}
               placeholder="Ej: Diego Morales"
               onFocus={(event) => event.currentTarget.select()}
+              disabled={isUserSlot}
             />
-            <Button type="button" size="icon" variant="ghost" aria-label="Compartir enlace" onClick={handleShare}>
-              <Share2 className="h-4 w-4" />
-            </Button>
+            {!isUserSlot && (
+              <Button type="button" size="icon" variant="ghost" aria-label="Compartir enlace" onClick={handleShare}>
+                <Share2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
+          {isUserSlot && (
+            <p className="text-xs text-muted-foreground">
+              El jugador ya se unió. Podés liberar el cupo para que otro se anote.
+            </p>
+          )}
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </div>
 
