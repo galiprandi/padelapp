@@ -193,7 +193,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                                             placeholder="0"
                                                             className="w-12 h-12 text-center text-lg font-semibold px-0"
                                                             value={scores[setIndex]?.[index] ?? 0}
-                                                            onFocus={(e) => e.currentTarget.select()}
+                                                            autoSelect
                                                             onChange={(e) => {
                                                                 const val = parseInt(e.target.value) || 0;
                                                                 setScores(prev => {

@@ -61,6 +61,7 @@ export function ProfileForm({ initialAlias }: ProfileFormProps) {
           placeholder="Ej: Gero, La Muralla"
           value={alias}
           onChange={(event) => setAlias(event.target.value)}
+          autoSelect
           disabled={isSaving}
           aria-invalid={Boolean(aliasError)}
           aria-describedby={aliasError ? "alias-error" : undefined}

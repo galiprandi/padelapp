@@ -13,3 +13,7 @@
 ## 2025-05-15 - [Guiding Users with Empty State Actions]
 **Learning:** An empty state without a clear call-to-action (CTA) is a dead end for users. Providing a relevant action (e.g., "Create Match" when the list is empty) reduces cognitive load and keeps users in the flow.
 **Action:** Always include an `action` button in `EmptyState` components to guide the user toward the next logical step.
+
+## 2026-05-17 - [Centralized Input Auto-selection]
+**Learning:** Centralizing common UX patterns like text auto-selection into base components reduces boilerplate and ensures consistency across the app, especially for mobile-first forms where overwriting values is frequent.
+**Action:** Standardize mobile-friendly behaviors in base UI components (like the new `autoSelect` prop in `Input`) to maintain a high UX bar with minimal effort.
