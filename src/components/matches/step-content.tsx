@@ -155,7 +155,7 @@ export function StepContent({
                 max={MAX_SETS}
                 value={sets}
                 onChange={(event) => onSetsChange(event.target.value)}
-                onFocus={(e) => e.currentTarget.select()}
+                autoSelect
               />
             </div>
             <div className="space-y-2">
@@ -203,6 +203,7 @@ export function StepContent({
               placeholder="Ej: Padel City"
               value={club}
               onChange={(event) => onClubChange(event.target.value)}
+              autoSelect
             />
           </div>
           <div className="space-y-2">
@@ -212,6 +213,7 @@ export function StepContent({
               placeholder="Ej: 3"
               value={courtNumber}
               onChange={(event) => onCourtNumberChange(event.target.value)}
+              autoSelect
             />
           </div>
         </div>

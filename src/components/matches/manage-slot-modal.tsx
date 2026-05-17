@@ -111,7 +111,7 @@ export function ManageSlotModal({
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Ej: Diego Morales"
-              onFocus={(event) => event.currentTarget.select()}
+              autoSelect
               disabled={isUserSlot}
             />
             {!isUserSlot && (

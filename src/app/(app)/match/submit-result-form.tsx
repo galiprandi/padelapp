@@ -145,6 +145,7 @@ export function SubmitResultForm({ matchId, initialScore, initialNotes, sets, on
               placeholder="Ej: 6-4"
               value={setInputValue}
               onChange={(event) => setSetInputValue(event.target.value)}
+              autoSelect
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
