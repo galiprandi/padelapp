@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, useTransition, useEffect } from 'react';
+import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import { getMatchByIdAction, saveMatchResultAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
@@ -161,7 +162,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                             Este partido ya tiene resultado confirmado
                         </p>
                         <Button asChild className="w-full max-w-xs">
-                            <a href={`/match/${match.id}`}>Volver al partido</a>
+                            <Link href={`/match/${match.id}`}>Volver al partido</Link>
                         </Button>
                     </div>
                 ) : (

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { updateUserAliasAction } from "@/app/(app)/me/actions";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,6 +79,7 @@ export function ProfileForm({ initialAlias }: ProfileFormProps) {
 
       <div className="flex flex-col gap-3">
         <Button type="submit" className="w-full" disabled={isSaving}>
+          {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSaving ? "Guardando..." : "Guardar cambios"}
         </Button>
         <Button type="button" variant="ghost" className="w-full" asChild>
