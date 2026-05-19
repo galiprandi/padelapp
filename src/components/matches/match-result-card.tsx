@@ -1,5 +1,6 @@
 
 import { Fragment, type ReactNode } from "react";
+import Link from "next/link";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn } from "@/lib/utils";
@@ -148,9 +149,9 @@ export function MatchResultCompact({ label = "Resultado", match, matchDate, deta
                   <span className="font-medium text-foreground">{formattedDate ?? "—"}</span>
                 </div>
                 {matchDetailUrl ? (
-                  <a href={matchDetailUrl} className="text-primary underline-offset-2 hover:underline">
+                  <Link href={matchDetailUrl} className="text-primary underline-offset-2 hover:underline">
                     Ver detalle
-                  </a>
+                  </Link>
                 ) : null}
               </div>
             )
