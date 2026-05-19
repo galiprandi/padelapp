@@ -64,9 +64,11 @@ export default async function MatchListPage() {
         title="Partidos"
         description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
         action={
-          <Button className="w-full justify-center py-2 text-base">
-            <PlusCircle className="mr-2 h-5 w-5" />
-            <Link href="/match/new">Crear Partido</Link>
+          <Button asChild className="w-full justify-center py-2 text-base">
+            <Link href="/match/new">
+              <PlusCircle className="mr-2 h-5 w-5" />
+              Crear Partido
+            </Link>
           </Button>
         }
       />
