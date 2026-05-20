@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, CalendarOff } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -83,6 +83,7 @@ export default async function MatchListPage() {
             <EmptyState
               title="Sin partidos todavía"
               description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
+              icon={CalendarOff}
               action={
                 <Button asChild size="sm" className="w-full max-w-xs">
                   <Link href="/match/new">Crear partido</Link>
