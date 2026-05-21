@@ -3,7 +3,6 @@ import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockReputation } from "@/lib/mock-data";
 import { prisma } from "@/lib/prisma";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
@@ -79,27 +78,17 @@ export default async function DashboardPage() {
       <section className="space-y-2">
         <h1 className="text-2xl font-bold">Hola, {displayName} 👋</h1>
         <p className="text-sm text-muted-foreground">
-          Armá equipos rápido, seguí tu reputación y compartí resultados sin fricción.
+          Armá equipos rápido, registrá tus resultados y escalá en la comunidad.
         </p>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" asChild>
             <Link href="/me/profile">Editar perfil</Link>
           </Button>
-        </div>
-      </section>
-
-      <Card className="bg-gradient-to-br from-primary/10 via-card to-background">
-        <CardHeader className="space-y-1">
-          <CardTitle>Tu reputación</CardTitle>
-          <CardDescription>{mockReputation.message}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex items-end justify-between">
-          <div className="text-5xl font-black text-primary">{mockReputation.score}</div>
-          <Button variant="secondary" className="rounded-full" asChild>
+          <Button size="sm" variant="secondary" asChild>
             <Link href="/ranking">Ver ranking</Link>
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
