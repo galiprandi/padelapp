@@ -1,0 +1,24 @@
+
+> padelapp@0.1.0 dev /app
+> next dev --port 3000
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 541ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling /ranking ...
+ GET /login 200 in 1222ms (next.js: 942ms, application-code: 280ms)
+prisma:query SELECT "public"."User"."id", "public"."User"."displayName", "public"."User"."alias", "public"."User"."email", "public"."User"."image", "public"."User"."level", "public"."User"."emailVerified", "public"."User"."rankingScore", "public"."User"."rankingPosition", "public"."User"."rankingDelta", "public"."User"."matchesPlayed", "public"."User"."wins", "public"."User"."losses", "public"."User"."attendanceScore", "public"."User"."lastMatchAt", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."rankingScore" DESC, "public"."User"."attendanceScore" DESC, "public"."User"."wins" DESC, "public"."User"."lastMatchAt" DESC OFFSET $1
+ GET /ranking 307 in 8.7s (next.js: 5.7s, application-code: 2.9s)
+ GET /api/auth/session 200 in 2.6s (next.js: 2.6s, application-code: 31ms)
+ GET /api/auth/session 200 in 34ms (next.js: 25ms, application-code: 10ms)
+ GET /me 307 in 1281ms (next.js: 925ms, application-code: 356ms)
+ GET /login 200 in 91ms (next.js: 3ms, application-code: 88ms)
+ GET /api/auth/session 200 in 36ms (next.js: 26ms, application-code: 11ms)
+ GET /api/auth/session 200 in 21ms (next.js: 4ms, application-code: 17ms)
+ GET /verify-ranking-ui 200 in 837ms (next.js: 590ms, application-code: 247ms)
+ GET /api/auth/session 200 in 93ms (next.js: 82ms, application-code: 11ms)
+ GET /api/auth/session 200 in 10ms (next.js: 4ms, application-code: 6ms)

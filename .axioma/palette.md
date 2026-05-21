@@ -17,3 +17,7 @@
 ## 2026-05-17 - [Centralized Input Auto-selection]
 **Learning:** Centralizing common UX patterns like text auto-selection into base components reduces boilerplate and ensures consistency across the app, especially for mobile-first forms where overwriting values is frequent.
 **Action:** Standardize mobile-friendly behaviors in base UI components (like the new `autoSelect` prop in `Input`) to maintain a high UX bar with minimal effort.
+
+## 2026-05-21 - [Transition from Mock to Real Ranking Data]
+**Learning:** Moving from mock data to real database-backed logic for core features like Ranking increases trust and allows for immediate user feedback. Implementing recalculation logic as a Server Action enables on-demand updates and ensures the UI always reflects the latest confirmed results.
+**Action:** Replace all mock ranking and reputation displays with real data from getRankingAction, and ensure the User schema supports all necessary metrics (wins, losses, score, attendance) to avoid artificial placeholders.

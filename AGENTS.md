@@ -78,6 +78,20 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/manage-slot-modal.tsx`
   - `src/app/(app)/ranking/page.tsx`
 
+### ✅ Ranking con Datos Reales
+- **Estado**: Implementado (MVP)
+- **Funcionalidades**:
+  - Persistencia de campos de ranking en el modelo `User`.
+  - Acción `recalculateRankingAction` para procesar resultados de partidos confirmados.
+  - Acción `getRankingAction` para obtener la tabla de posiciones filtrada.
+  - Interfaz de Ranking dinámica sin datos mock.
+  - Integración de ranking y asistencia (reputación) en el dashboard `/me`.
+- **Archivos relacionados**:
+  - `prisma/schema.prisma`
+  - `src/app/(app)/ranking/actions.ts`
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/app/(app)/me/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

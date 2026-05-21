@@ -3,8 +3,8 @@ import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockReputation } from "@/lib/mock-data";
 import { prisma } from "@/lib/prisma";
+import { getRankingAction } from "../ranking/actions";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
@@ -67,12 +67,23 @@ export default async function DashboardPage() {
   const displayName = session?.user?.alias ?? session?.user?.displayName ?? "Jugador";
   const viewerId = session?.user?.id;
 
-  const [upcomingMatches, recentMatches] = viewerId
+  const [upcomingMatches, recentMatches, { currentUserRanking }] = viewerId
     ? await Promise.all([
         getUserMatches(viewerId, "PENDING"),
         getUserMatches(viewerId, "CONFIRMED"),
+        getRankingAction(),
       ])
-    : [[], []];
+    : [[], [], { currentUserRanking: null }];
+
+  const reputationScore = currentUserRanking
+    ? Math.round(currentUserRanking.attendanceScore)
+    : 100;
+
+  const reputationMessage = reputationScore >= 90
+    ? "¡Excelente! Casi ninguna ausencia en tus turnos."
+    : reputationScore >= 70
+    ? "Buena asistencia. Mantenela para subir tu reputación."
+    : "Tu reputación es baja. Intentá no faltar a tus partidos.";
 
   return (
     <div className="flex flex-col gap-6">
@@ -91,13 +102,21 @@ export default async function DashboardPage() {
       <Card className="bg-gradient-to-br from-primary/10 via-card to-background">
         <CardHeader className="space-y-1">
           <CardTitle>Tu reputación</CardTitle>
-          <CardDescription>{mockReputation.message}</CardDescription>
+          <CardDescription>{reputationMessage}</CardDescription>
         </CardHeader>
         <CardContent className="flex items-end justify-between">
-          <div className="text-5xl font-black text-primary">{mockReputation.score}</div>
-          <Button variant="secondary" className="rounded-full" asChild>
-            <Link href="/ranking">Ver ranking</Link>
-          </Button>
+          <div className="text-5xl font-black text-primary">{reputationScore}</div>
+          <div className="flex flex-col items-end gap-2">
+            {currentUserRanking && (
+              <div className="text-right">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Ranking</p>
+                <p className="text-xl font-black text-foreground">#{currentUserRanking.position}</p>
+              </div>
+            )}
+            <Button variant="secondary" className="rounded-full" asChild>
+              <Link href="/ranking">Ver ranking</Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
