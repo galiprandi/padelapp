@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { levelOptions, mockTurns } from "@/lib/mock-data";
+import { EmptyState } from "@/components/empty-state";
+import { levelOptions } from "@/lib/mock-data";
 import Link from "next/link";
+import { CalendarOff } from "lucide-react";
 
 export default function TurnsPage() {
   return (
@@ -35,29 +37,16 @@ export default function TurnsPage() {
       </Card>
 
       <div className="grid gap-3">
-        {mockTurns.map((turn) => (
-          <Card key={turn.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <div>
-                <CardTitle className="text-base">{turn.club}</CardTitle>
-                <CardDescription>
-                  {turn.date} · {turn.time}
-                </CardDescription>
-              </div>
-              <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
-                Nivel {turn.level}
-              </span>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between text-sm">
-              <span className="font-medium">
-                {turn.slots.taken}/{turn.slots.total} jugadores
-              </span>
-              <Button size="sm" variant="outline" className="rounded-full" asChild>
-                <Link href={`/t/${turn.id}`}>Ver detalles</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+        <EmptyState
+          title="Sin turnos abiertos"
+          description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
+          icon={CalendarOff}
+          action={
+            <Button asChild size="sm" className="w-full max-w-xs rounded-full">
+              <Link href="/turnos/nuevo">Crear turno</Link>
+            </Button>
+          }
+        />
       </div>
     </div>
   );
