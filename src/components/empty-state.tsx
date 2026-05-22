@@ -18,18 +18,18 @@ export function EmptyState({ title, description, icon: Icon, action, className }
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center space-y-3 rounded-2xl border border-dashed border-border/70 bg-muted/20 p-8 text-center",
+        "flex flex-col items-center justify-center space-y-4 rounded-3xl border border-dashed border-border/60 bg-muted/20 p-10 text-center backdrop-blur-sm",
         className,
       )}
     >
       {Icon && (
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 shadow-inner">
+          <Icon className="h-7 w-7 text-primary" aria-hidden="true" />
         </div>
       )}
-      <div className="space-y-1">
-        <h3 className="text-base font-bold text-foreground">{title}</h3>
-        <p className="text-sm text-muted-foreground max-w-[250px] mx-auto">{description}</p>
+      <div className="space-y-1.5">
+        <h3 className="text-lg font-bold tracking-tight text-foreground">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground max-w-[260px] mx-auto">{description}</p>
       </div>
       {action ? <div className="pt-2 w-full flex justify-center">{action}</div> : null}
     </div>
