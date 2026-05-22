@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink } from "@/lib/magic-link";
+import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
@@ -605,6 +606,9 @@ export async function finalizeMatchAction(matchId: string): Promise<MatchActionR
       });
     });
 
+    // Trigger ranking recalculation
+    await recalculateRankingAction();
+
     revalidatePath(`/match/${matchId}`);
 
     return { status: "ok" };
@@ -847,11 +851,21 @@ export async function saveMatchResultAction(input: SaveMatchResultInput): Promis
       
       // If all players confirmed, update status to CONFIRMED
       if (allConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
-        return tx.match.update({
+        const confirmedMatch = await tx.match.update({
           where: { id: input.matchId },
           data: { status: MATCH_STATUS.CONFIRMED },
           include: { players: true },
         });
+
+        // Trigger ranking recalculation
+        await recalculateRankingAction();
+
+        return confirmedMatch;
+      }
+
+      // If status is explicitly set to CONFIRMED (even if not all confirmed, e.g. forced by creator)
+      if (input.status === MATCH_STATUS.CONFIRMED && baseMatch.status === MATCH_STATUS.CONFIRMED) {
+        await recalculateRankingAction();
       }
 
       return baseMatch;

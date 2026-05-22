@@ -78,6 +78,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/manage-slot-modal.tsx`
   - `src/app/(app)/ranking/page.tsx`
 
+### ✅ Sistema de Ranking dinámico
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Persistencia de métricas de usuario en el modelo de base de datos.
+  - Recalculado automático de ranking al confirmar resultados de partidos.
+  - Fórmula de scoring basada en victorias, rachas y actividad reciente.
+  - UI de ranking con posiciones, deltas (+/-) y puntajes redondeados.
+- **Archivos relacionados**:
+  - `prisma/schema.prisma` (modelo User actualizado)
+  - `src/app/(app)/ranking/actions.ts` (recalculateRankingAction)
+  - `src/app/(app)/ranking/page.tsx` (UI de ranking)
+  - `src/app/(app)/match/actions.ts` (integración con saveMatchResultAction)
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
