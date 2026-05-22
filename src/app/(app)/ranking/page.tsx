@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { prisma } from "@/lib/prisma";
 import { TrendingDown, TrendingUp, Minus } from "lucide-react";
@@ -75,14 +75,11 @@ export default async function RankingPage() {
               </div>
             ))
           ) : (
-            <Card className="bg-muted/50">
-              <CardHeader>
-                <CardTitle className="text-base">Sin jugadores</CardTitle>
-                <CardDescription>
-                  Aún no hay jugadores registrados en la plataforma.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <EmptyState
+              icon={Users}
+              title="Sin jugadores"
+              description="Aún no hay jugadores registrados en la plataforma."
+            />
           )}
         </TabsContent>
       </Tabs>

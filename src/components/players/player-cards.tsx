@@ -22,7 +22,7 @@ export function PlayerPreview({ name, role, image, isConfirmed, category, onMana
     <div
       role="button"
       tabIndex={0}
-      className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+      className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 px-4 py-3 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
     >
       <PlayerAvatar name={name} image={image} />
 
@@ -62,7 +62,7 @@ export function PlayerWithRanking({ name, role, image, ranking, category }: Play
     <div
       role="button"
       tabIndex={0}
-      className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+      className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 px-4 py-3 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
     >
       <PlayerAvatar name={name} image={image} />
 
@@ -88,7 +88,7 @@ export function PlayerCompact({ name, image, ranking }: PlayerPreviewProps) {
     <div
       role="button"
       tabIndex={0}
-      className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+      className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 px-4 py-3 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
     >
       <PlayerAvatar name={name} image={image} />
 
@@ -105,8 +105,8 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
   const hasConnector = players.length > 1;
 
   return (
-    <div className="relative rounded-xl border border-border/80 bg-muted/30 mt-6">
-      <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+    <div className="relative rounded-3xl border border-border/60 bg-muted/10 mt-6 backdrop-blur-[2px]">
+      <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background border border-border/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
         {label}
       </span>
       <div className="relative space-y-3 p-4 pt-2">
@@ -134,8 +134,8 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
 
 export function PairInline({ players, label }: { players: PlayerPreviewProps[]; label: string }) {
   return (
-    <div className="relative rounded-xl border border-border/80 bg-muted/30">
-      <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+    <div className="relative rounded-3xl border border-border/60 bg-muted/10 backdrop-blur-[2px]">
+      <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background border border-border/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
         {label}
       </span>
 
