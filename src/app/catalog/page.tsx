@@ -161,12 +161,27 @@ export default function ComponentCatalogPage() {
               </div>
             </section>
 
-            <section id="players" className="space-y-4">
+            <section id="players" className="space-y-6">
               <h2 className="text-lg font-semibold mb-3">👥 Jugadores</h2>
-              <div className="p-4 border rounded-lg bg-muted/50">
-                {SAMPLE_PLAYERS.map((player) => (
-                  <PlayerPreview key={player.id} {...player} />
-                ))}
+              <div className="p-4 border rounded-lg bg-muted/50 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Individual</h3>
+                  {SAMPLE_PLAYERS.map((player) => (
+                    <PlayerPreview key={player.id} {...player} />
+                  ))}
+                  <PlayerWithRanking {...SAMPLE_PLAYERS[0]} ranking={5} />
+                  <PlayerCompact {...SAMPLE_PLAYERS[1]} ranking={12} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Parejas (PairPreview)</h3>
+                  <PairPreview label="Pareja A" players={SAMPLE_PLAYERS} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Parejas (PairInline)</h3>
+                  <PairInline label="Pareja B" players={SAMPLE_PLAYERS} />
+                </div>
               </div>
             </section>
 

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
+import { CalendarDays, Trophy } from "lucide-react";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
@@ -90,9 +91,9 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Próximos partidos</h2>
+          <h2 className="text-lg font-bold tracking-tight">Próximos partidos</h2>
         </div>
         <div className="grid gap-3">
           {viewerId && upcomingMatches.length > 0 ? (
@@ -100,24 +101,23 @@ export default async function DashboardPage() {
               <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} label="Pendiente" />
             ))
           ) : (
-            <Card>
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-base">Sin partidos agendados</CardTitle>
-                <CardDescription>Agendá un partido para coordinar jugadores y confirmar horarios.</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <EmptyState
+              icon={CalendarDays}
+              title="Sin partidos agendados"
+              description="Agendá un partido para coordinar jugadores y confirmar horarios."
+              action={
                 <Button className="w-full" asChild>
                   <Link href="/match/new">Crear partido</Link>
                 </Button>
-              </CardContent>
-            </Card>
+              }
+            />
           )}
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Últimos partidos</h2>
+          <h2 className="text-lg font-bold tracking-tight">Últimos partidos</h2>
         </div>
         <div className="space-y-3">
           {viewerId && recentMatches.length > 0 ? (
@@ -125,17 +125,16 @@ export default async function DashboardPage() {
               <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
             ))
           ) : (
-            <Card>
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-base">Sin resultados todavía</CardTitle>
-                <CardDescription>Cuando registres un marcador, vas a verlo acá para compartirlo.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" asChild>
+            <EmptyState
+              icon={Trophy}
+              title="Sin resultados todavía"
+              description="Cuando registres un marcador, vas a verlo acá para compartirlo."
+              action={
+                <Button className="w-full" variant="secondary" asChild>
                   <Link href="/match">Ver partidos</Link>
                 </Button>
-              </CardContent>
-            </Card>
+              }
+            />
           )}
         </div>
       </section>
