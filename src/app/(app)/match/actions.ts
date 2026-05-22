@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink } from "@/lib/magic-link";
+import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
@@ -485,7 +486,7 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
   }
 
   try {
-    await prisma.$transaction(async (tx) => {
+    const updatedMatch = await prisma.$transaction(async (tx) => {
       const player = await tx.matchPlayer.findFirst({
         where: { matchId, userId: session.user.id },
       });
@@ -524,9 +525,15 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
         include: { players: true },
       });
 
-      const everyoneConfirmed = updated.players.every((current) => current.resultConfirmed);
+      const totalPlayers = updated.players.length;
+      const teamAConfirmed = updated.players.some(
+        (p) => teamForPosition(p.position, totalPlayers) === "A" && p.resultConfirmed
+      );
+      const teamBConfirmed = updated.players.some(
+        (p) => teamForPosition(p.position, totalPlayers) === "B" && p.resultConfirmed
+      );
 
-      if (everyoneConfirmed && updated.status !== MATCH_STATUS.CONFIRMED) {
+      if (teamAConfirmed && teamBConfirmed && updated.status !== MATCH_STATUS.CONFIRMED) {
         return tx.match.update({
           where: { id: matchId },
           data: { status: MATCH_STATUS.CONFIRMED },
@@ -536,6 +543,10 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
 
       return updated;
     });
+
+    if (updatedMatch.status === MATCH_STATUS.CONFIRMED) {
+      await recalculateRankingAction();
+    }
 
     revalidatePath(`/match/${matchId}`);
 
@@ -604,6 +615,9 @@ export async function finalizeMatchAction(matchId: string): Promise<MatchActionR
         },
       });
     });
+
+    // Trigger ranking recalculation
+    await recalculateRankingAction();
 
     revalidatePath(`/match/${matchId}`);
 
@@ -842,11 +856,17 @@ export async function saveMatchResultAction(input: SaveMatchResultInput): Promis
         },
       });
 
-      // Check if all players have confirmed the result
-      const allConfirmed = baseMatch.players.every(p => p.resultConfirmed);
+      // Check if at least one player from each team has confirmed the result
+      const totalPlayers = baseMatch.players.length;
+      const teamAConfirmed = baseMatch.players.some(
+        (p) => teamForPosition(p.position, totalPlayers) === "A" && p.resultConfirmed
+      );
+      const teamBConfirmed = baseMatch.players.some(
+        (p) => teamForPosition(p.position, totalPlayers) === "B" && p.resultConfirmed
+      );
       
-      // If all players confirmed, update status to CONFIRMED
-      if (allConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
+      // If one from each team confirmed, update status to CONFIRMED
+      if (teamAConfirmed && teamBConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
         return tx.match.update({
           where: { id: input.matchId },
           data: { status: MATCH_STATUS.CONFIRMED },

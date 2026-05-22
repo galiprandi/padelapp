@@ -1,36 +1,22 @@
-# 🎨 PadelApp Design System
+# DESIGN.md – PadelApp
 
-Este documento define la identidad visual y los patrones de diseño de PadelApp.
+Este documento registra las decisiones de diseño, patrones de UI y arquitectura de componentes de **PadelApp**.
 
-## 🫧 Estética "Bubble"
-PadelApp utiliza una estética moderna, suave y "amigable" basada en curvas pronunciadas y profundidad sutil.
+## 1. Patrones de UI
+- **Rounded-xl**: Utilizado para componentes base como tarjetas de ranking y contenedores de jugadores.
+- **Backdrop-blur-sm**: Para overlays de modales y menús flotantes (si aplica).
+- **Uppercase tracking-widest**: Para encabezados de secciones pequeñas y etiquetas de "Sets" o "Categoría".
 
-### Radios de Borde (Border Radius)
-- **Base Components**: `rounded-xl` (12px) - Para botones, inputs y tarjetas de jugador.
-- **Main Containers / Modals**: `rounded-3xl` (24px) - Para secciones principales, modales y bloques de agrupación (como `PairPreview`).
-- **Icons / Avatars**: `rounded-full` - Para elementos circulares puros.
+## 2. Componentes Clave
+- **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
+- **RankingTable**: (En `/ranking/page.tsx`) Muestra la lista de jugadores ordenados por `rankingScore`. Incluye indicadores de tendencia (`TrendingUp`, `TrendingDown`).
+- **EmptyState**: Componente reutilizable para secciones sin datos. Requiere un `title`, `description`, `icon` opcional y un `action` CTA.
 
-### Profundidad y Capas
-- **Glassmorphism**: Uso de `backdrop-blur-sm` y `bg-muted/10` o `bg-card/80` para capas que se superponen.
-- **Bordes**: `border-border/50` o `border-border/60` para separaciones sutiles sin sobrecargar la vista.
+## 3. Arquitectura de Datos
+- **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
+- **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
 
-## 📝 Tipografía
-- **Títulos de Sección**: `text-lg font-bold tracking-tight` para encabezados internos.
-- **Subheaders**: `uppercase tracking-widest text-[10px] font-bold text-muted-foreground` para etiquetas pequeñas sobre contenedores.
-
-## 📋 Componentes Estándar
-
-### Empty States
-Utilizar siempre el componente `EmptyState` en lugar de tarjetas manuales.
-- **Padding**: `p-10`
-- **Radio**: `rounded-3xl`
-- **Icono**: Fondo `bg-primary/10` con sombra interna.
-
-### Player Cards
-- **Contenedores**: `rounded-xl` con fondo `bg-muted/30`.
-- **Interacción**: `active:scale-[0.98]` (implícito en botones) y `hover:bg-muted/50`.
-
-## 🎨 Paleta de Colores
-Dominada por el **Amarillo Padel** (`primary`) sobre fondos neutros limpios.
-- Primary: Amarillo vibrante para CTAs y elementos destacados.
-- Muted: Grises suaves para fondos de contenedores.
+## 4. Sistema de Ranking (V1)
+- **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
+- **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 días.
+- **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.

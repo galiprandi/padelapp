@@ -16,6 +16,17 @@ model User {
   image         String?
   level         Int       @default(6)
   emailVerified DateTime?
+
+  // Ranking fields
+  rankingScore    Float     @default(1000)
+  rankingPosition Int?
+  rankingDelta    Int       @default(0)
+  matchesPlayed   Int       @default(0)
+  wins            Int       @default(0)
+  losses          Int       @default(0)
+  attendanceScore Float     @default(1.0)
+  lastMatchAt     DateTime?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
