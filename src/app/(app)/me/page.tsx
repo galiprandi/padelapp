@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy } from "lucide-react";
 
@@ -64,31 +65,57 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
 
 export default async function DashboardPage() {
   const session = await auth();
-  const displayName = session?.user?.alias ?? session?.user?.displayName ?? "Jugador";
   const viewerId = session?.user?.id;
 
-  const [upcomingMatches, recentMatches] = viewerId
+  const [user, upcomingMatches, recentMatches] = viewerId
     ? await Promise.all([
+        prisma.user.findUnique({
+          where: { id: viewerId },
+          select: {
+            displayName: true,
+            alias: true,
+            rankingScore: true,
+            rankingPosition: true,
+            rankingDelta: true,
+            level: true,
+            matchesPlayed: true,
+          },
+        }),
         getUserMatches(viewerId, "PENDING"),
         getUserMatches(viewerId, "CONFIRMED"),
       ])
-    : [[], []];
+    : [null, [], []];
+
+  const displayName = user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
 
   return (
     <div className="flex flex-col gap-6">
-      <section className="space-y-2">
-        <h1 className="text-2xl font-bold">Hola, {displayName} 👋</h1>
-        <p className="text-sm text-muted-foreground">
-          Armá equipos rápido, registrá tus resultados y escalá en la comunidad.
-        </p>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" asChild>
-            <Link href="/me/profile">Editar perfil</Link>
-          </Button>
-          <Button size="sm" variant="secondary" asChild>
-            <Link href="/ranking">Ver ranking</Link>
-          </Button>
+      <section className="space-y-4">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">Hola, {displayName} 👋</h1>
+          <p className="text-sm text-muted-foreground">
+            Armá equipos rápido, registrá tus resultados y escalá en la comunidad.
+          </p>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/me/profile">Editar perfil</Link>
+            </Button>
+            <Button size="sm" variant="secondary" asChild>
+              <Link href="/ranking">Ver ranking</Link>
+            </Button>
+          </div>
         </div>
+
+        {user && user.matchesPlayed > 0 && (
+          <Link href="/ranking">
+            <UserRankingCard
+              position={user.rankingPosition}
+              score={user.rankingScore}
+              delta={user.rankingDelta}
+              level={user.level}
+            />
+          </Link>
+        )}
       </section>
 
       <section className="space-y-4">

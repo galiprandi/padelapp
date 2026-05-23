@@ -91,6 +91,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/ranking/page.tsx` (UI de ranking)
   - `src/app/(app)/match/actions.ts` (integración con saveMatchResultAction)
 
+### ✅ Integración de Ranking en Dashboard
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Banner personal de ranking en `/ranking` con estadísticas detalladas (récord, nivel, delta).
+  - Card de ranking en dashboard (`/me`) para acceso rápido y feedback inmediato de progreso.
+  - Resaltado visual del usuario logueado en la tabla global de posiciones.
+- **Archivos relacionados**:
+  - `src/components/ranking/user-ranking-stats.tsx` (Nuevos componentes)
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/ranking/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

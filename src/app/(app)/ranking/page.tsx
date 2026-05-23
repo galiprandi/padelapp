@@ -1,17 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Users } from "lucide-react";
+import { auth } from "@/auth";
 import { cn } from "@/lib/utils";
 
 export default async function RankingPage() {
+  const session = await auth();
+  const viewerId = session?.user?.id;
+
   const players = await prisma.user.findMany({
     orderBy: [
       { rankingScore: "desc" },
       { displayName: "asc" },
     ],
   });
+
+  const currentUser = viewerId ? players.find(p => p.id === viewerId) : null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -22,6 +29,17 @@ export default async function RankingPage() {
         </p>
       </header>
 
+      {currentUser && currentUser.matchesPlayed > 0 && (
+        <UserRankingBanner
+          position={currentUser.rankingPosition}
+          score={currentUser.rankingScore}
+          delta={currentUser.rankingDelta}
+          wins={currentUser.wins}
+          losses={currentUser.losses}
+          level={currentUser.level}
+        />
+      )}
+
       <Tabs defaultValue="individual" className="w-full">
         <TabsList>
           <TabsTrigger value="individual">Individual</TabsTrigger>
@@ -31,7 +49,12 @@ export default async function RankingPage() {
             players.map((player) => (
               <div
                 key={player.id}
-                className="flex items-center gap-4 rounded-xl border border-border/50 bg-card p-3 shadow-sm transition-colors active:bg-muted/50"
+                className={cn(
+                  "flex items-center gap-4 rounded-xl border p-3 shadow-sm transition-colors active:bg-muted/50",
+                  player.id === viewerId
+                    ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
+                    : "border-border/50 bg-card"
+                )}
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-muted-foreground">
                   {player.rankingPosition ?? "-"}
