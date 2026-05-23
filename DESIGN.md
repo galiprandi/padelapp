@@ -11,6 +11,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
 - **RankingTable**: (En `/ranking/page.tsx`) Muestra la lista de jugadores ordenados por `rankingScore`. Incluye indicadores de tendencia (`TrendingUp`, `TrendingDown`).
 - **EmptyState**: Componente reutilizable para secciones sin datos. Requiere un `title`, `description`, `icon` opcional y un `action` CTA.
+- **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.
 
 ## 3. Arquitectura de Datos
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
