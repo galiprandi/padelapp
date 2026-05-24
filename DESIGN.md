@@ -3,9 +3,10 @@
 Este documento registra las decisiones de diseño, patrones de UI y arquitectura de componentes de **PadelApp**.
 
 ## 1. Patrones de UI
-- **Rounded-xl**: Utilizado para componentes base como tarjetas de ranking y contenedores de jugadores.
-- **Backdrop-blur-sm**: Para overlays de modales y menús flotantes (si aplica).
-- **Uppercase tracking-widest**: Para encabezados de secciones pequeñas y etiquetas de "Sets" o "Categoría".
+- **Rounded-xl**: Utilizado para componentes base como tarjetas de ranking, contenedores de jugadores y campos de entrada de formularios.
+- **Rounded-3xl**: Utilizado para contenedores principales, secciones de formularios y estados vacíos para crear el "bubble aesthetic".
+- **Backdrop-blur-sm**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-muted/20`.
+- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
 
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
