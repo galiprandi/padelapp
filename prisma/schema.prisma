@@ -33,6 +33,8 @@ model User {
   sessions      Session[]
   matches       Match[]   @relation("MatchCreator")
   matchPlayers  MatchPlayer[]
+  turnsCreated  Turn[]    @relation("TurnCreator")
+  turnPlayers   TurnPlayer[]
 }
 
 model Account {
@@ -80,9 +82,46 @@ model Match {
   courtNumber String?
   score       String?
   notes       String?
+  turnId      String?
+  turn        Turn?        @relation(fields: [turnId], references: [id])
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   players     MatchPlayer[]
+}
+
+model Turn {
+  id           String       @id @default(cuid())
+  creatorId    String
+  creator      User         @relation("TurnCreator", fields: [creatorId], references: [id])
+  club         String
+  date         DateTime
+  duration     Int          @default(90)
+  maxPlayers   Int          @default(4)
+  suggestedLevel Int        @default(6)
+  notes        String?
+  status       TurnStatus   @default(OPEN)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  players      TurnPlayer[]
+  matches      Match[]
+}
+
+model TurnPlayer {
+  id        String   @id @default(cuid())
+  turnId    String
+  turn      Turn     @relation(fields: [turnId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime @default(now())
+
+  @@unique([turnId, userId])
+}
+
+enum TurnStatus {
+  OPEN
+  FULL
+  CANCELLED
+  COMPLETED
 }
 
 model MatchPlayer {
