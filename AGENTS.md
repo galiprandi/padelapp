@@ -102,6 +102,16 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/ranking/page.tsx`
 
+### ✅ Refinamiento UX Turnos (Open Matches)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Dashboard de turnos con estética "bubble" y filtros optimizados.
+  - Formulario de creación de turnos rediseñado con mejor jerarquía visual y ergonomía móvil.
+  - Uso sistemático de `PageHeader` y `rounded-3xl` para contenedores principales.
+- **Archivos relacionados**:
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/app/(app)/turnos/nuevo/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
