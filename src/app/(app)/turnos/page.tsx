@@ -26,6 +26,7 @@ export default async function TurnsPage() {
     orderBy: {
       date: "asc",
     },
+    take: 20,
   });
 
   return (

@@ -16,6 +16,7 @@ export default async function RankingPage() {
       { rankingScore: "desc" },
       { displayName: "asc" },
     ],
+    take: 50,
   });
 
   const currentUser = viewerId ? players.find(p => p.id === viewerId) : null;

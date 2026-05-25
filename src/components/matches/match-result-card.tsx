@@ -1,5 +1,5 @@
 
-import { Fragment, type ReactNode } from "react";
+import { Fragment, memo, type ReactNode } from "react";
 import Link from "next/link";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
@@ -70,7 +70,7 @@ function parseScoreSets(score?: string | null): Array<[number, number]> {
     .filter((value): value is [number, number] => Array.isArray(value));
 }
 
-export function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl }: MatchResultCompactProps) {
+export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl }: MatchResultCompactProps) {
   const parsedSets = parseScoreSets(match.score);
   const scoresMatrix: Array<Array<number>> = [[], []];
 
@@ -229,4 +229,4 @@ export function MatchResultCompact({ label = "Resultado", match, matchDate, deta
       </div>
     </MatchResultCard>
   );
-}
+});
