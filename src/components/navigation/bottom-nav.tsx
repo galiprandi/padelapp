@@ -20,6 +20,7 @@ export function BottomNav({
 
   const navItems = [
     { href: "/ranking", icon: Trophy, label: "Ranking" },
+    { href: "/turnos", icon: Calendar, label: "Turnos" },
     { href: "/match", icon: Calendar, label: "Partidos" },
     { href: "/me", icon: User, label: "Perfil" },
   ];
