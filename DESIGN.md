@@ -22,3 +22,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
 - **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 días.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
+
+## 5. Estándares de Autenticación
+- **Esquema de Usuario**: El modelo `User` debe incluir el campo `name` (String?) para compatibilidad total con `PrismaAdapter` y Auth.js.
+- **Validación de Entorno**: Se requiere validación explícita de `AUTH_SECRET` y credenciales de proveedores en `src/auth.ts` para evitar fallos silenciosos en producción.
+- **Logging**: El modo `debug: true` está habilitado temporalmente para facilitar la resolución de errores de configuración en entornos de hosting (Vercel).

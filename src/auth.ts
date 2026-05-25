@@ -4,6 +4,16 @@ import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
+// Validate environment variables
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.AUTH_SECRET) {
+    console.error("Missing AUTH_SECRET environment variable");
+  }
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.error("Missing Google OAuth environment variables");
+  }
+}
+
 type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
 
 function resolveDisplayName(profile: GoogleProfile): string {
@@ -20,6 +30,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" },
   trustHost: true,
+  debug: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -29,6 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         return {
           id: profile.sub,
+          name: displayName,
           email: profile.email,
           emailVerified: profile.email_verified ? new Date() : null,
           image: profile.picture,

@@ -112,6 +112,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/page.tsx`
   - `src/app/(app)/turnos/nuevo/page.tsx`
 
+### ✅ Estabilización de Autenticación y Diagnóstico
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Validación explícita de variables de entorno (`AUTH_SECRET`, `GOOGLE_CLIENT_ID/SECRET`) en producción.
+  - Activación de `debug: true` en NextAuth para logs detallados en Vercel.
+  - Alineación del modelo `User` con el estándar de Auth.js mediante la adición del campo `name`.
+  - Poblado automático de `name` desde el perfil de Google.
+- **Archivos relacionados**:
+  - `src/auth.ts`
+  - `prisma/schema.prisma`
+  - `src/app/(app)/turnos/nuevo/page.tsx` (fix de importaciones)
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
