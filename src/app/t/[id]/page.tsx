@@ -155,32 +155,48 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             <Button variant="outline" className="w-full rounded-full border-primary text-primary" size="lg" disabled>
               ¡Ya estás anotado!
             </Button>
-            <form action={async () => {
-              "use server";
-              await leaveTurnAction(id);
-            }}>
-              <Button type="submit" variant="ghost" className="w-full text-destructive hover:bg-destructive/10 rounded-full" size="sm">
-                <LogOut className="mr-2 h-4 w-4" />
-                Bajarme del turno
-              </Button>
-            </form>
+            <LeaveTurnForm turnId={id} />
           </div>
         ) : isFull ? (
           <Button disabled className="w-full rounded-full opacity-70" size="lg">
             Turno completo
           </Button>
         ) : (
-          <form action={async () => {
-            "use server";
-            await joinTurnAction(id);
-          }}>
-            <Button type="submit" className="w-full rounded-full shadow-lg" size="lg">
-              <UserPlus className="mr-2 h-5 w-5" />
-              Anotarme ahora
-            </Button>
-          </form>
+          <JoinTurnForm turnId={id} />
         )}
       </div>
     </main>
+  );
+}
+
+function LeaveTurnForm({ turnId }: { turnId: string }) {
+  async function handleLeave() {
+    "use server";
+    await leaveTurnAction(turnId);
+  }
+
+  return (
+    <form action={handleLeave}>
+      <Button type="submit" variant="ghost" className="w-full text-destructive hover:bg-destructive/10 rounded-full" size="sm">
+        <LogOut className="mr-2 h-4 w-4" />
+        Bajarme del turno
+      </Button>
+    </form>
+  );
+}
+
+function JoinTurnForm({ turnId }: { turnId: string }) {
+  async function handleJoin() {
+    "use server";
+    await joinTurnAction(turnId);
+  }
+
+  return (
+    <form action={handleJoin}>
+      <Button type="submit" className="w-full rounded-full shadow-lg" size="lg">
+        <UserPlus className="mr-2 h-5 w-5" />
+        Anotarme ahora
+      </Button>
+    </form>
   );
 }
