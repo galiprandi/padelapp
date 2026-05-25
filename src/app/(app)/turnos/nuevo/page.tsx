@@ -3,10 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PageHeader } from "@/components/page-header";
 import { levelOptions } from "@/lib/mock-data";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
@@ -57,13 +57,11 @@ export default function NewTurnPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-bold">Nuevo turno abierto</h1>
-        <p className="text-sm text-muted-foreground">
-          Configura cancha, nivel y cupos. Al guardar tendrás un link listo para compartir.
-        </p>
-      </header>
+    <div className="flex flex-col gap-6 pb-10">
+      <PageHeader
+        title="Nuevo turno"
+        description="Configurá cancha, nivel y cupos. Al guardar tendrás un link listo para compartir."
+      />
 
       <form onSubmit={handleSubmit}>
         <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm">
