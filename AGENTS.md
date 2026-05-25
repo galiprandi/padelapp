@@ -112,6 +112,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/page.tsx`
   - `src/app/(app)/turnos/nuevo/page.tsx`
 
+### ✅ Pulido Estético Dashboard y Detalle de Partido
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Evolución de `MatchResultCard` a `rounded-3xl` con `backdrop-blur-sm` para consistencia visual.
+  - Refinamiento de tipografía en Dashboard (`text-3xl font-extrabold`) y espaciado general.
+  - Integración de badges de estado en el detalle de partido y limpieza de layout.
+- **Archivos relacionados**:
+  - `src/components/matches/match-result-card.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

@@ -1,6 +1,7 @@
 import { getMatchByIdAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlusCircle, FileText } from "lucide-react";
@@ -86,16 +87,30 @@ export default async function MatchPage({ params }: MatchPageProps) {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <PageHeader
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
-        description={`Creado por ${match.creator?.displayName || 'Usuario'}${match.club ? ` en ${match.club}` : ''}${match.courtNumber ? ` - Cancha ${match.courtNumber}` : ''}`}
+        description={
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-bold">
+                {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
+              </Badge>
+              <span className="text-sm text-muted-foreground">
+                Creado por {match.creator?.displayName || 'Usuario'}
+              </span>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {match.club ? `${match.club}` : ''}{match.courtNumber ? ` - Cancha ${match.courtNumber}` : ''}
+            </span>
+          </div>
+        }
         action={
           !isClosed ? (
             <Button
               asChild
               variant="default"
-              className="w-full justify-center py-2 text-base"
+              className="w-full justify-center py-2 text-base rounded-xl shadow-sm shadow-primary/20"
             >
               <Link href={`/match/${match.id}/result`}>
                 <FileText className="mr-2 h-5 w-5" />
@@ -105,7 +120,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
           ) : null
         }
       />
-      <br />
 
       {isClosed ? (
         <MatchResultCompact
@@ -136,7 +150,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           }))}
         />
       )}
-    </>
+    </div>
   );
 }
 
