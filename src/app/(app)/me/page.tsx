@@ -89,10 +89,10 @@ export default async function DashboardPage() {
   const displayName = user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <section className="space-y-4">
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold">Hola, {displayName} 👋</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight">Hola, {displayName} 👋</h1>
           <p className="text-sm text-muted-foreground">
             Armá equipos rápido, registrá tus resultados y escalá en la comunidad.
           </p>

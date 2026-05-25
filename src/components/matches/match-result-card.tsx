@@ -13,11 +13,11 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="relative rounded-xl border border-border/80 bg-muted/30">
+    <div className="relative rounded-3xl border border-border/80 bg-muted/20 backdrop-blur-sm">
       <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </span>
-      <div className="min-h-24 rounded-xl p-4 pt-6 text-sm text-muted-foreground">{children}</div>
+      <div className="min-h-24 rounded-3xl p-4 pt-6 text-sm text-muted-foreground">{children}</div>
       {footer ? <div className="border-t border-border/60 bg-background px-4 py-3 text-xs text-muted-foreground">{footer}</div> : null}
     </div>
   );
@@ -198,11 +198,11 @@ export function MatchResultCompact({ label = "Resultado", match, matchDate, deta
                     let segmentClass = "bg-muted text-muted-foreground";
                     if (hasNumericValues) {
                       if (didWinSet) {
-                        segmentClass = "bg-primary text-primary-foreground";
+                        segmentClass = "bg-primary text-primary-foreground shadow-sm";
                       } else if (isDraw) {
                         segmentClass = "bg-muted text-foreground";
                       } else if (team.isWinner === false) {
-                        segmentClass = "bg-muted/70 text-muted-foreground";
+                        segmentClass = "bg-muted/50 text-muted-foreground";
                       } else {
                         segmentClass = "bg-muted text-foreground";
                       }
@@ -213,7 +213,7 @@ export function MatchResultCompact({ label = "Resultado", match, matchDate, deta
                     return (
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
-                        className={cn("rounded-md px-2 py-0.5 text-base font-bold", segmentClass)}
+                        className={cn("rounded-lg px-2.5 py-1 text-base font-bold", segmentClass)}
                       >
                         {displayValue}
                       </span>
