@@ -166,14 +166,14 @@ export default async function DashboardPage() {
 
               return (
                 <Link key={turn.id} href={`/t/${turn.id}`}>
-                  <div className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 backdrop-blur-sm border border-border/40">
-                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-2 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-bold uppercase">{dateStr.split(" ")[1]}</span>
-                      <span className="text-xl font-black">{dateStr.split(" ")[0]}</span>
+                  <div className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 backdrop-blur-sm border border-border/40 transition-all hover:bg-card/80 active:scale-[0.98]">
+                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-3 text-primary min-w-[60px]">
+                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
+                      <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="truncate font-bold text-foreground">{turn.club}</p>
-                      <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <div className="mt-1 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {timeStr}
@@ -235,14 +235,14 @@ export default async function DashboardPage() {
 
               return (
                 <Link key={turn.id} href={`/t/${turn.id}`}>
-                  <div className="flex items-center gap-4 rounded-3xl bg-primary/5 p-4 backdrop-blur-sm border border-primary/10">
-                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-2 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-bold uppercase">{dateStr.split(" ")[1]}</span>
-                      <span className="text-xl font-black">{dateStr.split(" ")[0]}</span>
+                  <div className="flex items-center gap-4 rounded-3xl bg-primary/5 p-4 backdrop-blur-sm border border-primary/20 transition-all hover:bg-primary/10 active:scale-[0.98]">
+                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/20 px-3 py-3 text-primary min-w-[60px]">
+                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
+                      <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="truncate font-bold text-foreground">{turn.club}</p>
-                      <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <div className="mt-1 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                         <span className="flex items-center gap-1 text-primary">
                           <Trophy className="h-3 w-3" />
                           {levelLabel}
@@ -253,9 +253,9 @@ export default async function DashboardPage() {
                         </span>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost" className="rounded-full text-primary">
+                    <div className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary">
                       Unirse
-                    </Button>
+                    </div>
                   </div>
                 </Link>
               );

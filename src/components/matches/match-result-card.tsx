@@ -13,12 +13,12 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="relative rounded-3xl border border-border/80 bg-muted/20 backdrop-blur-sm">
-      <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+    <div className="relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm">
         {label}
       </span>
-      <div className="min-h-24 rounded-3xl p-4 pt-6 text-sm text-muted-foreground">{children}</div>
-      {footer ? <div className="border-t border-border/60 bg-background px-4 py-3 text-xs text-muted-foreground">{footer}</div> : null}
+      <div className="min-h-24 rounded-3xl p-5 pt-8 text-sm text-muted-foreground">{children}</div>
+      {footer ? <div className="border-t border-border/40 bg-background/30 px-5 py-4 text-xs text-muted-foreground">{footer}</div> : null}
     </div>
   );
 }
@@ -127,11 +127,11 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
   const statusClassName = (() => {
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
-        return "bg-emerald-500/15 text-emerald-600";
+        return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
       case "DISPUTED":
-        return "bg-amber-500/15 text-amber-600";
+        return "bg-amber-500/10 text-amber-600 border-amber-500/20";
       default:
-        return "bg-muted text-muted-foreground";
+        return "bg-muted/50 text-muted-foreground border-border/40";
     }
   })();
 
@@ -143,14 +143,14 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           ? (
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className={cn("rounded-full px-2 py-1 text-[11px] font-semibold uppercase tracking-wide", statusClassName)}>
+                  <span className={cn("rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-wider", statusClassName)}>
                     {statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
-                  <span className="font-medium text-foreground">{formattedDate ?? "—"}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>
                 </div>
                 {matchDetailUrl ? (
-                  <Link href={matchDetailUrl} className="text-primary underline-offset-2 hover:underline">
-                    Ver detalle
+                  <Link href={matchDetailUrl} className="text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
+                    Detalle
                   </Link>
                 ) : null}
               </div>
@@ -195,16 +195,16 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                     const didWinSet = hasNumericValues && numeric > opponentNumeric;
                     const isDraw = hasNumericValues && numeric === opponentNumeric;
 
-                    let segmentClass = "bg-muted text-muted-foreground";
+                    let segmentClass = "bg-muted/30 text-muted-foreground/50 border-transparent";
                     if (hasNumericValues) {
                       if (didWinSet) {
-                        segmentClass = "bg-primary text-primary-foreground shadow-sm";
+                        segmentClass = "bg-primary text-primary-foreground shadow-sm border-primary";
                       } else if (isDraw) {
-                        segmentClass = "bg-muted text-foreground";
+                        segmentClass = "bg-muted text-foreground border-border/20";
                       } else if (team.isWinner === false) {
-                        segmentClass = "bg-muted/50 text-muted-foreground";
+                        segmentClass = "bg-muted/20 text-muted-foreground/60 border-transparent";
                       } else {
-                        segmentClass = "bg-muted text-foreground";
+                        segmentClass = "bg-muted text-foreground border-border/20";
                       }
                     }
 
@@ -213,7 +213,10 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                     return (
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
-                        className={cn("rounded-lg px-2.5 py-1 text-base font-bold", segmentClass)}
+                        className={cn(
+                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-colors",
+                          segmentClass
+                        )}
                       >
                         {displayValue}
                       </span>

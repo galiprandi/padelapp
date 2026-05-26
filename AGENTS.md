@@ -126,16 +126,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/new/page.tsx`
   - `src/hooks/use-match-form.ts`
 
-### ✅ Pulido Estético Dashboard y Detalle de Partido
+### ✅ Evolución del "Bubble Aesthetic" (Ranking y Dashboard)
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Evolución de `MatchResultCard` a `rounded-3xl` con `backdrop-blur-sm` para consistencia visual.
-  - Refinamiento de tipografía en Dashboard (`text-3xl font-extrabold`) y espaciado general.
-  - Integración de badges de estado en el detalle de partido y limpieza de layout.
+  - Unificación visual de cards de turnos y rankings usando `rounded-3xl`, `bg-card/50` y `backdrop-blur-sm`.
+  - Refinamiento de `MatchResultCard` con bordes más suaves, jerarquía de scores mejorada y estados visuales claros.
+  - Rediseño de la lista de ranking con indicadores de posición en `rounded-2xl` y badges de nivel consistentes.
+  - Estandarización de badges de fecha y estados (confirmed, pending) con tipografía `font-black uppercase`.
 - **Archivos relacionados**:
   - `src/components/matches/match-result-card.tsx`
   - `src/app/(app)/me/page.tsx`
-  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/app/(app)/ranking/page.tsx`
 
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
