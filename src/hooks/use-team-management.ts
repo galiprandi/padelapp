@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { buildInitialState, PLACEHOLDER_SLOTS, createPlaceholderSlot, positionFromTeam } from "@/lib/match-utils";
 import type { TeamState, SlotValue, PlayerOption, TeamKey } from "@/lib/match-types";
@@ -73,8 +73,13 @@ export function useTeamManagement() {
     });
   }
 
+  const setWholeState = useCallback((state: TeamState) => {
+    setTeamState(state);
+  }, []);
+
   return {
     teamState,
     updateSlot,
+    setWholeState,
   };
 }

@@ -1,11 +1,12 @@
 import { auth } from "@/auth";
-import { getTurnByIdAction, joinTurnAction, leaveTurnAction } from "@/app/(app)/turnos/actions";
+import { getTurnByIdAction, joinTurnAction, leaveTurnAction, convertTurnToMatchAction } from "@/app/(app)/turnos/actions";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { EmptyState } from "@/components/empty-state";
 import { levelOptions } from "@/lib/mock-data";
-import { Calendar, Clock, MapPin, Users, Trophy, LogOut, UserPlus } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Trophy, LogOut, UserPlus, Play } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import appSettings from "@/config/app-settings.json";
@@ -150,6 +151,16 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               Iniciá sesión para anotarte
             </Link>
           </Button>
+        ) : isFull ? (
+          <div className="flex flex-col gap-3">
+            {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
+              <StartMatchForm turnId={id} />
+            )}
+            <Button disabled className="w-full rounded-full opacity-70" size="lg">
+              {turn.status === "COMPLETED" ? "Turno finalizado" : "Turno completo"}
+            </Button>
+            {isJoined && turn.status !== "COMPLETED" && <LeaveTurnForm turnId={id} />}
+          </div>
         ) : isJoined ? (
           <div className="flex flex-col gap-3">
             <Button variant="outline" className="w-full rounded-full border-primary text-primary" size="lg" disabled>
@@ -157,15 +168,30 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </Button>
             <LeaveTurnForm turnId={id} />
           </div>
-        ) : isFull ? (
-          <Button disabled className="w-full rounded-full opacity-70" size="lg">
-            Turno completo
-          </Button>
         ) : (
           <JoinTurnForm turnId={id} />
         )}
       </div>
     </main>
+  );
+}
+
+function StartMatchForm({ turnId }: { turnId: string }) {
+  async function handleStart() {
+    "use server";
+    const result = await convertTurnToMatchAction(turnId);
+    if (result.status === "ok" && result.matchId) {
+      return redirect(`/match/${result.matchId}`);
+    }
+  }
+
+  return (
+    <form action={handleStart}>
+      <Button type="submit" className="w-full rounded-full shadow-lg bg-green-600 hover:bg-green-700 text-white" size="lg">
+        <Play className="mr-2 h-5 w-5 fill-current" />
+        Iniciar partido
+      </Button>
+    </form>
   );
 }
 

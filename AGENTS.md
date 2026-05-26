@@ -112,6 +112,20 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/page.tsx`
   - `src/app/(app)/turnos/nuevo/page.tsx`
 
+### ✅ Integración Dashboard y Flujo Turno-Partido
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Dashboard consolidado con "Mis próximos turnos" y "Turnos recomendados".
+  - Botón "Iniciar partido" en detalle de turno cuando está lleno (4/4).
+  - Acción `convertTurnToMatchAction` para automatizar la creación de partidos desde turnos.
+  - El formulario de nuevo partido ahora soporta pre-llenado desde un `turnId`.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/turnos/actions.ts`
+  - `src/app/t/[id]/page.tsx`
+  - `src/app/(app)/match/new/page.tsx`
+  - `src/hooks/use-match-form.ts`
+
 ### ✅ Pulido Estético Dashboard y Detalle de Partido
 - **Estado**: Implementado
 - **Funcionalidades**:

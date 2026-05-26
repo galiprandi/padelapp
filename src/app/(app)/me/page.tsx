@@ -5,7 +5,8 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy } from "lucide-react";
+import { CalendarDays, Trophy, Clock, Users } from "lucide-react";
+import { levelOptions } from "@/lib/mock-data";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
@@ -88,6 +89,32 @@ export default async function DashboardPage() {
 
   const displayName = user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
 
+  const myTurns = viewerId
+    ? await prisma.turn.findMany({
+        where: {
+          players: { some: { userId: viewerId } },
+          date: { gte: new Date() },
+          status: { in: ["OPEN", "FULL"] },
+        },
+        include: { players: true },
+        orderBy: { date: "asc" },
+        take: 3,
+      })
+    : [];
+
+  const recommendedTurns = viewerId
+    ? await prisma.turn.findMany({
+        where: {
+          players: { none: { userId: viewerId } },
+          date: { gte: new Date() },
+          status: "OPEN",
+        },
+        include: { players: true },
+        orderBy: { date: "asc" },
+        take: 3,
+      })
+    : [];
+
   return (
     <div className="flex flex-col gap-8">
       <section className="space-y-4">
@@ -118,6 +145,53 @@ export default async function DashboardPage() {
         )}
       </section>
 
+      {myTurns.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold tracking-tight">Mis próximos turnos</h2>
+            <Button variant="link" size="sm" asChild className="text-primary">
+              <Link href="/turnos">Ver todos</Link>
+            </Button>
+          </div>
+          <div className="grid gap-3">
+            {myTurns.map((turn) => {
+              const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "short",
+              });
+              const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              return (
+                <Link key={turn.id} href={`/t/${turn.id}`}>
+                  <div className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 backdrop-blur-sm border border-border/40">
+                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-2 text-primary min-w-[60px]">
+                      <span className="text-[10px] font-bold uppercase">{dateStr.split(" ")[1]}</span>
+                      <span className="text-xl font-black">{dateStr.split(" ")[0]}</span>
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="truncate font-bold text-foreground">{turn.club}</p>
+                      <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {timeStr}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {turn.players.length}/{turn.maxPlayers}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold tracking-tight">Próximos partidos</h2>
@@ -141,6 +215,54 @@ export default async function DashboardPage() {
           )}
         </div>
       </section>
+
+      {recommendedTurns.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold tracking-tight">Turnos recomendados</h2>
+          </div>
+          <div className="grid gap-3">
+            {recommendedTurns.map((turn) => {
+              const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "short",
+              });
+              const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel;
+
+              return (
+                <Link key={turn.id} href={`/t/${turn.id}`}>
+                  <div className="flex items-center gap-4 rounded-3xl bg-primary/5 p-4 backdrop-blur-sm border border-primary/10">
+                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-2 text-primary min-w-[60px]">
+                      <span className="text-[10px] font-bold uppercase">{dateStr.split(" ")[1]}</span>
+                      <span className="text-xl font-black">{dateStr.split(" ")[0]}</span>
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="truncate font-bold text-foreground">{turn.club}</p>
+                      <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        <span className="flex items-center gap-1 text-primary">
+                          <Trophy className="h-3 w-3" />
+                          {levelLabel}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {turn.players.length}/{turn.maxPlayers}
+                        </span>
+                      </div>
+                    </div>
+                    <Button size="sm" variant="ghost" className="rounded-full text-primary">
+                      Unirse
+                    </Button>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
