@@ -51,47 +51,56 @@ export default async function RankingPage() {
               <div
                 key={player.id}
                 className={cn(
-                  "flex items-center gap-4 rounded-xl border p-3 shadow-sm transition-colors active:bg-muted/50",
+                  "flex items-center gap-4 rounded-3xl border p-3 shadow-sm transition-all active:scale-[0.98]",
                   player.id === viewerId
-                    ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
-                    : "border-border/50 bg-card"
+                    ? "border-primary/50 bg-primary/10 backdrop-blur-sm ring-1 ring-primary/20"
+                    : "border-border/40 bg-card/50 backdrop-blur-sm"
                 )}
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-muted-foreground">
+                <div
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-black",
+                    player.id === viewerId ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                  )}
+                >
                   {player.rankingPosition ?? "-"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold truncate text-sm">
                     {player.alias ?? player.displayName}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="h-4 px-1 text-[9px] font-black uppercase border-primary/20 text-primary/80">
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Badge
+                      variant="outline"
+                      className="h-4 px-1.5 text-[9px] font-black uppercase border-primary/30 text-primary bg-primary/5"
+                    >
                       Nivel {player.level}
                     </Badge>
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[10px] font-bold uppercase tracking-tight text-muted-foreground/70">
                       {player.wins}V - {player.losses}D
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="text-sm font-bold">
-                    {Math.round(player.rankingScore)} pts
+                <div className="flex flex-col items-end gap-0.5 pr-2">
+                  <span className="text-sm font-black tracking-tight">
+                    {Math.round(player.rankingScore)}
+                    <span className="ml-0.5 text-[10px] font-bold text-muted-foreground/60 uppercase">pts</span>
                   </span>
                   <div className="flex items-center gap-1">
                     {player.rankingDelta > 0 ? (
                       <>
                         <TrendingUp className="h-3 w-3 text-green-500" />
-                        <span className="text-[10px] font-medium text-green-500">+{player.rankingDelta}</span>
+                        <span className="text-[10px] font-black text-green-500">+{player.rankingDelta}</span>
                       </>
                     ) : player.rankingDelta < 0 ? (
                       <>
                         <TrendingDown className="h-3 w-3 text-red-500" />
-                        <span className="text-[10px] font-medium text-red-500">{player.rankingDelta}</span>
+                        <span className="text-[10px] font-black text-red-500">{player.rankingDelta}</span>
                       </>
                     ) : (
                       <>
-                        <Minus className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">0</span>
+                        <Minus className="h-3 w-3 text-muted-foreground/40" />
+                        <span className="text-[10px] font-black text-muted-foreground/40">0</span>
                       </>
                     )}
                   </div>
