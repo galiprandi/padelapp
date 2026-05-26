@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useCallback } from "react";
 import { redirect } from "next/navigation";
 import { createMatchAction, type CreateMatchInput, type SlotPayload } from "@/app/(app)/match/actions";
-import type { TeamState, MatchTypeValue, StepIndex } from "@/lib/match-types";
+import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
+import type { TeamState, MatchTypeValue, StepIndex, SlotValue } from "@/lib/match-types";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
 
-export function useMatchForm(teamState: TeamState) {
+export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: TeamState) => void) {
   const [currentStep, setCurrentStep] = useState<StepIndex>(0);
   const [matchType, setMatchType] = useState<MatchTypeValue>("FRIENDLY");
   const [sets, setSets] = useState<string>("3");
@@ -17,6 +18,40 @@ export function useMatchForm(teamState: TeamState) {
   const [courtNumber, setCourtNumber] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, startSubmit] = useTransition();
+  const [prefilledTurnId, setPrefilledTurnId] = useState<string | null>(null);
+
+  const initializeWithTurn = useCallback(async (turnId: string) => {
+    const response = await getTurnByIdAction(turnId);
+    if (response.status === "ok" && response.turn) {
+      const turn = response.turn;
+      setClub(turn.club);
+      setPrefilledTurnId(turnId);
+
+      if (onTeamStateChange) {
+        const newState: TeamState = {
+          A: [null, null],
+          B: [null, null],
+        };
+
+        turn.players.slice(0, 4).forEach((p, index) => {
+          const team: "A" | "B" = index < 2 ? "A" : "B";
+          const teamIndex: 0 | 1 = (index % 2) as 0 | 1;
+
+          newState[team][teamIndex] = {
+            kind: "user",
+            player: {
+              id: p.userId,
+              displayName: p.user.alias ?? p.user.displayName,
+              email: "", // Not available in public action
+              image: p.user.image,
+            }
+          };
+        });
+
+        onTeamStateChange(newState);
+      }
+    }
+  }, [onTeamStateChange]);
 
   const setsValue = Number.parseInt(sets, 10);
   const setsValid = !Number.isNaN(setsValue) && setsValue >= MIN_SETS && setsValue <= MAX_SETS;
@@ -94,6 +129,7 @@ export function useMatchForm(teamState: TeamState) {
         courtNumber: courtNumber.trim().length > 0 ? courtNumber.trim() : null,
         score: null,
         notes: null,
+        turnId: prefilledTurnId,
         slots: slotsPayload,
       };
 
@@ -125,5 +161,6 @@ export function useMatchForm(teamState: TeamState) {
     goToNextStep,
     goToPreviousStep,
     handleCreateMatch,
+    initializeWithTurn,
   };
 }

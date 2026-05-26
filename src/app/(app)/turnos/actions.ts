@@ -168,3 +168,88 @@ export async function getTurnByIdAction(turnId: string) {
     return { status: "error", message: "Error al obtener el turno" };
   }
 }
+
+export async function convertTurnToMatchAction(turnId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await prisma.turn.findUnique({
+      where: { id: turnId },
+      include: {
+        players: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                alias: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: { joinedAt: "asc" },
+        },
+      },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede iniciar el partido" };
+    }
+
+    if (turn.players.length < 4) {
+      return { status: "error", message: "Se necesitan 4 jugadores para iniciar el partido" };
+    }
+
+    // Use a transaction to create the match and update the turn
+    const matchId = await prisma.$transaction(async (tx) => {
+      // 1. Create Teams (Pareja A and Pareja B)
+      const teamA = await tx.team.create({ data: { label: "Pareja A" } });
+      const teamB = await tx.team.create({ data: { label: "Pareja B" } });
+
+      // 2. Create the Match
+      const match = await tx.match.create({
+        data: {
+          creatorId: session.user.id,
+          club: turn.club,
+          status: "PENDING",
+          sets: 3,
+          matchType: "FRIENDLY",
+          turnId: turn.id,
+          players: {
+            create: turn.players.slice(0, 4).map((p, index) => ({
+              userId: p.userId,
+              position: index,
+              teamId: index < 2 ? teamA.id : teamB.id,
+              displayName: p.user.alias ?? p.user.displayName,
+              joinedAt: p.joinedAt,
+            })),
+          },
+        },
+      });
+
+      // 3. Update Turn status to COMPLETED
+      await tx.turn.update({
+        where: { id: turnId },
+        data: { status: "COMPLETED" },
+      });
+
+      return match.id;
+    });
+
+    revalidatePath("/turnos");
+    revalidatePath(`/t/${turnId}`);
+    revalidatePath("/me");
+
+    return { status: "ok", matchId };
+  } catch (error) {
+    console.error("Error converting turn to match:", error);
+    return { status: "error", message: "Error al convertir el turno en partido" };
+  }
+}

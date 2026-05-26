@@ -7,9 +7,14 @@ import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
 import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
 import type { TeamKey } from "@/lib/match-types";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import appSettings from "@/config/app-settings.json";
 
 export default function RegisterMatchPage() {
+  const searchParams = useSearchParams();
+  const turnId = searchParams.get("turnId");
+
   const [activeSlot, setActiveSlot] = useState<{ team: TeamKey; index: 0 | 1 }>({ team: "A", index: 1 });
   const [manageModal, setManageModal] = useState<{ open: boolean; team: TeamKey; index: 0 | 1 }>({
     open: false,
@@ -17,7 +22,7 @@ export default function RegisterMatchPage() {
     index: 1,
   });
 
-  const { teamState, updateSlot } = useTeamManagement();
+  const { teamState, updateSlot, setWholeState } = useTeamManagement();
   const {
     currentStep,
     matchType,
@@ -36,7 +41,14 @@ export default function RegisterMatchPage() {
     goToNextStep,
     goToPreviousStep,
     handleCreateMatch,
-  } = useMatchForm(teamState);
+    initializeWithTurn,
+  } = useMatchForm(teamState, setWholeState);
+
+  useEffect(() => {
+    if (turnId) {
+      initializeWithTurn(turnId);
+    }
+  }, [turnId, initializeWithTurn]);
 
   function handleCloseManageModal() {
     setManageModal((previous) => ({ ...previous, open: false }));

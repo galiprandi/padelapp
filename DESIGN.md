@@ -18,7 +18,12 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
 - **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
 
-## 4. Sistema de Ranking (V1)
+## 4. Integración de Flujos (Turnos -> Partidos)
+- **Turnos como Lead**: Los turnos abiertos actúan como el embudo principal de jugadores.
+- **Conversión Automática**: Al completar un turno (4 jugadores), el organizador puede disparar `convertTurnToMatchAction`, que hereda el club, los jugadores y las posiciones, marcando el turno como `COMPLETED`.
+- **Pre-llenado de Formulario**: El hook `useMatchForm` soporta la inicialización mediante `turnId` para mantener la flexibilidad si se desea ajustar el partido antes de crearlo.
+
+## 5. Sistema de Ranking (V1)
 - **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
 - **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 días.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
