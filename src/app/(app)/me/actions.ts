@@ -1,18 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
-export type UpdateUserAliasResponse =
-  | { status: "ok"; alias: string | null }
+export type UpdateProfileResponse =
+  | { status: "ok"; alias: string | null; level: number }
   | { status: "error"; message: string };
 
-export async function updateUserAliasAction(aliasInput: string | null): Promise<UpdateUserAliasResponse> {
+export async function updateUserProfileAction(
+  aliasInput: string | null,
+  levelInput: number
+): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
     return { status: "error", message: "You must be signed in." };
@@ -28,15 +30,17 @@ export async function updateUserAliasAction(aliasInput: string | null): Promise<
 
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
 
-  const data = { alias: aliasToSave } as Prisma.UserUncheckedUpdateInput;
-
   await prisma.user.update({
     where: { id: session.user.id },
-    data,
+    data: {
+      alias: aliasToSave,
+      level: levelInput,
+    },
   });
 
   revalidatePath("/me");
   revalidatePath("/me/profile");
+  revalidatePath("/ranking");
 
-  return { status: "ok", alias: aliasToSave };
+  return { status: "ok", alias: aliasToSave, level: levelInput };
 }
