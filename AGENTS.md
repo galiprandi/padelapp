@@ -149,6 +149,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `src/components/matches/match-result-card.tsx`
 
+### ✅ Refactor de Perfil y Nivel de Jugador
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Edición unificada de Alias y Nivel de Juego (1-8).
+  - Selector de nivel visual en cuadrícula con feedback táctil.
+  - UI de perfil alineada al "Bubble Aesthetic" usando `rounded-3xl` y `backdrop-blur-sm`.
+  - Acción de servidor consolidada `updateUserProfileAction` para gestión de perfil.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/profile/page.tsx`
+  - `src/app/(app)/me/profile/profile-form.tsx`
+  - `src/app/(app)/me/actions.ts`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
