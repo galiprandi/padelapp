@@ -13,6 +13,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **RankingList**: (En `/ranking/page.tsx`) Lista de jugadores refinada con estética "bubble", indicadores de posición en `rounded-2xl` y badges de nivel consistentes.
 - **EmptyState**: Componente reutilizable para secciones sin datos. Requiere un `title`, `description`, `icon` opcional y un `action` CTA.
 - **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.
+- **Match Confirmation Flow**: Los partidos con resultado pendiente de confirmación muestran un banner de "Confirmación pendiente" con indicadores individuales (`CheckCircle2` para confirmados, `Clock` para pendientes) para incentivar el cierre del partido y el impacto en el ranking.
 
 ## 3. Arquitectura de Datos
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
@@ -27,3 +28,4 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
 - **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 días.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
+- **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.

@@ -1,4 +1,6 @@
 
+"use client";
+
 import { Fragment, memo, type ReactNode } from "react";
 import Link from "next/link";
 
@@ -70,7 +72,11 @@ function parseScoreSets(score?: string | null): Array<[number, number]> {
     .filter((value): value is [number, number] => Array.isArray(value));
 }
 
+import { useSession } from "next-auth/react";
+
 export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl }: MatchResultCompactProps) {
+  const { data: session } = useSession();
+  const viewerId = session?.user?.id;
   const parsedSets = parseScoreSets(match.score);
   const scoresMatrix: Array<Array<number>> = [[], []];
 
@@ -124,7 +130,16 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     : null;
   const matchDetailUrl = detailUrl ?? `/match/${match.id}`;
   const statusLabel = (match.status ?? "PENDING").toString();
+
+  const needsConfirmation = viewerId &&
+    match.status !== "CONFIRMED" &&
+    match.score &&
+    match.players.some(p => p.user?.id === viewerId);
+
   const statusClassName = (() => {
+    if (needsConfirmation) {
+      return "bg-primary text-primary-foreground border-primary animate-pulse";
+    }
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
         return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
@@ -144,7 +159,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className={cn("rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-wider", statusClassName)}>
-                    {statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
+                    {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>
                 </div>
