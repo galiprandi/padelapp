@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
+import { TurnCard } from "@/components/turns/turn-card";
 import { prisma } from "@/lib/prisma";
 import { levelOptions } from "@/lib/mock-data";
 import Link from "next/link";
-import { CalendarOff, MapPin, Clock, Users, Trophy, Plus } from "lucide-react";
+import { CalendarOff, Plus } from "lucide-react";
 import { auth } from "@/auth";
 
 export default async function TurnsPage() {
@@ -31,19 +33,18 @@ export default async function TurnsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Turnos abiertos</h1>
-          <p className="text-sm text-muted-foreground">
-            Unite a partidos de tu nivel o creá uno nuevo.
-          </p>
-        </div>
-        <Button asChild size="icon" className="rounded-full md:hidden">
-          <Link href="/turnos/nuevo">
-            <Plus className="h-5 w-5" />
-          </Link>
-        </Button>
-      </header>
+      <PageHeader
+        title="Turnos abiertos"
+        description="Unite a partidos de tu nivel o creá uno nuevo."
+        action={
+          <Button asChild className="w-full md:w-auto rounded-xl">
+            <Link href="/turnos/nuevo">
+              <Plus className="mr-2 h-5 w-5" />
+              Crear turno
+            </Link>
+          </Button>
+        }
+      />
 
       <div className="hidden md:block">
         <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm p-5">
@@ -59,58 +60,14 @@ export default async function TurnsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {turns.length > 0 ? (
-          turns.map((turn) => {
-            const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel;
-            const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
-              hour: "2-digit",
-              minute: "2-digit",
-            });
-            const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
-              day: "numeric",
-              month: "short",
-            });
-
-            return (
-              <Link key={turn.id} href={`/t/${turn.id}`}>
-                <Card className="overflow-hidden rounded-3xl border-none bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98]">
-                  <CardContent className="p-0">
-                    <div className="flex">
-                      <div className="flex flex-col items-center justify-center bg-primary/10 px-4 py-4 text-primary">
-                        <span className="text-xs font-bold uppercase">{dateStr.split(" ")[1]}</span>
-                        <span className="text-2xl font-black">{dateStr.split(" ")[0]}</span>
-                      </div>
-                      <div className="flex flex-1 flex-col justify-center p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-bold text-foreground">{turn.club}</h3>
-                            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {timeStr}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" />
-                                {turn.players.length}/{turn.maxPlayers}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Trophy className="h-3 w-3" />
-                                {levelLabel}
-                              </span>
-                            </div>
-                          </div>
-                          {turn.status === "FULL" && (
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest">Completo</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })
+          turns.map((turn) => (
+            <TurnCard
+              key={turn.id}
+              turn={turn}
+            />
+          ))
         ) : (
           <EmptyState
             title="Sin turnos abiertos"

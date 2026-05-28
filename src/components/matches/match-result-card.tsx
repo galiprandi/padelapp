@@ -138,7 +138,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
 
   const statusClassName = (() => {
     if (needsConfirmation) {
-      return "bg-primary text-primary-foreground border-primary animate-pulse";
+      return "bg-primary text-primary-foreground border-primary animate-pulse shadow-sm shadow-primary/20";
     }
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
@@ -146,7 +146,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
       case "DISPUTED":
         return "bg-amber-500/10 text-amber-600 border-amber-500/20";
       default:
-        return "bg-muted/50 text-muted-foreground border-border/40";
+        return "bg-secondary/20 text-secondary-foreground border-secondary/20";
     }
   })();
 
@@ -158,7 +158,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           ? (
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className={cn("rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-wider", statusClassName)}>
+                  <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest", statusClassName)}>
                     {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>

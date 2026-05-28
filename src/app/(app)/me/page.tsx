@@ -3,9 +3,11 @@ import { auth } from "@/auth";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
+import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, Clock, Users } from "lucide-react";
+import { CalendarDays, Trophy } from "lucide-react";
 import { levelOptions } from "@/lib/mock-data";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
@@ -116,32 +118,35 @@ export default async function DashboardPage() {
     : [];
 
   return (
-    <div className="flex flex-col gap-8">
-      <section className="space-y-4">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-tight">Hola, {displayName} 👋</h1>
-          <p className="text-sm text-muted-foreground">
-            Armá equipos rápido, registrá tus resultados y escalá en la comunidad.
-          </p>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/me/profile">Editar perfil</Link>
-            </Button>
-            <Button size="sm" variant="secondary" asChild>
-              <Link href="/ranking">Ver ranking</Link>
-            </Button>
-          </div>
-        </div>
+    <div className="flex flex-col gap-8 pb-8">
+      <section className="space-y-6">
+        <PageHeader
+          title={`Hola, ${displayName} 👋`}
+          description="Armá equipos rápido, registrá tus resultados y escalá en la comunidad."
+          size="lg"
+          action={
+            <div className="flex gap-2 w-full">
+              <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl">
+                <Link href="/me/profile">Editar perfil</Link>
+              </Button>
+              <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl">
+                <Link href="/ranking">Ver ranking</Link>
+              </Button>
+            </div>
+          }
+        />
 
         {user && user.matchesPlayed > 0 && (
-          <Link href="/ranking">
-            <UserRankingCard
-              position={user.rankingPosition}
-              score={user.rankingScore}
-              delta={user.rankingDelta}
-              level={user.level}
-            />
-          </Link>
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+            <Link href="/ranking">
+              <UserRankingCard
+                position={user.rankingPosition}
+                score={user.rankingScore}
+                delta={user.rankingDelta}
+                level={user.level}
+              />
+            </Link>
+          </div>
         )}
       </section>
 
@@ -149,45 +154,14 @@ export default async function DashboardPage() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold tracking-tight">Mis próximos turnos</h2>
-            <Button variant="link" size="sm" asChild className="text-primary">
+            <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
               <Link href="/turnos">Ver todos</Link>
             </Button>
           </div>
           <div className="grid gap-3">
-            {myTurns.map((turn) => {
-              const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "short",
-              });
-              const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-
-              return (
-                <Link key={turn.id} href={`/t/${turn.id}`}>
-                  <div className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 backdrop-blur-sm border border-border/40 transition-all hover:bg-card/80 active:scale-[0.98]">
-                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-3 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
-                      <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="truncate font-bold text-foreground">{turn.club}</p>
-                      <div className="mt-1 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {timeStr}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          {turn.players.length}/{turn.maxPlayers}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+            {myTurns.map((turn) => (
+              <TurnCard key={turn.id} turn={turn} />
+            ))}
           </div>
         </section>
       )}
@@ -222,44 +196,13 @@ export default async function DashboardPage() {
             <h2 className="text-lg font-bold tracking-tight">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
-            {recommendedTurns.map((turn) => {
-              const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "short",
-              });
-              const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-              const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel;
-
-              return (
-                <Link key={turn.id} href={`/t/${turn.id}`}>
-                  <div className="flex items-center gap-4 rounded-3xl bg-primary/5 p-4 backdrop-blur-sm border border-primary/20 transition-all hover:bg-primary/10 active:scale-[0.98]">
-                    <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/20 px-3 py-3 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
-                      <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="truncate font-bold text-foreground">{turn.club}</p>
-                      <div className="mt-1 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                        <span className="flex items-center gap-1 text-primary">
-                          <Trophy className="h-3 w-3" />
-                          {levelLabel}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          {turn.players.length}/{turn.maxPlayers}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary">
-                      Unirse
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+            {recommendedTurns.map((turn) => (
+              <TurnCard
+                key={turn.id}
+                turn={turn}
+                variant="recommended"
+              />
+            ))}
           </div>
         </section>
       )}
