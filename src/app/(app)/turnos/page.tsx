@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { prisma } from "@/lib/prisma";
 import { levelOptions } from "@/lib/mock-data";
 import Link from "next/link";
@@ -31,33 +32,18 @@ export default async function TurnsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Turnos abiertos</h1>
-          <p className="text-sm text-muted-foreground">
-            Unite a partidos de tu nivel o creá uno nuevo.
-          </p>
-        </div>
-        <Button asChild size="icon" className="rounded-full md:hidden">
-          <Link href="/turnos/nuevo">
-            <Plus className="h-5 w-5" />
-          </Link>
-        </Button>
-      </header>
-
-      <div className="hidden md:block">
-        <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm p-5">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex-1 space-y-1">
-              <CardTitle className="text-base">¿No encontrás tu partido?</CardTitle>
-              <CardDescription>Creá un turno y compartí el link con tu grupo.</CardDescription>
-            </div>
-            <Button asChild className="rounded-full px-8">
-              <Link href="/turnos/nuevo">Crear turno</Link>
-            </Button>
-          </div>
-        </Card>
-      </div>
+      <PageHeader
+        title="Turnos abiertos"
+        description="Unite a partidos de tu nivel o creá uno nuevo para compartir."
+        action={
+          <Button asChild className="w-full justify-center py-2 text-base rounded-xl shadow-sm shadow-primary/20">
+            <Link href="/turnos/nuevo">
+              <Plus className="mr-2 h-5 w-5" />
+              Crear turno
+            </Link>
+          </Button>
+        }
+      />
 
       <div className="grid gap-4">
         {turns.length > 0 ? (
@@ -74,18 +60,18 @@ export default async function TurnsPage() {
 
             return (
               <Link key={turn.id} href={`/t/${turn.id}`}>
-                <Card className="overflow-hidden rounded-3xl border-none bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98]">
+                <Card className="overflow-hidden rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98]">
                   <CardContent className="p-0">
                     <div className="flex">
-                      <div className="flex flex-col items-center justify-center bg-primary/10 px-4 py-4 text-primary">
-                        <span className="text-xs font-bold uppercase">{dateStr.split(" ")[1]}</span>
-                        <span className="text-2xl font-black">{dateStr.split(" ")[0]}</span>
+                      <div className="flex flex-col items-center justify-center bg-primary/10 px-4 py-4 text-primary min-w-[70px]">
+                        <span className="text-[10px] font-black uppercase tracking-widest leading-none">{dateStr.split(" ")[1]}</span>
+                        <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
                       </div>
                       <div className="flex flex-1 flex-col justify-center p-4">
                         <div className="flex items-start justify-between">
                           <div>
                             <h3 className="font-bold text-foreground">{turn.club}</h3>
-                            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 {timeStr}
@@ -123,14 +109,6 @@ export default async function TurnsPage() {
             }
           />
         )}
-      </div>
-
-      <div className="fixed bottom-24 right-5 md:hidden">
-        <Button asChild size="lg" className="h-14 w-14 rounded-full shadow-2xl">
-          <Link href="/turnos/nuevo">
-            <Plus className="h-6 w-6" />
-          </Link>
-        </Button>
       </div>
     </div>
   );

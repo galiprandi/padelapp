@@ -168,7 +168,7 @@ export default async function DashboardPage() {
                 <Link key={turn.id} href={`/t/${turn.id}`}>
                   <div className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 backdrop-blur-sm border border-border/40 transition-all hover:bg-card/80 active:scale-[0.98]">
                     <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 px-3 py-3 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest leading-none">{dateStr.split(" ")[1]}</span>
                       <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
                     </div>
                     <div className="flex-1 overflow-hidden">
@@ -237,7 +237,7 @@ export default async function DashboardPage() {
                 <Link key={turn.id} href={`/t/${turn.id}`}>
                   <div className="flex items-center gap-4 rounded-3xl bg-primary/5 p-4 backdrop-blur-sm border border-primary/20 transition-all hover:bg-primary/10 active:scale-[0.98]">
                     <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/20 px-3 py-3 text-primary min-w-[60px]">
-                      <span className="text-[10px] font-black uppercase leading-none">{dateStr.split(" ")[1]}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest leading-none">{dateStr.split(" ")[1]}</span>
                       <span className="text-2xl font-black leading-none mt-1">{dateStr.split(" ")[0]}</span>
                     </div>
                     <div className="flex-1 overflow-hidden">

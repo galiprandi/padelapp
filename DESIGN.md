@@ -6,7 +6,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Rounded-xl**: Utilizado para componentes base como contenedores de jugadores y campos de entrada de formularios.
 - **Rounded-3xl**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic".
 - **Backdrop-blur-sm**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`.
-- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
+- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`). Se utiliza de forma sistemática en fechas, estados, y contadores para dar una estética técnica y limpia.
 
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
