@@ -161,6 +161,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/profile/profile-form.tsx`
   - `src/app/(app)/me/actions.ts`
 
+### ✅ Pulido UI de Dashboard y Turnos
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Unificación de cabeceras usando el componente `PageHeader` en Dashboard y Turnos.
+  - Creación del componente reutilizable `TurnCard` para eliminar duplicación de lógica visual.
+  - Refinamiento de badges de estado en `MatchResultCompact` con mejor legibilidad y alineación al palette.
+  - Estandarización de espaciado vertical (`gap-8`) en el dashboard principal.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
