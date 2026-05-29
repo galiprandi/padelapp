@@ -4,7 +4,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 
 ## 1. Patrones de UI
 - **Rounded-xl**: Utilizado para componentes base como contenedores de jugadores y campos de entrada de formularios.
-- **Rounded-3xl**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic".
+- **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`.
 - **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
 

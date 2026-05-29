@@ -11,6 +11,10 @@ import {
 } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { JoinSlotButton } from "./join-slot-button";
+import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, UserCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const MATCH_STATUS = {
   PENDING: "PENDING",
@@ -115,53 +119,49 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-6 px-5 py-10">
-      <header className="space-y-2 text-center">
-        <p className="text-xs font-medium uppercase tracking-wide text-primary">Invitación directa</p>
-        <h1 className="text-2xl font-semibold text-foreground">Unite como {teamLabel}</h1>
-        <p className="text-sm text-muted-foreground">
-          {match.creator.displayName} te compartió este enlace para completar el equipo.
-        </p>
-      </header>
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-8 px-5 py-10 pb-32">
+      <PageHeader
+        title={`Invitación a jugar`}
+        align="center"
+        description={
+          <span className="flex flex-col items-center gap-1">
+             <span className="text-xs font-black uppercase tracking-widest text-primary">Invitación directa</span>
+             <span className="text-sm text-muted-foreground text-center">
+              {match.creator.displayName} te invitó a sumarte como <span className="font-bold text-foreground underline decoration-primary decoration-2 underline-offset-2">{teamLabel}</span>.
+             </span>
+          </span>
+        }
+      />
 
-      <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle>Detalle del partido</CardTitle>
-          <CardDescription>Confirmá que los datos sean correctos antes de sumarte.</CardDescription>
+      <Card className="rounded-3xl border-border/40 bg-card/50 shadow-xl backdrop-blur-md overflow-hidden">
+        <CardHeader className="pb-4 pt-6 border-b border-border/40 bg-muted/20">
+          <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/80">Detalle del partido</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Organizador</span>
-            <span className="font-medium text-foreground">{match.creator.displayName}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Estado</span>
-            <span className="rounded-md bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-              {formatStatus(match.status)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Sets</span>
-            <span className="font-medium text-foreground">{match.sets}</span>
-          </div>
-          {match.club ? (
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Club</span>
-              <span className="font-medium text-foreground">{match.club}</span>
+        <CardContent className="p-6 space-y-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="space-y-1">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Organizador</p>
+              <p className="font-bold">{match.creator.displayName}</p>
             </div>
-          ) : null}
-          {match.courtNumber ? (
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">N° de cancha</span>
-              <span className="font-medium text-foreground">{match.courtNumber}</span>
+            <div className="space-y-1">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Estado</p>
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[8px] font-bold tracking-widest">
+                {formatStatus(match.status)}
+              </Badge>
             </div>
-          ) : null}
+            {match.club && (
+              <div className="col-span-2 space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Club / Cancha</p>
+                <p className="font-bold">{match.club} {match.courtNumber ? `(Cancha ${match.courtNumber})` : ''}</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">Jugadores</h2>
-        <div className="grid gap-3">
+      <section className="space-y-4">
+        <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 px-1">Formación actual</h2>
+        <div className="grid gap-4">
           {(["A", "B"] as const).map((key) => {
             const slots = teamGroups[key];
             if (slots.length === 0) {
@@ -170,23 +170,33 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             const label = slots[0]?.team?.label ?? defaultTeamLabel(key, totalPlayers);
 
             return (
-              <div key={key} className="space-y-2 rounded-xl border border-border/60 bg-muted/20 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
-                <div className="space-y-2">
+              <div key={key} className="space-y-3 rounded-3xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 border-b border-border/40 pb-1">{label}</p>
+                <div className="space-y-3">
                   {slots.map((slot) => {
                     const name = slot.user?.displayName ?? slot.displayName ?? `Jugador ${slot.position + 1}`;
-                    const status = slot.userId ? (slot.resultConfirmed ? "Confirmado" : "Pendiente") : "Libre";
+                    const isOccupied = Boolean(slot.userId);
+                    const isViewer = slot.userId === viewerId;
 
                     return (
-                      <div key={slot.id} className="flex items-center gap-3 rounded-md border border-border/60 bg-background/80 px-3 py-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-xs font-semibold text-primary">
+                      <div key={slot.id} className={cn(
+                        "flex items-center gap-3 rounded-2xl border px-3 py-2 transition-all",
+                        isViewer ? "bg-primary/10 border-primary/30" : "bg-background/50 border-border/40"
+                      )}>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-xs font-black text-primary shadow-inner">
                           {initials(name)}
                         </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-foreground">{name}</p>
-                          <p className="text-xs text-muted-foreground">Jugador {slot.position + 1}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className={cn("text-sm font-bold truncate", isOccupied ? "text-foreground" : "text-muted-foreground/60 italic")}>
+                            {name}
+                          </p>
+                          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50">Jugador {slot.position + 1}</p>
                         </div>
-                        <span className="text-xs font-semibold text-muted-foreground">{status}</span>
+                        {isOccupied && (
+                          <Badge variant="outline" className="text-[8px] uppercase font-black tracking-widest border-emerald-500/30 text-emerald-600 bg-emerald-500/5">
+                            {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
+                          </Badge>
+                        )}
                       </div>
                     );
                   })}
@@ -197,53 +207,57 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
         </div>
       </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tu cupo</CardTitle>
-          <CardDescription>Este acceso es único. Al confirmar, tu nombre figurará como {teamLabel}.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="flex items-center justify-between rounded-md border border-border/60 bg-muted/20 px-3 py-2">
-            <div>
-              <p className="font-semibold text-foreground">{slotName}</p>
-              <p className="text-xs text-muted-foreground">Jugador {player.position + 1}</p>
-            </div>
-            <span className="text-xs font-semibold text-muted-foreground">
-              {slotTaken ? (slotTakenByViewer ? "Tu lugar" : "Ocupado") : "Libre"}
-            </span>
-          </div>
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+        <div className="max-w-md mx-auto pointer-events-auto">
+          <Card className="rounded-[2rem] border-primary/20 bg-card/80 shadow-2xl backdrop-blur-xl border-2 overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-500">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                  <UserCheck className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60 leading-none">Te unirás como</p>
+                  <p className="text-xl font-black text-foreground">{teamLabel}</p>
+                </div>
+              </div>
 
-          {helperMessage ? <p className="text-xs text-destructive">{helperMessage}</p> : null}
-          {!session?.user ? (
-            <Button asChild className="w-full">
-              <Link href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}>
-                Iniciar sesión con Google
-              </Link>
-            </Button>
-          ) : slotTakenByViewer ? (
-            <Button asChild variant="secondary" className="w-full">
-              <Link href={`/match/${match.id}`}>Ya confirmaste · Ver partido</Link>
-            </Button>
-          ) : (
-            <JoinSlotButton
-              playerId={player.id}
-              matchId={match.id}
-              disabled={joinDisabled}
-              redirectOnSuccess={`/match/${match.id}`}
-            />
-          )}
+              {helperMessage && (
+                <div className="flex items-center gap-2 rounded-xl bg-destructive/10 p-3 text-destructive border border-destructive/20">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <p className="text-xs font-bold leading-tight">{helperMessage}</p>
+                </div>
+              )}
 
-          <Button asChild variant="ghost" className="w-full">
-            <Link href={`/match/${match.id}`}>Ver detalles del partido</Link>
-          </Button>
+              <div className="space-y-3">
+                {!session?.user ? (
+                  <Button asChild className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl shadow-primary/20" size="lg">
+                    <Link href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}>
+                      Continuar con Google
+                    </Link>
+                  </Button>
+                ) : slotTakenByViewer ? (
+                  <Button asChild variant="secondary" className="w-full rounded-2xl h-14 text-lg font-bold" size="lg">
+                    <Link href={`/match/${match.id}`}>Ya estás unido · Ver partido</Link>
+                  </Button>
+                ) : (
+                  <JoinSlotButton
+                    playerId={player.id}
+                    matchId={match.id}
+                    disabled={joinDisabled}
+                    redirectOnSuccess={`/match/${match.id}`}
+                  />
+                )}
 
-          {isOwner ? (
-            <p className="text-xs text-muted-foreground">
-              Sos el organizador. Podés liberar este cupo desde la vista completa del partido.
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+                <div className="flex flex-col gap-2 pt-1">
+                   <Link href={`/match/${match.id}`} className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+                    Ver todos los detalles
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
