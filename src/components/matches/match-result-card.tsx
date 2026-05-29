@@ -88,6 +88,8 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
   const totalSets = Math.max(scoresMatrix[0].length, scoresMatrix[1].length);
   const setWins = [0, 0];
 
+  const matchHasResult = parsedSets.length > 0;
+
   parsedSets.forEach(([teamAScore, teamBScore]) => {
     if (teamAScore > teamBScore) {
       setWins[0] += 1;
@@ -96,7 +98,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     }
   });
 
-  const winnerIndex = setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
+  const winnerIndex = !matchHasResult ? undefined : (setWins[0] === setWins[1] ? undefined : (setWins[0] > setWins[1] ? 0 : 1));
 
   const sortedPlayers = [...match.players].sort((a, b) => a.position - b.position);
   const teamsPlayers = [
@@ -216,7 +218,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                         segmentClass = "bg-primary text-primary-foreground shadow-sm border-primary";
                       } else if (isDraw) {
                         segmentClass = "bg-muted text-foreground border-border/20";
-                      } else if (team.isWinner === false) {
+                      } else if (winnerIndex !== undefined && teamIndex !== winnerIndex) {
                         segmentClass = "bg-muted/20 text-muted-foreground/60 border-transparent";
                       } else {
                         segmentClass = "bg-muted text-foreground border-border/20";

@@ -161,18 +161,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/profile/profile-form.tsx`
   - `src/app/(app)/me/actions.ts`
 
-### ✅ Pulido UI de Dashboard y Turnos
+### ✅ Dashboard Evolucionado y Priorización de Acciones
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Unificación de cabeceras usando el componente `PageHeader` en Dashboard y Turnos.
-  - Creación del componente reutilizable `TurnCard` para eliminar duplicación de lógica visual.
-  - Refinamiento de badges de estado en `MatchResultCompact` con mejor legibilidad y alineación al palette.
-  - Estandarización de espaciado vertical (`gap-8`) en el dashboard principal.
+  - Nueva sección "Acciones pendientes" que prioriza partidos sin resultado o por confirmar.
+  - Unificación de "Mi Agenda" integrando Turnos y Partidos cronológicamente.
+  - Soporte de campo `date` en el modelo `Match` para programación precisa fuera de turnos.
+  - Refactor de fetching en Dashboard para categorizar contenido por relevancia y temporalidad.
 - **Archivos relacionados**:
-  - `src/components/turns/turn-card.tsx`
   - `src/app/(app)/me/page.tsx`
-  - `src/app/(app)/turnos/page.tsx`
-  - `src/components/matches/match-result-card.tsx`
+  - `prisma/schema.prisma`
+  - `src/app/(app)/match/actions.ts`
+  - `src/app/(app)/turnos/actions.ts`
 
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.

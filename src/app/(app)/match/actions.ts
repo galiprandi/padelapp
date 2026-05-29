@@ -53,6 +53,7 @@ export interface CreateMatchInput {
   courtNumber?: string | null;
   notes?: string | null;
   score?: string | null;
+  date?: string | null;
   turnId?: string | null;
   slots: SlotPayload[];
 }
@@ -240,6 +241,7 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
           courtNumber: input.courtNumber?.trim() || null,
           notes: input.notes?.trim() || null,
           score: input.score?.trim() || null,
+          date: input.date ? new Date(input.date) : new Date(),
           turnId: input.turnId || null,
           players: {
             create: normalizedSlots.map((slot) => ({

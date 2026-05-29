@@ -17,12 +17,12 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Match Confirmation Flow**: Los partidos con resultado pendiente de confirmación muestran un banner de "Confirmación pendiente" con indicadores individuales (`CheckCircle2` para confirmados, `Clock` para pendientes) para incentivar el cierre del partido y el impacto en el ranking.
 
 ## 3. Arquitectura de Datos
-- **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
+- **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` incluye campos de cache para ranking. El modelo `Match` incluye un campo `date` para permitir una agenda cronológica precisa.
 - **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
 
 ## 4. Integración de Flujos (Turnos -> Partidos)
 - **Turnos como Lead**: Los turnos abiertos actúan como el embudo principal de jugadores.
-- **Conversión Automática**: Al completar un turno (4 jugadores), el organizador puede disparar `convertTurnToMatchAction`, que hereda el club, los jugadores y las posiciones, marcando el turno como `COMPLETED`.
+- **Conversión Automática**: Al completar un turno (4 jugadores), el organizador puede disparar `convertTurnToMatchAction`, que hereda el club, la fecha (`Turn.date`), los jugadores y las posiciones, marcando el turno como `COMPLETED`.
 - **Pre-llenado de Formulario**: El hook `useMatchForm` soporta la inicialización mediante `turnId` para mantener la flexibilidad si se desea ajustar el partido antes de crearlo.
 
 ## 5. Sistema de Ranking (V1)

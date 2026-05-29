@@ -82,6 +82,7 @@ model Match {
   courtNumber String?
   score       String?
   notes       String?
+  date        DateTime     @default(now())
   turnId      String?
   turn        Turn?        @relation(fields: [turnId], references: [id])
   createdAt   DateTime     @default(now())
