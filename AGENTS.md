@@ -161,18 +161,21 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/profile/profile-form.tsx`
   - `src/app/(app)/me/actions.ts`
 
-### ✅ Pulido UI de Dashboard y Turnos
+### ✅ Pulido UI de Dashboard, Turnos y Vistas Públicas
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Unificación de cabeceras usando el componente `PageHeader` en Dashboard y Turnos.
+  - Refactor de la página de Login con estética "bubble" y branding mejorado.
+  - Rediseño de vistas públicas (Detalle de Turno e Invitación Directa) usando `PageHeader`, `rounded-3xl` y glassmorphism.
+  - Mejora de la jerarquía visual en el Detalle de Partido, con badges de estado y sección de confirmación refinadas.
+  - Unificación de cabeceras usando el componente `PageHeader` en Dashboard, Turnos y Ranking.
   - Creación del componente reutilizable `TurnCard` para eliminar duplicación de lógica visual.
-  - Refinamiento de badges de estado en `MatchResultCompact` con mejor legibilidad y alineación al palette.
-  - Estandarización de espaciado vertical (`gap-8`) en el dashboard principal.
+  - Estandarización de botones (`rounded-xl`) y contenedores (`rounded-[2.5rem]`) en flujos críticos.
 - **Archivos relacionados**:
-  - `src/components/turns/turn-card.tsx`
-  - `src/app/(app)/me/page.tsx`
-  - `src/app/(app)/turnos/page.tsx`
-  - `src/components/matches/match-result-card.tsx`
+  - `src/app/login/page.tsx`
+  - `src/app/t/[id]/page.tsx`
+  - `src/app/j/[playerId]/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/app/(app)/ranking/page.tsx`
 
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
