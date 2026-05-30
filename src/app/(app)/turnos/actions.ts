@@ -218,6 +218,7 @@ export async function convertTurnToMatchAction(turnId: string) {
         data: {
           creatorId: session.user.id,
           club: turn.club,
+          date: turn.date,
           status: "PENDING",
           sets: 3,
           matchType: "FRIENDLY",

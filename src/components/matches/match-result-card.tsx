@@ -136,6 +136,11 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     match.score &&
     match.players.some(p => p.user?.id === viewerId);
 
+  const needsScore = viewerId &&
+    match.status !== "CONFIRMED" &&
+    !match.score &&
+    match.players.some(p => p.user?.id === viewerId);
+
   const statusClassName = (() => {
     if (needsConfirmation) {
       return "bg-primary text-primary-foreground border-primary animate-pulse shadow-sm shadow-primary/20";
@@ -159,14 +164,26 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest", statusClassName)}>
-                    {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
+                    {needsConfirmation ? "Confirmar resultado" : needsScore ? "Cargar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>
                 </div>
                 {matchDetailUrl ? (
-                  <Link href={matchDetailUrl} className="text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
-                    Detalle
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    {needsConfirmation && (
+                      <Link href={matchDetailUrl} className="rounded-lg bg-primary px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95">
+                        Confirmar
+                      </Link>
+                    )}
+                    {needsScore && (
+                      <Link href={`${matchDetailUrl}/result`} className="rounded-lg bg-primary px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary-foreground shadow-sm transition-all hover:scale-105 active:scale-95">
+                        Cargar
+                      </Link>
+                    )}
+                    <Link href={matchDetailUrl} className="text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
+                      Detalle
+                    </Link>
+                  </div>
                 ) : null}
               </div>
             )

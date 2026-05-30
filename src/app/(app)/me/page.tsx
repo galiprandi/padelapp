@@ -7,13 +7,13 @@ import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy } from "lucide-react";
-import { levelOptions } from "@/lib/mock-data";
+import { CalendarDays, Trophy, AlertCircle, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
-async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
-  const matches = await prisma.match.findMany({
+async function getEnhancedUserMatches(userId: string) {
+  const allMatches = await prisma.match.findMany({
     where: {
-      status: statusFilter,
       players: {
         some: { userId },
       },
@@ -26,27 +26,19 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
       },
     },
     orderBy: {
-      updatedAt: "desc",
+      date: "desc",
     },
-    take: 10,
+    take: 20,
   });
 
-  return matches.map<MatchResultCompactMatch>((match) => ({
+  const formattedMatches = allMatches.map<MatchResultCompactMatch & { date: Date; playersRaw: any[] }>((match) => ({
     id: match.id,
-    createdAt: match.updatedAt ?? match.createdAt,
+    createdAt: match.createdAt,
+    date: match.date,
     score: match.score,
     status: match.status,
-    players: match.players.map((player: {
-      id: string;
-      position: number;
-      displayName: string | null;
-      user: {
-        id: string;
-        displayName: string | null;
-        alias?: string | null;
-        image: string | null;
-      } | null;
-    }) => {
+    playersRaw: match.players,
+    players: match.players.map((player) => {
       const preferredName = player.user && "alias" in player.user && player.user.alias
         ? player.user.alias
         : player.user?.displayName;
@@ -64,58 +56,92 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
       };
     }),
   }));
+
+  const now = new Date();
+
+  const pendingAction = formattedMatches.filter(m => {
+    if (m.status === "CONFIRMED") return false;
+
+    const userPlayer = m.playersRaw.find(p => p.userId === userId);
+    const isPast = m.date < now;
+    const needsScore = !m.score && isPast;
+    const needsConfirmation = m.score && userPlayer && !userPlayer.resultConfirmed;
+
+    return needsScore || needsConfirmation;
+  }).sort((a, b) => {
+    const userPlayerA = a.playersRaw.find(p => p.userId === userId);
+    const userPlayerB = b.playersRaw.find(p => p.userId === userId);
+    const aNeedsConfirmation = a.score && userPlayerA && !userPlayerA.resultConfirmed;
+    const bNeedsConfirmation = b.score && userPlayerB && !userPlayerB.resultConfirmed;
+
+    if (aNeedsConfirmation && !bNeedsConfirmation) return -1;
+    if (!aNeedsConfirmation && bNeedsConfirmation) return 1;
+    return a.date.getTime() - b.date.getTime();
+  });
+
+  const upcoming = formattedMatches.filter(m => m.date >= now);
+
+  const recent = formattedMatches
+    .filter(m => m.date < now && !pendingAction.find(p => p.id === m.id))
+    .slice(0, 5);
+
+  return { pendingAction, upcoming, recent };
 }
 
 export default async function DashboardPage() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const [user, upcomingMatches, recentMatches] = viewerId
-    ? await Promise.all([
-        prisma.user.findUnique({
-          where: { id: viewerId },
-          select: {
-            displayName: true,
-            alias: true,
-            rankingScore: true,
-            rankingPosition: true,
-            rankingDelta: true,
-            level: true,
-            matchesPlayed: true,
-          },
-        }),
-        getUserMatches(viewerId, "PENDING"),
-        getUserMatches(viewerId, "CONFIRMED"),
-      ])
-    : [null, [], []];
+  if (!viewerId) {
+    return redirect("/login");
+  }
 
+  const [user, matchesData] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: viewerId },
+      select: {
+        displayName: true,
+        alias: true,
+        rankingScore: true,
+        rankingPosition: true,
+        rankingDelta: true,
+        level: true,
+        matchesPlayed: true,
+      },
+    }),
+    getEnhancedUserMatches(viewerId),
+  ]);
+
+  const { pendingAction, upcoming, recent } = matchesData;
   const displayName = user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
 
-  const myTurns = viewerId
-    ? await prisma.turn.findMany({
-        where: {
-          players: { some: { userId: viewerId } },
-          date: { gte: new Date() },
-          status: { in: ["OPEN", "FULL"] },
-        },
-        include: { players: true },
-        orderBy: { date: "asc" },
-        take: 3,
-      })
-    : [];
+  const myTurns = await prisma.turn.findMany({
+    where: {
+      players: { some: { userId: viewerId } },
+      date: { gte: new Date() },
+      status: { in: ["OPEN", "FULL"] },
+    },
+    include: { players: true },
+    orderBy: { date: "asc" },
+    take: 5,
+  });
 
-  const recommendedTurns = viewerId
-    ? await prisma.turn.findMany({
-        where: {
-          players: { none: { userId: viewerId } },
-          date: { gte: new Date() },
-          status: "OPEN",
-        },
-        include: { players: true },
-        orderBy: { date: "asc" },
-        take: 3,
-      })
-    : [];
+  const recommendedTurns = await prisma.turn.findMany({
+    where: {
+      players: { none: { userId: viewerId } },
+      date: { gte: new Date() },
+      status: "OPEN",
+    },
+    include: { players: true },
+    orderBy: { date: "asc" },
+    take: 3,
+  });
+
+  // Consolidate Agenda
+  const agendaItems = [
+    ...myTurns.map(t => ({ type: 'turn' as const, date: new Date(t.date), data: t })),
+    ...upcoming.map(m => ({ type: 'match' as const, date: new Date(m.date), data: m }))
+  ].sort((a, b) => a.date.getTime() - b.date.getTime());
 
   return (
     <div className="flex flex-col gap-8 pb-8">
@@ -150,40 +176,66 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {myTurns.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold tracking-tight">Mis próximos turnos</h2>
-            <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
-              <Link href="/turnos">Ver todos</Link>
-            </Button>
+      {pendingAction.length > 0 && (
+        <section className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-2 px-1">
+            <AlertCircle className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-bold tracking-tight">Acciones pendientes</h2>
           </div>
           <div className="grid gap-3">
-            {myTurns.map((turn) => (
-              <TurnCard key={turn.id} turn={turn} />
+            {pendingAction.map((match) => (
+              <MatchResultCompact
+                key={match.id}
+                match={match}
+                matchDate={match.date}
+                detailUrl={`/match/${match.id}`}
+                label={!match.score ? "Cargar resultado" : "Confirmar resultado"}
+              />
             ))}
           </div>
         </section>
       )}
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight">Próximos partidos</h2>
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-bold tracking-tight">Mi Agenda</h2>
+          </div>
+          <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
+            <Link href="/turnos">Explorar turnos</Link>
+          </Button>
         </div>
+
         <div className="grid gap-3">
-          {viewerId && upcomingMatches.length > 0 ? (
-            upcomingMatches.map((match) => (
-              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} label="Pendiente" />
+          {agendaItems.length > 0 ? (
+            agendaItems.map((item, idx) => (
+              item.type === 'turn' ? (
+                <TurnCard key={`turn-${item.data.id}`} turn={item.data} />
+              ) : (
+                <MatchResultCompact
+                  key={`match-${item.data.id}`}
+                  match={item.data}
+                  matchDate={item.data.date}
+                  detailUrl={`/match/${item.data.id}`}
+                  label="Partido"
+                />
+              )
             ))
           ) : (
             <EmptyState
               icon={CalendarDays}
-              title="Sin partidos agendados"
-              description="Agendá un partido para coordinar jugadores y confirmar horarios."
+              title="Tu agenda está vacía"
+              description="Sumate a un turno abierto o creá un partido con amigos."
               action={
-                <Button className="w-full" asChild>
-                  <Link href="/match/new">Crear partido</Link>
-                </Button>
+                <div className="flex flex-col gap-2 w-full">
+                  <Button className="w-full rounded-xl" asChild>
+                    <Link href="/turnos">Ver turnos disponibles</Link>
+                  </Button>
+                  <Button className="w-full rounded-xl" variant="outline" asChild>
+                    <Link href="/match/new">Crear partido</Link>
+                  </Button>
+                </div>
               }
             />
           )}
@@ -192,7 +244,7 @@ export default async function DashboardPage() {
 
       {recommendedTurns.length > 0 && (
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between px-1">
             <h2 className="text-lg font-bold tracking-tight">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
@@ -207,29 +259,23 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight">Últimos partidos</h2>
-        </div>
-        <div className="space-y-3">
-          {viewerId && recentMatches.length > 0 ? (
-            recentMatches.map((match) => (
-              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
-            ))
-          ) : (
-            <EmptyState
-              icon={Trophy}
-              title="Sin resultados todavía"
-              description="Cuando registres un marcador, vas a verlo acá para compartirlo."
-              action={
-                <Button className="w-full" variant="secondary" asChild>
-                  <Link href="/match">Ver partidos</Link>
-                </Button>
-              }
-            />
-          )}
-        </div>
-      </section>
+      {recent.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-lg font-bold tracking-tight">Últimos resultados</h2>
+          </div>
+          <div className="space-y-3">
+            {recent.map((match) => (
+              <MatchResultCompact
+                key={match.id}
+                match={match}
+                matchDate={match.date}
+                detailUrl={`/match/${match.id}`}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

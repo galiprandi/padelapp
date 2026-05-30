@@ -177,6 +177,20 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `src/app/(app)/ranking/page.tsx`
 
+### ✅ Consolidación de Core y UX Profunda
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Integración de "Turnos" en navegación principal y Dashboard con agenda unificada cronológicamente.
+  - Sección "Acciones pendientes" optimizada con botones CTA directos ("Cargar", "Confirmar") y priorización de tareas críticas.
+  - Mejora en `TurnCard` con insignias de "Organizador" y botón de compartir integrado para optimizar la distribución de links.
+  - Soporte de campo `date` en el modelo `Match` y propagación automática desde el flujo de Turnos.
+  - Fetching de partidos en Dashboard limitado (`take: 20`) para prevenir degradación de performance.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/components/turns/turn-card.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `src/components/navigation/bottom-nav.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
