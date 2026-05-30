@@ -8,7 +8,6 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy } from "lucide-react";
-import { levelOptions } from "@/lib/mock-data";
 
 async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
@@ -117,12 +116,28 @@ export default async function DashboardPage() {
       })
     : [];
 
+  // Consolidar agenda: turnos y partidos pendientes
+  const agendaItems = [
+    ...myTurns.map((turn) => ({
+      id: turn.id,
+      type: "turn" as const,
+      date: new Date(turn.date),
+      data: turn,
+    })),
+    ...upcomingMatches.map((match) => ({
+      id: match.id,
+      type: "match" as const,
+      date: new Date(match.createdAt), // En el MVP, usamos createdAt como fecha de referencia si no hay campo date
+      data: match,
+    })),
+  ].sort((a, b) => a.date.getTime() - b.date.getTime());
+
   return (
-    <div className="flex flex-col gap-8 pb-8">
+    <div className="flex flex-col gap-12 pb-8">
       <section className="space-y-6">
         <PageHeader
           title={`Hola, ${displayName} 👋`}
-          description="Armá equipos rápido, registrá tus resultados y escalá en la comunidad."
+          description="Tu actividad central: turnos, partidos y progreso en el ranking."
           size="lg"
           action={
             <div className="flex gap-2 w-full">
@@ -150,39 +165,35 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {myTurns.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold tracking-tight">Mis próximos turnos</h2>
-            <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
-              <Link href="/turnos">Ver todos</Link>
-            </Button>
-          </div>
-          <div className="grid gap-3">
-            {myTurns.map((turn) => (
-              <TurnCard key={turn.id} turn={turn} />
-            ))}
-          </div>
-        </section>
-      )}
-
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight">Próximos partidos</h2>
+          <h2 className="text-lg font-bold tracking-tight">Mi Agenda</h2>
+          <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
+            <Link href="/turnos">Ver turnos</Link>
+          </Button>
         </div>
         <div className="grid gap-3">
-          {viewerId && upcomingMatches.length > 0 ? (
-            upcomingMatches.map((match) => (
-              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} label="Pendiente" />
+          {agendaItems.length > 0 ? (
+            agendaItems.map((item) => (
+              item.type === "turn" ? (
+                <TurnCard key={item.id} turn={item.data} />
+              ) : (
+                <MatchResultCompact
+                  key={item.id}
+                  match={item.data as MatchResultCompactMatch}
+                  detailUrl={`/match/${item.id}`}
+                  label="Partido"
+                />
+              )
             ))
           ) : (
             <EmptyState
               icon={CalendarDays}
-              title="Sin partidos agendados"
-              description="Agendá un partido para coordinar jugadores y confirmar horarios."
+              title="Tu agenda está vacía"
+              description="Sumate a un turno abierto o creá un partido con amigos para empezar."
               action={
-                <Button className="w-full" asChild>
-                  <Link href="/match/new">Crear partido</Link>
+                <Button className="w-full rounded-xl" asChild>
+                  <Link href="/turnos">Explorar turnos</Link>
                 </Button>
               }
             />
@@ -209,7 +220,7 @@ export default async function DashboardPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight">Últimos partidos</h2>
+          <h2 className="text-lg font-bold tracking-tight">Últimos resultados</h2>
         </div>
         <div className="space-y-3">
           {viewerId && recentMatches.length > 0 ? (
@@ -222,7 +233,7 @@ export default async function DashboardPage() {
               title="Sin resultados todavía"
               description="Cuando registres un marcador, vas a verlo acá para compartirlo."
               action={
-                <Button className="w-full" variant="secondary" asChild>
+                <Button className="w-full rounded-xl" variant="secondary" asChild>
                   <Link href="/match">Ver partidos</Link>
                 </Button>
               }
