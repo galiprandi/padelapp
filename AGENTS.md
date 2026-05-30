@@ -47,6 +47,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 4. Establecer linting, formatos y scripts de build/deploy.
 
 ## 6.1. Estado actual del desarrollo
+
+### ✅ Refinamiento Estético y Dashboard (Mi Agenda)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Unificación de próximos turnos y partidos en la sección "Mi Agenda" con orden cronológico.
+  - Refactor del componente `EmptyState` con bordes sólidos, `bg-card/50` y padding optimizado.
+  - Pulido de `MatchResultCard` con celdas de puntuación cuadradas perfectas y jerarquía de ganadores mejorada.
+  - Ajuste de jerarquía visual en Dashboard con `gap-12` y descripciones de cabecera más concisas.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/components/empty-state.tsx`
+  - `src/components/matches/match-result-card.tsx`
+
 ### ✅ Página de resultados de partidos (`/match/[matchId]/result`)
 - **Estado**: Implementada y funcional
 - **Funcionalidades**:

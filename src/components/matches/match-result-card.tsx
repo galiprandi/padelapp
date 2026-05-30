@@ -15,7 +15,7 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80">
+    <div className="relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 shadow-sm overflow-hidden">
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm">
         {label}
       </span>
@@ -138,7 +138,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
 
   const statusClassName = (() => {
     if (needsConfirmation) {
-      return "bg-primary text-primary-foreground border-primary animate-pulse shadow-sm shadow-primary/20";
+      return "bg-primary text-primary-foreground border-primary animate-pulse shadow-sm shadow-primary/40";
     }
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
@@ -158,7 +158,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           ? (
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest", statusClassName)}>
+                  <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest transition-all", statusClassName)}>
                     {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>
@@ -194,9 +194,9 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   ))}
                 </div>
 
-                <div className="flex flex-col text-sm font-medium text-foreground">
+                <div className="flex flex-col text-sm font-medium text-foreground min-w-0">
                   {team.players.map((player) => (
-                    <span key={`team-${team.id}-name-${player.id}`}>{player.name}</span>
+                    <span key={`team-${team.id}-name-${player.id}`} className="truncate">{player.name}</span>
                   ))}
                 </div>
 
@@ -229,7 +229,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
                         className={cn(
-                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-colors",
+                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-all",
                           segmentClass
                         )}
                       >
@@ -240,7 +240,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                 </div>
               </div>
 
-              {!isLastTeam ? <div className="mx-auto h-px w-[30%] bg-border" aria-hidden /> : null}
+              {!isLastTeam ? <div className="mx-auto h-px w-[20%] bg-border/40" aria-hidden /> : null}
             </Fragment>
           );
         })}
