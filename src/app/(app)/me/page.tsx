@@ -25,16 +25,17 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
       },
     },
     orderBy: {
-      updatedAt: "desc",
+      date: "asc",
     },
     take: 10,
   });
 
   return matches.map<MatchResultCompactMatch>((match) => ({
     id: match.id,
-    createdAt: match.updatedAt ?? match.createdAt,
+    createdAt: match.date,
     score: match.score,
     status: match.status,
+    date: match.date,
     players: match.players.map((player: {
       id: string;
       position: number;
@@ -127,7 +128,7 @@ export default async function DashboardPage() {
     ...upcomingMatches.map((match) => ({
       id: match.id,
       type: "match" as const,
-      date: new Date(match.createdAt), // En el MVP, usamos createdAt como fecha de referencia si no hay campo date
+      date: new Date(match.date ?? match.createdAt),
       data: match,
     })),
   ].sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -176,7 +177,11 @@ export default async function DashboardPage() {
           {agendaItems.length > 0 ? (
             agendaItems.map((item) => (
               item.type === "turn" ? (
-                <TurnCard key={item.id} turn={item.data} />
+                <TurnCard
+                  key={item.id}
+                  turn={item.data}
+                  isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
+                />
               ) : (
                 <MatchResultCompact
                   key={item.id}
@@ -212,6 +217,7 @@ export default async function DashboardPage() {
                 key={turn.id}
                 turn={turn}
                 variant="recommended"
+                isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
               />
             ))}
           </div>

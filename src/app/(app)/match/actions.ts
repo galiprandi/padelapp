@@ -44,6 +44,7 @@ type MatchType = (typeof MATCH_TYPE)[keyof typeof MATCH_TYPE];
 
 export interface CreateMatchInput {
   matchId?: string;
+  date?: string; // ISO string
   sets: number;
   matchType: MatchType;
   countsForRanking: boolean;
@@ -234,6 +235,7 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
         data: {
           creatorId: session.user.id,
           status: MATCH_STATUS.PENDING,
+          date: input.date ? new Date(input.date) : new Date(),
           sets: input.sets,
           matchType: input.matchType,
           club: input.club?.trim() || null,

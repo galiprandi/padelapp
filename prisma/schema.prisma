@@ -71,6 +71,7 @@ model Match {
   id          String        @id @default(cuid())
   creatorId   String
   status      MatchStatus   @default(PENDING)
+  date        DateTime      @default(now())
   sets        Int           @default(2)
   matchType   MatchType     @default(FRIENDLY)
   club        String?
