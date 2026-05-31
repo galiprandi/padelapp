@@ -182,7 +182,7 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - **Funcionalidades**:
   - Integración de "Turnos" en navegación principal y Dashboard con agenda unificada cronológicamente.
   - Sección "Acciones pendientes" optimizada con botones CTA directos ("Cargar", "Confirmar") y priorización de tareas críticas.
-  - Mejora en `TurnCard` con insignias de "Organizador" y botón de compartir integrado para optimizar la distribución de links.
+  - Mejora en `TurnCard` con insignias de "Organizador" y botón de compartir integrado para mejorar la distribución de links.
   - Soporte de campo `date` en el modelo `Match` y propagación automática desde el flujo de Turnos.
   - Fetching de partidos en Dashboard limitado (`take: 20`) para prevenir degradación de performance.
 - **Archivos relacionados**:

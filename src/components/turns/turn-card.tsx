@@ -1,7 +1,10 @@
 
-import { Clock, Users, Trophy } from "lucide-react";
+"use client";
+
+import { Clock, Users, Trophy, Share2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ShareButton } from "@/components/share/share-button";
 import { levelOptions } from "@/lib/mock-data";
 
 interface TurnCardProps {
@@ -13,11 +16,13 @@ interface TurnCardProps {
     maxPlayers: number;
     suggestedLevel: number | string;
     status?: string;
+    creatorId?: string;
   };
   variant?: "default" | "recommended";
+  viewerId?: string;
 }
 
-export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
+export function TurnCard({ turn, variant = "default", viewerId }: TurnCardProps) {
   const dateObj = new Date(turn.date);
 
   // Pre-formatting in a way that is less likely to cause hydration mismatches
@@ -32,17 +37,19 @@ export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
 
   const isRecommended = variant === "recommended";
   const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel.toString();
+  const isOrganizer = viewerId && turn.creatorId === viewerId;
 
   return (
-    <Link href={`/t/${turn.id}`}>
-      <div
-        className={cn(
-          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98]",
-          isRecommended
-            ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
-            : "bg-card/50 border-border/40 hover:bg-card/80"
-        )}
-      >
+    <div className="group relative">
+      <Link href={`/t/${turn.id}`}>
+        <div
+          className={cn(
+            "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98]",
+            isRecommended
+              ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
+              : "bg-card/50 border-border/40 hover:bg-card/80"
+          )}
+        >
         <div
           className={cn(
             "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px]",
@@ -59,7 +66,14 @@ export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
 
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-bold text-foreground">{turn.club}</p>
+            <div className="flex items-center gap-2 overflow-hidden">
+              <p className="truncate font-bold text-foreground">{turn.club}</p>
+              {isOrganizer && (
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[7px] font-black uppercase tracking-widest text-primary border border-primary/20 shrink-0">
+                  Organizador
+                </span>
+              )}
+            </div>
             {turn.status === "FULL" && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-black uppercase tracking-widest shrink-0">
                 Completo
@@ -88,7 +102,22 @@ export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
             Unirse
           </div>
         )}
+
+        {isOrganizer && (
+          <div className="ml-2 shrink-0" onClick={(e) => e.preventDefault()}>
+            <ShareButton
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/t/${turn.id}`}
+              title={`Turno en ${turn.club}`}
+              text={`¡Sumate al partido en ${turn.club}!`}
+              variant="ghost"
+              size="icon"
+              iconOnly
+              className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+            />
+          </div>
+        )}
       </div>
     </Link>
+    </div>
   );
 }

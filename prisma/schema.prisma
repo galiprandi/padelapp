@@ -5,52 +5,48 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // directUrl = env("DATABASE_URL_DIRECT") // enable for read replicas
 }
 
 model User {
-  id            String    @id @default(cuid())
-  displayName   String
-  alias         String?
-  email         String    @unique
-  image         String?
-  level         Int       @default(6)
-  emailVerified DateTime?
-
-  // Ranking fields
-  rankingScore    Float     @default(1000)
-  rankingPosition Int?
-  rankingDelta    Int       @default(0)
-  matchesPlayed   Int       @default(0)
-  wins            Int       @default(0)
-  losses          Int       @default(0)
-  attendanceScore Float     @default(1.0)
+  id              String        @id @default(cuid())
+  displayName     String
+  alias           String?
+  email           String        @unique
+  image           String?
+  level           Int           @default(6)
+  emailVerified   DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  attendanceScore Float         @default(1.0)
   lastMatchAt     DateTime?
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  matches       Match[]   @relation("MatchCreator")
-  matchPlayers  MatchPlayer[]
-  turnsCreated  Turn[]    @relation("TurnCreator")
-  turnPlayers   TurnPlayer[]
+  losses          Int           @default(0)
+  matchesPlayed   Int           @default(0)
+  rankingDelta    Int           @default(0)
+  rankingPosition Int?
+  rankingScore    Float         @default(1000)
+  wins            Int           @default(0)
+  accounts        Account[]
+  matches         Match[]       @relation("MatchCreator")
+  matchPlayers    MatchPlayer[]
+  sessions        Session[]
+  turnsCreated    Turn[]        @relation("TurnCreator")
+  turnPlayers     TurnPlayer[]
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -65,57 +61,84 @@ model Session {
 
 model VerificationToken {
   identifier String
-  token      String @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model Match {
-  id          String       @id @default(cuid())
+  id          String        @id @default(cuid())
   creatorId   String
-  creator     User         @relation("MatchCreator", fields: [creatorId], references: [id])
-  status      MatchStatus  @default(PENDING)
-  sets        Int          @default(2)
-  matchType   MatchType    @default(FRIENDLY)
+  status      MatchStatus   @default(PENDING)
+  sets        Int           @default(2)
+  matchType   MatchType     @default(FRIENDLY)
   club        String?
   courtNumber String?
   score       String?
   notes       String?
-  date        DateTime     @default(now())
+  date        DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   turnId      String?
-  turn        Turn?        @relation(fields: [turnId], references: [id])
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  creator     User          @relation("MatchCreator", fields: [creatorId], references: [id])
+  turn        Turn?         @relation(fields: [turnId], references: [id])
   players     MatchPlayer[]
 }
 
 model Turn {
-  id           String       @id @default(cuid())
-  creatorId    String
-  creator      User         @relation("TurnCreator", fields: [creatorId], references: [id])
-  club         String
-  date         DateTime
-  duration     Int          @default(90)
-  maxPlayers   Int          @default(4)
-  suggestedLevel Int        @default(6)
-  notes        String?
-  status       TurnStatus   @default(OPEN)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  players      TurnPlayer[]
-  matches      Match[]
+  id             String       @id @default(cuid())
+  creatorId      String
+  club           String
+  date           DateTime
+  duration       Int          @default(90)
+  maxPlayers     Int          @default(4)
+  suggestedLevel Int          @default(6)
+  notes          String?
+  status         TurnStatus   @default(OPEN)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  matches        Match[]
+  creator        User         @relation("TurnCreator", fields: [creatorId], references: [id])
+  players        TurnPlayer[]
 }
 
 model TurnPlayer {
-  id        String   @id @default(cuid())
-  turnId    String
-  turn      Turn     @relation(fields: [turnId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  joinedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  turnId   String
+  userId   String
+  joinedAt DateTime @default(now())
+  turn     Turn     @relation(fields: [turnId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([turnId, userId])
+}
+
+model MatchPlayer {
+  id              String    @id @default(cuid())
+  matchId         String
+  userId          String?
+  position        Int
+  resultConfirmed Boolean   @default(false)
+  displayName     String?
+  teamId          String?
+  joinedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  match           Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team            Team?     @relation(fields: [teamId], references: [id])
+  user            User?     @relation(fields: [userId], references: [id])
+
+  @@unique([matchId, position])
+  @@unique([matchId, userId])
+}
+
+model Team {
+  id           String        @id @default(cuid())
+  label        String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  matchPlayers MatchPlayer[]
 }
 
 enum TurnStatus {
@@ -123,33 +146,6 @@ enum TurnStatus {
   FULL
   CANCELLED
   COMPLETED
-}
-
-model MatchPlayer {
-  id             String   @id @default(cuid())
-  matchId        String
-  match          Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  userId         String?
-  user           User?    @relation(fields: [userId], references: [id])
-  position       Int
-  resultConfirmed Boolean @default(false)
-  displayName    String?
-  teamId         String?
-  team           Team?    @relation(fields: [teamId], references: [id])
-  joinedAt       DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  @@unique([matchId, position])
-  @@unique([matchId, userId])
-}
-
-model Team {
-  id          String        @id @default(cuid())
-  label       String
-  matchPlayers MatchPlayer[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
 }
 
 enum MatchStatus {
