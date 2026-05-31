@@ -44,6 +44,7 @@ export interface MatchResultCompactMatch {
   score?: string | null;
   players: MatchResultCompactPlayer[];
   status?: MatchResultCompactStatus | null;
+  date?: Date | string;
 }
 
 export interface MatchResultCompactProps {
@@ -115,7 +116,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
   }));
 
   const segmentsToRender = totalSets > 0 ? totalSets : 1;
-  const effectiveDate = matchDate ?? match.createdAt;
+  const effectiveDate = matchDate ?? match.date ?? match.createdAt;
   const parsedDate = effectiveDate
     ? effectiveDate instanceof Date
       ? effectiveDate

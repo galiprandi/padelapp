@@ -11,9 +11,9 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
 - **RankingList**: (En `/ranking/page.tsx`) Lista de jugadores refinada con estética "bubble", indicadores de posición en `rounded-2xl` y badges de nivel consistentes.
-- **EmptyState**: Componente refinado para secciones sin datos. Utiliza `bg-card/50`, bordes sólidos (`border-border/40`) y un generoso padding vertical (`py-16`) para mantener la jerarquía visual del "bubble aesthetic".
+- **EmptyState**: Componente refinado para secciones sin datos. Utiliza `bg-card/50`, bordes sólidos (`border-border/40`), un generoso padding vertical (`py-16`) e iconos destacados en círculos `bg-primary/5` para mantener la jerarquía visual del "bubble aesthetic".
 - **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.
-- **TurnCard**: Componente unificado para mostrar turnos abiertos en listas y dashboards. Soporta variantes `default` y `recommended` (con acento en `bg-primary`), manteniendo la jerarquía visual con micro-etiquetas uppercase y fecha destacada.
+- **TurnCard**: Componente unificado para mostrar turnos abiertos en listas y dashboards. Soporta variantes `default` y `recommended` (con acento en `bg-primary`) e incluye un badge de "Inscripto" si el usuario ya forma parte del turno, manteniendo la jerarquía visual con micro-etiquetas uppercase y fecha destacada.
 - **MatchResultCard / MatchResultCompact**: Polished UI para resultados. Los segmentos de score son cuadrados perfectos (`h-9 w-9`) con `rounded-xl`. El equipo ganador destaca sus sets con `bg-primary`. El estado de confirmación pendiente usa un pulso animado para captar atención.
 - **Match Confirmation Flow**: Los partidos con resultado pendiente de confirmación muestran un banner de "Confirmación pendiente" con indicadores individuales (`CheckCircle2` para confirmados, `Clock` para pendientes) para incentivar el cierre del partido y el impacto en el ranking.
 
@@ -22,7 +22,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
 
 ## 4. Dashboard (Mi Agenda)
-- **Unified Activity View**: El dashboard consolida turnos y partidos próximos en una sola sección de "Mi Agenda", ordenada cronológicamente para reducir la carga cognitiva del usuario.
+- **Unified Activity View**: El dashboard consolida turnos y partidos próximos en una sola sección de "Mi Agenda", ordenada cronológicamente mediante el campo `date` (heredado de turnos o asignado en la creación) para reducir la carga cognitiva del usuario.
 - **Hierarchical Separation**: Se utiliza un espacio amplio (`gap-12`) para separar la sección de perfil/ranking de la agenda operativa.
 
 ## 5. Integración de Flujos (Turnos -> Partidos)

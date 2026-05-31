@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trophy, Calendar, User } from "lucide-react";
+import { Trophy, Calendar, User, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
@@ -19,6 +19,7 @@ export function BottomNav({
   const pathname = usePathname();
 
   const navItems = [
+    { href: "/turnos", icon: Users, label: "Turnos" },
     { href: "/ranking", icon: Trophy, label: "Ranking" },
     { href: "/match", icon: Calendar, label: "Partidos" },
     { href: "/me", icon: User, label: "Perfil" },

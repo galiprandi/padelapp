@@ -51,14 +51,16 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 ### ✅ Refinamiento Estético y Dashboard (Mi Agenda)
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Unificación de próximos turnos y partidos en la sección "Mi Agenda" con orden cronológico.
-  - Refactor del componente `EmptyState` con bordes sólidos, `bg-card/50` y padding optimizado.
+  - Unificación de próximos turnos y partidos en la sección "Mi Agenda" con orden cronológico basado en el campo `date`.
+  - Refactor del componente `EmptyState` con bordes sólidos, `bg-card/50`, padding optimizado e iconos en círculos `bg-primary/5`.
   - Pulido de `MatchResultCard` con celdas de puntuación cuadradas perfectas y jerarquía de ganadores mejorada.
   - Ajuste de jerarquía visual en Dashboard con `gap-12` y descripciones de cabecera más concisas.
+  - `TurnCard` ahora muestra el estado de inscripción del usuario ("Inscripto").
 - **Archivos relacionados**:
   - `src/app/(app)/me/page.tsx`
   - `src/components/empty-state.tsx`
   - `src/components/matches/match-result-card.tsx`
+  - `src/components/turns/turn-card.tsx`
 
 ### ✅ Página de resultados de partidos (`/match/[matchId]/result`)
 - **Estado**: Implementada y funcional

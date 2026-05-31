@@ -15,9 +15,10 @@ interface TurnCardProps {
     status?: string;
   };
   variant?: "default" | "recommended";
+  isJoined?: boolean;
 }
 
-export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
+export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps) {
   const dateObj = new Date(turn.date);
 
   // Pre-formatting in a way that is less likely to cause hydration mismatches
@@ -60,11 +61,18 @@ export function TurnCard({ turn, variant = "default" }: TurnCardProps) {
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center justify-between gap-2">
             <p className="truncate font-bold text-foreground">{turn.club}</p>
-            {turn.status === "FULL" && (
-              <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-black uppercase tracking-widest shrink-0">
-                Completo
-              </span>
-            )}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {isJoined && (
+                <span className="rounded-full bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
+                  Inscripto
+                </span>
+              )}
+              {turn.status === "FULL" && (
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
+                  Completo
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
