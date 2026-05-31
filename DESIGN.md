@@ -3,7 +3,7 @@
 Este documento registra las decisiones de diseño, patrones de UI y arquitectura de componentes de **PadelApp**.
 
 ## 1. Patrones de UI
-- **Rounded-xl**: Utilizado para componentes base como contenedores de jugadores y campos de entrada de formularios.
+- **Rounded-xl**: Estándar para botones (`src/components/ui/button.tsx`), contenedores de jugadores y campos de entrada.
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`.
 - **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
@@ -25,17 +25,22 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Unified Activity View**: El dashboard consolida turnos y partidos próximos en una sola sección de "Mi Agenda", ordenada cronológicamente mediante el campo `date` (heredado de turnos o asignado en la creación) para reducir la carga cognitiva del usuario.
 - **Hierarchical Separation**: Se utiliza un espacio amplio (`gap-12`) para separar la sección de perfil/ranking de la agenda operativa.
 
-## 5. Integración de Flujos (Turnos -> Partidos)
+## 5. Navegación y Operatividad
+- **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.
+- **Glassmorphism**: La barra de navegación utiliza `bg-zinc-950/90` y `backdrop-blur-lg` para integrarse suavemente con el contenido.
+- **Tactile Feedback**: Componentes interactivos como `TurnCard` y botones implementan `active:scale-[0.98]` para una sensación de respuesta nativa.
+
+## 6. Integración de Flujos (Turnos -> Partidos)
 - **Turnos como Lead**: Los turnos abiertos actúan como el embudo principal de jugadores.
 - **Conversión Automática**: Al completar un turno (4 jugadores), el organizador puede disparar `convertTurnToMatchAction`, que hereda el club, los jugadores y las posiciones, marcando el turno como `COMPLETED`.
 - **Pre-llenado de Formulario**: El hook `useMatchForm` soporta la inicialización mediante `turnId` para mantener la flexibilidad si se desea ajustar el partido antes de crearlo.
 
-## 6. Sistema de Ranking (V1)
+## 7. Sistema de Ranking (V1)
 - **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
 - **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 days.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
-## 7. Gestión de Perfil
+## 8. Gestión de Perfil
 - **Visual Level Selector**: Los niveles se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects nativos o inputs numéricos.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.

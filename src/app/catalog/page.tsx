@@ -9,6 +9,9 @@ import {
   PlayerWithRanking,
 } from "@/components/players/player-cards";
 import {
+  TurnCard,
+} from "@/components/turns/turn-card";
+import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
@@ -57,6 +60,16 @@ const SAMPLE_MATCH: MatchResultCompactMatch = {
       image: null,
     },
   })),
+};
+
+const SAMPLE_TURN = {
+  id: "turn-sample",
+  club: "Padel Center",
+  date: "2024-05-31T18:00:00.000Z",
+  players: [{}, {}],
+  maxPlayers: 4,
+  suggestedLevel: 5,
+  status: "OPEN",
 };
 
 export default function ComponentCatalogPage() {
@@ -185,14 +198,25 @@ export default function ComponentCatalogPage() {
               </div>
             </section>
 
-            <section id="matches" className="space-y-4">
-              <h2 className="text-lg font-semibold mb-3">🎾 Partidos</h2>
-              <div className="p-4 border rounded-lg bg-muted/50">
-                <MatchResultCompact
-                  label="Resultado ejemplo"
-                  match={SAMPLE_MATCH}
-                  detailUrl={`/match/${SAMPLE_MATCH.id}`}
-                />
+            <section id="matches" className="space-y-6">
+              <h2 className="text-lg font-semibold mb-3">🎾 Partidos y Turnos</h2>
+              <div className="p-4 border rounded-lg bg-muted/50 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Resultado (MatchResultCompact)</h3>
+                  <MatchResultCompact
+                    label="Resultado ejemplo"
+                    match={SAMPLE_MATCH}
+                    detailUrl={`/match/${SAMPLE_MATCH.id}`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Turno (TurnCard)</h3>
+                  <TurnCard turn={SAMPLE_TURN} />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Turno Recomendado</h3>
+                  <TurnCard turn={SAMPLE_TURN} variant="recommended" />
+                </div>
               </div>
             </section>
 

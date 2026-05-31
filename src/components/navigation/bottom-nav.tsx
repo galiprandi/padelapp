@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trophy, Calendar, User, Users } from "lucide-react";
+import { Trophy, Calendar, User, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
@@ -19,7 +19,7 @@ export function BottomNav({
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/turnos", icon: Users, label: "Turnos" },
+    { href: "/turnos", icon: CalendarDays, label: "Turnos" },
     { href: "/ranking", icon: Trophy, label: "Ranking" },
     { href: "/match", icon: Calendar, label: "Partidos" },
     { href: "/me", icon: User, label: "Perfil" },
@@ -34,7 +34,7 @@ export function BottomNav({
         position === "fixed" && "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]"
       )}
     >
-      <div className="relative flex h-14 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-900">
+      <div className="relative flex h-14 w-full items-stretch justify-evenly border-t border-border/70 bg-zinc-950/90 backdrop-blur-lg">
         {navItems.map((item) => {
           // Check if active: exact match or starts with segment (for subpages)
           const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href + "/"));

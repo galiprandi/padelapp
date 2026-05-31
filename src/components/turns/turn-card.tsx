@@ -38,7 +38,7 @@ export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps)
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98]",
+          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
           isRecommended
             ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
             : "bg-card/50 border-border/40 hover:bg-card/80"
@@ -47,7 +47,7 @@ export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps)
         <div
           className={cn(
             "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px]",
-            isRecommended ? "bg-primary/20" : "bg-primary/10"
+            isRecommended ? "bg-primary/25" : "bg-primary/15"
           )}
         >
           <span className="text-[10px] font-black uppercase leading-none">
