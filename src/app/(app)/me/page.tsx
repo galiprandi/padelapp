@@ -165,11 +165,11 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+        <div className="flex items-center justify-between px-1">
           <h2 className="text-lg font-bold tracking-tight">Mi Agenda</h2>
-          <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px]">
-            <Link href="/turnos">Ver turnos</Link>
+          <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px] h-auto p-0">
+            <Link href="/turnos">Ver todos</Link>
           </Button>
         </div>
         <div className="grid gap-3">
@@ -202,8 +202,8 @@ export default async function DashboardPage() {
       </section>
 
       {recommendedTurns.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+          <div className="flex items-center justify-between px-1">
             <h2 className="text-lg font-bold tracking-tight">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">

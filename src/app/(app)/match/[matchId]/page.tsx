@@ -168,15 +168,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-6 rounded-[2.5rem] bg-card/50 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
+            <section className="space-y-6 rounded-[2.5rem] bg-primary/5 p-8 backdrop-blur-md border border-primary/20 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15 text-primary">
                     <AlertCircle className="h-5 w-5" />
                   </div>
                   <h2 className="text-[10px] font-black uppercase tracking-widest text-foreground">Confirmación pendiente</h2>
                 </div>
-                <p className="text-xs font-medium leading-relaxed text-muted-foreground">
+                <p className="text-xs font-medium leading-relaxed text-muted-foreground/80">
                   Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
                 </p>
               </div>
@@ -193,7 +193,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                         image?: string | null;
                         isConfirmed?: boolean;
                       }) => (
-                        <div key={player.id} className="flex items-center gap-3">
+                        <div key={player.id} className="flex items-center gap-3 min-h-[40px]">
                           <div className="relative shrink-0">
                             <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-10 w-10 border-2 border-background shadow-sm" />
                             <div className={cn(
