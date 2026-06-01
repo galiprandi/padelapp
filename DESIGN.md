@@ -44,3 +44,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 8. Gestión de Perfil
 - **Visual Level Selector**: Los niveles se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects nativos o inputs numéricos.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
+
+## 9. Vistas de Invitación (Públicas)
+- **Shared Experience**: Las vistas bajo `/t/[id]` y `/m/[matchId]` están optimizadas para usuarios que no han iniciado sesión, utilizando el `PageHeader` centrado y micro-etiquetas de contexto claras ("Turno Abierto", "Invitación de Partido").
+- **Conversion focus**: Implementan un contenedor CTA fijo en la parte inferior (`fixed bottom-0`) con un gradiente `bg-gradient-to-t` para guiar al usuario hacia el registro o la visualización del detalle completo, manteniendo la operatividad sin obstruir el contenido.
+- **Visual Consistency**: Reutilizan el patrón de grid 2x2 para información técnica y `rounded-[2.5rem]` para las tarjetas principales, asegurando que la primera impresión de la app sea profesional y alineada con la identidad visual interna.

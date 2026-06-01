@@ -9,6 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PageHeader } from "@/components/page-header";
+import { PlayerAvatar } from "@/components/players/player-avatar";
+import { Calendar, Clock, Trophy, Users, CheckCircle2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 const MATCH_STATUS = {
@@ -90,50 +93,77 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   const viewerPlayerId = viewerPlayer?.id;
   const isParticipant = viewerId ? match.players.some((slot) => slot.userId === viewerId) : false;
 
-  return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-6 px-5 py-10">
-      <header className="space-y-2 text-center">
-        <p className="text-xs font-medium uppercase tracking-wide text-primary">Partido compartido</p>
-        <h1 className="text-2xl font-semibold text-foreground">{match.matchType === "FRIENDLY" ? "Partido amistoso" : "Torneo local"}</h1>
-        <p className="text-sm text-muted-foreground">
-          {match.creator.displayName} organizó este partido. Iniciá sesión para verlo completo o sumarte desde tu cupo.
-        </p>
-      </header>
+  const dateStr = new Date(match.date).toLocaleDateString("es-ES", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
-      <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle>Resumen</CardTitle>
-          <CardDescription>Estado y datos principales.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Estado</span>
-            <span className="rounded-md bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-              {formatStatus(match.status)}
+  return (
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-8 px-5 py-10 pb-48">
+      <PageHeader
+        title={match.matchType === "FRIENDLY" ? "Partido Amistoso" : "Torneo Local"}
+        align="center"
+        description={
+          <span className="flex flex-col items-center gap-1">
+            <span className="text-xs font-black uppercase tracking-widest text-primary">Invitación de Partido</span>
+            <span className="flex items-center gap-1.5 capitalize">
+              <Calendar className="h-3.5 w-3.5 text-primary/70" />
+              {dateStr}
             </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Sets</span>
-            <span className="font-medium text-foreground">{match.sets}</span>
-          </div>
-          {match.club ? (
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Club</span>
-              <span className="font-medium text-foreground">{match.club}</span>
+          </span>
+        }
+      />
+
+      <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-xl backdrop-blur-md overflow-hidden">
+        <CardHeader className="pb-4 pt-8 text-center border-b border-border/40 bg-muted/20">
+          <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/80">Información del partido</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 gap-px bg-border/40 p-0">
+          <div className="bg-card/50 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Trophy className="h-5 w-5" />
             </div>
-          ) : null}
-          {match.courtNumber ? (
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">N° de cancha</span>
-              <span className="font-medium text-foreground">{match.courtNumber}</span>
+            <div>
+              <p className="text-lg font-black">{match.sets} sets</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Modalidad</p>
             </div>
-          ) : null}
+          </div>
+
+          <div className="bg-card/50 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Clock className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-lg font-black">{formatStatus(match.status)}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Estado</p>
+            </div>
+          </div>
+
+          <div className="col-span-2 bg-card/50 p-6 flex items-center justify-center gap-4">
+             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0">
+              <Users className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <p className="text-lg font-black">{match.club || "Club por definir"}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                {match.courtNumber ? `Cancha ${match.courtNumber}` : "Sede del encuentro"}
+              </p>
+            </div>
+          </div>
         </CardContent>
+        {match.notes && (
+          <div className="bg-muted/30 p-6 text-center text-sm italic text-muted-foreground border-t border-border/40">
+            "{match.notes}"
+          </div>
+        )}
       </Card>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">Jugadores</h2>
-        <div className="grid gap-3">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">Jugadores convocados</h2>
+        </div>
+        <div className="grid gap-6">
           {(["A", "B"] as const).map((teamKey) => {
             const teamPlayers = teamGroups[teamKey];
             if (teamPlayers.length === 0) {
@@ -142,23 +172,47 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             const label = teamPlayers[0]?.team?.label ?? defaultTeamLabel(teamKey, totalPlayers);
 
             return (
-              <div key={teamKey} className="space-y-2 rounded-xl border border-border/60 bg-muted/20 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
-                <div className="space-y-2">
+              <div key={teamKey} className="space-y-3">
+                <p className="px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">{label}</p>
+                <div className="grid gap-3">
                   {teamPlayers.map((player) => {
-                    const name = player.user?.displayName ?? player.displayName ?? `Jugador ${player.position + 1}`;
-                    const status = player.userId ? (player.resultConfirmed ? "Confirmado" : "Pendiente") : "Libre";
+                    const name = player.user?.displayName ?? player.displayName ?? `Cupo ${player.position + 1}`;
+                    const isOccupied = !!player.userId;
+                    const isConfirmed = player.resultConfirmed;
+                    const isCreator = player.userId === match.creatorId;
+
+                    if (!isOccupied) {
+                      return (
+                        <div key={player.id} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/10 p-4 text-muted-foreground/40">
+                          <div className="h-12 w-12 rounded-full bg-muted/20 border-2 border-dashed border-muted/30" />
+                          <p className="text-sm font-bold uppercase tracking-widest italic opacity-60">Cupo disponible</p>
+                        </div>
+                      );
+                    }
 
                     return (
-                      <div key={player.id} className="flex items-center gap-3 rounded-md border border-border/60 bg-background/80 px-3 py-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-xs font-semibold text-primary">
-                          {initials(name)}
+                      <div key={player.id} className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80">
+                        <div className="relative">
+                          <PlayerAvatar
+                            name={name}
+                            image={player.user?.image ?? undefined}
+                            className="h-12 w-12 border-2 border-background shadow-sm"
+                          />
+                          {isConfirmed && (
+                            <div className="absolute -right-1 -bottom-1 rounded-full bg-emerald-500 p-0.5 border-2 border-background shadow-sm">
+                              <CheckCircle2 className="h-3 w-3 text-white" />
+                            </div>
+                          )}
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-foreground">{name}</p>
-                          <p className="text-xs text-muted-foreground">Jugador {player.position + 1}</p>
+                          <p className="font-bold text-foreground leading-none">{name}</p>
+                          <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                            {isConfirmed ? "Confirmado" : "Pendiente"}
+                          </p>
                         </div>
-                        <span className="text-xs font-semibold text-muted-foreground">{status}</span>
+                        {isCreator && (
+                          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20">Organizador</span>
+                        )}
                       </div>
                     );
                   })}
@@ -169,30 +223,34 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         </div>
       </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>¿Querés participar?</CardTitle>
-          <CardDescription>
-            Accedé a tu enlace personalizado desde el creador o iniciá sesión para gestionar tus partidos desde la app.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Button asChild className="w-full">
-            <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
+      <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
+        <div className="max-w-md mx-auto pointer-events-auto space-y-3">
+          <Button asChild className="w-full rounded-2xl h-14 text-lg font-bold shadow-2xl shadow-primary/30" size="lg">
+            <Link href={`/match/${match.id}`}>
+              Ver partido en PadelApp
+            </Link>
           </Button>
           {!session?.user ? (
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}>Iniciar sesión con Google</Link>
+            <Button asChild variant="ghost" className="w-full rounded-xl py-2 text-muted-foreground hover:bg-muted/10" size="sm">
+              <Link href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}>
+                Iniciar sesión con Google
+              </Link>
             </Button>
           ) : !isParticipant ? (
-            <p className="text-xs text-muted-foreground">
-              Pedile al organizador el enlace directo de tu cupo (`/j/${viewerPlayerId}`) para confirmar tu asistencia.
-            </p>
+            <div className="bg-card/80 backdrop-blur-md rounded-2xl p-4 border border-border/40 text-center">
+              <p className="text-xs font-medium text-muted-foreground">
+                Para unirte, pedile al organizador tu enlace de cupo directo
+              </p>
+            </div>
           ) : (
-            <p className="text-xs text-muted-foreground">Ya formás parte de este partido.</p>
+            <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20 text-center">
+              <p className="text-xs font-bold text-primary uppercase tracking-widest">
+                ¡Ya formás parte de este partido!
+              </p>
+            </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
