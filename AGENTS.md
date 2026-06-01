@@ -62,6 +62,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/match-result-card.tsx`
   - `src/components/turns/turn-card.tsx`
 
+### ✅ Dashboard Inteligente y Gestión de Acciones
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Nueva sección "Acciones pendientes" que prioriza confirmaciones y carga de resultados pasados.
+  - Los partidos PENDING con score cargado se priorizan (confirmación) sobre los que no tienen (carga).
+  - La sección "Mi Agenda" se reserva estrictamente para turnos y partidos futuros (planificación).
+  - Contador visual de acciones pendientes en el encabezado de sección.
+  - Orden cronológico inverso para acciones (lo más reciente arriba) y directo para agenda (lo próximo arriba).
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+
 ### ✅ Página de resultados de partidos (`/match/[matchId]/result`)
 - **Estado**: Implementada y funcional
 - **Funcionalidades**:
