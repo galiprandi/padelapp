@@ -176,6 +176,16 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/profile/profile-form.tsx`
   - `src/app/(app)/me/actions.ts`
 
+### ✅ Refinamiento de Vistas de Invitación Pública
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor de la página de invitación de partido (`/m/[matchId]`) con el "bubble aesthetic".
+  - Integración de `PageHeader` y `PlayerAvatar` en flujos públicos.
+  - Implementación de CTA fijo con gradiente para maximizar conversiones móviles.
+  - Alineación visual completa con el detalle de turno (grid 2x2, bordes redondeados `2.5rem`).
+- **Archivos relacionados**:
+  - `src/app/m/[matchId]/page.tsx`
+
 ### ✅ Pulido UI y UX Consolidado (V2)
 - **Estado**: Implementado
 - **Funcionalidades**:
