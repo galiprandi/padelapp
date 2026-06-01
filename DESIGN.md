@@ -21,9 +21,10 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
 - **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
 
-## 4. Dashboard (Mi Agenda)
-- **Unified Activity View**: El dashboard consolida turnos y partidos próximos en una sola sección de "Mi Agenda", ordenada cronológicamente mediante el campo `date` (heredado de turnos o asignado en la creación) para reducir la carga cognitiva del usuario.
-- **Hierarchical Separation**: Se utiliza un espacio amplio (`gap-12`) para separar la sección de perfil/ranking de la agenda operativa.
+## 4. Dashboard Inteligente
+- **Priorización de Acciones**: El dashboard introduce una sección de "Acciones pendientes" ubicada en la parte superior para destacar tareas críticas (confirmar resultados o cargar scores de partidos pasados). Esto asegura que el "Time to Action" sea mínimo para cerrar ciclos de partidos.
+- **Unified Activity View (Agenda)**: La sección "Mi Agenda" se reserva exclusivamente para actividad futura (turnos y partidos próximos), proporcionando una vista limpia de planificación ordenada cronológicamente.
+- **Hierarchical Separation**: Se utiliza un espacio amplio (`gap-12`) para separar los bloques lógicos: Perfil/Ranking, Acciones Urgentes, Agenda de Planificación, Recomendaciones y Resultados Históricos.
 
 ## 5. Navegación y Operatividad
 - **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.

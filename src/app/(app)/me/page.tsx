@@ -7,9 +7,9 @@ import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy } from "lucide-react";
+import { CalendarDays, Trophy, AlertCircle } from "lucide-react";
 
-async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
+async function getEnhancedUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
     where: {
       status: statusFilter,
@@ -25,9 +25,9 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
       },
     },
     orderBy: {
-      date: "asc",
+      date: "desc", // Default to newest for results and pending actions
     },
-    take: 10,
+    take: 20,
   });
 
   return matches.map<MatchResultCompactMatch>((match) => ({
@@ -36,17 +36,7 @@ async function getUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIR
     score: match.score,
     status: match.status,
     date: match.date,
-    players: match.players.map((player: {
-      id: string;
-      position: number;
-      displayName: string | null;
-      user: {
-        id: string;
-        displayName: string | null;
-        alias?: string | null;
-        image: string | null;
-      } | null;
-    }) => {
+    players: match.players.map((player) => {
       const preferredName = player.user && "alias" in player.user && player.user.alias
         ? player.user.alias
         : player.user?.displayName;
@@ -70,54 +60,67 @@ export default async function DashboardPage() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const [user, upcomingMatches, recentMatches] = viewerId
-    ? await Promise.all([
-        prisma.user.findUnique({
-          where: { id: viewerId },
-          select: {
-            displayName: true,
-            alias: true,
-            rankingScore: true,
-            rankingPosition: true,
-            rankingDelta: true,
-            level: true,
-            matchesPlayed: true,
-          },
-        }),
-        getUserMatches(viewerId, "PENDING"),
-        getUserMatches(viewerId, "CONFIRMED"),
-      ])
-    : [null, [], []];
+  if (!viewerId) return null;
+
+  const [user, allPendingMatches, recentMatches] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: viewerId },
+      select: {
+        displayName: true,
+        alias: true,
+        rankingScore: true,
+        rankingPosition: true,
+        rankingDelta: true,
+        level: true,
+        matchesPlayed: true,
+      },
+    }),
+    getEnhancedUserMatches(viewerId, "PENDING"),
+    getEnhancedUserMatches(viewerId, "CONFIRMED"),
+  ]);
+
+  const now = new Date();
+
+  // Categorizar partidos PENDING
+  const pendingActionMatches = allPendingMatches
+    .filter(m => new Date(m.date || m.createdAt) < now)
+    .sort((a, b) => {
+      // Priorizar los que TIENEN score (necesitan confirmación) sobre los que NO tienen score (necesitan carga)
+      if (a.score && !b.score) return -1;
+      if (!a.score && b.score) return 1;
+      // Secundario: fecha más reciente primero
+      return new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime();
+    });
+
+  const upcomingMatches = allPendingMatches
+    .filter(m => new Date(m.date || m.createdAt) >= now)
+    .sort((a, b) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime());
 
   const displayName = user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
 
-  const myTurns = viewerId
-    ? await prisma.turn.findMany({
-        where: {
-          players: { some: { userId: viewerId } },
-          date: { gte: new Date() },
-          status: { in: ["OPEN", "FULL"] },
-        },
-        include: { players: true },
-        orderBy: { date: "asc" },
-        take: 3,
-      })
-    : [];
+  const myTurns = await prisma.turn.findMany({
+    where: {
+      players: { some: { userId: viewerId } },
+      date: { gte: now },
+      status: { in: ["OPEN", "FULL"] },
+    },
+    include: { players: true },
+    orderBy: { date: "asc" },
+    take: 3,
+  });
 
-  const recommendedTurns = viewerId
-    ? await prisma.turn.findMany({
-        where: {
-          players: { none: { userId: viewerId } },
-          date: { gte: new Date() },
-          status: "OPEN",
-        },
-        include: { players: true },
-        orderBy: { date: "asc" },
-        take: 3,
-      })
-    : [];
+  const recommendedTurns = await prisma.turn.findMany({
+    where: {
+      players: { none: { userId: viewerId } },
+      date: { gte: now },
+      status: "OPEN",
+    },
+    include: { players: true },
+    orderBy: { date: "asc" },
+    take: 3,
+  });
 
-  // Consolidar agenda: turnos y partidos pendientes
+  // Consolidar agenda: turnos y partidos futuros solamente
   const agendaItems = [
     ...myTurns.map((turn) => ({
       id: turn.id,
@@ -166,7 +169,31 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+      {/* NUEVA SECCIÓN: Acciones Pendientes */}
+      {pendingActionMatches.length > 0 && (
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
+              Acciones pendientes
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground">
+                {pendingActionMatches.length}
+              </span>
+            </h2>
+          </div>
+          <div className="grid gap-3">
+            {pendingActionMatches.map((match) => (
+              <MatchResultCompact
+                key={match.id}
+                match={match}
+                detailUrl={`/match/${match.id}/result`}
+                label={match.score ? "Confirmación pendiente" : "Cargar resultado"}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-lg font-bold tracking-tight">Mi Agenda</h2>
           <Button variant="link" size="sm" asChild className="text-primary font-bold uppercase tracking-widest text-[10px] h-auto p-0">
@@ -187,7 +214,7 @@ export default async function DashboardPage() {
                   key={item.id}
                   match={item.data as MatchResultCompactMatch}
                   detailUrl={`/match/${item.id}`}
-                  label="Partido"
+                  label="Próximo partido"
                 />
               )
             ))
@@ -207,7 +234,7 @@ export default async function DashboardPage() {
       </section>
 
       {recommendedTurns.length > 0 && (
-        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
           <div className="flex items-center justify-between px-1">
             <h2 className="text-lg font-bold tracking-tight">Turnos recomendados</h2>
           </div>
@@ -224,12 +251,12 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
+        <div className="flex items-center justify-between px-1">
           <h2 className="text-lg font-bold tracking-tight">Últimos resultados</h2>
         </div>
         <div className="space-y-3">
-          {viewerId && recentMatches.length > 0 ? (
+          {recentMatches.length > 0 ? (
             recentMatches.map((match) => (
               <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
             ))
