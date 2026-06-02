@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { PlusCircle, CalendarOff } from "lucide-react";
+import { PlusCircle, CalendarOff, Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -59,12 +59,13 @@ export default async function MatchListPage() {
   const matches = viewerId ? await getUserMatches(viewerId) : [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-12 pb-8">
       <PageHeader
         title="Partidos"
         description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
+        size="lg"
         action={
-          <Button asChild className="w-full justify-center py-2 text-base">
+          <Button asChild className="w-full justify-center py-2 text-base rounded-xl font-bold h-11">
             <Link href="/match/new">
               <PlusCircle className="mr-2 h-5 w-5" />
               Crear Partido
@@ -73,38 +74,57 @@ export default async function MatchListPage() {
         }
       />
 
-      <div className="grid gap-3">
-        {viewerId ? (
-          matches.length > 0 ? (
-            matches.map((match) => (
-              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
-            ))
+      <section className="space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-lg font-bold tracking-tight">Historial de partidos</h2>
+        </div>
+
+        <div className="grid gap-3">
+          {viewerId ? (
+            matches.length > 0 ? (
+              matches.map((match) => (
+                <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
+              ))
+            ) : (
+              <EmptyState
+                title="Sin partidos todavía"
+                description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
+                icon={CalendarOff}
+                action={
+                  <Button asChild className="w-full max-w-xs rounded-xl font-bold">
+                    <Link href="/match/new">Crear partido</Link>
+                  </Button>
+                }
+              />
+            )
           ) : (
-            <EmptyState
-              title="Sin partidos todavía"
-              description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
-              icon={CalendarOff}
-              action={
-                <Button asChild size="sm" className="w-full max-w-xs">
-                  <Link href="/match/new">Crear partido</Link>
+            <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-md overflow-hidden shadow-xl">
+              <CardHeader className="space-y-2 pt-8 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl shadow-inner mb-2">
+                  🎾
+                </div>
+                <CardTitle className="text-xl font-black">Iniciá sesión</CardTitle>
+                <CardDescription className="font-medium">Ingresá con Google para ver tus partidos recientes y el ranking.</CardDescription>
+              </CardHeader>
+              <CardContent className="pb-8">
+                <Button asChild className="w-full rounded-xl font-bold h-12 shadow-lg shadow-primary/20">
+                  <Link href="/login">Ir al login</Link>
                 </Button>
-              }
-            />
-          )
-        ) : (
-          <Card>
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-base">Iniciá sesión</CardTitle>
-              <CardDescription>Ingresá con Google para ver tus partidos recientes.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild>
-                <Link href="/login">Ir al login</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </section>
+
+      {viewerId && (
+        <div className="fixed bottom-24 right-5 md:hidden z-40">
+          <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40">
+            <Link href="/match/new">
+              <Plus className="h-7 w-7" />
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

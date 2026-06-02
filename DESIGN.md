@@ -4,6 +4,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 
 ## 1. Patrones de UI
 - **Rounded-xl**: Estándar para botones (`src/components/ui/button.tsx`), contenedores de jugadores y campos de entrada.
+- **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay` y selectores de opciones en cuadrícula.
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`.
 - **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
@@ -42,8 +43,9 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
-## 8. Gestión de Perfil
-- **Visual Level Selector**: Los niveles se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects nativos o inputs numéricos.
+## 10. Gestión de Perfil y Formularios
+- **Visual Selector Grid**: Los niveles y tipos de formato se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects nativos.
+- **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 
 ## 9. Vistas de Invitación (Públicas)
