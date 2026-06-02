@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UsersRound } from "lucide-react";
 import { avatarFallback, positionFromTeam } from "@/lib/match-utils";
 import type { SlotValue, TeamKey } from "@/lib/match-types";
+import { cn } from "@/lib/utils";
 
 interface SlotDisplayProps {
   team: TeamKey;
@@ -49,11 +50,14 @@ export function SlotDisplay({
           onSlotClick(team, index);
         }
       }}
-      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 ${
-        isActive ? "border-primary bg-primary/10" : "border-border bg-muted/40"
-      }`}
+      className={cn(
+        "flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 active:scale-[0.98]",
+        isActive
+          ? "border-primary bg-primary/10 shadow-sm shadow-primary/5"
+          : "border-border/40 bg-card/40 hover:bg-card/60"
+      )}
     >
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary shadow-inner">
         {slot?.kind === "user" && slot.player.image ? (
           <Image
             alt={slot.player.displayName}

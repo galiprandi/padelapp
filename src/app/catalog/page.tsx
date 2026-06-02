@@ -15,6 +15,7 @@ import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
+import { SlotDisplay } from "@/components/matches/slot-display";
 import { MatchNavigation } from "@/components/matches/match-navigation";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
@@ -194,6 +195,30 @@ export default function ComponentCatalogPage() {
                 <div className="space-y-2">
                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Parejas (PairInline)</h3>
                   <PairInline label="Pareja B" players={SAMPLE_PLAYERS} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Slot Display (Nuevo)</h3>
+                  <div className="grid gap-2">
+                    <SlotDisplay
+                      team="A"
+                      index={1}
+                      slot={null}
+                      userDisplayName="Usuario"
+                      isActive={false}
+                      onSlotClick={() => {}}
+                      onManageClick={() => {}}
+                    />
+                    <SlotDisplay
+                      team="A"
+                      index={1}
+                      slot={null}
+                      userDisplayName="Usuario"
+                      isActive={true}
+                      onSlotClick={() => {}}
+                      onManageClick={() => {}}
+                    />
+                  </div>
                 </div>
               </div>
             </section>

@@ -187,6 +187,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/profile/profile-form.tsx`
   - `src/app/(app)/me/actions.ts`
 
+### ✅ Refinamiento de Creación y Lista de Partidos
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor del flujo de creación de partidos con selectores visuales en cuadrícula y ergonomía móvil mejorada.
+  - Pulido de `SlotDisplay` con `rounded-2xl` y feedback táctil `active:scale-[0.98]`.
+  - Mejora de la jerarquía visual en la lista de partidos con `PageHeader` tamaño `lg` y espaciado `gap-12`.
+  - Incorporación de botón flotante (FAB) en la lista de partidos para acceso rápido en mobile.
+- **Archivos relacionados**:
+  - `src/components/matches/slot-display.tsx`
+  - `src/components/matches/step-content.tsx`
+  - `src/app/(app)/match/page.tsx`
+
 ### ✅ Refinamiento de Vistas de Invitación Pública
 - **Estado**: Implementado
 - **Funcionalidades**:
