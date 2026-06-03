@@ -11,7 +11,21 @@ import { PageHeader } from "@/components/page-header";
 import { levelOptions } from "@/lib/mock-data";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const DURATION_OPTIONS = [
+  { value: "60", label: "60 min" },
+  { value: "90", label: "90 min" },
+  { value: "120", label: "120 min" },
+];
+
+const PLAYER_OPTIONS = [
+  { value: "4", label: "4 jugadores" },
+  { value: "6", label: "6 jugadores" },
+  { value: "8", label: "8 jugadores" },
+  { value: "10", label: "10 jugadores" },
+];
 
 export default function NewTurnPage() {
   const router = useRouter();
@@ -64,15 +78,15 @@ export default function NewTurnPage() {
         description="Configurá cancha, nivel y cupos. Al guardar tendrás un link listo para compartir."
       />
 
-      <form onSubmit={handleSubmit}>
-        <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="rounded-3xl border-border/40 bg-card/50 backdrop-blur-sm shadow-xl">
           <CardHeader>
-            <CardTitle>Detalles principales</CardTitle>
-            <CardDescription>Información visible para quienes reciban el link.</CardDescription>
+            <CardTitle className="text-lg font-bold">Detalles principales</CardTitle>
+            <CardDescription className="text-xs">Información visible para quienes reciban el link.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="club" requiredIndicator="*">
+          <CardContent className="space-y-6">
+            <div className="space-y-2.5">
+              <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">
                 Club y cancha
               </Label>
               <Input
@@ -81,85 +95,117 @@ export default function NewTurnPage() {
                 value={formData.club}
                 onChange={(e) => setFormData({ ...formData, club: e.target.value })}
                 required
+                className="h-12 rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="date">Fecha</Label>
+              <div className="space-y-2.5">
+                <Label htmlFor="date" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Fecha</Label>
                 <Input
                   id="date"
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   required
+                  className="h-12 rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="time">Hora</Label>
+              <div className="space-y-2.5">
+                <Label htmlFor="time" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Hora</Label>
                 <Input
                   id="time"
                   type="time"
                   value={formData.time}
                   onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                   required
+                  className="h-12 rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="duration">Duración</Label>
-                <select
-                  id="duration"
-                  className="h-10 w-full rounded-full border border-input bg-background px-4 text-sm"
-                  value={formData.duration}
-                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                >
-                  <option value="60">60 minutos</option>
-                  <option value="90">90 minutos</option>
-                  <option value="120">120 minutos</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="players">Jugadores</Label>
-                <select
-                  id="players"
-                  className="h-10 w-full rounded-full border border-input bg-background px-4 text-sm"
-                  value={formData.maxPlayers}
-                  onChange={(e) => setFormData({ ...formData, maxPlayers: e.target.value })}
-                >
-                  <option value="4">4 jugadores</option>
-                  <option value="6">6 jugadores</option>
-                  <option value="8">8 jugadores</option>
-                  <option value="10">10 jugadores</option>
-                </select>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Duración</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {DURATION_OPTIONS.map((option) => {
+                  const isSelected = formData.duration === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, duration: option.value })}
+                      className={cn(
+                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-bold active:scale-[0.98]",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="level">Nivel sugerido</Label>
-              <select
-                id="level"
-                className="h-10 w-full rounded-full border border-input bg-background px-4 text-sm"
-                value={formData.suggestedLevel}
-                onChange={(e) => setFormData({ ...formData, suggestedLevel: e.target.value })}
-              >
-                {levelOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Jugadores</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {PLAYER_OPTIONS.map((option) => {
+                  const isSelected = formData.maxPlayers === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
+                      className={cn(
+                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-bold text-left active:scale-[0.98]",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                      )}
+                    >
+                      <span>{option.label}</span>
+                      {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notas opcionales</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Nivel sugerido</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {levelOptions.map((option) => {
+                  const isSelected = formData.suggestedLevel === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, suggestedLevel: option.value })}
+                      className={cn(
+                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-bold text-left active:scale-[0.98]",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                      )}
+                    >
+                      <span className="truncate">{option.label}</span>
+                      {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="notes" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Notas opcionales</Label>
               <Textarea
                 id="notes"
                 placeholder="Traer pelotas nuevas. Punto de encuentro en recepción."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                className="min-h-[100px] rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all resize-none"
               />
             </div>
           </CardContent>
@@ -167,13 +213,13 @@ export default function NewTurnPage() {
 
         <Button
           type="submit"
-          className="mt-6 w-full rounded-full"
+          className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
           size="lg"
           disabled={isPending}
         >
           {isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
               Generando link...
             </>
           ) : (
