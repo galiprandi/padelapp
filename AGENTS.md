@@ -235,6 +235,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/nuevo/page.tsx`
   - `src/app/t/[id]/page.tsx`
 
+### ✅ Refinamiento de Vistas de Marketing (Landing e Install)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor de la Landing Page principal (`/`) y la página de instalación (`/install`) con el "bubble aesthetic".
+  - Implementación de cards de alto impacto con `rounded-[2.5rem]`, `backdrop-blur-md` y gradientes radiales de fondo.
+  - Estandarización de componentes UI: `Badge` actualizado a `rounded-xl` para coherencia global.
+  - Introducción de animaciones de entrada escalonadas (`animate-in`) para una experiencia más fluida y profesional.
+- **Archivos relacionados**:
+  - `src/app/page.tsx`
+  - `src/app/install/page.tsx`
+  - `src/components/ui/badge.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

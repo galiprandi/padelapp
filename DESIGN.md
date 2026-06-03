@@ -3,7 +3,7 @@
 Este documento registra las decisiones de diseño, patrones de UI y arquitectura de componentes de **PadelApp**.
 
 ## 1. Patrones de UI
-- **Rounded-xl**: Estándar para botones (`src/components/ui/button.tsx`), contenedores de jugadores y campos de entrada.
+- **Rounded-xl**: Estándar para botones (`src/components/ui/button.tsx`), badges (`src/components/ui/badge.tsx`), contenedores de jugadores y campos de entrada.
 - **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay` y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm / md**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`. Las vistas públicas de alta jerarquía utilizan `backdrop-blur-md`.
@@ -52,3 +52,4 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Shared Experience**: Las vistas bajo `/t/[id]` y `/m/[matchId]` están optimizadas para usuarios que no han iniciado sesión, utilizando el `PageHeader` centrado y micro-etiquetas de contexto claras ("Turno Abierto", "Invitación de Partido").
 - **Conversion focus**: Implementan un contenedor CTA fijo en la parte inferior (`fixed bottom-0`) con un gradiente `bg-gradient-to-t` para guiar al usuario hacia el registro o la visualización del detalle completo. En el detalle de turno, se utiliza un `pb-40` para evitar oclusiones.
 - **Visual Consistency**: Reutilizan el patrón de grid 2x2 para información técnica y `rounded-[2.5rem]` para las tarjetas principales con `shadow-2xl` y `backdrop-blur-md`, asegurando que la primera impresión de la app sea profesional y alineada con la identidad visual interna.
+- **Marketing Refinement**: La landing page (`/`) y la página de instalación (`/install`) utilizan el mismo patrón de card de alto impacto (`rounded-[2.5rem]`) y el fondo de gradiente radial para garantizar que la experiencia de marca comience desde el primer contacto.

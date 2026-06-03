@@ -16,12 +16,11 @@ import {
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
 import { SlotDisplay } from "@/components/matches/slot-display";
-import { MatchNavigation } from "@/components/matches/match-navigation";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import { PlusCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 // The catalog is a tool for developers to see UI components in isolation.
 // Using local sample data here is appropriate as it serves as documentation
@@ -49,7 +48,7 @@ const SAMPLE_PLAYERS: PlayerPreviewProps[] = [
 
 const SAMPLE_MATCH: MatchResultCompactMatch = {
   id: "match-sample",
-  createdAt: new Date().toISOString(),
+  createdAt: "2024-05-31T18:00:00.000Z",
   score: "6-4, 6-4",
   status: "CONFIRMED",
   players: SAMPLE_PLAYERS.map((p, i) => ({
@@ -89,6 +88,7 @@ export default function ComponentCatalogPage() {
 
   const sections = [
     { id: "headers", name: "Encabezados", icon: "📝" },
+    { id: "ui", name: "UI Básica", icon: "🎨" },
     { id: "players", name: "Jugadores", icon: "👥" },
     { id: "matches", name: "Partidos", icon: "🎾" },
     { id: "states", name: "Estados", icon: "📋" },
@@ -172,6 +172,29 @@ export default function ComponentCatalogPage() {
                   title="Título de la Página"
                   description="Descripción opcional."
                 />
+              </div>
+            </section>
+
+            <section id="ui" className="space-y-6">
+              <h2 className="text-lg font-semibold">🎨 UI Básica</h2>
+              <div className="p-4 border rounded-lg bg-muted/50 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Botones (rounded-xl)</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Button>Primary</Button>
+                    <Button variant="secondary">Secondary</Button>
+                    <Button variant="outline">Outline</Button>
+                    <Button variant="ghost">Ghost</Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Badges (rounded-xl)</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>Default</Badge>
+                    <Badge variant="outline">Outline</Badge>
+                    <Badge variant="success">Success</Badge>
+                  </div>
+                </div>
               </div>
             </section>
 
