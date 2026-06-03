@@ -224,6 +224,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
 
+### ✅ Ergonomía Móvil y Tactile Selectors en Turnos
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Sustitución de selects nativos por selectores táctiles en cuadrícula (`rounded-2xl`) para Duración, Cupos y Nivel en la creación de turnos.
+  - Refinamiento del Detalle de Turno (`/t/[id]`) con estética de alta fidelidad: cards `rounded-[2.5rem]`, animaciones de entrada y jerarquía visual mejorada.
+  - Optimización del contenedor CTA fijo en vistas públicas con gradientes más suaves y espaciado corregido (`pb-40`).
+  - Mejora de los placeholders de "Cupo disponible" con estética dashed y feedback visual al hover.
+- **Archivos relacionados**:
+  - `src/app/(app)/turnos/nuevo/page.tsx`
+  - `src/app/t/[id]/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
