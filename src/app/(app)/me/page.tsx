@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, AlertCircle } from "lucide-react";
+import { CalendarDays, Trophy, AlertCircle, Clock, FileText, CheckCircle2 } from "lucide-react";
 
 async function getEnhancedUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
   const matches = await prisma.match.findMany({
@@ -181,14 +181,17 @@ export default async function DashboardPage() {
             </h2>
           </div>
           <div className="grid gap-3">
-            {pendingActionMatches.map((match) => (
-              <MatchResultCompact
-                key={match.id}
-                match={match}
-                detailUrl={`/match/${match.id}/result`}
-                label={match.score ? "Confirmación pendiente" : "Cargar resultado"}
-              />
-            ))}
+            {pendingActionMatches.map((match) => {
+              const needsScore = !match.score;
+              return (
+                <MatchResultCompact
+                  key={match.id}
+                  match={match}
+                  detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
+                  label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                />
+              );
+            })}
           </div>
         </section>
       )}

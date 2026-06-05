@@ -44,7 +44,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
 ## 10. Gestión de Perfil y Formularios
-- **Visual Selector Grid**: Los niveles y tipos de formato se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects nativos.
+- **Visual Selector Grid**: Los niveles, tipos de formato y marcadores de sets se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects e inputs nativos.
 - **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 
