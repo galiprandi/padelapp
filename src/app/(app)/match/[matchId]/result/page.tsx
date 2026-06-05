@@ -6,11 +6,11 @@ import { notFound, useRouter } from 'next/navigation';
 import { getMatchByIdAction, saveMatchResultAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { MatchNavigation } from "@/components/matches/match-navigation";
 import { PairInline } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
+import { cn } from "@/lib/utils";
 
 interface MatchPlayer {
     id: string;
@@ -167,55 +167,72 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                     </div>
                 ) : (
                     <Fragment>
-                        <div className="space-y-4">
-                            {teams.map((team, index) => (
-                                <Fragment key={team.id}>
-                                    <PairInline
-                                        players={team.players}
-                                        label={team.label}
-                                    />
-                                    <div className="relative rounded-xl border border-border/80 bg-muted/30 mt-4">
-                                        <span className="absolute left-4 top-0 -translate-y-1/2 rounded-full bg-background px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                            Sets
-                                        </span>
-                                        <div className="p-4 pt-6">
-                                            <div className="flex items-center justify-center gap-6">
-                                                {Array.from({ length: Math.max(1, match.sets || 1) }, (_, setIndex) => (
-                                                    <div key={setIndex} className="flex flex-col items-center gap-2">
-                                                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                            Set {setIndex + 1}
-                                                        </span>
-                                                        <Input
-                                                            type="number"
-                                                            inputMode="numeric"
-                                                            aria-label={`Juegos del equipo ${team.label} en set ${setIndex + 1}`}
-                                                            min={0}
-                                                            max={7}
-                                                            placeholder="0"
-                                                            className="w-12 h-12 text-center text-lg font-semibold px-0"
-                                                            value={scores[setIndex]?.[index] ?? 0}
-                                                            autoSelect
-                                                            onChange={(e) => {
-                                                                const val = parseInt(e.target.value) || 0;
-                                                                setScores(prev => {
-                                                                    const newScores = prev.map(s => [...s]);
-                                                                    if (!newScores[setIndex]) {
-                                                                        newScores[setIndex] = [0, 0];
-                                                                    }
-                                                                    newScores[setIndex][index] = val;
-                                                                    return newScores;
-                                                                });
-                                                            }}
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
+                        <div className="space-y-10">
+                            {Array.from({ length: Math.max(1, match.sets || 1) }, (_, setIndex) => (
+                                <section
+                                    key={setIndex}
+                                    className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                    style={{ animationDelay: `${setIndex * 100}ms` }}
+                                >
+                                    <div className="flex items-center justify-between px-1">
+                                        <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Set {setIndex + 1}</h2>
+                                        <div className="h-px flex-1 mx-4 bg-border/40" />
                                     </div>
-                                </Fragment>
+
+                                    <div className="grid gap-8">
+                                        {teams.map((team, teamIndex) => (
+                                            <div key={team.id} className="space-y-4">
+                                                <div className="flex items-center justify-between px-2">
+                                                    <div className="flex flex-col gap-1 min-w-0">
+                                                        <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">{team.label}</span>
+                                                        <span className="text-sm font-bold text-foreground truncate leading-none">
+                                                            {team.players.map((p: { name: string }) => p.name).join(" & ")}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl font-black text-primary border border-primary/20 shadow-inner">
+                                                        {scores[setIndex]?.[teamIndex] ?? 0}
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-4 gap-2">
+                                                    {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
+                                                        const isSelected = (scores[setIndex]?.[teamIndex] ?? 0) === num;
+                                                        return (
+                                                            <button
+                                                                key={num}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setScores(prev => {
+                                                                        const newScores = prev.map(s => [...s]);
+                                                                        if (!newScores[setIndex]) newScores[setIndex] = [0, 0];
+                                                                        newScores[setIndex][teamIndex] = num;
+                                                                        return newScores;
+                                                                    });
+                                                                }}
+                                                                className={cn(
+                                                                    "h-14 rounded-2xl border text-xl font-black transition-all active:scale-[0.95] relative overflow-hidden",
+                                                                    isSelected
+                                                                        ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                                                                        : "bg-card/40 border-border/40 text-muted-foreground/70 hover:bg-card/60"
+                                                                )}
+                                                            >
+                                                                {num}
+                                                                {isSelected && (
+                                                                    <div className="absolute top-1 right-1">
+                                                                        <Check className="h-3 w-3 opacity-50" />
+                                                                    </div>
+                                                                )}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
                             ))}
                         </div>
-                        <div className="mt-6">
+                        <div className="mt-12 pt-6 border-t border-border/40">
                             <MatchNavigation
                                 primaryButtonText={pending ? "Guardando..." : "Guardar resultado"}
                                 onPrimaryClick={save}
