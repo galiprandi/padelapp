@@ -17,7 +17,7 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="group relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="group relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98] duration-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm z-10">
         {label}
       </span>
@@ -252,7 +252,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
 
               {!isLastTeam ? (
                 <div className="relative h-px w-full bg-border/20" aria-hidden>
-                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-[8px] font-black text-muted-foreground/30 uppercase tracking-tighter">
+                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-3 text-[8px] font-black text-muted-foreground/50 uppercase tracking-tighter">
                     vs
                    </div>
                 </div>

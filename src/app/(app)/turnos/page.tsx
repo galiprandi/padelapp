@@ -31,10 +31,11 @@ export default async function TurnsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-12 pb-8">
       <PageHeader
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."
+        size="lg"
         action={
           <Button asChild className="w-full md:w-auto rounded-xl h-11 font-bold">
             <Link href="/turnos/nuevo">
@@ -46,8 +47,8 @@ export default async function TurnsPage() {
       />
 
       <div className="hidden md:block">
-        <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm p-5 border border-border/40">
-          <div className="flex items-center justify-between gap-4">
+        <Card className="rounded-3xl bg-card/50 backdrop-blur-sm p-6 border border-border/40 shadow-sm">
+          <div className="flex items-center justify-between gap-6">
             <div className="flex-1 space-y-1">
               <CardTitle className="text-base font-bold">¿No encontrás tu partido?</CardTitle>
               <CardDescription className="text-xs">Creá un turno y compartí el link con tu grupo.</CardDescription>
@@ -83,7 +84,7 @@ export default async function TurnsPage() {
       </div>
 
       <div className="fixed bottom-24 right-5 md:hidden z-40">
-        <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40">
+        <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40 active:scale-90 transition-all">
           <Link href="/turnos/nuevo">
             <Plus className="h-7 w-7" />
           </Link>
