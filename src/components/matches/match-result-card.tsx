@@ -6,6 +6,8 @@ import Link from "next/link";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { Trophy, ChevronRight } from "lucide-react";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -15,12 +17,12 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 shadow-sm overflow-hidden">
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm">
+    <div className="group relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm z-10">
         {label}
       </span>
       <div className="min-h-24 rounded-3xl p-5 pt-8 text-sm text-muted-foreground">{children}</div>
-      {footer ? <div className="border-t border-border/40 bg-background/30 px-5 py-4 text-xs text-muted-foreground">{footer}</div> : null}
+      {footer ? <div className="border-t border-border/40 bg-background/30 px-5 py-3 text-xs text-muted-foreground">{footer}</div> : null}
     </div>
   );
 }
@@ -52,6 +54,7 @@ export interface MatchResultCompactProps {
   match: MatchResultCompactMatch;
   matchDate?: Date | string;
   detailUrl?: string;
+  viewerId?: string;
 }
 
 function parseScoreSets(score?: string | null): Array<[number, number]> {
@@ -73,11 +76,9 @@ function parseScoreSets(score?: string | null): Array<[number, number]> {
     .filter((value): value is [number, number] => Array.isArray(value));
 }
 
-import { useSession } from "next-auth/react";
-
-export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl }: MatchResultCompactProps) {
+export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl, viewerId: propViewerId }: MatchResultCompactProps) {
   const { data: session } = useSession();
-  const viewerId = session?.user?.id;
+  const viewerId = propViewerId ?? session?.user?.id;
   const parsedSets = parseScoreSets(match.score);
   const scoresMatrix: Array<Array<number>> = [[], []];
 
@@ -162,11 +163,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest transition-all", statusClassName)}>
                     {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
-                  <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground">{formattedDate ?? "—"}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
                 </div>
                 {matchDetailUrl ? (
-                  <Link href={matchDetailUrl} className="text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
+                  <Link href={matchDetailUrl} className="group/link flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-all">
                     Detalle
+                    <ChevronRight className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
                   </Link>
                 ) : null}
               </div>
@@ -174,7 +176,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           : null
       }
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
         {normalizedTeams.map((team, teamIndex) => {
           const isLastTeam = teamIndex === normalizedTeams.length - 1;
           const indices = Array.from({ length: segmentsToRender }, (_, idx) => idx);
@@ -190,18 +192,25 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                       key={`team-${team.id}-player-${player.id}`}
                       name={player.name}
                       image={player.image ?? undefined}
-                      className={cn("border-2 border-background", index === 0 ? "ml-0" : "-ml-2.5")}
+                      className={cn(
+                        "border-2 border-background shadow-sm transition-transform group-hover:scale-105",
+                        index === 0 ? "ml-0" : "-ml-3"
+                      )}
+                      size={36}
                     />
                   ))}
                 </div>
 
-                <div className="flex flex-col text-sm font-medium text-foreground min-w-0">
+                <div className="flex flex-col text-sm font-bold text-foreground min-w-0 leading-tight">
                   {team.players.map((player) => (
-                    <span key={`team-${team.id}-name-${player.id}`} className="truncate">{player.name}</span>
+                    <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
+                      <span className="truncate">{player.name}</span>
+                      {team.isWinner && <Trophy className="h-3 w-3 shrink-0 text-yellow-500" />}
+                    </div>
                   ))}
                 </div>
 
-                <div className="flex min-w-[104px] items-center justify-end gap-1 pl-3">
+                <div className="flex min-w-[104px] items-center justify-end gap-1.5 pl-3">
                   {indices.map((setIndex) => {
                     const rawValue = teamScores[setIndex];
                     const opponentRawValue = opponentScores[setIndex];
@@ -211,16 +220,16 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                     const didWinSet = hasNumericValues && numeric > opponentNumeric;
                     const isDraw = hasNumericValues && numeric === opponentNumeric;
 
-                    let segmentClass = "bg-muted/30 text-muted-foreground/50 border-transparent";
+                    let segmentClass = "bg-muted/20 text-muted-foreground/40 border-transparent";
                     if (hasNumericValues) {
                       if (didWinSet) {
-                        segmentClass = "bg-primary text-primary-foreground shadow-sm border-primary";
+                        segmentClass = "bg-primary text-primary-foreground shadow-md shadow-primary/20 border-primary scale-105 z-10";
                       } else if (isDraw) {
                         segmentClass = "bg-muted text-foreground border-border/20";
                       } else if (team.isWinner === false) {
-                        segmentClass = "bg-muted/20 text-muted-foreground/60 border-transparent";
+                        segmentClass = "bg-muted/10 text-muted-foreground/50 border-transparent";
                       } else {
-                        segmentClass = "bg-muted text-foreground border-border/20";
+                        segmentClass = "bg-muted/40 text-foreground/80 border-border/20";
                       }
                     }
 
@@ -230,7 +239,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
                         className={cn(
-                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-all",
+                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-all duration-300",
                           segmentClass
                         )}
                       >
@@ -241,7 +250,13 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                 </div>
               </div>
 
-              {!isLastTeam ? <div className="mx-auto h-px w-[20%] bg-border/40" aria-hidden /> : null}
+              {!isLastTeam ? (
+                <div className="relative h-px w-full bg-border/20" aria-hidden>
+                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-[8px] font-black text-muted-foreground/30 uppercase tracking-tighter">
+                    vs
+                   </div>
+                </div>
+              ) : null}
             </Fragment>
           );
         })}

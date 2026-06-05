@@ -247,6 +247,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/install/page.tsx`
   - `src/components/ui/badge.tsx`
 
+### ✅ Evolución del "Bubble Aesthetic" V3 (Ranking y Partidos)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Introducción de un **Podio de Honor** dinámico en el ranking para destacar al Top 3 con estética premium.
+  - Refactor de `MatchResultCompact` con separadores visuales "vs", indicadores de trofeo para ganadores y animaciones de escala en sets ganados.
+  - Estandarización de tipografía `font-black` en botones y cabeceras de sección para mayor impacto visual.
+  - Implementación de animaciones de entrada consistentes (`animate-in`) en todas las vistas principales de la aplicación.
+- **Archivos relacionados**:
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/app/(app)/match/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
