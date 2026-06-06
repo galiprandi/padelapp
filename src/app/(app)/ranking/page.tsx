@@ -26,10 +26,11 @@ export default async function RankingPage() {
   const restOfPlayers = players.slice(3);
 
   return (
-    <div className="flex flex-col gap-8 pb-8">
+    <div className="flex flex-col gap-12 pb-8">
       <PageHeader
         title="Ranking"
         description="Posiciones actualizadas según resultados confirmados y actividad reciente."
+        size="lg"
       />
 
       {currentUser && currentUser.matchesPlayed > 0 && (
@@ -90,7 +91,7 @@ export default async function RankingPage() {
                         name={topThree[0].alias ?? topThree[0].displayName ?? "Player"}
                         image={topThree[0].image ?? undefined}
                         size={80}
-                        className="border-4 border-yellow-400 shadow-2xl scale-110"
+                        className="border-4 border-yellow-400 shadow-2xl scale-110 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
                       />
                       <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-xs font-black text-yellow-900 shadow-md border-2 border-background">
                         1

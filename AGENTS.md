@@ -269,6 +269,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `src/components/matches/match-result-card.tsx`
+### ✅ Estandarización Visual y Refinamiento Premium (V4)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Estandarización de espaciado jerárquico (`gap-12`) y tamaño de cabecera (`PageHeader size="lg"`) en todas las vistas principales (Dashboard, Ranking, Turnos, Partidos).
+  - Mejora visual del Podio de Ranking: borders metálicos más definidos y efecto de "aura" dorada para el primer puesto.
+  - Refinamiento de feedback táctil: incorporación de `active:scale-[0.98]` en `MatchResultCard` y estandarización de `active:scale-90` para botones flotantes (FAB) en móviles.
+  - Pulido de legibilidad en `MatchResultCompact`: aumento de contraste y espaciado en el separador central "vs".
+- **Archivos relacionados**:
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `DESIGN.md`
 
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
