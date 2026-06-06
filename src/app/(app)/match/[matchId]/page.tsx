@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
+import { ShareButton } from "@/components/share/share-button";
 import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
@@ -138,22 +140,36 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </span>
         }
         action={
-          !isClosed ? (
-            <div className="flex flex-col gap-3 w-full">
-              <Button
-                asChild
-                className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-bold"
-              >
-                <Link href={`/match/${match.id}/result`}>
-                  <FileText className="mr-2 h-5 w-5" />
-                  Ingresar Resultado
-                </Link>
-              </Button>
-              <p className="text-[10px] font-black uppercase tracking-widest text-center text-muted-foreground/60">
-                Una vez jugado, cargá el resultado acá
-              </p>
-            </div>
-          ) : null
+          <div className="flex flex-col gap-3 w-full">
+            {!isClosed ? (
+              <>
+                <Button
+                  asChild
+                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-bold"
+                >
+                  <Link href={`/match/${match.id}/result`}>
+                    <FileText className="mr-2 h-5 w-5" />
+                    Ingresar Resultado
+                  </Link>
+                </Button>
+                <ShareButton
+                  title="Invitación a partido de Pádel"
+                  text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
+                  url={createMagicLink({ resource: "match", identifier: match.id }).url}
+                  variant="outline"
+                  className="w-full h-12 rounded-2xl font-bold border-primary/20 hover:bg-primary/5 text-primary"
+                />
+              </>
+            ) : (
+              <ShareButton
+                title="Resultado de Pádel"
+                text="¡Mira el resultado de nuestro partido de pádel!"
+                url={createMagicLink({ resource: "match", identifier: match.id }).url}
+                variant="outline"
+                className="w-full h-12 rounded-2xl font-bold border-primary/20 hover:bg-primary/5 text-primary"
+              />
+            )}
+          </div>
         }
       />
 

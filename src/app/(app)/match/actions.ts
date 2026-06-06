@@ -912,6 +912,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
     courtNumber: string | null;
     notes: string | null;
     score: string | null;
+    date: Date;
     createdAt: Date;
     creator?: {
       id: string;
@@ -990,6 +991,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
         courtNumber: match.courtNumber,
         notes: match.notes,
         score: match.score,
+        date: match.date,
         createdAt: match.createdAt,
         creator: match.creator,
         players: match.players,

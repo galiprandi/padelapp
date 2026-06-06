@@ -259,6 +259,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/page.tsx`
   - `src/components/matches/match-result-card.tsx`
 
+### ✅ Dashboard Inteligente y Compartición de Partidos (V2)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refinamiento de etiquetas de confirmación: diferenciación clara entre "Confirmar resultado" (acción pendiente del usuario) y "Esperando otros" (ya confirmado por el usuario).
+  - Integración de `ShareButton` en el detalle del partido para invitaciones y resultados usando `match.date`.
+  - Mejora de `EmptyState` en agenda con CTAs duales para fomentar tanto el descubrimiento como la creación.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
