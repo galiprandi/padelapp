@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2, UserMinus } from "lucide-react";
+import { Share2, UserMinus, ArrowLeftRight } from "lucide-react";
 
 interface ManageSlotModalProps {
   open: boolean;
@@ -13,6 +13,7 @@ interface ManageSlotModalProps {
   onSave: (name: string) => void;
   onShare: (name: string) => void;
   onRelease?: () => void;
+  onSwap?: () => void;
   onClose: () => void;
 }
 
@@ -34,6 +35,7 @@ export function ManageSlotModal({
   onSave,
   onShare,
   onRelease,
+  onSwap,
   onClose,
 }: ManageSlotModalProps) {
   const [name, setName] = useState(placeholderName);
@@ -89,18 +91,32 @@ export function ManageSlotModal({
           <h2 id="modal-title" className="text-xl font-semibold text-foreground">
             Gestionar jugador
           </h2>
-          {onRelease && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={onRelease}
-            >
-              <UserMinus className="mr-2 h-4 w-4" />
-              Liberar
-            </Button>
-          )}
+          <div className="flex gap-1">
+            {onSwap && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-primary hover:bg-primary/10"
+                onClick={onSwap}
+                title="Cambiar equipo"
+              >
+                <ArrowLeftRight className="h-4 w-4" />
+              </Button>
+            )}
+            {onRelease && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={onRelease}
+              >
+                <UserMinus className="mr-2 h-4 w-4" />
+                Liberar
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="space-y-3">

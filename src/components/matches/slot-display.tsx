@@ -13,6 +13,7 @@ interface SlotDisplayProps {
   slot: SlotValue | null;
   userDisplayName: string;
   isActive: boolean;
+  isCurrentUser?: boolean;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
 }
@@ -23,6 +24,7 @@ export function SlotDisplay({
   slot,
   userDisplayName,
   isActive,
+  isCurrentUser,
   onSlotClick,
   onManageClick,
 }: SlotDisplayProps) {
@@ -72,7 +74,14 @@ export function SlotDisplay({
           position + 1
         )}
       </div>
-      <p className="flex-1 truncate text-sm font-semibold text-foreground">{displayName}</p>
+      <p className="flex-1 truncate text-sm font-semibold text-foreground">
+        {displayName}
+        {isCurrentUser && (
+          <span className="ml-2 rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-primary">
+            Tú
+          </span>
+        )}
+      </p>
       {isOwnerSlot ? null : (
         <div className="flex items-center gap-1">
           <Button

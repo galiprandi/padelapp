@@ -10,8 +10,10 @@ import type { TeamKey } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import appSettings from "@/config/app-settings.json";
+import { useSession } from "next-auth/react";
 
 export default function RegisterMatchPage() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const turnId = searchParams.get("turnId");
 
@@ -108,7 +110,8 @@ export default function RegisterMatchPage() {
         currentStep={currentStep}
         teamState={teamState}
         activeSlot={activeSlot}
-        userDisplayName="Usuario" // This should come from session
+        userId={session?.user?.id}
+        userDisplayName={session?.user?.name ?? "Usuario"}
         matchType={matchType}
         sets={sets}
         setsValid={setsValid}

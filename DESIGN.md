@@ -10,7 +10,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
 
 ## 2. Componentes Clave
-- **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
+- **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Permite al organizador intercambiar jugadores entre equipos (Swap Action) para balancear parejas con un solo clic, asegurando una gestión ágil post-creación.
 - **RankingList**: (En `/ranking/page.tsx`) Lista de jugadores refinada con un **Podio de Honor** para el Top 3. Los líderes destacan con avatares de mayor tamaño, bordes metálicos (oro, plata, bronce) y trofeos animados. La lista global utiliza `rounded-3xl`, avatares integrados y tipografía `font-black` para una estética premium.
 - **EmptyState**: Componente refinado para secciones sin datos. Utiliza `bg-card/50`, bordes sólidos (`border-border/40`), un generoso padding vertical (`py-16`) e iconos destacados en círculos `bg-primary/5` para mantener la jerarquía visual del "bubble aesthetic".
 - **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.

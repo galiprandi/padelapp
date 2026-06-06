@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { PairPreview, PlayerPreviewProps } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
-import { renamePlaceholderAction, releaseMatchSlotAction } from "@/app/(app)/match/actions";
+import { renamePlaceholderAction, releaseMatchSlotAction, swapMatchPlayersAction } from "@/app/(app)/match/actions";
 import appSettings from "@/config/app-settings.json";
+import { useSession } from "next-auth/react";
 
 export interface MatchTeamPlayer {
   matchPlayerId: string;
@@ -25,9 +26,11 @@ export interface MatchTeamView {
 
 interface MatchPlayersManagerProps {
   teams: MatchTeamView[];
+  creatorId?: string;
 }
 
-export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
+export function MatchPlayersManager({ teams, creatorId }: MatchPlayersManagerProps) {
+  const { data: session } = useSession();
   const router = useRouter();
   const { showToast } = useToast();
   const [, startTransition] = useTransition();
@@ -49,6 +52,45 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
       playerId: player.matchPlayerId,
       userId: player.userId || null,
       name: player.placeholderName || player.name,
+    });
+  }
+
+  async function handleSwap() {
+    if (!manageModal.playerId) return;
+
+    // Find the current player and their team
+    let currentPlayerTeamIdx = -1;
+    let currentPlayerIdx = -1;
+
+    teams.forEach((team, tIdx) => {
+      const pIdx = team.players.findIndex(p => p.matchPlayerId === manageModal.playerId);
+      if (pIdx !== -1) {
+        currentPlayerTeamIdx = tIdx;
+        currentPlayerIdx = pIdx;
+      }
+    });
+
+    if (currentPlayerTeamIdx === -1) return;
+
+    // Target the player in the same position of the OTHER team
+    const otherTeamIdx = (currentPlayerTeamIdx + 1) % 2;
+    const targetPlayer = teams[otherTeamIdx].players[currentPlayerIdx];
+
+    if (!targetPlayer) return;
+
+    startTransition(async () => {
+      const response = await swapMatchPlayersAction({
+        player1Id: manageModal.playerId!,
+        player2Id: targetPlayer.matchPlayerId,
+      });
+
+      if (response.status === "ok") {
+        showToast("Posiciones intercambiadas");
+        closeManageModal();
+        router.refresh();
+      } else {
+        showToast(response.message ?? "No pudimos intercambiar las posiciones");
+      }
     });
   }
 
@@ -110,6 +152,8 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
     }
   }
 
+  const isCreator = session?.user?.id === creatorId;
+
   async function handleRelease() {
     if (!manageModal.playerId) return;
 
@@ -153,7 +197,8 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
         placeholderName={manageModal.name || "Jugador"}
         onSave={handleSave}
         onShare={handleShareIntent}
-        onRelease={manageModal.userId ? handleRelease : undefined}
+        onRelease={isCreator ? handleRelease : undefined}
+        onSwap={isCreator ? handleSwap : undefined}
         onClose={closeManageModal}
       />
     </>

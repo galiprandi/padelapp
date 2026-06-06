@@ -425,6 +425,71 @@ export async function submitMatchResultAction(
   }
 }
 
+export interface SwapPlayersInput {
+  player1Id: string;
+  player2Id: string;
+}
+
+export async function swapMatchPlayersAction(input: SwapPlayersInput): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+  }
+
+  try {
+    const [player1, player2] = await Promise.all([
+      prisma.matchPlayer.findUnique({
+        where: { id: input.player1Id },
+        include: { match: true },
+      }),
+      prisma.matchPlayer.findUnique({
+        where: { id: input.player2Id },
+        include: { match: true },
+      }),
+    ]);
+
+    if (!player1 || !player2) {
+      return { status: "error", message: "No encontramos alguno de los jugadores." };
+    }
+
+    if (player1.matchId !== player2.matchId) {
+      return { status: "error", message: "Los jugadores deben pertenecer al mismo partido." };
+    }
+
+    if (player1.match.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede intercambiar posiciones." };
+    }
+
+    await prisma.$transaction([
+      prisma.matchPlayer.update({
+        where: { id: player1.id },
+        data: {
+          position: player2.position,
+          teamId: player2.teamId,
+        },
+      }),
+      prisma.matchPlayer.update({
+        where: { id: player2.id },
+        data: {
+          position: player1.position,
+          teamId: player1.teamId,
+        },
+      }),
+    ]);
+
+    revalidatePath(`/match/${player1.matchId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("swapMatchPlayersAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos intercambiar los jugadores. Intentá nuevamente.",
+    };
+  }
+}
+
 interface UpdateMatchDetailsInput {
   matchId: string;
   club?: string | null;
@@ -905,6 +970,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
   status: "ok" | "error";
   match?: {
     id: string;
+      creatorId: string;
     status: string;
     sets: number;
     matchType: string;
@@ -983,6 +1049,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
       status: "ok",
       match: {
         id: match.id,
+        creatorId: match.creatorId,
         status: match.status,
         sets: match.sets,
         matchType: match.matchType,
