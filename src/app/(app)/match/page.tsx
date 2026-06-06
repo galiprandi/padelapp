@@ -118,9 +118,9 @@ export default async function MatchListPage() {
 
       {viewerId && (
         <div className="fixed bottom-24 right-5 md:hidden z-40 animate-in slide-in-from-bottom-8 duration-700">
-          <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40 active:scale-90 transition-all">
+          <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40 active:scale-90 active:bg-primary transition-all">
             <Link href="/match/new">
-              <Plus className="h-7 w-7" />
+              <Plus className="h-8 w-8 stroke-[3]" />
             </Link>
           </Button>
         </div>

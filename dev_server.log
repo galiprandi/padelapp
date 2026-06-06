@@ -1,0 +1,20 @@
+
+> padelapp@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 551ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling /catalog ...
+ GET /catalog 200 in 6.5s (next.js: 5.5s, application-code: 987ms)
+ GET /api/auth/session 200 in 2.9s (next.js: 2.8s, application-code: 31ms)
+ GET /api/auth/session 200 in 40ms (next.js: 30ms, application-code: 10ms)
+ GET /login 200 in 1427ms (next.js: 1165ms, application-code: 262ms)
+ GET /api/auth/session 200 in 37ms (next.js: 29ms, application-code: 8ms)
+ GET /api/auth/session 200 in 12ms (next.js: 4ms, application-code: 7ms)
+ ELIFECYCLE  Command failed.
+[?25h

@@ -55,7 +55,7 @@ export function MatchNavigation({
     <Button
       type="button"
       variant={secondaryVariant}
-      className="w-full"
+      className="w-full h-12 rounded-xl font-bold"
       onClick={onSecondaryClick}
     >
       {secondaryButtonText}
@@ -63,19 +63,19 @@ export function MatchNavigation({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 pt-4 border-t border-border/40">
       <Button
         type="button"
-        className="w-full"
+        className="w-full h-14 rounded-2xl text-lg font-black shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
       >
-        {primaryLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {primaryLoading && <Loader2 className="mr-2 h-6 w-6 animate-spin" />}
         {primaryButtonText}
       </Button>
 
       {secondaryIsLink && secondaryHref ? (
-        <Button asChild type="button" variant={secondaryVariant} className="w-full">
+        <Button asChild type="button" variant={secondaryVariant} className="w-full h-12 rounded-xl font-bold">
           <Link href={secondaryHref}>{secondaryButtonText}</Link>
         </Button>
       ) : (

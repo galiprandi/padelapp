@@ -31,6 +31,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.
 - **Glassmorphism**: La barra de navegación utiliza `bg-zinc-950/90` y `backdrop-blur-lg` para integrarse suavemente con el contenido.
 - **Tactile Feedback**: Componentes interactivos como `TurnCard` y botones implementan `active:scale-[0.98]` para una sensación de respuesta nativa. Los selectores de cuadrícula proporcionan feedback visual inmediato al seleccionar opciones.
+- **Floating Action Buttons (FAB)**: Los botones de acción rápida en mobile utilizan `h-14 w-14`, `rounded-2xl` y una sombra prominente. Incluyen un feedback agresivo de `active:scale-90` e íconos con mayor peso visual (`stroke-[3]`).
 
 ## 6. Integración de Flujos (Turnos -> Partidos)
 - **Turnos como Lead**: Los turnos abiertos actúan como el embudo principal de jugadores.
@@ -44,8 +45,10 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
 ## 10. Gestión de Perfil y Formularios
-- **Visual Selector Grid**: Los niveles, tipos de formato y marcadores de sets se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects e inputs nativos.
+- **Visual Selector Grid**: Los niveles, tipos de formato, cantidad de sets y marcadores de resultados se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, eliminando la dependencia de inputs numéricos nativos y mejorando la ergonomía.
 - **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
+- **Step Transitions**: Los formularios de múltiples pasos implementan animaciones de entrada (`animate-in fade-in slide-in-from-bottom-4`) para una navegación fluida y profesional.
+- **Action Buttons**: Los CTAs primarios en flujos críticos utilizan `h-14`, `rounded-2xl`, `font-black` y sombras dinámicas (`shadow-primary/20`) para maximizar la claridad operativa.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 
 ## 9. Vistas de Invitación (Públicas)

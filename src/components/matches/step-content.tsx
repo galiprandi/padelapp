@@ -65,7 +65,7 @@ export function StepContent({
   onPreviousStep,
   onCreateMatch,
 }: StepContentProps) {
-  const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8";
+  const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500";
 
   if (currentStep === 0) {
     return (
@@ -78,7 +78,7 @@ export function StepContent({
 
           <div className="grid gap-6">
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Pareja A</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja A</p>
               <div className="grid gap-2">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
@@ -95,7 +95,7 @@ export function StepContent({
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Pareja B</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja B</p>
               <div className="grid gap-2">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
@@ -138,7 +138,7 @@ export function StepContent({
 
           <div className="space-y-6">
             <div className="space-y-3">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {MATCH_TYPE_OPTIONS.map((option) => {
                   const isSelected = matchType === option.value;
@@ -148,7 +148,7 @@ export function StepContent({
                       type="button"
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
-                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-medium text-left active:scale-[0.98]",
+                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-bold text-left active:scale-[0.98]",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
@@ -163,25 +163,34 @@ export function StepContent({
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="sets" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
-              <Input
-                id="sets"
-                inputMode="numeric"
-                type="number"
-                min={MIN_SETS}
-                max={MAX_SETS}
-                value={sets}
-                onChange={(event) => onSetsChange(event.target.value)}
-                autoSelect
-                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
-              />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {["1", "3", "5"].map((option) => {
+                  const isSelected = sets === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => onSetsChange(option)}
+                      className={cn(
+                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-bold active:scale-[0.98]",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                      )}
+                    >
+                      {option} {parseInt(option) === 1 ? 'Set' : 'Sets'}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="space-y-3 rounded-3xl border border-border/40 bg-card/40 p-5">
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="counts-ranking" className="text-sm font-bold">Sumar puntos para el Ranking</Label>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <Label htmlFor="counts-ranking" className="text-sm font-bold leading-tight">Sumar puntos para el Ranking</Label>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     Si está activo, el resultado impactará en tu posición y delta del ranking global.
                   </p>
                 </div>
@@ -217,7 +226,7 @@ export function StepContent({
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <Label htmlFor="club" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
+            <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
             <Input
               id="club"
               placeholder="Ej: Padel City, Tie Break"
@@ -228,7 +237,7 @@ export function StepContent({
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="court" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
+            <Label htmlFor="court" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
             <Input
               id="court"
               placeholder="Ej: 3, Central"
