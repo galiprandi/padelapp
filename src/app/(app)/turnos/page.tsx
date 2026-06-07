@@ -37,7 +37,7 @@ export default async function TurnsPage() {
         description="Unite a partidos de tu nivel o creá uno nuevo."
         size="lg"
         action={
-          <Button asChild className="w-full md:w-auto rounded-xl h-11 font-bold">
+          <Button asChild className="w-full md:w-auto rounded-xl h-11 font-black">
             <Link href="/turnos/nuevo">
               <Plus className="mr-2 h-5 w-5" />
               Crear turno
@@ -50,10 +50,10 @@ export default async function TurnsPage() {
         <Card className="rounded-3xl bg-card/50 backdrop-blur-sm p-6 border border-border/40 shadow-sm">
           <div className="flex items-center justify-between gap-6">
             <div className="flex-1 space-y-1">
-              <CardTitle className="text-base font-bold">¿No encontrás tu partido?</CardTitle>
+              <CardTitle className="text-base font-black">¿No encontrás tu partido?</CardTitle>
               <CardDescription className="text-xs">Creá un turno y compartí el link con tu grupo.</CardDescription>
             </div>
-            <Button asChild className="rounded-xl px-8 font-bold">
+            <Button asChild className="rounded-xl px-8 font-black">
               <Link href="/turnos/nuevo">Crear turno</Link>
             </Button>
           </div>
@@ -75,7 +75,7 @@ export default async function TurnsPage() {
             description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
             icon={CalendarOff}
             action={
-              <Button asChild className="w-full max-w-xs rounded-xl h-11 font-bold">
+              <Button asChild className="w-full max-w-xs rounded-xl h-11 font-black">
                 <Link href="/turnos/nuevo">Crear turno ahora</Link>
               </Button>
             }

@@ -28,7 +28,7 @@ async function ConfirmResultForm({ matchId }: { matchId: string }) {
 
   return (
     <form action={handleConfirm} className="w-full">
-      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
         <CheckCircle2 className="mr-2 h-6 w-6" />
         Confirmar Resultado
       </Button>
@@ -48,6 +48,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     return (
       <div className="flex flex-col gap-6 px-5 py-10">
         <PageHeader
+          size="lg"
           title="Partido no encontrado"
           description="El partido que estás buscando no se encuentra. Sin embargo, puedes crear uno nuevo."
           align="center"
@@ -119,8 +120,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const userNeedsToConfirm = viewerId && match.players.some(p => p.userId === viewerId && !p.resultConfirmed);
 
   return (
-    <div className="flex flex-col gap-8 pb-10">
+    <div className="flex flex-col gap-12 pb-8">
       <PageHeader
+        size="lg"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
         description={
           <span className="flex flex-col gap-3">
@@ -129,11 +131,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
               </Badge>
               <span className="text-xs font-medium text-muted-foreground">
-                Creado por <span className="text-foreground font-bold">{match.creator?.displayName || 'Usuario'}</span>
+                Creado por <span className="text-foreground font-black">{match.creator?.displayName || 'Usuario'}</span>
               </span>
             </span>
             {match.club && (
-              <span className="text-sm font-bold text-foreground bg-primary/5 px-3 py-1 rounded-full border border-primary/10 inline-flex items-center w-fit">
+              <span className="text-sm font-black text-foreground bg-primary/5 px-3 py-1 rounded-full border border-primary/10 inline-flex items-center w-fit">
                 📍 {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
               </span>
             )}
@@ -145,7 +147,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               <>
                 <Button
                   asChild
-                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-bold"
+                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-black"
                 >
                   <Link href={`/match/${match.id}/result`}>
                     <FileText className="mr-2 h-5 w-5" />
@@ -157,7 +159,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
                   url={createMagicLink({ resource: "match", identifier: match.id }).url}
                   variant="outline"
-                  className="w-full h-12 rounded-2xl font-bold border-primary/20 hover:bg-primary/5 text-primary"
+                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary"
                 />
               </>
             ) : (
@@ -166,7 +168,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 text="¡Mira el resultado de nuestro partido de pádel!"
                 url={createMagicLink({ resource: "match", identifier: match.id }).url}
                 variant="outline"
-                className="w-full h-12 rounded-2xl font-bold border-primary/20 hover:bg-primary/5 text-primary"
+                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary"
               />
             )}
           </div>
@@ -230,7 +232,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                             )}>
                               {player.name}
                             </span>
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40 mt-1">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 mt-1">
                               {player.isConfirmed ? "Confirmado" : "Esperando"}
                             </span>
                           </div>

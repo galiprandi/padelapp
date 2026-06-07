@@ -48,7 +48,7 @@ export default async function RankingPage() {
 
       <Tabs defaultValue="individual" className="w-full">
         <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm">
-          <TabsTrigger value="individual" className="rounded-xl h-full font-bold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
+          <TabsTrigger value="individual" className="rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
             Ranking Individual
           </TabsTrigger>
         </TabsList>
@@ -75,7 +75,7 @@ export default async function RankingPage() {
                       <p className="text-[11px] font-black truncate max-w-full px-1">
                         {topThree[1].alias ?? topThree[1].displayName}
                       </p>
-                      <p className="text-[10px] font-bold text-muted-foreground">
+                      <p className="text-[10px] font-black text-muted-foreground">
                         {Math.round(topThree[1].rankingScore)} pts
                       </p>
                     </div>
@@ -126,7 +126,7 @@ export default async function RankingPage() {
                       <p className="text-[10px] font-black truncate max-w-full px-1">
                         {topThree[2].alias ?? topThree[2].displayName}
                       </p>
-                      <p className="text-[10px] font-bold text-muted-foreground">
+                      <p className="text-[10px] font-black text-muted-foreground">
                         {Math.round(topThree[2].rankingScore)} pts
                       </p>
                     </div>
@@ -187,7 +187,7 @@ export default async function RankingPage() {
                             Nivel {player.level}
                           </Badge>
                           <span className={cn(
-                            "text-[10px] font-bold uppercase tracking-widest",
+                            "text-[10px] font-black uppercase tracking-widest",
                             player.id === viewerId ? "text-primary-foreground/60" : "text-muted-foreground/50"
                           )}>
                             {player.wins}V - {player.losses}D

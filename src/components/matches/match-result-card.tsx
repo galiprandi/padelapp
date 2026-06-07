@@ -163,7 +163,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest transition-all", statusClassName)}>
                     {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
-                  <span className="text-[11px] font-bold uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
+                  <span className="text-[11px] font-black uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
                 </div>
                 {matchDetailUrl ? (
                   <Link href={matchDetailUrl} className="group/link flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-all">
@@ -201,7 +201,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   ))}
                 </div>
 
-                <div className="flex flex-col text-sm font-bold text-foreground min-w-0 leading-tight">
+                <div className="flex flex-col text-sm font-black text-foreground min-w-0 leading-tight">
                   {team.players.map((player) => (
                     <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
                       <span className="truncate">{player.name}</span>

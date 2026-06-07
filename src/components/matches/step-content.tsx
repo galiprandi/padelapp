@@ -78,7 +78,7 @@ export function StepContent({
 
           <div className="grid gap-6">
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Pareja A</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja A</p>
               <div className="grid gap-2">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
@@ -95,7 +95,7 @@ export function StepContent({
               </div>
             </div>
             <div className="space-y-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Pareja B</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja B</p>
               <div className="grid gap-2">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
@@ -138,7 +138,7 @@ export function StepContent({
 
           <div className="space-y-6">
             <div className="space-y-3">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {MATCH_TYPE_OPTIONS.map((option) => {
                   const isSelected = matchType === option.value;
@@ -163,7 +163,7 @@ export function StepContent({
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="sets" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
+              <Label htmlFor="sets" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
               <Input
                 id="sets"
                 inputMode="numeric"
@@ -180,7 +180,7 @@ export function StepContent({
             <div className="space-y-3 rounded-3xl border border-border/40 bg-card/40 p-5">
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="counts-ranking" className="text-sm font-bold">Sumar puntos para el Ranking</Label>
+                  <Label htmlFor="counts-ranking" className="text-sm font-black">Sumar puntos para el Ranking</Label>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Si está activo, el resultado impactará en tu posición y delta del ranking global.
                   </p>
@@ -217,7 +217,7 @@ export function StepContent({
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <Label htmlFor="club" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
+            <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
             <Input
               id="club"
               placeholder="Ej: Padel City, Tie Break"
@@ -228,7 +228,7 @@ export function StepContent({
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="court" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
+            <Label htmlFor="court" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
             <Input
               id="court"
               placeholder="Ej: 3, Central"

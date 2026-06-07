@@ -30,7 +30,7 @@ export function UserRankingBanner({
     >
       <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary/70">
             Tu Ranking Actual
           </span>
           <div className="flex items-baseline gap-2">
@@ -41,38 +41,38 @@ export function UserRankingBanner({
               {delta > 0 ? (
                 <div className="flex items-center text-green-500">
                   <TrendingUp className="h-4 w-4" />
-                  <span className="text-sm font-bold">+{delta}</span>
+                  <span className="text-sm font-black">+{delta}</span>
                 </div>
               ) : delta < 0 ? (
                 <div className="flex items-center text-red-500">
                   <TrendingDown className="h-4 w-4" />
-                  <span className="text-sm font-bold">{delta}</span>
+                  <span className="text-sm font-black">{delta}</span>
                 </div>
               ) : (
                 <div className="flex items-center text-muted-foreground">
                   <Minus className="h-4 w-4" />
-                  <span className="text-sm font-bold">0</span>
+                  <span className="text-sm font-black">0</span>
                 </div>
               )}
             </div>
           </div>
-          <Badge variant="success" className="mt-1 font-bold uppercase tracking-tight">
+          <Badge variant="success" className="mt-1 font-black uppercase tracking-tight">
             Nivel {level}
           </Badge>
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:flex sm:gap-8">
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               Puntos
             </span>
-            <span className="text-xl font-bold">{Math.round(score)}</span>
+            <span className="text-xl font-black">{Math.round(score)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               Récord (V-D)
             </span>
-            <span className="text-xl font-bold">
+            <span className="text-xl font-black">
               {wins} - {losses}
             </span>
           </div>
@@ -104,14 +104,14 @@ export function UserRankingCard({
           <Trophy className="h-6 w-6" />
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
             Mi Posición
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-black">
               {position ? `#${position}` : "--"}
             </span>
-            <span className="text-xs font-bold text-muted-foreground">
+            <span className="text-xs font-black text-muted-foreground">
               {Math.round(score)} pts
             </span>
           </div>
@@ -126,17 +126,17 @@ export function UserRankingCard({
           {delta > 0 ? (
             <>
               <TrendingUp className="h-3 w-3 text-green-500" />
-              <span className="text-[10px] font-bold text-green-500">+{delta}</span>
+              <span className="text-[10px] font-black text-green-500">+{delta}</span>
             </>
           ) : delta < 0 ? (
             <>
               <TrendingDown className="h-3 w-3 text-red-500" />
-              <span className="text-[10px] font-bold text-red-500">{delta}</span>
+              <span className="text-[10px] font-black text-red-500">{delta}</span>
             </>
           ) : (
             <>
               <Minus className="h-3 w-3 text-muted-foreground" />
-              <span className="text-[10px] font-bold text-muted-foreground">0</span>
+              <span className="text-[10px] font-black text-muted-foreground">0</span>
             </>
           )}
         </div>

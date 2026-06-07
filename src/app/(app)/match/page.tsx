@@ -91,7 +91,7 @@ export default async function MatchListPage() {
                 description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
                 icon={CalendarOff}
                 action={
-                  <Button asChild className="w-full max-w-xs rounded-xl font-bold active:scale-[0.98] transition-all">
+                  <Button asChild className="w-full max-w-xs rounded-xl font-black active:scale-[0.98] transition-all">
                     <Link href="/match/new">Crear partido</Link>
                   </Button>
                 }

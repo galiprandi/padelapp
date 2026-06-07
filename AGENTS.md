@@ -282,9 +282,23 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/match-result-card.tsx`
   - `DESIGN.md`
 
+### ✅ Refinamiento Premium y Estandarización V5
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor de `PlayerPreview`, `PlayerWithRanking` y `PlayerCompact` con el "bubble aesthetic" (rounded-2xl, font-black, backdrop-blur).
+  - Refinamiento de `PairPreview` y `PairInline` con conectores simplificados y mejor jerarquía visual.
+  - Estandarización global de tipografía: migración masiva de `font-black` a `font-black` en títulos, botones y etiquetas para un look más audaz y profesional.
+  - Sincronización del catálogo de componentes (`/catalog`) con los nuevos estándares visuales.
+  - Mejora de `PageHeader`: implementación de `font-black` nativo y optimización de alineación para descripciones complejas.
+- **Archivos relacionados**:
+  - `src/components/players/player-cards.tsx`
+  - `src/components/page-header.tsx`
+  - `src/app/catalog/page.tsx`
+  - Global `*.tsx` refactor.
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
-- **Jerarquía clara**: encabezados `text-2xl font-bold` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
+- **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
 - **Tarjetas interactivas**: usar contenedores con bordes redondeados, estados hover/active/focus visibles y accesibles (`focus-visible:ring`), replicando el patrón de selección de jugadores.
 - **Acciones primarias/secundarias**: botón principal lleno arriba, seguido por acciones secundarias variante `ghost` u `outline`; mantener mínimo 44px de alto y full width en mobile.
 - **Accesibilidad y estados**: definir `aria-label`, `aria-current` o roles según corresponda, asegurar contraste ≥4.5:1, y contemplar validaciones visuales claras antes de avanzar.

@@ -60,7 +60,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
     <form className="space-y-8" onSubmit={handleSubmit}>
       <div className="space-y-3">
         <div className="space-y-1">
-          <Label htmlFor="alias" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+          <Label htmlFor="alias" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
             Alias
           </Label>
           <Input
@@ -88,7 +88,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
 
       <div className="space-y-4">
         <div className="space-y-1">
-          <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
             Nivel de Juego
           </Label>
           <p className="text-xs text-muted-foreground leading-relaxed">
@@ -121,7 +121,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
       </div>
 
       <div className="flex flex-col gap-3 pt-2">
-        <Button type="submit" className="w-full h-12 rounded-xl font-bold text-base" disabled={isSaving}>
+        <Button type="submit" className="w-full h-12 rounded-xl font-black text-base" disabled={isSaving}>
           {isSaving && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
           {isSaving ? "Guardando..." : "Guardar perfil"}
         </Button>

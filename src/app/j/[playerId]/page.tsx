@@ -127,7 +127,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
           <span className="flex flex-col items-center gap-1">
              <span className="text-xs font-black uppercase tracking-widest text-primary">Invitación directa</span>
              <span className="text-sm text-muted-foreground text-center">
-              {match.creator.displayName} te invitó a sumarte como <span className="font-bold text-foreground underline decoration-primary decoration-2 underline-offset-2">{teamLabel}</span>.
+              {match.creator.displayName} te invitó a sumarte como <span className="font-black text-foreground underline decoration-primary decoration-2 underline-offset-2">{teamLabel}</span>.
              </span>
           </span>
         }
@@ -141,18 +141,18 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-1">
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Organizador</p>
-              <p className="font-bold">{match.creator.displayName}</p>
+              <p className="font-black">{match.creator.displayName}</p>
             </div>
             <div className="space-y-1">
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Estado</p>
-              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[8px] font-bold tracking-widest">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[8px] font-black tracking-widest">
                 {formatStatus(match.status)}
               </Badge>
             </div>
             {match.club && (
               <div className="col-span-2 space-y-1">
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Club / Cancha</p>
-                <p className="font-bold">{match.club} {match.courtNumber ? `(Cancha ${match.courtNumber})` : ''}</p>
+                <p className="font-black">{match.club} {match.courtNumber ? `(Cancha ${match.courtNumber})` : ''}</p>
               </div>
             )}
           </div>
@@ -187,7 +187,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                           {initials(name)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={cn("text-sm font-bold truncate", isOccupied ? "text-foreground" : "text-muted-foreground/60 italic")}>
+                          <p className={cn("text-sm font-black truncate", isOccupied ? "text-foreground" : "text-muted-foreground/60 italic")}>
                             {name}
                           </p>
                           <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50">Jugador {slot.position + 1}</p>
@@ -224,19 +224,19 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
               {helperMessage && (
                 <div className="flex items-center gap-2 rounded-xl bg-destructive/10 p-3 text-destructive border border-destructive/20">
                   <AlertCircle className="h-4 w-4 shrink-0" />
-                  <p className="text-xs font-bold leading-tight">{helperMessage}</p>
+                  <p className="text-xs font-black leading-tight">{helperMessage}</p>
                 </div>
               )}
 
               <div className="space-y-3">
                 {!session?.user ? (
-                  <Button asChild className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl shadow-primary/20" size="lg">
+                  <Button asChild className="w-full rounded-2xl h-14 text-lg font-black shadow-xl shadow-primary/20" size="lg">
                     <Link href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}>
                       Continuar con Google
                     </Link>
                   </Button>
                 ) : slotTakenByViewer ? (
-                  <Button asChild variant="secondary" className="w-full rounded-2xl h-14 text-lg font-bold" size="lg">
+                  <Button asChild variant="secondary" className="w-full rounded-2xl h-14 text-lg font-black" size="lg">
                     <Link href={`/match/${match.id}`}>Ya estás unido · Ver partido</Link>
                   </Button>
                 ) : (

@@ -60,7 +60,7 @@ export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps)
 
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-bold text-foreground">{turn.club}</p>
+            <p className="truncate font-black text-foreground">{turn.club}</p>
             <div className="flex items-center gap-1.5 shrink-0">
               {isJoined && (
                 <span className="rounded-full bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
@@ -75,7 +75,7 @@ export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps)
             </div>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
             <span className="flex items-center gap-1">
               <Clock className="h-3.5 w-3.5 text-primary/70" />
               {timeStr}
