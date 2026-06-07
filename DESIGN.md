@@ -7,7 +7,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay` y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm / md**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`. Las vistas públicas de alta jerarquía utilizan `backdrop-blur-md`.
-- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-bold`).
+- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-black`).
 
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
@@ -42,6 +42,10 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 days.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
+
+## 8. Typography and High-Impact Styling (V5)
+- **Font-black standard**: Titles (`PageHeader`), section headers, and key interactive labels (Buttons, Navigation, Names in lists) utilize `font-black` (weight 900) to ensure maximum visual weight and a premium "bubble" feel.
+- **Consistency**: All primary views are standardized with `gap-12` vertical spacing and `PageHeader size="lg"` for a balanced, spacious layout.
 
 ## 10. Gestión de Perfil y Formularios
 - **Visual Selector Grid**: Los niveles, tipos de formato y marcadores de sets se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects e inputs nativos.

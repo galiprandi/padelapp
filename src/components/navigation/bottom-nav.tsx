@@ -63,7 +63,7 @@ export function BottomNav({
                 aria-hidden="true"
               />
               <span className={cn(
-                "mt-1 text-[10px] font-bold tracking-tight transition-opacity duration-200",
+                "mt-1 text-[10px] font-black tracking-tight transition-opacity duration-200",
                 isActive ? "opacity-100" : "opacity-70"
               )}>
                 {item.label}
@@ -76,7 +76,7 @@ export function BottomNav({
           <Link
             href={notificationsHref}
             aria-label="Notificaciones"
-            className="absolute -top-3 right-4 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="absolute -top-3 right-4 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary px-2 text-xs font-black text-primary-foreground shadow transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <span>{notificationsCount}</span>
           </Link>

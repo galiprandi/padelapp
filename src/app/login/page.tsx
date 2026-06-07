@@ -37,7 +37,7 @@ export default async function LoginPage() {
           <form action={handleSignIn}>
             <Button
               type="submit"
-              className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+              className="h-14 w-full rounded-2xl text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
               size="lg"
             >
               Continuar con Google

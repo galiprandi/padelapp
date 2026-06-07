@@ -74,6 +74,7 @@ export default function NewTurnPage() {
   return (
     <div className="flex flex-col gap-6 pb-10">
       <PageHeader
+        size="lg"
         title="Nuevo turno"
         description="Configurá cancha, nivel y cupos. Al guardar tendrás un link listo para compartir."
       />
@@ -81,7 +82,7 @@ export default function NewTurnPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card className="rounded-3xl border-border/40 bg-card/50 backdrop-blur-sm shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg font-bold">Detalles principales</CardTitle>
+            <CardTitle className="text-lg font-black">Detalles principales</CardTitle>
             <CardDescription className="text-xs">Información visible para quienes reciban el link.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -135,7 +136,7 @@ export default function NewTurnPage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, duration: option.value })}
                       className={cn(
-                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-bold active:scale-[0.98]",
+                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
@@ -159,7 +160,7 @@ export default function NewTurnPage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
                       className={cn(
-                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-bold text-left active:scale-[0.98]",
+                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
@@ -184,7 +185,7 @@ export default function NewTurnPage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, suggestedLevel: option.value })}
                       className={cn(
-                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-bold text-left active:scale-[0.98]",
+                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
@@ -213,7 +214,7 @@ export default function NewTurnPage() {
 
         <Button
           type="submit"
-          className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
+          className="w-full rounded-2xl h-14 text-lg font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
           size="lg"
           disabled={isPending}
         >

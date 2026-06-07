@@ -72,7 +72,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         description={
           <span className="flex flex-col items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Turno Abierto</span>
-            <span className="flex items-center gap-1.5 capitalize font-bold text-foreground/80">
+            <span className="flex items-center gap-1.5 capitalize font-black text-foreground/80">
               <Calendar className="h-4 w-4 text-primary" />
               {dateStr}
             </span>
@@ -138,7 +138,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 className="h-12 w-12 border-2 border-background shadow-sm"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-foreground truncate leading-tight">{p.user.alias ?? p.user.displayName}</p>
+                <p className="font-black text-foreground truncate leading-tight">{p.user.alias ?? p.user.displayName}</p>
                 <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Nivel {p.user.level}</p>
               </div>
               {p.userId === turn.creatorId && (
@@ -158,7 +158,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none z-50">
         <div className="max-w-md mx-auto pointer-events-auto">
           {!viewerId ? (
-            <Button asChild className="w-full rounded-2xl h-14 text-lg font-bold shadow-2xl shadow-primary/30" size="lg">
+            <Button asChild className="w-full rounded-2xl h-14 text-lg font-black shadow-2xl shadow-primary/30" size="lg">
               <Link href={`/login?callbackUrl=/t/${id}`}>
                 Iniciá sesión para anotarte
               </Link>
@@ -175,7 +175,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </div>
           ) : isJoined ? (
             <div className="flex flex-col gap-4">
-              <div className="w-full rounded-2xl h-14 flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold text-lg shadow-inner">
+              <div className="w-full rounded-2xl h-14 flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-black text-lg shadow-inner">
                 ¡Ya estás anotado!
               </div>
               <LeaveTurnForm turnId={id} />
@@ -200,7 +200,7 @@ function StartMatchForm({ turnId }: { turnId: string }) {
 
   return (
     <form action={handleStart}>
-      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-bold shadow-2xl bg-emerald-500 hover:bg-emerald-600 text-white border-none transition-all active:scale-[0.98]" size="lg">
+      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-2xl bg-emerald-500 hover:bg-emerald-600 text-white border-none transition-all active:scale-[0.98]" size="lg">
         <Play className="mr-2 h-6 w-6 fill-current" />
         Iniciar partido
       </Button>
@@ -216,7 +216,7 @@ function LeaveTurnForm({ turnId }: { turnId: string }) {
 
   return (
     <form action={handleLeave}>
-      <Button type="submit" variant="ghost" className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-10 font-bold uppercase tracking-widest text-[10px] transition-all" size="sm">
+      <Button type="submit" variant="ghost" className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-10 font-black uppercase tracking-widest text-[10px] transition-all" size="sm">
         <LogOut className="mr-2 h-3.5 w-3.5" />
         Bajarme del turno
       </Button>
@@ -232,7 +232,7 @@ function JoinTurnForm({ turnId }: { turnId: string }) {
 
   return (
     <form action={handleJoin}>
-      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-bold shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]" size="lg">
+      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]" size="lg">
         <UserPlus className="mr-2 h-6 w-6" />
         Anotarme ahora
       </Button>

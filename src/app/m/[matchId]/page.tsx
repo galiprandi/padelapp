@@ -126,7 +126,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div>
               <p className="text-lg font-black">{match.sets} sets</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Modalidad</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Modalidad</p>
             </div>
           </div>
 
@@ -136,7 +136,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div>
               <p className="text-lg font-black">{formatStatus(match.status)}</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Estado</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Estado</p>
             </div>
           </div>
 
@@ -146,7 +146,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div className="text-left">
               <p className="text-lg font-black">{match.club || "Club por definir"}</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                 {match.courtNumber ? `Cancha ${match.courtNumber}` : "Sede del encuentro"}
               </p>
             </div>
@@ -185,7 +185,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                       return (
                         <div key={player.id} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/10 p-4 text-muted-foreground/40">
                           <div className="h-12 w-12 rounded-full bg-muted/20 border-2 border-dashed border-muted/30" />
-                          <p className="text-sm font-bold uppercase tracking-widest italic opacity-60">Cupo disponible</p>
+                          <p className="text-sm font-black uppercase tracking-widest italic opacity-60">Cupo disponible</p>
                         </div>
                       );
                     }
@@ -205,7 +205,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                           )}
                         </div>
                         <div className="flex-1">
-                          <p className="font-bold text-foreground leading-none">{name}</p>
+                          <p className="font-black text-foreground leading-none">{name}</p>
                           <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                             {isConfirmed ? "Confirmado" : "Pendiente"}
                           </p>
@@ -225,7 +225,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
 
       <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
         <div className="max-w-md mx-auto pointer-events-auto space-y-3">
-          <Button asChild className="w-full rounded-2xl h-14 text-lg font-bold shadow-2xl shadow-primary/30" size="lg">
+          <Button asChild className="w-full rounded-2xl h-14 text-lg font-black shadow-2xl shadow-primary/30" size="lg">
             <Link href={`/match/${match.id}`}>
               Ver partido en PadelApp
             </Link>
@@ -244,7 +244,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
           ) : (
             <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20 text-center">
-              <p className="text-xs font-bold text-primary uppercase tracking-widest">
+              <p className="text-xs font-black text-primary uppercase tracking-widest">
                 ¡Ya formás parte de este partido!
               </p>
             </div>

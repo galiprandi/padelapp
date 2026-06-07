@@ -28,7 +28,7 @@ export function EmptyState({ title, description, icon: Icon, action, className }
         </div>
       )}
       <div className="space-y-1.5">
-        <h3 className="text-lg font-bold tracking-tight text-foreground">{title}</h3>
+        <h3 className="text-lg font-black tracking-tight text-foreground">{title}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground max-w-[260px] mx-auto">{description}</p>
       </div>
       {action ? <div className="pt-2 w-full flex justify-center">{action}</div> : null}

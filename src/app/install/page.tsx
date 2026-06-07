@@ -58,7 +58,7 @@ export default function InstallPage() {
           </div>
 
           <section className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-xs font-medium text-muted-foreground leading-relaxed">
-            <p className="mb-1 font-bold text-foreground">¿No ves la opción?</p>
+            <p className="mb-1 font-black text-foreground">¿No ves la opción?</p>
             <p>Asegurate de estar usando el navegador por defecto (Safari en iOS o Chrome en Android).</p>
           </section>
         </CardContent>
@@ -66,7 +66,7 @@ export default function InstallPage() {
         <CardFooter className="pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
           <Button
             variant="secondary"
-            className="w-full rounded-xl font-bold"
+            className="w-full rounded-xl font-black"
             asChild
           >
             <Link href="/">Volver al inicio</Link>

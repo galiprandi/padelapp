@@ -155,7 +155,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
             <div className="max-w-2xl mx-auto">
                 {isClosed ? (
                     <div className="text-center space-y-4">
-                        <div className="text-2xl font-bold text-foreground">
+                        <div className="text-2xl font-black text-foreground">
                             {match.score}
                         </div>
                         <p className="text-muted-foreground">
@@ -185,7 +185,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
                                                 <div className="flex items-center justify-between px-2">
                                                     <div className="flex flex-col gap-1 min-w-0">
                                                         <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">{team.label}</span>
-                                                        <span className="text-sm font-bold text-foreground truncate leading-none">
+                                                        <span className="text-sm font-black text-foreground truncate leading-none">
                                                             {team.players.map((p: { name: string }) => p.name).join(" & ")}
                                                         </span>
                                                     </div>

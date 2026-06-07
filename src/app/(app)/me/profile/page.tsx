@@ -35,8 +35,8 @@ export default async function ProfilePage() {
       <Card className="rounded-3xl bg-card/50 backdrop-blur-sm border-border/40 overflow-hidden">
         <CardContent className="p-6 space-y-6">
           <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Nombre de Google</p>
-            <p className="text-lg font-bold text-foreground">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">Nombre de Google</p>
+            <p className="text-lg font-black text-foreground">
               {user.displayName}
             </p>
             <p className="text-xs text-muted-foreground italic">

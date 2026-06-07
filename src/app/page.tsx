@@ -39,7 +39,7 @@ export default function MarketingLanding() {
             <Button
               type="submit"
               size="lg"
-              className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+              className="h-14 w-full rounded-2xl text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
             >
               Registrar partido
             </Button>

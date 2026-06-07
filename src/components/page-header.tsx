@@ -70,11 +70,11 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <header className={cn("space-y-3 w-full", alignClasses[align], className)}>
-      <div className="flex items-center gap-3">
+      <div className={cn("flex items-center gap-3", align === 'center' && 'justify-center')}>
         {icon && <div className="text-muted-foreground">{icon}</div>}
         <h1 
           className={cn(
-            "font-bold text-foreground tracking-tight",
+            "font-black text-foreground tracking-tight",
             titleSizes[size],
             titleClassName
           )}
@@ -84,20 +84,21 @@ export function PageHeader({
       </div>
       
       {description && (
-        <p className={cn(
-          "text-muted-foreground max-w-3xl text-left", // Aseguramos alineación izquierda
+        <div className={cn(
+          "text-muted-foreground max-w-3xl",
+          align === 'left' ? 'text-left' : align === 'center' ? 'mx-auto text-center' : 'ml-auto text-right',
           {
-            'text-sm': typeof description === 'string',
+            'text-sm font-medium leading-relaxed': typeof description === 'string',
           },
           descriptionClassName
         )}>
           {description}
-        </p>
+        </div>
       )}
       
       {action && (
         <div className={cn(
-          "pt-1",
+          "pt-2",
           {
             'flex justify-center': align === 'center',
             'flex justify-end': align === 'right',
