@@ -131,20 +131,24 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         </div>
         <div className="grid gap-3">
           {turn.players.map((p) => (
-            <div key={p.id} className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 active:scale-[0.99]">
+            <Link
+              key={p.id}
+              href={`/p/${p.userId}`}
+              className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 active:scale-[0.99] group/player"
+            >
               <PlayerAvatar
                 name={p.user.alias ?? p.user.displayName}
                 image={p.user.image ?? undefined}
-                className="h-12 w-12 border-2 border-background shadow-sm"
+                className="h-12 w-12 border-2 border-background shadow-sm transition-transform group-hover/player:scale-110"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-black text-foreground truncate leading-tight">{p.user.alias ?? p.user.displayName}</p>
+                <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors">{p.user.alias ?? p.user.displayName}</p>
                 <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Nivel {p.user.level}</p>
               </div>
               {p.userId === turn.creatorId && (
                 <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20 shrink-0">Organizador</span>
               )}
-            </div>
+            </Link>
           ))}
           {Array.from({ length: turn.maxPlayers - turn.players.length }).map((_, i) => (
             <div key={i} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/5 p-4 text-muted-foreground/30 transition-all hover:bg-muted/10">

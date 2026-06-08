@@ -8,6 +8,7 @@ import { auth } from "@/auth";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
+import Link from "next/link";
 
 export default async function RankingPage() {
   const session = await auth();
@@ -59,78 +60,78 @@ export default async function RankingPage() {
               <div className="grid grid-cols-3 items-end gap-2 px-2 pt-4 pb-2 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                 {/* 2nd Place */}
                 {topThree[1] && (
-                  <div className="flex flex-col items-center gap-2">
+                  <Link href={`/p/${topThree[1].id}`} className="flex flex-col items-center gap-2 group/podium">
                     <div className="relative">
                       <PlayerAvatar
                         name={topThree[1].alias ?? topThree[1].displayName ?? "Player"}
                         image={topThree[1].image ?? undefined}
                         size={64}
-                        className="border-4 border-slate-300 shadow-xl"
+                        className="border-4 border-slate-300 shadow-xl transition-transform group-hover/podium:scale-110"
                       />
                       <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-300 text-[10px] font-black text-slate-700 shadow-md border-2 border-background">
                         2
                       </div>
                     </div>
                     <div className="text-center w-full">
-                      <p className="text-[11px] font-black truncate max-w-full px-1">
+                      <p className="text-[11px] font-black truncate max-w-full px-1 group-hover/podium:text-primary transition-colors">
                         {topThree[1].alias ?? topThree[1].displayName}
                       </p>
                       <p className="text-[10px] font-black text-muted-foreground">
                         {Math.round(topThree[1].rankingScore)} pts
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 )}
 
                 {/* 1st Place */}
                 {topThree[0] && (
-                  <div className="flex flex-col items-center gap-3 -mt-4">
+                  <Link href={`/p/${topThree[0].id}`} className="flex flex-col items-center gap-3 -mt-4 group/podium">
                     <Trophy className="h-6 w-6 text-yellow-500 animate-bounce" />
                     <div className="relative">
                       <PlayerAvatar
                         name={topThree[0].alias ?? topThree[0].displayName ?? "Player"}
                         image={topThree[0].image ?? undefined}
                         size={80}
-                        className="border-4 border-yellow-400 shadow-2xl scale-110 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
+                        className="border-4 border-yellow-400 shadow-2xl scale-110 shadow-[0_0_20px_rgba(234,179,8,0.3)] transition-transform group-hover/podium:scale-[1.2]"
                       />
                       <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-xs font-black text-yellow-900 shadow-md border-2 border-background">
                         1
                       </div>
                     </div>
                     <div className="text-center w-full">
-                      <p className="text-sm font-black truncate max-w-full px-1">
+                      <p className="text-sm font-black truncate max-w-full px-1 group-hover/podium:text-primary transition-colors">
                         {topThree[0].alias ?? topThree[0].displayName}
                       </p>
                       <p className="text-xs font-black text-primary">
                         {Math.round(topThree[0].rankingScore)} pts
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 )}
 
                 {/* 3rd Place */}
                 {topThree[2] && (
-                  <div className="flex flex-col items-center gap-2">
+                  <Link href={`/p/${topThree[2].id}`} className="flex flex-col items-center gap-2 group/podium">
                     <div className="relative">
                       <PlayerAvatar
                         name={topThree[2].alias ?? topThree[2].displayName ?? "Player"}
                         image={topThree[2].image ?? undefined}
                         size={56}
-                        className="border-4 border-amber-600/50 shadow-lg"
+                        className="border-4 border-amber-600/50 shadow-lg transition-transform group-hover/podium:scale-110"
                       />
                       <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[9px] font-black text-amber-50 shadow-md border-2 border-background">
                         3
                       </div>
                     </div>
                     <div className="text-center w-full">
-                      <p className="text-[10px] font-black truncate max-w-full px-1">
+                      <p className="text-[10px] font-black truncate max-w-full px-1 group-hover/podium:text-primary transition-colors">
                         {topThree[2].alias ?? topThree[2].displayName}
                       </p>
                       <p className="text-[10px] font-black text-muted-foreground">
                         {Math.round(topThree[2].rankingScore)} pts
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 )}
               </div>
 
@@ -160,17 +161,20 @@ export default async function RankingPage() {
                       {player.rankingPosition ?? index + 1}
                     </div>
 
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <Link
+                      href={`/p/${player.id}`}
+                      className="flex items-center gap-3 flex-1 min-w-0 group/player"
+                    >
                       <PlayerAvatar
                         name={player.alias ?? player.displayName ?? "Player"}
                         image={player.image ?? undefined}
                         size={40}
-                        className="rounded-xl"
+                        className="rounded-xl transition-transform group-hover/player:scale-110"
                       />
                       <div className="flex-1 min-w-0">
                         <p className={cn(
-                          "font-black truncate text-sm tracking-tight",
-                          player.id === viewerId ? "text-primary-foreground" : "text-foreground"
+                          "font-black truncate text-sm tracking-tight group-hover/player:text-primary transition-colors",
+                          player.id === viewerId ? "text-primary-foreground group-hover/player:text-primary-foreground" : "text-foreground"
                         )}>
                           {player.alias ?? player.displayName}
                         </p>
@@ -194,7 +198,7 @@ export default async function RankingPage() {
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </Link>
 
                     <div className="flex flex-col items-end gap-1 pr-1">
                       <span className={cn(

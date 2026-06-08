@@ -110,6 +110,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     id: `${match.id}-team-${index}`,
     players: teamPlayers.map((player) => ({
       id: player.id,
+      userId: player.user?.id,
       name: player.displayName ?? player.user?.displayName ?? `Jugador ${player.position + 1}`,
       image: player.user?.image ?? undefined,
     })),
@@ -204,7 +205,13 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                 <div className="flex flex-col text-sm font-black text-foreground min-w-0 leading-tight">
                   {team.players.map((player) => (
                     <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
-                      <span className="truncate">{player.name}</span>
+                      {player.userId ? (
+                        <Link href={`/p/${player.userId}`} className="truncate hover:text-primary transition-colors">
+                          {player.name}
+                        </Link>
+                      ) : (
+                        <span className="truncate">{player.name}</span>
+                      )}
                       {team.isWinner && <Trophy className="h-3 w-3 shrink-0 text-yellow-500" />}
                     </div>
                   ))}

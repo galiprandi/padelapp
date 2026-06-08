@@ -224,6 +224,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
 
+### ✅ Perfiles Públicos de Jugadores
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Nueva ruta pública `/p/[userId]` para visualizar perfiles de jugadores.
+  - Integración de estadísticas competitivas (ranking, nivel, historial de partidos) en la vista de perfil.
+  - Navegación bidireccional entre ranking, detalles de partido y perfiles de jugadores.
+  - Estética premium unificada con el podio de ranking y tarjetas de resultados.
+- **Archivos relacionados**:
+  - `src/app/p/[userId]/page.tsx`
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+
 ### ✅ Ergonomía Móvil y Tactile Selectors (Turnos y Resultados)
 - **Estado**: Implementado
 - **Funcionalidades**:
