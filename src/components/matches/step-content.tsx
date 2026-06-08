@@ -39,9 +39,6 @@ const MATCH_TYPE_OPTIONS = [
   { value: "LOCAL_TOURNAMENT", label: "Torneo local" },
 ] as const;
 
-const MIN_SETS = 1;
-const MAX_SETS = 5;
-
 export function StepContent({
   currentStep,
   teamState,
@@ -65,7 +62,7 @@ export function StepContent({
   onPreviousStep,
   onCreateMatch,
 }: StepContentProps) {
-  const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8";
+  const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500";
 
   if (currentStep === 0) {
     return (
@@ -163,18 +160,27 @@ export function StepContent({
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="sets" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
-              <Input
-                id="sets"
-                inputMode="numeric"
-                type="number"
-                min={MIN_SETS}
-                max={MAX_SETS}
-                value={sets}
-                onChange={(event) => onSetsChange(event.target.value)}
-                autoSelect
-                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
-              />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {["1", "3", "5"].map((option) => {
+                  const isSelected = sets === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => onSetsChange(option)}
+                      className={cn(
+                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                      )}
+                    >
+                      {option} {parseInt(option) === 1 ? 'Set' : 'Sets'}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="space-y-3 rounded-3xl border border-border/40 bg-card/40 p-5">

@@ -198,6 +198,25 @@ export default function ComponentCatalogPage() {
                     <Badge variant="success" className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Success</Badge>
                   </div>
                 </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Selectores Táctiles (Grid)</h3>
+                  <div className="grid grid-cols-3 gap-2 max-w-xs">
+                    {["1", "3", "5"].map((option) => (
+                      <button
+                        key={option}
+                        className={cn(
+                          "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
+                          option === "3"
+                            ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                            : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                        )}
+                      >
+                        {option} {option === "1" ? 'Set' : 'Sets'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </section>
 

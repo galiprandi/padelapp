@@ -143,7 +143,7 @@ export default function MatchResultPage({ params }: { params: Promise<{ matchId:
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-12 animate-in fade-in duration-700">
             <PageHeader
                 title="Resultado del partido"
                 description={isClosed
