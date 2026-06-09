@@ -123,6 +123,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         size="lg"
+        backHref="/match"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
         description={
           <span className="flex flex-col gap-3">

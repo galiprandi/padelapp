@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 type TextAlign = 'left' | 'center' | 'right';
 type TitleSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
@@ -25,6 +28,8 @@ interface PageHeaderProps {
   descriptionClassName?: string;
   /** Additional class names for the action container */
   actionClassName?: string;
+  /** Optional href for a back button */
+  backHref?: string;
 }
 
 const alignClasses: Record<TextAlign, string> = {
@@ -67,9 +72,25 @@ export function PageHeader({
   titleClassName,
   descriptionClassName,
   actionClassName,
+  backHref,
 }: PageHeaderProps) {
   return (
     <header className={cn("space-y-3 w-full", alignClasses[align], className)}>
+      {backHref && (
+        <div className={cn("flex items-center mb-1", align === 'center' && 'justify-center')}>
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="h-8 rounded-xl px-2 font-black text-[10px] uppercase tracking-widest text-muted-foreground/60 hover:text-foreground active:scale-95 transition-all -ml-2"
+          >
+            <Link href={backHref}>
+              <ChevronLeft className="mr-1 h-3.5 w-3.5" />
+              Volver
+            </Link>
+          </Button>
+        </div>
+      )}
       <div className={cn("flex items-center gap-3", align === 'center' && 'justify-center')}>
         {icon && <div className="text-muted-foreground">{icon}</div>}
         <h1 

@@ -7,54 +7,8 @@ import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
+import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import { CalendarDays, Trophy, AlertCircle, Clock, FileText, CheckCircle2 } from "lucide-react";
-
-async function getEnhancedUserMatches(userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED") {
-  const matches = await prisma.match.findMany({
-    where: {
-      status: statusFilter,
-      players: {
-        some: { userId },
-      },
-    },
-    include: {
-      players: {
-        include: {
-          user: true,
-        },
-      },
-    },
-    orderBy: {
-      date: "desc", // Default to newest for results and pending actions
-    },
-    take: 20,
-  });
-
-  return matches.map<MatchResultCompactMatch>((match) => ({
-    id: match.id,
-    createdAt: match.date,
-    score: match.score,
-    status: match.status,
-    date: match.date,
-    players: match.players.map((player) => {
-      const preferredName = player.user && "alias" in player.user && player.user.alias
-        ? player.user.alias
-        : player.user?.displayName;
-      return {
-        id: player.id,
-        position: player.position,
-        displayName: player.displayName,
-        user: player.user
-          ? {
-            id: player.user.id,
-            displayName: preferredName ?? null,
-            image: player.user.image ?? undefined,
-          }
-          : null,
-      };
-    }),
-  }));
-}
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -82,15 +36,7 @@ export default async function DashboardPage() {
   const now = new Date();
 
   // Categorizar partidos PENDING
-  const pendingActionMatches = allPendingMatches
-    .filter(m => new Date(m.date || m.createdAt) < now)
-    .sort((a, b) => {
-      // Priorizar los que TIENEN score (necesitan confirmación) sobre los que NO tienen score (necesitan carga)
-      if (a.score && !b.score) return -1;
-      if (!a.score && b.score) return 1;
-      // Secundario: fecha más reciente primero
-      return new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime();
-    });
+  const pendingActionMatches = getPendingActions(allPendingMatches, now);
 
   const upcomingMatches = allPendingMatches
     .filter(m => new Date(m.date || m.createdAt) >= now)
@@ -169,19 +115,22 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {/* NUEVA SECCIÓN: Acciones Pendientes */}
+      {/* SECCIÓN: Acciones Pendientes */}
       {pendingActionMatches.length > 0 && (
         <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
           <div className="flex items-center justify-between px-1">
             <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
               Acciones pendientes
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground shadow-lg shadow-primary/20 animate-pulse">
                 {pendingActionMatches.length}
               </span>
             </h2>
+            <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0">
+              <Link href="/notifications">Ver todas</Link>
+            </Button>
           </div>
           <div className="grid gap-3">
-            {pendingActionMatches.map((match) => {
+            {pendingActionMatches.slice(0, 2).map((match) => {
               const needsScore = !match.score;
               return (
                 <MatchResultCompact
@@ -192,6 +141,13 @@ export default async function DashboardPage() {
                 />
               );
             })}
+            {pendingActionMatches.length > 2 && (
+              <Button variant="ghost" asChild className="w-full rounded-2xl border border-dashed border-border/60 text-muted-foreground/60 font-black uppercase tracking-widest text-[10px] h-12">
+                <Link href="/notifications">
+                  Y {pendingActionMatches.length - 2} más pendientes...
+                </Link>
+              </Button>
+            )}
           </div>
         </section>
       )}

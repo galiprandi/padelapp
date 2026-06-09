@@ -169,12 +169,24 @@ export default function ComponentCatalogPage() {
           >
             <section id="headers" className="space-y-6">
               <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
-              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
-                <PageHeader
-                  title="Título de la Página"
-                  description="Descripción opcional con jerarquía visual de alto impacto."
-                  size="lg"
-                />
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Estándar</h3>
+                  <PageHeader
+                    title="Título de la Página"
+                    description="Descripción opcional con jerarquía visual de alto impacto."
+                    size="lg"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Con botón Volver</h3>
+                  <PageHeader
+                    title="Detalle de Partido"
+                    backHref="#"
+                    description="Ejemplo con navegación de regreso integrada."
+                    size="md"
+                  />
+                </div>
               </div>
             </section>
 

@@ -28,6 +28,7 @@ export default async function ProfilePage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Editar perfil"
+        backHref="/me"
         description="Personalizá cómo te ven tus rivales y tu nivel de juego."
         size="md"
       />
