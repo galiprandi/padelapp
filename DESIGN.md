@@ -16,7 +16,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.
 - **TurnCard**: Componente unificado para mostrar turnos abiertos en listas y dashboards. Soporta variantes `default` y `recommended` (con acento en `bg-primary`) e incluye un badge de "Inscripto" si el usuario ya forma parte del turno, manteniendo la jerarquía visual con micro-etiquetas uppercase y fecha destacada.
 - **MatchResultCard / MatchResultCompact**: Polished UI para resultados. Utiliza una separación visual "vs" entre equipos. El equipo ganador se identifica con iconos de trofeo. Los segmentos de score son cuadrados perfectos (`h-9 w-9`) con `rounded-xl` y sombras dinámicas; los sets ganados escalan sutilmente (`scale-105`) para énfasis visual.
-- **Match Confirmation Flow**: Los partidos con resultado pendiente de confirmación muestran un banner de "Confirmación pendiente" con indicadores individuales (`CheckCircle2` para confirmados, `Clock` para pendientes) para incentivar el cierre del partido y el impacto en el ranking.
+- **Match Confirmation Flow**: La sección de confirmación utiliza un diseño de tarjetas individuales para cada jugador (`bg-emerald-500/5` para confirmados) con avatares de gran tamaño y micro-etiquetas de estado, asegurando una visibilidad máxima en móviles.
 
 ## 3. Arquitectura de Datos
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
@@ -48,7 +48,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Consistency**: All primary views are standardized with `gap-12` vertical spacing and `PageHeader size="lg"` for a balanced, spacious layout.
 
 ## 10. Gestión de Perfil y Formularios
-- **Visual Selector Grid**: Los niveles, tipos de formato y marcadores de sets se presentan en una cuadrícula de botones (`rounded-2xl`) para facilitar la selección táctil en móviles, evitando selects e inputs nativos.
+- **Visual Selector Grid**: La selección de cantidad de sets (1, 3, 5), niveles, tipos de formato y marcadores se realiza mediante cuadrículas de botones táctiles (`rounded-2xl`) con feedback de escala y sombras, eliminando la necesidad de inputs numéricos nativos.
 - **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 

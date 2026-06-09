@@ -120,7 +120,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const userNeedsToConfirm = viewerId && match.players.some(p => p.userId === viewerId && !p.resultConfirmed);
 
   return (
-    <div className="flex flex-col gap-12 pb-8">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         size="lg"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
@@ -186,37 +186,44 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-6 rounded-[2.5rem] bg-primary/5 p-8 backdrop-blur-md border border-primary/20 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <div className="space-y-2">
+            <section className="space-y-8 rounded-[2.5rem] bg-primary/5 p-8 backdrop-blur-md border border-primary/20 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15 text-primary shadow-sm shadow-primary/10">
                     <AlertCircle className="h-5 w-5" />
                   </div>
                   <h2 className="text-[10px] font-black uppercase tracking-widest text-foreground">Confirmación pendiente</h2>
                 </div>
-                <p className="text-xs font-medium leading-relaxed text-muted-foreground/80">
+                <p className="text-xs font-medium leading-relaxed text-muted-foreground/80 max-w-sm">
                   Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 relative">
-                <div className="absolute left-1/2 top-4 bottom-0 w-px bg-border/40 -translate-x-1/2 hidden sm:block" />
+              <div className="grid gap-6">
                 {teams.map((team) => (
                   <div key={team.id} className="space-y-4">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 border-b border-border/20 pb-1">{team.label}</p>
-                    <div className="space-y-4">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
+                      <span className="h-px w-4 bg-border/40" />
+                      {team.label}
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {team.players.map((player: {
                         id: string;
                         name: string;
                         image?: string | null;
                         isConfirmed?: boolean;
                       }) => (
-                        <div key={player.id} className="flex items-center gap-3 min-h-[40px]">
+                        <div key={player.id} className={cn(
+                          "flex items-center gap-4 p-3 rounded-2xl border transition-all duration-300",
+                          player.isConfirmed
+                            ? "bg-emerald-500/5 border-emerald-500/10"
+                            : "bg-muted/30 border-transparent"
+                        )}>
                           <div className="relative shrink-0">
-                            <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-10 w-10 border-2 border-background shadow-sm" />
+                            <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-12 w-12 border-2 border-background shadow-md" />
                             <div className={cn(
-                              "absolute -right-1 -bottom-1 rounded-full p-0.5 border-2 border-background shadow-sm transition-colors",
-                              player.isConfirmed ? "bg-emerald-500" : "bg-muted"
+                              "absolute -right-1 -bottom-1 rounded-full p-1 border-2 border-background shadow-sm transition-all duration-500",
+                              player.isConfirmed ? "bg-emerald-500 scale-110" : "bg-muted scale-90"
                             )}>
                               {player.isConfirmed ? (
                                 <CheckCircle2 className="h-3 w-3 text-white" />
@@ -227,12 +234,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           </div>
                           <div className="flex flex-col min-w-0">
                             <span className={cn(
-                              "text-xs font-black truncate leading-none",
+                              "text-sm font-black truncate leading-tight",
                               player.isConfirmed ? "text-foreground" : "text-muted-foreground/60"
                             )}>
                               {player.name}
                             </span>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 mt-1">
+                            <span className={cn(
+                              "text-[9px] font-black uppercase tracking-widest mt-1 transition-colors",
+                              player.isConfirmed ? "text-emerald-600" : "text-muted-foreground/40"
+                            )}>
                               {player.isConfirmed ? "Confirmado" : "Esperando"}
                             </span>
                           </div>
@@ -244,7 +254,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               </div>
 
               {userNeedsToConfirm && (
-                <div className="pt-6 border-t border-border/40 mt-2">
+                <div className="pt-8 border-t border-border/40 mt-2">
                   <ConfirmResultForm matchId={match.id} />
                 </div>
               )}

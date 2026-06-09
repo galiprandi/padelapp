@@ -296,6 +296,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/catalog/page.tsx`
   - Global `*.tsx` refactor.
 
+### ✅ Refinamiento UX de Partidos y Selectores Táctiles
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Sustitución de inputs numéricos por selectores táctiles (grid de botones 1-3-5) en la creación de partidos para una mejor ergonomía móvil.
+  - Rediseño de la sección de "Confirmación pendiente" en el detalle de partido con una jerarquía visual superior, avatares destacados y estados de confirmación más legibles.
+  - Estandarización de animaciones de entrada escalonadas (`animate-in fade-in`) y espaciados (`gap-12`) en todo el flujo de partidos.
+  - Actualización del Catálogo de Componentes con los nuevos patrones de selectores táctiles.
+- **Archivos relacionados**:
+  - `src/components/matches/step-content.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/app/(app)/match/[matchId]/result/page.tsx`
+  - `src/app/catalog/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
