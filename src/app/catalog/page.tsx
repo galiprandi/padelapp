@@ -108,7 +108,7 @@ export default function ComponentCatalogPage() {
               <div className="flex bg-muted/40 backdrop-blur-sm rounded-xl p-1 border border-border/20">
                 <button
                   onClick={() => setViewportMode("mobile")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "mobile"
+                  className={`flex-1 px-3 py-2 text-xs font-black rounded-lg transition-all ${viewportMode === "mobile"
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                     : "text-muted-foreground hover:text-foreground"
                     }`}
@@ -117,7 +117,7 @@ export default function ComponentCatalogPage() {
                 </button>
                 <button
                   onClick={() => setViewportMode("desktop")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "desktop"
+                  className={`flex-1 px-3 py-2 text-xs font-black rounded-lg transition-all ${viewportMode === "desktop"
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                     : "text-muted-foreground hover:text-foreground"
                     }`}
