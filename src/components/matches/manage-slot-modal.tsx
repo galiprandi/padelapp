@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2, UserMinus } from "lucide-react";
+import { Share2, UserMinus, ArrowUpDown } from "lucide-react";
 
 interface ManageSlotModalProps {
   open: boolean;
@@ -13,6 +13,7 @@ interface ManageSlotModalProps {
   onSave: (name: string) => void;
   onShare: (name: string) => void;
   onRelease?: () => void;
+  onSwap?: () => void;
   onClose: () => void;
 }
 
@@ -34,6 +35,7 @@ export function ManageSlotModal({
   onSave,
   onShare,
   onRelease,
+  onSwap,
   onClose,
 }: ManageSlotModalProps) {
   const [name, setName] = useState(placeholderName);
@@ -86,21 +88,35 @@ export function ManageSlotModal({
         className="w-full max-w-sm space-y-6 rounded-2xl border border-border/60 bg-card p-6 shadow-lg"
       >
         <div className="flex items-center justify-between">
-          <h2 id="modal-title" className="text-xl font-semibold text-foreground">
+          <h2 id="modal-title" className="text-xl font-black text-foreground">
             Gestionar jugador
           </h2>
-          {onRelease && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={onRelease}
-            >
-              <UserMinus className="mr-2 h-4 w-4" />
-              Liberar
-            </Button>
-          )}
+          <div className="flex gap-1">
+            {onSwap && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-primary hover:bg-primary/10 rounded-xl h-9 font-black uppercase tracking-widest text-[10px]"
+                onClick={onSwap}
+              >
+                <ArrowUpDown className="mr-2 h-3.5 w-3.5" />
+                Intercambiar
+              </Button>
+            )}
+            {onRelease && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-xl h-9 font-black uppercase tracking-widest text-[10px]"
+                onClick={onRelease}
+              >
+                <UserMinus className="mr-2 h-3.5 w-3.5" />
+                Liberar
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -128,12 +144,12 @@ export function ManageSlotModal({
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </div>
 
-        <div className="flex items-center justify-end gap-3">
-          <Button type="button" variant="ghost" onClick={onClose}>
-            Cancelar
+        <div className="flex flex-col gap-3 pt-2">
+          <Button type="button" className="w-full h-12 rounded-xl font-black text-base" onClick={handleAccept}>
+            Guardar cambios
           </Button>
-          <Button type="button" onClick={handleAccept}>
-            Aceptar
+          <Button type="button" variant="ghost" className="w-full h-11 rounded-xl font-black text-muted-foreground uppercase tracking-widest text-[11px]" onClick={onClose}>
+            Cancelar
           </Button>
         </div>
       </div>

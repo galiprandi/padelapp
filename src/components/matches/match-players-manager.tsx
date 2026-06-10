@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { PairPreview, PlayerPreviewProps } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
-import { renamePlaceholderAction, releaseMatchSlotAction } from "@/app/(app)/match/actions";
+import { renamePlaceholderAction, releaseMatchSlotAction, swapMatchPlayersAction } from "@/app/(app)/match/actions";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { X, ArrowUpDown } from "lucide-react";
 import appSettings from "@/config/app-settings.json";
 
 export interface MatchTeamPlayer {
@@ -24,13 +27,16 @@ export interface MatchTeamView {
 }
 
 interface MatchPlayersManagerProps {
+  matchId: string;
+  creatorId: string;
   teams: MatchTeamView[];
 }
 
-export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
+export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersManagerProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const { showToast } = useToast();
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const [manageModal, setManageModal] = useState<{
     open: boolean;
     playerId: string | null;
@@ -43,7 +49,18 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
     name: "",
   });
 
+  const [swapSourceId, setSwapSourceId] = useState<string | null>(null);
+
+  const isOrganizer = session?.user?.id === creatorId;
+
   function openManageModal(player: MatchTeamPlayer) {
+    if (!isOrganizer) return;
+
+    if (swapSourceId) {
+      handleSwap(player.matchPlayerId);
+      return;
+    }
+
     setManageModal({
       open: true,
       playerId: player.matchPlayerId,
@@ -126,22 +143,72 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
     });
   }
 
+  function initiateSwap() {
+    if (!manageModal.playerId) return;
+    setSwapSourceId(manageModal.playerId);
+    closeManageModal();
+    showToast("Seleccioná el otro jugador para intercambiar");
+  }
+
+  async function handleSwap(targetId: string) {
+    if (!swapSourceId || swapSourceId === targetId) {
+      setSwapSourceId(null);
+      return;
+    }
+
+    startTransition(async () => {
+      const response = await swapMatchPlayersAction({
+        matchId,
+        player1Id: swapSourceId,
+        player2Id: targetId,
+      });
+
+      if (response.status === "ok") {
+        showToast("Posiciones intercambiadas");
+        setSwapSourceId(null);
+        router.refresh();
+      } else {
+        showToast(response.message ?? "No pudimos realizar el cambio");
+        setSwapSourceId(null);
+      }
+    });
+  }
+
   return (
     <>
-      {teams.map((team) => (
-        <PairPreview
-          key={team.id}
-          label={team.label}
-          players={team.players.map<PlayerPreviewProps>((player) => ({
-            id: player.matchPlayerId,
-            name: player.name,
-            image: player.image || undefined,
-            isConfirmed: player.isConfirmed,
-            onManageClick: () => openManageModal(player),
-            manageAriaLabel: "Gestionar jugador",
-          }))}
-        />
-      ))}
+      {swapSourceId && (
+        <div className="fixed inset-x-0 top-20 z-50 flex justify-center px-5 animate-in slide-in-from-top-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-primary px-4 py-2 text-primary-foreground shadow-xl">
+            <ArrowUpDown className="h-4 w-4" />
+            <span className="text-xs font-black uppercase tracking-widest">Modo intercambio activo</span>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6 rounded-lg hover:bg-white/20 text-primary-foreground"
+              onClick={() => setSwapSourceId(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {teams.map((team) => (
+          <PairPreview
+            key={team.id}
+            label={team.label}
+            players={team.players.map<PlayerPreviewProps>((player) => ({
+              id: player.matchPlayerId,
+              name: player.name,
+              image: player.image || undefined,
+              isConfirmed: player.isConfirmed,
+              onManageClick: isOrganizer ? () => openManageModal(player) : undefined,
+              manageAriaLabel: isOrganizer ? "Gestionar jugador" : undefined,
+            }))}
+          />
+        ))}
+      </div>
 
       <ManageSlotModal
         open={manageModal.open}
@@ -154,6 +221,7 @@ export function MatchPlayersManager({ teams }: MatchPlayersManagerProps) {
         onSave={handleSave}
         onShare={handleShareIntent}
         onRelease={manageModal.userId ? handleRelease : undefined}
+        onSwap={initiateSwap}
         onClose={closeManageModal}
       />
     </>
