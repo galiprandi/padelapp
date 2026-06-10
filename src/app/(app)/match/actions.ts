@@ -315,6 +315,77 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
   }
 }
 
+interface SwapMatchPlayersInput {
+  matchId: string;
+  player1Id: string;
+  player2Id: string;
+}
+
+export async function swapMatchPlayersAction(input: SwapMatchPlayersInput): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: input.matchId },
+      select: { creatorId: true },
+    });
+
+    if (!match) {
+      return { status: "error", message: "No encontramos el partido." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede intercambiar posiciones." };
+    }
+
+    const [p1, p2] = await Promise.all([
+      prisma.matchPlayer.findUnique({ where: { id: input.player1Id } }),
+      prisma.matchPlayer.findUnique({ where: { id: input.player2Id } }),
+    ]);
+
+    if (!p1 || !p2 || p1.matchId !== input.matchId || p2.matchId !== input.matchId) {
+      return { status: "error", message: "Los jugadores no pertenecen a este partido." };
+    }
+
+    // Atomic swap using a transaction.
+    // We use a temporary position for one player to avoid unique constraint violations on (matchId, position).
+    await prisma.$transaction([
+      prisma.matchPlayer.update({
+        where: { id: p1.id },
+        data: { position: -1 },
+      }),
+      prisma.matchPlayer.update({
+        where: { id: p2.id },
+        data: {
+          position: p1.position,
+          teamId: p1.teamId,
+        },
+      }),
+      prisma.matchPlayer.update({
+        where: { id: p1.id },
+        data: {
+          position: p2.position,
+          teamId: p2.teamId,
+        },
+      }),
+    ]);
+
+    revalidatePath(`/match/${input.matchId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("swapMatchPlayersAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos intercambiar los jugadores. Intentá nuevamente.",
+    };
+  }
+}
+
 export interface SubmitResultInput {
   matchId: string;
   score: string;
@@ -905,6 +976,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
   status: "ok" | "error";
   match?: {
     id: string;
+    creatorId: string;
     status: string;
     sets: number;
     matchType: string;
@@ -984,6 +1056,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
       status: "ok",
       match: {
         id: match.id,
+        creatorId: match.creatorId,
         status: match.status,
         sets: match.sets,
         matchType: match.matchType,

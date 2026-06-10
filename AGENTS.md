@@ -335,6 +335,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/lib/match-queries.ts`
 
+### ✅ Intercambio de Jugadores y Gestión de Organizador
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Nueva acción `swapMatchPlayersAction` para intercambiar posiciones y equipos de forma atómica.
+  - El `MatchPlayersManager` ahora restringe las acciones de gestión (intercambiar, liberar, renombrar) exclusivamente al organizador del partido.
+  - Interfaz de "Modo Intercambio" en el detalle de partido para una experiencia táctil fluida.
+  - Refinamiento de la agenda del dashboard con CTAs duales en estados vacíos para mejorar el descubrimiento.
+- **Archivos relacionados**:
+  - `src/app/(app)/match/actions.ts`
+  - `src/components/matches/match-players-manager.tsx`
+  - `src/components/matches/manage-slot-modal.tsx`
+  - `src/app/(app)/me/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

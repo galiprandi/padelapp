@@ -181,9 +181,14 @@ export default async function DashboardPage() {
               title="Tu agenda está vacía"
               description="Sumate a un turno abierto o creá un partido con amigos para empezar."
               action={
-                <Button className="w-full rounded-xl" asChild>
-                  <Link href="/turnos">Explorar turnos</Link>
-                </Button>
+                <div className="flex flex-col w-full gap-3">
+                  <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20" asChild>
+                    <Link href="/turnos">Explorar turnos</Link>
+                  </Button>
+                  <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px]" asChild>
+                    <Link href="/ranking">Ver ranking global</Link>
+                  </Button>
+                </div>
               }
             />
           )}

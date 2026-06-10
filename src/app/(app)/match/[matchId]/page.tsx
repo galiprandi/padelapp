@@ -272,6 +272,8 @@ export default async function MatchPage({ params }: MatchPageProps) {
         </div>
       ) : (
         <MatchPlayersManager
+          matchId={match.id}
+          creatorId={match.creatorId}
           teams={teams.map((team) => ({
             id: team.id,
             label: team.label,

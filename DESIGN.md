@@ -53,6 +53,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Visual Selector Grid**: La selección de cantidad de sets (1, 3, 5), niveles, tipos de formato y marcadores se realiza mediante cuadrículas de botones táctiles (`rounded-2xl`) con feedback de escala y sombras, eliminando la necesidad de inputs numéricos nativos.
 - **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
+- **Organizer Management**: Las acciones críticas de gestión de partidos (intercambiar jugadores, liberar cupos, renombrar placeholders) están restringidas al creador del partido mediante validaciones tanto en el cliente (condicional UI) como en el servidor (Server Actions).
+- **Atomic Player Swap**: El intercambio de jugadores utiliza una transacción de base de datos con posiciones temporales para garantizar la integridad referencial y evitar conflictos de unicidad en el esquema.
 
 ## 9. Vistas de Invitación (Públicas)
 - **Shared Experience**: Las vistas bajo `/t/[id]` y `/m/[matchId]` están optimizadas para usuarios que no han iniciado sesión, utilizando el `PageHeader` centrado y micro-etiquetas de contexto claras ("Turno Abierto", "Invitación de Partido").
