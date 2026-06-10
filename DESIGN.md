@@ -25,11 +25,13 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 4. Dashboard Inteligente
 - **Priorización de Acciones**: El dashboard introduce una sección de "Acciones pendientes" ubicada en la parte superior para destacar tareas críticas (confirmar resultados o cargar scores de partidos pasados). Esto asegura que el "Time to Action" sea mínimo para cerrar ciclos de partidos.
 - **Unified Activity View (Agenda)**: La sección "Mi Agenda" se reserva exclusivamente para actividad futura (turnos y partidos próximos), proporcionando una vista limpia de planificación ordenada cronológicamente.
-- **Hierarchical Separation**: Se utiliza un espacio estándar de `gap-12` para separar los bloques lógicos en vistas principales (Dashboard, Ranking, Turnos, Partidos). Esto asegura una respiración visual consistente y profesional.
+- **Hierarchical Separation**: Se utiliza un espacio estándar de `gap-12` para separar los bloques lógicos en vistas principales (Dashboard, Ranking, Turnos, Partidos, Notificaciones). Esto asegura una respiración visual consistente y profesional.
+- **Centralized Data Retrieval**: Las operaciones de lectura de base de datos para partidos de usuarios y acciones pendientes están centralizadas en `src/lib/match-queries.ts` para garantizar un filtrado, ordenamiento (confirmaciones primero) y mapeo de datos consistente en toda la UI.
 
 ## 5. Navegación y Operatividad
 - **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.
 - **Glassmorphism**: La barra de navegación utiliza `bg-zinc-950/90` y `backdrop-blur-lg` para integrarse suavemente con el contenido.
+- **Notifications Center**: Se implementa un Centro de Notificaciones dedicado en `/notifications` para agregar todas las acciones pendientes de partidos (scores y confirmaciones), complementado por un badge de conteo dinámico en el `BottomNav`.
 - **Tactile Feedback**: Componentes interactivos como `TurnCard`, `MatchResultCard` y botones implementan `active:scale-[0.98]` para una sensación de respuesta nativa. Los botones flotantes de acción (FAB) en móviles utilizan `active:scale-90` para un feedback más pronunciado. Los selectores de cuadrícula proporcionan feedback visual inmediato al seleccionar opciones.
 
 ## 6. Integración de Flujos (Turnos -> Partidos)

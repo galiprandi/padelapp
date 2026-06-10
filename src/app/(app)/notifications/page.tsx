@@ -1,0 +1,74 @@
+import { auth } from "@/auth";
+import { getPendingActions } from "@/lib/match-queries";
+import { PageHeader } from "@/components/page-header";
+import { MatchResultCompact } from "@/components/matches/match-result-card";
+import { EmptyState } from "@/components/empty-state";
+import { BellOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+export default async function NotificationsPage() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) return null;
+
+  const pendingActions = await getPendingActions(userId);
+
+  return (
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
+      <PageHeader
+        title="Notificaciones"
+        description="Gestioná tus confirmaciones y cargas de resultados pendientes."
+        size="lg"
+      />
+
+      <section className="space-y-6">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-lg font-black tracking-tight uppercase tracking-widest text-[11px] text-muted-foreground/70">
+            Acciones requeridas
+          </h2>
+          {pendingActions.length > 0 && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground animate-in zoom-in duration-300">
+              {pendingActions.length}
+            </span>
+          )}
+        </div>
+
+        {pendingActions.length > 0 ? (
+          <div className="grid gap-4">
+            {pendingActions.map((match, index) => {
+              const needsScore = !match.score;
+              return (
+                <div
+                  key={match.id}
+                  className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <MatchResultCompact
+                    match={match}
+                    detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
+                    label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="pt-4">
+            <EmptyState
+              icon={BellOff}
+              title="Todo al día"
+              description="No tenés acciones pendientes por ahora. ¡Buen trabajo!"
+              action={
+                <Button className="w-full max-w-xs rounded-xl font-black" asChild>
+                  <Link href="/me">Volver al inicio</Link>
+                </Button>
+              }
+            />
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}

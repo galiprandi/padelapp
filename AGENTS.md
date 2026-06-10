@@ -321,6 +321,20 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/result/page.tsx`
   - `src/app/catalog/page.tsx`
 
+### ✅ Centro de Notificaciones y Consistencia UX
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Centro de Notificaciones dedicado en `/notifications` para centralizar acciones pendientes (confirmaciones y carga de scores).
+  - Integración de badge de conteo dinámico en la barra de navegación inferior (`BottomNav`).
+  - Centralización de la lógica de consulta de partidos y acciones pendientes en `src/lib/match-queries.ts`.
+  - Refinamiento de la jerarquía visual del Dashboard con enlaces de "Ver todas" para acciones excedentes.
+  - Estandarización de tipografía `font-black` en encabezados de sección para alineación con V5 Premium.
+- **Archivos relacionados**:
+  - `src/app/(app)/notifications/page.tsx`
+  - `src/app/(app)/layout.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/lib/match-queries.ts`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
