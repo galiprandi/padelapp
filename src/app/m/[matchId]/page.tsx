@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { Calendar, Clock, Trophy, Users, CheckCircle2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { cn } from "@/lib/utils";
 
 const MATCH_STATUS = {
   PENDING: "PENDING",
