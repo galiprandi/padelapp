@@ -119,7 +119,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-8 px-5 py-10 pb-32">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-8 px-6 py-10 pb-32">
       <PageHeader
         title={`Invitación a jugar`}
         align="center"

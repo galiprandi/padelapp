@@ -84,7 +84,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   const displayName = user.alias ?? user.displayName ?? "Jugador";
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-12 px-5 py-10 pb-20 animate-in fade-in duration-700">
+    <div className="mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 animate-in fade-in duration-700">
       <section className="space-y-6">
         <PageHeader
           title={displayName}
