@@ -65,7 +65,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   });
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md space-y-10 px-5 py-10 pb-40">
+    <main className="mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-40">
       <PageHeader
         title={turn.club}
         align="center"

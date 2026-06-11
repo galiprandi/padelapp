@@ -100,70 +100,70 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   });
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-8 px-5 py-10 pb-48">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-12 px-6 py-10 pb-48 animate-in fade-in duration-700">
       <PageHeader
         title={match.matchType === "FRIENDLY" ? "Partido Amistoso" : "Torneo Local"}
         align="center"
         description={
-          <span className="flex flex-col items-center gap-1">
-            <span className="text-xs font-black uppercase tracking-widest text-primary">Invitación de Partido</span>
-            <span className="flex items-center gap-1.5 capitalize">
-              <Calendar className="h-3.5 w-3.5 text-primary/70" />
+          <span className="flex flex-col items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Invitación de Partido</span>
+            <span className="flex items-center gap-1.5 capitalize font-black text-foreground/80">
+              <Calendar className="h-4 w-4 text-primary" />
               {dateStr}
             </span>
           </span>
         }
       />
 
-      <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-xl backdrop-blur-md overflow-hidden">
-        <CardHeader className="pb-4 pt-8 text-center border-b border-border/40 bg-muted/20">
-          <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/80">Información del partido</CardTitle>
+      <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-2xl backdrop-blur-md overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+        <CardHeader className="pb-4 pt-8 text-center border-b border-border/20 bg-muted/30">
+          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Información del partido</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-px bg-border/40 p-0">
-          <div className="bg-card/50 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Trophy className="h-5 w-5" />
+        <CardContent className="grid grid-cols-2 gap-px bg-border/20 p-0">
+          <div className="bg-card/40 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Trophy className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-lg font-black">{match.sets} sets</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Modalidad</p>
+              <p className="text-xl font-black">{match.sets} sets</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Modalidad</p>
             </div>
           </div>
 
-          <div className="bg-card/50 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Clock className="h-5 w-5" />
+          <div className="bg-card/40 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Clock className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-lg font-black">{formatStatus(match.status)}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Estado</p>
+              <p className="text-xl font-black">{formatStatus(match.status)}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Estado</p>
             </div>
           </div>
 
-          <div className="col-span-2 bg-card/50 p-6 flex items-center justify-center gap-4">
-             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0">
-              <Users className="h-5 w-5" />
+          <div className="col-span-2 bg-card/40 p-6 flex items-center justify-center gap-4 border-t border-border/20">
+             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0">
+              <Users className="h-6 w-6" />
             </div>
             <div className="text-left">
-              <p className="text-lg font-black">{match.club || "Club por definir"}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+              <p className="text-xl font-black">{match.club || "Club por definir"}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 {match.courtNumber ? `Cancha ${match.courtNumber}` : "Sede del encuentro"}
               </p>
             </div>
           </div>
         </CardContent>
         {match.notes && (
-          <div className="bg-muted/30 p-6 text-center text-sm italic text-muted-foreground border-t border-border/40">
+          <div className="bg-primary/5 p-6 text-center text-sm font-medium text-muted-foreground/80 border-t border-border/20 italic">
             "{match.notes}"
           </div>
         )}
       </Card>
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">Jugadores convocados</h2>
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Jugadores convocados</h2>
         </div>
-        <div className="grid gap-6">
+        <div className="grid gap-8">
           {(["A", "B"] as const).map((teamKey) => {
             const teamPlayers = teamGroups[teamKey];
             if (teamPlayers.length === 0) {
@@ -172,8 +172,11 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             const label = teamPlayers[0]?.team?.label ?? defaultTeamLabel(teamKey, totalPlayers);
 
             return (
-              <div key={teamKey} className="space-y-3">
-                <p className="px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">{label}</p>
+              <div key={teamKey} className="space-y-4">
+                <p className="px-1 text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 flex items-center gap-2">
+                  <span className="h-px w-4 bg-border/40" />
+                  {label}
+                </p>
                 <div className="grid gap-3">
                   {teamPlayers.map((player) => {
                     const name = player.user?.displayName ?? player.displayName ?? `Cupo ${player.position + 1}`;
@@ -183,35 +186,38 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
 
                     if (!isOccupied) {
                       return (
-                        <div key={player.id} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/10 p-4 text-muted-foreground/40">
-                          <div className="h-12 w-12 rounded-full bg-muted/20 border-2 border-dashed border-muted/30" />
-                          <p className="text-sm font-black uppercase tracking-widest italic opacity-60">Cupo disponible</p>
+                        <div key={player.id} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/5 p-4 text-muted-foreground/30 transition-all hover:bg-muted/10">
+                          <div className="h-12 w-12 rounded-full bg-muted/10 border-2 border-dashed border-muted/20" />
+                          <p className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Cupo disponible</p>
                         </div>
                       );
                     }
 
                     return (
-                      <div key={player.id} className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80">
+                      <div key={player.id} className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 group/player">
                         <div className="relative">
                           <PlayerAvatar
                             name={name}
                             image={player.user?.image ?? undefined}
-                            className="h-12 w-12 border-2 border-background shadow-sm"
+                            className="h-12 w-12 border-2 border-background shadow-md transition-transform group-hover/player:scale-110"
                           />
                           {isConfirmed && (
-                            <div className="absolute -right-1 -bottom-1 rounded-full bg-emerald-500 p-0.5 border-2 border-background shadow-sm">
+                            <div className="absolute -right-1 -bottom-1 rounded-full bg-emerald-500 p-1 border-2 border-background shadow-sm">
                               <CheckCircle2 className="h-3 w-3 text-white" />
                             </div>
                           )}
                         </div>
-                        <div className="flex-1">
-                          <p className="font-black text-foreground leading-none">{name}</p>
-                          <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors">{name}</p>
+                          <p className={cn(
+                            "mt-1 text-[10px] font-black uppercase tracking-widest transition-colors",
+                            isConfirmed ? "text-emerald-600" : "text-muted-foreground/40"
+                          )}>
                             {isConfirmed ? "Confirmado" : "Pendiente"}
                           </p>
                         </div>
                         {isCreator && (
-                          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20">Organizador</span>
+                          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20 shrink-0">Organizador</span>
                         )}
                       </div>
                     );
