@@ -46,7 +46,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   if (!result.match) {
     return (
-      <div className="flex flex-col gap-6 px-5 py-10">
+      <div className="flex flex-col gap-6 py-10">
         <PageHeader
           size="lg"
           title="Partido no encontrado"
@@ -56,7 +56,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <Button
               asChild
               variant="default"
-              className="w-full justify-center py-2 text-base rounded-xl"
+              className="w-full justify-center py-2 text-base rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]"
             >
               <Link href="/match/new">
                 <PlusCircle className="mr-2 h-5 w-5" />
@@ -127,15 +127,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
         description={
           <span className="flex flex-col gap-3">
             <span className="flex items-center gap-2">
-              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-0.5">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-0.5 rounded-xl">
                 {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
               </Badge>
-              <span className="text-xs font-medium text-muted-foreground">
-                Creado por <span className="text-foreground font-black">{match.creator?.displayName || 'Usuario'}</span>
+              <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/60">
+                Por <span className="text-foreground">{match.creator?.displayName || 'Usuario'}</span>
               </span>
             </span>
             {match.club && (
-              <span className="text-sm font-black text-foreground bg-primary/5 px-3 py-1 rounded-full border border-primary/10 inline-flex items-center w-fit">
+              <span className="text-[11px] font-black uppercase tracking-widest text-foreground bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 inline-flex items-center w-fit shadow-sm">
                 📍 {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
               </span>
             )}
@@ -147,7 +147,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               <>
                 <Button
                   asChild
-                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-black"
+                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-black active:scale-[0.98]"
                 >
                   <Link href={`/match/${match.id}/result`}>
                     <FileText className="mr-2 h-5 w-5" />
@@ -159,7 +159,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
                   url={createMagicLink({ resource: "match", identifier: match.id }).url}
                   variant="outline"
-                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary"
+                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98]"
                 />
               </>
             ) : (
@@ -168,7 +168,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 text="¡Mira el resultado de nuestro partido de pádel!"
                 url={createMagicLink({ resource: "match", identifier: match.id }).url}
                 variant="outline"
-                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary"
+                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98]"
               />
             )}
           </div>
@@ -192,9 +192,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15 text-primary shadow-sm shadow-primary/10">
                     <AlertCircle className="h-5 w-5" />
                   </div>
-                  <h2 className="text-[10px] font-black uppercase tracking-widest text-foreground">Confirmación pendiente</h2>
+                  <h2 className="text-[11px] font-black uppercase tracking-widest text-foreground">Confirmación pendiente</h2>
                 </div>
-                <p className="text-xs font-medium leading-relaxed text-muted-foreground/80 max-w-sm">
+                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/80 max-w-sm">
                   Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
                 </p>
               </div>
@@ -217,7 +217,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           "flex items-center gap-4 p-3 rounded-2xl border transition-all duration-300",
                           player.isConfirmed
                             ? "bg-emerald-500/5 border-emerald-500/10"
-                            : "bg-muted/30 border-transparent"
+                            : "bg-muted/30 border-transparent shadow-sm"
                         )}>
                           <div className="relative shrink-0">
                             <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-12 w-12 border-2 border-background shadow-md" />
@@ -263,7 +263,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
           {!isPendingConfirmation && match.status === 'CONFIRMED' && (
             <div className="flex justify-center">
-               <Badge variant="success" className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-sm shadow-emerald-500/20">
+               <Badge variant="success" className="px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-sm shadow-emerald-500/20">
                  <CheckCircle2 className="mr-2 h-4 w-4" />
                  Partido procesado
                </Badge>

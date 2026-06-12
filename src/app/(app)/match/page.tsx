@@ -1,62 +1,20 @@
 import { auth } from "@/auth";
-import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
-import { prisma } from "@/lib/prisma";
+import { getEnhancedUserMatches } from "@/lib/match-queries";
 import Link from "next/link";
 import { PlusCircle, CalendarOff, Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-async function getUserMatches(userId: string): Promise<MatchResultCompactMatch[]> {
-  const matches = await prisma.match.findMany({
-    where: {
-      players: {
-        some: {
-          userId,
-        },
-      },
-    },
-    include: {
-      players: {
-        include: {
-          user: true,
-        },
-      },
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-    take: 20,
-  });
-
-  return matches.map((match) => ({
-    id: match.id,
-    createdAt: match.updatedAt ?? match.createdAt,
-    score: match.score,
-    status: match.status,
-    players: match.players.map((player) => ({
-      id: player.id,
-      position: player.position,
-      displayName: player.displayName,
-      user: player.user
-        ? {
-          id: player.user.id,
-          displayName: player.user.displayName,
-          image: player.user.image,
-        }
-        : null,
-    })),
-  }));
-}
-
 export default async function MatchListPage() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const matches = viewerId ? await getUserMatches(viewerId) : [];
+  const matches = viewerId ? await getEnhancedUserMatches(viewerId) : [];
 
   return (
     <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
@@ -65,7 +23,7 @@ export default async function MatchListPage() {
         description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
         size="lg"
         action={
-          <Button asChild className="w-full justify-center py-2 text-base rounded-xl font-black h-11 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+          <Button asChild className="w-full justify-center py-2 text-base rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
             <Link href="/match/new">
               <PlusCircle className="mr-2 h-5 w-5" />
               Crear Partido
@@ -74,9 +32,9 @@ export default async function MatchListPage() {
         }
       />
 
-      <section className="space-y-4">
+      <section className="space-y-6">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-black tracking-tight uppercase tracking-widest text-[11px] text-muted-foreground/70">Historial de partidos</h2>
+          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Historial de partidos</h2>
         </div>
 
         <div className="grid gap-4">
@@ -91,23 +49,29 @@ export default async function MatchListPage() {
                 description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
                 icon={CalendarOff}
                 action={
-                  <Button asChild className="w-full max-w-xs rounded-xl font-black active:scale-[0.98] transition-all">
-                    <Link href="/match/new">Crear partido</Link>
-                  </Button>
+                  <div className="flex flex-col w-full gap-3">
+                    <Button asChild className="w-full rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+                      <Link href="/match/new">Crear partido</Link>
+                    </Button>
+                  </div>
                 }
               />
             )
           ) : (
-            <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-md overflow-hidden shadow-xl animate-in zoom-in-95 duration-500">
-              <CardHeader className="space-y-2 pt-8 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl shadow-inner mb-2">
+            <Card className="rounded-[2.5rem] border-primary/10 bg-card/50 backdrop-blur-md overflow-hidden shadow-xl animate-in zoom-in-95 duration-500 border">
+              <CardHeader className="space-y-4 pt-10 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[2rem] bg-primary/10 text-3xl shadow-inner mb-2 animate-pulse">
                   🎾
                 </div>
-                <CardTitle className="text-xl font-black">Iniciá sesión</CardTitle>
-                <CardDescription className="font-medium">Ingresá con Google para ver tus partidos recientes y el ranking.</CardDescription>
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl font-black tracking-tight">Iniciá sesión</CardTitle>
+                  <CardDescription className="text-sm font-medium text-muted-foreground/80 px-6">
+                    Ingresá con Google para ver tus partidos recientes, el ranking y estadísticas detalladas.
+                  </CardDescription>
+                </div>
               </CardHeader>
-              <CardContent className="pb-8">
-                <Button asChild className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+              <CardContent className="pb-10 px-8">
+                <Button asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all text-lg">
                   <Link href="/login">Ir al login</Link>
                 </Button>
               </CardContent>
@@ -117,10 +81,10 @@ export default async function MatchListPage() {
       </section>
 
       {viewerId && (
-        <div className="fixed bottom-24 right-5 md:hidden z-40 animate-in slide-in-from-bottom-8 duration-700">
-          <Button asChild size="icon" className="h-14 w-14 rounded-2xl shadow-2xl shadow-primary/40 active:scale-90 transition-all">
+        <div className="fixed bottom-24 right-6 md:hidden z-40 animate-in slide-in-from-bottom-8 duration-700">
+          <Button asChild size="icon" className="h-16 w-16 rounded-[1.25rem] shadow-2xl shadow-primary/40 active:scale-90 transition-all border-4 border-background">
             <Link href="/match/new">
-              <Plus className="h-7 w-7" />
+              <Plus className="h-8 w-8 stroke-[3]" />
             </Link>
           </Button>
         </div>

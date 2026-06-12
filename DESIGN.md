@@ -3,8 +3,8 @@
 Este documento registra las decisiones de diseño, patrones de UI y arquitectura de componentes de **PadelApp**.
 
 ## 1. Patrones de UI
-- **Rounded-xl**: Estándar para botones (`src/components/ui/button.tsx`), badges (`src/components/ui/badge.tsx`), contenedores de jugadores y campos de entrada.
-- **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay` y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
+- **Rounded-xl**: Estándar para botones secundarias (`src/components/ui/button.tsx`), badges (`src/components/ui/badge.tsx`), contenedores de jugadores y campos de entrada.
+- **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay`, botones primarios de alto impacto, y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm / md**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`. Las vistas públicas de alta jerarquía utilizan `backdrop-blur-md`.
 - **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-black`).
@@ -21,12 +21,13 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 3. Arquitectura de Datos
 - **Prisma + PostgreSQL**: Fuente de verdad única. El modelo `User` ha sido extendido con campos de cache para ranking para optimizar lecturas rápidas en la tabla global.
 - **Server Actions**: Se utilizan para todas las mutaciones de datos (`createMatchAction`, `saveMatchResultAction`, `recalculateRankingAction`).
+- **Centralized Queries**: Las operaciones de lectura de base de datos para partidos de usuarios y acciones pendientes están centralizadas en `src/lib/match-queries.ts` para garantizar un filtrado, ordenamiento y mapeo de datos consistente entre el Dashboard, el Historial de Partidos y el Centro de Notificaciones.
 
-## 4. Dashboard Inteligente
+## 4. Dashboard Inteligente y Historial
 - **Priorización de Acciones**: El dashboard introduce una sección de "Acciones pendientes" ubicada en la parte superior para destacar tareas críticas (confirmar resultados o cargar scores de partidos pasados). Esto asegura que el "Time to Action" sea mínimo para cerrar ciclos de partidos.
 - **Unified Activity View (Agenda)**: La sección "Mi Agenda" se reserva exclusivamente para actividad futura (turnos y partidos próximos), proporcionando una vista limpia de planificación ordenada cronológicamente.
 - **Hierarchical Separation**: Se utiliza un espacio estándar de `gap-12` para separar los bloques lógicos en vistas principales (Dashboard, Ranking, Turnos, Partidos, Notificaciones). Esto asegura una respiración visual consistente y profesional.
-- **Centralized Data Retrieval**: Las operaciones de lectura de base de datos para partidos de usuarios y acciones pendientes están centralizadas en `src/lib/match-queries.ts` para garantizar un filtrado, ordenamiento (confirmaciones primero) y mapeo de datos consistente en toda la UI.
+- **Match History Refinement**: El historial de partidos (`/match`) utiliza el "bubble aesthetic" con cards de alto impacto para estados no autenticados, visualización cronológica consistente y un Floating Action Button (FAB) con feedback táctil pronunciado (`active:scale-90`).
 
 ## 5. Navegación y Operatividad
 - **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.
@@ -45,18 +46,18 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
-## 8. Typography and High-Impact Styling (V5)
+## 8. Typography and High-Impact Styling (V5+)
 - **Font-black standard**: Titles (`PageHeader`), section headers, and key interactive labels (Buttons, Navigation, Names in lists) utilize `font-black` (weight 900) to ensure maximum visual weight and a premium "bubble" feel.
-- **Consistency**: All primary views are standardized with `gap-12` vertical spacing and `PageHeader size="lg"` for a balanced, spacious layout.
+- **V6 Consistency**: Views adhere to a strict `px-6` padding standard for app containers and public detail views. All interactive cards and primary buttons utilize `rounded-2xl` or higher to maintain the high-fidelity bubble aesthetic.
 
-## 10. Gestión de Perfil y Formularios
+## 9. Gestión de Perfil y Formularios
 - **Visual Selector Grid**: La selección de cantidad de sets (1, 3, 5), niveles, tipos de formato y marcadores se realiza mediante cuadrículas de botones táctiles (`rounded-2xl`) con feedback de escala y sombras, eliminando la necesidad de inputs numéricos nativos.
 - **Form Fields**: Los inputs utilizan `rounded-xl`, `bg-background/50` y `h-12` para una ergonomía superior en dispositivos móviles.
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 - **Organizer Management**: Las acciones críticas de gestión de partidos (intercambiar jugadores, liberar cupos, renombrar placeholders) están restringidas al creador del partido mediante validaciones tanto en el cliente (condicional UI) como en el servidor (Server Actions).
 - **Atomic Player Swap**: El intercambio de jugadores utiliza una transacción de base de datos con posiciones temporales para garantizar la integridad referencial y evitar conflictos de unicidad en el esquema.
 
-## 9. Vistas de Invitación (Públicas)
+## 10. Vistas de Invitación (Públicas)
 - **Shared Experience**: Las vistas bajo `/t/[id]` y `/m/[matchId]` están optimizadas para usuarios que no han iniciado sesión, utilizando el `PageHeader` centrado y micro-etiquetas de contexto claras ("Turno Abierto", "Invitación de Partido").
 - **Conversion focus**: Implementan un contenedor CTA fijo en la parte inferior (`fixed bottom-0`) con un gradiente `bg-gradient-to-t` para guiar al usuario hacia el registro o la visualización del detalle completo. En el detalle de turno, se utiliza un `pb-40` para evitar oclusiones.
 - **Public Player Profiles**: La ruta `/p/[userId]` permite visualizar el perfil de cualquier jugador sin necesidad de sesión. Utiliza el `UserRankingBanner` para mostrar el estatus competitivo y el historial de últimos 5 partidos confirmados mediante `MatchResultCompact`.

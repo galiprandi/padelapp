@@ -348,6 +348,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/manage-slot-modal.tsx`
   - `src/app/(app)/me/page.tsx`
 
+### ✅ Refinamiento Premium V6: Historial y Detalles
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor del Historial de Partidos (`/match`) con unificación de queries vía `getEnhancedUserMatches`.
+  - Mejora estética de estados no autenticados: cards `rounded-[2.5rem]`, `backdrop-blur-md` y animaciones premium.
+  - Estandarización de tipografía `font-black` en todos los PageHeaders, etiquetas de sección y botones de acción.
+  - Pulido de feedback táctil con FAB `active:scale-90` y botones `rounded-2xl`.
+  - Refuerzo de la consistencia visual en el detalle de partido: badges `rounded-xl`, etiquetas de confirmación premium y espaciados estandarizados.
+- **Archivos relacionados**:
+  - `src/app/(app)/match/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `DESIGN.md`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
