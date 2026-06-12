@@ -52,7 +52,7 @@ export function BottomNav({
             >
               {/* Active indicator bar at the top */}
               {isActive && (
-                <span className="absolute top-0 h-0.5 w-10 rounded-b-full bg-primary animate-in fade-in zoom-in duration-300" />
+                <span className="absolute top-0 h-1 w-12 rounded-b-xl bg-primary shadow-lg shadow-primary/30 animate-in fade-in zoom-in duration-300" />
               )}
 
               <item.icon

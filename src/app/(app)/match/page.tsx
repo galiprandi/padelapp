@@ -22,6 +22,7 @@ export default async function MatchListPage() {
         title="Partidos"
         description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
         size="lg"
+        backHref="/me"
         action={
           <Button asChild className="w-full justify-center py-2 text-base rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
             <Link href="/match/new">

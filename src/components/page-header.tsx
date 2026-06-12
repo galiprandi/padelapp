@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 
 type TextAlign = 'left' | 'center' | 'right';
 type TitleSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
@@ -25,6 +27,8 @@ interface PageHeaderProps {
   descriptionClassName?: string;
   /** Additional class names for the action container */
   actionClassName?: string;
+  /** Optional back link href */
+  backHref?: string;
 }
 
 const alignClasses: Record<TextAlign, string> = {
@@ -67,9 +71,21 @@ export function PageHeader({
   titleClassName,
   descriptionClassName,
   actionClassName,
+  backHref,
 }: PageHeaderProps) {
   return (
     <header className={cn("space-y-3 w-full", alignClasses[align], className)}>
+      {backHref && (
+        <div className={cn("flex mb-2", align === 'center' && 'justify-center')}>
+          <Link
+            href={backHref}
+            className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            Volver
+          </Link>
+        </div>
+      )}
       <div className={cn("flex items-center gap-3", align === 'center' && 'justify-center')}>
         {icon && <div className="text-muted-foreground">{icon}</div>}
         <h1 
