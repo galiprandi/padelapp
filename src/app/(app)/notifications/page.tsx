@@ -51,6 +51,7 @@ export default async function NotificationsPage() {
                     match={match}
                     detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
                     label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                    viewerId={userId}
                   />
                 </div>
               );

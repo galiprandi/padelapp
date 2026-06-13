@@ -27,7 +27,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Priorización de Acciones**: El dashboard introduce una sección de "Acciones pendientes" ubicada en la parte superior para destacar tareas críticas (confirmar resultados o cargar scores de partidos pasados). Esto asegura que el "Time to Action" sea mínimo para cerrar ciclos de partidos.
 - **Unified Activity View (Agenda)**: La sección "Mi Agenda" se reserva exclusivamente para actividad futura (turnos y partidos próximos), proporcionando una vista limpia de planificación ordenada cronológicamente.
 - **Hierarchical Separation**: Se utiliza un espacio estándar de `gap-12` para separar los bloques lógicos en vistas principales (Dashboard, Ranking, Turnos, Partidos, Notificaciones). Esto asegura una respiración visual consistente y profesional.
-- **Match History Refinement**: El historial de partidos (`/match`) utiliza el "bubble aesthetic" con cards de alto impacto para estados no autenticados, visualización cronológica consistente y un Floating Action Button (FAB) con feedback táctil pronunciado (`active:scale-90`).
+- **Match History Refinement**: El historial de partidos (`/match`) evoluciona hacia un modelo híbrido: prioriza "Acciones pendientes" (confirmaciones/cargas) en la parte superior y mantiene un historial cronológico claro abajo. Utiliza el "bubble aesthetic" con cards de alto impacto para estados no autenticados y un Floating Action Button (FAB) con feedback táctil pronunciado (`active:scale-90`).
+- **Personal Relevance Branding**: Los componentes de lista (`TurnCard`, `MatchResultCompact`) implementan una capa de personalización que resalta el equipo del usuario y utiliza etiquetas como "Tú" o "Organizador" para reducir la carga cognitiva y mejorar el "Time to Insight".
 
 ## 5. Navegación y Operatividad
 - **Navigation Priority**: La barra de navegación prioriza "Turnos" para incentivar la participación y descubrimiento de partidos.

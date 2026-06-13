@@ -16,9 +16,10 @@ interface TurnCardProps {
   };
   variant?: "default" | "recommended";
   isJoined?: boolean;
+  isCreator?: boolean;
 }
 
-export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps) {
+export function TurnCard({ turn, variant = "default", isJoined, isCreator }: TurnCardProps) {
   const dateObj = new Date(turn.date);
 
   // Pre-formatting in a way that is less likely to cause hydration mismatches
@@ -62,7 +63,12 @@ export function TurnCard({ turn, variant = "default", isJoined }: TurnCardProps)
           <div className="flex items-center justify-between gap-2">
             <p className="truncate font-black text-foreground">{turn.club}</p>
             <div className="flex items-center gap-1.5 shrink-0">
-              {isJoined && (
+              {isCreator && (
+                <span className="rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
+                  Organizador
+                </span>
+              )}
+              {isJoined && !isCreator && (
                 <span className="rounded-full bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
                   Inscripto
                 </span>

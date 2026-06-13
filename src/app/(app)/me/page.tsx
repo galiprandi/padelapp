@@ -145,6 +145,7 @@ export default async function DashboardPage() {
                   match={match}
                   detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
                   label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                  viewerId={viewerId}
                 />
               );
             })}
@@ -167,6 +168,7 @@ export default async function DashboardPage() {
                   key={item.id}
                   turn={item.data}
                   isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
+                  isCreator={item.data.creatorId === viewerId}
                 />
               ) : (
                 <MatchResultCompact
@@ -174,6 +176,7 @@ export default async function DashboardPage() {
                   match={item.data as MatchResultCompactMatch}
                   detailUrl={`/match/${item.id}`}
                   label="Próximo partido"
+                  viewerId={viewerId}
                 />
               )
             ))
@@ -209,6 +212,7 @@ export default async function DashboardPage() {
                 turn={turn}
                 variant="recommended"
                 isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
+                isCreator={turn.creatorId === viewerId}
               />
             ))}
           </div>
@@ -222,7 +226,12 @@ export default async function DashboardPage() {
         <div className="space-y-3">
           {recentMatches.length > 0 ? (
             recentMatches.map((match) => (
-              <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
+              <MatchResultCompact
+                key={match.id}
+                match={match}
+                detailUrl={`/match/${match.id}`}
+                viewerId={viewerId}
+              />
             ))
           ) : (
             <EmptyState
