@@ -56,6 +56,11 @@ export default async function RankingPage() {
         <TabsContent value="individual" className="space-y-6 pt-6">
           {players.length > 0 ? (
             <>
+              <div className="px-1 mb-4">
+                <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+                  Top Jugadores
+                </h2>
+              </div>
               {/* Podium Section */}
               <div className="grid grid-cols-3 items-end gap-2 px-2 pt-4 pb-2 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                 {/* 2nd Place */}

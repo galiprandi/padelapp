@@ -36,6 +36,7 @@ export default async function TurnsPage() {
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."
         size="lg"
+        backHref="/me"
         action={
           <Button asChild className="w-full md:w-auto rounded-xl h-11 font-black">
             <Link href="/turnos/nuevo">

@@ -119,12 +119,14 @@ export default async function DashboardPage() {
       {pendingActionMatches.length > 0 && (
         <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
-              Acciones pendientes
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground">
+            <div className="flex items-center gap-2">
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+                Acciones pendientes
+              </h2>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground">
                 {pendingActionMatches.length}
               </span>
-            </h2>
+            </div>
             {pendingActionMatches.length > 3 && (
               <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1">
                 <Link href="/notifications">
@@ -152,7 +154,7 @@ export default async function DashboardPage() {
 
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-black tracking-tight uppercase tracking-widest text-[11px] text-muted-foreground/70">Mi Agenda</h2>
+          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Mi Agenda</h2>
           <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1">
             <Link href="/turnos">Ver todos</Link>
           </Button>
@@ -198,7 +200,7 @@ export default async function DashboardPage() {
       {recommendedTurns.length > 0 && (
         <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
           <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-black tracking-tight uppercase tracking-widest text-[11px] text-muted-foreground/70">Turnos recomendados</h2>
+            <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
             {recommendedTurns.map((turn) => (
@@ -215,7 +217,7 @@ export default async function DashboardPage() {
 
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-black tracking-tight uppercase tracking-widest text-[11px] text-muted-foreground/70">Últimos resultados</h2>
+          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Últimos resultados</h2>
         </div>
         <div className="space-y-3">
           {recentMatches.length > 0 ? (

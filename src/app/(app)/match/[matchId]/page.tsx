@@ -120,10 +120,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const userNeedsToConfirm = viewerId && match.players.some(p => p.userId === viewerId && !p.resultConfirmed);
 
   return (
-    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700 px-6">
       <PageHeader
         size="lg"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
+        backHref="/match"
         description={
           <span className="flex flex-col gap-3">
             <span className="flex items-center gap-2">
@@ -186,15 +187,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-8 rounded-[2.5rem] bg-primary/5 p-8 backdrop-blur-md border border-primary/20 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
+            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15 text-primary shadow-sm shadow-primary/10">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm shadow-primary/5">
                     <AlertCircle className="h-5 w-5" />
                   </div>
-                  <h2 className="text-[11px] font-black uppercase tracking-widest text-foreground">Confirmación pendiente</h2>
+                  <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Confirmación pendiente</h2>
                 </div>
-                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/80 max-w-sm">
+                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/60 max-w-sm">
                   Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
                 </p>
               </div>
@@ -206,7 +207,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                       <span className="h-px w-4 bg-border/40" />
                       {team.label}
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-3">
                       {team.players.map((player: {
                         id: string;
                         name: string;
@@ -214,10 +215,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
                         isConfirmed?: boolean;
                       }) => (
                         <div key={player.id} className={cn(
-                          "flex items-center gap-4 p-3 rounded-2xl border transition-all duration-300",
+                          "flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300",
                           player.isConfirmed
-                            ? "bg-emerald-500/5 border-emerald-500/10"
-                            : "bg-muted/30 border-transparent shadow-sm"
+                            ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.05)]"
+                            : "bg-card/30 border-border/20 shadow-sm"
                         )}>
                           <div className="relative shrink-0">
                             <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-12 w-12 border-2 border-background shadow-md" />
@@ -235,7 +236,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           <div className="flex flex-col min-w-0">
                             <span className={cn(
                               "text-sm font-black truncate leading-tight",
-                              player.isConfirmed ? "text-foreground" : "text-muted-foreground/60"
+                              player.isConfirmed ? "text-foreground" : "text-foreground/70"
                             )}>
                               {player.name}
                             </span>
