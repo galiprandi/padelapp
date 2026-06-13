@@ -348,6 +348,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/manage-slot-modal.tsx`
   - `src/app/(app)/me/page.tsx`
 
+### ✅ Evolución UX: Historial Inteligente e Identificación
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor de la lista de partidos (`/match`) con sección de "Acciones pendientes" priorizada.
+  - Mejora de identificación personal: los componentes `TurnCard` y `MatchResultCompact` ahora resaltan visualmente al usuario actual ("Tú" y badge "Organizador").
+  - Rediseño de la cabecera de detalle de partido con metadatos estructurados en burbujas (Fecha, Club, Organizador).
+  - Mejora de la "Sala de espera" en partidos pendientes con secciones claras para formación y notas.
+- **Archivos relacionados**:
+  - `src/app/(app)/match/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `src/components/turns/turn-card.tsx`
+
 ### ✅ Refinamiento Premium V6: Historial y Detalles
 - **Estado**: Implementado
 - **Funcionalidades**:

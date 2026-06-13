@@ -115,6 +115,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
       image: player.user?.image ?? undefined,
     })),
     isWinner: winnerIndex === index,
+    hasViewer: teamPlayers.some(p => p.user?.id === viewerId),
   }));
 
   const segmentsToRender = totalSets > 0 ? totalSets : 1;
@@ -186,7 +187,10 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
 
           return (
             <Fragment key={team.id}>
-              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+              <div className={cn(
+                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-colors",
+                team.hasViewer ? "bg-primary/5 ring-1 ring-primary/10" : ""
+              )}>
                 <div className="flex items-center">
                   {team.players.map((player, index) => (
                     <PlayerAvatar
@@ -203,18 +207,24 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                 </div>
 
                 <div className="flex flex-col text-sm font-black text-foreground min-w-0 leading-tight">
-                  {team.players.map((player) => (
-                    <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
-                      {player.userId ? (
-                        <Link href={`/p/${player.userId}`} className="truncate hover:text-primary transition-colors">
-                          {player.name}
-                        </Link>
-                      ) : (
-                        <span className="truncate">{player.name}</span>
-                      )}
-                      {team.isWinner && <Trophy className="h-3 w-3 shrink-0 text-yellow-500" />}
-                    </div>
-                  ))}
+                  {team.players.map((player) => {
+                    const isViewer = player.userId === viewerId;
+                    return (
+                      <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
+                        {player.userId ? (
+                          <Link href={`/p/${player.userId}`} className={cn(
+                            "truncate hover:text-primary transition-colors",
+                            isViewer && "text-primary"
+                          )}>
+                            {isViewer ? "Tú" : player.name}
+                          </Link>
+                        ) : (
+                          <span className="truncate">{player.name}</span>
+                        )}
+                        {team.isWinner && <Trophy className="h-3 w-3 shrink-0 text-yellow-500" />}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex min-w-[104px] items-center justify-end gap-1.5 pl-3">

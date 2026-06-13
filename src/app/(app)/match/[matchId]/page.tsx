@@ -7,7 +7,7 @@ import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users } from "lucide-react";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
@@ -125,21 +125,49 @@ export default async function MatchPage({ params }: MatchPageProps) {
         size="lg"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
         description={
-          <span className="flex flex-col gap-3">
-            <span className="flex items-center gap-2">
-              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-0.5 rounded-xl">
+          <div className="flex flex-col gap-6 mt-4">
+            <div className="flex items-center gap-3">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-1 px-3 rounded-xl shadow-sm">
                 {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
               </Badge>
-              <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/60">
-                Por <span className="text-foreground">{match.creator?.displayName || 'Usuario'}</span>
-              </span>
-            </span>
-            {match.club && (
-              <span className="text-[11px] font-black uppercase tracking-widest text-foreground bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 inline-flex items-center w-fit shadow-sm">
-                📍 {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
-              </span>
-            )}
-          </span>
+              <div className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-1 border border-border/40">
+                <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
+                   <Clock className="h-2.5 w-2.5 text-primary" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {new Date(match.date).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              {match.club && (
+                <div className="group flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/60">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
+                    <span className="text-lg">📍</span>
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">Club y Cancha</span>
+                    <span className="text-sm font-black truncate text-foreground leading-tight">
+                      {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/60">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
+                  <PlayerAvatar name={match.creator?.displayName || 'U'} image={match.creator?.image ?? undefined} className="h-8 w-8" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">Organizador</span>
+                  <span className="text-sm font-black truncate text-foreground leading-tight">
+                    {match.creator?.displayName || 'Usuario'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         }
         action={
           <div className="flex flex-col gap-3 w-full">
@@ -182,6 +210,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               match={matchResultData}
               matchDate={match.createdAt}
               detailUrl={`/match/${match.id}`}
+              viewerId={viewerId}
             />
           </div>
 
@@ -271,29 +300,57 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
         </div>
       ) : (
-        <MatchPlayersManager
-          matchId={match.id}
-          creatorId={match.creatorId}
-          teams={teams.map((team) => ({
-            id: team.id,
-            label: team.label,
-            players: team.players.map((player: {
-              id: string;
-              userId?: string | null;
-              name: string;
-              image?: string | null;
-              isConfirmed?: boolean;
-              placeholderName: string;
-            }) => ({
-              matchPlayerId: player.id,
-              userId: player.userId,
-              name: player.name,
-              image: player.image,
-              isConfirmed: player.isConfirmed,
-              placeholderName: player.placeholderName,
-            })),
-          }))}
-        />
+        <div className="space-y-8">
+          <section className="space-y-4">
+             <div className="flex items-center justify-between px-1">
+                <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5" />
+                  Formación de equipos
+                </h2>
+                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5">
+                  Listo para jugar
+                </Badge>
+             </div>
+
+             <MatchPlayersManager
+                matchId={match.id}
+                creatorId={match.creatorId}
+                teams={teams.map((team) => ({
+                  id: team.id,
+                  label: team.label,
+                  players: team.players.map((player: {
+                    id: string;
+                    userId?: string | null;
+                    name: string;
+                    image?: string | null;
+                    isConfirmed?: boolean;
+                    placeholderName: string;
+                  }) => ({
+                    matchPlayerId: player.id,
+                    userId: player.userId,
+                    name: player.name,
+                    image: player.image,
+                    isConfirmed: player.isConfirmed,
+                    placeholderName: player.placeholderName,
+                  })),
+                }))}
+              />
+          </section>
+
+          {match.notes && (
+            <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+               <div className="rounded-[2rem] bg-muted/20 border border-border/40 p-6 backdrop-blur-sm">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-3 flex items-center gap-2">
+                    <FileText className="h-3 w-3" />
+                    Notas del organizador
+                  </h3>
+                  <p className="text-sm font-medium text-foreground/80 leading-relaxed italic">
+                    "{match.notes}"
+                  </p>
+               </div>
+            </section>
+          )}
+        </div>
       )}
     </div>
   );

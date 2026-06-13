@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
-import { getEnhancedUserMatches } from "@/lib/match-queries";
+import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import Link from "next/link";
-import { PlusCircle, CalendarOff, Plus } from "lucide-react";
+import { PlusCircle, CalendarOff, Plus, ChevronRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -14,13 +14,16 @@ export default async function MatchListPage() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const matches = viewerId ? await getEnhancedUserMatches(viewerId) : [];
+  const [matches, pendingActions] = await Promise.all([
+    viewerId ? getEnhancedUserMatches(viewerId) : Promise.resolve([]),
+    viewerId ? getPendingActions(viewerId) : Promise.resolve([]),
+  ]);
 
   return (
     <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         title="Partidos"
-        description="Revisá tus partidos jugados y compartí el marcador con tu equipo."
+        description="Revisá tus partidos jugados y gestioná tus resultados pendientes."
         size="lg"
         action={
           <Button asChild className="w-full justify-center py-2 text-base rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
@@ -32,6 +35,41 @@ export default async function MatchListPage() {
         }
       />
 
+      {pendingActions.length > 0 && (
+        <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+              Acciones pendientes
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground">
+                {pendingActions.length}
+              </span>
+            </h2>
+            {pendingActions.length > 3 && (
+              <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1">
+                <Link href="/notifications">
+                  Ver todas
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </Button>
+            )}
+          </div>
+          <div className="grid gap-3">
+            {pendingActions.slice(0, 3).map((match) => {
+              const needsScore = !match.score;
+              return (
+                <MatchResultCompact
+                  key={match.id}
+                  match={match}
+                  detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
+                  label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                  viewerId={viewerId}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       <section className="space-y-6">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Historial de partidos</h2>
@@ -41,7 +79,12 @@ export default async function MatchListPage() {
           {viewerId ? (
             matches.length > 0 ? (
               matches.map((match) => (
-                <MatchResultCompact key={match.id} match={match} detailUrl={`/match/${match.id}`} />
+                <MatchResultCompact
+                  key={match.id}
+                  match={match}
+                  detailUrl={`/match/${match.id}`}
+                  viewerId={viewerId}
+                />
               ))
             ) : (
               <EmptyState
