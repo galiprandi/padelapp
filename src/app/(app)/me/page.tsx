@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
+import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight } from "lucide-react";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
@@ -103,6 +104,8 @@ export default async function DashboardPage() {
             </div>
           }
         />
+
+        <PwaInstallBanner />
 
         {user && user.matchesPlayed > 0 && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
