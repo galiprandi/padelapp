@@ -9,6 +9,7 @@ import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight } from "lucide-react";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
+import { getGreeting } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -82,11 +83,13 @@ export default async function DashboardPage() {
     })),
   ].sort((a, b) => a.date.getTime() - b.date.getTime());
 
+  const greeting = getGreeting();
+
   return (
     <div className="flex flex-col gap-12 pb-8">
       <section className="space-y-6">
         <PageHeader
-          title={`Hola, ${displayName} 👋`}
+          title={`${greeting}, ${displayName} 👋`}
           description="Tu actividad central: turnos, partidos y progreso en el ranking."
           size="lg"
           action={

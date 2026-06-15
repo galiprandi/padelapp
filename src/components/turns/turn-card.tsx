@@ -1,7 +1,7 @@
 
 import { Clock, Users, Trophy } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
 
 interface TurnCardProps {
@@ -35,6 +35,9 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
   const isRecommended = variant === "recommended";
   const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel.toString();
 
+  const isTodayDate = isToday(dateObj);
+  const isTomorrowDate = isTomorrow(dateObj);
+
   return (
     <Link href={`/t/${turn.id}`}>
       <div
@@ -47,7 +50,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px]",
+            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px] relative",
             isRecommended ? "bg-primary/25" : "bg-primary/15"
           )}
         >
@@ -57,6 +60,16 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           <span className="text-2xl font-black leading-none mt-1">
             {day}
           </span>
+          {isTodayDate && (
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-8 items-center justify-center rounded-full bg-primary text-[8px] font-black uppercase tracking-tighter text-primary-foreground shadow-sm ring-2 ring-background animate-pulse">
+              Hoy
+            </span>
+          )}
+          {isTomorrowDate && (
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-10 items-center justify-center rounded-full bg-zinc-800 text-[8px] font-black uppercase tracking-tighter text-white shadow-sm ring-2 ring-background">
+              Mañana
+            </span>
+          )}
         </div>
 
         <div className="flex-1 overflow-hidden">

@@ -5,9 +5,11 @@ import { Fragment, memo, type ReactNode } from "react";
 import Link from "next/link";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn } from "@/lib/utils";
+import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { Trophy, ChevronRight } from "lucide-react";
+import { Trophy, ChevronRight, Share2 } from "lucide-react";
+import { ShareButton } from "@/components/share/share-button";
+import { createMagicLink } from "@/lib/magic-link";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -134,6 +136,10 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     : null;
   const matchDetailUrl = detailUrl ?? `/match/${match.id}`;
   const statusLabel = (match.status ?? "PENDING").toString();
+  const isConfirmed = statusLabel === "CONFIRMED";
+
+  const isTodayDate = parsedDate ? isToday(parsedDate) : false;
+  const isTomorrowDate = parsedDate ? isTomorrow(parsedDate) : false;
 
   const needsConfirmation = viewerId &&
     match.status !== "CONFIRMED" &&
@@ -165,14 +171,39 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest transition-all", statusClassName)}>
                     {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
                   </span>
-                  <span className="text-[11px] font-black uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-black uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
+                    {isTodayDate && (
+                      <span className="flex h-4 w-7 items-center justify-center rounded-full bg-primary/20 text-[7px] font-black uppercase tracking-tighter text-primary ring-1 ring-primary/20 animate-pulse">
+                        Hoy
+                      </span>
+                    )}
+                    {isTomorrowDate && (
+                      <span className="flex h-4 w-9 items-center justify-center rounded-full bg-zinc-800/10 text-[7px] font-black uppercase tracking-tighter text-zinc-600 ring-1 ring-zinc-500/10">
+                        Mañana
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {matchDetailUrl ? (
-                  <Link href={matchDetailUrl} className="group/link flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-all">
-                    Detalle
-                    <ChevronRight className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
-                  </Link>
-                ) : null}
+                <div className="flex items-center gap-3">
+                  {isConfirmed && match.score && (
+                    <ShareButton
+                      url={createMagicLink({ resource: "match", identifier: match.id }).url}
+                      title="Resultado de Pádel"
+                      text={`¡Mirá el resultado de nuestro partido: ${match.score}! 🎾`}
+                      variant="ghost"
+                      size="sm"
+                      iconOnly
+                      className="h-7 w-7 rounded-lg text-primary hover:bg-primary/10 transition-all"
+                    />
+                  )}
+                  {matchDetailUrl ? (
+                    <Link href={matchDetailUrl} className="group/link flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-all">
+                      Detalle
+                      <ChevronRight className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
+                    </Link>
+                  ) : null}
+                </div>
               </div>
             )
           : null

@@ -374,6 +374,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `DESIGN.md`
 
+### ✅ Match Day Intelligence y Social Sharing
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Implementación de badges dinámicos "Hoy" (con animación pulse) y "Mañana" en cards de agenda.
+  - Introducción de saludos dinámicos en el Dashboard basados en el momento del día.
+  - Integración de `ShareButton` en `MatchResultCompact` para resultados confirmados, facilitando el social proof.
+  - Centralización de utilidades de fecha y tiempo en `src/lib/utils.ts`.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/components/turns/turn-card.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `src/lib/utils.ts`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.
