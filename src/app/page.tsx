@@ -11,10 +11,10 @@ export default function MarketingLanding() {
     "use server";
     const session = await auth();
     if (session?.user) {
-      redirect("/match");
+      redirect("/me");
     }
 
-    await signIn("google", { redirectTo: "/match" });
+    await signIn("google", { redirectTo: "/me" });
   }
 
   return (
