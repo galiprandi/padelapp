@@ -66,3 +66,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Sharing Integrated**: El detalle de partido incluye acciones de compartición contextuales (invitación para partidos abiertos, resultados para partidos cerrados) utilizando el componente `ShareButton` y URLs generadas vía `createMagicLink` para maximizar la viralidad orgánica.
 - **Visual Consistency**: Reutilizan el patrón de grid 2x2 para información técnica y `rounded-[2.5rem]` para las tarjetas principales con `shadow-2xl` y `backdrop-blur-md`, asegurando que la primera impresión de la app sea profesional y alineada con la identidad visual interna.
 - **Marketing Refinement**: La landing page (`/`) y la página de instalación (`/install`) utilizan el mismo patrón de card de alto impacto (`rounded-[2.5rem]`) y el fondo de gradiente radial para garantizar que la experiencia de marca comience desde el primer contacto.
+
+## 11. Instant Match Recording (V7)
+- **Time-to-Value Optimization**: El flujo de creación de partidos integra un paso opcional de "Carga de resultado instantánea" (Step 4). Esto permite registrar partidos pasados en una única sesión, eliminando la necesidad de navegar al detalle del partido tras su creación.
+- **Visual Hierarchy (Dashboard)**: El PageHeader del Dashboard prioriza el botón "Nuevo Partido" como acción primaria (`h-14`, `rounded-2xl`, `shadow-lg shadow-primary/20`), relegando la gestión de perfil y ranking a botones secundarios para agilizar el ciclo de registro de actividad.
+- **High-Impact Scores**: En la vista de detalle de partidos cerrados, el marcador se presenta con tipografía `text-6xl font-black` y efectos de iluminación (`aura primary/20`) para celebrar el resultado y proporcionar una lectura inmediata del desenlace.

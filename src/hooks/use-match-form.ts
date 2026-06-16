@@ -16,6 +16,8 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
   const [countsForRanking, setCountsForRanking] = useState<boolean>(true);
   const [club, setClub] = useState("");
   const [courtNumber, setCourtNumber] = useState("");
+  const [recordScore, setRecordScore] = useState<boolean>(false);
+  const [scores, setScores] = useState<number[][]>([]);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, startSubmit] = useTransition();
   const [prefilledTurnId, setPrefilledTurnId] = useState<string | null>(null);
@@ -74,7 +76,8 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
       return;
     }
 
-    setCurrentStep((prev) => (prev + 1 > 2 ? prev : ((prev + 1) as StepIndex)));
+    const nextLimit = recordScore ? 3 : 2;
+    setCurrentStep((prev) => (prev + 1 > nextLimit ? prev : ((prev + 1) as StepIndex)));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -115,6 +118,18 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
     });
 
     setFormError(null);
+
+    let scoreStr: string | null = null;
+    if (recordScore) {
+      scoreStr = scores
+        .slice(0, setsValue)
+        .map(set => {
+          const s = set || [0, 0];
+          return `${s[0]}-${s[1]}`;
+        })
+        .join(', ');
+    }
+
     startSubmit(async () => {
       const payload: CreateMatchInput = {
         sets: setsValue,
@@ -127,7 +142,7 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
         },
         club: club.trim().length > 0 ? club.trim() : null,
         courtNumber: courtNumber.trim().length > 0 ? courtNumber.trim() : null,
-        score: null,
+        score: scoreStr,
         notes: null,
         turnId: prefilledTurnId,
         slots: slotsPayload,
@@ -156,6 +171,10 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
     setClub,
     courtNumber,
     setCourtNumber,
+    recordScore,
+    setRecordScore,
+    scores,
+    setScores,
     formError,
     isSubmitting,
     goToNextStep,

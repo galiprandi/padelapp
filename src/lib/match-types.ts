@@ -17,4 +17,4 @@ export type TeamKey = "A" | "B";
 
 export type ActiveSlot = { team: TeamKey; index: 0 | 1 };
 
-export type StepIndex = 0 | 1 | 2;
+export type StepIndex = 0 | 1 | 2 | 3;

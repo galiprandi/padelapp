@@ -205,7 +205,36 @@ export default async function MatchPage({ params }: MatchPageProps) {
       />
 
       {isClosed ? (
-        <div className="space-y-6">
+        <div className="space-y-12">
+          <section className="flex flex-col items-center justify-center text-center py-6 animate-in zoom-in duration-700">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-6">Resultado Final</span>
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-2xl group-hover:bg-primary/30 transition-all duration-500 opacity-50" />
+              <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+                {match.score?.split(',').map((set, idx) => (
+                  <div key={idx} className="relative text-6xl md:text-7xl font-black tracking-tighter text-foreground drop-shadow-sm">
+                    {set.trim()}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <div className="flex -space-x-4 items-center">
+                {match.players.map((p, i) => (
+                  <PlayerAvatar
+                    key={p.id}
+                    name={p.displayName || p.user?.displayName || ""}
+                    image={p.user?.image ?? undefined}
+                    className="border-4 border-background shadow-xl"
+                    size={48}
+                  />
+                ))}
+              </div>
+              <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/40">Competencia {getMatchTypeLabel(match.matchType)}</p>
+            </div>
+          </section>
+
           <div className="animate-in fade-in slide-in-from-top-4 duration-500">
              <MatchResultCompact
               match={matchResultData}

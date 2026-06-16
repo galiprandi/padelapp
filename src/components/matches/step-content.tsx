@@ -8,10 +8,10 @@ import { SlotDisplay } from "./slot-display";
 import { MatchNavigation } from "./match-navigation";
 import type { TeamState, MatchTypeValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, Trophy } from "lucide-react";
 
 interface StepContentProps {
-  currentStep: 0 | 1 | 2;
+  currentStep: 0 | 1 | 2 | 3;
   teamState: TeamState;
   activeSlot: { team: TeamKey; index: 0 | 1 };
   userDisplayName: string;
@@ -21,6 +21,8 @@ interface StepContentProps {
   countsForRanking: boolean;
   club: string;
   courtNumber: string;
+  recordScore: boolean;
+  scores: number[][];
   isSubmitting: boolean;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
@@ -29,9 +31,69 @@ interface StepContentProps {
   onCountsForRankingChange: (checked: boolean) => void;
   onClubChange: (value: string) => void;
   onCourtNumberChange: (value: string) => void;
+  onRecordScoreChange: (checked: boolean) => void;
+  onScoresChange: (scores: number[][]) => void;
   onNextStep: () => void;
   onPreviousStep: () => void;
   onCreateMatch: () => void;
+}
+
+function ScoreSelector({
+  setIndex,
+  teamIndex,
+  teamLabel,
+  players,
+  currentValue,
+  onValueChange
+}: {
+  setIndex: number;
+  teamIndex: number;
+  teamLabel: string;
+  players: string;
+  currentValue: number;
+  onValueChange: (val: number) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between px-2">
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">{teamLabel}</span>
+          <span className="text-sm font-black text-foreground truncate leading-none">
+            {players}
+          </span>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl font-black text-primary border border-primary/20 shadow-inner">
+          {currentValue}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-2">
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
+          const isSelected = currentValue === num;
+          return (
+            <button
+              key={num}
+              type="button"
+              onClick={() => onValueChange(num)}
+              className={cn(
+                "h-14 rounded-2xl border text-xl font-black transition-all active:scale-[0.95] relative overflow-hidden",
+                isSelected
+                  ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-background/40 border-border/40 text-muted-foreground/70 hover:bg-background/60"
+              )}
+            >
+              {num}
+              {isSelected && (
+                <div className="absolute top-1 right-1">
+                  <Check className="h-3 w-3 opacity-50" />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 const MATCH_TYPE_OPTIONS = [
@@ -58,9 +120,13 @@ export function StepContent({
   onCountsForRankingChange,
   onClubChange,
   onCourtNumberChange,
+  onRecordScoreChange,
+  onScoresChange,
   onNextStep,
   onPreviousStep,
   onCreateMatch,
+  recordScore,
+  scores,
 }: StepContentProps) {
   const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500";
 
@@ -134,6 +200,25 @@ export function StepContent({
           />
 
           <div className="space-y-6">
+            <div className="space-y-3 rounded-3xl border border-primary/20 bg-primary/5 p-5 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-4 w-4 text-primary" />
+                    <Label htmlFor="record-score" className="text-sm font-black">Cargar resultado ahora</Label>
+                  </div>
+                  <p className="text-xs text-primary/70 leading-relaxed">
+                    Si el partido ya terminó, cargá el marcador para cerrarlo inmediatamente.
+                  </p>
+                </div>
+                <Switch
+                  id="record-score"
+                  checked={recordScore}
+                  onCheckedChange={onRecordScoreChange}
+                />
+              </div>
+            </div>
+
             <div className="space-y-3">
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -212,43 +297,111 @@ export function StepContent({
     );
   }
 
+  if (currentStep === 2) {
+    return (
+      <section className={baseClass}>
+        <div className="space-y-8">
+          <PageHeader
+            title="Detalles del Partido"
+            description="Agregá información opcional como el club y la cancha. Estos datos ayudan a organizar mejor el partido."
+            size="md"
+          />
+
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
+              <Input
+                id="club"
+                placeholder="Ej: Padel City, Tie Break"
+                value={club}
+                onChange={(event) => onClubChange(event.target.value)}
+                autoSelect
+                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
+              />
+            </div>
+            <div className="space-y-3">
+              <Label htmlFor="court" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
+              <Input
+                id="court"
+                placeholder="Ej: 3, Central"
+                value={courtNumber}
+                onChange={(event) => onCourtNumberChange(event.target.value)}
+                autoSelect
+                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
+              />
+            </div>
+          </div>
+        </div>
+
+        <MatchNavigation
+          primaryButtonText={recordScore ? "Continuar" : (isSubmitting ? "Creando..." : "Crear partido")}
+          onPrimaryClick={recordScore ? onNextStep : onCreateMatch}
+          primaryDisabled={isSubmitting}
+          primaryLoading={!recordScore && isSubmitting}
+          secondaryButtonText="Atrás"
+          onSecondaryClick={onPreviousStep}
+        />
+      </section>
+    );
+  }
+
+  // Final Step: Score Entry (Only if recordScore is true)
+  const setsCount = parseInt(sets) || 1;
+  const teamAPlayers = teamState.A.map(s => s?.kind === "user" ? s.player.displayName : s?.displayName || "").join(" & ");
+  const teamBPlayers = teamState.B.map(s => s?.kind === "user" ? s.player.displayName : s?.displayName || "").join(" & ");
+
   return (
     <section className={baseClass}>
       <div className="space-y-8">
         <PageHeader
-          title="Detalles del Partido"
-          description="Agregá información opcional como el club y la cancha. Estos datos ayudan a organizar mejor el partido."
+          title="Marcador Final"
+          description="Completá los sets jugados para finalizar el registro del partido."
           size="md"
         />
 
-        <div className="space-y-6">
-          <div className="space-y-3">
-            <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
-            <Input
-              id="club"
-              placeholder="Ej: Padel City, Tie Break"
-              value={club}
-              onChange={(event) => onClubChange(event.target.value)}
-              autoSelect
-              className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
-            />
-          </div>
-          <div className="space-y-3">
-            <Label htmlFor="court" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
-            <Input
-              id="court"
-              placeholder="Ej: 3, Central"
-              value={courtNumber}
-              onChange={(event) => onCourtNumberChange(event.target.value)}
-              autoSelect
-              className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
-            />
-          </div>
+        <div className="space-y-10">
+          {Array.from({ length: setsCount }, (_, setIndex) => (
+            <div key={setIndex} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${setIndex * 100}ms` }}>
+              <div className="flex items-center justify-between px-1">
+                <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Set {setIndex + 1}</h2>
+                <div className="h-px flex-1 mx-4 bg-border/40" />
+              </div>
+
+              <div className="grid gap-8">
+                <ScoreSelector
+                  setIndex={setIndex}
+                  teamIndex={0}
+                  teamLabel="Pareja A"
+                  players={teamAPlayers}
+                  currentValue={scores[setIndex]?.[0] ?? 0}
+                  onValueChange={(val) => {
+                    const newScores = [...scores];
+                    if (!newScores[setIndex]) newScores[setIndex] = [0, 0];
+                    newScores[setIndex][0] = val;
+                    onScoresChange(newScores);
+                  }}
+                />
+                <ScoreSelector
+                  setIndex={setIndex}
+                  teamIndex={1}
+                  teamLabel="Pareja B"
+                  players={teamBPlayers}
+                  currentValue={scores[setIndex]?.[1] ?? 0}
+                  onValueChange={(val) => {
+                    const newScores = [...scores];
+                    if (!newScores[setIndex]) newScores[setIndex] = [0, 0];
+                    newScores[setIndex][1] = val;
+                    onScoresChange(newScores);
+                  }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       <MatchNavigation
-        primaryButtonText={isSubmitting ? "Creando..." : "Crear partido"}
+        primaryButtonText={isSubmitting ? "Creando..." : "Crear y finalizar"}
         onPrimaryClick={onCreateMatch}
         primaryDisabled={isSubmitting}
         primaryLoading={isSubmitting}

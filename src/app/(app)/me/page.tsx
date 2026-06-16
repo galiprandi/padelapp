@@ -8,7 +8,7 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, ChevronRight } from "lucide-react";
+import { CalendarDays, Trophy, ChevronRight, PlusCircle } from "lucide-react";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import { getGreeting } from "@/lib/utils";
 
@@ -94,13 +94,21 @@ export default async function DashboardPage() {
           description="Tu actividad central: turnos, partidos y progreso en el ranking."
           size="lg"
           action={
-            <div className="flex gap-2 w-full">
-              <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl">
-                <Link href="/me/profile">Editar perfil</Link>
+            <div className="flex flex-col gap-3 w-full">
+              <Button size="lg" asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">
+                <Link href="/match/new">
+                  <PlusCircle className="mr-2 h-5 w-5" />
+                  Nuevo Partido
+                </Link>
               </Button>
-              <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl">
-                <Link href="/ranking">Ver ranking</Link>
-              </Button>
+              <div className="flex gap-2 w-full">
+                <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl font-black">
+                  <Link href="/me/profile">Mi Perfil</Link>
+                </Button>
+                <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl font-black">
+                  <Link href="/ranking">Ranking</Link>
+                </Button>
+              </div>
             </div>
           }
         />
