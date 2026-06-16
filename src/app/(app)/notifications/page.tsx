@@ -21,6 +21,7 @@ export default async function NotificationsPage() {
         title="Notificaciones"
         description="Gestioná tus confirmaciones y cargas de resultados pendientes."
         size="lg"
+        backHref="/me"
       />
 
       <section className="space-y-6">

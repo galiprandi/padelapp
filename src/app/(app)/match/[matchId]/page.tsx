@@ -206,32 +206,45 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
       {isClosed ? (
         <div className="space-y-12">
-          <section className="flex flex-col items-center justify-center text-center py-6 animate-in zoom-in duration-700">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-6">Resultado Final</span>
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-2xl group-hover:bg-primary/30 transition-all duration-500 opacity-50" />
-              <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <section className="flex flex-col items-center justify-center text-center py-10 animate-in zoom-in duration-700 relative overflow-hidden rounded-[3rem] bg-card/20 backdrop-blur-xl border border-border/40 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.3em] text-primary/60 mb-8">Resultado Final</span>
+
+            <div className="relative z-10 group">
+              <div className="absolute -inset-8 bg-primary/20 rounded-[4rem] blur-3xl group-hover:bg-primary/30 transition-all duration-1000 opacity-40 animate-pulse" />
+              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 px-6">
                 {match.score?.split(',').map((set, idx) => (
-                  <div key={idx} className="relative text-6xl md:text-7xl font-black tracking-tighter text-foreground drop-shadow-sm">
+                  <div key={idx}
+                    className="relative text-7xl md:text-8xl font-black tracking-tighter text-foreground drop-shadow-[0_4px_12px_rgba(0,0,0,0.1)] animate-in slide-in-from-bottom-8 duration-700"
+                    style={{ animationDelay: `${idx * 150}ms` }}
+                  >
                     {set.trim()}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col items-center gap-4">
-              <div className="flex -space-x-4 items-center">
-                {match.players.map((p, i) => (
-                  <PlayerAvatar
+            <div className="relative z-10 mt-12 flex flex-col items-center gap-6">
+              <div className="flex -space-x-3 items-center">
+                {match.players.sort((a, b) => a.position - b.position).map((p, i) => (
+                  <div
                     key={p.id}
-                    name={p.displayName || p.user?.displayName || ""}
-                    image={p.user?.image ?? undefined}
-                    className="border-4 border-background shadow-xl"
-                    size={48}
-                  />
+                    className="animate-in fade-in zoom-in duration-500"
+                    style={{ animationDelay: `${400 + i * 100}ms` }}
+                  >
+                    <PlayerAvatar
+                      name={p.displayName || p.user?.displayName || ""}
+                      image={p.user?.image ?? undefined}
+                      className="border-4 border-background shadow-2xl"
+                      size={56}
+                    />
+                  </div>
                 ))}
               </div>
-              <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/40">Competencia {getMatchTypeLabel(match.matchType)}</p>
+              <div className="flex flex-col items-center gap-1">
+                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/50">Modalidad {getMatchTypeLabel(match.matchType)}</p>
+                <div className="h-1 w-8 rounded-full bg-primary/20" />
+              </div>
             </div>
           </section>
 
@@ -331,13 +344,13 @@ export default async function MatchPage({ params }: MatchPageProps) {
         </div>
       ) : (
         <div className="space-y-8">
-          <section className="space-y-4">
+          <section className="space-y-6">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 flex items-center gap-2">
                   <Users className="h-3.5 w-3.5" />
                   Formación de equipos
                 </h2>
-                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5">
+                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 rounded-full px-3">
                   Listo para jugar
                 </Badge>
              </div>
@@ -369,12 +382,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
           {match.notes && (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-               <div className="rounded-[2rem] bg-muted/20 border border-border/40 p-6 backdrop-blur-sm">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-3 flex items-center gap-2">
-                    <FileText className="h-3 w-3" />
+               <div className="rounded-[2.5rem] bg-card/30 border border-border/40 p-8 backdrop-blur-md shadow-sm">
+                  <h3 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 mb-4 flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
                     Notas del organizador
                   </h3>
-                  <p className="text-sm font-medium text-foreground/80 leading-relaxed italic">
+                  <p className="text-base font-medium text-foreground/80 leading-relaxed italic">
                     "{match.notes}"
                   </p>
                </div>

@@ -137,12 +137,12 @@ export default async function DashboardPage() {
               <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
                 Acciones pendientes
               </h2>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-300">
                 {pendingActionMatches.length}
               </span>
             </div>
             {pendingActionMatches.length > 3 && (
-              <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1">
+              <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1 active:scale-95 transition-transform">
                 <Link href="/notifications">
                   Ver todas
                   <ChevronRight className="h-3 w-3" />
@@ -170,7 +170,7 @@ export default async function DashboardPage() {
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Mi Agenda</h2>
-          <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1">
+          <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1 active:scale-95 transition-transform">
             <Link href="/turnos">Ver todos</Link>
           </Button>
         </div>

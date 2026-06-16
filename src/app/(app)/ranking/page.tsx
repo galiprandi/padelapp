@@ -56,7 +56,7 @@ export default async function RankingPage() {
         <TabsContent value="individual" className="space-y-6 pt-6">
           {players.length > 0 ? (
             <>
-              <div className="px-1 mb-4">
+              <div className="px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
                   Top Jugadores
                 </h2>

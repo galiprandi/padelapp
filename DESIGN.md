@@ -7,7 +7,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay`, botones primarios de alto impacto, y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm / md**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`. Las vistas públicas de alta jerarquía utilizan `backdrop-blur-md`.
-- **Uppercase tracking-widest**: Para micro-etiquetas de secciones pequeñas (usualmente `text-[10px] font-black`).
+- **Uppercase tracking-widest**: Para micro-etiquetas de secciones y etiquetas de acción. Estándar V8: `text-[11px] font-black uppercase tracking-widest text-muted-foreground/70` para encabezados de sección, y `text-[10px]` para micro-links.
 
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
@@ -28,7 +28,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Unified Activity View (Agenda)**: La sección "Mi Agenda" se reserva exclusivamente para actividad futura (turnos y partidos próximos), proporcionando una vista limpia de planificación ordenada cronológicamente.
 - **Hierarchical Separation**: Se utiliza un espacio estándar de `gap-12` para separar los bloques lógicos en vistas principales (Dashboard, Ranking, Turnos, Partidos, Notificaciones). Esto asegura una respiración visual consistente y profesional.
 - **Match Day Intelligence**: Los elementos de la agenda que ocurren en el día actual se destacan con un badge "Hoy" con animación pulse de color primario para priorizar acciones inmediatas. Los eventos de mañana usan un badge "Mañana" más discreto.
-- **Match History Refinement**: El historial de partidos (`/match`) evoluciona hacia un modelo híbrido: prioriza "Acciones pendientes" (confirmaciones/cargas) en la parte superior y mantiene un historial cronológico claro abajo. Utiliza el "bubble aesthetic" con cards de alto impacto para estados no autenticados y un Floating Action Button (FAB) con feedback táctil pronunciado (`active:scale-90`).
+- **Match History Refinement**: El historial de partidos (`/match`) evoluciona hacia un modelo híbrido: prioriza "Acciones pendientes" (confirmaciones/cargas) en la parte superior y mantiene un historial cronológico claro abajo. Utiliza el "bubble aesthetic" con cards de alto impacto para estados no autenticados y un Floating Action Button (FAB) con feedback táctil pronunciado (`active:scale-90`). FAB estándar: `h-16 w-16`, `rounded-[1.25rem]`, borde `4px border-background`.
 - **Personal Relevance Branding**: Los componentes de lista (`TurnCard`, `MatchResultCompact`) implementan una capa de personalización que resalta el equipo del usuario y utiliza etiquetas como "Tú" o "Organizador" para reducir la carga cognitiva y mejorar el "Time to Insight".
 
 ## 5. Navegación y Operatividad
@@ -71,3 +71,9 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Time-to-Value Optimization**: El flujo de creación de partidos integra un paso opcional de "Carga de resultado instantánea" (Step 4). Esto permite registrar partidos pasados en una única sesión, eliminando la necesidad de navegar al detalle del partido tras su creación.
 - **Visual Hierarchy (Dashboard)**: El PageHeader del Dashboard prioriza el botón "Nuevo Partido" como acción primaria (`h-14`, `rounded-2xl`, `shadow-lg shadow-primary/20`), relegando la gestión de perfil y ranking a botones secundarios para agilizar el ciclo de registro de actividad.
 - **High-Impact Scores**: En la vista de detalle de partidos cerrados, el marcador se presenta con tipografía `text-6xl font-black` y efectos de iluminación (`aura primary/20`) para celebrar el resultado y proporcionar una lectura inmediata del desenlace.
+
+## 12. Premium Refinement V8 (Consistencia y Pulido)
+- **Standardized Micro-labels**: Se unifica la tipografía de encabezados de sección a `text-[11px] font-black uppercase tracking-widest text-muted-foreground/70`. Los enlaces de "Ver todas" se estandarizan a `text-[10px] font-black uppercase tracking-widest text-primary` con feedback táctil `active:scale-95`.
+- **Primary Action Refinement**: Los botones de acción principal en cabeceras (`PageHeader`) se estandarizan a `h-14`, `rounded-2xl`, `font-black`, y `shadow-lg shadow-primary/20` con `active:scale-[0.98]`.
+- **High-Impact Score Detail**: La visualización de resultados cerrados en el detalle de partido evoluciona a un contenedor con `backdrop-blur-xl`, animaciones escalonadas para scores y jugadores, y una jerarquía visual superior para celebrar el resultado.
+- **Navigation Consistency**: Se integra el botón de "Volver" (`backHref`) en el Centro de Notificaciones para mantener la consistencia de navegación en todas las vistas de detalle o gestión.

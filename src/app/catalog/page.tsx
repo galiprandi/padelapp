@@ -168,7 +168,7 @@ export default function ComponentCatalogPage() {
               }`}
           >
             <section id="headers" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
                 <PageHeader
                   title="Título de la Página"
@@ -179,10 +179,16 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="ui" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">🎨 UI Básica</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🎨 UI Básica</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Botones (rounded-xl)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Botones Primarios (rounded-2xl)</h3>
+                  <div className="flex flex-col gap-3">
+                    <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">Primary Action</Button>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Botones (rounded-xl)</h3>
                   <div className="flex flex-wrap gap-3">
                     <Button className="rounded-xl font-black">Primary</Button>
                     <Button variant="secondary" className="rounded-xl font-black">Secondary</Button>
@@ -191,7 +197,7 @@ export default function ComponentCatalogPage() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Badges (rounded-xl)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Badges (rounded-xl)</h3>
                   <div className="flex flex-wrap gap-3">
                     <Badge className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Default</Badge>
                     <Badge variant="outline" className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Outline</Badge>
@@ -200,7 +206,7 @@ export default function ComponentCatalogPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Selectores Táctiles (Grid)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selectores Táctiles (Grid)</h3>
                   <div className="grid grid-cols-3 gap-2 max-w-xs">
                     {["1", "3", "5"].map((option) => (
                       <button
@@ -221,10 +227,10 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="players" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">👥 Jugadores</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">👥 Jugadores</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Individual (Cards Premium)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Individual (Cards Premium)</h3>
                   <div className="grid gap-3">
                     <PlayerPreview {...SAMPLE_PLAYERS[0]} />
                     <PlayerWithRanking {...SAMPLE_PLAYERS[1]} ranking={12} />
@@ -233,17 +239,17 @@ export default function ComponentCatalogPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Parejas (PairPreview)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas (PairPreview)</h3>
                   <PairPreview label="Pareja A" players={SAMPLE_PLAYERS} />
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Parejas (PairInline)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas (PairInline)</h3>
                   <PairInline label="Pareja B" players={SAMPLE_PLAYERS} />
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Slot Display</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Slot Display</h3>
                   <div className="grid gap-3">
                     <SlotDisplay
                       team="A"
@@ -269,10 +275,10 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="matches" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">🎾 Partidos y Turnos</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🎾 Partidos y Turnos</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Resultado (MatchResultCompact)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Resultado (MatchResultCompact)</h3>
                   <MatchResultCompact
                     label="Resultado ejemplo"
                     match={SAMPLE_MATCH}
@@ -280,18 +286,18 @@ export default function ComponentCatalogPage() {
                   />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Turno (TurnCard)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Turno (TurnCard)</h3>
                   <TurnCard turn={SAMPLE_TURN} />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Turno Recomendado</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Turno Recomendado</h3>
                   <TurnCard turn={SAMPLE_TURN} variant="recommended" />
                 </div>
               </div>
             </section>
 
             <section id="states" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">📋 Estados</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">📋 Estados</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
                 <EmptyState
                   title="Estado vacío"
@@ -302,7 +308,7 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="navigation" className="space-y-6">
-              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 border-b border-border/20 pb-2">🧭 Navegación</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🧭 Navegación</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl overflow-hidden">
                 <BottomNav
                   position="static"
