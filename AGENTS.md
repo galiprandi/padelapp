@@ -374,6 +374,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `DESIGN.md`
 
+### ✅ Instant Match Flow and Dashboard Hierarchy (V7)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refactor de la jerarquía del Dashboard: "Nuevo Partido" ahora es la acción primaria en el PageHeader para maximizar el registro de actividad.
+  - Implementación del flujo "Instant Match": el wizard de creación ahora incluye un paso opcional de carga de resultados (Step 4) para partidos ya finalizados.
+  - Mejora de impacto visual en Match Detail: marcador de partidos cerrados con tipografía `text-6xl font-black` y efectos de iluminación.
+  - Estandarización de `font-black` en botones de navegación secundaria del Dashboard.
+- **Archivos relacionados**:
+  - `src/app/(app)/me/page.tsx`
+  - `src/hooks/use-match-form.ts`
+  - `src/components/matches/step-content.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+
 ### ✅ Match Day Intelligence y Social Sharing
 - **Estado**: Implementado
 - **Funcionalidades**:

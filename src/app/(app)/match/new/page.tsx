@@ -36,6 +36,10 @@ export default function RegisterMatchPage() {
     setClub,
     courtNumber,
     setCourtNumber,
+    recordScore,
+    setRecordScore,
+    scores,
+    setScores,
     formError,
     isSubmitting,
     goToNextStep,
@@ -115,6 +119,8 @@ export default function RegisterMatchPage() {
         countsForRanking={countsForRanking}
         club={club}
         courtNumber={courtNumber}
+        recordScore={recordScore}
+        scores={scores}
         isSubmitting={isSubmitting}
         onSlotClick={(team, index) => setActiveSlot({ team, index })}
         onManageClick={(team, index) => setManageModal({ open: true, team, index })}
@@ -123,6 +129,8 @@ export default function RegisterMatchPage() {
         onCountsForRankingChange={setCountsForRanking}
         onClubChange={setClub}
         onCourtNumberChange={setCourtNumber}
+        onRecordScoreChange={setRecordScore}
+        onScoresChange={setScores}
         onNextStep={goToNextStep}
         onPreviousStep={goToPreviousStep}
         onCreateMatch={handleCreateMatch}
