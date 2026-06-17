@@ -25,9 +25,9 @@ export default async function NotificationsPage() {
       />
 
       <section className="space-y-6">
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
               Acciones requeridas
             </h2>
             {pendingActions.length > 0 && (
@@ -39,14 +39,14 @@ export default async function NotificationsPage() {
         </div>
 
         {pendingActions.length > 0 ? (
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {pendingActions.map((match, index) => {
               const needsScore = !match.score;
               return (
                 <div
                   key={match.id}
-                  className="animate-in fade-in slide-in-from-bottom-4 duration-500"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+                  style={{ animationDelay: `${index * 150}ms` }}
                 >
                   <MatchResultCompact
                     match={match}
