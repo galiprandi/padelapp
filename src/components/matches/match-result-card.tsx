@@ -19,12 +19,18 @@ export interface MatchResultCardProps {
 
 export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
   return (
-    <div className="group relative rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98] duration-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm z-10">
+    <div className="group relative rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-md transition-all hover:bg-card/60 active:scale-[0.98] duration-300 shadow-sm hover:shadow-md overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <span className="absolute left-8 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 shadow-sm z-20">
         {label}
       </span>
-      <div className="min-h-24 rounded-3xl p-5 pt-8 text-sm text-muted-foreground">{children}</div>
-      {footer ? <div className="border-t border-border/40 bg-background/30 px-5 py-3 text-xs text-muted-foreground">{footer}</div> : null}
+      <div className="min-h-24 p-6 pt-10 text-sm text-muted-foreground relative z-10">
+        {children}
+      </div>
+      {footer ? (
+        <div className="border-t border-border/40 bg-muted/10 px-6 py-4 text-xs text-muted-foreground relative z-10">
+          {footer}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -219,8 +225,9 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           return (
             <Fragment key={team.id}>
               <div className={cn(
-                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-colors",
-                team.hasViewer ? "bg-primary/5 ring-1 ring-primary/10" : ""
+                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-all duration-300",
+                team.hasViewer ? "bg-primary/5 ring-1 ring-primary/10" : "",
+                team.isWinner && "bg-gradient-to-r from-primary/5 to-transparent border-l-2 border-primary/30 shadow-[inset_1px_0_8px_rgba(0,0,0,0.02)]"
               )}>
                 <div className="flex items-center">
                   {team.players.map((player, index) => (
@@ -299,8 +306,8 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
               </div>
 
               {!isLastTeam ? (
-                <div className="relative h-px w-full bg-border/20" aria-hidden>
-                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-3 text-[8px] font-black text-muted-foreground/50 uppercase tracking-tighter">
+                <div className="relative h-px w-full bg-border/20 my-1" aria-hidden>
+                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm border border-border/40 px-2.5 py-0.5 rounded-full text-[8px] font-black text-muted-foreground/30 uppercase tracking-[0.2em] shadow-sm z-10">
                     vs
                    </div>
                 </div>

@@ -7,7 +7,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Rounded-2xl**: Estándar para celdas interactivas secundarias como `SlotDisplay`, botones primarios de alto impacto, y selectores de opciones en cuadrícula (Duración, Jugadores, Niveles).
 - **Rounded-3xl / 2.5rem**: Utilizado para contenedores principales, secciones de formularios, tarjetas de resultados, cards de turnos y estados vacíos para crear el "bubble aesthetic". Las vistas de login y públicas usan `rounded-[2.5rem]` para un impacto visual más audaz.
 - **Backdrop-blur-sm / md**: Para overlays de modales, menús flotantes y fondos de contenedores `bg-card/50` o `bg-primary/10`. Las vistas públicas de alta jerarquía utilizan `backdrop-blur-md`.
-- **Uppercase tracking-widest**: Para micro-etiquetas de secciones y etiquetas de acción. Estándar V8: `text-[11px] font-black uppercase tracking-widest text-muted-foreground/70` para encabezados de sección, y `text-[10px]` para micro-links.
+- **Uppercase tracking-widest**: Para micro-etiquetas de secciones y etiquetas de acción. Estándar V8: `text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50` para encabezados de sección, y `text-[10px]` para micro-links. El tracking aumentado a `0.2em` y el color más tenue aseguran una jerarquía de "metadata" superior.
 
 ## 2. Componentes Clave
 - **MatchPlayersManager**: Gestiona el estado y la edición de jugadores en un partido. Usa `ManageSlotModal` para acciones individuales.
@@ -15,7 +15,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **EmptyState**: Componente refinado para secciones sin datos. Utiliza `bg-card/50`, bordes sólidos (`border-border/40`), un generoso padding vertical (`py-16`) e iconos destacados en círculos `bg-primary/5` para mantener la jerarquía visual del "bubble aesthetic".
 - **UserRankingStats**: Familia de componentes (`UserRankingBanner`, `UserRankingCard`) para visualizar el estatus competitivo del usuario. Utiliza `backdrop-blur-sm` y `rounded-3xl` para mantener el "bubble" aesthetic.
 - **TurnCard**: Componente unificado para mostrar turnos abiertos en listas y dashboards. Soporta variantes `default` y `recommended` (con acento en `bg-primary`) e incluye un badge de "Inscripto" si el usuario ya forma parte del turno, manteniendo la jerarquía visual con micro-etiquetas uppercase y fecha destacada.
-- **MatchResultCard / MatchResultCompact**: Polished UI para resultados. Utiliza una separación visual "vs" entre equipos. El equipo ganador se identifica con iconos de trofeo. Los segmentos de score son cuadrados perfectos (`h-9 w-9`) con `rounded-xl` y sombras dinámicas; los sets ganados escalan sutilmente (`scale-105`) para énfasis visual.
+- **MatchResultCard / MatchResultCompact**: Polished UI para resultados. Utiliza una separación visual "vs" en una píldora con desenfoque de fondo. El equipo ganador se identifica con iconos de trofeo y un gradiente de fondo sutil. Los segmentos de score son cuadrados perfectos (`h-9 w-9`) con `rounded-xl` y sombras dinámicas; los sets ganados escalan sutilmente (`scale-105`) para énfasis visual. Implementa `rounded-[2rem]` y `backdrop-blur-md` para la tarjeta principal.
 - **Match Confirmation Flow**: La sección de confirmación utiliza un diseño de tarjetas individuales para cada jugador (`bg-emerald-500/5` para confirmados) con avatares de gran tamaño y micro-etiquetas de estado, asegurando una visibilidad máxima en móviles.
 
 ## 3. Arquitectura de Datos
@@ -75,5 +75,5 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 12. Premium Refinement V8 (Consistencia y Pulido)
 - **Standardized Micro-labels**: Se unifica la tipografía de encabezados de sección a `text-[11px] font-black uppercase tracking-widest text-muted-foreground/70`. Los enlaces de "Ver todas" se estandarizan a `text-[10px] font-black uppercase tracking-widest text-primary` con feedback táctil `active:scale-95`.
 - **Primary Action Refinement**: Los botones de acción principal en cabeceras (`PageHeader`) se estandarizan a `h-14`, `rounded-2xl`, `font-black`, y `shadow-lg shadow-primary/20` con `active:scale-[0.98]`.
-- **High-Impact Score Detail**: La visualización de resultados cerrados en el detalle de partido evoluciona a un contenedor con `backdrop-blur-xl`, animaciones escalonadas para scores y jugadores, y una jerarquía visual superior para celebrar el resultado.
+- **High-Impact Score Detail**: La visualización de resultados cerrados en el detalle de partido evoluciona a un contenedor con `backdrop-blur-2xl`, iluminación ambiental superior (`blur-[100px]`), animaciones escalonadas extendidas para scores (1000ms) y jugadores (64px avatars), y una jerarquía visual superior para celebrar el resultado.
 - **Navigation Consistency**: Se integra el botón de "Volver" (`backHref`) en el Centro de Notificaciones para mantener la consistencia de navegación en todas las vistas de detalle o gestión.

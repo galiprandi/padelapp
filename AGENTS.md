@@ -387,20 +387,20 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/step-content.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
 
-### ✅ Premium Refinement V8: Consistencia UI/UX
+### ✅ Premium Refinement V9: Coreografía y Alta Fidelidad
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Estandarización de encabezados de sección a `text-[11px] font-black uppercase tracking-widest text-muted-foreground/70` en toda la app.
-  - Pulido de botones primarios en PageHeaders (`h-14`, `rounded-2xl`, `shadow-lg`) para mejorar el Time-to-Action.
-  - Refuerzo de feedback táctil con `active:scale-[0.98]` y `active:scale-95` en elementos interactivos.
-  - Rediseño de la sección de resultados en el detalle de partido con `backdrop-blur-xl` y animaciones premium.
-  - Estandarización de FABs a `h-16 w-16` con borde de seguridad para una mejor ergonomía móvil.
+  - Implementación de **Entrance Choreography**: animaciones escalonadas (`slide-in-from-bottom-6`) con duraciones extendidas (700ms-1000ms) en todas las vistas principales.
+  - Refactor de `MatchResultCompact`: introducción de la píldora "vs" con backdrop-blur, gradientes de victoria y `rounded-[2rem]` para una estética más suave.
+  - Evolución del `PageHeader`: nuevo botón "Volver" estilo burbuja, animaciones laterales y tipografía V8 con `tracking-[0.2em]`.
+  - Refinamiento de impacto en Detalle de Partido: iluminación ambiental (`blur-[100px]`), avatares de 64px y `backdrop-blur-2xl` para el marcador final.
+  - Estandarización de micro-etiquetas: migración a `tracking-[0.2em]` y `text-muted-foreground/50` para una jerarquía visual más sofisticada.
 - **Archivos relacionados**:
+  - `src/components/matches/match-result-card.tsx`
+  - `src/components/page-header.tsx`
   - `src/app/(app)/me/page.tsx`
-  - `src/app/(app)/match/page.tsx`
-  - `src/app/(app)/turnos/page.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
-  - `src/app/catalog/page.tsx`
+  - `src/app/(app)/notifications/page.tsx`
 
 ### ✅ Match Day Intelligence y Social Sharing
 - **Estado**: Implementado
