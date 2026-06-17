@@ -277,58 +277,64 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 </p>
               </div>
 
-              <div className="grid gap-6">
-                {teams.map((team) => (
-                  <div key={team.id} className="space-y-4">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
-                      <span className="h-px w-4 bg-border/40" />
-                      {team.label}
-                    </p>
-                    <div className="grid grid-cols-1 gap-3">
-                      {team.players.map((player: {
-                        id: string;
-                        name: string;
-                        image?: string | null;
-                        isConfirmed?: boolean;
-                      }) => (
-                        <div key={player.id} className={cn(
-                          "flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300",
-                          player.isConfirmed
-                            ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.05)]"
-                            : "bg-card/30 border-border/20 shadow-sm"
+              <div className="grid grid-cols-2 gap-4">
+                {match.players.sort((a, b) => a.position - b.position).map((player, idx) => {
+                  const displayName = player.displayName || player.user?.displayName || `Jugador ${player.position + 1}`;
+                  const isConfirmed = player.resultConfirmed;
+
+                  return (
+                    <div
+                      key={player.id}
+                      className={cn(
+                        "relative flex flex-col items-center gap-3 p-5 rounded-[2rem] border transition-all duration-500 animate-in zoom-in-95",
+                        isConfirmed
+                          ? "bg-emerald-500/5 border-emerald-500/20 shadow-[0_8px_20px_-12px_rgba(16,185,129,0.3)]"
+                          : "bg-card/30 border-border/20"
+                      )}
+                      style={{ animationDelay: `${idx * 100}ms` }}
+                    >
+                      <div className="relative">
+                        <PlayerAvatar
+                          name={displayName}
+                          image={player.user?.image ?? undefined}
+                          className={cn(
+                            "h-16 w-16 border-4 border-background shadow-xl transition-all duration-500",
+                            isConfirmed ? "ring-2 ring-emerald-500/20 scale-105" : "grayscale-[0.5] opacity-80"
+                          )}
+                        />
+                        <div className={cn(
+                          "absolute -right-1 -bottom-1 rounded-full p-1.5 border-2 border-background shadow-lg transition-all duration-700",
+                          isConfirmed ? "bg-emerald-500 scale-110 rotate-0" : "bg-muted scale-75 rotate-45"
                         )}>
-                          <div className="relative shrink-0">
-                            <PlayerAvatar name={player.name} image={player.image ?? undefined} className="h-12 w-12 border-2 border-background shadow-md" />
-                            <div className={cn(
-                              "absolute -right-1 -bottom-1 rounded-full p-1 border-2 border-background shadow-sm transition-all duration-500",
-                              player.isConfirmed ? "bg-emerald-500 scale-110" : "bg-muted scale-90"
-                            )}>
-                              {player.isConfirmed ? (
-                                <CheckCircle2 className="h-3 w-3 text-white" />
-                              ) : (
-                                <Clock className="h-3 w-3 text-muted-foreground/50" />
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className={cn(
-                              "text-sm font-black truncate leading-tight",
-                              player.isConfirmed ? "text-foreground" : "text-foreground/70"
-                            )}>
-                              {player.name}
-                            </span>
-                            <span className={cn(
-                              "text-[9px] font-black uppercase tracking-widest mt-1 transition-colors",
-                              player.isConfirmed ? "text-emerald-600" : "text-muted-foreground/40"
-                            )}>
-                              {player.isConfirmed ? "Confirmado" : "Esperando"}
-                            </span>
-                          </div>
+                          {isConfirmed ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+                          ) : (
+                            <Clock className="h-3.5 w-3.5 text-muted-foreground/50" />
+                          )}
                         </div>
-                      ))}
+                      </div>
+
+                      <div className="flex flex-col items-center text-center gap-1 min-w-0 w-full">
+                        <span className={cn(
+                          "text-[13px] font-black truncate leading-none px-2 w-full",
+                          isConfirmed ? "text-foreground" : "text-foreground/50"
+                        )}>
+                          {displayName}
+                        </span>
+                        <span className={cn(
+                          "text-[8px] font-black uppercase tracking-[0.2em] transition-colors",
+                          isConfirmed ? "text-emerald-500" : "text-muted-foreground/30"
+                        )}>
+                          {isConfirmed ? "Confirmado" : "Pendiente"}
+                        </span>
+                      </div>
+
+                      {player.userId === viewerId && !isConfirmed && (
+                        <div className="absolute inset-0 rounded-[2rem] ring-2 ring-primary/20 animate-pulse pointer-events-none" />
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {userNeedsToConfirm && (

@@ -1,14 +1,16 @@
 
 "use client";
 
-import { Fragment, memo, type ReactNode } from "react";
+import { Fragment, memo, type ReactNode, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { Trophy, ChevronRight, Share2 } from "lucide-react";
+import { Trophy, ChevronRight, Share2, Check, Loader2 } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
+import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
 
 export interface MatchResultCardProps {
@@ -39,6 +41,7 @@ export interface MatchResultCompactPlayer {
   id: string;
   position: number;
   displayName?: string | null;
+  resultConfirmed?: boolean;
   user?: {
     id: string;
     displayName: string | null;
@@ -86,6 +89,8 @@ function parseScoreSets(score?: string | null): Array<[number, number]> {
 
 export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl, viewerId: propViewerId }: MatchResultCompactProps) {
   const { data: session } = useSession();
+  const router = useRouter();
+  const [isConfirming, startTransition] = useTransition();
   const viewerId = propViewerId ?? session?.user?.id;
   const parsedSets = parseScoreSets(match.score);
   const scoresMatrix: Array<Array<number>> = [[], []];
@@ -150,7 +155,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
   const needsConfirmation = viewerId &&
     match.status !== "CONFIRMED" &&
     match.score &&
-    match.players.some(p => p.user?.id === viewerId);
+    match.players.some(p => p.user?.id === viewerId && !p.resultConfirmed);
 
   const statusClassName = (() => {
     if (needsConfirmation) {
@@ -165,6 +170,18 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
         return "bg-secondary/20 text-secondary-foreground border-secondary/20";
     }
   })();
+
+  const handleQuickConfirm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    startTransition(async () => {
+      const res = await confirmMatchResultAction(match.id);
+      if (res.status === "ok") {
+        router.refresh();
+      }
+    });
+  };
 
   return (
     <MatchResultCard
@@ -192,6 +209,20 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
+                  {needsConfirmation && (
+                    <button
+                      onClick={handleQuickConfirm}
+                      disabled={isConfirming}
+                      className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
+                    >
+                      {isConfirming ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Check className="h-3 w-3" />
+                      )}
+                      Confirmar
+                    </button>
+                  )}
                   {isConfirmed && match.score && (
                     <ShareButton
                       url={createMagicLink({ resource: "match", identifier: match.id }).url}

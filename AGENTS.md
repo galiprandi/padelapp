@@ -326,7 +326,7 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - **Funcionalidades**:
   - Centro de Notificaciones dedicado en `/notifications` para centralizar acciones pendientes (confirmaciones y carga de scores).
   - Integración de badge de conteo dinámico en la barra de navegación inferior (`BottomNav`).
-  - Centralización de la lógica de consulta de partidos y acciones pendientes en `src/lib/match-queries.ts`.
+  - Centralización de la lógica de consulta de partidos y acciones pendientes in `src/lib/match-queries.ts`.
   - Refinamiento de la jerarquía visual del Dashboard con enlaces de "Ver todas" para acciones excedentes.
   - Estandarización de tipografía `font-black` en encabezados de sección para alineación con V5 Premium.
 - **Archivos relacionados**:
@@ -401,6 +401,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `src/app/(app)/notifications/page.tsx`
+
+### ✅ Frictionless Confirmation and Status Board (V9)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Implementación de "Quick Confirm" en `MatchResultCompact`: botón de confirmación directa desde Dashboard y Notificaciones para reducir el Time-to-Value.
+  - Refactor del Detalle de Partido: nuevo "Status Board" de confirmaciones con grid de alto impacto, avatares destacados y animaciones premium.
+  - Optimización de la query `getEnhancedUserMatches` para incluir el estado de confirmación del visor.
+- **Archivos relacionados**:
+  - `src/components/matches/match-result-card.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/lib/match-queries.ts`
 
 ### ✅ Match Day Intelligence y Social Sharing
 - **Estado**: Implementado
