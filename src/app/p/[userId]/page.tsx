@@ -107,7 +107,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
 
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
+          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
             Últimos partidos
           </h2>
         </div>
