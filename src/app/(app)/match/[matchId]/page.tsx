@@ -206,37 +206,43 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
       {isClosed ? (
         <div className="space-y-12">
-          <section className="flex flex-col items-center justify-center text-center py-10 animate-in zoom-in duration-700 relative overflow-hidden rounded-[3rem] bg-card/20 backdrop-blur-xl border border-border/40 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.3em] text-primary/60 mb-8">Resultado Final</span>
+          <section className="flex flex-col items-center justify-center text-center py-12 animate-in zoom-in duration-1000 relative overflow-hidden rounded-[3.5rem] bg-card/20 backdrop-blur-2xl border border-border/40 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/20 blur-[100px] rounded-full pointer-events-none opacity-50" />
+
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.4em] text-primary mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
+              Resultado Final
+            </span>
 
             <div className="relative z-10 group">
-              <div className="absolute -inset-8 bg-primary/20 rounded-[4rem] blur-3xl group-hover:bg-primary/30 transition-all duration-1000 opacity-40 animate-pulse" />
-              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 px-6">
+              <div className="absolute -inset-12 bg-primary/30 rounded-[5rem] blur-3xl group-hover:bg-primary/40 transition-all duration-1000 opacity-30 animate-pulse" />
+              <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 px-6">
                 {match.score?.split(',').map((set, idx) => (
                   <div key={idx}
-                    className="relative text-7xl md:text-8xl font-black tracking-tighter text-foreground drop-shadow-[0_4px_12px_rgba(0,0,0,0.1)] animate-in slide-in-from-bottom-8 duration-700"
-                    style={{ animationDelay: `${idx * 150}ms` }}
+                    className="relative text-7xl md:text-9xl font-black tracking-tighter text-foreground drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-12 duration-1000"
+                    style={{ animationDelay: `${idx * 200}ms` }}
                   >
-                    {set.trim()}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
+                      {set.trim()}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="relative z-10 mt-12 flex flex-col items-center gap-6">
-              <div className="flex -space-x-3 items-center">
+            <div className="relative z-10 mt-16 flex flex-col items-center gap-8">
+              <div className="flex -space-x-4 items-center">
                 {match.players.sort((a, b) => a.position - b.position).map((p, i) => (
                   <div
                     key={p.id}
-                    className="animate-in fade-in zoom-in duration-500"
-                    style={{ animationDelay: `${400 + i * 100}ms` }}
+                    className="animate-in fade-in zoom-in duration-700 hover:z-20 hover:scale-110 transition-transform"
+                    style={{ animationDelay: `${600 + i * 150}ms` }}
                   >
                     <PlayerAvatar
                       name={p.displayName || p.user?.displayName || ""}
                       image={p.user?.image ?? undefined}
-                      className="border-4 border-background shadow-2xl"
-                      size={56}
+                      className="border-4 border-background shadow-2xl ring-1 ring-primary/10"
+                      size={64}
                     />
                   </div>
                 ))}
@@ -258,15 +264,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-6 duration-700">
+            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm shadow-primary/5">
                     <AlertCircle className="h-5 w-5" />
                   </div>
-                  <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Confirmación pendiente</h2>
+                  <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Confirmación pendiente</h2>
                 </div>
-                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/60 max-w-sm">
+                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/40 max-w-sm">
                   Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
                 </p>
               </div>
@@ -346,7 +352,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
         <div className="space-y-8">
           <section className="space-y-6">
              <div className="flex items-center justify-between px-1">
-                <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 flex items-center gap-2">
+                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 flex items-center gap-2">
                   <Users className="h-3.5 w-3.5" />
                   Formación de equipos
                 </h2>

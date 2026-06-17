@@ -131,10 +131,10 @@ export default async function DashboardPage() {
 
       {/* NUEVA SECCIÓN: Acciones Pendientes */}
       {pendingActionMatches.length > 0 && (
-        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-          <div className="flex items-center justify-between px-1">
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+          <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                 Acciones pendientes
               </h2>
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-300">
@@ -167,10 +167,10 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Mi Agenda</h2>
-          <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 flex items-center gap-1 active:scale-95 transition-transform">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Mi Agenda</h2>
+          <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-[0.2em] text-[10px] h-auto p-0 flex items-center gap-1 active:scale-95 transition-transform">
             <Link href="/turnos">Ver todos</Link>
           </Button>
         </div>
@@ -215,9 +215,9 @@ export default async function DashboardPage() {
       </section>
 
       {recommendedTurns.length > 0 && (
-        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Turnos recomendados</h2>
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
             {recommendedTurns.map((turn) => (
@@ -233,9 +233,9 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Últimos resultados</h2>
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Últimos resultados</h2>
         </div>
         <div className="space-y-3">
           {recentMatches.length > 0 ? (

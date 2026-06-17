@@ -76,12 +76,14 @@ export function PageHeader({
   return (
     <header className={cn("space-y-3 w-full", alignClasses[align], className)}>
       {backHref && (
-        <div className={cn("flex mb-2", align === 'center' && 'justify-center')}>
+        <div className={cn("flex mb-4 animate-in fade-in slide-in-from-left-4 duration-500", align === 'center' && 'justify-center')}>
           <Link
             href={backHref}
-            className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+            className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-all active:scale-95"
           >
-            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted/20 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            </div>
             Volver
           </Link>
         </div>
@@ -90,7 +92,7 @@ export function PageHeader({
         {icon && <div className="text-muted-foreground">{icon}</div>}
         <h1 
           className={cn(
-            "font-black text-foreground tracking-tight",
+            "font-black text-foreground tracking-tight animate-in fade-in slide-in-from-left-4 duration-700",
             titleSizes[size],
             titleClassName
           )}
@@ -101,7 +103,7 @@ export function PageHeader({
       
       {description && (
         <div className={cn(
-          "text-muted-foreground max-w-3xl",
+          "text-muted-foreground/80 max-w-3xl animate-in fade-in slide-in-from-left-4 duration-1000",
           align === 'left' ? 'text-left' : align === 'center' ? 'mx-auto text-center' : 'ml-auto text-right',
           {
             'text-sm font-medium leading-relaxed': typeof description === 'string',
