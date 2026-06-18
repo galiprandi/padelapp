@@ -19,6 +19,20 @@ export default async function MatchListPage() {
     viewerId ? getPendingActions(viewerId) : Promise.resolve([]),
   ]);
 
+  // Agrupar partidos por mes y año
+  const groupedMatches = matches.reduce((groups: Record<string, typeof matches>, match) => {
+    const date = new Date(match.date || match.createdAt);
+    const month = date.toLocaleString("es-AR", { month: "long" });
+    const year = date.getFullYear();
+    const key = `${month} ${year}`;
+
+    if (!groups[key]) {
+      groups[key] = [];
+    }
+    groups[key].push(match);
+    return groups;
+  }, {});
+
   return (
     <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
@@ -73,21 +87,34 @@ export default async function MatchListPage() {
         </section>
       )}
 
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">Historial de partidos</h2>
+      <section className="space-y-8">
+        <div className="flex items-center justify-between px-1 border-b border-border/10 pb-4">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Historial de partidos</h2>
         </div>
 
-        <div className="grid gap-4">
+        <div className="space-y-12">
           {viewerId ? (
             matches.length > 0 ? (
-              matches.map((match) => (
-                <MatchResultCompact
-                  key={match.id}
-                  match={match}
-                  detailUrl={`/match/${match.id}`}
-                  viewerId={viewerId}
-                />
+              Object.entries(groupedMatches).map(([monthYear, monthMatches], groupIdx) => (
+                <div key={monthYear} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700" style={{ animationDelay: `${groupIdx * 100}ms` }}>
+                  <div className="flex items-center gap-4 px-1">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 whitespace-nowrap">
+                      {monthYear}
+                    </h3>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
+                  </div>
+                  <div className="grid gap-4">
+                    {monthMatches.map((match) => (
+                      <MatchResultCompact
+                        key={match.id}
+                        match={match}
+                        detailUrl={`/match/${match.id}`}
+                        viewerId={viewerId}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))
             ) : (
               <EmptyState

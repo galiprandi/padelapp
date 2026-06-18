@@ -1,8 +1,13 @@
 
-import { Clock, Users, Trophy } from "lucide-react";
+"use client";
+
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Clock, Users, Trophy, Loader2, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
+import { joinTurnAction } from "@/app/(app)/turnos/actions";
 
 interface TurnCardProps {
   turn: {
@@ -20,11 +25,10 @@ interface TurnCardProps {
 }
 
 export function TurnCard({ turn, variant = "default", isJoined, isCreator }: TurnCardProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const dateObj = new Date(turn.date);
 
-  // Pre-formatting in a way that is less likely to cause hydration mismatches
-  // if this were a client component, but since we removed 'use client'
-  // we are safer. Still, keeping it clean.
   const day = dateObj.getDate();
   const month = dateObj.toLocaleDateString("es-ES", { month: "short" });
   const timeStr = dateObj.toLocaleTimeString("es-ES", {
@@ -38,14 +42,30 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
   const isTodayDate = isToday(dateObj);
   const isTomorrowDate = isTomorrow(dateObj);
 
+  const canJoin = !isJoined && turn.status === "OPEN";
+
+  const handleQuickJoin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    startTransition(async () => {
+      const res = await joinTurnAction(turn.id);
+      if (res.status === "ok") {
+        router.refresh();
+      }
+    });
+  };
+
   return (
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
+          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all duration-200 shadow-sm hover:shadow-md",
+          !isPending && "active:scale-[0.98]",
           isRecommended
             ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
-            : "bg-card/50 border-border/40 hover:bg-card/80"
+            : "bg-card/50 border-border/40 hover:bg-card/80",
+          isPending && "opacity-70 pointer-events-none"
         )}
       >
         <div
@@ -110,9 +130,29 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           </div>
         </div>
 
-        {isRecommended && (
-          <div className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary shrink-0 border border-primary/20">
+        {canJoin && (
+          <button
+            onClick={handleQuickJoin}
+            disabled={isPending}
+            className={cn(
+              "flex items-center gap-1.5 rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all shrink-0 border shadow-lg active:scale-90",
+              isRecommended
+                ? "bg-primary text-primary-foreground border-primary shadow-primary/20"
+                : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+            )}
+          >
+            {isPending ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <UserPlus className="h-3 w-3" />
+            )}
             Unirse
+          </button>
+        )}
+
+        {isRecommended && isJoined && (
+          <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 shrink-0 border border-emerald-500/20">
+            Inscripto
           </div>
         )}
       </div>
