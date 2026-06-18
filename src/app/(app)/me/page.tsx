@@ -176,40 +176,46 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-3">
           {agendaItems.length > 0 ? (
-            agendaItems.map((item) => (
-              item.type === "turn" ? (
-                <TurnCard
-                  key={item.id}
-                  turn={item.data}
-                  isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
-                  isCreator={item.data.creatorId === viewerId}
-                />
-              ) : (
-                <MatchResultCompact
-                  key={item.id}
-                  match={item.data as MatchResultCompactMatch}
-                  detailUrl={`/match/${item.id}`}
-                  label="Próximo partido"
-                  viewerId={viewerId}
-                />
-              )
+            agendaItems.map((item, index) => (
+              <div
+                key={item.id}
+                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {item.type === "turn" ? (
+                  <TurnCard
+                    turn={item.data}
+                    isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
+                    isCreator={item.data.creatorId === viewerId}
+                  />
+                ) : (
+                  <MatchResultCompact
+                    match={item.data as MatchResultCompactMatch}
+                    detailUrl={`/match/${item.id}`}
+                    label="Próximo partido"
+                    viewerId={viewerId}
+                  />
+                )}
+              </div>
             ))
           ) : (
-            <EmptyState
-              icon={CalendarDays}
-              title="Tu agenda está vacía"
-              description="Sumate a un turno abierto o creá un partido con amigos para empezar."
-              action={
-                <div className="flex flex-col w-full gap-3">
-                  <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20" asChild>
-                    <Link href="/turnos">Explorar turnos</Link>
-                  </Button>
-                  <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px]" asChild>
-                    <Link href="/ranking">Ver ranking global</Link>
-                  </Button>
-                </div>
-              }
-            />
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+              <EmptyState
+                icon={CalendarDays}
+                title="Tu agenda está vacía"
+                description="Sumate a un turno abierto o creá un partido con amigos para empezar."
+                action={
+                  <div className="flex flex-col w-full gap-3">
+                    <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20" asChild>
+                      <Link href="/turnos">Explorar turnos</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px]" asChild>
+                      <Link href="/ranking">Ver ranking global</Link>
+                    </Button>
+                  </div>
+                }
+              />
+            </div>
           )}
         </div>
       </section>
@@ -220,14 +226,19 @@ export default async function DashboardPage() {
             <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
-            {recommendedTurns.map((turn) => (
-              <TurnCard
+            {recommendedTurns.map((turn, index) => (
+              <div
                 key={turn.id}
-                turn={turn}
-                variant="recommended"
-                isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
-                isCreator={turn.creatorId === viewerId}
-              />
+                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <TurnCard
+                  turn={turn}
+                  variant="recommended"
+                  isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
+                  isCreator={turn.creatorId === viewerId}
+                />
+              </div>
             ))}
           </div>
         </section>
@@ -239,25 +250,32 @@ export default async function DashboardPage() {
         </div>
         <div className="space-y-3">
           {recentMatches.length > 0 ? (
-            recentMatches.map((match) => (
-              <MatchResultCompact
+            recentMatches.map((match, index) => (
+              <div
                 key={match.id}
-                match={match}
-                detailUrl={`/match/${match.id}`}
-                viewerId={viewerId}
-              />
+                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <MatchResultCompact
+                  match={match}
+                  detailUrl={`/match/${match.id}`}
+                  viewerId={viewerId}
+                />
+              </div>
             ))
           ) : (
-            <EmptyState
-              icon={Trophy}
-              title="Sin resultados todavía"
-              description="Cuando registres un marcador, vas a verlo acá para compartirlo."
-              action={
-                <Button className="w-full rounded-xl" variant="secondary" asChild>
-                  <Link href="/match">Ver partidos</Link>
-                </Button>
-              }
-            />
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
+              <EmptyState
+                icon={Trophy}
+                title="Sin resultados todavía"
+                description="Cuando registres un marcador, vas a verlo acá para compartirlo."
+                action={
+                  <Button className="w-full rounded-xl" variant="secondary" asChild>
+                    <Link href="/match">Ver partidos</Link>
+                  </Button>
+                }
+              />
+            </div>
           )}
         </div>
       </section>

@@ -42,7 +42,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
+          "flex items-center gap-4 rounded-[2rem] p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
           isRecommended
             ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
             : "bg-card/50 border-border/40 hover:bg-card/80"
@@ -50,14 +50,14 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px] relative",
-            isRecommended ? "bg-primary/25" : "bg-primary/15"
+            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[64px] relative shadow-lg transition-shadow",
+            isRecommended ? "bg-primary/25 shadow-primary/20" : "bg-primary/15 shadow-primary/5"
           )}
         >
-          <span className="text-[10px] font-black uppercase leading-none">
+          <span className="text-[11px] font-black uppercase leading-none tracking-[0.1em]">
             {month}
           </span>
-          <span className="text-2xl font-black leading-none mt-1">
+          <span className="text-3xl font-black leading-none mt-1 tracking-tighter">
             {day}
           </span>
           {isTodayDate && (
@@ -111,7 +111,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
         </div>
 
         {isRecommended && (
-          <div className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary shrink-0 border border-primary/20">
+          <div className="rounded-full bg-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95">
             Unirse
           </div>
         )}

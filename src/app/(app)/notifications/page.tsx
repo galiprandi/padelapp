@@ -46,7 +46,7 @@ export default async function NotificationsPage() {
                 <div
                   key={match.id}
                   className="animate-in fade-in slide-in-from-bottom-6 duration-700"
-                  style={{ animationDelay: `${index * 150}ms` }}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <MatchResultCompact
                     match={match}
@@ -59,7 +59,7 @@ export default async function NotificationsPage() {
             })}
           </div>
         ) : (
-          <div className="pt-4">
+          <div className="pt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
             <EmptyState
               icon={BellOff}
               title="Todo al día"
