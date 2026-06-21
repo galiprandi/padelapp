@@ -85,15 +85,19 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 animate-in fade-in duration-700">
-      <section className="space-y-6">
-        <PageHeader
-          title={displayName}
-          description={`Perfil de jugador de pádel • Nivel ${user.level}`}
-          size="lg"
-          align="center"
-        />
+      <section className="relative space-y-6">
+        <div className="absolute -top-20 left-1/2 -z-10 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-primary/10 blur-[100px]" />
 
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+        <div className="space-y-2">
+          <PageHeader
+            title={displayName}
+            description={`Perfil de jugador de pádel • Nivel ${user.level}`}
+            size="lg"
+            align="center"
+          />
+        </div>
+
+        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
           <UserRankingBanner
             position={user.rankingPosition}
             score={user.rankingScore}
@@ -105,9 +109,9 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
         </div>
       </section>
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
             Últimos partidos
           </h2>
         </div>

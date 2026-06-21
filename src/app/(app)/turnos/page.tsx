@@ -31,7 +31,7 @@ export default async function TurnsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 pb-8">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."
@@ -61,29 +61,39 @@ export default async function TurnsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-3">
-        {turns.length > 0 ? (
-          turns.map((turn) => (
-            <TurnCard
-              key={turn.id}
-              turn={turn}
-              isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
-              isCreator={turn.creatorId === session?.user?.id}
+      <section className="space-y-6">
+        <div className="px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos disponibles</h2>
+        </div>
+        <div className="grid gap-3">
+          {turns.length > 0 ? (
+            turns.map((turn, index) => (
+              <div
+                key={turn.id}
+                className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both"
+                style={{ animationDelay: `${(index + 2) * 100}ms` }}
+              >
+                <TurnCard
+                  turn={turn}
+                  isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
+                  isCreator={turn.creatorId === session?.user?.id}
+                />
+              </div>
+            ))
+          ) : (
+            <EmptyState
+              title="Sin turnos abiertos"
+              description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
+              icon={CalendarOff}
+              action={
+                <Button asChild className="w-full max-w-xs rounded-xl h-11 font-black">
+                  <Link href="/turnos/nuevo">Crear turno ahora</Link>
+                </Button>
+              }
             />
-          ))
-        ) : (
-          <EmptyState
-            title="Sin turnos abiertos"
-            description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
-            icon={CalendarOff}
-            action={
-              <Button asChild className="w-full max-w-xs rounded-xl h-11 font-black">
-                <Link href="/turnos/nuevo">Crear turno ahora</Link>
-              </Button>
-            }
-          />
-        )}
-      </div>
+          )}
+        </div>
+      </section>
 
       <div className="fixed bottom-24 right-6 md:hidden z-40 animate-in slide-in-from-bottom-8 duration-700">
         <Button asChild size="icon" className="h-16 w-16 rounded-[1.25rem] shadow-2xl shadow-primary/40 active:scale-90 transition-all border-4 border-background">
