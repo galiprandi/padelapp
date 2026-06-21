@@ -438,6 +438,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/ranking/user-ranking-stats.tsx`
   - `src/app/(app)/me/page.tsx`
   - `src/lib/utils.ts`
+### ✅ UX Premium Refinement y Coreografía V9+
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Refinamiento de la Vista de Perfil Público (`/p/[id]`) con estética de alta fidelidad, iluminación ambiental (`blur-[100px]`) y animaciones escalonadas optimizadas.
+  - Estandarización global de micro-etiquetas y encabezados de sección con `tracking-[0.2em]` y `text-muted-foreground/50` para una jerarquía visual superior.
+  - Mejora de la coreografía de entrada en Notificaciones y Turnos con duraciones de 1000ms y retardos secuenciales.
+  - Pulido del active indicator en `BottomNav` con mayor presencia visual (`h-1.5`, `rounded-b-2xl`) y sombras profundas.
+- **Archivos relacionados**:
+  - `src/app/p/[userId]/page.tsx`
+  - `src/app/(app)/notifications/page.tsx`
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/components/navigation/bottom-nav.tsx`
 
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
