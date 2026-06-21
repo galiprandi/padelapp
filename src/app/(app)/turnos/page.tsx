@@ -61,26 +61,23 @@ export default async function TurnsPage() {
         </Card>
       </div>
 
-      <section className="space-y-6">
-        <div className="px-2">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos disponibles</h2>
-        </div>
-        <div className="grid gap-3">
-          {turns.length > 0 ? (
-            turns.map((turn, index) => (
-              <div
-                key={turn.id}
-                className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both"
-                style={{ animationDelay: `${(index + 2) * 100}ms` }}
-              >
-                <TurnCard
-                  turn={turn}
-                  isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
-                  isCreator={turn.creatorId === session?.user?.id}
-                />
-              </div>
-            ))
-          ) : (
+      <div className="grid gap-3">
+        {turns.length > 0 ? (
+          turns.map((turn, index) => (
+            <div
+              key={turn.id}
+              className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <TurnCard
+                turn={turn}
+                isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
+                isCreator={turn.creatorId === session?.user?.id}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
             <EmptyState
               title="Sin turnos abiertos"
               description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
@@ -91,9 +88,9 @@ export default async function TurnsPage() {
                 </Button>
               }
             />
-          )}
-        </div>
-      </section>
+          </div>
+        )}
+      </div>
 
       <div className="fixed bottom-24 right-6 md:hidden z-40 animate-in slide-in-from-bottom-8 duration-700">
         <Button asChild size="icon" className="h-16 w-16 rounded-[1.25rem] shadow-2xl shadow-primary/40 active:scale-90 transition-all border-4 border-background">
