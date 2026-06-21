@@ -22,6 +22,7 @@ export default async function DashboardPage() {
     prisma.user.findUnique({
       where: { id: viewerId },
       select: {
+        id: true,
         displayName: true,
         alias: true,
         rankingScore: true,
@@ -29,6 +30,8 @@ export default async function DashboardPage() {
         rankingDelta: true,
         level: true,
         matchesPlayed: true,
+        wins: true,
+        losses: true,
       },
     }),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -123,6 +126,9 @@ export default async function DashboardPage() {
                 score={user.rankingScore}
                 delta={user.rankingDelta}
                 level={user.level}
+                wins={user.wins}
+                losses={user.losses}
+                matchesPlayed={user.matchesPlayed}
               />
             </Link>
           </div>

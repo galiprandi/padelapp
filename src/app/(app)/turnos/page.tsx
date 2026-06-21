@@ -31,7 +31,7 @@ export default async function TurnsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 pb-8">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."

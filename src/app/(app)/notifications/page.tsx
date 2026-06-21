@@ -25,13 +25,13 @@ export default async function NotificationsPage() {
       />
 
       <section className="space-y-6">
-        <div className="flex items-center justify-between px-2">
+        <div className="flex items-center justify-between px-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
           <div className="flex items-center gap-2">
             <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
               Acciones requeridas
             </h2>
             {pendingActions.length > 0 && (
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-300">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-500 delay-300">
                 {pendingActions.length}
               </span>
             )}

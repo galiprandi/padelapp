@@ -31,3 +31,30 @@ export function getGreeting(): string {
   if (hour < 19) return "¡Buenas tardes!";
   return "¡Buenas noches!";
 }
+
+export function calculateWinRate(wins: number, matchesPlayed: number): number {
+  if (!matchesPlayed || matchesPlayed === 0) return 0;
+  return Math.round((wins / matchesPlayed) * 100);
+}
+
+export function getMatchWinner(score: string | null): "A" | "B" | null {
+  if (!score) return null;
+
+  const sets = score.split(",").map((s) => s.trim());
+  let winsA = 0;
+  let winsB = 0;
+
+  for (const set of sets) {
+    const match = set.match(/(\d+)[^\d]+(\d+)/);
+    if (match) {
+      const scoreA = parseInt(match[1], 10);
+      const scoreB = parseInt(match[2], 10);
+      if (scoreA > scoreB) winsA++;
+      else if (scoreB > scoreA) winsB++;
+    }
+  }
+
+  if (winsA > winsB) return "A";
+  if (winsB > winsA) return "B";
+  return null;
+}
