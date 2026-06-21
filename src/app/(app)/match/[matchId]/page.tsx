@@ -248,7 +248,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 ))}
               </div>
               <div className="flex flex-col items-center gap-1">
-                <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/50">Modalidad {getMatchTypeLabel(match.matchType)}</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Modalidad {getMatchTypeLabel(match.matchType)}</p>
                 <div className="h-1 w-8 rounded-full bg-primary/20" />
               </div>
             </div>
@@ -395,7 +395,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           {match.notes && (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
                <div className="rounded-[2.5rem] bg-card/30 border border-border/40 p-8 backdrop-blur-md shadow-sm">
-                  <h3 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 mb-4 flex items-center gap-2">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-4 flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Notas del organizador
                   </h3>

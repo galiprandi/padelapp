@@ -22,6 +22,7 @@ export default async function DashboardPage() {
     prisma.user.findUnique({
       where: { id: viewerId },
       select: {
+        id: true,
         displayName: true,
         alias: true,
         rankingScore: true,
@@ -29,6 +30,8 @@ export default async function DashboardPage() {
         rankingDelta: true,
         level: true,
         matchesPlayed: true,
+        wins: true,
+        losses: true,
       },
     }),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -123,6 +126,9 @@ export default async function DashboardPage() {
                 score={user.rankingScore}
                 delta={user.rankingDelta}
                 level={user.level}
+                wins={user.wins}
+                losses={user.losses}
+                matchesPlayed={user.matchesPlayed}
               />
             </Link>
           </div>
@@ -176,23 +182,27 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-3">
           {agendaItems.length > 0 ? (
-            agendaItems.map((item) => (
-              item.type === "turn" ? (
-                <TurnCard
-                  key={item.id}
-                  turn={item.data}
-                  isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
-                  isCreator={item.data.creatorId === viewerId}
-                />
-              ) : (
-                <MatchResultCompact
-                  key={item.id}
-                  match={item.data as MatchResultCompactMatch}
-                  detailUrl={`/match/${item.id}`}
-                  label="Próximo partido"
-                  viewerId={viewerId}
-                />
-              )
+            agendaItems.map((item, index) => (
+              <div
+                key={item.id}
+                className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {item.type === "turn" ? (
+                  <TurnCard
+                    turn={item.data}
+                    isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
+                    isCreator={item.data.creatorId === viewerId}
+                  />
+                ) : (
+                  <MatchResultCompact
+                    match={item.data as MatchResultCompactMatch}
+                    detailUrl={`/match/${item.id}`}
+                    label="Próximo partido"
+                    viewerId={viewerId}
+                  />
+                )}
+              </div>
             ))
           ) : (
             <EmptyState
@@ -220,14 +230,19 @@ export default async function DashboardPage() {
             <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos recomendados</h2>
           </div>
           <div className="grid gap-3">
-            {recommendedTurns.map((turn) => (
-              <TurnCard
+            {recommendedTurns.map((turn, index) => (
+              <div
                 key={turn.id}
-                turn={turn}
-                variant="recommended"
-                isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
-                isCreator={turn.creatorId === viewerId}
-              />
+                className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <TurnCard
+                  turn={turn}
+                  variant="recommended"
+                  isJoined={turn.players.some((p: { userId: string }) => p.userId === viewerId)}
+                  isCreator={turn.creatorId === viewerId}
+                />
+              </div>
             ))}
           </div>
         </section>
@@ -239,13 +254,18 @@ export default async function DashboardPage() {
         </div>
         <div className="space-y-3">
           {recentMatches.length > 0 ? (
-            recentMatches.map((match) => (
-              <MatchResultCompact
+            recentMatches.map((match, index) => (
+              <div
                 key={match.id}
-                match={match}
-                detailUrl={`/match/${match.id}`}
-                viewerId={viewerId}
-              />
+                className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <MatchResultCompact
+                  match={match}
+                  detailUrl={`/match/${match.id}`}
+                  viewerId={viewerId}
+                />
+              </div>
             ))
           ) : (
             <EmptyState

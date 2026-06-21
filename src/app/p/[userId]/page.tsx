@@ -58,6 +58,15 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     take: 5,
   });
 
+  const recentForm = matches.map(match => {
+    const winner = getMatchWinner(match.score);
+    const player = match.players.find(p => p.userId === userId);
+    if (!winner || !player) return null;
+
+    const playerTeam = player.position < 2 ? "A" : "B";
+    return playerTeam === winner ? "W" : "L";
+  }).filter(Boolean) as Array<"W" | "L">;
+
   const formattedMatches = matches.map<MatchResultCompactMatch>((match) => ({
     id: match.id,
     createdAt: match.date,
@@ -113,16 +122,54 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   });
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 animate-in fade-in duration-700">
-      <section className="space-y-6">
-        <PageHeader
-          title={displayName}
-          description={`Perfil de jugador de pádel • Nivel ${user.level}`}
-          size="lg"
-          align="center"
-        />
+    <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
+      {/* Ambient Light Effect */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] pointer-events-none">
+        <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-primary/20 blur-[100px] rounded-full animate-pulse" />
+      </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+      <section className="relative z-10 space-y-8 text-center animate-in fade-in slide-in-from-top-8 duration-700">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <PlayerAvatar
+              name={displayName}
+              image={user.image ?? undefined}
+              size={120}
+              className="border-4 border-background shadow-2xl ring-1 ring-primary/20"
+            />
+            <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-black text-lg shadow-lg border-4 border-background ring-1 ring-primary/20">
+              {user.level}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black tracking-tight text-foreground">{displayName}</h1>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+              Jugador de Pádel • Nivel {user.level}
+            </p>
+          </div>
+
+          {recentForm.length > 0 && (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-card/40 border border-border/40 backdrop-blur-md shadow-sm">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mr-2">Forma:</span>
+              <div className="flex gap-1.5">
+                {recentForm.map((result, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "h-3.5 w-3.5 rounded-full flex items-center justify-center text-[7px] font-black shadow-sm",
+                      result === "W" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
+                    )}
+                  >
+                    {result}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 px-2">
           <UserRankingBanner
             position={user.rankingPosition}
             score={user.rankingScore}
@@ -130,6 +177,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
             wins={user.wins}
             losses={user.losses}
             level={user.level}
+            matchesPlayed={user.matchesPlayed}
           />
         </div>
 
@@ -173,20 +221,30 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
         </div>
       </section>
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70">
-            Últimos partidos
+      <section className="relative z-10 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+            Historial Reciente
           </h2>
+          <div className="flex items-center gap-1.5 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2.5 py-1 rounded-full border border-primary/10">
+            <Zap className="h-3 w-3 fill-current" />
+            {winRate}% WR
+          </div>
         </div>
-        <div className="grid gap-3">
+        <div className="grid gap-4">
           {formattedMatches.length > 0 ? (
-            formattedMatches.map((match) => (
-              <MatchResultCompact
+            formattedMatches.map((match, index) => (
+              <div
                 key={match.id}
-                match={match}
-                detailUrl={`/match/${match.id}`}
-              />
+                className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+                style={{ animationDelay: `${400 + (index * 100)}ms` }}
+              >
+                <MatchResultCompact
+                  match={match}
+                  detailUrl={`/match/${match.id}`}
+                  viewerId={userId}
+                />
+              </div>
             ))
           ) : (
             <EmptyState
@@ -198,9 +256,9 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
         </div>
       </section>
 
-      <div className="flex flex-col gap-3 pt-4">
-        <Button asChild variant="outline" className="w-full rounded-xl font-black">
-          <Link href="/ranking">Volver al ranking</Link>
+      <div className="relative z-10 flex flex-col gap-3 pt-6 px-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
+        <Button asChild variant="outline" className="w-full rounded-2xl h-14 font-black uppercase tracking-widest text-[11px] border-border/40 bg-card/40 backdrop-blur-sm active:scale-[0.98] shadow-sm">
+          <Link href="/ranking">Volver al ranking global</Link>
         </Button>
       </div>
     </div>
