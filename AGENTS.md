@@ -426,6 +426,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/match-result-card.tsx`
   - `src/lib/utils.ts`
 
+### ✅ Inteligencia Competitiva y Perfiles Premium (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Visualización de "Forma Reciente" (W/L) en perfiles públicos basada en los últimos 5 partidos.
+  - Cálculo y visualización de Win Rate (WR%) en Dashboard, Ranking y Perfiles.
+  - Refactor de perfiles públicos con estética de alta fidelidad: iluminación ambiental (`blur-[100px]`), avatares de 120px y animaciones premium.
+  - Quick Stats Bar en Dashboard con métricas enriquecidas (WR, Wins, Losses).
+- **Archivos relacionados**:
+  - `src/app/p/[userId]/page.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/lib/utils.ts`
 ### ✅ UX Premium Refinement y Coreografía V9+
 - **Estado**: Implementado
 - **Funcionalidades**:
