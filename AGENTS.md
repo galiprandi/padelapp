@@ -413,6 +413,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/[matchId]/page.tsx`
   - `src/lib/match-queries.ts`
 
+### ✅ Premium UX Refinement V9 (Uma Edition)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Quick Join**: Acción directa de inscripción en `TurnCard` para minimizar el Time-to-Participation.
+  - **Historial Inteligente**: Agrupación cronológica por mes en `/match` con tipografía de alta fidelidad.
+  - **Social Proof Público**: Enriquecimiento de `/p/[userId]` con Win Rate y Forma Reciente (W/L).
+  - **Consistencia Visual**: Verificación de estándares V9 en notificaciones y dashboards.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/app/(app)/match/page.tsx`
+  - `src/app/p/[userId]/page.tsx`
+  - `DESIGN.md`
+
 ### ✅ Match Day Intelligence y Social Sharing
 - **Estado**: Implementado
 - **Funcionalidades**:
