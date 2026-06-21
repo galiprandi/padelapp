@@ -42,7 +42,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-4 rounded-3xl p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
+          "flex items-center gap-4 rounded-[2rem] p-4 backdrop-blur-md border transition-all active:scale-[0.98] duration-300 shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20",
           isRecommended
             ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
             : "bg-card/50 border-border/40 hover:bg-card/80"
@@ -50,7 +50,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
       >
         <div
           className={cn(
-            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px] relative",
+            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px] relative shadow-md shadow-primary/20",
             isRecommended ? "bg-primary/25" : "bg-primary/15"
           )}
         >
@@ -94,16 +94,16 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
             </div>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
             <span className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5 text-primary/70" />
+              <Clock className="h-3.5 w-3.5 text-primary/40" />
               {timeStr}
             </span>
             <span className="flex items-center gap-1">
-              <Users className="h-3.5 w-3.5 text-primary/70" />
+              <Users className="h-3.5 w-3.5 text-primary/40" />
               {turn.players.length}/{turn.maxPlayers}
             </span>
-            <span className="flex items-center gap-1 text-primary">
+            <span className="flex items-center gap-1 text-primary/60">
               <Trophy className="h-3.5 w-3.5" />
               {levelLabel}
             </span>

@@ -65,7 +65,10 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   });
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-40">
+    <main className="relative mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-40 overflow-hidden">
+      {/* Ambient Lighting */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[100px] -z-10 rounded-full" />
+
       <PageHeader
         title={turn.club}
         align="center"
@@ -80,9 +83,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         }
       />
 
-      <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-2xl backdrop-blur-md overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+      <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-2xl shadow-primary/10 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
         <CardHeader className="pb-4 pt-8 text-center border-b border-border/20 bg-muted/30">
-          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Detalles del encuentro</CardTitle>
+          <CardTitle className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Detalles del encuentro</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-px bg-border/20 p-0">
           <div className="bg-card/40 p-6 flex flex-col items-center text-center gap-2">
@@ -122,19 +125,20 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         )}
       </Card>
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
         <div className="flex items-center justify-between px-2">
-          <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Lista de jugadores</h2>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Lista de jugadores</h2>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
             {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
         <div className="grid gap-3">
-          {turn.players.map((p) => (
+          {turn.players.map((p, index) => (
             <Link
               key={p.id}
               href={`/p/${p.userId}`}
-              className="flex items-center gap-4 rounded-3xl bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 active:scale-[0.99] group/player"
+              style={{ animationDelay: `${(index + 1) * 100}ms` }}
+              className="flex items-center gap-4 rounded-[2rem] bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 active:scale-[0.99] group/player animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
             >
               <PlayerAvatar
                 name={p.user.alias ?? p.user.displayName}
@@ -143,17 +147,21 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors">{p.user.alias ?? p.user.displayName}</p>
-                <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Nivel {p.user.level}</p>
+                <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">Nivel {p.user.level}</p>
               </div>
               {p.userId === turn.creatorId && (
-                <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20 shrink-0">Organizador</span>
+                <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.2em] text-primary border border-primary/20 shrink-0">Organizador</span>
               )}
             </Link>
           ))}
           {Array.from({ length: turn.maxPlayers - turn.players.length }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 rounded-3xl border-2 border-dashed border-border/40 bg-muted/5 p-4 text-muted-foreground/30 transition-all hover:bg-muted/10">
+            <div
+              key={i}
+              style={{ animationDelay: `${(turn.players.length + i + 1) * 100}ms` }}
+              className="flex items-center gap-4 rounded-[2rem] border-2 border-dashed border-border/40 bg-muted/5 p-4 text-muted-foreground/30 transition-all hover:bg-muted/10 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
+            >
               <div className="h-12 w-12 rounded-full bg-muted/10 border-2 border-dashed border-muted/20" />
-              <p className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Cupo disponible</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] italic opacity-60">Cupo disponible</p>
             </div>
           ))}
         </div>
