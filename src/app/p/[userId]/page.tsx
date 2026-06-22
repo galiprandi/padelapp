@@ -2,13 +2,14 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/page-header";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
+import { PlayerAvatar } from "@/components/players/player-avatar";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
-import { Trophy, CalendarDays, Target, TrendingUp } from "lucide-react";
+import { Trophy, CalendarDays, Target, TrendingUp, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getMatchWinner } from "@/lib/utils";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -58,14 +59,6 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     take: 5,
   });
 
-  const recentForm = matches.map(match => {
-    const winner = getMatchWinner(match.score);
-    const player = match.players.find(p => p.userId === userId);
-    if (!winner || !player) return null;
-
-    const playerTeam = player.position < 2 ? "A" : "B";
-    return playerTeam === winner ? "W" : "L";
-  }).filter(Boolean) as Array<"W" | "L">;
 
   const formattedMatches = matches.map<MatchResultCompactMatch>((match) => ({
     id: match.id,

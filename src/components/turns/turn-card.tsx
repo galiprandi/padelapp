@@ -61,7 +61,6 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
       <div
         className={cn(
           "flex items-center gap-4 rounded-[2rem] p-4 backdrop-blur-md border transition-all active:scale-[0.98] duration-300 shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20",
-          "flex items-center gap-4 rounded-[2rem] p-4 backdrop-blur-sm border transition-all active:scale-[0.98] duration-200 shadow-sm hover:shadow-md",
           isRecommended
             ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
             : "bg-card/50 border-border/40 hover:bg-card/80",
@@ -130,9 +129,17 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           </div>
         </div>
 
-        {isRecommended && (
-          <div className="rounded-full bg-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95">
-            Unirse
+        {isRecommended && canJoin && (
+          <button
+            onClick={handleQuickJoin}
+            disabled={isPending}
+            className="rounded-full bg-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[80px]"
+          >
+            {isPending ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              "Unirse"
+            )}
           </button>
         )}
 
