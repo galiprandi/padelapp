@@ -45,7 +45,7 @@ export default async function NotificationsPage() {
               return (
                 <div
                   key={match.id}
-                  className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+                  className="animate-in fade-in slide-in-from-bottom-6 duration-1000"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <MatchResultCompact

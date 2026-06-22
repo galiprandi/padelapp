@@ -3,9 +3,9 @@ import { EmptyState } from "@/components/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { prisma } from "@/lib/prisma";
-import { TrendingDown, TrendingUp, Minus, Users, Trophy, Medal } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Users, Trophy, Medal, Zap } from "lucide-react";
 import { auth } from "@/auth";
-import { cn } from "@/lib/utils";
+import { cn, getMatchWinner } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import Link from "next/link";
@@ -20,6 +20,24 @@ export default async function RankingPage() {
       { displayName: "asc" },
     ],
     take: 50,
+    include: {
+      matchPlayers: {
+        where: {
+          match: {
+            status: "CONFIRMED"
+          }
+        },
+        orderBy: {
+          match: {
+            date: "desc"
+          }
+        },
+        take: 5,
+        include: {
+          match: true
+        }
+      }
+    }
   });
 
   const currentUser = viewerId ? players.find(p => p.id === viewerId) : null;
@@ -142,7 +160,15 @@ export default async function RankingPage() {
 
               {/* List Section */}
               <div className="grid gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-                {players.map((player, index) => (
+                {players.map((player, index) => {
+                  const recentForm = player.matchPlayers.map(mp => {
+                    const winner = mp.match.score ? getMatchWinner(mp.match.score) : null;
+                    if (!winner) return 'L';
+                    const playerTeam = mp.position < 2 ? 'A' : 'B';
+                    return winner === playerTeam ? 'W' : 'L';
+                  });
+
+                  return (
                   <div
                     key={player.id}
                     className={cn(
@@ -201,6 +227,21 @@ export default async function RankingPage() {
                           )}>
                             {player.wins}V - {player.losses}D
                           </span>
+
+                          {recentForm.length > 0 && (
+                            <div className="flex gap-1 ml-1 items-center">
+                              <span className="text-[10px] text-muted-foreground/30 mr-1">•</span>
+                              {recentForm.map((result, i) => (
+                                <div
+                                  key={i}
+                                  className={cn(
+                                    "h-1.5 w-1.5 rounded-full",
+                                    result === "W" ? "bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
+                                  )}
+                                />
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </Link>
@@ -255,7 +296,7 @@ export default async function RankingPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
             </>
           ) : (
