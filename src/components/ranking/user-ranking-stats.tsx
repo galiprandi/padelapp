@@ -111,37 +111,37 @@ export function UserRankingCard({
   return (
     <div
       className={cn(
-        "group relative flex items-center justify-between overflow-hidden rounded-[1.5rem] border border-border/40 bg-card/60 p-5 shadow-lg backdrop-blur-md transition-all hover:bg-card/80 hover:border-primary/20 active:scale-[0.98]",
+        "group relative flex items-center justify-between overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 p-6 shadow-lg backdrop-blur-md transition-all hover:bg-card/80 hover:border-primary/20 active:scale-[0.98]",
         className
       )}
     >
-      <div className="flex items-center gap-5">
-        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
-          <Trophy className="h-7 w-7 transition-transform group-hover:scale-110" />
-          <div className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground border-2 border-background shadow-sm">
+      <div className="flex items-center gap-6">
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-primary/10 text-primary shadow-inner transition-transform group-hover:scale-105">
+          <Trophy className="h-8 w-8" />
+          <div className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[11px] font-black text-primary-foreground border-4 border-background shadow-md">
             {level}
           </div>
         </div>
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-0.5">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-1">
             Mi Estatus
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black tracking-tighter">
+            <span className="text-4xl font-black tracking-tighter">
               {position ? `#${position}` : "--"}
             </span>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-black leading-none">{Math.round(score ?? 1000)} pts</span>
+            <div className="flex flex-col justify-center">
+              <span className="text-[12px] font-black leading-none">{Math.round(score ?? 1000)} <span className="text-[10px] text-muted-foreground/60">pts</span></span>
               {matchesPlayed > 0 && (
-                <span className="text-[10px] font-black text-primary/80 mt-0.5">{winRate}% Win Rate</span>
+                <span className="text-[10px] font-black text-primary/80 mt-1">{winRate}% <span className="opacity-60">WR</span></span>
               )}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-2 pr-1">
-        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-background/50 border border-border/20 text-[11px] font-black uppercase">
+      <div className="flex flex-col items-end gap-2.5">
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-background/50 border border-border/20 text-[11px] font-black uppercase shadow-sm">
           {delta && delta > 0 ? (
             <>
               <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
@@ -154,20 +154,20 @@ export function UserRankingCard({
             </>
           ) : (
             <>
-              <Minus className="h-3.5 w-3.5 text-muted-foreground/40" />
-              <span className="text-muted-foreground/40">0</span>
+              <Minus className="h-3.5 w-3.5 text-muted-foreground/30" />
+              <span className="text-muted-foreground/30">0</span>
             </>
           )}
         </div>
         {matchesPlayed > 0 && (
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-            {wins}V - {losses}D
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+            {wins}V <span className="opacity-30">/</span> {losses}D
           </span>
         )}
       </div>
 
       {/* Subtle background decoration */}
-      <Activity className="absolute -right-4 -top-4 h-20 w-20 rotate-12 text-primary/5 transition-transform group-hover:rotate-[30deg] pointer-events-none" />
+      <Activity className="absolute -right-4 -top-4 h-24 w-24 rotate-12 text-primary/5 transition-transform group-hover:rotate-[30deg] pointer-events-none" />
     </div>
   );
 }

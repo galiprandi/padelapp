@@ -9,6 +9,10 @@ import {
   PlayerWithRanking,
 } from "@/components/players/player-cards";
 import {
+  UserRankingCard,
+  UserRankingBanner,
+} from "@/components/ranking/user-ranking-stats";
+import {
   TurnCard,
 } from "@/components/turns/turn-card";
 import {
@@ -91,6 +95,7 @@ export default function ComponentCatalogPage() {
     { id: "headers", name: "Encabezados", icon: "📝" },
     { id: "ui", name: "UI Básica", icon: "🎨" },
     { id: "players", name: "Jugadores", icon: "👥" },
+    { id: "stats", name: "Estadísticas", icon: "📊" },
     { id: "matches", name: "Partidos", icon: "🎾" },
     { id: "states", name: "Estados", icon: "📋" },
     { id: "navigation", name: "Navegación", icon: "🧭" },
@@ -156,7 +161,7 @@ export default function ComponentCatalogPage() {
           <header className="mb-12">
             <PageHeader
               title="Catálogo de componentes"
-              description="Centralizamos ejemplos reutilizables para mantener consistencia en las vistas bajo el Bubble Aesthetic V5."
+              description="Centralizamos ejemplos reutilizables para mantener consistencia en las vistas bajo el Bubble Aesthetic V9+ High-Fidelity."
               size="lg"
             />
           </header>
@@ -169,12 +174,24 @@ export default function ComponentCatalogPage() {
           >
             <section id="headers" className="space-y-6">
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
-              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
-                <PageHeader
-                  title="Título de la Página"
-                  description="Descripción opcional con jerarquía visual de alto impacto."
-                  size="lg"
-                />
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
+                <div>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-4">Standard Header</h3>
+                  <PageHeader
+                    title="Título de la Página"
+                    description="Descripción opcional con jerarquía visual de alto impacto."
+                    size="lg"
+                  />
+                </div>
+                <div className="pt-8 border-t border-border/20">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-4">Header with Back Link</h3>
+                  <PageHeader
+                    title="Editar Perfil"
+                    description="Personalizá cómo te ven tus rivales y tu nivel de juego."
+                    size="lg"
+                    backHref="#"
+                  />
+                </div>
               </div>
             </section>
 
@@ -207,21 +224,61 @@ export default function ComponentCatalogPage() {
 
                 <div className="space-y-4">
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selectores Táctiles (Grid)</h3>
-                  <div className="grid grid-cols-3 gap-2 max-w-xs">
-                    {["1", "3", "5"].map((option) => (
+                  <div className="grid grid-cols-1 gap-2.5 max-w-xs">
+                    {["Nivel Principiante", "Nivel Intermedio"].map((option, idx) => (
                       <button
                         key={option}
                         className={cn(
-                          "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
-                          option === "3"
-                            ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
-                            : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                          "group flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
+                          idx === 1
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            : "bg-background/20 border-border/20 text-muted-foreground/60 hover:bg-background/40 hover:border-border/40"
                         )}
                       >
-                        {option} {option === "1" ? 'Set' : 'Sets'}
+                        <span className="tracking-tight">{option}</span>
+                        <div className={cn(
+                          "flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300",
+                          idx === 1
+                            ? "bg-primary-foreground/20 text-primary-foreground scale-110"
+                            : "bg-muted/20 text-transparent scale-75"
+                        )}>
+                          <svg className="h-3.5 w-3.5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
                       </button>
                     ))}
                   </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="stats" className="space-y-6">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📊 Estadísticas y Ranking</h2>
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Banner Principal (UserRankingBanner)</h3>
+                  <UserRankingBanner
+                    position={1}
+                    score={1250}
+                    delta={15}
+                    wins={10}
+                    losses={2}
+                    level={5}
+                    matchesPlayed={12}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Dashboard Card (UserRankingCard)</h3>
+                  <UserRankingCard
+                    position={1}
+                    score={1250}
+                    delta={15}
+                    wins={10}
+                    losses={2}
+                    level={5}
+                    matchesPlayed={12}
+                  />
                 </div>
               </div>
             </section>
