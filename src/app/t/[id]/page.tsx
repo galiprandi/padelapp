@@ -85,36 +85,40 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
 
       <Card className="rounded-[2.5rem] border-border/40 bg-card/50 shadow-2xl shadow-primary/10 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
         <CardHeader className="pb-4 pt-8 text-center border-b border-border/20 bg-muted/30">
+      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 blur-[80px] rounded-full pointer-events-none opacity-40" />
+
+        <CardHeader className="relative z-10 pb-4 pt-8 text-center border-b border-border/20 bg-muted/10">
           <CardTitle className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Detalles del encuentro</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-px bg-border/20 p-0">
-          <div className="bg-card/40 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <CardContent className="relative z-10 grid grid-cols-2 gap-px bg-border/10 p-0">
+          <div className="bg-card/20 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
               <Clock className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xl font-black">{timeStr}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">{turn.duration} min</p>
+              <p className="text-2xl font-black tracking-tight">{timeStr}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">{turn.duration} min</p>
             </div>
           </div>
 
-          <div className="bg-card/40 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <div className="bg-card/20 p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
               <Trophy className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xl font-black">{suggestedLevelLabel}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Nivel sugerido</p>
+              <p className="text-2xl font-black tracking-tight">{suggestedLevelLabel}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Nivel sugerido</p>
             </div>
           </div>
 
-          <div className="col-span-2 bg-card/40 p-6 flex items-center justify-center gap-4 border-t border-border/20">
-             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0">
+          <div className="col-span-2 bg-card/20 p-6 flex items-center justify-center gap-4 border-t border-border/20">
+             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0 shadow-inner">
               <Users className="h-6 w-6" />
             </div>
             <div className="text-left">
-              <p className="text-xl font-black">{turn.players.length} / {turn.maxPlayers}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">Jugadores anotados</p>
+              <p className="text-2xl font-black tracking-tight">{turn.players.length} / {turn.maxPlayers}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Jugadores anotados</p>
             </div>
           </div>
         </CardContent>
@@ -129,6 +133,10 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Lista de jugadores</h2>
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Lista de jugadores</h2>
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
             {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
@@ -139,6 +147,8 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               href={`/p/${p.userId}`}
               style={{ animationDelay: `${(index + 1) * 100}ms` }}
               className="flex items-center gap-4 rounded-[2rem] bg-card/50 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/80 active:scale-[0.99] group/player animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
+              className="flex items-center gap-4 rounded-[2rem] bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60 active:scale-[0.98] group/player animate-in fade-in slide-in-from-bottom-4 duration-500"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <PlayerAvatar
                 name={p.user.alias ?? p.user.displayName}
@@ -148,6 +158,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <div className="flex-1 min-w-0">
                 <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors">{p.user.alias ?? p.user.displayName}</p>
                 <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">Nivel {p.user.level}</p>
+                <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Nivel {p.user.level}</p>
               </div>
               {p.userId === turn.creatorId && (
                 <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.2em] text-primary border border-primary/20 shrink-0">Organizador</span>
@@ -162,13 +173,21 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             >
               <div className="h-12 w-12 rounded-full bg-muted/10 border-2 border-dashed border-muted/20" />
               <p className="text-[10px] font-black uppercase tracking-[0.2em] italic opacity-60">Cupo disponible</p>
+              key={`empty-${i}`}
+              className="flex items-center gap-4 rounded-[2rem] border-2 border-dashed border-primary/10 bg-primary/5 p-4 text-primary/30 transition-all hover:bg-primary/10 animate-in fade-in slide-in-from-bottom-4 duration-700"
+              style={{ animationDelay: `${(turn.players.length + i) * 100}ms` }}
+            >
+              <div className="h-12 w-12 rounded-full bg-primary/5 border-2 border-dashed border-primary/10 flex items-center justify-center text-xl grayscale opacity-20">
+                🎾
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest italic opacity-40">Cupo disponible</p>
             </div>
           ))}
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none z-50">
-        <div className="max-w-md mx-auto pointer-events-auto">
+      <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none z-50 pb-10">
+        <div className="max-w-md mx-auto pointer-events-auto animate-in slide-in-from-bottom-10 duration-1000">
           {!viewerId ? (
             <Button asChild className="w-full rounded-2xl h-14 text-lg font-black shadow-2xl shadow-primary/30" size="lg">
               <Link href={`/login?callbackUrl=/t/${id}`}>

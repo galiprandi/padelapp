@@ -31,7 +31,7 @@ export default async function TurnsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-12 pb-8">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
       <PageHeader
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."
@@ -65,25 +65,32 @@ export default async function TurnsPage() {
 
       <div className="grid gap-3">
         {turns.length > 0 ? (
-          turns.map((turn) => (
-            <TurnCard
+          turns.map((turn, index) => (
+            <div
               key={turn.id}
-              turn={turn}
-              isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
-              isCreator={turn.creatorId === session?.user?.id}
-            />
+              className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <TurnCard
+                turn={turn}
+                isJoined={turn.players.some((p) => p.userId === session?.user?.id)}
+                isCreator={turn.creatorId === session?.user?.id}
+              />
+            </div>
           ))
         ) : (
-          <EmptyState
-            title="Sin turnos abiertos"
-            description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
-            icon={CalendarOff}
-            action={
-              <Button asChild className="w-full max-w-xs rounded-xl h-11 font-black">
-                <Link href="/turnos/nuevo">Crear turno ahora</Link>
-              </Button>
-            }
-          />
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+            <EmptyState
+              title="Sin turnos abiertos"
+              description="No hay turnos disponibles en este momento. ¡Sé el primero en crear uno!"
+              icon={CalendarOff}
+              action={
+                <Button asChild className="w-full max-w-xs rounded-xl h-11 font-black">
+                  <Link href="/turnos/nuevo">Crear turno ahora</Link>
+                </Button>
+              }
+            />
+          </div>
         )}
       </div>
 

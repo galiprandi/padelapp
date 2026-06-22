@@ -168,7 +168,7 @@ export default function ComponentCatalogPage() {
               }`}
           >
             <section id="headers" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
                 <PageHeader
                   title="Título de la Página"
@@ -179,10 +179,10 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="ui" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🎨 UI Básica</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🎨 UI Básica</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Botones Primarios (rounded-2xl)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botones Primarios (rounded-2xl)</h3>
                   <div className="flex flex-col gap-3">
                     <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">Primary Action</Button>
                   </div>
@@ -227,10 +227,10 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="players" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">👥 Jugadores</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">👥 Jugadores</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Individual (Cards Premium)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Individual (Cards Premium)</h3>
                   <div className="grid gap-3">
                     <PlayerPreview {...SAMPLE_PLAYERS[0]} />
                     <PlayerWithRanking {...SAMPLE_PLAYERS[1]} ranking={12} />
@@ -275,10 +275,10 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="matches" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🎾 Partidos y Turnos</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🎾 Partidos y Turnos</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Resultado (MatchResultCompact)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Resultado (MatchResultCompact)</h3>
                   <MatchResultCompact
                     label="Resultado ejemplo"
                     match={SAMPLE_MATCH}
@@ -297,7 +297,7 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="states" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">📋 Estados</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📋 Estados</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
                 <EmptyState
                   title="Estado vacío"
@@ -308,7 +308,7 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="navigation" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 border-b border-border/20 pb-2">🧭 Navegación</h2>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🧭 Navegación</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl overflow-hidden">
                 <BottomNav
                   position="static"
