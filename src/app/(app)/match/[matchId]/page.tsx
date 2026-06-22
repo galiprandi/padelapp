@@ -206,23 +206,23 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
       {isClosed ? (
         <div className="space-y-12">
-          <section className="flex flex-col items-center justify-center text-center py-12 animate-in zoom-in duration-1000 relative overflow-hidden rounded-[3.5rem] bg-card/20 backdrop-blur-2xl border border-border/40 shadow-2xl">
+          <section className="flex flex-col items-center justify-center text-center py-20 animate-in zoom-in duration-1000 relative overflow-hidden rounded-[3.5rem] bg-card/20 backdrop-blur-2xl border border-border/40 shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/20 blur-[100px] rounded-full pointer-events-none opacity-50" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-60 animate-pulse" />
 
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.4em] text-primary mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] text-primary/60 mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
               Resultado Final
             </span>
 
             <div className="relative z-10 group">
-              <div className="absolute -inset-12 bg-primary/30 rounded-[5rem] blur-3xl group-hover:bg-primary/40 transition-all duration-1000 opacity-30 animate-pulse" />
-              <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 px-6">
+              <div className="absolute -inset-20 bg-primary/30 rounded-[5rem] blur-[100px] group-hover:bg-primary/40 transition-all duration-1000 opacity-40 animate-pulse" />
+              <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-8 px-6">
                 {match.score?.split(',').map((set, idx) => (
                   <div key={idx}
-                    className="relative text-7xl md:text-9xl font-black tracking-tighter text-foreground drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-12 duration-1000"
+                    className="relative text-8xl md:text-[10rem] font-black tracking-tighter text-foreground drop-shadow-[0_12px_40px_rgba(0,0,0,0.2)] animate-in slide-in-from-bottom-12 duration-1000"
                     style={{ animationDelay: `${idx * 200}ms` }}
                   >
-                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/60 leading-none">
                       {set.trim()}
                     </span>
                   </div>
@@ -281,15 +281,18 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 {match.players.sort((a, b) => a.position - b.position).map((player, idx) => {
                   const displayName = player.displayName || player.user?.displayName || `Jugador ${player.position + 1}`;
                   const isConfirmed = player.resultConfirmed;
+                  const isViewer = player.userId === viewerId;
 
                   return (
                     <div
                       key={player.id}
                       className={cn(
-                        "relative flex flex-col items-center gap-3 p-5 rounded-[2rem] border transition-all duration-500 animate-in zoom-in-95",
+                        "relative flex flex-col items-center gap-4 p-6 rounded-[2rem] border transition-all duration-500 animate-in zoom-in-95 shadow-sm",
                         isConfirmed
-                          ? "bg-emerald-500/5 border-emerald-500/20 shadow-[0_8px_20px_-12px_rgba(16,185,129,0.3)]"
-                          : "bg-card/30 border-border/20"
+                          ? "bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5"
+                          : isViewer
+                            ? "bg-primary/5 border-primary/20 shadow-primary/5 animate-pulse"
+                            : "bg-card/30 border-border/20"
                       )}
                       style={{ animationDelay: `${idx * 100}ms` }}
                     >
@@ -322,8 +325,8 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           {displayName}
                         </span>
                         <span className={cn(
-                          "text-[8px] font-black uppercase tracking-[0.2em] transition-colors",
-                          isConfirmed ? "text-emerald-500" : "text-muted-foreground/30"
+                          "text-[9px] font-black uppercase tracking-[0.25em] transition-colors",
+                          isConfirmed ? "text-emerald-500" : isViewer ? "text-primary" : "text-muted-foreground/30"
                         )}>
                           {isConfirmed ? "Confirmado" : "Pendiente"}
                         </span>

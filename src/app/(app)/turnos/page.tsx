@@ -68,7 +68,7 @@ export default async function TurnsPage() {
           turns.map((turn, index) => (
             <div
               key={turn.id}
-              className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+              className="animate-in fade-in slide-in-from-bottom-6 duration-1000"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <TurnCard

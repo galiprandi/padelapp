@@ -51,7 +51,7 @@ export default async function MatchListPage() {
       />
 
       {pendingActions.length > 0 && (
-        <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <section className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
@@ -96,7 +96,7 @@ export default async function MatchListPage() {
           {viewerId ? (
             matches.length > 0 ? (
               Object.entries(groupedMatches).map(([monthYear, monthMatches], groupIdx) => (
-                <div key={monthYear} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700" style={{ animationDelay: `${groupIdx * 100}ms` }}>
+                <div key={monthYear} className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000" style={{ animationDelay: `${groupIdx * 100}ms` }}>
                   <div className="flex items-center gap-4 px-1">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
                     <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 whitespace-nowrap">
