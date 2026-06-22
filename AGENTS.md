@@ -236,13 +236,13 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/ranking/page.tsx`
   - `src/components/matches/match-result-card.tsx`
 
-### ✅ Ergonomía Móvil y Tactile Selectors (Turnos y Resultados)
+### ✅ Refinamiento Premium de Turnos (V9)
 - **Estado**: Implementado
 - **Funcionalidades**:
-  - Sustitución de selects e inputs nativos por selectores táctiles en cuadrícula (`rounded-2xl`) para Duración, Cupos, Nivel y marcadores de sets.
-  - Refinamiento del Detalle de Turno (`/t/[id]`) con estética de alta fidelidad: cards `rounded-[2.5rem]`, animaciones de entrada y jerarquía visual mejorada.
-  - Optimización del contenedor CTA fijo en vistas públicas con gradientes más suaves y espaciado corregido (`pb-40`).
-  - Mejora de los placeholders de "Cupo disponible" con estética dashed y feedback visual al hover.
+  - **TurnCard Premium**: Actualización a `rounded-[2rem]`, `backdrop-blur-md` y `shadow-lg shadow-primary/10`. Unificación de tipografía de metadatos a V9 (`text-[11px] font-black uppercase tracking-[0.2em]`).
+  - **Detalle de Turno de Alta Fidelidad**: Implementación de iluminación ambiental (`blur-[100px]`), tarjetas `backdrop-blur-2xl` y **Entrance Choreography** con animaciones escalonadas para la lista de jugadores.
+  - **Turns Listing Polish**: Refactor de la card CTA desktop (`rounded-[2.5rem]`, ambient glow) y estandarización de tipografía en `PageHeader`.
+  - Mejora de los placeholders de "Cupo disponible" con estética dashed, V9 typography y feedback visual al hover.
 - **Archivos relacionados**:
   - `src/app/(app)/turnos/nuevo/page.tsx`
   - `src/app/t/[id]/page.tsx`

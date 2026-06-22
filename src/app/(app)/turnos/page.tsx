@@ -36,6 +36,7 @@ export default async function TurnsPage() {
         title="Turnos abiertos"
         description="Unite a partidos de tu nivel o creá uno nuevo."
         size="lg"
+        descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
         backHref="/me"
         action={
           <Button asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">
@@ -48,13 +49,14 @@ export default async function TurnsPage() {
       />
 
       <div className="hidden md:block">
-        <Card className="rounded-3xl bg-card/50 backdrop-blur-sm p-6 border border-border/40 shadow-sm">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex-1 space-y-1">
-              <CardTitle className="text-base font-black">¿No encontrás tu partido?</CardTitle>
-              <CardDescription className="text-xs">Creá un turno y compartí el link con tu grupo.</CardDescription>
+        <Card className="rounded-[2.5rem] bg-card/50 backdrop-blur-md p-8 border border-border/40 shadow-lg shadow-primary/5 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -z-10 rounded-full" />
+          <div className="flex items-center justify-between gap-8">
+            <div className="flex-1 space-y-2">
+              <CardTitle className="text-xl font-black">¿No encontrás tu partido?</CardTitle>
+              <CardDescription className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Creá un turno y compartí el link con tu grupo.</CardDescription>
             </div>
-            <Button asChild className="rounded-xl px-8 font-black">
+            <Button asChild className="rounded-2xl h-12 px-8 font-black shadow-lg shadow-primary/10 active:scale-[0.98] transition-all">
               <Link href="/turnos/nuevo">Crear turno</Link>
             </Button>
           </div>
