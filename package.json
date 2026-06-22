@@ -20,7 +20,7 @@
   "dependencies": {
     "@auth/core": "0.41.2",
     "@auth/prisma-adapter": "2.11.2",
-    "@prisma/client": "^6.16.3",
+    "@prisma/client": "6.16.3",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.13",
@@ -48,7 +48,7 @@
     "playwright": "^1.60.0",
     "playwright-core": "^1.60.0",
     "postcss": "^8.4.47",
-    "prisma": "^6.16.3",
+    "prisma": "6.16.3",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.2",
