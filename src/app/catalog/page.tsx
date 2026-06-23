@@ -21,7 +21,10 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 // The catalog is a tool for developers to see UI components in isolation.
 // Using local sample data here is appropriate as it serves as documentation
@@ -74,7 +77,7 @@ const SAMPLE_TURN = {
 };
 
 export default function ComponentCatalogPage() {
-  const [activeCategory, setActiveCategory] = useState("players");
+  const [activeCategory, setActiveCategory] = useState("headers");
   const [viewportMode, setViewportMode] = useState<"mobile" | "desktop">(
     "mobile"
   );
@@ -90,6 +93,7 @@ export default function ComponentCatalogPage() {
   const sections = [
     { id: "headers", name: "Encabezados", icon: "📝" },
     { id: "ui", name: "UI Básica", icon: "🎨" },
+    { id: "forms", name: "Formularios V9+", icon: "📋" },
     { id: "players", name: "Jugadores", icon: "👥" },
     { id: "matches", name: "Partidos", icon: "🎾" },
     { id: "states", name: "Estados", icon: "📋" },
@@ -156,7 +160,7 @@ export default function ComponentCatalogPage() {
           <header className="mb-12">
             <PageHeader
               title="Catálogo de componentes"
-              description="Centralizamos ejemplos reutilizables para mantener consistencia en las vistas bajo el Bubble Aesthetic V5."
+              description="Centralizamos ejemplos reutilizables para mantener consistencia en las vistas bajo el Bubble Aesthetic V9+ Premium."
               size="lg"
             />
           </header>
@@ -169,11 +173,13 @@ export default function ComponentCatalogPage() {
           >
             <section id="headers" className="space-y-6">
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📝 Encabezado de Página</h2>
-              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-primary/5 blur-3xl -z-10" />
                 <PageHeader
                   title="Título de la Página"
-                  description="Descripción opcional con jerarquía visual de alto impacto."
+                  description="Descripción opcional con jerarquía visual de alto impacto V9."
                   size="lg"
+                  descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
                 />
               </div>
             </section>
@@ -182,43 +188,78 @@ export default function ComponentCatalogPage() {
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🎨 UI Básica</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botones Primarios (rounded-2xl)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botones Primarios (V9 High-Impact)</h3>
                   <div className="flex flex-col gap-3">
-                    <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">Primary Action</Button>
+                    <Button className="w-full rounded-2xl font-black h-16 shadow-2xl shadow-primary/30 active:scale-[0.98]">Primary Action V9</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Botones (rounded-xl)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Botones (Standard)</h3>
                   <div className="flex flex-wrap gap-3">
                     <Button className="rounded-xl font-black">Primary</Button>
                     <Button variant="secondary" className="rounded-xl font-black">Secondary</Button>
                     <Button variant="outline" className="rounded-xl font-black">Outline</Button>
-                    <Button variant="ghost" className="rounded-xl font-black">Ghost</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Badges (rounded-xl)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Badges</h3>
                   <div className="flex flex-wrap gap-3">
                     <Badge className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Default</Badge>
-                    <Badge variant="outline" className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Outline</Badge>
                     <Badge variant="success" className="rounded-xl font-black uppercase text-[10px] tracking-widest px-3 py-1">Success</Badge>
+                    <Badge className="rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest">Premium Badge</Badge>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="forms" className="space-y-6">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📋 Formularios V9+</h2>
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-2xl shadow-2xl space-y-8">
+                <div className="space-y-3">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Label Premium</Label>
+                  <Input
+                    placeholder="Input V9 High-Fidelity"
+                    className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all font-medium px-6"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Selector Táctil V9</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["60 min", "90 min", "120 min"].map((label, i) => (
+                      <button
+                        key={label}
+                        className={cn(
+                          "flex items-center justify-center py-4 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
+                          i === 1
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selectores Táctiles (Grid)</h3>
-                  <div className="grid grid-cols-3 gap-2 max-w-xs">
-                    {["1", "3", "5"].map((option) => (
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Selector con Icono</Label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {[
+                      { label: "4 jugadores", selected: true },
+                      { label: "6 jugadores", selected: false }
+                    ].map((opt) => (
                       <button
-                        key={option}
+                        key={opt.label}
                         className={cn(
-                          "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
-                          option === "3"
-                            ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          "flex items-center justify-between px-5 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
+                          opt.selected
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
                             : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                         )}
                       >
-                        {option} {option === "1" ? 'Set' : 'Sets'}
+                        <span>{opt.label}</span>
+                        {opt.selected && <Check className="h-4 w-4 shrink-0" />}
                       </button>
                     ))}
                   </div>
@@ -239,37 +280,8 @@ export default function ComponentCatalogPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas (PairPreview)</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas</h3>
                   <PairPreview label="Pareja A" players={SAMPLE_PLAYERS} />
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas (PairInline)</h3>
-                  <PairInline label="Pareja B" players={SAMPLE_PLAYERS} />
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Slot Display</h3>
-                  <div className="grid gap-3">
-                    <SlotDisplay
-                      team="A"
-                      index={1}
-                      slot={null}
-                      userDisplayName="Usuario"
-                      isActive={false}
-                      onSlotClick={() => {}}
-                      onManageClick={() => {}}
-                    />
-                    <SlotDisplay
-                      team="A"
-                      index={1}
-                      slot={null}
-                      userDisplayName="Usuario"
-                      isActive={true}
-                      onSlotClick={() => {}}
-                      onManageClick={() => {}}
-                    />
-                  </div>
                 </div>
               </div>
             </section>
@@ -278,7 +290,7 @@ export default function ComponentCatalogPage() {
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🎾 Partidos y Turnos</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Resultado (MatchResultCompact)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Resultado (MatchResultCompact V9)</h3>
                   <MatchResultCompact
                     label="Resultado ejemplo"
                     match={SAMPLE_MATCH}
@@ -286,12 +298,8 @@ export default function ComponentCatalogPage() {
                   />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Turno (TurnCard)</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turno (TurnCard V9 Premium)</h3>
                   <TurnCard turn={SAMPLE_TURN} />
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Turno Recomendado</h3>
-                  <TurnCard turn={SAMPLE_TURN} variant="recommended" />
                 </div>
               </div>
             </section>
@@ -300,9 +308,9 @@ export default function ComponentCatalogPage() {
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📋 Estados</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl">
                 <EmptyState
-                  title="Estado vacío"
-                  description="Descripción del estado vacío con estética unificada."
-                  action={<Button className="rounded-xl font-black px-8">Acción</Button>}
+                  title="Estado vacío V9"
+                  description="Descripción del estado vacío con estética unificada premium."
+                  action={<Button className="rounded-2xl font-black px-10 h-14 shadow-lg shadow-primary/20">Acción V9</Button>}
                 />
               </div>
             </section>
