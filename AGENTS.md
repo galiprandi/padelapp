@@ -464,6 +464,19 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/page.tsx`
   - `src/components/navigation/bottom-nav.tsx`
 
+### ✅ Inteligencia de Producto y Refinamiento Premium V9+ (Uma Edition)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Match Day Intelligence**: Priorización visual de items de agenda del día actual ("Hoy") con badges animados, bordes primarios y efectos de pulso para minimizar el Time-to-Action.
+  - **Social Proof Competitivo**: Implementación de "Racha de Victorias" (flame badge) en perfiles públicos para destacar el desempeño excepcional y fomentar la competitividad.
+  - **V9+ EmptyState Evolution**: Rediseño del componente de estado vacío con estética premium, iconos en contenedores de brillo primario, tipografía de alta fidelidad y coreografía de entrada.
+  - **Refinamiento de Confirmación**: Evolución del "Status Board" en el detalle de partido con mayor contraste, efectos de brillo (`sparkle`) y micro-tipografía V9+.
+- **Archivos relacionados**:
+  - `src/components/empty-state.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/p/[userId]/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+
 ## 7. Guía de diseño para nuevas vistas
 - **Mobile-first**: estructurar cada paso o sección para ocupar el alto disponible (`100dvh` ajustado por safe areas), priorizando columnas simples y CTA de ancho completo en móviles.
 - **Jerarquía clara**: encabezados `text-2xl font-black` para títulos, subtítulos `text-sm font-semibold text-muted-foreground` para agrupar bloques (p.ej. Pareja A/B), y párrafos auxiliares `text-sm text-muted-foreground` para instrucciones.

@@ -87,4 +87,9 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Public Player Engagement**: Los perfiles públicos (`/p/[userId]`) integran métricas avanzadas de engagement social:
   - **Win Rate**: Cálculo dinámico del porcentaje de efectividad para proyectar estatus competitivo.
   - **Recent Form**: Visualización de los últimos 5 resultados mediante badges (W/L) para proporcionar contexto inmediato sobre el momento actual del jugador.
+  - **Winning Streaks**: Se destaca visualmente si el jugador tiene una racha activa de 2 o más victorias consecutivas mediante un flame badge en la cabecera del perfil, reforzando el sentimiento de progreso y estatus.
 - **UX Premium Refinement (V9+)**: Las vistas públicas y de gestión (Perfiles, Notificaciones, Turnos) implementan una coreografía de entrada cinematográfica (`duration-1000`, `fill-mode-both`) y micro-tipografía estandarizada con `tracking-[0.2em]` para una sensación de producto curado y profesional. La iluminación ambiental y el desenfoque de fondo de alta densidad (`backdrop-blur-2xl`) se utilizan para elevar la jerarquía de las secciones principales.
+- **Match Day Intelligence (Uma Pattern)**: El sistema identifica dinámicamente eventos que ocurren en la fecha actual y les otorga una prioridad visual superior en el Dashboard mediante:
+  - Borde primario (`ring-2 ring-primary/20`).
+  - Badge "Hoy" con icono `Zap` y animación `animate-pulse`.
+  - Escala sutil para diferenciar items activos de la agenda estática.

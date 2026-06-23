@@ -5,7 +5,7 @@ import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
-import { Trophy, CalendarDays, Target, TrendingUp, Zap } from "lucide-react";
+import { Trophy, CalendarDays, Target, TrendingUp, Zap, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -91,28 +91,24 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   // Determinar forma reciente (W/L) de los últimos 5 partidos
   const recentForm = matches.map(match => {
     if (!match.score) return 'L';
-    const sets = match.score.split(",").map(s => {
-      const parts = s.trim().split("-");
-      return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
-    });
+    const winner = getMatchWinner(match.score);
+    if (!winner) return 'L';
 
-    let teamASets = 0;
-    let teamBSets = 0;
-
-    sets.forEach(([scoreA, scoreB]) => {
-      if (isNaN(scoreA) || isNaN(scoreB)) return;
-      if (scoreA > scoreB) teamASets++;
-      else if (scoreB > scoreA) teamBSets++;
-    });
-
-    if (teamASets === teamBSets) return 'L';
-
-    const winnerIndex = teamASets > teamBSets ? 0 : 1;
     const playerPosition = match.players.find(p => p.userId === userId)?.position ?? 0;
-    const playerTeamIndex = playerPosition < 2 ? 0 : 1;
+    const playerTeam = playerPosition < 2 ? 'A' : 'B';
 
-    return winnerIndex === playerTeamIndex ? 'W' : 'L';
+    return winner === playerTeam ? 'W' : 'L';
   });
+
+  // Calcular racha actual
+  let currentStreak = 0;
+  for (const result of recentForm) {
+    if (result === 'W') {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
 
   return (
     <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
@@ -133,13 +129,25 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
             <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-black text-lg shadow-lg border-4 border-background ring-1 ring-primary/20">
               {user.level}
             </div>
+            {currentStreak >= 2 && (
+              <div className="absolute -top-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg border-4 border-background animate-bounce">
+                <Flame className="h-5 w-5 fill-current" />
+              </div>
+            )}
           </div>
 
           <div className="space-y-1">
             <h1 className="text-4xl font-black tracking-tight text-foreground">{displayName}</h1>
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-              Jugador de Pádel • Nivel {user.level}
-            </p>
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none">
+                Jugador de Pádel • Nivel {user.level}
+              </p>
+              {currentStreak >= 2 && (
+                <Badge variant="outline" className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-black uppercase tracking-[0.2em] text-[9px] px-3 py-1 animate-pulse">
+                   Racha: {currentStreak} Victorias 🔥
+                </Badge>
+              )}
+            </div>
           </div>
 
           {recentForm.length > 0 && (
