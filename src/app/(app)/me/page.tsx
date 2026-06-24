@@ -90,25 +90,25 @@ export default async function DashboardPage() {
   const greeting = getGreeting();
 
   return (
-    <div className="flex flex-col gap-12 pb-8">
+    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-1000">
       <section className="space-y-6">
         <PageHeader
           title={`${greeting}, ${displayName} 👋`}
           description="Tu actividad central: turnos, partidos y progreso en el ranking."
           size="lg"
           action={
-            <div className="flex flex-col gap-3 w-full">
-              <Button size="lg" asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98]">
+            <div className="flex flex-col gap-3 w-full animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+              <Button size="lg" asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all duration-300">
                 <Link href="/match/new">
                   <PlusCircle className="mr-2 h-5 w-5" />
                   Nuevo Partido
                 </Link>
               </Button>
               <div className="flex gap-2 w-full">
-                <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl font-black active:scale-[0.98]">
+                <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl font-black h-11 active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-[10px]">
                   <Link href="/me/profile">Mi Perfil</Link>
                 </Button>
-                <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl font-black active:scale-[0.98]">
+                <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl font-black h-11 active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-[10px]">
                   <Link href="/ranking">Ranking</Link>
                 </Button>
               </div>
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
         <PwaInstallBanner />
 
         {user && user.matchesPlayed > 0 && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-400">
             <Link href="/ranking">
               <UserRankingCard
                 position={user.rankingPosition}
@@ -137,13 +137,13 @@ export default async function DashboardPage() {
 
       {/* NUEVA SECCIÓN: Acciones Pendientes */}
       {pendingActionMatches.length > 0 && (
-        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                 Acciones pendientes
               </h2>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-300">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-500 delay-700">
                 {pendingActionMatches.length}
               </span>
             </div>
@@ -157,23 +157,24 @@ export default async function DashboardPage() {
             )}
           </div>
           <div className="grid gap-3">
-            {pendingActionMatches.slice(0, 3).map((match) => {
+            {pendingActionMatches.slice(0, 3).map((match, idx) => {
               const needsScore = !match.score;
               return (
-                <MatchResultCompact
-                  key={match.id}
-                  match={match}
-                  detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
-                  label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
-                  viewerId={viewerId}
-                />
+                <div key={match.id} className="animate-in fade-in slide-in-from-bottom-4 duration-1000" style={{ animationDelay: `${600 + (idx * 100)}ms` }}>
+                  <MatchResultCompact
+                    match={match}
+                    detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
+                    label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
+                    viewerId={viewerId}
+                  />
+                </div>
               );
             })}
           </div>
         </section>
       )}
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-700">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Mi Agenda</h2>
           <Button variant="link" size="sm" asChild className="text-primary font-black uppercase tracking-[0.2em] text-[10px] h-auto p-0 flex items-center gap-1 active:scale-95 transition-transform">
@@ -188,10 +189,10 @@ export default async function DashboardPage() {
                 <div
                   key={item.id}
                   className={cn(
-                    "relative animate-in fade-in slide-in-from-bottom-4 duration-700",
+                    "relative animate-in fade-in slide-in-from-bottom-4 duration-1000",
                     isMatchDay && "z-10"
                   )}
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  style={{ animationDelay: `${800 + (index * 100)}ms` }}
                 >
                   {isMatchDay && (
                     <div className="absolute -left-1 -top-1 -right-1 -bottom-1 bg-primary/5 rounded-[2.1rem] blur-sm -z-10 animate-pulse border border-primary/20" />
@@ -222,7 +223,7 @@ export default async function DashboardPage() {
               );
             })
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-1000">
               <EmptyState
                 icon={CalendarDays}
                 title="Tu agenda está vacía"
@@ -244,7 +245,7 @@ export default async function DashboardPage() {
       </section>
 
       {recommendedTurns.length > 0 && (
-        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+        <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-[900ms]">
           <div className="flex items-center justify-between px-2">
             <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turnos recomendados</h2>
           </div>
@@ -252,8 +253,8 @@ export default async function DashboardPage() {
             {recommendedTurns.map((turn, index) => (
               <div
                 key={turn.id}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="animate-in fade-in slide-in-from-bottom-4 duration-1000"
+                style={{ animationDelay: `${1000 + (index * 100)}ms` }}
               >
                 <TurnCard
                   turn={turn}
@@ -267,7 +268,7 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500">
+      <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-[1100ms]">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Últimos resultados</h2>
         </div>
@@ -276,8 +277,8 @@ export default async function DashboardPage() {
             recentMatches.map((match, index) => (
               <div
                 key={match.id}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="animate-in fade-in slide-in-from-bottom-4 duration-1000"
+                style={{ animationDelay: `${1200 + (index * 100)}ms` }}
               >
                 <MatchResultCompact
                   match={match}
@@ -287,7 +288,7 @@ export default async function DashboardPage() {
               </div>
             ))
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-[1300ms]">
               <EmptyState
                 icon={Trophy}
                 title="Sin resultados todavía"

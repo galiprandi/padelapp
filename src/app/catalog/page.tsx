@@ -24,7 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, UserCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 // The catalog is a tool for developers to see UI components in isolation.
 // Using local sample data here is appropriate as it serves as documentation
@@ -92,6 +93,7 @@ export default function ComponentCatalogPage() {
 
   const sections = [
     { id: "headers", name: "Encabezados", icon: "📝" },
+    { id: "profile", name: "Perfil V9+", icon: "👤" },
     { id: "ui", name: "UI Básica", icon: "🎨" },
     { id: "forms", name: "Formularios V9+", icon: "📋" },
     { id: "players", name: "Jugadores", icon: "👥" },
@@ -184,13 +186,33 @@ export default function ComponentCatalogPage() {
               </div>
             </section>
 
+            <section id="profile" className="space-y-6">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">👤 Perfil V9+</h2>
+              <div className="space-y-8">
+                <div className="relative group p-1">
+                  <div className="absolute inset-0 bg-primary/10 blur-[60px] rounded-full -z-10" />
+                  <Card className="rounded-[2.5rem] bg-card/30 backdrop-blur-2xl border-border/40 overflow-hidden shadow-2xl relative">
+                    <CardContent className="p-8 flex flex-col items-center text-center space-y-4">
+                      <div className="relative w-24 h-24 rounded-[2rem] bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl">
+                        <UserCircle className="w-12 h-12 text-primary/40" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Nombre de Google</p>
+                        <h2 className="text-xl font-black text-foreground">Carolina Ferrante</h2>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </section>
+
             <section id="ui" className="space-y-6">
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🎨 UI Básica</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
                 <div className="space-y-4">
                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botones Primarios (V9 High-Impact)</h3>
                   <div className="flex flex-col gap-3">
-                    <Button className="w-full rounded-2xl font-black h-16 shadow-2xl shadow-primary/30 active:scale-[0.98]">Primary Action V9</Button>
+                    <Button className="w-full rounded-[2rem] font-black h-16 shadow-2xl shadow-primary/30 active:scale-[0.98]">Primary Action V9</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -198,7 +220,7 @@ export default function ComponentCatalogPage() {
                   <div className="flex flex-wrap gap-3">
                     <Button className="rounded-xl font-black">Primary</Button>
                     <Button variant="secondary" className="rounded-xl font-black">Secondary</Button>
-                    <Button variant="outline" className="rounded-xl font-black">Outline</Button>
+                    <Button variant="outline" className="rounded-xl font-black h-11 uppercase tracking-[0.2em] text-[10px]">Outline V9</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -216,7 +238,7 @@ export default function ComponentCatalogPage() {
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📋 Formularios V9+</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-2xl shadow-2xl space-y-8">
                 <div className="space-y-3">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Label Premium</Label>
+                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Label Premium V9</Label>
                   <Input
                     placeholder="Input V9 High-Fidelity"
                     className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all font-medium px-6"
@@ -225,41 +247,28 @@ export default function ComponentCatalogPage() {
 
                 <div className="space-y-4">
                   <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Selector Táctil V9</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {["60 min", "90 min", "120 min"].map((label, i) => (
-                      <button
-                        key={label}
-                        className={cn(
-                          "flex items-center justify-center py-4 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
-                          i === 1
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
-                            : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Selector con Icono</Label>
                   <div className="grid grid-cols-1 gap-2">
                     {[
-                      { label: "4 jugadores", selected: true },
-                      { label: "6 jugadores", selected: false }
+                      { label: "Nivel 5 - Avanzado", selected: true },
+                      { label: "Nivel 4 - Intermedio", selected: false }
                     ].map((opt) => (
                       <button
                         key={opt.label}
                         className={cn(
-                          "flex items-center justify-between px-5 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
+                          "flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
                           opt.selected
                             ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
                             : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                         )}
                       >
                         <span>{opt.label}</span>
-                        {opt.selected && <Check className="h-4 w-4 shrink-0" />}
+                        {opt.selected ? (
+                          <div className="h-6 w-6 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                            <Check className="h-4 w-4" />
+                          </div>
+                        ) : (
+                          <div className="h-6 w-6 rounded-full border border-border/40" />
+                        )}
                       </button>
                     ))}
                   </div>
