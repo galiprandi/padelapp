@@ -8,9 +8,9 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, ChevronRight, PlusCircle } from "lucide-react";
+import { CalendarDays, Trophy, ChevronRight, PlusCircle, Zap } from "lucide-react";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
-import { getGreeting } from "@/lib/utils";
+import { getGreeting, isToday, cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -105,10 +105,10 @@ export default async function DashboardPage() {
                 </Link>
               </Button>
               <div className="flex gap-2 w-full">
-                <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl font-black">
+                <Button size="sm" variant="outline" asChild className="flex-1 rounded-xl font-black active:scale-[0.98]">
                   <Link href="/me/profile">Mi Perfil</Link>
                 </Button>
-                <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl font-black">
+                <Button size="sm" variant="secondary" asChild className="flex-1 rounded-xl font-black active:scale-[0.98]">
                   <Link href="/ranking">Ranking</Link>
                 </Button>
               </div>
@@ -182,28 +182,45 @@ export default async function DashboardPage() {
         </div>
         <div className="grid gap-3">
           {agendaItems.length > 0 ? (
-            agendaItems.map((item, index) => (
-              <div
-                key={item.id}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {item.type === "turn" ? (
-                  <TurnCard
-                    turn={item.data}
-                    isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
-                    isCreator={item.data.creatorId === viewerId}
-                  />
-                ) : (
-                  <MatchResultCompact
-                    match={item.data as MatchResultCompactMatch}
-                    detailUrl={`/match/${item.id}`}
-                    label="Próximo partido"
-                    viewerId={viewerId}
-                  />
-                )}
-              </div>
-            ))
+            agendaItems.map((item, index) => {
+              const isMatchDay = isToday(item.date);
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    "relative animate-in fade-in slide-in-from-bottom-4 duration-700",
+                    isMatchDay && "z-10"
+                  )}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {isMatchDay && (
+                    <div className="absolute -left-1 -top-1 -right-1 -bottom-1 bg-primary/5 rounded-[2.1rem] blur-sm -z-10 animate-pulse border border-primary/20" />
+                  )}
+
+                  {item.type === "turn" ? (
+                    <TurnCard
+                      turn={item.data}
+                      isJoined={item.data.players.some((p: { userId: string }) => p.userId === viewerId)}
+                      isCreator={item.data.creatorId === viewerId}
+                    />
+                  ) : (
+                    <MatchResultCompact
+                      match={item.data as MatchResultCompactMatch}
+                      detailUrl={`/match/${item.id}`}
+                      label={isMatchDay ? "¡Hoy jugás!" : "Próximo partido"}
+                      viewerId={viewerId}
+                    />
+                  )}
+
+                  {isMatchDay && (
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary text-[8px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 animate-bounce">
+                      <Zap className="h-2.5 w-2.5 fill-current" />
+                      Hoy
+                    </div>
+                  )}
+                </div>
+              );
+            })
           ) : (
             <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
               <EmptyState
@@ -212,10 +229,10 @@ export default async function DashboardPage() {
                 description="Sumate a un turno abierto o creá un partido con amigos para empezar."
                 action={
                   <div className="flex flex-col w-full gap-3">
-                    <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20" asChild>
+                    <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]" asChild>
                       <Link href="/turnos">Explorar turnos</Link>
                     </Button>
-                    <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px]" asChild>
+                    <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px] active:scale-[0.98]" asChild>
                       <Link href="/ranking">Ver ranking global</Link>
                     </Button>
                   </div>
@@ -276,7 +293,7 @@ export default async function DashboardPage() {
                 title="Sin resultados todavía"
                 description="Cuando registres un marcador, vas a verlo acá para compartirlo."
                 action={
-                  <Button className="w-full rounded-xl" variant="secondary" asChild>
+                  <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]" variant="secondary" asChild>
                     <Link href="/match">Ver partidos</Link>
                   </Button>
                 }

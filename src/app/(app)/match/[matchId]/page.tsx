@@ -7,7 +7,7 @@ import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users } from "lucide-react";
+import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,7 @@ async function ConfirmResultForm({ matchId }: { matchId: string }) {
 
   return (
     <form action={handleConfirm} className="w-full">
-      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+      <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] bg-primary hover:bg-primary/90">
         <CheckCircle2 className="mr-2 h-6 w-6" />
         Confirmar Resultado
       </Button>
@@ -264,20 +264,24 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-              <div className="space-y-3">
+            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Sparkles className="h-24 w-24 text-primary" />
+              </div>
+
+              <div className="space-y-3 relative z-10">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm shadow-primary/5">
                     <AlertCircle className="h-5 w-5" />
                   </div>
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Confirmación pendiente</h2>
+                  <h2 className="text-[11px] font-black uppercase tracking-[0.5em] text-muted-foreground/50">Estado de Confirmación</h2>
                 </div>
-                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/40 max-w-sm">
-                  Al menos un jugador de cada equipo debe confirmar el resultado para que impacte en el ranking.
+                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/40 max-w-xs">
+                  Para que este resultado impacte en el ranking, un jugador de cada equipo debe validarlo.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 relative z-10">
                 {match.players.sort((a, b) => a.position - b.position).map((player, idx) => {
                   const displayName = player.displayName || player.user?.displayName || `Jugador ${player.position + 1}`;
                   const isConfirmed = player.resultConfirmed;
@@ -291,7 +295,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                         isConfirmed
                           ? "bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5"
                           : isViewer
-                            ? "bg-primary/5 border-primary/20 shadow-primary/5 animate-pulse"
+                            ? "bg-primary/5 border-primary/20 shadow-primary/5 shadow-[inset_0_0_20px_theme(colors.primary.DEFAULT/0.05)]"
                             : "bg-card/30 border-border/20"
                       )}
                       style={{ animationDelay: `${idx * 100}ms` }}
@@ -322,18 +326,18 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           "text-[13px] font-black truncate leading-none px-2 w-full",
                           isConfirmed ? "text-foreground" : "text-foreground/50"
                         )}>
-                          {displayName}
+                          {isViewer ? "Tú" : displayName}
                         </span>
                         <span className={cn(
                           "text-[9px] font-black uppercase tracking-[0.25em] transition-colors",
-                          isConfirmed ? "text-emerald-500" : isViewer ? "text-primary" : "text-muted-foreground/30"
+                          isConfirmed ? "text-emerald-500" : isViewer ? "text-primary animate-pulse" : "text-muted-foreground/30"
                         )}>
                           {isConfirmed ? "Confirmado" : "Pendiente"}
                         </span>
                       </div>
 
                       {player.userId === viewerId && !isConfirmed && (
-                        <div className="absolute inset-0 rounded-[2rem] ring-2 ring-primary/20 animate-pulse pointer-events-none" />
+                        <div className="absolute inset-0 rounded-[2rem] ring-2 ring-primary/30 animate-pulse pointer-events-none shadow-[0_0_15px_theme(colors.primary.DEFAULT/0.1)]" />
                       )}
                     </div>
                   );
@@ -341,7 +345,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               </div>
 
               {userNeedsToConfirm && (
-                <div className="pt-8 border-t border-border/40 mt-2">
+                <div className="pt-8 border-t border-border/40 mt-2 relative z-10 animate-in slide-in-from-bottom-4 duration-700">
                   <ConfirmResultForm matchId={match.id} />
                 </div>
               )}
@@ -349,10 +353,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
 
           {!isPendingConfirmation && match.status === 'CONFIRMED' && (
-            <div className="flex justify-center">
-               <Badge variant="success" className="px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-sm shadow-emerald-500/20">
+            <div className="flex justify-center animate-in zoom-in duration-700">
+               <Badge variant="success" className="px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 border-emerald-500/30">
                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                 Partido procesado
+                 Partido procesado en el Ranking
                </Badge>
             </div>
           )}
