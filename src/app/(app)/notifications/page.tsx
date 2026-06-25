@@ -16,7 +16,9 @@ export default async function NotificationsPage() {
   const pendingActions = await getPendingActions(userId);
 
   return (
-    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700">
+    <div className="relative flex flex-col gap-12 pb-8 animate-in fade-in duration-1000">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] -z-10" />
+
       <PageHeader
         title="Notificaciones"
         description="Gestioná tus confirmaciones y cargas de resultados pendientes."
@@ -46,7 +48,7 @@ export default async function NotificationsPage() {
                 <div
                   key={match.id}
                   className="animate-in fade-in slide-in-from-bottom-6 duration-1000"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  style={{ animationDelay: `${200 + (index * 100)}ms` }}
                 >
                   <MatchResultCompact
                     match={match}
@@ -65,7 +67,7 @@ export default async function NotificationsPage() {
               title="Todo al día"
               description="No tenés acciones pendientes por ahora. ¡Buen trabajo!"
               action={
-                <Button className="w-full max-w-xs rounded-xl font-black" asChild>
+                <Button className="w-full max-w-xs rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all" asChild>
                   <Link href="/me">Volver al inicio</Link>
                 </Button>
               }

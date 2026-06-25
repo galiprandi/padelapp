@@ -76,9 +76,10 @@ export function BottomNav({
           <Link
             href={notificationsHref}
             aria-label="Notificaciones"
-            className="absolute -top-3 right-4 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary px-2 text-xs font-black text-primary-foreground shadow transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="absolute -top-3 right-6 flex h-8 min-w-[32px] items-center justify-center rounded-full bg-primary px-2 text-[11px] font-black text-primary-foreground shadow-lg shadow-primary/40 transition-all duration-300 hover:scale-110 active:scale-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary animate-in zoom-in duration-500"
           >
-            <span>{notificationsCount}</span>
+            <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-20" />
+            <span className="relative z-10">{notificationsCount}</span>
           </Link>
         )}
       </div>
