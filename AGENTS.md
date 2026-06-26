@@ -64,6 +64,11 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - **Tactile Forms**: Rediseño de `ProfileForm` con selectores táctiles V9, feedback `active:scale-[0.98]` y botones de acción de alto impacto (`h-16`).
   - **Dashboard Polish**: Estandarización de botones de navegación secundaria y sincronización de Entrance Choreography (1000ms duration).
   - **Metadata V9**: Unificación de tipografía de micro-etiquetas con `tracking-[0.2em]`.
+- **Ranking & Notifications Refinement**:
+  - **Podium Section**: Nueva visualización premium con contenedor `backdrop-blur-2xl`, iluminación ambiental y sombras de alto impacto.
+  - **Ranking List**: Estandarización a `rounded-[2rem]` y micro-typography `tracking-[0.2em]`.
+  - **Notifications**: Implementación de Entrance Choreography (1000ms), ambient lighting y botones `rounded-2xl` de alto impacto.
+  - **Notification Badge**: Refinamiento estético con `animate-ping` sutil y `shadow-lg shadow-primary/40`.
 - **Archivos relacionados**:
   - `src/app/(app)/me/profile/page.tsx`
   - `src/app/(app)/me/profile/profile-form.tsx`

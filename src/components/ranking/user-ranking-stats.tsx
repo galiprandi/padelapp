@@ -74,13 +74,13 @@ export function UserRankingBanner({
 
         <div className="grid grid-cols-2 gap-x-12 gap-y-4">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
               Puntos
             </span>
             <span className="text-2xl font-black tabular-nums">{Math.round(score)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
               Récord
             </span>
             <span className="text-2xl font-black tabular-nums">
@@ -111,7 +111,7 @@ export function UserRankingCard({
   return (
     <div
       className={cn(
-        "group relative flex items-center justify-between overflow-hidden rounded-[1.5rem] border border-border/40 bg-card/60 p-5 shadow-lg backdrop-blur-md transition-all hover:bg-card/80 hover:border-primary/20 active:scale-[0.98]",
+        "group relative flex items-center justify-between overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 p-6 shadow-lg backdrop-blur-md transition-all hover:bg-card/80 hover:border-primary/20 active:scale-[0.98]",
         className
       )}
     >
@@ -123,7 +123,7 @@ export function UserRankingCard({
           </div>
         </div>
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-0.5">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-0.5">
             Mi Estatus
           </p>
           <div className="flex items-baseline gap-2">
@@ -131,9 +131,9 @@ export function UserRankingCard({
               {position ? `#${position}` : "--"}
             </span>
             <div className="flex flex-col">
-              <span className="text-[11px] font-black leading-none">{Math.round(score ?? 1000)} pts</span>
+              <span className="text-[11px] font-black leading-none tracking-tight">{Math.round(score ?? 1000)} pts</span>
               {matchesPlayed > 0 && (
-                <span className="text-[10px] font-black text-primary/80 mt-0.5">{winRate}% Win Rate</span>
+                <span className="text-[11px] font-black uppercase tracking-[0.1em] text-primary/80 mt-0.5">{winRate}% WR</span>
               )}
             </div>
           </div>
@@ -160,7 +160,7 @@ export function UserRankingCard({
           )}
         </div>
         {matchesPlayed > 0 && (
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
+          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
             {wins}V - {losses}D
           </span>
         )}
