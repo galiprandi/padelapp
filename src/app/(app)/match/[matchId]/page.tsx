@@ -7,7 +7,7 @@ import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users, Sparkles } from "lucide-react";
+import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users, Sparkles, MapPin } from "lucide-react";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
@@ -46,7 +46,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   if (!result.match) {
     return (
-      <div className="flex flex-col gap-6 py-10">
+      <div className="flex flex-col gap-6 py-10 px-6">
         <PageHeader
           size="lg"
           title="Partido no encontrado"
@@ -120,13 +120,16 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const userNeedsToConfirm = viewerId && match.players.some(p => p.userId === viewerId && !p.resultConfirmed);
 
   return (
-    <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-700 px-6">
+    <div className="relative flex flex-col gap-12 pb-8 animate-in fade-in duration-1000 px-6 overflow-hidden">
+      {/* Ambient Lighting */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/5 blur-[100px] -z-10 rounded-full" />
+
       <PageHeader
         size="lg"
         title={`Partido ${getMatchTypeLabel(match.matchType)}`}
         backHref="/match"
         description={
-          <div className="flex flex-col gap-6 mt-4">
+          <div className="flex flex-col gap-6 mt-6">
             <div className="flex items-center gap-3">
               <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-1 px-3 rounded-xl shadow-sm">
                 {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
@@ -143,12 +146,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
             <div className="grid grid-cols-1 gap-3">
               {match.club && (
-                <div className="group flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/60">
+                <div className="group flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
-                    <span className="text-lg">📍</span>
+                    <MapPin className="h-5 w-5" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">Club y Cancha</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Club y Cancha</span>
                     <span className="text-sm font-black truncate text-foreground leading-tight">
                       {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
                     </span>
@@ -156,12 +159,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 </div>
               )}
 
-              <div className="flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-sm shadow-sm transition-all hover:bg-card/60">
+              <div className="flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
                   <PlayerAvatar name={match.creator?.displayName || 'U'} image={match.creator?.image ?? undefined} className="h-8 w-8" />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">Organizador</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Organizador</span>
                   <span className="text-sm font-black truncate text-foreground leading-tight">
                     {match.creator?.displayName || 'Usuario'}
                   </span>
@@ -171,12 +174,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
         }
         action={
-          <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-col gap-3 w-full mt-2">
             {!isClosed ? (
               <>
                 <Button
                   asChild
-                  className="w-full h-12 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-black active:scale-[0.98]"
+                  className="w-full h-14 justify-center text-base rounded-2xl shadow-lg shadow-primary/20 font-black active:scale-[0.98] transition-all"
                 >
                   <Link href={`/match/${match.id}/result`}>
                     <FileText className="mr-2 h-5 w-5" />
@@ -188,7 +191,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
                   url={createMagicLink({ resource: "match", identifier: match.id }).url}
                   variant="outline"
-                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98]"
+                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
                 />
               </>
             ) : (
@@ -197,7 +200,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 text="¡Mira el resultado de nuestro partido de pádel!"
                 url={createMagicLink({ resource: "match", identifier: match.id }).url}
                 variant="outline"
-                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98]"
+                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
               />
             )}
           </div>
@@ -362,7 +365,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-10">
           <section className="space-y-6">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 flex items-center gap-2">
@@ -374,39 +377,44 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 </Badge>
              </div>
 
-             <MatchPlayersManager
-                matchId={match.id}
-                creatorId={match.creatorId}
-                teams={teams.map((team) => ({
-                  id: team.id,
-                  label: team.label,
-                  players: team.players.map((player: {
-                    id: string;
-                    userId?: string | null;
-                    name: string;
-                    image?: string | null;
-                    isConfirmed?: boolean;
-                    placeholderName: string;
-                  }) => ({
-                    matchPlayerId: player.id,
-                    userId: player.userId,
-                    name: player.name,
-                    image: player.image,
-                    isConfirmed: player.isConfirmed,
-                    placeholderName: player.placeholderName,
-                  })),
-                }))}
-              />
+             <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <MatchPlayersManager
+                  matchId={match.id}
+                  creatorId={match.creatorId}
+                  teams={teams.map((team) => ({
+                    id: team.id,
+                    label: team.label,
+                    players: team.players.map((player: {
+                      id: string;
+                      userId?: string | null;
+                      name: string;
+                      image?: string | null;
+                      isConfirmed?: boolean;
+                      placeholderName: string;
+                    }) => ({
+                      matchPlayerId: player.id,
+                      userId: player.userId,
+                      name: player.name,
+                      image: player.image,
+                      isConfirmed: player.isConfirmed,
+                      placeholderName: player.placeholderName,
+                    })),
+                  }))}
+                />
+             </div>
           </section>
 
           {match.notes && (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-               <div className="rounded-[2.5rem] bg-card/30 border border-border/40 p-8 backdrop-blur-md shadow-sm">
+               <div className="rounded-[2.5rem] bg-card/30 border border-border/40 p-8 backdrop-blur-md shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-5">
+                    <FileText className="h-12 w-12 text-primary" />
+                  </div>
                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-4 flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Notas del organizador
                   </h3>
-                  <p className="text-base font-medium text-foreground/80 leading-relaxed italic">
+                  <p className="text-base font-medium text-foreground/80 leading-relaxed italic relative z-10">
                     "{match.notes}"
                   </p>
                </div>

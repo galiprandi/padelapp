@@ -96,3 +96,15 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/page.tsx`
   - `src/app/(app)/me/page.tsx`
   - `src/components/matches/match-result-card.tsx`
+
+### ✅ Refactor de Invitaciones y Unirse Directo (V9+ High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Public Invitation Hero**: Nueva estética para invitaciones públicas (`/m/[id]`) con ambient lighting (`blur-[100px]`), cards `backdrop-blur-2xl` y tipografía V9 (`tracking-[0.2em]`).
+  - **Frictionless Join Flow**: Rediseño de la vista de unirse a cupo directo (`/j/[id]`) con cards táctiles de alto impacto, jerarquía visual premium y botones de acción de 64px (`h-16`).
+  - **Visual Sync**: Unificación estética entre el detalle de partido interno y la invitación pública para una experiencia de marca coherente.
+  - **Tactile Feedback**: Implementación de animaciones de entrada (`duration-1000`) y estados `active:scale-[0.98]` en todos los puntos de contacto de invitación.
+- **Archivos relacionados**:
+  - `src/app/m/[matchId]/page.tsx`
+  - `src/app/j/[playerId]/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
