@@ -256,9 +256,9 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
           return (
             <Fragment key={team.id}>
               <div className={cn(
-                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-all duration-300",
+                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-all duration-500",
                 team.hasViewer ? "bg-primary/5 ring-1 ring-primary/10" : "",
-                team.isWinner && "bg-gradient-to-r from-primary/5 to-transparent border-l-2 border-primary/30 shadow-[inset_1px_0_8px_rgba(0,0,0,0.02)]"
+                team.isWinner && "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-2 border-primary/40 shadow-[inset_1px_0_12px_theme(colors.primary.DEFAULT/0.05)]"
               )}>
                 <div className="flex items-center">
                   {team.players.map((player, index) => (
@@ -290,7 +290,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                         ) : (
                           <span className="truncate">{player.name}</span>
                         )}
-                        {team.isWinner && <Trophy className="h-3 w-3 shrink-0 text-yellow-500" />}
+                        {team.isWinner && <Trophy className="h-3.5 w-3.5 shrink-0 text-yellow-500 fill-yellow-500/20" />}
                       </div>
                     );
                   })}

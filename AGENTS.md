@@ -81,4 +81,13 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - **Archivos relacionados**:
   - `src/app/(app)/me/page.tsx`
 
-... (resto del contenido original)
+### ✅ Career Intelligence y Resumen de Carrera (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - Incorporación de tarjeta "Resumen de Carrera" en el historial de partidos (`/match`) con métricas de Win Rate, Racha y Mejor Socio.
+  - Visualización de "Forma Reciente" (W/L dots) en el Dashboard para feedback inmediato.
+  - Estandarización de `EmptyState` y `MatchResultCompact` con el estándar de alta fidelidad V9+.
+- **Archivos relacionados**:
+  - `src/app/(app)/match/page.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/components/matches/match-result-card.tsx`

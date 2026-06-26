@@ -10,7 +10,7 @@ import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight, PlusCircle, Zap } from "lucide-react";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
-import { getGreeting, isToday, cn } from "@/lib/utils";
+import { getGreeting, isToday, cn, getMatchWinner } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -88,6 +88,15 @@ export default async function DashboardPage() {
   ].sort((a, b) => a.date.getTime() - b.date.getTime());
 
   const greeting = getGreeting();
+
+  const recentForm = recentMatches.slice(0, 5).map(match => {
+    const winner = getMatchWinner(match.score ?? null);
+    if (!winner) return 'L';
+    const player = match.players.find(p => p.user?.id === viewerId);
+    if (!player) return 'L';
+    const playerTeam = player.position < 2 ? 'A' : 'B';
+    return winner === playerTeam ? 'W' : 'L';
+  });
 
   return (
     <div className="flex flex-col gap-12 pb-8 animate-in fade-in duration-1000">
@@ -228,12 +237,13 @@ export default async function DashboardPage() {
                 icon={CalendarDays}
                 title="Tu agenda está vacía"
                 description="Sumate a un turno abierto o creá un partido con amigos para empezar."
+                className="rounded-[2.5rem]"
                 action={
-                  <div className="flex flex-col w-full gap-3">
-                    <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]" asChild>
+                  <div className="flex flex-col w-full gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-[1200ms]">
+                    <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] text-sm" asChild>
                       <Link href="/turnos">Explorar turnos</Link>
                     </Button>
-                    <Button variant="ghost" className="w-full rounded-xl font-black h-10 text-muted-foreground uppercase tracking-widest text-[11px] active:scale-[0.98]" asChild>
+                    <Button variant="ghost" className="w-full rounded-2xl font-black h-12 text-muted-foreground uppercase tracking-[0.2em] text-[10px] active:scale-[0.98]" asChild>
                       <Link href="/ranking">Ver ranking global</Link>
                     </Button>
                   </div>
@@ -270,7 +280,22 @@ export default async function DashboardPage() {
 
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-[1100ms]">
         <div className="flex items-center justify-between px-2">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Últimos resultados</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Últimos resultados</h2>
+            {recentForm.length > 0 && (
+              <div className="flex gap-1 items-center bg-muted/20 px-2 py-1 rounded-full border border-border/10">
+                {recentForm.map((result, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "h-1.5 w-1.5 rounded-full",
+                      result === "W" ? "bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
+                    )}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="space-y-3">
           {recentMatches.length > 0 ? (
@@ -293,9 +318,10 @@ export default async function DashboardPage() {
                 icon={Trophy}
                 title="Sin resultados todavía"
                 description="Cuando registres un marcador, vas a verlo acá para compartirlo."
+                className="rounded-[2.5rem]"
                 action={
-                  <Button className="w-full rounded-xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]" variant="secondary" asChild>
-                    <Link href="/match">Ver partidos</Link>
+                  <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] text-sm animate-in fade-in slide-in-from-bottom-4 duration-700 delay-[1500ms]" variant="secondary" asChild>
+                    <Link href="/match">Ver historial de partidos</Link>
                   </Button>
                 }
               />

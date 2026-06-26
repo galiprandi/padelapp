@@ -6,7 +6,8 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import Link from "next/link";
-import { PlusCircle, CalendarOff, Plus, ChevronRight } from "lucide-react";
+import { PlusCircle, CalendarOff, Plus, ChevronRight, Trophy, Zap, Users, Target, Activity } from "lucide-react";
+import { cn, calculateWinRate, getMatchWinner } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,51 @@ export default async function MatchListPage() {
     viewerId ? getEnhancedUserMatches(viewerId) : Promise.resolve([]),
     viewerId ? getPendingActions(viewerId) : Promise.resolve([]),
   ]);
+
+  // Cálculos para el Career Summary
+  const confirmedMatches = matches.filter(m => m.status === 'CONFIRMED');
+  const totalMatches = confirmedMatches.length;
+
+  const matchResults = confirmedMatches.map(match => {
+    const winner = getMatchWinner(match.score ?? null);
+    if (!winner) return 'L';
+    const player = match.players.find(p => p.user?.id === viewerId);
+    const playerTeam = (player?.position ?? 0) < 2 ? 'A' : 'B';
+    return winner === playerTeam ? 'W' : 'L';
+  });
+
+  const wins = matchResults.filter(r => r === 'W').length;
+  const winRate = calculateWinRate(wins, totalMatches);
+
+  // Racha actual
+  let currentStreak = 0;
+  for (let i = 0; i < matchResults.length; i++) {
+    if (matchResults[i] === 'W') currentStreak++;
+    else break;
+  }
+
+  // Mejor Compañero (socio con más victorias)
+  const partnersWins: Record<string, { name: string, wins: number }> = {};
+  confirmedMatches.forEach((match, idx) => {
+    if (matchResults[idx] === 'W') {
+      const viewer = match.players.find(p => p.user?.id === viewerId);
+      if (!viewer) return;
+      const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
+      const partner = match.players.find(p =>
+        p.user?.id !== viewerId &&
+        (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2)
+      );
+
+      if (partner && partner.user) {
+        const pId = partner.user.id;
+        const pName = partner.user.displayName || "Compañero";
+        if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
+        partnersWins[pId].wins += 1;
+      }
+    }
+  });
+
+  const bestPartner = Object.values(partnersWins).sort((a, b) => b.wins - a.wins)[0];
 
   // Agrupar partidos por mes y año
   const groupedMatches = matches.reduce((groups: Record<string, typeof matches>, match) => {
@@ -49,6 +95,63 @@ export default async function MatchListPage() {
           </Button>
         }
       />
+
+      {viewerId && totalMatches > 0 && (
+        <section className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-card/40 p-8 backdrop-blur-md shadow-xl">
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+              <Trophy className="h-32 w-32 text-primary" />
+            </div>
+
+            <div className="relative z-10 space-y-6">
+              <div className="flex items-center gap-2">
+                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                  Resumen de Carrera
+                </h2>
+                {currentStreak >= 2 && (
+                  <div className="flex items-center gap-1 bg-orange-500/10 text-orange-500 px-2 py-0.5 rounded-full border border-orange-500/20 animate-pulse">
+                    <Zap className="h-3 w-3 fill-current" />
+                    <span className="text-[9px] font-black uppercase tracking-widest">{currentStreak} en racha</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/60">
+                    <Target className="h-3.5 w-3.5" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Partidos</span>
+                  </div>
+                  <p className="text-3xl font-black tabular-nums">{totalMatches}</p>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/60">
+                    <Activity className="h-3.5 w-3.5" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Win Rate</span>
+                  </div>
+                  <p className="text-3xl font-black tabular-nums text-primary">{winRate}%</p>
+                </div>
+
+                {bestPartner && (
+                  <div className="space-y-1 col-span-2 md:col-span-2">
+                    <div className="flex items-center gap-1.5 text-muted-foreground/60">
+                      <Users className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Mejor Socio</span>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <p className="text-xl font-black truncate max-w-[150px]">{bestPartner.name}</p>
+                      <span className="text-xs font-black text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/10">
+                        {bestPartner.wins} victorias
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {pendingActions.length > 0 && (
         <section className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
@@ -121,10 +224,11 @@ export default async function MatchListPage() {
                 title="Sin partidos todavía"
                 description="Todavía no participaste de ningún partido. Cuando quieras, podés crear uno nuevo y gestionarlo desde acá."
                 icon={CalendarOff}
+                className="rounded-[2.5rem]"
                 action={
-                  <div className="flex flex-col w-full gap-3">
-                    <Button asChild className="w-full rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
-                      <Link href="/match/new">Crear partido</Link>
+                  <div className="flex flex-col w-full gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+                    <Button asChild className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all text-sm">
+                      <Link href="/match/new">Crear primer partido</Link>
                     </Button>
                   </div>
                 }

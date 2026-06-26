@@ -87,3 +87,4 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - Borde primario (`ring-2 ring-primary/20`).
   - Badge "Hoy" con icono `Zap` y animación `animate-pulse`.
   - Escala sutil para diferenciar items activos de la agenda estática.
+- **Career Intelligence (V9+)**: El historial de partidos (`/match`) incorpora una tarjeta de "Resumen de Carrera" que agrega métricas históricas (Total, Win Rate, Racha, Mejor Socio) utilizando la estética de alta fidelidad para proporcionar un sentimiento de progresión y estatus competitivo. Las victorias se destacan con un icono de Trofeo con relleno sutil y gradientes de fondo `primary/10`.
