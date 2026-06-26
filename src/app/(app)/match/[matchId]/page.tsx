@@ -362,14 +362,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
         </div>
       ) : (
-        <div className="space-y-8">
-          <section className="space-y-6">
+        <div className="space-y-12">
+          <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 flex items-center gap-2">
-                  <Users className="h-3.5 w-3.5" />
+                  <Users className="h-4 w-4" />
                   Formación de equipos
                 </h2>
-                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 rounded-full px-3">
+                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-[0.2em] border-primary/20 text-primary bg-primary/5 rounded-full px-4 py-1">
                   Listo para jugar
                 </Badge>
              </div>
@@ -400,13 +400,16 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </section>
 
           {match.notes && (
-            <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-               <div className="rounded-[2.5rem] bg-card/30 border border-border/40 p-8 backdrop-blur-md shadow-sm">
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-4 flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
+            <section className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+               <div className="rounded-[2.5rem] bg-card/40 border border-border/40 p-10 backdrop-blur-md shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <FileText className="h-24 w-24 text-primary" />
+                  </div>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-muted-foreground/50 mb-6 flex items-center gap-3 relative z-10">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                     Notas del organizador
                   </h3>
-                  <p className="text-base font-medium text-foreground/80 leading-relaxed italic">
+                  <p className="text-lg font-medium text-foreground/80 leading-relaxed italic relative z-10">
                     "{match.notes}"
                   </p>
                </div>

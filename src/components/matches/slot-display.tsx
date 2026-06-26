@@ -51,34 +51,51 @@ export function SlotDisplay({
         }
       }}
       className={cn(
-        "flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 active:scale-[0.98]",
+        "flex items-center gap-4 rounded-[2rem] border px-5 py-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 active:scale-[0.98] backdrop-blur-md",
         isActive
-          ? "border-primary bg-primary/10 shadow-sm shadow-primary/5"
-          : "border-border/40 bg-card/40 hover:bg-card/60"
+          ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
+          : "border-border/40 bg-card/40 hover:bg-card/60 shadow-sm"
       )}
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary shadow-inner">
+      <div className={cn(
+        "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-sm font-black shadow-inner transition-all duration-500",
+        isActive ? "bg-primary/20 text-primary scale-105" : "text-muted-foreground/50"
+      )}>
         {slot?.kind === "user" && slot.player.image ? (
           <Image
             alt={slot.player.displayName}
             src={slot.player.image}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-full object-cover"
+            width={48}
+            height={48}
+            className="h-12 w-12 rounded-2xl object-cover"
           />
         ) : slot?.kind === "user" ? (
-          avatarFallback(slot.player.displayName)
+          <span className="text-base">{avatarFallback(slot.player.displayName)}</span>
         ) : (
-          position + 1
+          <span className="text-base">{position + 1}</span>
         )}
       </div>
-      <p className="flex-1 truncate text-sm font-semibold text-foreground">{displayName}</p>
+      <div className="flex flex-col flex-1 min-w-0">
+        {slot?.kind === "user" && (
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary/60 leading-none mb-1">Inscripto</span>
+        )}
+        <p className={cn(
+          "truncate text-base font-black leading-tight transition-colors",
+          isActive ? "text-foreground" : "text-foreground/80"
+        )}>
+          {displayName}
+        </p>
+      </div>
       {isOwnerSlot ? null : (
         <div className="flex items-center gap-1">
           <Button
             type="button"
             variant="ghost"
             size="icon"
+            className={cn(
+              "h-10 w-10 rounded-xl transition-all active:scale-90",
+              isActive ? "text-primary hover:bg-primary/10" : "text-muted-foreground/40 hover:bg-muted"
+            )}
             aria-label={
               slot?.kind === "placeholder"
                 ? "Gestionar nombre del cupo"
@@ -91,7 +108,7 @@ export function SlotDisplay({
               onManageClick(team, index);
             }}
           >
-            <UsersRound className="h-4 w-4" />
+            <UsersRound className="h-5 w-5" />
           </Button>
         </div>
       )}

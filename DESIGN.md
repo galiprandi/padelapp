@@ -88,3 +88,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - Badge "Hoy" con icono `Zap` y animación `animate-pulse`.
   - Escala sutil para diferenciar items activos de la agenda estática.
 - **Career Intelligence (V9+)**: El historial de partidos (`/match`) incorpora una tarjeta de "Resumen de Carrera" que agrega métricas históricas (Total, Win Rate, Racha, Mejor Socio) utilizando la estética de alta fidelidad para proporcionar un sentimiento de progresión y estatus competitivo. Las victorias se destacan con un icono de Trofeo con relleno sutil y gradientes de fondo `primary/10`.
+- **Match Flow Elevation (V9+)**: El proceso de creación de partidos evoluciona a una experiencia inmersiva multi-paso con:
+  - **Ambient Depth**: Uso de iluminación radial (`bg-primary/10 blur-[100px]`) y cards `backdrop-blur-2xl` para separar el flujo del fondo.
+  - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` y `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
+  - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 48px para una lectura clara y profesional.
+  - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.
