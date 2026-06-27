@@ -107,4 +107,15 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
 - **Archivos relacionados**:
   - `src/app/m/[matchId]/page.tsx`
   - `src/app/j/[playerId]/page.tsx`
+### ✅ Elevación de Flujo de Partidos y Detalle Premium (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Match Flow Elevation**: El flujo de creación de partidos (`/match/new`) ahora implementa iluminación ambiental (`blur-[100px]`), contenedores `backdrop-blur-2xl` y animaciones de entrada sincronizadas.
+  - **MatchNavigation V9**: Estandarización de botones de navegación con altura `h-14`, `rounded-2xl`, sombras de alto impacto `primary/20` y feedback táctil `active:scale-[0.98]`.
+  - **Premium Detail**: El detalle de partido (`/match/[matchId]`) refuerza la estética glassmorphic en la formación de equipos y notas del organizador.
+  - **Micro-typography**: Unificación de etiquetas a `tracking-[0.2em]` y `font-black` para una jerarquía superior.
+- **Archivos relacionados**:
+  - `src/components/matches/step-content.tsx`
+  - `src/components/matches/match-navigation.tsx`
+  - `src/components/matches/slot-display.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`

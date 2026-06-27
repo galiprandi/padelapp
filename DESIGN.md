@@ -94,3 +94,8 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Frictionless Conversion**: El flujo de unirse a un cupo directo (`/j/[id]`) se optimiza con tarjetas de equipo prominentes y botones de acción de gran tamaño (`h-16`, `rounded-2xl`) para minimizar la fricción en la conversión de nuevos jugadores.
 - **Visual Sync (Internal/Public)**: El detalle de partido interno (`/match/[id]`) se sincroniza visualmente con la invitación pública, compartiendo los mismos patrones de micro-typography (`tracking-[0.2em]`, `font-black`) y cards de jugadores para una transición fluida tras el registro.
 - **Status Visibility**: Las confirmaciones de jugadores en las vistas de invitación se resaltan con iconos de `CheckCircle2` animados y badges de nivel para proyectar un entorno competitivo y organizado desde el primer contacto.
+- **Match Flow Elevation (V9+)**: El proceso de creación de partidos evoluciona a una experiencia inmersiva multi-paso con:
+  - **Ambient Depth**: Uso de iluminación radial (`bg-primary/10 blur-[100px]`) y cards `backdrop-blur-2xl` para separar el flujo del fondo.
+  - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` y `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
+  - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 48px para una lectura clara y profesional.
+  - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.

@@ -369,10 +369,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
           <section className="space-y-6">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 flex items-center gap-2">
-                  <Users className="h-3.5 w-3.5" />
+                  <Users className="h-4 w-4" />
                   Formación de equipos
                 </h2>
-                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 rounded-full px-3">
+                <Badge variant="outline" className="text-[10px] font-black uppercase tracking-[0.2em] border-primary/20 text-primary bg-primary/5 rounded-full px-4 py-1">
                   Listo para jugar
                 </Badge>
              </div>

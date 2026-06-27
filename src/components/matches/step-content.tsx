@@ -54,15 +54,15 @@ function ScoreSelector({
   onValueChange: (val: number) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between px-2">
         <div className="flex flex-col gap-1 min-w-0">
-          <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">{teamLabel}</span>
-          <span className="text-sm font-black text-foreground truncate leading-none">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/50">{teamLabel}</span>
+          <span className="text-base font-black text-foreground truncate leading-none">
             {players}
           </span>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl font-black text-primary border border-primary/20 shadow-inner">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-3xl font-black text-primary-foreground border-4 border-background shadow-xl ring-1 ring-primary/20 scale-110">
           {currentValue}
         </div>
       </div>
@@ -78,7 +78,7 @@ function ScoreSelector({
               className={cn(
                 "h-14 rounded-2xl border text-xl font-black transition-all active:scale-[0.95] relative overflow-hidden",
                 isSelected
-                  ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/30 z-10 scale-105"
                   : "bg-background/40 border-border/40 text-muted-foreground/70 hover:bg-background/60"
               )}
             >
@@ -128,21 +128,24 @@ export function StepContent({
   recordScore,
   scores,
 }: StepContentProps) {
-  const baseClass = "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500";
+  const baseClass = "relative flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-12 animate-in fade-in slide-in-from-bottom-4 duration-700";
 
   if (currentStep === 0) {
     return (
       <section className={baseClass}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
+
         <div className="space-y-8">
           <PageHeader
             title="Nuevo Partido"
             description="Armá tu partido seleccionando las parejas. Tocá el botón de cada jugador para gestionar nombres y enlaces de invitación."
+            descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
           />
 
-          <div className="grid gap-6">
-            <div className="space-y-3">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja A</p>
-              <div className="grid gap-2">
+          <div className="grid gap-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
+            <div className="space-y-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Pareja A</p>
+              <div className="grid gap-3">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
                     key={`A-${index}`}
@@ -157,9 +160,9 @@ export function StepContent({
                 ))}
               </div>
             </div>
-            <div className="space-y-3">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Pareja B</p>
-              <div className="grid gap-2">
+            <div className="space-y-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Pareja B</p>
+              <div className="grid gap-3">
                 {([0, 1] as const).map((index) => (
                   <SlotDisplay
                     key={`B-${index}`}
@@ -192,15 +195,18 @@ export function StepContent({
   if (currentStep === 1) {
     return (
       <section className={baseClass}>
-        <div className="space-y-8">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
+
+        <div className="space-y-10">
           <PageHeader
             title="Tipo de Partido"
             description="Elegí el formato del partido y configurá cuántos sets se jugarán. Activá el ranking si querés que cuente para las posiciones."
+            descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
             size="md"
           />
 
-          <div className="space-y-6">
-            <div className="space-y-3 rounded-3xl border border-primary/20 bg-primary/5 p-5 shadow-sm">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
+            <div className="space-y-3 rounded-[2rem] border border-primary/20 bg-primary/5 p-6 shadow-lg shadow-primary/5 backdrop-blur-md">
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
@@ -219,8 +225,8 @@ export function StepContent({
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Tipo de Formato</Label>
+            <div className="space-y-4">
+              <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Tipo de Formato</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {MATCH_TYPE_OPTIONS.map((option) => {
                   const isSelected = matchType === option.value;
@@ -230,22 +236,22 @@ export function StepContent({
                       type="button"
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
-                        "flex items-center justify-between px-4 py-3 rounded-2xl border transition-all text-sm font-medium text-left active:scale-[0.98]",
+                        "flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-base font-black text-left active:scale-[0.98] shadow-sm",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                       )}
                     >
                       <span>{option.label}</span>
-                      {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                      {isSelected && <Check className="h-5 w-5 shrink-0" />}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Cantidad de sets</Label>
+            <div className="space-y-4">
+              <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Cantidad de sets</Label>
               <div className="grid grid-cols-3 gap-2">
                 {["1", "3", "5"].map((option) => {
                   const isSelected = sets === option;
@@ -255,9 +261,9 @@ export function StepContent({
                       type="button"
                       onClick={() => onSetsChange(option)}
                       className={cn(
-                        "flex items-center justify-center py-3 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
+                        "flex items-center justify-center py-4 rounded-2xl border transition-all text-base font-black active:scale-[0.98] shadow-sm",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
                           : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                       )}
                     >
@@ -268,11 +274,11 @@ export function StepContent({
               </div>
             </div>
 
-            <div className="space-y-3 rounded-3xl border border-border/40 bg-card/40 p-5">
+            <div className="space-y-3 rounded-[2rem] border border-border/40 bg-card/40 p-6 shadow-lg backdrop-blur-md">
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor="counts-ranking" className="text-sm font-black">Sumar puntos para el Ranking</Label>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <Label htmlFor="counts-ranking" className="text-base font-black">Ranking competitivo</Label>
+                  <p className="text-xs text-muted-foreground/60 leading-relaxed">
                     Si está activo, el resultado impactará en tu posición y delta del ranking global.
                   </p>
                 </div>
@@ -280,19 +286,22 @@ export function StepContent({
                   id="counts-ranking"
                   checked={countsForRanking}
                   onCheckedChange={onCountsForRankingChange}
+                  className="scale-110"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <MatchNavigation
-          primaryButtonText="Continuar"
-          onPrimaryClick={onNextStep}
-          primaryDisabled={!setsValid}
-          secondaryButtonText="Atrás"
-          onSecondaryClick={onPreviousStep}
-        />
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
+          <MatchNavigation
+            primaryButtonText="Continuar"
+            onPrimaryClick={onNextStep}
+            primaryDisabled={!setsValid}
+            secondaryButtonText="Atrás"
+            onSecondaryClick={onPreviousStep}
+          />
+        </div>
       </section>
     );
   }
@@ -300,47 +309,52 @@ export function StepContent({
   if (currentStep === 2) {
     return (
       <section className={baseClass}>
-        <div className="space-y-8">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
+
+        <div className="space-y-10">
           <PageHeader
             title="Detalles del Partido"
             description="Agregá información opcional como el club y la cancha. Estos datos ayudan a organizar mejor el partido."
+            descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
             size="md"
           />
 
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <Label htmlFor="club" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Club (opcional)</Label>
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
+            <div className="space-y-4">
+              <Label htmlFor="club" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Club (opcional)</Label>
               <Input
                 id="club"
                 placeholder="Ej: Padel City, Tie Break"
                 value={club}
                 onChange={(event) => onClubChange(event.target.value)}
                 autoSelect
-                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
+                className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all text-base font-medium px-6 shadow-sm"
               />
             </div>
-            <div className="space-y-3">
-              <Label htmlFor="court" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 px-1">Número de cancha (opcional)</Label>
+            <div className="space-y-4">
+              <Label htmlFor="court" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Número de cancha (opcional)</Label>
               <Input
                 id="court"
                 placeholder="Ej: 3, Central"
                 value={courtNumber}
                 onChange={(event) => onCourtNumberChange(event.target.value)}
                 autoSelect
-                className="rounded-xl bg-background/50 border-border/40 focus:bg-background transition-all h-12"
+                className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all text-base font-medium px-6 shadow-sm"
               />
             </div>
           </div>
         </div>
 
-        <MatchNavigation
-          primaryButtonText={recordScore ? "Continuar" : (isSubmitting ? "Creando..." : "Crear partido")}
-          onPrimaryClick={recordScore ? onNextStep : onCreateMatch}
-          primaryDisabled={isSubmitting}
-          primaryLoading={!recordScore && isSubmitting}
-          secondaryButtonText="Atrás"
-          onSecondaryClick={onPreviousStep}
-        />
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
+          <MatchNavigation
+            primaryButtonText={recordScore ? "Continuar" : (isSubmitting ? "Creando..." : "Crear partido")}
+            onPrimaryClick={recordScore ? onNextStep : onCreateMatch}
+            primaryDisabled={isSubmitting}
+            primaryLoading={!recordScore && isSubmitting}
+            secondaryButtonText="Atrás"
+            onSecondaryClick={onPreviousStep}
+          />
+        </div>
       </section>
     );
   }
@@ -352,22 +366,29 @@ export function StepContent({
 
   return (
     <section className={baseClass}>
-      <div className="space-y-8">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
+
+      <div className="space-y-10">
         <PageHeader
           title="Marcador Final"
           description="Completá los sets jugados para finalizar el registro del partido."
+          descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
           size="md"
         />
 
-        <div className="space-y-10">
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
           {Array.from({ length: setsCount }, (_, setIndex) => (
-            <div key={setIndex} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${setIndex * 100}ms` }}>
-              <div className="flex items-center justify-between px-1">
-                <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Set {setIndex + 1}</h2>
-                <div className="h-px flex-1 mx-4 bg-border/40" />
+            <div key={setIndex} className="space-y-8 p-8 rounded-[2.5rem] bg-card/40 border border-border/40 backdrop-blur-md shadow-xl overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <Trophy className="h-32 w-32 text-primary" />
               </div>
 
-              <div className="grid gap-8">
+              <div className="flex items-center justify-between px-1 relative z-10">
+                <h2 className="text-[11px] font-black uppercase tracking-[0.5em] text-primary/40">Set {setIndex + 1}</h2>
+                <div className="h-px flex-1 mx-6 bg-primary/10" />
+              </div>
+
+              <div className="grid gap-10 relative z-10">
                 <ScoreSelector
                   setIndex={setIndex}
                   teamIndex={0}
@@ -400,14 +421,16 @@ export function StepContent({
         </div>
       </div>
 
-      <MatchNavigation
-        primaryButtonText={isSubmitting ? "Creando..." : "Crear y finalizar"}
-        onPrimaryClick={onCreateMatch}
-        primaryDisabled={isSubmitting}
-        primaryLoading={isSubmitting}
-        secondaryButtonText="Atrás"
-        onSecondaryClick={onPreviousStep}
-      />
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
+        <MatchNavigation
+          primaryButtonText={isSubmitting ? "Creando..." : "Crear y finalizar"}
+          onPrimaryClick={onCreateMatch}
+          primaryDisabled={isSubmitting}
+          primaryLoading={isSubmitting}
+          secondaryButtonText="Atrás"
+          onSecondaryClick={onPreviousStep}
+        />
+      </div>
     </section>
   );
 }

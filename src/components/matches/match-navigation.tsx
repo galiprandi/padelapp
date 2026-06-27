@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MatchNavigationProps {
   /** Texto del botón principal (Siguiente/Continuar/Crear) */
@@ -55,7 +56,10 @@ export function MatchNavigation({
     <Button
       type="button"
       variant={secondaryVariant}
-      className="w-full"
+      className={cn(
+        "w-full h-14 rounded-2xl font-black transition-all active:scale-[0.98]",
+        secondaryVariant === "ghost" ? "text-muted-foreground/60 hover:text-foreground" : ""
+      )}
       onClick={onSecondaryClick}
     >
       {secondaryButtonText}
@@ -63,19 +67,27 @@ export function MatchNavigation({
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <Button
         type="button"
-        className="w-full"
+        className="w-full h-14 rounded-2xl font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] text-base"
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
       >
-        {primaryLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {primaryLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
         {primaryButtonText}
       </Button>
 
       {secondaryIsLink && secondaryHref ? (
-        <Button asChild type="button" variant={secondaryVariant} className="w-full">
+        <Button
+          asChild
+          type="button"
+          variant={secondaryVariant}
+          className={cn(
+            "w-full h-14 rounded-2xl font-black transition-all active:scale-[0.98]",
+            secondaryVariant === "ghost" ? "text-muted-foreground/60 hover:text-foreground" : ""
+          )}
+        >
           <Link href={secondaryHref}>{secondaryButtonText}</Link>
         </Button>
       ) : (
