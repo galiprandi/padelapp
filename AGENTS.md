@@ -119,3 +119,16 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/match-navigation.tsx`
   - `src/components/matches/slot-display.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
+
+### ✅ Refactor de Turnos y Creación High-Fidelity (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **TurnCard V9 Premium**: Evolución a `rounded-[2rem]`, `backdrop-blur-md` y universalización del "Quick Join" para todas las listas.
+  - **Public Turn View Hero**: Nueva estética para `/t/[id]` con iluminación ambiental (`blur-[120px]`), cards `backdrop-blur-2xl` y visualización de cupos con bordes punteados sofisticados.
+  - **Tactile Turn Creation**: Rediseño de `/turnos/nuevo` con el estándar de burbuja, selectores táctiles con feedback `active:scale-[0.96]` y botones de acción de 80px (`h-20`).
+  - **V9 Metadata**: Unificación de micro-etiquetas con `tracking-[0.2em]` y `font-black` en todo el módulo de turnos.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/app/(app)/turnos/nuevo/page.tsx`
+  - `src/app/t/[id]/page.tsx`
