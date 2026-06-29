@@ -132,3 +132,26 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/match/new/page.tsx`
   - `src/components/matches/step-content.tsx`
   - `src/components/matches/slot-display.tsx`
+### ✅ Estandarización de UX e Inteligencia de Contexto (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Universal Quick Join**: `TurnCard` habilita la acción de unirse en todas las vistas (Dashboard y Lista de Turnos) para minimizar el "Time to Participation".
+  - **Match Time Intelligence**: `MatchResultCompact` prioriza la visualización de la hora para eventos del día actual, mejorando la relevancia contextual.
+  - **Ranking UI Polish**: Unificación de micro-tipografía y badges de efectividad (Win Rate) en componentes de estatus competitivo.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
+  - `src/app/p/[userId]/page.tsx`
+### ✅ Refactor de Turnos y Creación High-Fidelity (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **TurnCard V9 Premium**: Evolución a `rounded-[2rem]`, `backdrop-blur-md` y universalización del "Quick Join" para todas las listas.
+  - **Public Turn View Hero**: Nueva estética para `/t/[id]` con iluminación ambiental (`blur-[120px]`), cards `backdrop-blur-2xl` y visualización de cupos con bordes punteados sofisticados.
+  - **Tactile Turn Creation**: Rediseño de `/turnos/nuevo` con el estándar de burbuja, selectores táctiles con feedback `active:scale-[0.96]` y botones de acción de 80px (`h-20`).
+  - **V9 Metadata**: Unificación de micro-etiquetas con `tracking-[0.2em]` y `font-black` en todo el módulo de turnos.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/app/(app)/turnos/page.tsx`
+  - `src/app/(app)/turnos/nuevo/page.tsx`
+  - `src/app/t/[id]/page.tsx`
