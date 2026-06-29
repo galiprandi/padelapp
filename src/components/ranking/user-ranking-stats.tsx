@@ -61,11 +61,11 @@ export function UserRankingBanner({
             </div>
           </div>
           <div className="flex items-center gap-2 pt-1">
-            <Badge variant="success" className="font-black uppercase tracking-widest text-[9px] px-2.5 py-0.5">
+            <Badge variant="success" className="font-black uppercase tracking-[0.2em] text-[9px] px-2.5 py-0.5">
               Nivel {level}
             </Badge>
             {matchesPlayed > 0 && (
-              <Badge variant="outline" className="border-primary/20 bg-primary/5 font-black uppercase tracking-widest text-[9px] px-2.5 py-0.5">
+              <Badge variant="outline" className="border-primary/20 bg-primary/5 font-black uppercase tracking-[0.2em] text-[9px] px-2.5 py-0.5">
                 {winRate}% WR
               </Badge>
             )}
@@ -133,7 +133,9 @@ export function UserRankingCard({
             <div className="flex flex-col">
               <span className="text-[11px] font-black leading-none tracking-tight">{Math.round(score ?? 1000)} pts</span>
               {matchesPlayed > 0 && (
-                <span className="text-[11px] font-black uppercase tracking-[0.1em] text-primary/80 mt-0.5">{winRate}% WR</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary mt-1 px-1.5 py-0.5 rounded-lg bg-primary/5 border border-primary/10">
+                  {winRate}% WR
+                </span>
               )}
             </div>
           </div>

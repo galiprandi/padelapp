@@ -99,3 +99,9 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` y `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
   - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 48px para una lectura clara y profesional.
   - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.
+
+## 14. Estandarización de UX e Inteligencia de Contexto (V9+)
+- **Universal Quick Join**: `TurnCard` elimina la restricción de "Recomendados" para habilitar la acción de "Unirse" en cualquier vista de lista (Dashboard, Turnos), optimizando el flujo de inscripción.
+- **Match Time Context**: En eventos que ocurren en el día actual, `MatchResultCompact` prioriza la visualización de la hora por sobre la fecha para proporcionar información accionable inmediata.
+- **Unified Recent Form**: Se unifica el lenguaje visual de los puntos de "Recent Form" (W/L) en Dashboard, Ranking y Perfiles Públicos, utilizando el estándar de puntos minimalistas con sombras de resplandor para victorias.
+- **Micro-typography Consistency**: Los badges de Win Rate y nivel en banners competitivos se estandarizan con `tracking-[0.2em]` para alinearse con la jerarquía de metadatos V9.

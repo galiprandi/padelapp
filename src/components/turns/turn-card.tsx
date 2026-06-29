@@ -125,27 +125,25 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           </div>
         </div>
 
-        {/* Action Area */}
-        <div className="flex items-center justify-end min-w-[90px]">
-          {canJoin ? (
-            <button
-              onClick={handleQuickJoin}
-              disabled={isPending}
-              className="rounded-full bg-primary px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center w-full"
-            >
-              {isPending ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                "Unirse"
-              )}
-            </button>
-          ) : isJoined ? (
-            <div className="rounded-full bg-emerald-500/10 px-3.5 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-600 shrink-0 border border-emerald-500/20 flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Inscripto
-            </div>
-          ) : null}
-        </div>
+        {canJoin && (
+          <button
+            onClick={handleQuickJoin}
+            disabled={isPending}
+            className="rounded-full bg-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[80px]"
+          >
+            {isPending ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              "Unirse"
+            )}
+          </button>
+        )}
+
+        {isJoined && !isCreator && (
+          <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 shrink-0 border border-emerald-500/20">
+            Inscripto
+          </div>
+        )}
       </div>
     </Link>
   );

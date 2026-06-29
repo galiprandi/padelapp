@@ -120,6 +120,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/slot-display.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
 
+### ✅ Estandarización de UX e Inteligencia de Contexto (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Universal Quick Join**: `TurnCard` habilita la acción de unirse en todas las vistas (Dashboard y Lista de Turnos) para minimizar el "Time to Participation".
+  - **Match Time Intelligence**: `MatchResultCompact` prioriza la visualización de la hora para eventos del día actual, mejorando la relevancia contextual.
+  - **Ranking UI Polish**: Unificación de micro-tipografía y badges de efectividad (Win Rate) en componentes de estatus competitivo.
+- **Archivos relacionados**:
+  - `src/components/turns/turn-card.tsx`
+  - `src/components/matches/match-result-card.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
+  - `src/app/p/[userId]/page.tsx`
 ### ✅ Refactor de Turnos y Creación High-Fidelity (V9+)
 - **Estado**: Implementado
 - **Funcionalidades**:
