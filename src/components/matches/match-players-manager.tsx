@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
+import type { SlotValue } from "@/lib/match-types";
 import { PairPreview, PlayerPreviewProps } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
 import { renamePlaceholderAction, releaseMatchSlotAction, swapMatchPlayersAction } from "@/app/(app)/match/actions";
@@ -73,16 +74,22 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     setManageModal((prev) => ({ ...prev, open: false }));
   }
 
-  async function handleSave(nameToSave: string) {
+  async function handleSave(value: SlotValue) {
     if (!manageModal.playerId) {
       closeManageModal();
       return;
     }
 
+    if (value.kind === "user") {
+       showToast("Asignación de jugadores existentes no permitida en esta vista todavía.");
+       closeManageModal();
+       return;
+    }
+
     startTransition(async () => {
       const response = await renamePlaceholderAction({
         playerId: manageModal.playerId!,
-        displayName: nameToSave,
+        displayName: value.displayName,
       });
 
       if (response.status === "ok") {

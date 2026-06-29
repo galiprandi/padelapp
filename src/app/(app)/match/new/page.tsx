@@ -6,7 +6,7 @@ import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
 import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
-import type { TeamKey } from "@/lib/match-types";
+import type { TeamKey, SlotValue } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import appSettings from "@/config/app-settings.json";
@@ -58,20 +58,20 @@ export default function RegisterMatchPage() {
     setManageModal((previous) => ({ ...previous, open: false }));
   }
 
-  function handleSaveSlotName(nameToSave: string) {
-    const trimmed = nameToSave.trim();
-    if (trimmed.length === 0) {
-      handleCloseManageModal();
-      return;
-    }
-
+  function handleSaveSlot(value: SlotValue) {
     if (manageModal.team === "A" && manageModal.index === 0) {
       handleCloseManageModal();
       return;
     }
 
-    updateSlot(manageModal.team, manageModal.index, createPlaceholderSlot(trimmed));
+    updateSlot(manageModal.team, manageModal.index, value);
     handleCloseManageModal();
+  }
+
+  function handleReleaseSlot() {
+     const placeholderName = `Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`;
+     updateSlot(manageModal.team, manageModal.index, createPlaceholderSlot(placeholderName));
+     handleCloseManageModal();
   }
 
   async function handleShareIntent(nameToShare: string) {
@@ -136,14 +136,21 @@ export default function RegisterMatchPage() {
         onCreateMatch={handleCreateMatch}
       />
 
-      {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+      {formError ? (
+        <div className="fixed bottom-32 left-0 right-0 px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-4 backdrop-blur-md">
+            <p className="text-sm font-black text-destructive text-center uppercase tracking-widest">{formError}</p>
+          </div>
+        </div>
+      ) : null}
 
       <ManageSlotModal
         open={manageModal.open}
         slot={modalSlot}
         placeholderName={`Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`}
-        onSave={handleSaveSlotName}
+        onSave={handleSaveSlot}
         onShare={handleShareIntent}
+        onRelease={handleReleaseSlot}
         onClose={handleCloseManageModal}
       />
     </>

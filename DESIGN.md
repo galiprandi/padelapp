@@ -59,6 +59,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Unified Profile Action**: Se prefiere una única acción para actualizar todos los campos del perfil (alias, nivel) para reducir latencia y asegurar consistencia atómica.
 - **Organizer Management**: Las acciones críticas de gestión de partidos (intercambiar jugadores, liberar cupos, renombrar placeholders) están restringidas al creador del partido mediante validaciones tanto en el cliente (condicional UI) como en el servidor (Server Actions).
 - **Atomic Player Swap**: El intercambio de jugadores utiliza una transacción de base de datos con posiciones temporales para garantizar la integridad referencial y evitar conflictos de unicidad en el esquema.
+- **Frictionless Player Search**: El flujo de creación de partidos integra un buscador debounced que consulta `/api/players` en tiempo real. Esto permite a los organizadores encontrar y asignar perfiles verificados sin salir del modal de gestión de cupos, mejorando la integridad de los datos desde el origen.
 
 ## 10. Vistas de Invitación (Públicas)
 - **Shared Experience**: Las vistas bajo `/t/[id]` y `/m/[matchId]` están optimizadas para usuarios que no han iniciado sesión, utilizando el `PageHeader` centrado y micro-etiquetas de contexto claras ("Turno Abierto", "Invitación de Partido"). La vista de Turno (`/t/[id]`) implementa el estándar **V9 High-Fidelity**: iluminación ambiental (`blur-[100px]`, `bg-primary/20`), tarjetas con `backdrop-blur-2xl` y animaciones de entrada escalonadas para la lista de jugadores.
@@ -97,5 +98,5 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Match Flow Elevation (V9+)**: El proceso de creación de partidos evoluciona a una experiencia inmersiva multi-paso con:
   - **Ambient Depth**: Uso de iluminación radial (`bg-primary/10 blur-[100px]`) y cards `backdrop-blur-2xl` para separar el flujo del fondo.
   - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` y `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
-  - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 48px para una lectura clara y profesional.
+  - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 56px (`h-14`) para una lectura clara y profesional. Implementa badges de "Perfil Verificado" y estados de "Cupo pendiente" para mejorar la escaneabilidad.
   - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.

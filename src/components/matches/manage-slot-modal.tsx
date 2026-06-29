@@ -4,29 +4,21 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2, UserMinus, ArrowUpDown } from "lucide-react";
+import { Share2, UserMinus, ArrowUpDown, Search, UserPlus, Check, Loader2 } from "lucide-react";
+import { PlayerAvatar } from "@/components/players/player-avatar";
+import { cn } from "@/lib/utils";
+import type { SlotValue, PlayerOption } from "@/lib/match-types";
 
 interface ManageSlotModalProps {
   open: boolean;
   slot: SlotValue | null;
   placeholderName: string;
-  onSave: (name: string) => void;
+  onSave: (value: SlotValue) => void;
   onShare: (name: string) => void;
   onRelease?: () => void;
   onSwap?: () => void;
   onClose: () => void;
 }
-
-type SlotValue =
-  | { kind: "user"; player: PlayerOption }
-  | { kind: "placeholder"; displayName: string };
-
-type PlayerOption = {
-  id: string;
-  displayName: string;
-  email: string;
-  image: string | null;
-};
 
 export function ManageSlotModal({
   open,
@@ -39,6 +31,9 @@ export function ManageSlotModal({
   onClose,
 }: ManageSlotModalProps) {
   const [name, setName] = useState(placeholderName);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<PlayerOption[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,9 +45,37 @@ export function ManageSlotModal({
             ? slot.displayName
             : placeholderName;
       setName(initialName);
+      setSearchQuery("");
+      setSearchResults([]);
+      setIsSearching(false);
       setError(null);
     }
   }, [open, slot, placeholderName]);
+
+  // Debounced search
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const handler = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const response = await fetch(`/api/players?q=${encodeURIComponent(searchQuery)}`);
+        const data = await response.json();
+        if (data.players) {
+          setSearchResults(data.players);
+        }
+      } catch (err) {
+        console.error("Failed to fetch players", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
   if (!open) {
     return null;
@@ -65,7 +88,11 @@ export function ManageSlotModal({
       return;
     }
     setError(null);
-    onSave(trimmed);
+    onSave({ kind: "placeholder", displayName: trimmed });
+  }
+
+  function handleSelectPlayer(player: PlayerOption) {
+    onSave({ kind: "user", player });
   }
 
   async function handleShare() {
@@ -80,15 +107,15 @@ export function ManageSlotModal({
   const isUserSlot = slot?.kind === "user";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5 backdrop-blur-sm transition-all duration-300">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="w-full max-w-sm space-y-6 rounded-2xl border border-border/60 bg-card p-6 shadow-lg"
+        className="w-full max-w-sm space-y-6 rounded-[2.5rem] border border-border/40 bg-card/95 p-8 shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300"
       >
         <div className="flex items-center justify-between">
-          <h2 id="modal-title" className="text-xl font-black text-foreground">
+          <h2 id="modal-title" className="text-xl font-black text-foreground tracking-tight">
             Gestionar jugador
           </h2>
           <div className="flex gap-1">
@@ -97,11 +124,11 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-primary hover:bg-primary/10 rounded-xl h-9 font-black uppercase tracking-widest text-[10px]"
+                className="text-primary hover:bg-primary/10 rounded-xl h-9 font-black uppercase tracking-widest text-[9px] active:scale-95 transition-all"
                 onClick={onSwap}
               >
-                <ArrowUpDown className="mr-2 h-3.5 w-3.5" />
-                Intercambiar
+                <ArrowUpDown className="mr-1.5 h-3 w-3" />
+                Mover
               </Button>
             )}
             {onRelease && (
@@ -109,47 +136,117 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-xl h-9 font-black uppercase tracking-widest text-[10px]"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-xl h-9 font-black uppercase tracking-widest text-[9px] active:scale-95 transition-all"
                 onClick={onRelease}
               >
-                <UserMinus className="mr-2 h-3.5 w-3.5" />
-                Liberar
+                <UserMinus className="mr-1.5 h-3 w-3" />
+                Quitar
               </Button>
             )}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <Label htmlFor="slot-name">Nombre del jugador</Label>
-          <div className="flex items-center gap-2">
-            <Input
-              id="slot-name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Ej: Diego Morales"
-              autoSelect
-              disabled={isUserSlot}
-            />
-            {!isUserSlot && (
-              <Button type="button" size="icon" variant="ghost" aria-label="Compartir enlace" onClick={handleShare}>
-                <Share2 className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-          {isUserSlot && (
-            <p className="text-xs text-muted-foreground">
-              El jugador ya se unió. Podés liberar el cupo para que otro se anote.
-            </p>
+        <div className="space-y-6">
+          {/* Buscar Jugador */}
+          {!isUserSlot && (
+            <div className="space-y-4">
+              <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">
+                Buscar en la plataforma
+              </Label>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Nombre o email..."
+                  className="h-14 pl-11 pr-4 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all text-sm font-medium shadow-sm"
+                />
+                {isSearching && (
+                  <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
+                )}
+              </div>
+
+              {searchResults.length > 0 && (
+                <div className="max-h-48 overflow-y-auto rounded-2xl border border-border/40 bg-background/30 p-2 space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                  {searchResults.map((player) => (
+                    <button
+                      key={player.id}
+                      onClick={() => handleSelectPlayer(player)}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/10 transition-all text-left active:scale-[0.98]"
+                    >
+                      <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-black truncate">{player.displayName}</p>
+                        <p className="text-[10px] font-medium text-muted-foreground truncate opacity-60">{player.email}</p>
+                      </div>
+                      <UserPlus className="h-4 w-4 text-primary" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+
+          {/* Nombre Manual / Placeholder */}
+          <div className="space-y-4">
+            <Label htmlFor="slot-name" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">
+              {isUserSlot ? "Jugador Confirmado" : "O asignar nombre manual"}
+            </Label>
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Input
+                  id="slot-name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Ej: Diego Morales"
+                  autoSelect
+                  disabled={isUserSlot}
+                  className={cn(
+                    "h-14 px-5 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all text-sm font-medium shadow-sm",
+                    isUserSlot && "border-primary/20 bg-primary/5 text-primary font-black"
+                  )}
+                />
+                {isUserSlot && <Check className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />}
+              </div>
+              {!isUserSlot && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  aria-label="Compartir enlace"
+                  onClick={handleShare}
+                  className="h-14 w-14 rounded-2xl border-border/40 text-primary active:scale-95 transition-all"
+                >
+                  <Share2 className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
+            {isUserSlot && (
+              <p className="text-[10px] font-medium text-muted-foreground/60 leading-relaxed px-1">
+                Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.
+              </p>
+            )}
+            {error ? <p className="text-[11px] font-black text-destructive px-1 uppercase tracking-wider">{error}</p> : null}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-3 pt-2">
-          <Button type="button" className="w-full h-12 rounded-xl font-black text-base" onClick={handleAccept}>
-            Guardar cambios
-          </Button>
-          <Button type="button" variant="ghost" className="w-full h-11 rounded-xl font-black text-muted-foreground uppercase tracking-widest text-[11px]" onClick={onClose}>
-            Cancelar
+        <div className="flex flex-col gap-3 pt-4">
+          {!isUserSlot && (
+            <Button
+              type="button"
+              className="w-full h-16 rounded-[1.5rem] font-black text-base shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
+              onClick={handleAccept}
+            >
+              Guardar nombre
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full h-12 rounded-xl font-black text-muted-foreground uppercase tracking-[0.2em] text-[11px] active:scale-[0.98] transition-all"
+            onClick={onClose}
+          >
+            {isUserSlot ? "Cerrar" : "Cancelar"}
           </Button>
         </div>
       </div>
