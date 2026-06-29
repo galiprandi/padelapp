@@ -120,6 +120,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/slot-display.tsx`
   - `src/app/(app)/match/[matchId]/page.tsx`
 
+### ✅ Creación de Partidos V9+ con Búsqueda Integrada
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Frictionless Search**: Integración de buscador de jugadores en `ManageSlotModal` que consulta `/api/players` con debounce de 300ms.
+  - **High-Fidelity UI**: Elevación de los pasos de creación a estándares V9+ con `backdrop-blur-2xl`, `rounded-[2.5rem]` y animaciones sincronizadas.
+  - **V9+ Slots**: Rediseño de `SlotDisplay` con avatares de 56px, badges de verificación y visualización premium del organizador ("Tú").
+  - **Tactile Score Entry**: Refinamiento del paso de carga de marcador con feedback visual superior y cuadrículas táctiles optimizadas.
+- **Archivos relacionados**:
+  - `src/components/matches/manage-slot-modal.tsx`
+  - `src/app/(app)/match/new/page.tsx`
+  - `src/components/matches/step-content.tsx`
+  - `src/components/matches/slot-display.tsx`
 ### ✅ Estandarización de UX e Inteligencia de Contexto (V9+)
 - **Estado**: Implementado
 - **Funcionalidades**:
