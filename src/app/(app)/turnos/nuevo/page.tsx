@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/page-header";
 import { levelOptions } from "@/lib/mock-data";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, Zap, Info, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const DURATION_OPTIONS = [
@@ -72,11 +72,12 @@ export default function NewTurnPage() {
   };
 
   return (
-    <div className="relative flex flex-col gap-6 pb-10 min-h-screen">
+    <div className="relative flex flex-col gap-6 pb-20 min-h-screen">
       {/* Ambient Lighting */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
+      <div className="absolute top-[40%] right-0 w-64 h-64 bg-primary/5 blur-[120px] -z-10 rounded-full" />
 
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
         <PageHeader
           size="lg"
           title="Nuevo turno"
@@ -86,56 +87,62 @@ export default function NewTurnPage() {
         />
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
-          <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-2xl shadow-2xl">
-            <CardHeader>
-              <CardTitle className="text-xl font-black">Detalles principales</CardTitle>
-              <CardDescription className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Información visible para quienes reciban el link.</CardDescription>
+          <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-2xl shadow-2xl overflow-hidden">
+            <CardHeader className="pb-8 pt-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="h-4 w-4 text-primary fill-current" />
+                <CardTitle className="text-2xl font-black tracking-tight">Detalles del partido</CardTitle>
+              </div>
+              <CardDescription className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Información esencial para tus invitados.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8 pb-10">
-              <div className="space-y-3">
-                <Label htmlFor="club" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">
+            <CardContent className="space-y-10 pb-12">
+              <div className="space-y-4">
+                <Label htmlFor="club" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
                   Club y cancha
                 </Label>
                 <Input
                   id="club"
-                  placeholder="Padel City · Cancha 3"
+                  placeholder="Ej: Padel City · Cancha 3"
                   value={formData.club}
                   onChange={(e) => setFormData({ ...formData, club: e.target.value })}
                   required
-                  className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all text-base font-medium px-6"
+                  className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all text-lg font-bold px-6 placeholder:text-muted-foreground/30"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <Label htmlFor="date" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Fecha</Label>
+                <div className="space-y-4">
+                  <Label htmlFor="date" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Fecha</Label>
                   <Input
                     id="date"
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     required
-                    className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all font-medium px-4"
+                    className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all font-bold px-5"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="time" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Hora</Label>
+                <div className="space-y-4">
+                  <Label htmlFor="time" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Hora</Label>
                   <Input
                     id="time"
                     type="time"
                     value={formData.time}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                     required
-                    className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all font-medium px-4"
+                    className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all font-bold px-5"
                   />
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Duración</Label>
-                <div className="grid grid-cols-3 gap-2">
+              <div className="space-y-5">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                  <Clock className="h-3 w-3" />
+                  Duración del turno
+                </Label>
+                <div className="grid grid-cols-3 gap-3">
                   {DURATION_OPTIONS.map((option) => {
                     const isSelected = formData.duration === option.value;
                     return (
@@ -144,9 +151,9 @@ export default function NewTurnPage() {
                         type="button"
                         onClick={() => setFormData({ ...formData, duration: option.value })}
                         className={cn(
-                          "flex items-center justify-center py-4 rounded-2xl border transition-all text-sm font-black active:scale-[0.98]",
+                          "flex items-center justify-center py-4 rounded-[1.25rem] border transition-all text-sm font-black active:scale-[0.96]",
                           isSelected
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            ? "bg-primary border-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]"
                             : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                         )}
                       >
@@ -157,9 +164,12 @@ export default function NewTurnPage() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Jugadores</Label>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-5">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                  <Check className="h-3 w-3" />
+                  Cupos totales
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
                   {PLAYER_OPTIONS.map((option) => {
                     const isSelected = formData.maxPlayers === option.value;
                     return (
@@ -168,23 +178,25 @@ export default function NewTurnPage() {
                         type="button"
                         onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
                         className={cn(
-                          "flex items-center justify-between px-5 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
+                          "flex items-center justify-between px-6 py-5 rounded-[1.25rem] border transition-all text-sm font-black text-left active:scale-[0.96]",
                           isSelected
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            ? "bg-primary border-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]"
                             : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                         )}
                       >
                         <span>{option.label}</span>
-                        {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                        {isSelected && <Check className="h-5 w-5 shrink-0 stroke-[3]" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Nivel sugerido</Label>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-5">
+                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                  Nivel sugerido
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
                   {levelOptions.map((option) => {
                     const isSelected = formData.suggestedLevel === option.value;
                     return (
@@ -193,50 +205,57 @@ export default function NewTurnPage() {
                         type="button"
                         onClick={() => setFormData({ ...formData, suggestedLevel: option.value })}
                         className={cn(
-                          "flex items-center justify-between px-5 py-4 rounded-2xl border transition-all text-sm font-black text-left active:scale-[0.98]",
+                          "flex items-center justify-between px-6 py-5 rounded-[1.25rem] border transition-all text-sm font-black text-left active:scale-[0.96]",
                           isSelected
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            ? "bg-primary border-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]"
                             : "bg-background/40 border-border/40 text-muted-foreground hover:bg-background/60"
                         )}
                       >
                         <span className="truncate">{option.label}</span>
-                        {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                        {isSelected && <Check className="h-5 w-5 shrink-0 stroke-[3]" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="notes" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Notas opcionales</Label>
+              <div className="space-y-4">
+                <Label htmlFor="notes" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                  <Info className="h-3 w-3" />
+                  Notas adicionales
+                </Label>
                 <Textarea
                   id="notes"
-                  placeholder="Traer pelotas nuevas. Punto de encuentro en recepción."
+                  placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="min-h-[120px] rounded-[2rem] bg-background/50 border-border/40 focus:bg-background transition-all resize-none px-6 py-4"
+                  className="min-h-[140px] rounded-[2rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all resize-none px-6 py-6 text-base font-medium placeholder:text-muted-foreground/30"
                 />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both">
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both px-2">
           <Button
             type="submit"
-            className="w-full rounded-2xl h-16 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]"
+            className="w-full rounded-[2rem] h-20 text-xl font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98] relative overflow-hidden group"
             size="lg"
             disabled={isPending}
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-foreground/0 via-primary-foreground/10 to-primary-foreground/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-7 w-7 animate-spin" />
+                <Loader2 className="mr-3 h-8 w-8 animate-spin" />
                 Generando link...
               </>
             ) : (
-              "Generar link compartible"
+              "Crear turno y compartir link"
             )}
           </Button>
+          <p className="text-center mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">
+            Al confirmar, se generará una URL pública para que cualquiera pueda anotarse.
+          </p>
         </div>
       </form>
     </div>

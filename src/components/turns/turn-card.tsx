@@ -1,9 +1,8 @@
-
 "use client";
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Clock, Users, Trophy, Loader2, UserPlus } from "lucide-react";
+import { Clock, Users, Trophy, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
@@ -67,9 +66,10 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           isPending && "opacity-70 pointer-events-none"
         )}
       >
+        {/* Date Bubble */}
         <div
           className={cn(
-            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[60px] relative shadow-md shadow-primary/20",
+            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[64px] h-[64px] relative shadow-md shadow-primary/20 transition-transform group-hover:scale-105",
             isRecommended ? "bg-primary/25" : "bg-primary/15"
           )}
         >
@@ -91,33 +91,34 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           )}
         </div>
 
+        {/* Content */}
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-black text-foreground">{turn.club}</p>
+            <p className="truncate font-black text-foreground text-base tracking-tight">{turn.club}</p>
             <div className="flex items-center gap-1.5 shrink-0">
               {isCreator && (
-                <span className="rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
+                <span className="rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest">
                   Organizador
                 </span>
               )}
               {turn.status === "FULL" && (
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
+                <span className="rounded-full bg-muted px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 border border-border/40">
                   Completo
                 </span>
               )}
             </div>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-            <span className="flex items-center gap-1">
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+            <span className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 text-primary/40" />
               {timeStr}
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <Users className="h-3.5 w-3.5 text-primary/40" />
               {turn.players.length}/{turn.maxPlayers}
             </span>
-            <span className="flex items-center gap-1 text-primary/60">
+            <span className="flex items-center gap-1.5 text-primary/60">
               <Trophy className="h-3.5 w-3.5" />
               {levelLabel}
             </span>
