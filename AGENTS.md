@@ -155,3 +155,15 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/turnos/page.tsx`
   - `src/app/(app)/turnos/nuevo/page.tsx`
   - `src/app/t/[id]/page.tsx`
+
+### ✅ Elevación de Marketing y Onboarding (V9+ High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Landing Page Elevation**: Rediseño de la página de inicio (`/`) con iluminación ambiental (`blur-[100px]`), contenedores `backdrop-blur-2xl` y botones táctiles de 64px (`h-16`).
+  - **Login Flow Polish**: La página de acceso (`/login`) adopta el estándar de alta fidelidad con micro-tipografía V9 (`tracking-[0.2em]`) y estética glassmorphic.
+  - **Install Experience**: Refactor de la guía de instalación (`/install`) utilizando tarjetas de pasos `rounded-[1.5rem]` y jerarquía visual optimizada para PWA.
+  - **Bubble Consistency**: Aplicación sistemática de `rounded-[2.5rem]` en contenedores principales de marketing para una primera impresión coherente.
+- **Archivos relacionados**:
+  - `src/app/page.tsx`
+  - `src/app/login/page.tsx`
+  - `src/app/install/page.tsx`
