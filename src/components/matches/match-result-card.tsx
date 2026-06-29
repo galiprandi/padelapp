@@ -138,19 +138,24 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
       ? effectiveDate
       : new Date(effectiveDate)
     : null;
+  const isTodayDate = parsedDate ? isToday(parsedDate) : false;
+  const isTomorrowDate = parsedDate ? isTomorrow(parsedDate) : false;
+
   const formattedDate = parsedDate && !Number.isNaN(parsedDate.getTime())
-    ? new Intl.DateTimeFormat("es-AR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "2-digit",
-      }).format(parsedDate)
+    ? isTodayDate
+      ? parsedDate.toLocaleTimeString("es-AR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : new Intl.DateTimeFormat("es-AR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        }).format(parsedDate)
     : null;
   const matchDetailUrl = detailUrl ?? `/match/${match.id}`;
   const statusLabel = (match.status ?? "PENDING").toString();
   const isConfirmed = statusLabel === "CONFIRMED";
-
-  const isTodayDate = parsedDate ? isToday(parsedDate) : false;
-  const isTomorrowDate = parsedDate ? isTomorrow(parsedDate) : false;
 
   const needsConfirmation = viewerId &&
     match.status !== "CONFIRMED" &&

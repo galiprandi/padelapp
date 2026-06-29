@@ -100,11 +100,6 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
                   Organizador
                 </span>
               )}
-              {isJoined && !isCreator && (
-                <span className="rounded-full bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
-                  Inscripto
-                </span>
-              )}
               {turn.status === "FULL" && (
                 <span className="rounded-full bg-muted px-2 py-0.5 text-[8px] font-black uppercase tracking-widest">
                   Completo
@@ -129,7 +124,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           </div>
         </div>
 
-        {isRecommended && canJoin && (
+        {canJoin && (
           <button
             onClick={handleQuickJoin}
             disabled={isPending}
@@ -143,7 +138,7 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
           </button>
         )}
 
-        {isRecommended && isJoined && (
+        {isJoined && !isCreator && (
           <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 shrink-0 border border-emerald-500/20">
             Inscripto
           </div>

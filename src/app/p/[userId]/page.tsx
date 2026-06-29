@@ -152,18 +152,16 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
 
           {recentForm.length > 0 && (
             <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-card/40 border border-border/40 backdrop-blur-md shadow-sm">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mr-2">Forma:</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mr-2">Forma reciente:</span>
               <div className="flex gap-1.5">
                 {recentForm.map((result, i) => (
                   <div
                     key={i}
                     className={cn(
-                      "h-3.5 w-3.5 rounded-full flex items-center justify-center text-[7px] font-black shadow-sm",
-                      result === "W" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
+                      "h-2 w-2 rounded-full shadow-sm",
+                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
                     )}
-                  >
-                    {result}
-                  </div>
+                  />
                 ))}
               </div>
             </div>
@@ -195,7 +193,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
           </div>
 
           <div className="flex flex-col gap-3 rounded-3xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
               <TrendingUp className="h-3 w-3 text-primary" />
               Forma Reciente
             </div>
@@ -205,17 +203,13 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
                   <div
                     key={i}
                     className={cn(
-                      "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black shadow-sm transition-transform hover:scale-110",
-                      result === 'W'
-                        ? "bg-emerald-500 text-white shadow-emerald-500/20"
-                        : "bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 shadow-zinc-500/10"
+                      "h-2 w-2 rounded-full",
+                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
                     )}
-                  >
-                    {result}
-                  </div>
+                  />
                 ))
               ) : (
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30">—</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">—</span>
               )}
             </div>
           </div>
