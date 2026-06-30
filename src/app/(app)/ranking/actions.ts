@@ -2,13 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { getMatchWinner } from "@/lib/utils";
 
 /**
- * Recalculates the ranking for all users based on confirmed matches.
+ * Recalculates the ranking for all users based on confirmed matches and attendance.
  * Formula from specs/ranking.md:
- * score = 1000 + (wins * 15) + (losses * 0) + (streak * 5)
+ * score = 1000 + (wins * 15) + (streak * 5) + (setsWonBonus)
  * Bonus: +2 per set won in victory, +1 per set won in loss.
- * Penalty: -25 for no-show (not implemented yet as attendance is not tracked).
+ * Attendance: Ratio of confirmed results vs total matches played.
  * Time attenuation: >60 days factor 0.5, >120 days factor 0.25.
  */
 export async function recalculateRankingAction() {
@@ -16,102 +17,104 @@ export async function recalculateRankingAction() {
     // 1. Get all users
     const users = await prisma.user.findMany();
 
-    // 2. Get all confirmed matches with their players
-    const confirmedMatches = await prisma.match.findMany({
-      where: { status: "CONFIRMED" },
-      include: {
-        players: {
-          include: {
-            user: true,
-          },
-        },
+    // 2. Get all match players to calculate stats and attendance
+    // We include all matches where the user was a player to calculate attendanceScore
+    const allMatchPlayers = await prisma.matchPlayer.findMany({
+      where: {
+        userId: { not: null }
       },
-      orderBy: { createdAt: "asc" },
+      include: {
+        match: true,
+      },
+      orderBy: {
+        match: {
+          date: "asc"
+        }
+      }
     });
 
     const userStats = new Map<string, {
-      score: number;
       wins: number;
       losses: number;
       streak: number;
       matchesPlayed: number;
       lastMatchAt: Date | null;
-      setsWon: number;
+      setsWonBonus: number;
+      confirmedMatchesCount: number;
+      totalMatchesCount: number;
     }>();
 
     // Initialize stats for all users
     users.forEach(user => {
       userStats.set(user.id, {
-        score: 1000,
         wins: 0,
         losses: 0,
         streak: 0,
         matchesPlayed: 0,
         lastMatchAt: null,
-        setsWon: 0,
+        setsWonBonus: 0,
+        confirmedMatchesCount: 0,
+        totalMatchesCount: 0,
       });
     });
 
-    // 3. Process matches to calculate stats
-    confirmedMatches.forEach(match => {
-      if (!match.score) return;
+    // 3. Process match players
+    allMatchPlayers.forEach(mp => {
+      if (!mp.userId) return;
+      const stats = userStats.get(mp.userId);
+      if (!stats) return;
 
-      // Parse score: "6-4, 3-6, 10-7"
-      const sets = match.score.split(",").map(s => s.trim().split("-").map(Number));
-      let teamASets = 0;
-      let teamBSets = 0;
+      const match = mp.match;
 
-      sets.forEach(([scoreA, scoreB]) => {
-        if (scoreA > scoreB) teamASets++;
-        else if (scoreB > scoreA) teamBSets++;
-      });
+      // Attendance tracking: any match they were part of and has a score/is confirmed
+      // or simply any match they joined.
+      stats.totalMatchesCount++;
+      if (mp.resultConfirmed) {
+        stats.confirmedMatchesCount++;
+      }
 
-      const winningTeam = teamASets > teamBSets ? "A" : "B";
-
-      match.players.forEach(player => {
-        if (!player.userId) return;
-
-        const stats = userStats.get(player.userId);
-        if (!stats) return;
-
+      // Competitive stats only for CONFIRMED matches
+      if (match.status === "CONFIRMED" && match.score) {
         stats.matchesPlayed++;
-        stats.lastMatchAt = match.createdAt;
-
-        const playerTeam = player.position < 2 ? "A" : "B";
-        const isWinner = playerTeam === winningTeam;
-        const playerSetsWon = playerTeam === "A" ? teamASets : teamBSets;
-
-        if (isWinner) {
-          stats.wins++;
-          stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
-        } else {
-          stats.losses++;
-          stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
+        if (!stats.lastMatchAt || match.date > stats.lastMatchAt) {
+          stats.lastMatchAt = match.date;
         }
-        stats.setsWon += playerSetsWon;
-      });
+
+        const winningTeam = getMatchWinner(match.score);
+        if (winningTeam) {
+          const playerTeam = mp.position < 2 ? "A" : "B";
+          const isWinner = playerTeam === winningTeam;
+
+          // Parse sets for bonus
+          const sets = match.score.split(",").map(s => s.trim().split("-").map(Number));
+          let setsWon = 0;
+          sets.forEach(([scoreA, scoreB]) => {
+            if (playerTeam === "A" && scoreA > scoreB) setsWon++;
+            if (playerTeam === "B" && scoreB > scoreA) setsWon++;
+          });
+
+          if (isWinner) {
+            stats.wins++;
+            stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
+            stats.setsWonBonus += setsWon * 2;
+          } else {
+            stats.losses++;
+            stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
+            stats.setsWonBonus += setsWon * 1;
+          }
+        }
+      }
     });
 
-    // 4. Calculate final scores with time attenuation
+    // 4. Calculate final scores and apply tie-breaking
     const now = new Date();
     const SIXTY_DAYS = 60 * 24 * 60 * 60 * 1000;
     const ONE_HUNDRED_TWENTY_DAYS = 120 * 24 * 60 * 60 * 1000;
 
     const ranking = Array.from(userStats.entries()).map(([userId, stats]) => {
-      let score = 1000 + (stats.wins * 15) + (stats.streak * 5);
+      let score = 1000 + (stats.wins * 15) + (stats.streak * 5) + stats.setsWonBonus;
 
-      // Bonus sets won
-      // Simplified: +2 per set won in victory, +1 in loss
-      // But we already have total setsWon.
-      // Let's refine: (setsWon in victories * 2) + (setsWon in losses * 1)
-      // Since we didn't track them separately above, let's just use a middle ground or re-calculate.
-      // For MVP, let's just add setsWon * 1.5 as an approximation or just leave as is.
-      // Actually, let's stick to the spec as much as possible.
-      // Recalculating sets won based on win/loss:
-      // If win, they won at least 2 sets (usually).
-      score += stats.setsWon * 1.5; // Approximation
-
-      // Time attenuation
+      // Time attenuation based on lastMatchAt
       if (stats.lastMatchAt) {
         const diff = now.getTime() - stats.lastMatchAt.getTime();
         if (diff > ONE_HUNDRED_TWENTY_DAYS) {
@@ -121,15 +124,33 @@ export async function recalculateRankingAction() {
         }
       }
 
+      const attendanceScore = stats.totalMatchesCount > 0
+        ? stats.confirmedMatchesCount / stats.totalMatchesCount
+        : 1.0;
+
       return {
         userId,
         score,
+        attendanceScore,
+        wins: stats.wins,
+        lastMatchAt: stats.lastMatchAt,
         stats,
       };
     });
 
-    // 5. Sort and assign positions
-    ranking.sort((a, b) => b.score - a.score);
+    // 5. Sort based on tie-breaking hierarchy:
+    // 1) score (desc)
+    // 2) attendanceScore (desc)
+    // 3) wins (desc)
+    // 4) lastMatchAt (desc)
+    ranking.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (b.attendanceScore !== a.attendanceScore) return b.attendanceScore - a.attendanceScore;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      if (!a.lastMatchAt) return 1;
+      if (!b.lastMatchAt) return -1;
+      return b.lastMatchAt.getTime() - a.lastMatchAt.getTime();
+    });
 
     // 6. Update database
     await prisma.$transaction(
@@ -137,6 +158,9 @@ export async function recalculateRankingAction() {
         const user = users.find(u => u.id === item.userId);
         const oldPosition = user?.rankingPosition;
         const newPosition = index + 1;
+
+        // If it's a new user (no oldPosition) or first time ranking, delta is 0
+        // Otherwise calculate change. Note: position 1 is better than 5, so old - new.
         const delta = oldPosition ? oldPosition - newPosition : 0;
 
         return prisma.user.update({
@@ -149,6 +173,7 @@ export async function recalculateRankingAction() {
             losses: item.stats.losses,
             matchesPlayed: item.stats.matchesPlayed,
             lastMatchAt: item.stats.lastMatchAt,
+            attendanceScore: item.attendanceScore,
           },
         });
       })

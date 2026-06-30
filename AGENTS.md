@@ -103,7 +103,7 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - **Public Invitation Hero**: Nueva estética para invitaciones públicas (`/m/[id]`) con ambient lighting (`blur-[100px]`), cards `backdrop-blur-2xl` y tipografía V9 (`tracking-[0.2em]`).
   - **Frictionless Join Flow**: Rediseño de la vista de unirse a cupo directo (`/j/[id]`) con cards táctiles de alto impacto, jerarquía visual premium y botones de acción de 64px (`h-16`).
   - **Visual Sync**: Unificación estética entre el detalle de partido interno y la invitación pública para una experiencia de marca coherente.
-  - **Tactile Feedback**: Implementación de animaciones de entrada (`duration-1000`) y estados `active:scale-[0.98]` en todos los puntos de contacto de invitación.
+  - **Tactile Feedback**: Implementación de animaciones de entrada (`duration-1000`) e estados `active:scale-[0.98]` en todos los puntos de contacto de invitación.
 - **Archivos relacionados**:
   - `src/app/m/[matchId]/page.tsx`
   - `src/app/j/[playerId]/page.tsx`
@@ -143,6 +143,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/matches/match-result-card.tsx`
   - `src/components/ranking/user-ranking-stats.tsx`
   - `src/app/p/[userId]/page.tsx`
+
+### ✅ Elevación de Ranking y Reputación V9+ (High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Ranking Formula Refinement**: Implementación de bonos por sets ganados (+2 en victoria, +1 en derrota) y sistema de desempate multi-nivel (Score > Asistencia > Victorias > Fecha).
+  - **Reputation Intelligence**: Introducción del `attendanceScore` basado en la ratio de confirmaciones sobre partidos totales, visualizado como porcentaje de reputación.
+  - **V9 UI Polish**: Inclusión de indicadores de "Última actualización", badges de reputación con icono `ShieldCheck` y animaciones sincronizadas (`1000ms duration`).
+  - **Visual Hierarchy**: Refinamiento de `UserRankingBanner` y `UserRankingCard` para integrar métricas de asistencia sin sobrecargar la interfaz.
+- **Archivos relacionados**:
+  - `src/app/(app)/ranking/actions.ts`
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
 ### ✅ Refactor de Turnos y Creación High-Fidelity (V9+)
 - **Estado**: Implementado
 - **Funcionalidades**:

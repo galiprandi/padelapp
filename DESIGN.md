@@ -43,9 +43,12 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Conversión Automática**: Al completar un turno (4 jugadores), el organizador puede disparar `convertTurnToMatchAction`, que hereda el club, los jugadores y las posiciones, marcando el turno como `COMPLETED`.
 - **Pre-llenado de Formulario**: El hook `useMatchForm` soporta la inicialización mediante `turnId` para mantener la flexibilidad si se desea ajustar el partido antes de crearlo.
 
-## 7. Sistema de Ranking (V1)
-- **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWon * 1.5)`.
-- **Atenuación**: Los puntos se reducen si el usuario no tiene actividad en 60 o 120 days.
+## 7. Sistema de Ranking (V9+ High-Fidelity)
+- **Fórmula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWonBonus)`.
+- **Sets Won Bonus**: +2 puntos por set ganado en partidos ganados; +1 punto por set ganado en partidos perdidos.
+- **Jerarquía de Desempate**: 1) Score, 2) Reputación (Attendance), 3) Victorias totales, 4) Recencia (lastMatchAt).
+- **Reputación (Attendance)**: Ratio de confirmaciones de resultado sobre el total de participaciones. Se visualiza como un porcentaje con el icono `ShieldCheck`.
+- **Atenuación Temporal**: Los puntos se reducen (x0.5 o x0.25) si el usuario no tiene actividad en 60 o 120 días respectivamente para incentivar la participación continua.
 - **Delta**: Se calcula comparando la `rankingPosition` anterior con la nueva tras un recalculado.
 - **Confirmación Cruzada**: Para que un resultado pase a `CONFIRMED`, al menos un jugador de cada equipo debe confirmarlo. Esto previene cargas unilaterales erróneas.
 
@@ -97,7 +100,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 - **Status Visibility**: Las confirmaciones de jugadores en las vistas de invitación se resaltan con iconos de `CheckCircle2` animados y badges de nivel para proyectar un entorno competitivo y organizado desde el primer contacto.
 - **Match Flow Elevation (V9+)**: El proceso de creación de partidos evoluciona a una experiencia inmersiva multi-paso con:
   - **Ambient Depth**: Uso de iluminación radial (`bg-primary/10 blur-[100px]`) y cards `backdrop-blur-2xl` para separar el flujo del fondo.
-  - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` y `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
+  - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` e `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
   - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 56px (`h-14`) para una lectura clara y profesional. Implementa badges de "Perfil Verificado" y estados de "Cupo pendiente" para mejorar la escaneabilidad.
   - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.
 
