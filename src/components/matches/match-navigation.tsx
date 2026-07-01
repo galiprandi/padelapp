@@ -57,7 +57,7 @@ export function MatchNavigation({
       type="button"
       variant={secondaryVariant}
       className={cn(
-        "w-full h-14 rounded-2xl font-black transition-all active:scale-[0.98]",
+        "w-full h-14 rounded-2xl font-black",
         secondaryVariant === "ghost" ? "text-muted-foreground/60 hover:text-foreground" : ""
       )}
       onClick={onSecondaryClick}
@@ -70,7 +70,7 @@ export function MatchNavigation({
     <div className="flex flex-col gap-4">
       <Button
         type="button"
-        className="w-full h-14 rounded-2xl font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] text-base"
+        className="w-full h-14 rounded-2xl font-black shadow-lg shadow-primary/20 text-base"
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
       >
@@ -84,7 +84,7 @@ export function MatchNavigation({
           type="button"
           variant={secondaryVariant}
           className={cn(
-            "w-full h-14 rounded-2xl font-black transition-all active:scale-[0.98]",
+            "w-full h-14 rounded-2xl font-black",
             secondaryVariant === "ghost" ? "text-muted-foreground/60 hover:text-foreground" : ""
           )}
         >

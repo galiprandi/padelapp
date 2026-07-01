@@ -129,7 +129,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
         <Button
           type="submit"
           size="lg"
-          className="w-full h-16 rounded-[2rem] font-black text-lg shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
+          className="w-full h-16 rounded-[2rem] font-black text-lg shadow-xl shadow-primary/20"
           disabled={isSaving}
         >
           {isSaving ? (
@@ -141,7 +141,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
         <Button
           type="button"
           variant="ghost"
-          className="w-full h-12 rounded-xl text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] active:scale-95"
+          className="w-full h-12 rounded-xl text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px]"
           asChild
         >
           <Link href="/me">Cancelar y volver</Link>
