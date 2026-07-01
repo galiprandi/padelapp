@@ -180,6 +180,18 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/login/page.tsx`
   - `src/app/install/page.tsx`
 
+### ✅ Elevación de Invitaciones y Detalle de Partido (V9+ High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Internal Match Elevation**: Refactor de la vista interna de partido (`/match/[matchId]`) con iluminación ambiental de `blur-[120px]`, contenedores `rounded-[2.5rem]` y animaciones sincronizadas.
+  - **Public Invitation Polish**: La vista pública de invitación (`/m/[matchId]`) adopta el estándar High-Fidelity con micro-tipografía V9 (`tracking-[0.2em]`) y jerarquía de metadatos superior.
+  - **Direct Join Flow V9**: Elevación de la vista de unirse a cupo (`/j/[playerId]`) con tarjetas de equipo prominentes, botones táctiles de alto impacto y feedback visual mejorado.
+  - **Typography Audit**: Estandarización global de micro-etiquetas al formato `text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50`.
+- **Archivos relacionados**:
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/app/m/[matchId]/page.tsx`
+  - `src/app/j/[playerId]/page.tsx`
+
 ### ✅ Pulido de Interfaz y Consistencia Visual (V9+ High-Fidelity)
 - **Estado**: Implementado
 - **Funcionalidades**:

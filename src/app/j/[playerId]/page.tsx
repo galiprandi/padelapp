@@ -108,7 +108,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   return (
     <main className="relative mx-auto min-h-screen w-full max-w-md flex-col gap-12 px-6 py-10 pb-48 overflow-hidden animate-in fade-in duration-1000">
       {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[100px] -z-10 rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
 
       <PageHeader
         title={`Invitación a jugar`}
@@ -123,7 +123,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
         }
       />
 
-      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 blur-[80px] rounded-full pointer-events-none opacity-40" />
 
         <CardHeader className="relative z-10 pb-4 pt-8 text-center border-b border-border/20 bg-muted/10">
@@ -136,7 +136,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             </div>
             <div>
               <p className="text-xl font-black tracking-tight">{match.sets} sets</p>
-              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Modalidad</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Modalidad</p>
             </div>
           </div>
           <div className="bg-card/20 p-6 flex flex-col items-center text-center gap-2">
@@ -144,10 +144,10 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[8px] font-black tracking-widest py-0.5 px-2 rounded-lg">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[8px] font-black tracking-[0.2em] py-0.5 px-2 rounded-lg">
                 {formatStatus(match.status)}
               </Badge>
-              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 mt-1">Estado</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">Estado</p>
             </div>
           </div>
           {match.club && (
@@ -157,14 +157,14 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
               </div>
               <div className="text-left min-w-0">
                 <p className="text-base font-black tracking-tight truncate">{match.club} {match.courtNumber ? `(Cancha ${match.courtNumber})` : ''}</p>
-                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Sede del encuentro</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Sede del encuentro</p>
               </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Formación actual</h2>
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -181,7 +181,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
               <div key={key} className="space-y-3">
                  <div className="flex items-center gap-3 px-1">
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 whitespace-nowrap">
+                  <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 whitespace-nowrap">
                     {label}
                   </p>
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
@@ -194,23 +194,23 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
 
                     return (
                       <div key={slot.id} className={cn(
-                        "flex items-center gap-4 rounded-[1.5rem] p-3 border transition-all duration-300 backdrop-blur-sm",
+                        "flex items-center gap-4 rounded-[2rem] p-4 border transition-all duration-300 backdrop-blur-sm",
                         isViewer ? "bg-primary/5 border-primary/20 shadow-sm" : "bg-card/40 border-border/40"
                       )}>
                         <div className={cn(
-                          "flex h-10 w-10 items-center justify-center rounded-xl text-xs font-black shadow-inner",
+                          "flex h-11 w-11 items-center justify-center rounded-xl text-sm font-black shadow-inner shrink-0",
                           isOccupied ? "bg-primary/10 text-primary" : "bg-muted/30 text-muted-foreground/30"
                         )}>
                           {isOccupied ? name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase() : "?"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={cn("text-[13px] font-black truncate leading-tight", isOccupied ? "text-foreground" : "text-muted-foreground/40 italic")}>
+                          <p className={cn("text-base font-black truncate leading-tight tracking-tight", isOccupied ? "text-foreground" : "text-muted-foreground/40 italic")}>
                             {name}
                           </p>
-                          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/30">Jugador {slot.position + 1}</p>
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 mt-1">Jugador {slot.position + 1}</p>
                         </div>
                         {isOccupied && (
-                          <Badge variant="outline" className="text-[8px] uppercase font-black tracking-widest border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded-lg">
+                          <Badge variant="outline" className="text-[8px] uppercase font-black tracking-[0.2em] border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded-lg">
                             {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
                           </Badge>
                         )}
@@ -241,7 +241,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
               {helperMessage && (
                 <div className="flex items-center gap-3 rounded-2xl bg-destructive/5 p-4 text-destructive border border-destructive/20 animate-in shake duration-500">
                   <AlertCircle className="h-5 w-5 shrink-0" />
-                  <p className="text-[11px] font-black uppercase tracking-widest leading-relaxed">{helperMessage}</p>
+                  <p className="text-[11px] font-black uppercase tracking-[0.2em] leading-relaxed">{helperMessage}</p>
                 </div>
               )}
 
@@ -266,7 +266,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                 )}
 
                 <div className="flex flex-col gap-2">
-                   <Link href={`/match/${match.id}`} className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-primary transition-colors py-2">
+                   <Link href={`/match/${match.id}`} className="text-center text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-colors py-2">
                     Ver todos los detalles del encuentro
                   </Link>
                 </div>
