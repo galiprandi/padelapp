@@ -15,6 +15,7 @@ import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
+import { ShareButton } from "@/components/share/share-button";
 import { SlotDisplay } from "@/components/matches/slot-display";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
@@ -305,6 +306,18 @@ export default function ComponentCatalogPage() {
                     match={SAMPLE_MATCH}
                     detailUrl={`/match/${SAMPLE_MATCH.id}`}
                   />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botón de Compartir (V9)</h3>
+                  <div className="flex gap-4">
+                    <ShareButton
+                      url="https://padelapp.app"
+                      title="PadelApp"
+                      text="¡Sumate a PadelApp!"
+                      className="rounded-2xl font-black h-12 border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                      variant="outline"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-4">
                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Turno (TurnCard V9 Premium)</h3>

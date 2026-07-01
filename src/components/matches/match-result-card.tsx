@@ -236,6 +236,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                       variant="ghost"
                       size="sm"
                       iconOnly
+                      aria-label="Compartir resultado"
                       className="h-7 w-7 rounded-lg text-primary hover:bg-primary/10 transition-all"
                     />
                   )}
