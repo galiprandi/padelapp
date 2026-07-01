@@ -167,3 +167,17 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/page.tsx`
   - `src/app/login/page.tsx`
   - `src/app/install/page.tsx`
+
+### ✅ Pulido de Interfaz y Consistencia Visual (V9+ High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Ranking Elevation**: Implementación de iconos de reputación `ShieldCheck` para jugadores con asistencia ejemplar (`attendanceScore >= 0.9`) e indicador de recencia de datos.
+  - **Premium Match Detail**: Refinamiento de la vista de partido con iluminación ambiental ampliada, contenedores `backdrop-blur-2xl` y tipografía de confirmación mejorada.
+  - **Typography Audit**: Estandarización global de micro-etiquetas y encabezados al formato `text-[11px] font-black uppercase tracking-[0.2em]`.
+  - **Catalog Sync**: Actualización del catálogo de componentes para documentar los nuevos estándares de reputación y visualización.
+- **Archivos relacionados**:
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/app/(app)/match/[matchId]/page.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/app/(app)/match/page.tsx`
+  - `src/app/catalog/page.tsx`
