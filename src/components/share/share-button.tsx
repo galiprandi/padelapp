@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { Share2 } from "lucide-react";
+import { useCallback, useState, useEffect } from "react";
+import { Share2, Check } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -33,6 +33,14 @@ export function ShareButton({
 }: ShareButtonProps) {
   const { showToast } = useToast();
   const [isSharing, setIsSharing] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const timeout = setTimeout(() => setIsSuccess(false), 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isSuccess]);
 
   const { disabled, ...restButtonProps } = buttonProps;
 
@@ -43,17 +51,22 @@ export function ShareButton({
         return;
       }
 
-      if (event.type === "click" && event.nativeEvent instanceof MouseEvent && event.nativeEvent.button !== 0) {
+      if (
+        event.type === "click" &&
+        event.nativeEvent instanceof MouseEvent &&
+        event.nativeEvent.button !== 0
+      ) {
         return;
       }
 
       setIsSharing(true);
       try {
+        let shared = false;
         if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
           try {
             await navigator.share({ url, title, text });
             showToast(successMessage ?? DEFAULT_SUCCESS);
-            return;
+            shared = true;
           } catch (shareError) {
             if ((shareError as DOMException)?.name === "AbortError") {
               return;
@@ -62,22 +75,34 @@ export function ShareButton({
           }
         }
 
-        if (typeof navigator !== "undefined" && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        if (
+          !shared &&
+          typeof navigator !== "undefined" &&
+          navigator.clipboard &&
+          typeof navigator.clipboard.writeText === "function"
+        ) {
           await navigator.clipboard.writeText(url);
           showToast(copyMessage ?? DEFAULT_COPY);
-          return;
+          shared = true;
         }
 
-        const textarea = document.createElement("textarea");
-        textarea.value = url;
-        textarea.setAttribute("readonly", "");
-        textarea.style.position = "absolute";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-        showToast(copyMessage ?? DEFAULT_COPY);
+        if (!shared) {
+          const textarea = document.createElement("textarea");
+          textarea.value = url;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "absolute";
+          textarea.style.left = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+          showToast(copyMessage ?? DEFAULT_COPY);
+          shared = true;
+        }
+
+        if (shared) {
+          setIsSuccess(true);
+        }
       } catch (error) {
         console.error("ShareButton failed", error);
         showToast(errorMessage ?? DEFAULT_ERROR);
@@ -89,12 +114,30 @@ export function ShareButton({
   );
 
   return (
-    <Button type="button" onClick={handleShare} disabled={isSharing || disabled} {...restButtonProps}>
-      {iconOnly ? <Share2 className="h-4 w-4" /> : children ?? (
-        <span className="flex items-center gap-2">
+    <Button
+      type="button"
+      onClick={handleShare}
+      disabled={isSharing || disabled}
+      aria-label={iconOnly && !buttonProps["aria-label"] ? "Compartir" : buttonProps["aria-label"]}
+      {...restButtonProps}
+    >
+      {iconOnly ? (
+        isSuccess ? (
+          <Check className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-300" />
+        ) : (
           <Share2 className="h-4 w-4" />
-          <span>Compartir</span>
-        </span>
+        )
+      ) : (
+        children ?? (
+          <span className="flex items-center gap-2">
+            {isSuccess ? (
+              <Check className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-300" />
+            ) : (
+              <Share2 className="h-4 w-4" />
+            )}
+            <span>{isSuccess ? (successMessage ?? DEFAULT_SUCCESS) : "Compartir"}</span>
+          </span>
+        )
       )}
     </Button>
   );

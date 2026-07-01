@@ -191,6 +191,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
                   url={createMagicLink({ resource: "match", identifier: match.id }).url}
                   variant="outline"
+                  aria-label="Compartir invitación al partido"
                   className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
                 />
               </>
@@ -200,6 +201,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 text="¡Mira el resultado de nuestro partido de pádel!"
                 url={createMagicLink({ resource: "match", identifier: match.id }).url}
                 variant="outline"
+                aria-label="Compartir resultado del partido"
                 className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
               />
             )}

@@ -1,0 +1,138 @@
+
+> padelapp@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 506ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+warn - The class `delay-[1100ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `delay-&lsqb;1100ms&rsqb;` to silence this warning.
+
+warn - The class `delay-[1200ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `delay-&lsqb;1200ms&rsqb;` to silence this warning.
+
+warn - The class `delay-[1300ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `delay-&lsqb;1300ms&rsqb;` to silence this warning.
+
+warn - The class `delay-[1500ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `delay-&lsqb;1500ms&rsqb;` to silence this warning.
+
+warn - The class `delay-[900ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `delay-&lsqb;900ms&rsqb;` to silence this warning.
+○ Compiling /catalog ...
+ GET /catalog 200 in 6.5s (next.js: 5.9s, application-code: 589ms)
+ GET /catalog 200 in 299ms (next.js: 30ms, application-code: 269ms)
+ GET /api/auth/session 200 in 1403ms
+ GET /catalog 200 in 104ms (next.js: 5ms, application-code: 99ms)
+ GET /catalog 200 in 99ms (next.js: 4ms, application-code: 95ms)
+ GET /api/auth/session 200 in 41ms (next.js: 30ms, application-code: 11ms)
+ GET /api/auth/session 200 in 15ms (next.js: 4ms, application-code: 11ms)
+⨯ ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!" {
+  digest: '1370495155'
+}
+ GET /catalog 500 in 151ms (next.js: 10ms, application-code: 141ms)
+⨯ ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!" {
+  digest: '1370495155'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+ GET /catalog 500 in 145ms (next.js: 5ms, application-code: 140ms)
+[browser] Uncaught ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!"
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+[browser] Uncaught ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!"
+⨯ ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!" {
+  digest: '1370495155'
+}
+ GET /catalog 500 in 99ms (next.js: 4ms, application-code: 94ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+[browser] Uncaught ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!"
+⨯ ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!" {
+  digest: '1370495155'
+}
+ GET /catalog 500 in 100ms (next.js: 3ms, application-code: 97ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+[browser] Uncaught ReferenceError: ShareButton is not defined
+    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
+  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
+  311 |                   <div className="flex gap-4">
+> 312 |                     <ShareButton
+      |                      ^
+  313 |                       url="https://padelapp.app"
+  314 |                       title="PadelApp"
+  315 |                       text="¡Sumate a PadelApp!"
+ GET /catalog 200 in 135ms (next.js: 5ms, application-code: 129ms)
+ GET /catalog 200 in 97ms (next.js: 4ms, application-code: 94ms)
+ GET /catalog 200 in 97ms (next.js: 5ms, application-code: 92ms)
+ GET /api/auth/session 200 in 37ms (next.js: 24ms, application-code: 13ms)
+ GET /api/auth/session 200 in 12ms (next.js: 4ms, application-code: 9ms)
+ GET /catalog 200 in 140ms (next.js: 7ms, application-code: 133ms)
+ GET /catalog 200 in 148ms (next.js: 6ms, application-code: 142ms)
+ GET /api/auth/session 200 in 50ms (next.js: 34ms, application-code: 16ms)
+ GET /api/auth/session 200 in 14ms (next.js: 3ms, application-code: 10ms)
+ GET /catalog 200 in 83ms (next.js: 3ms, application-code: 80ms)
+ GET /catalog 200 in 94ms (next.js: 3ms, application-code: 91ms)
+ GET /api/auth/session 200 in 32ms (next.js: 22ms, application-code: 9ms)
+ GET /api/auth/session 200 in 12ms (next.js: 3ms, application-code: 9ms)
