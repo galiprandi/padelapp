@@ -213,7 +213,7 @@ export default function ComponentCatalogPage() {
                 <div className="space-y-4">
                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Botones Primarios (V9 High-Impact)</h3>
                   <div className="flex flex-col gap-3">
-                    <Button className="w-full rounded-[2rem] font-black h-16 shadow-2xl shadow-primary/30 active:scale-[0.98]">Primary Action V9</Button>
+                    <Button className="w-full rounded-[2rem] font-black h-16 shadow-2xl shadow-primary/30">Primary Action V9</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -314,7 +314,7 @@ export default function ComponentCatalogPage() {
                       url="https://padelapp.app"
                       title="PadelApp"
                       text="¡Sumate a PadelApp!"
-                      className="rounded-2xl font-black h-12 border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                      className="rounded-2xl font-black h-12 border-primary/20 hover:bg-primary/5 text-primary uppercase tracking-[0.2em] text-[10px]"
                       variant="outline"
                     />
                   </div>
