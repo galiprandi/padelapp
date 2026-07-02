@@ -87,13 +87,18 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - **Win Rate**: Cálculo dinámico del porcentaje de efectividad para proyectar estatus competitivo.
   - **Recent Form**: Visualización de los últimos 5 resultados mediante badges (W/L) para proporcionar contexto inmediato sobre el momento actual del jugador.
   - **Winning Streaks**: Se destaca visualmente si el jugador tiene una racha activa de 2 o más victorias consecutivas mediante un flame badge en la cabecera del perfil, reforzando el sentimiento de progreso y estatus.
+- **Head-to-Head Intelligence**: Los perfiles públicos integran un módulo de "Cara a Cara" que analiza la relación competitiva con el espectador, desglosando victorias como compañeros y como oponentes, además de detallar el desenlace del último encuentro.
 - **Match Day Intelligence (Uma Pattern)**: El sistema identifica dinámicamente eventos que ocurren en la fecha actual y les otorga una prioridad visual superior en el Dashboard mediante:
   - Borde primario (`ring-2 ring-primary/20`).
   - Badge "Hoy" con icono `Zap` y animación `animate-pulse`.
   - Escala sutil para diferenciar items activos de la agenda estática.
 - **Career Intelligence (V9+)**: El historial de partidos (`/match`) incorpora una tarjeta de "Resumen de Carrera" que agrega métricas históricas (Total, Win Rate, Racha, Mejor Socio) utilizando la estética de alta fidelidad para proporcionar un sentimiento de progresión y estatus competitivo. Las victorias se destacan con un icono de Trofeo con relleno sutil y gradientes de fondo `primary/10`.
 
-## 13. Invitaciones y Unirse Directo (Uma Edition V9+)
+## 13. Inteligencia Competitiva y Descubrimiento (Uma Edition)
+- **Surgical Search**: El ranking implementa un buscador quirúrgico que prioriza el "Time to Insight". Permite filtrar la lista global instantáneamente, ocultando elementos de distracción como el podio cuando hay una búsqueda activa para maximizar la visibilidad de los resultados.
+- **H2H Contextual Insights**: La sección H2H utiliza iconografía de `Swords` y `Users` con opacidad reducida (`opacity-5`) para crear texturas visuales de fondo, manteniendo el enfoque en las métricas de rendimiento mutuo.
+
+## 14. Invitaciones y Unirse Directo (Uma Edition V9+)
 - **High-Fidelity Public Hero**: Las vistas de invitación (`/m/[id]`) y de unirse a cupo (`/j/[id]`) implementan el estándar de "Hero" con iluminación ambiental (`blur-[100px]`, resplandor `primary/10`) y contenedores `backdrop-blur-2xl` para maximizar el impacto visual en usuarios no registrados.
 - **Frictionless Conversion**: El flujo de unirse a un cupo directo (`/j/[id]`) se optimiza con tarjetas de equipo prominentes y botones de acción de gran tamaño (`h-16`, `rounded-2xl`) para minimizar la fricción en la conversión de nuevos jugadores.
 - **Visual Sync (Internal/Public)**: El detalle de partido interno (`/match/[id]`) se sincroniza visualmente con la invitación pública, compartiendo los mismos patrones de micro-typography (`tracking-[0.2em]`, `font-black`) y cards de jugadores para una transición fluida tras el registro.
@@ -104,7 +109,7 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 56px (`h-14`) para una lectura clara y profesional. Implementa badges de "Perfil Verificado" y estados de "Cupo pendiente" para mejorar la escaneabilidad.
   - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.
 
-## 14. Estandarización de UX e Inteligencia de Contexto (V9+)
+## 15. Estandarización de UX e Inteligencia de Contexto (V9+)
 - **Universal Quick Join**: `TurnCard` elimina la restricción de "Recomendados" para habilitar la acción de "Unirse" en cualquier vista de lista (Dashboard, Turnos), optimizando el flujo de inscripción.
 - **Match Time Context**: En eventos que ocurren en el día actual, `MatchResultCompact` prioriza la visualización de la hora por sobre la fecha para proporcionar información accionable inmediata.
 - **Unified Recent Form**: Se unifica el lenguaje visual de los puntos de "Recent Form" (W/L) en Dashboard, Ranking y Perfiles Públicos, utilizando el estándar de puntos minimalistas con sombras de resplandor para victorias.

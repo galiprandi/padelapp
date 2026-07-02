@@ -1,17 +1,14 @@
 
-> padelapp@0.1.0 dev
+> padelapp@0.1.0 dev /app
 > next dev
 
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 506ms
+✓ Ready in 831ms
 - Experiments (use with caution):
   · optimizePackageImports
 
-Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
-  npx update-browserslist-db@latest
-  Why you should do it regularly: https://github.com/browserslist/update-db#readme
 
 warn - The class `delay-[1100ms]` is ambiguous and matches multiple utilities.
 warn - If this is content and not a class, replace it with `delay-&lsqb;1100ms&rsqb;` to silence this warning.
@@ -27,112 +24,44 @@ warn - If this is content and not a class, replace it with `delay-&lsqb;1500ms&r
 
 warn - The class `delay-[900ms]` is ambiguous and matches multiple utilities.
 warn - If this is content and not a class, replace it with `delay-&lsqb;900ms&rsqb;` to silence this warning.
-○ Compiling /catalog ...
- GET /catalog 200 in 6.5s (next.js: 5.9s, application-code: 589ms)
- GET /catalog 200 in 299ms (next.js: 30ms, application-code: 269ms)
- GET /api/auth/session 200 in 1403ms
- GET /catalog 200 in 104ms (next.js: 5ms, application-code: 99ms)
- GET /catalog 200 in 99ms (next.js: 4ms, application-code: 95ms)
- GET /api/auth/session 200 in 41ms (next.js: 30ms, application-code: 11ms)
- GET /api/auth/session 200 in 15ms (next.js: 4ms, application-code: 11ms)
-⨯ ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!" {
-  digest: '1370495155'
+○ Compiling /ranking ...
+ GET /login 200 in 1392ms (next.js: 1043ms, application-code: 349ms)
+ GET /ranking 307 in 12.4s (next.js: 6.5s, application-code: 5.9s)
+prisma:error
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].user.findMany()` invocation in
+/app/.next/dev/server/chunks/ssr/[root-of-the-server]__0uzj8a4._.js:1043:159
+
+  1040 const viewerId = session?.user?.id;
+  1041 const { q } = await searchParams;
+  1042 // Fetch players with attendanceScore and lastMatchAt from User table
+→ 1043 const players = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["prisma"].user.findMany(
+Can't reach database server at `ep-royal-darkness-ac5dmwzh-pooler.sa-east-1.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-royal-darkness-ac5dmwzh-pooler.sa-east-1.aws.neon.tech:5432`.
+⨯ Error [PrismaClientInitializationError]:
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].user.findMany()` invocation in
+/app/.next/dev/server/chunks/ssr/[root-of-the-server]__0uzj8a4._.js:1043:159
+
+  1040 const viewerId = session?.user?.id;
+  1041 const { q } = await searchParams;
+  1042 // Fetch players with attendanceScore and lastMatchAt from User table
+→ 1043 const players = await {imported module ./src/lib/prisma.ts}["prisma"].user.findMany(
+Can't reach database server at `ep-royal-darkness-ac5dmwzh-pooler.sa-east-1.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-royal-darkness-ac5dmwzh-pooler.sa-east-1.aws.neon.tech:5432`.
+    at <unknown> (src/app/(app)/ranking/page.tsx:25:37)
+    at async RankingPage (src/app/(app)/ranking/page.tsx:25:19)
+  23 |
+  24 |   // Fetch players with attendanceScore and lastMatchAt from User table
+> 25 |   const players = await prisma.user.findMany({
+     |                                     ^
+  26 |     where: q ? {
+  27 |       OR: [
+  28 |         { displayName: { contains: q, mode: 'insensitive' } }, {
+  clientVersion: '6.16.3',
+  errorCode: undefined,
+  retryable: undefined,
+  digest: '3699213496'
 }
- GET /catalog 500 in 151ms (next.js: 10ms, application-code: 141ms)
-⨯ ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!" {
-  digest: '1370495155'
-}
-[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
- GET /catalog 500 in 145ms (next.js: 5ms, application-code: 140ms)
-[browser] Uncaught ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!"
-[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
-[browser] Uncaught ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!"
-⨯ ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!" {
-  digest: '1370495155'
-}
- GET /catalog 500 in 99ms (next.js: 4ms, application-code: 94ms)
-[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
-[browser] Uncaught ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!"
-⨯ ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!" {
-  digest: '1370495155'
-}
- GET /catalog 500 in 100ms (next.js: 3ms, application-code: 97ms)
-[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
-[browser] Uncaught ReferenceError: ShareButton is not defined
-    at ComponentCatalogPage (src/app/catalog/page.tsx:312:22)
-  310 |                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-m...
-  311 |                   <div className="flex gap-4">
-> 312 |                     <ShareButton
-      |                      ^
-  313 |                       url="https://padelapp.app"
-  314 |                       title="PadelApp"
-  315 |                       text="¡Sumate a PadelApp!"
- GET /catalog 200 in 135ms (next.js: 5ms, application-code: 129ms)
- GET /catalog 200 in 97ms (next.js: 4ms, application-code: 94ms)
- GET /catalog 200 in 97ms (next.js: 5ms, application-code: 92ms)
- GET /api/auth/session 200 in 37ms (next.js: 24ms, application-code: 13ms)
- GET /api/auth/session 200 in 12ms (next.js: 4ms, application-code: 9ms)
- GET /catalog 200 in 140ms (next.js: 7ms, application-code: 133ms)
- GET /catalog 200 in 148ms (next.js: 6ms, application-code: 142ms)
- GET /api/auth/session 200 in 50ms (next.js: 34ms, application-code: 16ms)
- GET /api/auth/session 200 in 14ms (next.js: 3ms, application-code: 10ms)
- GET /catalog 200 in 83ms (next.js: 3ms, application-code: 80ms)
- GET /catalog 200 in 94ms (next.js: 3ms, application-code: 91ms)
- GET /api/auth/session 200 in 32ms (next.js: 22ms, application-code: 9ms)
- GET /api/auth/session 200 in 12ms (next.js: 3ms, application-code: 9ms)
+ GET /api/auth/session 200 in 2.8s (next.js: 2.8s, application-code: 32ms)
+ GET /api/auth/session 200 in 36ms (next.js: 26ms, application-code: 9ms)
