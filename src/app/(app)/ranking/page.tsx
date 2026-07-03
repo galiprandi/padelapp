@@ -90,10 +90,6 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
         </div>
       </div>
 
-      <div className="px-1">
-        <RankingSearch />
-      </div>
-
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
           <UserRankingBanner
