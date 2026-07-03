@@ -15,6 +15,8 @@ import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
+import { RankingSearch } from "@/components/ranking/ranking-search";
+import { RankingListItem } from "@/components/ranking/ranking-list-item";
 import { ShareButton } from "@/components/share/share-button";
 import { SlotDisplay } from "@/components/matches/slot-display";
 import { BottomNav } from "@/components/navigation/bottom-nav";
@@ -27,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Check, UserCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Suspense } from "react";
 
 // The catalog is a tool for developers to see UI components in isolation.
 // Using local sample data here is appropriate as it serves as documentation
@@ -51,6 +54,25 @@ const SAMPLE_PLAYERS: PlayerPreviewProps[] = [
     category: 2,
   },
 ];
+
+const SAMPLE_RANKING_PLAYER = {
+  id: "catalog-ranking-player",
+  displayName: "Carolina Ferrante",
+  alias: "Caro",
+  image: null,
+  level: 5,
+  rankingScore: 1250,
+  rankingPosition: 1,
+  rankingDelta: 2,
+  wins: 15,
+  losses: 5,
+  attendanceScore: 0.95,
+  matchPlayers: [
+    { position: 0, match: { score: "6-4, 6-4" } },
+    { position: 0, match: { score: "6-2, 6-3" } },
+    { position: 2, match: { score: "4-6, 3-6" } },
+  ]
+};
 
 const SAMPLE_MATCH: MatchResultCompactMatch = {
   id: "match-sample",
@@ -98,6 +120,7 @@ export default function ComponentCatalogPage() {
     { id: "ui", name: "UI Básica", icon: "🎨" },
     { id: "forms", name: "Formularios V9+", icon: "📋" },
     { id: "players", name: "Jugadores", icon: "👥" },
+    { id: "ranking", name: "Ranking V9+", icon: "🏆" },
     { id: "matches", name: "Partidos", icon: "🎾" },
     { id: "states", name: "Estados", icon: "📋" },
     { id: "navigation", name: "Navegación", icon: "🧭" },
@@ -292,6 +315,22 @@ export default function ComponentCatalogPage() {
                 <div className="space-y-4">
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Parejas</h3>
                   <PairPreview label="Pareja A" players={SAMPLE_PLAYERS} />
+                </div>
+              </div>
+            </section>
+
+            <section id="ranking" className="space-y-6">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🏆 Ranking V9+</h2>
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Buscador Quirúrgico</h3>
+                  <Suspense fallback={<div className="h-14 w-full bg-muted/20 animate-pulse rounded-2xl" />}>
+                    <RankingSearch />
+                  </Suspense>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Item de Lista</h3>
+                  <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
                 </div>
               </div>
             </section>

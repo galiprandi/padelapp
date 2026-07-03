@@ -205,3 +205,16 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/app/(app)/me/page.tsx`
   - `src/app/(app)/match/page.tsx`
   - `src/app/catalog/page.tsx`
+
+### ✅ Búsqueda Quirúrgica y Refactor de Ranking (V9+)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Surgical Search**: Implementación de búsqueda quirúrgica y debounced en `/ranking` a través del componente `RankingSearch`, permitiendo filtrar jugadores por nombre o alias.
+  - **Podium Intelligence**: El podio de honor se oculta automáticamente durante la búsqueda para priorizar la visibilidad de los resultados filtrados.
+  - **RankingListItem Refactor**: Extracción de la lógica de ítems de lista a un componente dedicado, asegurando consistencia visual y mantenibilidad.
+  - **UI Bugfix**: Corrección de bugs visuales en template literals dentro de componentes de estadísticas de ranking.
+- **Archivos relacionados**:
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/components/ranking/ranking-search.tsx`
+  - `src/components/ranking/ranking-list-item.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
