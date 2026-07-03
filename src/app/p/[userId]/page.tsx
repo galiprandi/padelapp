@@ -1,15 +1,17 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import { PageHeader } from "@/components/page-header";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
-import { Trophy, CalendarDays, Target, TrendingUp, Zap, Flame } from "lucide-react";
+import { Trophy, CalendarDays, Target, TrendingUp, Zap, Flame, Users, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { cn, getMatchWinner } from "@/lib/utils";
+import { getHeadToHeadStats } from "@/lib/match-queries";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -17,6 +19,8 @@ interface PublicProfilePageProps {
 
 export default async function PublicProfilePage({ params }: PublicProfilePageProps) {
   const { userId } = await params;
+  const session = await auth();
+  const viewerId = session?.user?.id;
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -109,6 +113,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
       break;
     }
   }
+
+  const h2h = (viewerId && viewerId !== userId) ? await getHeadToHeadStats(viewerId, userId) : null;
 
   return (
     <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
@@ -214,9 +220,64 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
             </div>
           </div>
         </div>
+
+        {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
+            <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/40 p-6 backdrop-blur-md shadow-xl">
+              <div className="absolute top-0 right-0 p-4 opacity-5">
+                <Swords className="h-16 w-16 text-primary" />
+              </div>
+
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-6 text-left">
+                Inteligencia Cara a Cara
+              </h3>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-1 text-left">
+                  <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    <Users className="h-3 w-3" />
+                    Socios
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-black">{h2h.together.wins}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">de {h2h.together.total} ganados</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-left">
+                  <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    <Swords className="h-3 w-3" />
+                    Rivales
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-black text-primary">{h2h.against.wins}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">de {h2h.against.total} ganados</span>
+                  </div>
+                </div>
+              </div>
+
+              {h2h.lastMatch && (
+                <div className="mt-6 pt-4 border-t border-border/20 flex items-center justify-between">
+                  <div className="flex flex-col gap-0.5 text-left">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Último duelo</span>
+                    <span className={cn(
+                      "text-[10px] font-black uppercase tracking-widest",
+                      h2h.lastMatch.winner === h2h.lastMatch.viewerTeam ? "text-emerald-500" : "text-rose-500"
+                    )}>
+                      {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam ? "Victoria" : "Derrota"} • {h2h.lastMatch.score}
+                    </span>
+                  </div>
+                  <Button size="sm" variant="ghost" className="h-8 rounded-xl font-black uppercase tracking-[0.2em] text-[8px] active:scale-95" asChild>
+                    <Link href={`/match/${h2h.lastMatch.id}`}>Ver detalle</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
-      <section className="relative z-10 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+      <section className="relative z-10 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
             Historial Reciente

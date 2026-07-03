@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import { getMatchWinner } from "./utils";
 
 export async function getEnhancedUserMatches(
   userId: string,
@@ -67,4 +68,60 @@ export async function getPendingActions(userId: string) {
       // Secondary: most recent first
       return new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime();
     });
+}
+
+export async function getHeadToHeadStats(viewerId: string, profileId: string) {
+  const sharedMatches = await prisma.match.findMany({
+    where: {
+      status: "CONFIRMED",
+      AND: [
+        { players: { some: { userId: viewerId } } },
+        { players: { some: { userId: profileId } } },
+      ],
+    },
+    include: {
+      players: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  const stats = {
+    together: { wins: 0, total: 0 },
+    against: { wins: 0, total: 0 },
+    lastMatch: sharedMatches[0]
+      ? {
+          id: sharedMatches[0].id,
+          date: sharedMatches[0].date,
+          score: sharedMatches[0].score,
+          winner: getMatchWinner(sharedMatches[0].score),
+          viewerTeam: sharedMatches[0].players.find((p) => p.userId === viewerId)!.position < 2 ? "A" : "B",
+        }
+      : null,
+  };
+
+  sharedMatches.forEach((match) => {
+    const viewerPos = match.players.find((p) => p.userId === viewerId)?.position ?? 0;
+    const profilePos = match.players.find((p) => p.userId === profileId)?.position ?? 0;
+
+    const viewerTeam = viewerPos < 2 ? "A" : "B";
+    const profileTeam = profilePos < 2 ? "A" : "B";
+
+    const winner = getMatchWinner(match.score ?? null);
+
+    if (viewerTeam === profileTeam) {
+      stats.together.total++;
+      if (winner === viewerTeam) stats.together.wins++;
+    } else {
+      stats.against.total++;
+      if (winner === viewerTeam) stats.against.wins++;
+    }
+  });
+
+  return stats;
 }

@@ -1,21 +1,34 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
+import { RankingSearch } from "@/components/ranking/ranking-search";
 import { prisma } from "@/lib/prisma";
-import { TrendingDown, TrendingUp, Minus, Users, Trophy, ShieldCheck, Zap, History } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Users, Trophy, ShieldCheck, Zap, History, SearchX } from "lucide-react";
 import { auth } from "@/auth";
 import { cn, getMatchWinner } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import Link from "next/link";
 
-export default async function RankingPage() {
+interface RankingPageProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export default async function RankingPage({ searchParams }: RankingPageProps) {
   const session = await auth();
   const viewerId = session?.user?.id;
+  const { q } = await searchParams;
 
   // Fetch players with attendanceScore and lastMatchAt from User table
   const players = await prisma.user.findMany({
+    where: q ? {
+      OR: [
+        { displayName: { contains: q, mode: 'insensitive' } },
+        { alias: { contains: q, mode: 'insensitive' } },
+      ]
+    } : undefined,
     orderBy: [
       { rankingScore: "desc" },
       { attendanceScore: "desc" },
@@ -23,7 +36,7 @@ export default async function RankingPage() {
       { lastMatchAt: "desc" },
       { displayName: "asc" },
     ],
-    take: 50,
+    take: q ? 100 : 50,
     include: {
       matchPlayers: {
         where: {
@@ -67,7 +80,7 @@ export default async function RankingPage() {
         </div>
       </div>
 
-      {currentUser && currentUser.matchesPlayed > 0 && (
+      {currentUser && currentUser.matchesPlayed > 0 && !q && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
           <UserRankingBanner
             position={currentUser.rankingPosition}
@@ -83,14 +96,20 @@ export default async function RankingPage() {
       )}
 
       <Tabs defaultValue="individual" className="w-full">
-        <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm">
-          <TabsTrigger value="individual" className="rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
-            Ranking Individual
-          </TabsTrigger>
-        </TabsList>
+        <div className="space-y-6">
+          <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm w-full">
+            <TabsTrigger value="individual" className="flex-1 rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
+              Ranking Individual
+            </TabsTrigger>
+          </TabsList>
+
+          <RankingSearch />
+        </div>
+
         <TabsContent value="individual" className="space-y-6 pt-6">
           {players.length > 0 ? (
             <>
+              {!q && (
               <div className="space-y-4">
                 <div className="px-2">
                   <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
@@ -180,8 +199,16 @@ export default async function RankingPage() {
                   </div>
                 </div>
               </div>
+              )}
 
               {/* List Section */}
+              {q && (
+                <div className="px-2">
+                  <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                    Resultados de búsqueda
+                  </h2>
+                </div>
+              )}
               <div className="grid gap-3">
                 {players.map((player, index) => {
                   const recentForm = player.matchPlayers.map(mp => {
@@ -332,11 +359,22 @@ export default async function RankingPage() {
               </div>
             </>
           ) : (
-            <EmptyState
-              icon={Users}
-              title="Sin jugadores"
-              description="Aún no hay jugadores registrados en la plataforma."
-            />
+            <div className="pt-8">
+              <EmptyState
+                icon={q ? SearchX : Users}
+                title={q ? "No se encontraron jugadores" : "Sin jugadores"}
+                description={q ? `No hay resultados para "${q}". Intentá con otro nombre o alias.` : "Aún no hay jugadores registrados en la plataforma."}
+                action={q ? (
+                  <Button
+                    variant="ghost"
+                    className="rounded-2xl font-black uppercase tracking-widest text-[10px]"
+                    asChild
+                  >
+                    <Link href="/ranking">Limpiar búsqueda</Link>
+                  </Button>
+                ) : undefined}
+              />
+            </div>
           )}
         </TabsContent>
       </Tabs>
