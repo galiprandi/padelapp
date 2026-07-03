@@ -91,7 +91,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   return (
     <main className="relative mx-auto min-h-screen w-full max-w-md flex-col gap-12 px-6 py-10 pb-48 overflow-hidden animate-in fade-in duration-1000">
       {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[100px] -z-10 rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
 
       <PageHeader
         title={match.matchType === "FRIENDLY" ? "Partido Amistoso" : "Torneo Local"}
@@ -109,7 +109,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         }
       />
 
-      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
+      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 blur-[80px] rounded-full pointer-events-none opacity-40" />
 
         <CardHeader className="relative z-10 pb-4 pt-8 text-center border-b border-border/20 bg-muted/10">
@@ -122,7 +122,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div>
               <p className="text-2xl font-black tracking-tight">{match.sets} sets</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Modalidad</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Modalidad</p>
             </div>
           </div>
 
@@ -132,7 +132,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div>
               <p className="text-2xl font-black tracking-tight">{formatStatus(match.status)}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Estado</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Estado</p>
             </div>
           </div>
 
@@ -142,20 +142,21 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             </div>
             <div className="text-left min-w-0">
               <p className="text-xl font-black tracking-tight truncate">{match.club || "Club por definir"}</p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                 {match.courtNumber ? `Cancha ${match.courtNumber}` : "Sede del encuentro"}
               </p>
             </div>
           </div>
         </CardContent>
         {match.notes && (
-          <div className="bg-primary/5 p-6 text-center text-sm font-medium text-muted-foreground/80 border-t border-border/20 italic">
+          <div className="bg-primary/5 p-8 text-center text-sm font-medium text-muted-foreground/80 border-t border-border/20 italic leading-relaxed">
+            <span className="block text-[11px] font-black uppercase tracking-[0.2em] text-primary/40 not-italic mb-2">Notas del organizador</span>
             "{match.notes}"
           </div>
         )}
       </Card>
 
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Jugadores convocados</h2>
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -218,11 +219,11 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors">{name}</p>
-                          <div className="mt-1 flex items-center gap-2">
+                          <p className="font-black text-foreground truncate leading-tight group-hover/player:text-primary transition-colors tracking-tight text-lg">{name}</p>
+                          <div className="mt-1.5 flex items-center gap-2">
                             <p className={cn(
                               "text-[10px] font-black uppercase tracking-[0.2em] transition-colors",
-                              isConfirmed ? "text-emerald-500" : "text-muted-foreground/40"
+                              isConfirmed ? "text-emerald-500" : "text-muted-foreground/50"
                             )}>
                               {isConfirmed ? "Confirmado" : "Pendiente"}
                             </p>
@@ -253,22 +254,22 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
           </Button>
 
           {!session?.user ? (
-            <Button asChild variant="ghost" className="w-full rounded-xl h-10 text-muted-foreground/60 hover:bg-muted/10 font-black uppercase tracking-widest text-[10px]" size="sm">
+            <Button asChild variant="ghost" className="w-full rounded-2xl h-12 text-muted-foreground/50 hover:bg-muted/10 font-black uppercase tracking-[0.2em] text-[10px]" size="sm">
               <Link href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}>
                 Iniciar sesión con Google
               </Link>
             </Button>
           ) : !isParticipant ? (
-            <div className="bg-card/40 backdrop-blur-xl rounded-[2rem] p-4 border border-border/40 text-center shadow-lg relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-2 opacity-10">
-                <Sparkles className="h-8 w-8 text-primary" />
+            <div className="bg-card/40 backdrop-blur-xl rounded-[2.5rem] p-6 border border-border/40 text-center shadow-lg relative overflow-hidden animate-in zoom-in-95 duration-1000 delay-500">
+               <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Sparkles className="h-10 w-10 text-primary" />
               </div>
-              <p className="text-[11px] font-black uppercase tracking-[0.1em] text-muted-foreground/60 relative z-10">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 relative z-10">
                 Para unirte, pedile al organizador tu enlace de cupo directo
               </p>
             </div>
           ) : (
-            <div className="bg-primary/5 backdrop-blur-xl rounded-[2rem] p-4 border border-primary/20 text-center shadow-lg">
+            <div className="bg-primary/5 backdrop-blur-xl rounded-[2.5rem] p-6 border border-primary/20 text-center shadow-lg animate-in zoom-in-95 duration-1000 delay-500">
               <p className="text-[11px] font-black text-primary uppercase tracking-[0.2em] animate-pulse">
                 ¡Ya formás parte de este partido!
               </p>

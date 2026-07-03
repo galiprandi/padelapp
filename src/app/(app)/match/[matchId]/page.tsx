@@ -122,7 +122,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
   return (
     <div className="relative flex flex-col gap-12 pb-8 animate-in fade-in duration-1000 px-6 overflow-hidden">
       {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/5 blur-[100px] -z-10 rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
 
       <PageHeader
         size="lg"
@@ -131,14 +131,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
         description={
           <div className="flex flex-col gap-6 mt-6">
             <div className="flex items-center gap-3">
-              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-widest font-black py-1 px-3 rounded-xl shadow-sm">
+              <Badge variant={match.status === 'CONFIRMED' ? 'success' : 'default'} className="uppercase text-[10px] tracking-[0.2em] font-black py-1 px-3 rounded-xl shadow-sm">
                 {match.status === 'PENDING' ? 'Pendiente' : match.status === 'CONFIRMED' ? 'Confirmado' : 'En disputa'}
               </Badge>
               <div className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-1 border border-border/40">
                 <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center">
                    <Clock className="h-2.5 w-2.5 text-primary" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                   {new Date(match.date).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                 </span>
               </div>
@@ -146,12 +146,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
             <div className="grid grid-cols-1 gap-3">
               {match.club && (
-                <div className="group flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
+                <div className="group flex items-center gap-4 rounded-[2rem] bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Club y Cancha</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Club y Cancha</span>
                     <span className="text-sm font-black truncate text-foreground leading-tight">
                       {match.club}{match.courtNumber ? ` · Cancha ${match.courtNumber}` : ''}
                     </span>
@@ -159,12 +159,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 </div>
               )}
 
-              <div className="flex items-center gap-4 rounded-2xl bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
+              <div className="flex items-center gap-4 rounded-[2rem] bg-card/40 p-4 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
                   <PlayerAvatar name={match.creator?.displayName || 'U'} image={match.creator?.image ?? undefined} className="h-8 w-8" />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Organizador</span>
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none mb-1">Organizador</span>
                   <span className="text-sm font-black truncate text-foreground leading-tight">
                     {match.creator?.displayName || 'Usuario'}
                   </span>
@@ -174,7 +174,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
         }
         action={
-          <div className="flex flex-col gap-3 w-full mt-2">
+          <div className="flex flex-col gap-3 w-full mt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
             {!isClosed ? (
               <>
                 <Button
@@ -210,12 +210,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
       />
 
       {isClosed ? (
-        <div className="space-y-12">
-          <section className="flex flex-col items-center justify-center text-center py-20 animate-in zoom-in duration-1000 relative overflow-hidden rounded-[3.5rem] bg-card/20 backdrop-blur-2xl border border-border/40 shadow-2xl">
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+          <section className="flex flex-col items-center justify-center text-center py-20 relative overflow-hidden rounded-[3.5rem] bg-card/20 backdrop-blur-2xl border border-border/40 shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-60 animate-pulse" />
 
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] text-primary/60 mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
               Resultado Final
             </span>
 
@@ -269,7 +269,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
 
           {isPendingConfirmation && (
-            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 overflow-hidden relative">
+            <section className="space-y-8 rounded-[2.5rem] bg-card/40 p-8 backdrop-blur-md border border-border/40 shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 overflow-hidden relative">
               <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Sparkles className="h-24 w-24 text-primary" />
               </div>
@@ -279,9 +279,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm shadow-primary/5">
                     <AlertCircle className="h-5 w-5" />
                   </div>
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.5em] text-muted-foreground/50">Estado de Confirmación</h2>
+                  <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Estado de Confirmación</h2>
                 </div>
-                <p className="text-[11px] font-medium leading-relaxed text-muted-foreground/40 max-w-xs">
+                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 max-w-xs">
                   Para que este resultado impacte en el ranking, un jugador de cada equipo debe validarlo.
                 </p>
               </div>
@@ -334,7 +334,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           {isViewer ? "Tú" : displayName}
                         </span>
                         <span className={cn(
-                          "text-[9px] font-black uppercase tracking-[0.25em] transition-colors",
+                          "text-[9px] font-black uppercase tracking-[0.2em] transition-colors",
                           isConfirmed ? "text-emerald-500" : isViewer ? "text-primary animate-pulse" : "text-muted-foreground/30"
                         )}>
                           {isConfirmed ? "Confirmado" : "Pendiente"}
@@ -358,8 +358,8 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
 
           {!isPendingConfirmation && match.status === 'CONFIRMED' && (
-            <div className="flex justify-center animate-in zoom-in duration-700">
-               <Badge variant="success" className="px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 border-emerald-500/30">
+            <div className="flex justify-center animate-in zoom-in duration-1000 delay-700">
+               <Badge variant="success" className="px-6 py-2 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 bg-emerald-500/10 border-emerald-500/20 shadow-lg shadow-emerald-500/10">
                  <CheckCircle2 className="mr-2 h-4 w-4" />
                  Partido procesado en el Ranking
                </Badge>
@@ -367,7 +367,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
           )}
         </div>
       ) : (
-        <div className="space-y-10">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
           <section className="space-y-6">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 flex items-center gap-2">
