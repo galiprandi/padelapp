@@ -8,7 +8,6 @@ import { auth } from "@/auth";
 import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import Link from "next/link";
-import { RankingSearch } from "@/components/ranking/ranking-search";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
 
 interface RankingPageProps {
