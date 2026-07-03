@@ -1,6 +1,7 @@
 import { EmptyState } from "@/components/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
+import { RankingSearch } from "@/components/ranking/ranking-search";
 import { prisma } from "@/lib/prisma";
 import { Trophy, History, Users } from "lucide-react";
 import { auth } from "@/auth";
@@ -110,11 +111,16 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
       )}
 
       <Tabs defaultValue="individual" className="w-full">
-        <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm">
-          <TabsTrigger value="individual" className="rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
-            Ranking Individual
-          </TabsTrigger>
-        </TabsList>
+        <div className="space-y-6">
+          <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm w-full">
+            <TabsTrigger value="individual" className="flex-1 rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
+              Ranking Individual
+            </TabsTrigger>
+          </TabsList>
+
+          <RankingSearch />
+        </div>
+
         <TabsContent value="individual" className="space-y-6 pt-6">
           {players.length > 0 ? (
             <>

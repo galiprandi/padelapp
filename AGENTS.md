@@ -218,3 +218,14 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/ranking/ranking-search.tsx`
   - `src/components/ranking/ranking-list-item.tsx`
   - `src/components/ranking/user-ranking-stats.tsx`
+### ✅ Inteligencia Competitiva y Descubrimiento (Uma Edition)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Head-to-Head (H2H) Intelligence**: Nueva sección en perfiles públicos (`/p/[userId]`) que detalla el historial compartido entre el espectador y el jugador (Socios vs Rivales) y el resultado del último duelo.
+  - **Surgical Ranking Search**: Implementación de un buscador quirúrgico en la página de Ranking que permite localizar perfiles específicos mediante consultas debounced al servidor.
+  - **V9+ H2H Styling**: Uso de contenedores glassmorphic, iluminación ambiental (`primary/10`) y micro-typography V9 (`tracking-[0.2em]`) para los insights competitivos.
+- **Archivos relacionados**:
+  - `src/app/p/[userId]/page.tsx`
+  - `src/app/(app)/ranking/page.tsx`
+  - `src/components/ranking/ranking-search.tsx`
+  - `src/lib/match-queries.ts`

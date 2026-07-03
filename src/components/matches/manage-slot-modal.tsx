@@ -150,12 +150,25 @@ export function ManageSlotModal({
           {/* Buscar Jugador */}
           {!isUserSlot && (
             <div className="space-y-4">
-              <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">
+              <div className="sr-only" aria-live="polite">
+                {isSearching
+                  ? "Buscando jugadores..."
+                  : searchQuery.trim().length >= 2 && searchResults.length === 0
+                    ? "No se encontraron jugadores"
+                    : searchResults.length > 0
+                      ? `${searchResults.length} jugadores encontrados`
+                      : ""}
+              </div>
+              <Label
+                htmlFor="player-search"
+                className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1"
+              >
                 Buscar en la plataforma
               </Label>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
                 <Input
+                  id="player-search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Nombre o email..."
@@ -165,6 +178,14 @@ export function ManageSlotModal({
                   <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
                 )}
               </div>
+
+              {searchQuery.trim().length >= 2 && !isSearching && searchResults.length === 0 && (
+                <div className="px-1 py-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <p className="text-[11px] font-black uppercase tracking-wider text-muted-foreground/40 italic">
+                    No se encontraron jugadores
+                  </p>
+                </div>
+              )}
 
               {searchResults.length > 0 && (
                 <div className="max-h-48 overflow-y-auto rounded-2xl border border-border/40 bg-background/30 p-2 space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
