@@ -39,16 +39,18 @@ export function RankingSearch() {
         )} />
       </div>
       <Input
-        type="text"
+        type="search"
         placeholder="BUSCAR JUGADOR O ALIAS..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        autoComplete="off"
         className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md font-black text-[11px] uppercase tracking-[0.2em] placeholder:text-muted-foreground/30 focus:bg-card/60 focus:ring-primary/20 transition-all shadow-sm"
       />
       {query && (
         <button
           onClick={() => setQuery("")}
-          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
+          aria-label="Limpiar búsqueda"
+          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors active:scale-90"
         >
           <X className="h-4 w-4" />
         </button>

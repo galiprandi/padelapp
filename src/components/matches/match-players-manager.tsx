@@ -192,6 +192,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
               size="icon"
               variant="ghost"
               className="h-6 w-6 rounded-lg hover:bg-white/20 text-primary-foreground"
+              aria-label="Cancelar intercambio"
               onClick={() => setSwapSourceId(null)}
             >
               <X className="h-4 w-4" />
