@@ -112,9 +112,10 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
   - **Metadata Typography**: Unificación de etiquetas al formato `text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50`.
 - **Match Flow Elevation (V9+)**: El proceso de creación de partidos evoluciona a una experiencia inmersiva multi-paso con:
   - **Ambient Depth**: Uso de iluminación radial (`bg-primary/10 blur-[100px]`) y cards `backdrop-blur-2xl` para separar el flujo del fondo.
-  - **Tactile Precision**: Botones de acción estandarizados a `h-14` con sombras `primary/20` e `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan un escalado `1.05` y sombras profundas para confirmar la interacción.
+  - **Tactile Precision**: Botones de acción principal estandarizados a `h-16` con sombras `shadow-2xl shadow-primary/30` e `active:scale-[0.98]`. Los selectores de marcador (`ScoreSelector`) utilizan targets de `h-16`, un escalado `1.1` y sombras profundas para confirmar la interacción con máxima fidelidad.
   - **Bubble Slots**: El componente `SlotDisplay` ahora utiliza contenedores `rounded-[2rem]` y avatares `rounded-2xl` de 56px (`h-14`) para una lectura clara y profesional. Implementa badges de "Perfil Verificado" y estados de "Cupo pendiente" para mejorar la escaneabilidad.
   - **Information Density**: Las notas del organizador en el detalle del partido se presentan en tarjetas `bg-card/40` con padding generoso (`p-10`) e iconos ambientales para elevar el contenido textual.
+  - **V9+ Match Creation Flow**: El flujo de creación de partidos ha sido elevado al estándar **Uma Edition V9+ Premium**, con botones de navegación de `h-16`, contenedores de set de `rounded-[3.5rem]` y targets táctiles de marcador de `h-16`. La iluminación ambiental se ha ampliado a `blur-[120px]` para una profundidad superior.
 
 ## 15. Estandarización de UX e Inteligencia de Contexto (V9+)
 - **Universal Quick Join**: `TurnCard` elimina la restricción de "Recomendados" para habilitar la acción de "Unirse" en cualquier vista de lista (Dashboard, Turnos), optimizando el flujo de inscripción.

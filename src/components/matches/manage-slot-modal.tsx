@@ -107,24 +107,26 @@ export function ManageSlotModal({
   const isUserSlot = slot?.kind === "user";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5 backdrop-blur-sm transition-all duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5 backdrop-blur-md transition-all duration-500 animate-in fade-in">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="w-full max-w-sm space-y-6 rounded-[2.5rem] border border-border/40 bg-card/95 p-8 shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300"
+        className="w-full max-w-sm space-y-8 rounded-[2.5rem] border border-border/40 bg-card/95 p-8 shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 relative overflow-hidden"
       >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-primary/5 blur-3xl -z-10" />
+
         <div className="flex items-center justify-between">
           <h2 id="modal-title" className="text-xl font-black text-foreground tracking-tight">
             Gestionar jugador
           </h2>
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             {onSwap && (
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-primary hover:bg-primary/10 rounded-xl h-9 font-black uppercase tracking-widest text-[9px] active:scale-95 transition-all"
+                className="text-primary hover:bg-primary/10 rounded-xl h-9 font-black uppercase tracking-[0.2em] text-[9px] active:scale-95 transition-all px-3"
                 onClick={onSwap}
               >
                 <ArrowUpDown className="mr-1.5 h-3 w-3" />
@@ -136,7 +138,7 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-xl h-9 font-black uppercase tracking-widest text-[9px] active:scale-95 transition-all"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-xl h-9 font-black uppercase tracking-[0.2em] text-[9px] active:scale-95 transition-all px-3"
                 onClick={onRelease}
               >
                 <UserMinus className="mr-1.5 h-3 w-3" />
@@ -146,7 +148,7 @@ export function ManageSlotModal({
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Buscar Jugador */}
           {!isUserSlot && (
             <div className="space-y-4">
@@ -251,11 +253,11 @@ export function ManageSlotModal({
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 pt-4">
+        <div className="flex flex-col gap-4 pt-4">
           {!isUserSlot && (
             <Button
               type="button"
-              className="w-full h-16 rounded-[1.5rem] font-black text-base shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
+              className="w-full h-16 rounded-[2rem] font-black text-base shadow-2xl shadow-primary/30 active:scale-[0.98] transition-all"
               onClick={handleAccept}
             >
               Guardar nombre
@@ -264,7 +266,7 @@ export function ManageSlotModal({
           <Button
             type="button"
             variant="ghost"
-            className="w-full h-12 rounded-xl font-black text-muted-foreground uppercase tracking-[0.2em] text-[11px] active:scale-[0.98] transition-all"
+            className="w-full h-14 rounded-2xl font-black text-muted-foreground uppercase tracking-[0.2em] text-[11px] active:scale-[0.98] transition-all"
             onClick={onClose}
           >
             {isUserSlot ? "Cerrar" : "Cancelar"}

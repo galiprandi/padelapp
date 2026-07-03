@@ -8,7 +8,6 @@ import { auth } from "@/auth";
 import { PageHeader } from "@/components/page-header";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import Link from "next/link";
-import { RankingSearch } from "@/components/ranking/ranking-search";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
 
 interface RankingPageProps {
@@ -89,10 +88,6 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
           <History className="h-3 w-3" />
           Actualizado el {lastUpdate.toLocaleDateString()} a las {lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
-      </div>
-
-      <div className="px-1">
-        <RankingSearch />
       </div>
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
