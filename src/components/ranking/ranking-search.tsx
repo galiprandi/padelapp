@@ -1,64 +1,71 @@
 "use client";
 
+import { useEffect, useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useTransition, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function RankingSearch() {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [value, setValue] = useState(searchParams.get("q") ?? "");
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
 
-  // Debounce search update
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (value !== (searchParams.get("q") ?? "")) {
-        const params = new URLSearchParams(searchParams);
-        if (value) {
-          params.set("q", value);
-        } else {
-          params.delete("q");
-        }
-
-        startTransition(() => {
-          router.replace(`${pathname}?${params.toString()}`);
-        });
+      const params = new URLSearchParams(searchParams);
+      if (query) {
+        params.set("q", query);
+      } else {
+        params.delete("q");
       }
-    }, 400);
+
+      startTransition(() => {
+        router.push(`/ranking?${params.toString()}`, { scroll: false });
+      });
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [value, pathname, router, searchParams]);
+  }, [query, router, searchParams]);
 
   return (
-    <div className="relative group animate-in fade-in slide-in-from-top-4 duration-700 delay-150">
-      <div className={cn(
-        "absolute inset-0 bg-primary/5 blur-xl rounded-2xl transition-opacity duration-500",
-        isPending ? "opacity-100" : "opacity-0"
-      )} />
-      <div className="relative">
+    <div className="relative group animate-in fade-in slide-in-from-top-4 duration-700">
+      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
-          "absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-300",
-          isPending ? "text-primary animate-pulse" : "text-muted-foreground/40"
+          "h-4 w-4 transition-colors duration-300",
+          query ? "text-primary" : "text-muted-foreground/40",
+          isPending && "animate-pulse"
         )} />
-        <Input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Buscar jugador por nombre o alias..."
-          className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md focus:bg-card/60 transition-all font-black text-sm placeholder:font-black placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px] placeholder:text-muted-foreground/30"
-        />
-        {value && (
-          <button
-            onClick={() => setValue("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted/20 text-muted-foreground/40 transition-colors"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
       </div>
+      <Input
+        type="text"
+        placeholder="BUSCAR JUGADOR O ALIAS..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md font-black text-[11px] uppercase tracking-[0.2em] placeholder:text-muted-foreground/30 focus:bg-card/60 focus:ring-primary/20 transition-all shadow-sm"
+      />
+      {query && (
+        <button
+          onClick={() => setQuery("")}
+          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
+
+      {isPending && (
+        <div className="absolute -bottom-1 left-6 right-6 h-0.5 bg-primary/20 overflow-hidden rounded-full">
+          <div className="h-full bg-primary w-1/3 animate-[loading_1s_infinite_linear]" />
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes loading {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(300%); }
+        }
+      `}</style>
     </div>
   );
 }

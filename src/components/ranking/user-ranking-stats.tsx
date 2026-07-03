@@ -42,18 +42,18 @@ export function UserRankingBanner({
           </span>
           <div className="flex items-baseline gap-3">
             <h2 className="text-5xl font-black text-foreground tracking-tighter">
-              {position ? "#${position}" : "S/P"}
+              {position ? `#${position}` : "S/P"}
             </h2>
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/50 border border-border/20 backdrop-blur-sm shadow-sm">
               {delta > 0 ? (
                 <div className="flex items-center text-emerald-500">
                   <TrendingUp className="h-4 w-4" />
-                  <span className="text-[11px] font-black ml-0.5">+${delta}</span>
+                  <span className="text-[11px] font-black ml-0.5">+{delta}</span>
                 </div>
               ) : delta < 0 ? (
                 <div className="flex items-center text-rose-500">
                   <TrendingDown className="h-4 w-4" />
-                  <span className="text-[11px] font-black ml-0.5">${delta}</span>
+                  <span className="text-[11px] font-black ml-0.5">{delta}</span>
                 </div>
               ) : (
                 <div className="flex items-center text-muted-foreground/60">
@@ -65,16 +65,16 @@ export function UserRankingBanner({
           </div>
           <div className="flex items-center gap-2 pt-1">
             <Badge variant="success" className="font-black uppercase tracking-[0.2em] text-[9px] px-2.5 py-0.5">
-              Nivel ${level}
+              Nivel {level}
             </Badge>
             {matchesPlayed > 0 && (
               <Badge variant="outline" className="border-primary/20 bg-primary/5 font-black uppercase tracking-[0.2em] text-[9px] px-2.5 py-0.5">
-                ${winRate}% WR
+                {winRate}% WR
               </Badge>
             )}
             <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
               <ShieldCheck className="h-3 w-3 text-primary" />
-              <span className="text-[9px] font-black text-primary uppercase tracking-widest">${reputationPercent}% Rep</span>
+              <span className="text-[9px] font-black text-primary uppercase tracking-widest">{reputationPercent}% Rep</span>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export function UserRankingBanner({
               Récord
             </span>
             <span className="text-2xl font-black tabular-nums">
-              ${wins}W <span className="text-muted-foreground/30 font-normal">/</span> ${losses}L
+              {wins}W <span className="text-muted-foreground/30 font-normal">/</span> {losses}L
             </span>
           </div>
         </div>
@@ -128,7 +128,7 @@ export function UserRankingCard({
         <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
           <Trophy className="h-7 w-7 transition-transform group-hover:scale-110" />
           <div className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground border-2 border-background shadow-sm">
-            ${level}
+            {level}
           </div>
         </div>
         <div>
@@ -137,18 +137,18 @@ export function UserRankingCard({
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-black tracking-tighter">
-              {position ? "#${position}" : "--"}
+              {position ? `#${position}` : "--"}
             </span>
             <div className="flex flex-col">
               <span className="text-[11px] font-black leading-none tracking-tight">{Math.round(score ?? 1000)} pts</span>
               <div className="flex items-center gap-1 mt-1">
                 {matchesPlayed > 0 && (
                   <span className="text-[8px] font-black uppercase tracking-widest text-primary px-1.5 py-0.5 rounded-lg bg-primary/5 border border-primary/10">
-                    ${winRate}% WR
+                    {winRate}% WR
                   </span>
                 )}
                 <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 px-1.5 py-0.5 rounded-lg bg-muted/20 border border-border/10">
-                  ${reputationPercent}% Rep
+                  {reputationPercent}% Rep
                 </span>
               </div>
             </div>
@@ -161,12 +161,12 @@ export function UserRankingCard({
           {delta && delta > 0 ? (
             <>
               <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
-              <span className="text-emerald-500">+${delta}</span>
+              <span className="text-emerald-500">+{delta}</span>
             </>
           ) : delta && delta < 0 ? (
             <>
               <TrendingDown className="h-3.5 w-3.5 text-rose-500" />
-              <span className="text-rose-500">${delta}</span>
+              <span className="text-rose-500">{delta}</span>
             </>
           ) : (
             <>
@@ -177,7 +177,7 @@ export function UserRankingCard({
         </div>
         {matchesPlayed > 0 && (
           <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-            ${wins}V - ${losses}D
+            {wins}V - {losses}D
           </span>
         )}
       </div>
