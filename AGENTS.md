@@ -252,3 +252,14 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - **Entrance Choreography**: Sincronización de animaciones de entrada (`duration-1000`) con retrasos escalonados por set.
 - **Archivos relacionados**:
   - `src/app/(app)/match/[matchId]/result/page.tsx`
+
+### ✅ Elevación de Agenda y Match Day Hero (Uma Edition)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Match Day Hero**: Evolución de la agenda del dashboard que promueve el primer evento del día a un componente Hero de alta fidelidad con iluminación ambiental (`blur-[120px]`), glassmorphism (`backdrop-blur-2xl`) y botones de acción de 64px (`h-16`).
+  - **Contextual Intelligence**: El Hero adapta su contenido y acciones según sea un "Turno Abierto" (Unirse/Detalles) o un "Partido Confirmado" (Ver Partido).
+  - **BottomNav Polish**: Estandarización de las etiquetas de navegación al formato V9+ micro-typography (`text-[9px] font-black uppercase tracking-[0.2em]`).
+- **Archivos relacionados**:
+  - `src/components/dashboard/match-day-hero.tsx`
+  - `src/app/(app)/me/page.tsx`
+  - `src/components/navigation/bottom-nav.tsx`

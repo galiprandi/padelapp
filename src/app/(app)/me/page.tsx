@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { TurnCard } from "@/components/turns/turn-card";
+import { MatchDayHero } from "@/components/dashboard/match-day-hero";
 import { UserRankingCard } from "@/components/ranking/user-ranking-stats";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
@@ -86,6 +87,9 @@ export default async function DashboardPage() {
       data: match,
     })),
   ].sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  const heroItem = agendaItems.length > 0 && isToday(agendaItems[0].date) ? agendaItems[0] : null;
+  const listAgendaItems = heroItem ? agendaItems.slice(1) : agendaItems;
 
   const greeting = getGreeting();
 
@@ -183,6 +187,12 @@ export default async function DashboardPage() {
         </section>
       )}
 
+      {heroItem && (
+        <section className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500">
+          <MatchDayHero item={heroItem} viewerId={viewerId} />
+        </section>
+      )}
+
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-700">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">Mi Agenda</h2>
@@ -191,22 +201,14 @@ export default async function DashboardPage() {
           </Button>
         </div>
         <div className="grid gap-3">
-          {agendaItems.length > 0 ? (
-            agendaItems.map((item, index) => {
-              const isMatchDay = isToday(item.date);
+          {listAgendaItems.length > 0 || heroItem ? (
+            listAgendaItems.map((item, index) => {
               return (
                 <div
                   key={item.id}
-                  className={cn(
-                    "relative animate-in fade-in slide-in-from-bottom-4 duration-1000",
-                    isMatchDay && "z-10"
-                  )}
+                  className="animate-in fade-in slide-in-from-bottom-4 duration-1000"
                   style={{ animationDelay: `${800 + (index * 100)}ms` }}
                 >
-                  {isMatchDay && (
-                    <div className="absolute -left-1 -top-1 -right-1 -bottom-1 bg-primary/5 rounded-[2.1rem] blur-sm -z-10 animate-pulse border border-primary/20" />
-                  )}
-
                   {item.type === "turn" ? (
                     <TurnCard
                       turn={item.data}
@@ -217,16 +219,9 @@ export default async function DashboardPage() {
                     <MatchResultCompact
                       match={item.data as MatchResultCompactMatch}
                       detailUrl={`/match/${item.id}`}
-                      label={isMatchDay ? "¡Hoy jugás!" : "Próximo partido"}
+                      label="Próximo partido"
                       viewerId={viewerId}
                     />
-                  )}
-
-                  {isMatchDay && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary text-[8px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 animate-bounce">
-                      <Zap className="h-2.5 w-2.5 fill-current" />
-                      Hoy
-                    </div>
                   )}
                 </div>
               );
