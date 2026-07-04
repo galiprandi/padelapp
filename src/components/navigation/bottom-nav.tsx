@@ -63,8 +63,8 @@ export function BottomNav({
                 aria-hidden="true"
               />
               <span className={cn(
-                "mt-1 text-[10px] font-black tracking-tight transition-opacity duration-200",
-                isActive ? "opacity-100" : "opacity-70"
+                "mt-1 text-[9px] font-black uppercase tracking-[0.2em] transition-opacity duration-200",
+                isActive ? "opacity-100" : "opacity-40"
               )}>
                 {item.label}
               </span>
