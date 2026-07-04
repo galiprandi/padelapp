@@ -35,7 +35,7 @@ export function PwaInstallBanner() {
     <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-primary/5 p-5 animate-in fade-in slide-in-from-top-4 duration-500">
       <div className="flex items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 shadow-inner">
-          <Smartphone className="h-6 w-6 text-primary" />
+          <Smartphone className="h-6 w-6 text-primary" aria-hidden="true" />
         </div>
 
         <div className="flex-1 space-y-1 pr-6">
@@ -49,9 +49,10 @@ export function PwaInstallBanner() {
 
         <button
           onClick={handleDismiss}
-          className="absolute right-4 top-4 rounded-full p-1 text-muted-foreground/50 hover:bg-primary/10 hover:text-primary transition-colors"
+          aria-label="Cerrar"
+          className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground/50 hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -64,7 +65,7 @@ export function PwaInstallBanner() {
         >
           <Link href="/install">
             Ver cómo instalar
-            <ChevronRight className="h-3 w-3 ml-0.5" />
+            <ChevronRight className="h-3 w-3 ml-0.5" aria-hidden="true" />
           </Link>
         </Button>
       </div>
