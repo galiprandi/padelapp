@@ -262,9 +262,16 @@ export default function ComponentCatalogPage() {
               <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">📋 Formularios V9+</h2>
               <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-2xl shadow-2xl space-y-8">
                 <div className="space-y-3">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1">Label Premium V9</Label>
+                  <Label
+                    requiredIndicator="*"
+                    className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-1"
+                  >
+                    Campo Requerido V9
+                  </Label>
                   <Input
-                    placeholder="Input V9 High-Fidelity"
+                    placeholder="Input con aria-required"
+                    required
+                    aria-required="true"
                     className="h-14 rounded-2xl bg-background/50 border-border/40 focus:bg-background transition-all font-medium px-6"
                   />
                 </div>
