@@ -238,7 +238,7 @@ export default async function DashboardPage() {
                     <Button className="w-full rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] text-sm" asChild>
                       <Link href="/turnos">Explorar turnos</Link>
                     </Button>
-                    <Button variant="ghost" className="w-full rounded-2xl font-black h-12 text-muted-foreground uppercase tracking-[0.2em] text-[10px] active:scale-[0.98]" asChild>
+                    <Button variant="ghost" className="w-full rounded-2xl font-black h-14 text-muted-foreground uppercase tracking-[0.2em] text-[11px] active:scale-[0.98]" asChild>
                       <Link href="/ranking">Ver ranking global</Link>
                     </Button>
                   </div>
