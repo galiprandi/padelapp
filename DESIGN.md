@@ -122,5 +122,10 @@ Este documento registra las decisiones de diseño, patrones de UI y arquitectura
 ## 15. Estandarización de UX e Inteligencia de Contexto (V9+)
 - **Universal Quick Join**: `TurnCard` elimina la restricción de "Recomendados" para habilitar la acción de "Unirse" en cualquier vista de lista (Dashboard, Turnos), optimizando el flujo de inscripción.
 - **Match Time Context**: En eventos que ocurren en el día actual, `MatchResultCompact` prioriza la visualización de la hora por sobre la fecha para proporcionar información accionable inmediata.
-- **Unified Recent Form**: Se unifica el lenguaje visual de los puntos de "Recent Form" (W/L) en Dashboard, Ranking y Perfiles Públicos, utilizando el estándar de puntos minimalistas con sombras de resplandor para victorias.
+- **Unified Recent Form**: Se unifica el lenguaje visual de los puntos de "Recent Form" (W/L) en Dashboard, Ranking y Perfiles Públicos, utilizando el estándar de puntos minimalistas con sombras de resplandor para victorias (`shadow-[0_0_8px_theme(colors.emerald.500/0.4)]`).
 - **Micro-typography Consistency**: Los badges de Win Rate y nivel en banners competitivos se estandarizan con `tracking-[0.2em]` para alinearse con la jerarquía de metadatos V9.
+- **V9+ Public Profile Elevation**: Los perfiles públicos (`/p/[userId]`) se consolidan bajo el estándar de alta fidelidad:
+  - **Career Stats Grid**: Grid 2x2 con iconos de fondo (`Target`, `TrendingUp`), `shadow-xl`, y micro-typography quirúrgica.
+  - **Surface Standards**: Uso sistemático de `backdrop-blur-2xl` y `bg-card/60` con contenedores `rounded-[2rem]`.
+  - **Hero refinement**: Avatares de 128px y eliminación de píldoras de forma redundantes para priorizar el grid de estadísticas.
+- **Standardized Competitive Banners**: `UserRankingBanner` y `UserRankingCard` se unifican con `p-10` (banner), `shadow-2xl` y efectos de cristal esmeralda para la reputación, reforzando el sentimiento de estatus.
