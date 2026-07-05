@@ -84,11 +84,13 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
           description="Posiciones actualizadas según resultados confirmados y actividad reciente."
           size="lg"
         />
-        <div className="flex items-center gap-2 px-1 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/10 bg-muted/5 w-fit text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
           <History className="h-3 w-3" />
           Actualizado el {lastUpdate.toLocaleDateString()} a las {lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
+
+      <RankingSearch />
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
@@ -108,7 +110,7 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
       <Tabs defaultValue="individual" className="w-full">
         <div className="space-y-6">
           <TabsList className="bg-muted/40 p-1 rounded-2xl h-12 border border-border/20 backdrop-blur-sm w-full">
-            <TabsTrigger value="individual" className="flex-1 rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-widest text-[10px]">
+            <TabsTrigger value="individual" className="flex-1 rounded-xl h-full font-black data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 transition-all uppercase tracking-[0.2em] text-[11px]">
               Ranking Individual
             </TabsTrigger>
           </TabsList>
