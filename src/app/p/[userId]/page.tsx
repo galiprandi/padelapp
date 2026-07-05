@@ -120,16 +120,16 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
       {/* Ambient Light Effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] pointer-events-none">
-        <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-primary/20 blur-[100px] rounded-full animate-pulse" />
+        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
       </div>
 
-      <section className="relative z-10 space-y-8 text-center animate-in fade-in slide-in-from-top-8 duration-700">
+      <section className="relative z-10 space-y-8 text-center animate-in fade-in slide-in-from-top-8 duration-1000">
         <div className="flex flex-col items-center gap-6">
           <div className="relative">
             <PlayerAvatar
               name={displayName}
               image={user.image ?? undefined}
-              size={120}
+              size={128}
               className="border-4 border-background shadow-2xl ring-1 ring-primary/20"
             />
             <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-black text-lg shadow-lg border-4 border-background ring-1 ring-primary/20">
@@ -156,25 +156,9 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
             </div>
           </div>
 
-          {recentForm.length > 0 && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-card/40 border border-border/40 backdrop-blur-md shadow-sm">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mr-2">Forma reciente:</span>
-              <div className="flex gap-1.5">
-                {recentForm.map((result, i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      "h-2 w-2 rounded-full shadow-sm",
-                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 px-2">
+        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 px-2">
           <UserRankingBanner
             position={user.rankingPosition}
             score={user.rankingScore}
@@ -186,31 +170,35 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-          <div className="flex flex-col gap-3 rounded-3xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              <Target className="h-3 w-3 text-primary" />
+        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400 px-2">
+          <div className="flex flex-col gap-4 rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Target className="h-16 w-16 text-primary" />
+            </div>
+            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 relative z-10">
               Efectividad
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-black">{winRate}%</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">Win Rate</span>
+            <div className="flex items-baseline gap-1 relative z-10">
+              <span className="text-4xl font-black tracking-tighter">{winRate}%</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">WR</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 rounded-3xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-              <TrendingUp className="h-3 w-3 text-primary" />
-              Forma Reciente
+          <div className="flex flex-col gap-4 rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <TrendingUp className="h-16 w-16 text-primary" />
             </div>
-            <div className="flex gap-1.5 pt-1">
+            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 relative z-10">
+              Forma
+            </div>
+            <div className="flex gap-2 pt-2 relative z-10">
               {recentForm.length > 0 ? (
                 recentForm.map((result, i) => (
                   <div
                     key={i}
                     className={cn(
-                      "h-2 w-2 rounded-full",
-                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500/40"
+                      "h-2.5 w-2.5 rounded-full shadow-sm transition-transform hover:scale-125",
+                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_theme(colors.emerald.500/0.4)]" : "bg-rose-500/30"
                     )}
                   />
                 ))
@@ -222,8 +210,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
         </div>
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
-            <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/40 p-6 backdrop-blur-md shadow-xl">
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500">
+            <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl">
               <div className="absolute top-0 right-0 p-4 opacity-5">
                 <Swords className="h-16 w-16 text-primary" />
               </div>
@@ -312,8 +300,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
         </div>
       </section>
 
-      <div className="relative z-10 flex flex-col gap-3 pt-6 px-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
-        <Button asChild variant="outline" className="w-full rounded-2xl h-14 font-black uppercase tracking-widest text-[11px] border-border/40 bg-card/40 backdrop-blur-sm active:scale-[0.98] shadow-sm">
+      <div className="relative z-10 flex flex-col gap-3 pt-6 px-2 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-700">
+        <Button asChild variant="outline" className="w-full rounded-[2rem] h-16 font-black uppercase tracking-[0.2em] text-[11px] border-border/40 bg-card/60 backdrop-blur-2xl active:scale-[0.98] shadow-sm transition-all duration-300">
           <Link href="/ranking">Volver al ranking global</Link>
         </Button>
       </div>

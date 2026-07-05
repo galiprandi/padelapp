@@ -263,3 +263,14 @@ Este documento define el contexto y las responsabilidades para agentes automatiz
   - `src/components/dashboard/match-day-hero.tsx`
   - `src/app/(app)/me/page.tsx`
   - `src/components/navigation/bottom-nav.tsx`
+
+### ✅ Refinamiento de Perfil Público y Banners Competitivos (V9+ High-Fidelity)
+- **Estado**: Implementado
+- **Funcionalidades**:
+  - **Public Profile Consolidado**: Evolución de `/p/[userId]` con un grid de estadísticas de carrera (Win Rate, Forma) que utiliza iconos de fondo (`Target`, `TrendingUp`), `shadow-xl` y `backdrop-blur-2xl`.
+  - **Career Intelligence**: Eliminación de píldoras redundantes para priorizar una visualización quirúrgica de métricas competitivas.
+  - **V9+ Surface Standards**: Aplicación sistemática de `rounded-[2rem]` para tarjetas y `rounded-[2.5rem]` para banners, con iluminación ambiental ampliada (`blur-[120px]`).
+  - **Competitive Banners**: Refactor de `UserRankingBanner` (`p-10`, `shadow-2xl`) y `UserRankingCard` con efectos de cristal esmeralda para la reputación y micro-tipografía V9 (`tracking-[0.2em]`).
+- **Archivos relacionados**:
+  - `src/app/p/[userId]/page.tsx`
+  - `src/components/ranking/user-ranking-stats.tsx`
