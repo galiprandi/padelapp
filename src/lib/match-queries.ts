@@ -4,12 +4,12 @@ import { getMatchWinner } from "./utils";
 
 export async function getEnhancedUserMatches(
   userId: string,
-  statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED",
+  statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED" | "CANCELLED",
   limit = 20
 ): Promise<MatchResultCompactMatch[]> {
   const matches = await prisma.match.findMany({
     where: {
-      status: statusFilter,
+      status: statusFilter ?? { not: "CANCELLED" },
       players: {
         some: { userId },
       },

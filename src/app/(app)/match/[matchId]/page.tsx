@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getMatchByIdAction, confirmMatchResultAction } from '@/app/(app)/match/actions';
+import { getMatchByIdAction, confirmMatchResultAction, cancelMatchAction } from '@/app/(app)/match/actions';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +7,7 @@ import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users, Sparkles, MapPin } from "lucide-react";
+import { PlusCircle, FileText, CheckCircle2, Clock, AlertCircle, Users, Sparkles, MapPin, Edit3, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,31 @@ async function ConfirmResultForm({ matchId }: { matchId: string }) {
       <Button type="submit" className="w-full rounded-2xl h-14 text-lg font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98] bg-primary hover:bg-primary/90">
         <CheckCircle2 className="mr-2 h-6 w-6" />
         Confirmar Resultado
+      </Button>
+    </form>
+  );
+}
+
+async function CancelMatchForm({ matchId }: { matchId: string }) {
+  async function handleCancel() {
+    "use server";
+    const result = await cancelMatchAction(matchId);
+    if (result.status === "ok") {
+        redirect("/match");
+    }
+    // Note: In a real RSC scenario we might want to handle the error state better,
+    // but for now this follows the pattern of redirecting only on success.
+  }
+
+  return (
+    <form action={handleCancel} className="w-full">
+      <Button
+        type="submit"
+        variant="ghost"
+        className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98]"
+      >
+        <Trash2 className="mr-2 h-4 w-4" />
+        Eliminar Partido
       </Button>
     </form>
   );
@@ -72,6 +97,32 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   // Verificar si el partido está cerrado (tiene resultado o está confirmado)
   const isClosed = Boolean(match.score) || match.status === 'CONFIRMED';
+  const isCancelled = match.status === 'CANCELLED';
+
+  if (isCancelled) {
+     return (
+      <div className="flex flex-col gap-6 py-10 px-6">
+        <PageHeader
+          size="lg"
+          title="Partido cancelado"
+          description="Este partido ha sido cancelado por el organizador."
+          align="center"
+          action={
+            <Button
+              asChild
+              variant="default"
+              className="w-full justify-center py-2 text-base rounded-2xl font-black h-12 shadow-lg shadow-primary/20 active:scale-[0.98]"
+            >
+              <Link href="/match">
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Volver a mis partidos
+              </Link>
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
 
   // Agrupar jugadores por equipo
   const teamsMap = new Map();
@@ -186,24 +237,52 @@ export default async function MatchPage({ params }: MatchPageProps) {
                     Ingresar Resultado
                   </Link>
                 </Button>
-                <ShareButton
-                  title="Invitación a partido de Pádel"
-                  text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
-                  url={createMagicLink({ resource: "match", identifier: match.id }).url}
-                  variant="outline"
-                  aria-label="Compartir invitación al partido"
-                  className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
-                />
+                <div className="flex gap-3">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="flex-1 h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                  >
+                    <Link href={`/match/${match.id}/edit`}>
+                      <Edit3 className="mr-2 h-4 w-4" />
+                      Editar
+                    </Link>
+                  </Button>
+                  <ShareButton
+                    title="Invitación a partido de Pádel"
+                    text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
+                    url={createMagicLink({ resource: "match", identifier: match.id }).url}
+                    variant="outline"
+                    aria-label="Compartir invitación al partido"
+                    className="flex-1 h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                  />
+                </div>
+                {viewerId === match.creatorId && <CancelMatchForm matchId={match.id} />}
               </>
             ) : (
-              <ShareButton
-                title="Resultado de Pádel"
-                text="¡Mira el resultado de nuestro partido de pádel!"
-                url={createMagicLink({ resource: "match", identifier: match.id }).url}
-                variant="outline"
-                aria-label="Compartir resultado del partido"
-                className="w-full h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
-              />
+              <>
+                <div className="flex gap-3">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="flex-1 h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                  >
+                    <Link href={`/match/${match.id}/edit`}>
+                      <Edit3 className="mr-2 h-4 w-4" />
+                      Editar
+                    </Link>
+                  </Button>
+                  <ShareButton
+                    title="Resultado de Pádel"
+                    text="¡Mira el resultado de nuestro partido de pádel!"
+                    url={createMagicLink({ resource: "match", identifier: match.id }).url}
+                    variant="outline"
+                    aria-label="Compartir resultado del partido"
+                    className="flex-1 h-12 rounded-2xl font-black border-primary/20 hover:bg-primary/5 text-primary active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]"
+                  />
+                </div>
+                {viewerId === match.creatorId && match.status !== 'CONFIRMED' && <CancelMatchForm matchId={match.id} />}
+              </>
             )}
           </div>
         }

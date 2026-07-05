@@ -19,6 +19,7 @@ const MATCH_STATUS = {
   PENDING: "PENDING",
   CONFIRMED: "CONFIRMED",
   DISPUTED: "DISPUTED",
+  CANCELLED: "CANCELLED",
 } as const;
 
 type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
@@ -33,6 +34,8 @@ function formatStatus(status: MatchStatus): string {
       return "Confirmado";
     case MATCH_STATUS.DISPUTED:
       return "En disputa";
+    case MATCH_STATUS.CANCELLED:
+      return "Cancelado";
     case MATCH_STATUS.PENDING:
     default:
       return "Pendiente";

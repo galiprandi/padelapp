@@ -1,12 +1,12 @@
 import { auth } from "@/auth";
-import { getTurnByIdAction, joinTurnAction, leaveTurnAction, convertTurnToMatchAction } from "@/app/(app)/turnos/actions";
+import { getTurnByIdAction, joinTurnAction, leaveTurnAction, convertTurnToMatchAction, cancelTurnAction } from "@/app/(app)/turnos/actions";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { PageHeader } from "@/components/page-header";
 import { levelOptions } from "@/lib/mock-data";
-import { Calendar, Clock, Trophy, LogOut, UserPlus, Play, Users, ChevronRight, Zap } from "lucide-react";
+import { Calendar, Clock, Trophy, LogOut, UserPlus, Play, Users, ChevronRight, Zap, Edit3, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import appSettings from "@/config/app-settings.json";
@@ -49,6 +49,27 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   const turn = result.turn;
   const viewerId = session?.user?.id;
   const isJoined = turn.players.some((p) => p.userId === viewerId);
+  const isCancelled = turn.status === "CANCELLED";
+
+  if (isCancelled) {
+     return (
+      <main className="relative mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-48 overflow-hidden">
+        <PageHeader
+          title="Turno cancelado"
+          align="center"
+          size="lg"
+          description="Este turno ha sido cancelado por el organizador."
+        />
+        <div className="flex flex-col gap-4">
+           <Button asChild className="w-full rounded-[2rem] h-16 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]" size="lg">
+             <Link href="/turnos">
+                Ver otros turnos
+             </Link>
+           </Button>
+        </div>
+      </main>
+    );
+  }
   const isFull = turn.players.length >= turn.maxPlayers;
   const suggestedLevelLabel = levelOptions.find((l) => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel;
 
@@ -193,7 +214,18 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           ) : isFull ? (
             <div className="flex flex-col gap-4">
               {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
-                <StartMatchForm turnId={id} />
+                <>
+                  <StartMatchForm turnId={id} />
+                  <div className="flex gap-4">
+                    <Button asChild variant="outline" className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary">
+                      <Link href={`/turnos/${id}/editar`}>
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Editar
+                      </Link>
+                    </Button>
+                    <CancelTurnForm turnId={id} />
+                  </div>
+                </>
               )}
               <Button disabled className="w-full rounded-[2rem] h-16 opacity-50 bg-muted text-muted-foreground cursor-not-allowed font-black" size="lg">
                 {turn.status === "COMPLETED" ? "Turno finalizado" : "Turno completo"}
@@ -205,14 +237,57 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <div className="w-full rounded-[2rem] h-16 flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-black text-xl shadow-inner animate-in zoom-in-95 duration-500">
                 ¡Ya estás anotado!
               </div>
+              {viewerId === turn.creatorId && (
+                 <div className="flex gap-4">
+                    <Button asChild variant="outline" className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary">
+                      <Link href={`/turnos/${id}/editar`}>
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Editar
+                      </Link>
+                    </Button>
+                    <CancelTurnForm turnId={id} />
+                  </div>
+              )}
               <LeaveTurnForm turnId={id} />
             </div>
           ) : (
-            <JoinTurnForm turnId={id} />
+            <div className="flex flex-col gap-4">
+               {viewerId === turn.creatorId && (
+                 <div className="flex gap-4">
+                    <Button asChild variant="outline" className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary">
+                      <Link href={`/turnos/${id}/editar`}>
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Editar
+                      </Link>
+                    </Button>
+                    <CancelTurnForm turnId={id} />
+                  </div>
+              )}
+              <JoinTurnForm turnId={id} />
+            </div>
           )}
         </div>
       </div>
     </main>
+  );
+}
+
+function CancelTurnForm({ turnId }: { turnId: string }) {
+  async function handleCancel() {
+    "use server";
+    const result = await cancelTurnAction(turnId);
+    if (result.status === "ok") {
+        redirect("/turnos");
+    }
+  }
+
+  return (
+    <form action={handleCancel} className="flex-1">
+      <Button type="submit" variant="ghost" className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98]" size="sm">
+        <Trash2 className="mr-2 h-4 w-4" />
+        Eliminar
+      </Button>
+    </form>
   );
 }
 

@@ -31,6 +31,7 @@ const MATCH_STATUS = {
   PENDING: "PENDING",
   CONFIRMED: "CONFIRMED",
   DISPUTED: "DISPUTED",
+  CANCELLED: "CANCELLED",
 } as const;
 
 type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
@@ -315,6 +316,50 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
   }
 }
 
+export async function cancelMatchAction(matchId: string): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return { status: "error", message: "Tenés que iniciar sesión para cancelar el partido." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: matchId },
+      select: { creatorId: true, status: true },
+    });
+
+    if (!match) {
+      return { status: "error", message: "No encontramos el partido." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede cancelar el partido." };
+    }
+
+    if (match.status === MATCH_STATUS.CONFIRMED) {
+      return { status: "error", message: "No se puede cancelar un partido ya confirmado." };
+    }
+
+    await prisma.match.update({
+      where: { id: matchId },
+      data: { status: MATCH_STATUS.CANCELLED },
+    });
+
+    revalidatePath("/match");
+    revalidatePath(`/match/${matchId}`);
+    revalidatePath("/me");
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("cancelMatchAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos cancelar el partido. Intentá nuevamente.",
+    };
+  }
+}
+
 interface SwapMatchPlayersInput {
   matchId: string;
   player1Id: string;
@@ -498,6 +543,9 @@ export async function submitMatchResultAction(
 
 interface UpdateMatchDetailsInput {
   matchId: string;
+  date?: string; // ISO string
+  sets?: number;
+  matchType?: MatchType;
   club?: string | null;
   courtNumber?: string | null;
   notes?: string | null;
@@ -517,7 +565,7 @@ export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): 
   try {
     const match = await prisma.match.findUnique({
       where: { id: input.matchId },
-      select: { creatorId: true },
+      select: { creatorId: true, status: true },
     });
 
     if (!match) {
@@ -528,16 +576,25 @@ export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): 
       return { status: "error", message: "Only the creator can edit the match." };
     }
 
+    if (match.status === MATCH_STATUS.CONFIRMED && (input.sets !== undefined || input.matchType !== undefined)) {
+        return { status: "error", message: "No se puede editar el formato de un partido ya confirmado." };
+    }
+
     await prisma.match.update({
       where: { id: input.matchId },
       data: {
+        date: input.date ? new Date(input.date) : undefined,
+        sets: input.sets,
+        matchType: input.matchType,
         club: input.club === undefined ? undefined : input.club?.trim() || null,
         courtNumber: input.courtNumber === undefined ? undefined : input.courtNumber?.trim() || null,
         notes: input.notes === undefined ? undefined : input.notes?.trim() || null,
       },
     });
 
+    revalidatePath("/match");
     revalidatePath(`/match/${input.matchId}`);
+    revalidatePath("/me");
 
     return { status: "ok" };
   } catch (error) {
