@@ -19,7 +19,7 @@ import { RankingSearch } from "@/components/ranking/ranking-search";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
 import { ShareButton } from "@/components/share/share-button";
 import { SlotDisplay } from "@/components/matches/slot-display";
-import { BottomNav } from "@/components/navigation/bottom-nav";
+import { NeuralHub } from "@/components/navigation/neural-hub";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
@@ -384,12 +384,12 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="navigation" className="space-y-6">
-              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🧭 Navegación</h2>
-              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl overflow-hidden">
-                <BottomNav
-                  position="static"
-                  notificationsCount={3}
-                />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 border-b border-border/20 pb-2">🧭 Navegación (Neural Hub)</h2>
+              <div className="p-8 border border-border/40 rounded-[2.5rem] bg-card/30 backdrop-blur-md shadow-xl overflow-hidden min-h-[300px] relative">
+                <p className="text-[10px] font-mono text-muted-foreground mb-4">Trigger flotante activo en la App. Vista previa de interfaz:</p>
+                <div className="scale-75 origin-top">
+                  <NeuralHub notificationsCount={3} />
+                </div>
               </div>
             </section>
           </div>

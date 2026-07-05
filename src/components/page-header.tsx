@@ -1,33 +1,22 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Cpu } from "lucide-react";
 
 type TextAlign = 'left' | 'center' | 'right';
 type TitleSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 interface PageHeaderProps {
-  /** Main title of the page */
   title: string;
-  /** Optional subtitle or description */
   description?: string | ReactNode;
-  /** Optional call-to-action component (e.g., Button) */
   action?: ReactNode;
-  /** Optional icon before the title */
   icon?: ReactNode;
-  /** Text alignment */
   align?: TextAlign;
-  /** Size of the title */
   size?: TitleSize;
-  /** Additional class names */
   className?: string;
-  /** Additional class names for the title */
   titleClassName?: string;
-  /** Additional class names for the description */
   descriptionClassName?: string;
-  /** Additional class names for the action container */
   actionClassName?: string;
-  /** Optional back link href */
   backHref?: string;
 }
 
@@ -45,21 +34,6 @@ const titleSizes: Record<TitleSize, string> = {
   '2xl': 'text-5xl',
 };
 
-/**
- * Flexible page header component with title, description, and optional CTA.
- * Supports different alignments, sizes, and includes responsive design.
- * 
- * @example
- * ```tsx
- * <PageHeader 
- *   title="Nuevo Partido"
- *   description="Invita jugadores y configura el partido"
- *   action={<Button>Crear Partido</Button>}
- *   align="left"
- *   size="lg"
- * />
- * ```
- */
 export function PageHeader({
   title,
   description,
@@ -74,25 +48,33 @@ export function PageHeader({
   backHref,
 }: PageHeaderProps) {
   return (
-    <header className={cn("space-y-3 w-full", alignClasses[align], className)}>
+    <header className={cn("space-y-4 w-full relative", alignClasses[align], className)}>
       {backHref && (
         <div className={cn("flex mb-4 animate-in fade-in slide-in-from-left-4 duration-500", align === 'center' && 'justify-center')}>
           <Link
             href={backHref}
-            className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-all active:scale-95"
+            className="group flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 hover:text-primary transition-all active:scale-95"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted/20 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all group-hover:border-primary/50 group-hover:bg-primary/10 group-hover:text-primary">
+              <ChevronLeft className="h-4 w-4" />
             </div>
-            Volver
+            BACK_CMD
           </Link>
         </div>
       )}
+
       <div className={cn("flex items-center gap-3", align === 'center' && 'justify-center')}>
-        {icon && <div className="text-muted-foreground">{icon}</div>}
+        <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 border border-primary/20 rounded md:hidden">
+          <Cpu className="h-3 w-3 text-primary" />
+          <span className="text-[8px] font-mono text-primary uppercase">HUD_v1</span>
+        </div>
+      </div>
+
+      <div className={cn("flex items-center gap-3", align === 'center' && 'justify-center')}>
+        {icon && <div className="text-primary">{icon}</div>}
         <h1 
           className={cn(
-            "font-black text-foreground tracking-tight animate-in fade-in slide-in-from-left-4 duration-700",
+            "font-black text-white tracking-tighter italic uppercase animate-in fade-in slide-in-from-left-4 duration-700",
             titleSizes[size],
             titleClassName
           )}
@@ -103,11 +85,8 @@ export function PageHeader({
       
       {description && (
         <div className={cn(
-          "text-muted-foreground/80 max-w-3xl animate-in fade-in slide-in-from-left-4 duration-1000",
+          "text-white/50 font-mono text-[10px] uppercase tracking-widest max-w-3xl animate-in fade-in slide-in-from-left-4 duration-1000",
           align === 'left' ? 'text-left' : align === 'center' ? 'mx-auto text-center' : 'ml-auto text-right',
-          {
-            'text-sm font-medium leading-relaxed': typeof description === 'string',
-          },
           descriptionClassName
         )}>
           {description}
@@ -116,7 +95,7 @@ export function PageHeader({
       
       {action && (
         <div className={cn(
-          "pt-2",
+          "pt-4",
           {
             'flex justify-center': align === 'center',
             'flex justify-end': align === 'right',
@@ -126,6 +105,9 @@ export function PageHeader({
           {action}
         </div>
       )}
+
+      {/* Decorative HUD line */}
+      <div className="absolute -bottom-2 left-0 w-full h-[1px] bg-gradient-to-r from-primary/40 to-transparent opacity-30" />
     </header>
   );
 }
