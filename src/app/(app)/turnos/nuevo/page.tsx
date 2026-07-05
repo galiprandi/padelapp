@@ -99,7 +99,11 @@ export default function NewTurnPage() {
             </CardHeader>
             <CardContent className="space-y-10 pb-12">
               <div className="space-y-4">
-                <Label htmlFor="club" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                <Label
+                  htmlFor="club"
+                  requiredIndicator="*"
+                  className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2"
+                >
                   Club y cancha
                 </Label>
                 <Input
@@ -108,47 +112,71 @@ export default function NewTurnPage() {
                   value={formData.club}
                   onChange={(e) => setFormData({ ...formData, club: e.target.value })}
                   required
+                  aria-required="true"
                   className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all text-lg font-bold px-6 placeholder:text-muted-foreground/30"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <Label htmlFor="date" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Fecha</Label>
+                  <Label
+                    htmlFor="date"
+                    requiredIndicator="*"
+                    className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2"
+                  >
+                    Fecha
+                  </Label>
                   <Input
                     id="date"
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     required
+                    aria-required="true"
                     className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all font-bold px-5"
                   />
                 </div>
                 <div className="space-y-4">
-                  <Label htmlFor="time" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Hora</Label>
+                  <Label
+                    htmlFor="time"
+                    requiredIndicator="*"
+                    className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2"
+                  >
+                    Hora
+                  </Label>
                   <Input
                     id="time"
                     type="time"
                     value={formData.time}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                     required
+                    aria-required="true"
                     className="h-16 rounded-[1.25rem] bg-background/50 border-border/40 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all font-bold px-5"
                   />
                 </div>
               </div>
 
               <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                <Label
+                  id="duration-label"
+                  className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2"
+                >
                   <Clock className="h-3 w-3" />
                   Duración del turno
                 </Label>
-                <div className="grid grid-cols-3 gap-3">
+                <div
+                  role="radiogroup"
+                  aria-labelledby="duration-label"
+                  className="grid grid-cols-3 gap-3"
+                >
                   {DURATION_OPTIONS.map((option) => {
                     const isSelected = formData.duration === option.value;
                     return (
                       <button
                         key={option.value}
                         type="button"
+                        role="radio"
+                        aria-checked={isSelected}
                         onClick={() => setFormData({ ...formData, duration: option.value })}
                         className={cn(
                           "flex items-center justify-center py-4 rounded-[1.25rem] border transition-all text-sm font-black active:scale-[0.96]",
@@ -165,17 +193,26 @@ export default function NewTurnPage() {
               </div>
 
               <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                <Label
+                  id="players-label"
+                  className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2"
+                >
                   <Check className="h-3 w-3" />
                   Cupos totales
                 </Label>
-                <div className="grid grid-cols-2 gap-3">
+                <div
+                  role="radiogroup"
+                  aria-labelledby="players-label"
+                  className="grid grid-cols-2 gap-3"
+                >
                   {PLAYER_OPTIONS.map((option) => {
                     const isSelected = formData.maxPlayers === option.value;
                     return (
                       <button
                         key={option.value}
                         type="button"
+                        role="radio"
+                        aria-checked={isSelected}
                         onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
                         className={cn(
                           "flex items-center justify-between px-6 py-5 rounded-[1.25rem] border transition-all text-sm font-black text-left active:scale-[0.96]",
@@ -193,16 +230,25 @@ export default function NewTurnPage() {
               </div>
 
               <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2">
+                <Label
+                  id="level-label"
+                  className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2 flex items-center gap-2"
+                >
                   Nivel sugerido
                 </Label>
-                <div className="grid grid-cols-2 gap-3">
+                <div
+                  role="radiogroup"
+                  aria-labelledby="level-label"
+                  className="grid grid-cols-2 gap-3"
+                >
                   {levelOptions.map((option) => {
                     const isSelected = formData.suggestedLevel === option.value;
                     return (
                       <button
                         key={option.value}
                         type="button"
+                        role="radio"
+                        aria-checked={isSelected}
                         onClick={() => setFormData({ ...formData, suggestedLevel: option.value })}
                         className={cn(
                           "flex items-center justify-between px-6 py-5 rounded-[1.25rem] border transition-all text-sm font-black text-left active:scale-[0.96]",
