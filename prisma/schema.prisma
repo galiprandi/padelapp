@@ -152,6 +152,7 @@ enum MatchStatus {
   PENDING
   CONFIRMED
   DISPUTED
+  CANCELLED
 }
 
 enum MatchType {

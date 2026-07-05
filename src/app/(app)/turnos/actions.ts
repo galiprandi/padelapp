@@ -46,6 +46,52 @@ export async function createTurnAction(input: CreateTurnInput) {
   }
 }
 
+export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await prisma.turn.findUnique({
+      where: { id: turnId },
+      select: { creatorId: true, status: true },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede editar el turno" };
+    }
+
+    if (turn.status === "COMPLETED") {
+      return { status: "error", message: "No se puede editar un turno ya finalizado" };
+    }
+
+    await prisma.turn.update({
+      where: { id: turnId },
+      data: {
+        club: input.club,
+        date: new Date(input.date),
+        duration: input.duration,
+        maxPlayers: input.maxPlayers,
+        suggestedLevel: input.suggestedLevel,
+        notes: input.notes,
+      },
+    });
+
+    revalidatePath("/turnos");
+    revalidatePath(`/t/${turnId}`);
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("Error updating turn:", error);
+    return { status: "error", message: "Error al actualizar el turno" };
+  }
+}
+
 export async function joinTurnAction(turnId: string) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -252,5 +298,45 @@ export async function convertTurnToMatchAction(turnId: string) {
   } catch (error) {
     console.error("Error converting turn to match:", error);
     return { status: "error", message: "Error al convertir el turno en partido" };
+  }
+}
+
+export async function cancelTurnAction(turnId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await prisma.turn.findUnique({
+      where: { id: turnId },
+      select: { creatorId: true, status: true },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return { status: "error", message: "Solo el organizador puede cancelar el turno" };
+    }
+
+    if (turn.status === "COMPLETED") {
+      return { status: "error", message: "No se puede cancelar un turno ya finalizado" };
+    }
+
+    await prisma.turn.update({
+      where: { id: turnId },
+      data: { status: "CANCELLED" },
+    });
+
+    revalidatePath("/turnos");
+    revalidatePath(`/t/${turnId}`);
+    revalidatePath("/me");
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("Error cancelling turn:", error);
+    return { status: "error", message: "Error al cancelar el turno" };
   }
 }
