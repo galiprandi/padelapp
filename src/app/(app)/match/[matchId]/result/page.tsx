@@ -170,15 +170,15 @@ export default function MatchResultPage({
     });
   };
 
+  const subtitle = isClosed
+    ? `Marcador registrado: ${match.score}`
+    : "Ingresá los juegos ganados por cada equipo.";
+
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-bold text-foreground">Cargar Resultado</h1>
-        <p className="text-sm text-muted-foreground">
-          {isClosed
-            ? `Marcador registrado: ${match.score}`
-            : "Ingresá los juegos ganados por cada equipo."
-        </p>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -186,7 +186,9 @@ export default function MatchResultPage({
           <section className="flex flex-col items-center justify-center text-center py-10 rounded-2xl border border-border bg-card">
             <Trophy className="h-8 w-8 text-primary mb-3" />
             <h2 className="text-3xl font-bold mb-1">{match.score}</h2>
-            <p className="text-xs text-muted-foreground mb-6">Partido ya confirmado</p>
+            <p className="text-xs text-muted-foreground mb-6">
+              Partido ya confirmado
+            </p>
             <Button asChild className="w-full">
               <Link href={`/match/${match.id}`}>Volver al detalle</Link>
             </Button>
@@ -198,7 +200,9 @@ export default function MatchResultPage({
                 { length: Math.max(1, match.sets || 1) },
                 (_, setIndex) => (
                   <section key={setIndex} className="space-y-3">
-                    <h2 className="text-sm font-bold text-foreground">Set {setIndex + 1}</h2>
+                    <h2 className="text-sm font-bold text-foreground">
+                      Set {setIndex + 1}
+                    </h2>
 
                     <div className="flex flex-col gap-4">
                       {teams.map((team, teamIndex) => (
@@ -219,7 +223,9 @@ export default function MatchResultPage({
                                 ))}
                               </div>
                               <div className="flex flex-col min-w-0">
-                                <span className="text-xs text-muted-foreground">{team.label}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {team.label}
+                                </span>
                                 <span className="text-sm font-semibold text-foreground truncate">
                                   {team.players.map((p) => p.name).join(" & ")}
                                 </span>
@@ -268,7 +274,9 @@ export default function MatchResultPage({
             </div>
 
             <MatchNavigation
-              primaryButtonText={pending ? "Guardando..." : "Registrar Resultado"}
+              primaryButtonText={
+                pending ? "Guardando..." : "Registrar Resultado"
+              }
               onPrimaryClick={save}
               primaryDisabled={pending || isClosed}
               primaryLoading={pending}
