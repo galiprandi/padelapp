@@ -16,7 +16,12 @@ function resolveDisplayName(profile: GoogleProfile): string {
   return emailUser && emailUser.length > 0 ? emailUser : "Jugador";
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const {
+  handlers,
+  auth: _auth,
+  signIn,
+  signOut,
+} = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" },
   trustHost: true,
@@ -59,9 +64,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       const emailVerifiedField = (profile as GoogleProfile).email_verified;
-      const isEmailVerified = typeof emailVerifiedField === "string"
-        ? emailVerifiedField === "true"
-        : Boolean(emailVerifiedField);
+      const isEmailVerified =
+        typeof emailVerifiedField === "string"
+          ? emailVerifiedField === "true"
+          : Boolean(emailVerifiedField);
 
       const adapterUser = user as AdapterUser;
 
@@ -79,4 +85,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
+export async function auth() {
+  if (process.env.AUTH_BYPASS === "true") {
+    const devUser = await prisma.user.upsert({
+      where: { email: "dev@padelapp.local" },
+      update: {},
+      create: {
+        email: "dev@padelapp.local",
+        displayName: "Dev Player",
+        alias: "DevPlayer",
+        level: 6,
+      },
+    });
+
+    return {
+      user: {
+        id: devUser.id,
+        displayName: devUser.displayName,
+        alias: devUser.alias,
+        level: devUser.level,
+        email: devUser.email,
+        image: devUser.image,
+      },
+      expires: new Date(Date.now() + 86400000).toISOString(),
+    } as unknown as Awaited<ReturnType<typeof _auth>>;
+  }
+  return _auth();
+}
+
+export { handlers, signIn, signOut };
 export const { GET, POST } = handlers;
