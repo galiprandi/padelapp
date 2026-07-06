@@ -17,6 +17,7 @@ export default async function ProfilePage() {
       alias: true,
       level: true,
       image: true,
+      email: true,
     },
   });
 
@@ -49,9 +50,7 @@ export default async function ProfilePage() {
           <p className="text-sm font-semibold text-foreground">
             {user.displayName}
           </p>
-          <p className="text-xs text-muted-foreground">
-            Nombre de Google (no editable)
-          </p>
+          <p className="text-xs text-muted-foreground">{user.email}</p>
         </div>
       </div>
 
