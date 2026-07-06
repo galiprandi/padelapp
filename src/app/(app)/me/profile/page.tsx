@@ -50,7 +50,9 @@ export default async function ProfilePage() {
           <p className="text-sm font-semibold text-foreground">
             {user.displayName}
           </p>
-          <p className="text-xs text-muted-foreground">{user.email}</p>
+          <p className="text-xs text-muted-foreground">
+            {user.alias || user.email}
+          </p>
         </div>
       </div>
 
