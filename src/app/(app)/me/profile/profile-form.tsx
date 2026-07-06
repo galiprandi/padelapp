@@ -75,6 +75,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
           value={alias}
           onChange={(event) => setAlias(event.target.value)}
           disabled={isSaving}
+          autoSelect
           className="h-12"
           aria-invalid={Boolean(aliasError)}
           aria-describedby={aliasError ? "alias-error" : undefined}
@@ -90,16 +91,22 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-sm font-semibold text-foreground">
+        <Label id="level-label" className="text-sm font-semibold text-foreground">
           Tu nivel de juego
         </Label>
-        <div className="grid grid-cols-1 gap-1.5">
+        <div
+          role="radiogroup"
+          aria-labelledby="level-label"
+          className="grid grid-cols-1 gap-1.5"
+        >
           {levelOptions.map((option) => {
             const isSelected = level === parseInt(option.value);
             return (
               <button
                 key={option.value}
                 type="button"
+                role="radio"
+                aria-checked={isSelected}
                 onClick={() => setLevel(parseInt(option.value))}
                 disabled={isSaving}
                 className={cn(
