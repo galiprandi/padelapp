@@ -10,6 +10,7 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight } from "lucide-react";
+import { PlayerAvatar } from "@/components/players/player-avatar";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import { getGreeting, cn, getMatchWinner } from "@/lib/utils";
 
@@ -33,6 +34,7 @@ export default async function DashboardPage() {
         matchesPlayed: true,
         wins: true,
         losses: true,
+        image: true,
       },
     }),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -105,13 +107,20 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Greeting */}
-      <div className="space-y-1">
-        <h1 className="text-xl font-bold text-foreground">
-          {greeting}, {displayName}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Tu actividad de pádel en un solo lugar.
-        </p>
+      <div className="flex items-center gap-3">
+        <PlayerAvatar
+          name={displayName}
+          image={user?.image ?? undefined}
+          size={44}
+        />
+        <div className="space-y-0.5">
+          <h1 className="text-xl font-bold text-foreground">
+            {greeting}, {displayName}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Tu actividad de pádel en un solo lugar.
+          </p>
+        </div>
       </div>
 
       {/* Stats row */}

@@ -21,8 +21,8 @@ export function TopBar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4",
-        className
+        "sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-background px-4",
+        className,
       )}
     >
       <div className="flex min-w-[80px] items-center">

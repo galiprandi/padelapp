@@ -35,7 +35,7 @@ export function BottomNav({
           "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]",
       )}
     >
-      <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background/95">
+      <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background">
         {navItems.slice(0, 2).map((item) => {
           const isActive =
             pathname === item.href ||
