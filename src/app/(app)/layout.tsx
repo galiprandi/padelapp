@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { BottomNav } from "@/components/navigation/bottom-nav";
+import { TopBar } from "@/components/navigation/top-bar";
 import { getPendingActions } from "@/lib/match-queries";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
-      <main className="flex-1 px-6 pt-6 pb-16">{children}</main>
+      <TopBar showLogo />
+      <main className="flex-1 px-5 pt-4 pb-20">{children}</main>
       <BottomNav notificationsCount={pendingActions.length} />
     </div>
   );

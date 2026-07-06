@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Smartphone, X, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Smartphone, X } from "lucide-react";
 
 export function PwaInstallBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,43 +30,34 @@ export function PwaInstallBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-primary/5 p-5 animate-in fade-in slide-in-from-top-4 duration-500">
-      <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 shadow-inner">
-          <Smartphone className="h-6 w-6 text-primary" aria-hidden="true" />
-        </div>
-
-        <div className="flex-1 space-y-1 pr-6">
-          <h3 className="text-sm font-black uppercase tracking-tight text-foreground">
-            Instalá la App
-          </h3>
-          <p className="text-[13px] font-medium leading-snug text-muted-foreground">
-            Accedé más rápido y recibí notificaciones instalando PadelApp en tu inicio.
-          </p>
-        </div>
-
-        <button
-          onClick={handleDismiss}
-          aria-label="Cerrar"
-          className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground/50 hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
-        >
-          <X className="h-4 w-4" aria-hidden="true" />
-        </button>
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <Smartphone className="h-4 w-4 text-primary" aria-hidden="true" />
       </div>
 
-      <div className="mt-4 flex items-center justify-end">
-        <Button
-          variant="link"
-          size="sm"
-          asChild
-          className="h-auto p-0 text-[11px] font-black uppercase tracking-widest text-primary flex items-center gap-1 hover:no-underline"
-        >
-          <Link href="/install">
-            Ver cómo instalar
-            <ChevronRight className="h-3 w-3 ml-0.5" aria-hidden="true" />
-          </Link>
-        </Button>
+      <div className="flex-1 space-y-0.5">
+        <h3 className="text-sm font-semibold text-foreground">
+          Instalá la App
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Accedé más rápido desde tu inicio.
+        </p>
       </div>
+
+      <button
+        onClick={handleDismiss}
+        aria-label="Cerrar"
+        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <X className="h-4 w-4" aria-hidden="true" />
+      </button>
+
+      <Link
+        href="/install"
+        className="text-xs font-semibold text-primary whitespace-nowrap"
+      >
+        Ver cómo
+      </Link>
     </div>
   );
 }

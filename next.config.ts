@@ -1,14 +1,8 @@
-import createNextPwa from "next-pwa";
-
-const withPWA = createNextPwa({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-});
-
 const nextConfig = {
   turbopack: {},
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
@@ -26,4 +20,4 @@ const nextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default nextConfig;

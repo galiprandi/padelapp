@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Clock, Users, Trophy, Loader2 } from "lucide-react";
+import { Clock, Users, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
@@ -23,7 +23,12 @@ interface TurnCardProps {
   isCreator?: boolean;
 }
 
-export function TurnCard({ turn, variant = "default", isJoined, isCreator }: TurnCardProps) {
+export function TurnCard({
+  turn,
+  variant = "default",
+  isJoined,
+  isCreator,
+}: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const dateObj = new Date(turn.date);
@@ -36,7 +41,9 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
   });
 
   const isRecommended = variant === "recommended";
-  const levelLabel = levelOptions.find(l => l.value === turn.suggestedLevel.toString())?.label ?? turn.suggestedLevel.toString();
+  const levelLabel =
+    levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
+      ?.label ?? turn.suggestedLevel.toString();
 
   const isTodayDate = isToday(dateObj);
   const isTomorrowDate = isTomorrow(dateObj);
@@ -59,77 +66,58 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-4 rounded-[2rem] p-4 backdrop-blur-md border transition-all active:scale-[0.98] duration-300 shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20",
-          isRecommended
-            ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
-            : "bg-card/50 border-border/40 hover:bg-card/80",
-          isPending && "opacity-70 pointer-events-none"
+          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30 active:scale-[0.98]",
+          isRecommended && "border-primary/20 bg-primary/5",
+          isPending && "opacity-70 pointer-events-none",
         )}
       >
-        {/* Date Bubble */}
-        <div
-          className={cn(
-            "flex flex-col items-center justify-center rounded-2xl px-3 py-3 text-primary min-w-[64px] h-[64px] relative shadow-md shadow-primary/20 transition-transform group-hover:scale-105",
-            isRecommended ? "bg-primary/25" : "bg-primary/15"
-          )}
-        >
-          <span className="text-[11px] font-black uppercase leading-none tracking-[0.1em]">
+        {/* Date */}
+        <div className="flex flex-col items-center justify-center rounded-lg bg-primary/10 px-2.5 py-2 min-w-[52px]">
+          <span className="text-[10px] font-medium uppercase text-primary">
             {month}
           </span>
-          <span className="text-3xl font-black leading-none mt-1 tracking-tighter">
+          <span className="text-xl font-bold text-primary leading-none mt-0.5">
             {day}
           </span>
-          {isTodayDate && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-8 items-center justify-center rounded-full bg-primary text-[8px] font-black uppercase tracking-tighter text-primary-foreground shadow-sm ring-2 ring-background animate-pulse">
-              Hoy
-            </span>
-          )}
-          {isTomorrowDate && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-10 items-center justify-center rounded-full bg-zinc-800 text-[8px] font-black uppercase tracking-tighter text-white shadow-sm ring-2 ring-background">
-              Mañana
-            </span>
-          )}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-hidden">
-          <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-black text-foreground text-base tracking-tight">{turn.club}</p>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {isCreator && (
-                <span className="rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest">
-                  Organizador
-                </span>
-              )}
-              {turn.status === "FULL" && (
-                <span className="rounded-full bg-muted px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 border border-border/40">
-                  Completo
-                </span>
-              )}
-            </div>
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold text-foreground">
+              {turn.club}
+            </p>
+            {isTodayDate && (
+              <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
+                Hoy
+              </span>
+            )}
+            {isTomorrowDate && (
+              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">
+                Mañana
+              </span>
+            )}
           </div>
 
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 text-primary/40" />
+          <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
               {timeStr}
             </span>
-            <span className="flex items-center gap-1.5">
-              <Users className="h-3.5 w-3.5 text-primary/40" />
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
               {turn.players.length}/{turn.maxPlayers}
             </span>
-            <span className="flex items-center gap-1.5 text-primary/60">
-              <Trophy className="h-3.5 w-3.5" />
-              {levelLabel}
-            </span>
+            <span className="text-primary">{levelLabel}</span>
           </div>
         </div>
 
-        {canJoin && (
+        {/* Status / Action */}
+        {canJoin ? (
           <button
             onClick={handleQuickJoin}
             disabled={isPending}
-            className="rounded-full bg-primary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-primary-foreground shrink-0 shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[80px]"
+            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shrink-0 transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[72px]"
           >
             {isPending ? (
               <Loader2 className="h-3 w-3 animate-spin" />
@@ -137,13 +125,15 @@ export function TurnCard({ turn, variant = "default", isJoined, isCreator }: Tur
               "Unirse"
             )}
           </button>
-        )}
-
-        {isJoined && !isCreator && (
-          <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 shrink-0 border border-emerald-500/20">
+        ) : isJoined ? (
+          <span className="rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary shrink-0">
             Inscripto
-          </div>
-        )}
+          </span>
+        ) : turn.status === "FULL" ? (
+          <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground shrink-0">
+            Completo
+          </span>
+        ) : null}
       </div>
     </Link>
   );

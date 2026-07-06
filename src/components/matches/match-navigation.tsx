@@ -57,8 +57,10 @@ export function MatchNavigation({
       type="button"
       variant={secondaryVariant}
       className={cn(
-        "w-full h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px]",
-        secondaryVariant === "ghost" ? "text-muted-foreground/40 hover:text-foreground" : ""
+        "w-full h-10",
+        secondaryVariant === "ghost"
+          ? "text-muted-foreground hover:text-foreground"
+          : "",
       )}
       onClick={onSecondaryClick}
     >
@@ -67,14 +69,14 @@ export function MatchNavigation({
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <Button
         type="button"
-        className="w-full h-16 rounded-[2rem] font-black shadow-2xl shadow-primary/30 text-base active:scale-[0.98] transition-all"
+        className="w-full h-12"
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
       >
-        {primaryLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+        {primaryLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {primaryButtonText}
       </Button>
 
@@ -84,8 +86,10 @@ export function MatchNavigation({
           type="button"
           variant={secondaryVariant}
           className={cn(
-            "w-full h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px]",
-            secondaryVariant === "ghost" ? "text-muted-foreground/40 hover:text-foreground" : ""
+            "w-full h-10",
+            secondaryVariant === "ghost"
+              ? "text-muted-foreground hover:text-foreground"
+              : "",
           )}
         >
           <Link href={secondaryHref}>{secondaryButtonText}</Link>

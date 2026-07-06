@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Fragment, memo, type ReactNode, useTransition } from "react";
@@ -19,17 +18,21 @@ export interface MatchResultCardProps {
   footer?: ReactNode;
 }
 
-export function MatchResultCard({ label = "Resultado", children, footer }: MatchResultCardProps) {
+export function MatchResultCard({
+  label = "Resultado",
+  children,
+  footer,
+}: MatchResultCardProps) {
   return (
-    <div className="group relative rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-md transition-all hover:bg-card/60 active:scale-[0.98] duration-300 shadow-sm hover:shadow-md overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <span className="absolute left-8 top-0 -translate-y-1/2 rounded-full border border-border/40 bg-background px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 shadow-sm z-20">
-        {label}
-      </span>
-      <div className="min-h-24 p-6 pt-10 text-sm text-muted-foreground relative z-10">
-        {children}
+    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <div className="border-b border-border px-4 py-2">
+        <span className="text-xs font-semibold text-muted-foreground">
+          {label}
+        </span>
       </div>
+      <div className="p-4 text-sm text-muted-foreground">{children}</div>
       {footer ? (
-        <div className="border-t border-border/40 bg-muted/10 px-6 py-4 text-xs text-muted-foreground relative z-10">
+        <div className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
           {footer}
         </div>
       ) : null}
@@ -49,7 +52,11 @@ export interface MatchResultCompactPlayer {
   } | null;
 }
 
-export type MatchResultCompactStatus = "PENDING" | "CONFIRMED" | "DISPUTED" | string;
+export type MatchResultCompactStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "DISPUTED"
+  | string;
 
 export interface MatchResultCompactMatch {
   id: string;
@@ -87,7 +94,13 @@ function parseScoreSets(score?: string | null): Array<[number, number]> {
     .filter((value): value is [number, number] => Array.isArray(value));
 }
 
-export const MatchResultCompact = memo(function MatchResultCompact({ label = "Resultado", match, matchDate, detailUrl, viewerId: propViewerId }: MatchResultCompactProps) {
+export const MatchResultCompact = memo(function MatchResultCompact({
+  label = "Resultado",
+  match,
+  matchDate,
+  detailUrl,
+  viewerId: propViewerId,
+}: MatchResultCompactProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const [isConfirming, startTransition] = useTransition();
@@ -111,9 +124,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     }
   });
 
-  const winnerIndex = setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
+  const winnerIndex =
+    setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
 
-  const sortedPlayers = [...match.players].sort((a, b) => a.position - b.position);
+  const sortedPlayers = [...match.players].sort(
+    (a, b) => a.position - b.position,
+  );
   const teamsPlayers = [
     sortedPlayers.filter((player) => player.position < 2),
     sortedPlayers.filter((player) => player.position >= 2),
@@ -124,11 +140,14 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     players: teamPlayers.map((player) => ({
       id: player.id,
       userId: player.user?.id,
-      name: player.displayName ?? player.user?.displayName ?? `Jugador ${player.position + 1}`,
+      name:
+        player.displayName ??
+        player.user?.displayName ??
+        `Jugador ${player.position + 1}`,
       image: player.user?.image ?? undefined,
     })),
     isWinner: winnerIndex === index,
-    hasViewer: teamPlayers.some(p => p.user?.id === viewerId),
+    hasViewer: teamPlayers.some((p) => p.user?.id === viewerId),
   }));
 
   const segmentsToRender = totalSets > 0 ? totalSets : 1;
@@ -141,38 +160,40 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
   const isTodayDate = parsedDate ? isToday(parsedDate) : false;
   const isTomorrowDate = parsedDate ? isTomorrow(parsedDate) : false;
 
-  const formattedDate = parsedDate && !Number.isNaN(parsedDate.getTime())
-    ? isTodayDate
-      ? parsedDate.toLocaleTimeString("es-AR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      : new Intl.DateTimeFormat("es-AR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-        }).format(parsedDate)
-    : null;
+  const formattedDate =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? isTodayDate
+        ? parsedDate.toLocaleTimeString("es-AR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : new Intl.DateTimeFormat("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          }).format(parsedDate)
+      : null;
   const matchDetailUrl = detailUrl ?? `/match/${match.id}`;
   const statusLabel = (match.status ?? "PENDING").toString();
   const isConfirmed = statusLabel === "CONFIRMED";
 
-  const needsConfirmation = viewerId &&
+  const needsConfirmation =
+    viewerId &&
     match.status !== "CONFIRMED" &&
     match.score &&
-    match.players.some(p => p.user?.id === viewerId && !p.resultConfirmed);
+    match.players.some((p) => p.user?.id === viewerId && !p.resultConfirmed);
 
   const statusClassName = (() => {
     if (needsConfirmation) {
-      return "bg-primary text-primary-foreground border-primary animate-pulse shadow-sm shadow-primary/40";
+      return "bg-primary text-primary-foreground";
     }
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
-        return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+        return "bg-primary/10 text-primary";
       case "DISPUTED":
-        return "bg-amber-500/10 text-amber-600 border-amber-500/20";
+        return "bg-amber-500/10 text-amber-500";
       default:
-        return "bg-secondary/20 text-secondary-foreground border-secondary/20";
+        return "bg-muted text-muted-foreground";
     }
   })();
 
@@ -192,80 +213,93 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
     <MatchResultCard
       label={label}
       footer={
-        formattedDate || matchDetailUrl
-          ? (
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest transition-all", statusClassName)}>
-                    {needsConfirmation ? "Confirmar resultado" : statusLabel === "PENDING" ? "Pendiente" : statusLabel === "CONFIRMED" ? "Confirmado" : statusLabel === "DISPUTED" ? "En disputa" : statusLabel}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-black uppercase tracking-tight text-muted-foreground/60">{formattedDate ?? "—"}</span>
-                    {isTodayDate && (
-                      <span className="flex h-4 w-7 items-center justify-center rounded-full bg-primary/20 text-[7px] font-black uppercase tracking-tighter text-primary ring-1 ring-primary/20 animate-pulse">
-                        Hoy
-                      </span>
-                    )}
-                    {isTomorrowDate && (
-                      <span className="flex h-4 w-9 items-center justify-center rounded-full bg-zinc-800/10 text-[7px] font-black uppercase tracking-tighter text-zinc-600 ring-1 ring-zinc-500/10">
-                        Mañana
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {needsConfirmation && (
-                    <button
-                      onClick={handleQuickConfirm}
-                      disabled={isConfirming}
-                      className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
-                    >
-                      {isConfirming ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Check className="h-3 w-3" />
-                      )}
-                      Confirmar
-                    </button>
+        formattedDate || matchDetailUrl ? (
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "rounded-md px-2 py-0.5 text-[10px] font-semibold",
+                  statusClassName,
+                )}
+              >
+                {needsConfirmation
+                  ? "Confirmar"
+                  : statusLabel === "PENDING"
+                    ? "Pendiente"
+                    : statusLabel === "CONFIRMED"
+                      ? "Confirmado"
+                      : statusLabel === "DISPUTED"
+                        ? "Disputa"
+                        : statusLabel}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {formattedDate ?? "—"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {needsConfirmation && (
+                <button
+                  onClick={handleQuickConfirm}
+                  disabled={isConfirming}
+                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 rounded-md text-[10px] font-semibold active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  {isConfirming ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Check className="h-3 w-3" />
                   )}
-                  {isConfirmed && match.score && (
-                    <ShareButton
-                      url={createMagicLink({ resource: "match", identifier: match.id }).url}
-                      title="Resultado de Pádel"
-                      text={`¡Mirá el resultado de nuestro partido: ${match.score}! 🎾`}
-                      variant="ghost"
-                      size="sm"
-                      iconOnly
-                      aria-label="Compartir resultado"
-                      className="h-7 w-7 rounded-lg text-primary hover:bg-primary/10 transition-all"
-                    />
-                  )}
-                  {matchDetailUrl ? (
-                    <Link href={matchDetailUrl} className="group/link flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary hover:opacity-80 transition-all">
-                      Detalle
-                      <ChevronRight className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
-                    </Link>
-                  ) : null}
-                </div>
-              </div>
-            )
-          : null
+                  Confirmar
+                </button>
+              )}
+              {isConfirmed && match.score && (
+                <ShareButton
+                  url={
+                    createMagicLink({ resource: "match", identifier: match.id })
+                      .url
+                  }
+                  title="Resultado de Pádel"
+                  text={`Mirá el resultado: ${match.score}`}
+                  variant="ghost"
+                  size="sm"
+                  iconOnly
+                  aria-label="Compartir resultado"
+                  className="h-7 w-7 rounded-md text-primary hover:bg-primary/10"
+                />
+              )}
+              {matchDetailUrl ? (
+                <Link
+                  href={matchDetailUrl}
+                  className="flex items-center gap-0.5 text-xs font-semibold text-primary"
+                >
+                  Detalle
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        ) : null
       }
     >
-      <div className="space-y-4">
+      <div className="space-y-2">
         {normalizedTeams.map((team, teamIndex) => {
           const isLastTeam = teamIndex === normalizedTeams.length - 1;
-          const indices = Array.from({ length: segmentsToRender }, (_, idx) => idx);
+          const indices = Array.from(
+            { length: segmentsToRender },
+            (_, idx) => idx,
+          );
           const teamScores = scoresMatrix[teamIndex] ?? [];
-          const opponentScores = scoresMatrix[(teamIndex + 1) % normalizedTeams.length] ?? [];
+          const opponentScores =
+            scoresMatrix[(teamIndex + 1) % normalizedTeams.length] ?? [];
 
           return (
             <Fragment key={team.id}>
-              <div className={cn(
-                "grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 rounded-2xl transition-all duration-500",
-                team.hasViewer ? "bg-primary/5 ring-1 ring-primary/10" : "",
-                team.isWinner && "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-l-2 border-primary/40 shadow-[inset_1px_0_12px_theme(colors.primary.DEFAULT/0.05)]"
-              )}>
+              <div
+                className={cn(
+                  "grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-2",
+                  team.hasViewer && "bg-primary/5",
+                  team.isWinner && "bg-primary/5",
+                )}
+              >
                 <div className="flex items-center">
                   {team.players.map((player, index) => (
                     <PlayerAvatar
@@ -273,69 +307,75 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
                       name={player.name}
                       image={player.image ?? undefined}
                       className={cn(
-                        "border-2 border-background shadow-sm transition-transform group-hover:scale-105",
-                        index === 0 ? "ml-0" : "-ml-3"
+                        "border-2 border-card",
+                        index === 0 ? "ml-0" : "-ml-2",
                       )}
-                      size={36}
+                      size={32}
                     />
                   ))}
                 </div>
 
-                <div className="flex flex-col text-sm font-black text-foreground min-w-0 leading-tight">
+                <div className="flex flex-col text-sm font-semibold text-foreground min-w-0 leading-tight">
                   {team.players.map((player) => {
                     const isViewer = player.userId === viewerId;
                     return (
-                      <div key={`team-${team.id}-name-${player.id}`} className="flex items-center gap-1.5 truncate">
+                      <div
+                        key={`team-${team.id}-name-${player.id}`}
+                        className="flex items-center gap-1 truncate"
+                      >
                         {player.userId ? (
-                          <Link href={`/p/${player.userId}`} className={cn(
-                            "truncate hover:text-primary transition-colors",
-                            isViewer && "text-primary"
-                          )}>
+                          <Link
+                            href={`/p/${player.userId}`}
+                            className={cn(
+                              "truncate hover:text-primary",
+                              isViewer && "text-primary",
+                            )}
+                          >
                             {isViewer ? "Tú" : player.name}
                           </Link>
                         ) : (
                           <span className="truncate">{player.name}</span>
                         )}
-                        {team.isWinner && <Trophy className="h-3.5 w-3.5 shrink-0 text-yellow-500 fill-yellow-500/20" />}
+                        {team.isWinner && (
+                          <Trophy className="h-3 w-3 shrink-0 text-primary" />
+                        )}
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="flex min-w-[104px] items-center justify-end gap-1.5 pl-3">
+                <div className="flex items-center justify-end gap-1 pl-2">
                   {indices.map((setIndex) => {
                     const rawValue = teamScores[setIndex];
                     const opponentRawValue = opponentScores[setIndex];
-                    const numeric = typeof rawValue === "number" ? rawValue : Number(rawValue);
-                    const opponentNumeric = typeof opponentRawValue === "number" ? opponentRawValue : Number(opponentRawValue);
-                    const hasNumericValues = !Number.isNaN(numeric) && !Number.isNaN(opponentNumeric);
-                    const didWinSet = hasNumericValues && numeric > opponentNumeric;
-                    const isDraw = hasNumericValues && numeric === opponentNumeric;
+                    const numeric =
+                      typeof rawValue === "number"
+                        ? rawValue
+                        : Number(rawValue);
+                    const opponentNumeric =
+                      typeof opponentRawValue === "number"
+                        ? opponentRawValue
+                        : Number(opponentRawValue);
+                    const hasNumericValues =
+                      !Number.isNaN(numeric) && !Number.isNaN(opponentNumeric);
+                    const didWinSet =
+                      hasNumericValues && numeric > opponentNumeric;
 
-                    let segmentClass = "bg-muted/20 text-muted-foreground/40 border-transparent";
-                    if (hasNumericValues) {
-                      if (didWinSet) {
-                        segmentClass = "bg-primary text-primary-foreground shadow-md shadow-primary/20 border-primary scale-105 z-10";
-                      } else if (isDraw) {
-                        segmentClass = "bg-muted text-foreground border-border/20";
-                      } else if (team.isWinner === false) {
-                        segmentClass = "bg-muted/10 text-muted-foreground/50 border-transparent";
-                      } else {
-                        segmentClass = "bg-muted/40 text-foreground/80 border-border/20";
-                      }
-                    }
-
-                    const displayValue = rawValue ?? "—";
+                    const segmentClass = hasNumericValues
+                      ? didWinSet
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                      : "bg-muted/50 text-muted-foreground";
 
                     return (
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
                         className={cn(
-                          "flex h-9 w-9 items-center justify-center rounded-xl border text-lg font-black transition-all duration-300",
-                          segmentClass
+                          "flex h-7 w-7 items-center justify-center rounded-md text-sm font-bold",
+                          segmentClass,
                         )}
                       >
-                        {displayValue}
+                        {rawValue ?? "—"}
                       </span>
                     );
                   })}
@@ -343,10 +383,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({ label = "Re
               </div>
 
               {!isLastTeam ? (
-                <div className="relative h-px w-full bg-border/20 my-1" aria-hidden>
-                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm border border-border/40 px-2.5 py-0.5 rounded-full text-[8px] font-black text-muted-foreground/30 uppercase tracking-[0.2em] shadow-sm z-10">
+                <div className="flex items-center gap-2 py-0.5">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-[10px] font-medium text-muted-foreground">
                     vs
-                   </div>
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
                 </div>
               ) : null}
             </Fragment>

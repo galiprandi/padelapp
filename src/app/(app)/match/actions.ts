@@ -96,7 +96,11 @@ function defaultTeamLabel(team: TeamKey, format: MatchFormat): string {
   return team === "A" ? "Pareja A" : "Pareja B";
 }
 
-function sanitizeTeamLabel(value: string | undefined, team: TeamKey, format: MatchFormat): string {
+function sanitizeTeamLabel(
+  value: string | undefined,
+  team: TeamKey,
+  format: MatchFormat,
+): string {
   const trimmed = value?.trim();
   if (!trimmed || trimmed.length === 0) {
     return defaultTeamLabel(team, format);
@@ -111,11 +115,16 @@ function teamForPosition(position: number, totalPlayers: number): TeamKey {
   return position < 2 ? "A" : "B";
 }
 
-export async function createMatchAction(input: CreateMatchInput): Promise<CreateMatchResponse> {
+export async function createMatchAction(
+  input: CreateMatchInput,
+): Promise<CreateMatchResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "You must be signed in to create a match." };
+    return {
+      status: "error",
+      message: "You must be signed in to create a match.",
+    };
   }
 
   if (!isValidMatchType(input.matchType)) {
@@ -126,7 +135,11 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
     return { status: "error", message: "Unsupported match format." };
   }
 
-  if (Number.isNaN(input.sets) || input.sets < MIN_SETS || input.sets > MAX_SETS) {
+  if (
+    Number.isNaN(input.sets) ||
+    input.sets < MIN_SETS ||
+    input.sets > MAX_SETS
+  ) {
     return {
       status: "error",
       message: `Sets must be between ${MIN_SETS} and ${MAX_SETS}.`,
@@ -139,7 +152,10 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
 
   const expectedPositions = FORMAT_POSITIONS[input.format];
 
-  if (!Array.isArray(input.slots) || input.slots.length !== expectedPositions.length) {
+  if (
+    !Array.isArray(input.slots) ||
+    input.slots.length !== expectedPositions.length
+  ) {
     return {
       status: "error",
       message: "The number of slots does not match the selected format.",
@@ -162,7 +178,10 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
 
   for (const slot of input.slots) {
     if (!allowedPositions.has(slot.position)) {
-      return { status: "error", message: "Slot positions must match the selected format." };
+      return {
+        status: "error",
+        message: "Slot positions must match the selected format.",
+      };
     }
 
     if (seenPositions.has(slot.position)) {
@@ -182,7 +201,10 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
     if (slot.kind === "user") {
       const trimmedUserId = slot.userId.trim();
       if (trimmedUserId.length === 0) {
-        return { status: "error", message: "Player identifier cannot be empty." };
+        return {
+          status: "error",
+          message: "Player identifier cannot be empty.",
+        };
       }
 
       if (slot.position === 0 && trimmedUserId === session.user.id) {
@@ -199,7 +221,10 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
     } else {
       const trimmedName = slot.displayName.trim();
       if (trimmedName.length === 0) {
-        return { status: "error", message: "Placeholder slots require a display name." };
+        return {
+          status: "error",
+          message: "Placeholder slots require a display name.",
+        };
       }
 
       normalizedSlots.push({
@@ -213,74 +238,96 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
   }
 
   if (!ownerOccupiesFirstSlot) {
-    return { status: "error", message: "You must occupy the first slot of Team A." };
+    return {
+      status: "error",
+      message: "You must occupy the first slot of Team A.",
+    };
   }
 
   const teamLabelA = sanitizeTeamLabel(input.teamLabels?.A, "A", input.format);
   const teamLabelB = sanitizeTeamLabel(input.teamLabels?.B, "B", input.format);
 
   try {
-    const creationResult = await prisma.$transaction(async (tx) => {
-      if (typeof (tx as { team?: typeof prisma.team }).team?.create !== "function") {
-        throw new Error("prisma-client-missing-team-delegate");
-      }
+    const creationResult = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        if (
+          typeof (tx as { team?: typeof prisma.team }).team?.create !==
+          "function"
+        ) {
+          throw new Error("prisma-client-missing-team-delegate");
+        }
 
-      const teamClient = (tx as { team: typeof prisma.team }).team;
+        const teamClient = (tx as { team: typeof prisma.team }).team;
 
-      const teamA = await teamClient.create({ data: { label: teamLabelA } });
-      const teamB = await teamClient.create({ data: { label: teamLabelB } });
+        const teamA = await teamClient.create({ data: { label: teamLabelA } });
+        const teamB = await teamClient.create({ data: { label: teamLabelB } });
 
-      const teamIdByKey: Record<TeamKey, string> = { A: teamA.id, B: teamB.id };
+        const teamIdByKey: Record<TeamKey, string> = {
+          A: teamA.id,
+          B: teamB.id,
+        };
 
-      const match = await tx.match.create({
-        data: {
-          creatorId: session.user.id,
-          status: MATCH_STATUS.PENDING,
-          date: input.date ? new Date(input.date) : new Date(),
-          sets: input.sets,
-          matchType: input.matchType,
-          club: input.club?.trim() || null,
-          courtNumber: input.courtNumber?.trim() || null,
-          notes: input.notes?.trim() || null,
-          score: input.score?.trim() || null,
-          turnId: input.turnId || null,
-          players: {
-            create: normalizedSlots.map((slot) => ({
-              position: slot.position,
-              userId: slot.userId,
-              displayName: slot.displayName,
-              teamId: teamIdByKey[slot.team],
-              resultConfirmed: false,
-              joinedAt: slot.joinedAt,
-            })),
+        const match = await tx.match.create({
+          data: {
+            creatorId: session.user.id,
+            status: MATCH_STATUS.PENDING,
+            date: input.date ? new Date(input.date) : new Date(),
+            sets: input.sets,
+            matchType: input.matchType,
+            club: input.club?.trim() || null,
+            courtNumber: input.courtNumber?.trim() || null,
+            notes: input.notes?.trim() || null,
+            score: input.score?.trim() || null,
+            turnId: input.turnId || null,
+            players: {
+              create: normalizedSlots.map((slot) => ({
+                position: slot.position,
+                userId: slot.userId,
+                displayName: slot.displayName,
+                teamId: teamIdByKey[slot.team],
+                resultConfirmed: false,
+                joinedAt: slot.joinedAt,
+              })),
+            },
           },
-        },
-        include: {
-          players: true,
-        },
-      });
+          include: {
+            players: true,
+          },
+        });
 
-      return {
-        match,
-        teamA,
-        teamB,
-      };
-    });
+        return {
+          match,
+          teamA,
+          teamB,
+        };
+      },
+    );
 
     revalidatePath("/match");
 
-    const shareUrl = createMagicLink({ resource: "match", identifier: creationResult.match.id }).url;
+    const shareUrl = createMagicLink({
+      resource: "match",
+      identifier: creationResult.match.id,
+    }).url;
 
     const teamLabelById: Record<string, { team: TeamKey; label: string }> = {
-      [creationResult.teamA.id]: { team: "A", label: creationResult.teamA.label },
-      [creationResult.teamB.id]: { team: "B", label: creationResult.teamB.label },
+      [creationResult.teamA.id]: {
+        team: "A",
+        label: creationResult.teamA.label,
+      },
+      [creationResult.teamB.id]: {
+        team: "B",
+        label: creationResult.teamB.label,
+      },
     };
 
     const slots = creationResult.match.players
       .slice()
       .sort((a, b) => a.position - b.position)
       .map((player) => {
-        const teamInfo = player.teamId ? teamLabelById[player.teamId] : { team: "A" as TeamKey, label: teamLabelA };
+        const teamInfo = player.teamId
+          ? teamLabelById[player.teamId]
+          : { team: "A" as TeamKey, label: teamLabelA };
         return {
           playerId: player.id,
           position: player.position,
@@ -288,7 +335,8 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
           teamLabel: teamInfo.label,
           occupied: Boolean(player.userId),
           displayName: player.displayName,
-          link: createMagicLink({ resource: "player", identifier: player.id }).url,
+          link: createMagicLink({ resource: "player", identifier: player.id })
+            .url,
         };
       });
 
@@ -299,13 +347,17 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
       slots,
     };
   } catch (error) {
-    if (error instanceof Error && error.message === "prisma-client-missing-team-delegate") {
+    if (
+      error instanceof Error &&
+      error.message === "prisma-client-missing-team-delegate"
+    ) {
       console.error(
         "createMatchAction error: Prisma client missing Team delegate. Run `npm run prisma:generate` and restart the dev server.",
       );
       return {
         status: "error",
-        message: "Necesitamos refrescar la base. Corré `npm run prisma:generate` y reiniciá el servidor de desarrollo.",
+        message:
+          "Necesitamos refrescar la base. Corré `npm run prisma:generate` y reiniciá el servidor de desarrollo.",
       };
     }
     console.error("createMatchAction failed", error);
@@ -316,11 +368,16 @@ export async function createMatchAction(input: CreateMatchInput): Promise<Create
   }
 }
 
-export async function cancelMatchAction(matchId: string): Promise<MatchActionResponse> {
+export async function cancelMatchAction(
+  matchId: string,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Tenés que iniciar sesión para cancelar el partido." };
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para cancelar el partido.",
+    };
   }
 
   try {
@@ -334,11 +391,17 @@ export async function cancelMatchAction(matchId: string): Promise<MatchActionRes
     }
 
     if (match.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede cancelar el partido." };
+      return {
+        status: "error",
+        message: "Solo el organizador puede cancelar el partido.",
+      };
     }
 
     if (match.status === MATCH_STATUS.CONFIRMED) {
-      return { status: "error", message: "No se puede cancelar un partido ya confirmado." };
+      return {
+        status: "error",
+        message: "No se puede cancelar un partido ya confirmado.",
+      };
     }
 
     await prisma.match.update({
@@ -366,11 +429,16 @@ interface SwapMatchPlayersInput {
   player2Id: string;
 }
 
-export async function swapMatchPlayersAction(input: SwapMatchPlayersInput): Promise<MatchActionResponse> {
+export async function swapMatchPlayersAction(
+  input: SwapMatchPlayersInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    };
   }
 
   try {
@@ -384,7 +452,10 @@ export async function swapMatchPlayersAction(input: SwapMatchPlayersInput): Prom
     }
 
     if (match.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede intercambiar posiciones." };
+      return {
+        status: "error",
+        message: "Solo el organizador puede intercambiar posiciones.",
+      };
     }
 
     const [p1, p2] = await Promise.all([
@@ -392,8 +463,16 @@ export async function swapMatchPlayersAction(input: SwapMatchPlayersInput): Prom
       prisma.matchPlayer.findUnique({ where: { id: input.player2Id } }),
     ]);
 
-    if (!p1 || !p2 || p1.matchId !== input.matchId || p2.matchId !== input.matchId) {
-      return { status: "error", message: "Los jugadores no pertenecen a este partido." };
+    if (
+      !p1 ||
+      !p2 ||
+      p1.matchId !== input.matchId ||
+      p2.matchId !== input.matchId
+    ) {
+      return {
+        status: "error",
+        message: "Los jugadores no pertenecen a este partido.",
+      };
     }
 
     // Atomic swap using a transaction.
@@ -453,7 +532,10 @@ export async function submitMatchResultAction(
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "You must be signed in to submit results." };
+    return {
+      status: "error",
+      message: "You must be signed in to submit results.",
+    };
   }
 
   if (!input.matchId || input.matchId.trim().length === 0) {
@@ -497,13 +579,21 @@ export async function submitMatchResultAction(
 
       const totalPlayers = baseMatch.players.length;
       const teamAConfirmed = baseMatch.players.some(
-        (matchPlayer) => teamForPosition(matchPlayer.position, totalPlayers) === "A" && matchPlayer.resultConfirmed,
+        (matchPlayer) =>
+          teamForPosition(matchPlayer.position, totalPlayers) === "A" &&
+          matchPlayer.resultConfirmed,
       );
       const teamBConfirmed = baseMatch.players.some(
-        (matchPlayer) => teamForPosition(matchPlayer.position, totalPlayers) === "B" && matchPlayer.resultConfirmed,
+        (matchPlayer) =>
+          teamForPosition(matchPlayer.position, totalPlayers) === "B" &&
+          matchPlayer.resultConfirmed,
       );
 
-      if (teamAConfirmed && teamBConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
+      if (
+        teamAConfirmed &&
+        teamBConfirmed &&
+        baseMatch.status !== MATCH_STATUS.CONFIRMED
+      ) {
         return tx.match.update({
           where: { id: input.matchId },
           data: { status: MATCH_STATUS.CONFIRMED },
@@ -511,7 +601,10 @@ export async function submitMatchResultAction(
         });
       }
 
-      if ((!teamAConfirmed || !teamBConfirmed) && baseMatch.status !== MATCH_STATUS.PENDING) {
+      if (
+        (!teamAConfirmed || !teamBConfirmed) &&
+        baseMatch.status !== MATCH_STATUS.PENDING
+      ) {
         return tx.match.update({
           where: { id: input.matchId },
           data: { status: MATCH_STATUS.PENDING },
@@ -531,7 +624,10 @@ export async function submitMatchResultAction(
     return { status: "ok" };
   } catch (error) {
     if (error instanceof Error && error.message === "not-authorized") {
-      return { status: "error", message: "You cannot update a match you are not part of." };
+      return {
+        status: "error",
+        message: "You cannot update a match you are not part of.",
+      };
     }
     console.error("submitMatchResultAction failed", error);
     return {
@@ -551,11 +647,16 @@ interface UpdateMatchDetailsInput {
   notes?: string | null;
 }
 
-export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): Promise<MatchActionResponse> {
+export async function updateMatchDetailsAction(
+  input: UpdateMatchDetailsInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "You must be signed in to update the match." };
+    return {
+      status: "error",
+      message: "You must be signed in to update the match.",
+    };
   }
 
   if (!input.matchId || input.matchId.trim().length === 0) {
@@ -573,11 +674,20 @@ export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): 
     }
 
     if (match.creatorId !== session.user.id) {
-      return { status: "error", message: "Only the creator can edit the match." };
+      return {
+        status: "error",
+        message: "Only the creator can edit the match.",
+      };
     }
 
-    if (match.status === MATCH_STATUS.CONFIRMED && (input.sets !== undefined || input.matchType !== undefined)) {
-        return { status: "error", message: "No se puede editar el formato de un partido ya confirmado." };
+    if (
+      match.status === MATCH_STATUS.CONFIRMED &&
+      (input.sets !== undefined || input.matchType !== undefined)
+    ) {
+      return {
+        status: "error",
+        message: "No se puede editar el formato de un partido ya confirmado.",
+      };
     }
 
     await prisma.match.update({
@@ -587,8 +697,12 @@ export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): 
         sets: input.sets,
         matchType: input.matchType,
         club: input.club === undefined ? undefined : input.club?.trim() || null,
-        courtNumber: input.courtNumber === undefined ? undefined : input.courtNumber?.trim() || null,
-        notes: input.notes === undefined ? undefined : input.notes?.trim() || null,
+        courtNumber:
+          input.courtNumber === undefined
+            ? undefined
+            : input.courtNumber?.trim() || null,
+        notes:
+          input.notes === undefined ? undefined : input.notes?.trim() || null,
       },
     });
 
@@ -606,11 +720,16 @@ export async function updateMatchDetailsAction(input: UpdateMatchDetailsInput): 
   }
 }
 
-export async function confirmMatchResultAction(matchId: string): Promise<MatchActionResponse> {
+export async function confirmMatchResultAction(
+  matchId: string,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "You must be signed in to confirm the result." };
+    return {
+      status: "error",
+      message: "You must be signed in to confirm the result.",
+    };
   }
 
   if (!matchId || matchId.trim().length === 0) {
@@ -659,13 +778,21 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
 
       const totalPlayers = updated.players.length;
       const teamAConfirmed = updated.players.some(
-        (p) => teamForPosition(p.position, totalPlayers) === "A" && p.resultConfirmed
+        (p) =>
+          teamForPosition(p.position, totalPlayers) === "A" &&
+          p.resultConfirmed,
       );
       const teamBConfirmed = updated.players.some(
-        (p) => teamForPosition(p.position, totalPlayers) === "B" && p.resultConfirmed
+        (p) =>
+          teamForPosition(p.position, totalPlayers) === "B" &&
+          p.resultConfirmed,
       );
 
-      if (teamAConfirmed && teamBConfirmed && updated.status !== MATCH_STATUS.CONFIRMED) {
+      if (
+        teamAConfirmed &&
+        teamBConfirmed &&
+        updated.status !== MATCH_STATUS.CONFIRMED
+      ) {
         return tx.match.update({
           where: { id: matchId },
           data: { status: MATCH_STATUS.CONFIRMED },
@@ -686,13 +813,19 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "not-authorized") {
-        return { status: "error", message: "Solo los jugadores pueden confirmar el resultado." };
+        return {
+          status: "error",
+          message: "Solo los jugadores pueden confirmar el resultado.",
+        };
       }
       if (error.message === "match-not-found") {
         return { status: "error", message: "No encontramos este partido." };
       }
       if (error.message === "missing-score") {
-        return { status: "error", message: "Primero cargá el resultado antes de confirmarlo." };
+        return {
+          status: "error",
+          message: "Primero cargá el resultado antes de confirmarlo.",
+        };
       }
     }
 
@@ -704,11 +837,16 @@ export async function confirmMatchResultAction(matchId: string): Promise<MatchAc
   }
 }
 
-export async function finalizeMatchAction(matchId: string): Promise<MatchActionResponse> {
+export async function finalizeMatchAction(
+  matchId: string,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "You must be signed in to finalize the match." };
+    return {
+      status: "error",
+      message: "You must be signed in to finalize the match.",
+    };
   }
 
   if (!matchId || matchId.trim().length === 0) {
@@ -726,11 +864,17 @@ export async function finalizeMatchAction(matchId: string): Promise<MatchActionR
     }
 
     if (match.creatorId !== session.user.id) {
-      return { status: "error", message: "Only the creator can finalize the match." };
+      return {
+        status: "error",
+        message: "Only the creator can finalize the match.",
+      };
     }
 
     if (!match.score || match.score.trim().length === 0) {
-      return { status: "error", message: "Cargá el resultado antes de finalizar el partido." };
+      return {
+        status: "error",
+        message: "Cargá el resultado antes de finalizar el partido.",
+      };
     }
 
     await prisma.$transaction(async (tx) => {
@@ -768,11 +912,16 @@ interface ReleaseMatchSlotInput {
   displayName?: string | null;
 }
 
-export async function releaseMatchSlotAction(input: ReleaseMatchSlotInput): Promise<MatchActionResponse> {
+export async function releaseMatchSlotAction(
+  input: ReleaseMatchSlotInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    };
   }
 
   if (!input.playerId || input.playerId.trim().length === 0) {
@@ -793,14 +942,17 @@ export async function releaseMatchSlotAction(input: ReleaseMatchSlotInput): Prom
     }
 
     if (player.match.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede liberar un cupo." };
+      return {
+        status: "error",
+        message: "Solo el organizador puede liberar un cupo.",
+      };
     }
 
     const trimmedName = input.displayName?.trim();
     const nextDisplayName =
       trimmedName && trimmedName.length > 0
         ? trimmedName
-        : player.displayName ?? player.user?.displayName ?? null;
+        : (player.displayName ?? player.user?.displayName ?? null);
 
     await prisma.matchPlayer.update({
       where: { id: input.playerId },
@@ -829,11 +981,16 @@ interface RenamePlaceholderInput {
   displayName: string;
 }
 
-export async function renamePlaceholderAction(input: RenamePlaceholderInput): Promise<MatchActionResponse> {
+export async function renamePlaceholderAction(
+  input: RenamePlaceholderInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    };
   }
 
   const trimmedName = input.displayName?.trim();
@@ -852,11 +1009,17 @@ export async function renamePlaceholderAction(input: RenamePlaceholderInput): Pr
     }
 
     if (player.match.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede editar los nombres." };
+      return {
+        status: "error",
+        message: "Solo el organizador puede editar los nombres.",
+      };
     }
 
     if (player.userId) {
-      return { status: "error", message: "No podés renombrar un jugador ya asignado." };
+      return {
+        status: "error",
+        message: "No podés renombrar un jugador ya asignado.",
+      };
     }
 
     await prisma.matchPlayer.update({
@@ -883,16 +1046,24 @@ interface UpdateTeamLabelInput {
   label: string;
 }
 
-export async function updateTeamLabelAction(input: UpdateTeamLabelInput): Promise<MatchActionResponse> {
+export async function updateTeamLabelAction(
+  input: UpdateTeamLabelInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    };
   }
 
   const trimmedLabel = input.label?.trim();
   if (!trimmedLabel || trimmedLabel.length === 0) {
-    return { status: "error", message: "Ingresá un nombre válido para el equipo." };
+    return {
+      status: "error",
+      message: "Ingresá un nombre válido para el equipo.",
+    };
   }
 
   try {
@@ -906,7 +1077,10 @@ export async function updateTeamLabelAction(input: UpdateTeamLabelInput): Promis
     }
 
     if (match.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede renombrar equipos." };
+      return {
+        status: "error",
+        message: "Solo el organizador puede renombrar equipos.",
+      };
     }
 
     const linkedPlayers = await prisma.matchPlayer.count({
@@ -914,7 +1088,10 @@ export async function updateTeamLabelAction(input: UpdateTeamLabelInput): Promis
     });
 
     if (linkedPlayers === 0) {
-      return { status: "error", message: "El equipo no pertenece a este partido." };
+      return {
+        status: "error",
+        message: "El equipo no pertenece a este partido.",
+      };
     }
 
     await prisma.team.update({
@@ -940,11 +1117,16 @@ export interface SaveMatchResultInput {
   status?: string;
 }
 
-export async function saveMatchResultAction(input: SaveMatchResultInput): Promise<MatchActionResponse> {
+export async function saveMatchResultAction(
+  input: SaveMatchResultInput,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
-    return { status: "error", message: "Debes iniciar sesión para guardar resultados." };
+    return {
+      status: "error",
+      message: "Debes iniciar sesión para guardar resultados.",
+    };
   }
 
   if (!input.matchId || input.matchId.trim().length === 0) {
@@ -953,7 +1135,10 @@ export async function saveMatchResultAction(input: SaveMatchResultInput): Promis
 
   const score = input.score.trim();
   if (score.length === 0) {
-    return { status: "error", message: "Por favor, ingresa el resultado del partido." };
+    return {
+      status: "error",
+      message: "Por favor, ingresa el resultado del partido.",
+    };
   }
 
   try {
@@ -991,14 +1176,22 @@ export async function saveMatchResultAction(input: SaveMatchResultInput): Promis
       // Check if at least one player from each team has confirmed the result
       const totalPlayers = baseMatch.players.length;
       const teamAConfirmed = baseMatch.players.some(
-        (p) => teamForPosition(p.position, totalPlayers) === "A" && p.resultConfirmed
+        (p) =>
+          teamForPosition(p.position, totalPlayers) === "A" &&
+          p.resultConfirmed,
       );
       const teamBConfirmed = baseMatch.players.some(
-        (p) => teamForPosition(p.position, totalPlayers) === "B" && p.resultConfirmed
+        (p) =>
+          teamForPosition(p.position, totalPlayers) === "B" &&
+          p.resultConfirmed,
       );
-      
+
       // If one from each team confirmed, update status to CONFIRMED
-      if (teamAConfirmed && teamBConfirmed && baseMatch.status !== MATCH_STATUS.CONFIRMED) {
+      if (
+        teamAConfirmed &&
+        teamBConfirmed &&
+        baseMatch.status !== MATCH_STATUS.CONFIRMED
+      ) {
         return tx.match.update({
           where: { id: input.matchId },
           data: { status: MATCH_STATUS.CONFIRMED },
@@ -1019,12 +1212,16 @@ export async function saveMatchResultAction(input: SaveMatchResultInput): Promis
     return { status: "ok" };
   } catch (error) {
     if (error instanceof Error && error.message === "not-authorized") {
-      return { status: "error", message: "No puedes actualizar un partido en el que no participas." };
+      return {
+        status: "error",
+        message: "No puedes actualizar un partido en el que no participas.",
+      };
     }
     console.error("saveMatchResultAction failed", error);
     return {
       status: "error",
-      message: "No se pudo guardar el resultado. Por favor, inténtalo de nuevo.",
+      message:
+        "No se pudo guardar el resultado. Por favor, inténtalo de nuevo.",
     };
   }
 }
@@ -1136,7 +1333,9 @@ export async function getMatchByIdAction(matchId: string): Promise<{
   }
 }
 
-export async function joinMatchPlayerAction(playerId: string): Promise<MatchActionResponse> {
+export async function joinMatchPlayerAction(
+  playerId: string,
+): Promise<MatchActionResponse> {
   const session = await auth();
 
   if (!session?.user) {
@@ -1158,11 +1357,17 @@ export async function joinMatchPlayerAction(playerId: string): Promise<MatchActi
     }
 
     if (player.match.status !== MATCH_STATUS.PENDING) {
-      return { status: "error", message: "El partido ya no admite nuevas confirmaciones." };
+      return {
+        status: "error",
+        message: "El partido ya no admite nuevas confirmaciones.",
+      };
     }
 
     if (player.userId) {
-      return { status: "error", message: "Cupo ocupado, hablá con el organizador del partido." };
+      return {
+        status: "error",
+        message: "Cupo ocupado, hablá con el organizador del partido.",
+      };
     }
 
     const alreadyJoined = await prisma.matchPlayer.findFirst({
@@ -1173,7 +1378,10 @@ export async function joinMatchPlayerAction(playerId: string): Promise<MatchActi
     });
 
     if (alreadyJoined) {
-      return { status: "error", message: "Ya estás inscripto en este partido." };
+      return {
+        status: "error",
+        message: "Ya estás inscripto en este partido.",
+      };
     }
 
     await prisma.matchPlayer.update({

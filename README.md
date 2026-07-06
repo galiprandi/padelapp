@@ -1,56 +1,65 @@
-# PadelApp – Esqueleto PWA
+# PadelApp
 
-Esqueleto inicial mobile-first basado en Next.js 15, Tailwind CSS y componentes estilo shadcn con paleta amarilla. El objetivo es contar con una PWA instalable en cualquier dispositivo antes de integrar autenticación, base de datos o Firebase.
+PWA mobile-first para registrar partidos, organizar turnos abiertos y mantener rankings/reputación de jugadores de pádel.
 
 ## Scripts
 
 ```bash
-npm run dev             # arranca el servidor en modo desarrollo (http://localhost:3000)
-npm run build           # genera el build de producción con soporte PWA
-npm run start           # ejecuta el build en modo producción
-npm run lint            # valida el código con las reglas base de Next.js
-npm run db:up           # levanta Postgres local (docker compose)
-npm run db:down         # detiene el contenedor de Postgres
-npm run db:drop         # elimina todas las tablas usando DATABASE_URL_DIRECT
-npm run prisma:migrate  # aplica migraciones en la base definida en .env
-npm run prisma:generate # regenera el cliente de Prisma tras cambios en el schema
-npm run db:studio       # abre Prisma Studio
+npm run dev             # servidor de desarrollo (http://localhost:3000)
+npm run build           # build de producción
+npm run start           # ejecutar build de producción
+npm run lint            # lint
+npm run db:up           # levantar Postgres local (docker compose)
+npm run db:down         # detener Postgres
+npm run db:drop         # eliminar todas las tablas
+npm run prisma:migrate  # aplicar migraciones
+npm run prisma:generate # regenerar cliente Prisma
+npm run db:studio       # abrir Prisma Studio
 ```
 
-## Stack ya configurado
+## Stack
 
-- **Next.js 15** (App Router, TypeScript estricto).
-- **Tailwind CSS 3.4** + diseño inspirado en shadcn/ui con tokens amarillos.
-- **React Query** inicializado (sin endpoints) para facilitar futuros datos remotos.
-- **NextAuth.js** con Google OAuth y Prisma Adapter listo para usar credenciales reales.
-- **next-pwa** con manifiesto, service worker y assets instalables.
-- **Componentes UI** (`Button`, `Card`, `Badge`, `Tabs`, `Input`, `Textarea`, `Label`) listos en `src/components/ui`.
-- **Navegación mobile** persistente para la app autenticada en `/(app)`.
+- **Next.js 15** (App Router, TypeScript, Server Components/Actions).
+- **Tailwind CSS** + shadcn/ui con paleta amarilla.
+- **Prisma + PostgreSQL** (local via Docker, producción via Supabase).
+- **NextAuth.js** con Google OAuth y Prisma Adapter.
+- **PWA** instalable con service worker y manifest.
 
-## Pantallas maquetadas
+## Rutas
 
-- `/` Landing marketing con CTA para instalación.
-- `/install` Guía rápida de instalación.
-- `/(app)/dashboard` Resumen de reputación, turnos y últimos partidos.
-- `/(app)/turnos` + `/(app)/turnos/nuevo` Listado y formulario de creación.
-- `/(app)/ranking` Ranking individual y placeholder para parejas.
-- `/(app)/match` Formulario de registro de partido.
-- `/t/[id]` Vista pública con datos mock del turno compartible.
+| Ruta | Descripción |
+|---|---|
+| `/` | Landing page |
+| `/login` | Login con Google |
+| `/install` | Guía de instalación PWA |
+| `/me` | Dashboard con agenda y acciones |
+| `/me/profile` | Perfil y nivel de juego |
+| `/turnos` | Lista de turnos abiertos |
+| `/turnos/nuevo` | Crear turno |
+| `/turnos/[id]/editar` | Editar turno |
+| `/t/[id]` | Vista pública de turno |
+| `/match` | Historial de partidos |
+| `/match/new` | Crear partido |
+| `/match/[matchId]` | Detalle de partido |
+| `/match/[matchId]/edit` | Editar partido |
+| `/match/[matchId]/result` | Cargar resultado |
+| `/m/[matchId]` | Invitación pública de partido |
+| `/j/[playerId]` | Unirse a cupo directo |
+| `/p/[userId]` | Perfil público de jugador |
+| `/ranking` | Ranking global |
+| `/notifications` | Acciones pendientes |
+| `/catalog` | Catálogo de componentes |
 
-## Base de datos local (PostgreSQL + Prisma)
+## Base de datos local
 
-1. Copia `.env.example` a `.env` y ajusta la `DATABASE_URL` si lo necesitas.
-2. Levanta la base con `npm run db:up` (usa `docker compose` con Postgres 16).
-3. Ejecuta `npm run prisma:migrate` o `npm run db:push` para crear las tablas de Auth (`User`, `Account`, `Session`, `VerificationToken`). Si necesitás limpiar la base por completo, definí `DATABASE_URL_DIRECT` en tu `.env` y corre `npm run db:drop` (usa la URL directa para evitar conflictos con Prisma Client).
+1. Copia `.env.example` a `.env` y ajusta la `DATABASE_URL`.
+2. Levanta la base con `npm run db:up`.
+3. Ejecuta `npm run prisma:migrate` para crear las tablas.
 4. Abre `npm run db:studio` para explorar datos.
 
-El cliente se expone desde `src/lib/prisma.ts` para reutilizar la conexión dentro del proyecto.
+## Documentación
 
-## Próximos pasos sugeridos
-
-1. Conectar Prisma + Supabase para persistir turnos, partidos y ranking.
-2. Afinar naming del displayName de los usuarios y permitir edición desde la app.
-3. Activar Firebase Cloud Messaging utilizando el `firebase-messaging-sw.js` placeholder.
-4. Añadir testing (Playwright/Vitest) para flujos críticos y CI en Vercel.
-
-> La UI opera con datos mock definidos en `src/lib/mock-data.ts`. Sustitúyelos gradualmente a medida que se integren los servicios reales.
+- `DESIGN.md` — Política de diseño con máximas y ejemplos.
+- `AGENTS.md` — Contexto y reglas para agentes/contribuyentes.
+- `PRODUCT.md` — Visión del producto y principios de UX.
+- `specs/` — Especificaciones de vistas y secciones.

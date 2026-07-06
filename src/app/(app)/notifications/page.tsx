@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { getPendingActions } from "@/lib/match-queries";
-import { PageHeader } from "@/components/page-header";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
 import { BellOff } from "lucide-react";
@@ -16,65 +15,58 @@ export default async function NotificationsPage() {
   const pendingActions = await getPendingActions(userId);
 
   return (
-    <div className="relative flex flex-col gap-12 pb-8 animate-in fade-in duration-1000">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] -z-10" />
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-xl font-bold text-foreground">Notificaciones</h1>
+        <p className="text-sm text-muted-foreground">
+          Confirmaciones y resultados pendientes.
+        </p>
+      </div>
 
-      <PageHeader
-        title="Notificaciones"
-        description="Gestioná tus confirmaciones y cargas de resultados pendientes."
-        size="lg"
-        backHref="/me"
-      />
-
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-          <div className="flex items-center gap-2">
-            <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-              Acciones requeridas
-            </h2>
-            {pendingActions.length > 0 && (
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground animate-in zoom-in duration-500 delay-300">
-                {pendingActions.length}
-              </span>
-            )}
-          </div>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-bold text-foreground">
+            Acciones requeridas
+          </h2>
+          {pendingActions.length > 0 && (
+            <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+              {pendingActions.length}
+            </span>
+          )}
         </div>
 
         {pendingActions.length > 0 ? (
-          <div className="grid gap-3">
-            {pendingActions.map((match, index) => {
+          <div className="space-y-2">
+            {pendingActions.map((match) => {
               const needsScore = !match.score;
               return (
-                <div
+                <MatchResultCompact
                   key={match.id}
-                  className="animate-in fade-in slide-in-from-bottom-6 duration-1000"
-                  style={{ animationDelay: `${200 + (index * 100)}ms` }}
-                >
-                  <MatchResultCompact
-                    match={match}
-                    detailUrl={needsScore ? `/match/${match.id}/result` : `/match/${match.id}`}
-                    label={needsScore ? "Cargar resultado" : "Confirmación pendiente"}
-                    viewerId={userId}
-                  />
-                </div>
+                  match={match}
+                  detailUrl={
+                    needsScore
+                      ? `/match/${match.id}/result`
+                      : `/match/${match.id}`
+                  }
+                  label={needsScore ? "Cargar resultado" : "Confirmar"}
+                  viewerId={userId}
+                />
               );
             })}
           </div>
         ) : (
-          <div className="pt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <EmptyState
-              icon={BellOff}
-              title="Todo al día"
-              description="No tenés acciones pendientes por ahora. ¡Buen trabajo!"
-              action={
-                <Button className="w-full max-w-xs rounded-2xl font-black h-14 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all" asChild>
-                  <Link href="/me">Volver al inicio</Link>
-                </Button>
-              }
-            />
-          </div>
+          <EmptyState
+            icon={BellOff}
+            title="Todo al día"
+            description="No tenés acciones pendientes por ahora."
+            action={
+              <Button asChild className="w-full">
+                <Link href="/me">Volver al inicio</Link>
+              </Button>
+            }
+          />
         )}
-      </section>
+      </div>
     </div>
   );
 }

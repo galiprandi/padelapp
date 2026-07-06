@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UsersRound, CheckCircle2 } from "lucide-react";
+import { UsersRound } from "lucide-react";
 import { avatarFallback, positionFromTeam } from "@/lib/match-utils";
 import type { SlotValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
@@ -52,70 +52,60 @@ export function SlotDisplay({
         }
       }}
       className={cn(
-        "group relative flex items-center gap-4 rounded-[2rem] border px-6 py-5 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 active:scale-[0.98] backdrop-blur-md overflow-hidden",
+        "group relative flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
         isActive
-          ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 scale-[1.02] z-10"
+          ? "border-primary bg-primary/5"
           : isUser
-            ? "border-primary/20 bg-primary/5 shadow-sm"
-            : "border-border/40 bg-card/40 hover:bg-card/60 shadow-sm"
+            ? "border-primary/20 bg-primary/5"
+            : "border-border bg-card hover:bg-muted/50",
       )}
     >
-      {/* Background decoration for active or user slots */}
-      {(isActive || isUser) && (
-        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-          <CheckCircle2 className="h-16 w-16 text-primary" />
-        </div>
-      )}
-
-      <div className={cn(
-        "relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-muted text-sm font-black shadow-inner transition-all duration-500",
-        isActive ? "bg-primary text-primary-foreground scale-105 shadow-lg shadow-primary/20 ring-4 ring-background" :
-        isUser ? "bg-primary/20 text-primary" : "text-muted-foreground/50"
-      )}>
+      <div
+        className={cn(
+          "relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold transition-colors",
+          isActive
+            ? "bg-primary text-primary-foreground"
+            : isUser
+              ? "bg-primary/20 text-primary"
+              : "text-muted-foreground",
+        )}
+      >
         {slot?.kind === "user" && slot.player.image ? (
           <Image
             alt={slot.player.displayName}
             src={slot.player.image}
-            width={56}
-            height={56}
-            className="h-14 w-14 rounded-2xl object-cover"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-lg object-cover"
           />
         ) : slot?.kind === "user" ? (
-          <span className="text-lg">{avatarFallback(slot.player.displayName)}</span>
+          <span className="text-sm">
+            {avatarFallback(slot.player.displayName)}
+          </span>
         ) : (
-          <span className="text-lg">{position + 1}</span>
-        )}
-
-        {isUser && !isActive && (
-          <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border-2 border-background shadow-md animate-in zoom-in duration-300">
-            <CheckCircle2 className="h-2.5 w-2.5 text-primary-foreground" />
-          </div>
+          <span className="text-sm">{position + 1}</span>
         )}
       </div>
 
       <div className="flex flex-col flex-1 min-w-0">
-        {isUser && (
-          <span className={cn(
-            "text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1.5 transition-colors",
-            isActive ? "text-primary-foreground/60" : "text-primary/60"
-          )}>
-            Perfil Verificado
-          </span>
-        )}
-        <p className={cn(
-          "truncate text-base font-black leading-tight transition-colors",
-          isActive ? "text-foreground" : isUser ? "text-foreground" : "text-foreground/80"
-        )}>
+        <p
+          className={cn(
+            "truncate text-sm font-semibold leading-tight",
+            isActive || isUser ? "text-foreground" : "text-foreground/80",
+          )}
+        >
           {displayName}
         </p>
         {!isUser && (
-          <span className="text-[10px] font-medium text-muted-foreground/40 mt-1 uppercase tracking-wider">Cupo pendiente</span>
+          <span className="text-xs text-muted-foreground mt-0.5">
+            Cupo pendiente
+          </span>
         )}
       </div>
 
       {isOwnerSlot ? (
-        <div className="flex h-10 items-center px-3 rounded-xl bg-primary/10 border border-primary/20">
-           <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Tú</span>
+        <div className="flex h-8 items-center px-2.5 rounded-lg bg-primary/10 border border-primary/20">
+          <span className="text-xs font-semibold text-primary">Tú</span>
         </div>
       ) : (
         <div className="flex items-center gap-1">
@@ -124,8 +114,10 @@ export function SlotDisplay({
             variant="ghost"
             size="icon"
             className={cn(
-              "h-12 w-12 rounded-2xl transition-all active:scale-90",
-              isActive ? "bg-primary/20 text-primary hover:bg-primary/30" : "text-muted-foreground/40 hover:bg-muted"
+              "h-9 w-9 rounded-lg transition-colors",
+              isActive
+                ? "bg-primary/10 text-primary hover:bg-primary/20"
+                : "text-muted-foreground hover:bg-muted",
             )}
             aria-label={
               slot?.kind === "placeholder"
@@ -139,7 +131,7 @@ export function SlotDisplay({
               onManageClick(team, index);
             }}
           >
-            <UsersRound className="h-5 w-5" />
+            <UsersRound className="h-4 w-4" />
           </Button>
         </div>
       )}

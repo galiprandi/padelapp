@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { type Session } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
 import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -85,7 +85,7 @@ const {
   },
 });
 
-export async function auth() {
+export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
     const devUser = await prisma.user.upsert({
       where: { email: "dev@padelapp.local" },
@@ -106,11 +106,11 @@ export async function auth() {
         level: devUser.level,
         email: devUser.email,
         image: devUser.image,
-      },
+      } as Session["user"],
       expires: new Date(Date.now() + 86400000).toISOString(),
-    } as unknown as Awaited<ReturnType<typeof _auth>>;
+    } as Session;
   }
-  return _auth();
+  return _auth() as Promise<Session | null>;
 }
 
 export { handlers, signIn, signOut };

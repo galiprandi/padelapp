@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PadelApp Redesign Proposal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0b; color: #e4e4e7; padding: 40px 20px; }
+  .header { text-align: center; max-width: 800px; margin: 0 auto 60px; }
+  .header h1 { font-size: 32px; font-weight: 800; color: #fbbf24; margin-bottom: 12px; }
+  .header p { font-size: 16px; color: #a1a1aa; line-height: 1.6; }
+  .screens { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; max-width: 1400px; margin: 0 auto; }
+  .screen-group { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .screen-label { font-size: 13px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; }
+  .screen-desc { font-size: 12px; color: #71717a; max-width: 280px; text-align: center; line-height: 1.5; }
+  .phone { width: 300px; height: 620px; background: #18181b; border-radius: 32px; overflow: hidden; border: 8px solid #27272a; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .phone-content { height: 100%; overflow-y: auto; padding: 0; }
+  .phone-content::-webkit-scrollbar { display: none; }
+
+  /* === DESIGN SYSTEM === */
+  :root {
+    --bg: #0a0a0b;
+    --surface: #18181b;
+    --surface-2: #27272a;
+    --surface-3: #3f3f46;
+    --primary: #fbbf24;
+    --primary-dark: #f59e0b;
+    --text: #fafafa;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --border: #27272a;
+  }
+
+  /* === SHARED COMPONENTS === */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .topbar-logo { font-size: 18px; font-weight: 800; color: var(--primary); }
+  .topbar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--text); }
+  .topbar-back { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 14px; font-weight: 600; }
+  .topbar-back svg { width: 18px; height: 18px; }
+
+  .bottomnav { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; padding: 10px 0 20px; background: rgba(10,10,11,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--border); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-dim); font-size: 10px; font-weight: 600; }
+  .nav-item.active { color: var(--primary); }
+  .nav-item svg { width: 22px; height: 22px; }
+  .nav-fab { width: 48px; height: 48px; border-radius: 16px; background: var(--primary); display: flex; align-items: center; justify-content: center; margin-top: -20px; box-shadow: 0 4px 20px rgba(251,191,36,0.4); }
+  .nav-fab svg { width: 24px; height: 24px; color: #0a0a0b; }
+
+  .card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin: 0 20px 12px; }
+  .card-elevated { background: var(--surface-2); border-radius: 16px; padding: 20px; margin: 0 20px 12px; border: none; }
+
+  .section-title { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; padding: 16px 20px 8px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+  .badge-primary { background: rgba(251,191,36,0.15); color: var(--primary); }
+  .badge-emerald { background: rgba(16,185,129,0.15); color: var(--emerald); }
+  .badge-rose { background: rgba(244,63,94,0.15); color: var(--rose); }
+  .badge-neutral { background: var(--surface-3); color: var(--text-muted); }
+
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; width: 100%; cursor: pointer; }
+  .btn-primary { background: var(--primary); color: #0a0a0b; }
+  .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost { background: transparent; color: var(--text-muted); }
+
+  /* === SCREEN: HOME === */
+  .hero { padding: 20px; background: linear-gradient(180deg, rgba(251,191,36,0.08) 0%, transparent 100%); }
+  .hero-greeting { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .hero-name { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+  .hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-mini { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+  .stat-value { font-size: 20px; font-weight: 800; color: var(--text); }
+  .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+  .next-match { background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(251,191,36,0.04)); border: 1px solid rgba(251,191,36,0.2); border-radius: 16px; padding: 20px; margin: 0 20px 16px; }
+  .next-match-label { font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .next-match-club { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .next-match-time { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+  .next-match-players { display: flex; gap: 8px; margin-bottom: 16px; }
+  .player-chip { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--text); border: 2px solid var(--surface); }
+  .player-chip.empty { border: 2px dashed var(--surface-3); color: var(--text-dim); }
+
+  /* === SCREEN: TURNOS === */
+  .filter-row { display: flex; gap: 8px; padding: 12px 20px; overflow-x: auto; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-chip { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .filter-chip.active { background: var(--primary); color: #0a0a0b; }
+  .filter-chip.inactive { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .turn-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin: 0 20px 12px; }
+  .turn-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .turn-card-club { font-size: 16px; font-weight: 800; color: var(--text); }
+  .turn-card-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .turn-card-level { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .turn-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border); }
+  .turn-card-players { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+  .turn-card-avatars { display: flex; }
+  .turn-card-avatars .player-chip { width: 28px; height: 28px; font-size: 10px; margin-left: -8px; }
+  .turn-card-avatars .player-chip:first-child { margin-left: 0; }
+
+  /* === SCREEN: RANKING === */
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: 8px; padding: 20px; }
+  .podium-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .podium-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
+  .podium-1 .podium-avatar { width: 72px; height: 72px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0a0a0b; font-size: 24px; box-shadow: 0 4px 20px rgba(251,191,36,0.3); }
+  .podium-2 .podium-avatar { background: var(--surface-3); color: var(--text); }
+  .podium-3 .podium-avatar { background: var(--surface-3); color: var(--text); }
+  .podium-name { font-size: 12px; font-weight: 700; color: var(--text); }
+  .podium-score { font-size: 11px; color: var(--text-dim); }
+  .podium-bar { width: 80px; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
+  .podium-1 .podium-bar { height: 80px; background: linear-gradient(180deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05)); color: var(--primary); }
+  .podium-2 .podium-bar { height: 60px; background: var(--surface-2); color: var(--text-muted); }
+  .podium-3 .podium-bar { height: 44px; background: var(--surface-2); color: var(--text-muted); }
+
+  .ranking-row { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  .ranking-pos { font-size: 16px; font-weight: 800; color: var(--text-dim); width: 28px; text-align: center; }
+  .ranking-row.me .ranking-pos { color: var(--primary); }
+  .ranking-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+  .ranking-info { flex: 1; }
+  .ranking-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .ranking-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .ranking-score { font-size: 14px; font-weight: 800; color: var(--text); }
+  .ranking-row.me { background: rgba(251,191,36,0.05); }
+
+  /* === SCREEN: MATCH DETAIL === */
+  .match-header { padding: 20px; text-align: center; }
+  .match-club { font-size: 20px; font-weight: 800; color: var(--text); }
+  .match-date { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .match-status { margin-top: 12px; }
+
+  .score-board { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px; }
+  .score-team { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .score-team-name { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+  .score-team-players { font-size: 11px; color: var(--text-dim); }
+  .score-number { font-size: 48px; font-weight: 900; color: var(--text); }
+  .score-number.winner { color: var(--primary); }
+  .score-divider { font-size: 24px; color: var(--text-dim); font-weight: 300; }
+
+  .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin: 0 20px 12px; }
+  .team-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .team-player { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .team-player-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+  .team-player-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .team-player-level { font-size: 11px; color: var(--text-dim); }
+
+  /* === SCREEN: CREATE === */
+  .create-step { padding: 20px; }
+  .create-progress { display: flex; gap: 4px; padding: 16px 20px 0; }
+  .create-progress-dot { flex: 1; height: 3px; border-radius: 2px; background: var(--surface-3); }
+  .create-progress-dot.active { background: var(--primary); }
+  .create-progress-dot.done { background: var(--primary); }
+  .create-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .create-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+  .input-group { margin-bottom: 16px; }
+  .input-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block; }
+  .input-field { width: 100%; padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 15px; }
+  .option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .option-btn { padding: 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-weight: 700; text-align: center; }
+  .option-btn.selected { background: rgba(251,191,36,0.1); border-color: var(--primary); color: var(--primary); }
+
+  /* === SCREEN: PUBLIC TURN === */
+  .public-hero { padding: 24px 20px; text-align: center; background: linear-gradient(180deg, rgba(251,191,36,0.08) 0%, transparent 100%); }
+  .public-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: rgba(251,191,36,0.15); color: var(--primary); font-size: 11px; font-weight: 700; margin-bottom: 16px; }
+  .public-club { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .public-date { font-size: 14px; color: var(--text-muted); }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 16px; overflow: hidden; margin: 0 20px 16px; }
+  .info-cell { background: var(--surface); padding: 16px; text-align: center; }
+  .info-cell-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(251,191,36,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+  .info-cell-icon svg { width: 16px; height: 16px; color: var(--primary); }
+  .info-cell-value { font-size: 16px; font-weight: 800; color: var(--text); }
+  .info-cell-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+  .slot-list { padding: 0 20px; }
+  .slot-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .slot-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+  .slot-avatar.filled { background: var(--surface-3); color: var(--text); }
+  .slot-avatar.empty { border: 2px dashed var(--surface-3); color: var(--text-dim); }
+  .slot-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .slot-name.empty { color: var(--text-dim); font-style: italic; }
+  .slot-meta { font-size: 11px; color: var(--text-dim); }
+
+  .cta-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px 24px; background: linear-gradient(180deg, transparent, var(--bg) 30%); }
+  .cta-bar-content { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+
+  /* === SCREEN: LOGIN === */
+  .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px 24px; text-align: center; background: radial-gradient(circle at 50% 30%, rgba(251,191,36,0.08), transparent 60%); }
+  .login-logo { font-size: 36px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .login-tagline { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.5; }
+  .login-features { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; width: 100%; }
+  .login-feature { display: flex; align-items: center; gap: 12px; text-align: left; }
+  .login-feature-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(251,191,36,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .login-feature-icon svg { width: 20px; height: 20px; color: var(--primary); }
+  .login-feature-text { font-size: 13px; color: var(--text); font-weight: 600; }
+  .login-feature-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; background: #fff; color: #1a1a1a; font-size: 15px; font-weight: 700; border: none; cursor: pointer; }
+  .google-icon { width: 20px; height: 20px; }
+
+  /* === SCREEN: PROFILE === */
+  .profile-hero { padding: 24px 20px; text-align: center; }
+  .profile-avatar { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #0a0a0b; margin: 0 auto 12px; }
+  .profile-name { font-size: 22px; font-weight: 800; color: var(--text); }
+  .profile-level { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-radius: 16px; overflow: hidden; margin: 20px; }
+  .profile-stat { background: var(--surface); padding: 16px; text-align: center; }
+  .profile-stat-value { font-size: 22px; font-weight: 800; color: var(--text); }
+  .profile-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  .form-row { padding: 0 20px; margin-bottom: 16px; }
+  .recent-form { display: flex; gap: 6px; justify-content: center; padding: 12px 0; }
+  .form-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .form-dot.w { background: var(--emerald); }
+  .form-dot.l { background: var(--rose); opacity: 0.4; }
+
+  /* SVG icons inline */
+  .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PadelApp — Redesign Proposal</h1>
+  <p>Propuesta completa de rediseño: layout, navegación, flujos y pantallas. Wireframes en estilo "dark limpio" inspirado en Playtomic, Strava y apps deportivas modernas.</p>
+</div>
+
+<div class="screens">
+
+  <!-- ===== LOGIN ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Login</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="login-screen">
+          <div class="login-logo">PadelApp</div>
+          <div class="login-tagline">Registra tus partidos,<br>constru tu ranking,<br>organiza turnos con un link.</div>
+          <div class="login-features">
+            <div class="login-feature">
+              <div class="login-feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+              <div><div class="login-feature-text">Ranking real</div><div class="login-feature-sub">Basado en resultados confirmados</div></div>
+            </div>
+            <div class="login-feature">
+              <div class="login-feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+              <div><div class="login-feature-text">Turnos con un link</div><div class="login-feature-sub">Compartí por WhatsApp y jugá</div></div>
+            </div>
+            <div class="login-feature">
+              <div class="login-feature-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+              <div><div class="login-feature-text">Nivel 1 al 8</div><div class="login-feature-sub">Categorías estándar de pádel</div></div>
+            </div>
+          </div>
+          <button class="google-btn">
+            <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.23 0 2.35.42 3.23 1.25l2.37-2.37C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continuar con Google
+          </button>
+          <p style="font-size:11px;color:var(--text-dim);margin-top:16px;">Al continuar aceptás los términos y la política de privacidad.</p>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Login con valor: muestra 3 beneficios clave antes del CTA. Fondo sutil con radial gradient amarillo.</div>
+  </div>
+
+  <!-- ===== HOME / DASHBOARD ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Home (Dashboard)</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-logo">PadelApp</div>
+          <div class="topbar-avatar">D</div>
+        </div>
+        <div class="hero">
+          <div class="hero-greeting">Hola,</div>
+          <div class="hero-name">DevPlayer</div>
+          <div class="hero-stats">
+            <div class="stat-mini"><div class="stat-value">6</div><div class="stat-label">Nivel</div></div>
+            <div class="stat-mini"><div class="stat-value">12</div><div class="stat-label">Partidos</div></div>
+            <div class="stat-mini"><div class="stat-value">#8</div><div class="stat-label">Ranking</div></div>
+          </div>
+        </div>
+
+        <div class="section-title">Próximo partido</div>
+        <div class="next-match">
+          <div class="next-match-label">Hoy · 19:00</div>
+          <div class="next-match-club">Ital, Mier 19hs</div>
+          <div class="next-match-time">120 min · Nivel 6 · 1/6 jugadores</div>
+          <div class="next-match-players">
+            <div class="player-chip">D</div>
+            <div class="player-chip empty">?</div>
+            <div class="player-chip empty">?</div>
+            <div class="player-chip empty">?</div>
+            <div class="player-chip empty">?</div>
+            <div class="player-chip empty">?</div>
+          </div>
+          <button class="btn btn-primary" style="background:var(--primary);color:#0a0a0b;">Ver detalle</button>
+        </div>
+
+        <div class="section-title">Acciones pendientes</div>
+        <div class="card" style="display:flex;align-items:center;gap:12px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,63,94,0.1);display:flex;align-items:center;justify-content:center;">
+            <svg class="icon" style="color:var(--rose);" viewBox="0 0 24 24"><path d="M12 2v6m0 0v6m0-6h6m-6 0H6"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Confirmar resultado</div>
+            <div style="font-size:12px;color:var(--text-dim);">Partido vs Martín & Lucas</div>
+          </div>
+          <svg class="icon" style="color:var(--text-dim);" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <div class="section-title">Turnos abiertos</div>
+        <div class="turn-card">
+          <div class="turn-card-header">
+            <div>
+              <div class="turn-card-club">Padel City</div>
+              <div class="turn-card-date">Sáb 12 Jul · 18:00</div>
+              <div class="turn-card-level"><span class="badge badge-primary">Nivel 5</span></div>
+            </div>
+            <div class="badge badge-emerald">3/4</div>
+          </div>
+          <div class="turn-card-footer">
+            <div class="turn-card-players">
+              <div class="turn-card-avatars">
+                <div class="player-chip">M</div>
+                <div class="player-chip">L</div>
+                <div class="player-chip">S</div>
+              </div>
+            </div>
+            <button style="background:var(--primary);color:#0a0a0b;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;">Unirme</button>
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="bottomnav">
+          <div class="nav-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inicio</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turnos</div>
+          <div class="nav-fab"><svg class="icon" viewBox="0 0 24 24" style="stroke:#0a0a0b;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Ranking</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Dashboard con info accionable arriba: próximo partido, acciones pendientes y turnos abiertos. FAB central para crear.</div>
+  </div>
+
+  <!-- ===== TURNOS ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Turnos</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-logo">Turnos</div>
+          <div class="topbar-avatar">D</div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-chip active">Todos</div>
+          <div class="filter-chip inactive">Mi nivel</div>
+          <div class="filter-chip inactive">Hoy</div>
+          <div class="filter-chip inactive">Esta semana</div>
+        </div>
+
+        <div class="turn-card">
+          <div class="turn-card-header">
+            <div>
+              <div class="turn-card-club">Ital, Mier 19hs</div>
+              <div class="turn-card-date">Mié 8 Jul · 19:00 · 120 min</div>
+              <div class="turn-card-level"><span class="badge badge-primary">Nivel 6</span> <span class="badge badge-neutral">Intermedio</span></div>
+            </div>
+            <div class="badge badge-emerald">1/6</div>
+          </div>
+          <div class="turn-card-footer">
+            <div class="turn-card-players">
+              <div class="turn-card-avatars"><div class="player-chip">D</div></div>
+              <span>5 cupos</span>
+            </div>
+            <button style="background:var(--primary);color:#0a0a0b;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;">Unirme</button>
+          </div>
+        </div>
+
+        <div class="turn-card">
+          <div class="turn-card-header">
+            <div>
+              <div class="turn-card-club">Padel City</div>
+              <div class="turn-card-date">Sáb 12 Jul · 18:00 · 90 min</div>
+              <div class="turn-card-level"><span class="badge badge-primary">Nivel 5</span></div>
+            </div>
+            <div class="badge badge-rose">Completo</div>
+          </div>
+          <div class="turn-card-footer">
+            <div class="turn-card-players">
+              <div class="turn-card-avatars">
+                <div class="player-chip">M</div>
+                <div class="player-chip">L</div>
+                <div class="player-chip">S</div>
+                <div class="player-chip">J</div>
+              </div>
+              <span>4/4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="turn-card">
+          <div class="turn-card-header">
+            <div>
+              <div class="turn-card-club">Club Náutico</div>
+              <div class="turn-card-date">Dom 13 Jul · 10:00 · 60 min</div>
+              <div class="turn-card-level"><span class="badge badge-primary">Nivel 4</span></div>
+            </div>
+            <div class="badge badge-emerald">2/4</div>
+          </div>
+          <div class="turn-card-footer">
+            <div class="turn-card-players">
+              <div class="turn-card-avatars"><div class="player-chip">P</div><div class="player-chip">R</div></div>
+              <span>2 cupos</span>
+            </div>
+            <button style="background:var(--primary);color:#0a0a0b;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;">Unirme</button>
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="bottomnav">
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inicio</div>
+          <div class="nav-item active"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turnos</div>
+          <div class="nav-fab"><svg class="icon" viewBox="0 0 24 24" style="stroke:#0a0a0b;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Ranking</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Lista de turnos con filtros horizontales. Cards compactas con info esencial, avatares agrupados y CTA directo.</div>
+  </div>
+
+  <!-- ===== RANKING ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Ranking</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-logo">Ranking</div>
+          <div class="topbar-avatar">D</div>
+        </div>
+
+        <div class="podium">
+          <div class="podium-item podium-2">
+            <div class="podium-avatar">M</div>
+            <div class="podium-name">Martín</div>
+            <div class="podium-score">1245 pts</div>
+            <div class="podium-bar">2</div>
+          </div>
+          <div class="podium-item podium-1">
+            <div class="podium-avatar">L</div>
+            <div class="podium-name">Lucas</div>
+            <div class="podium-score">1380 pts</div>
+            <div class="podium-bar">1</div>
+          </div>
+          <div class="podium-item podium-3">
+            <div class="podium-avatar">S</div>
+            <div class="podium-name">Sofía</div>
+            <div class="podium-score">1190 pts</div>
+            <div class="podium-bar">3</div>
+          </div>
+        </div>
+
+        <div class="ranking-row">
+          <div class="ranking-pos">4</div>
+          <div class="ranking-avatar">P</div>
+          <div class="ranking-info">
+            <div class="ranking-name">Pedro</div>
+            <div class="ranking-meta">Nivel 5 · 8W 3L · 73% Rep</div>
+          </div>
+          <div class="ranking-score">1150</div>
+        </div>
+        <div class="ranking-row">
+          <div class="ranking-pos">5</div>
+          <div class="ranking-avatar">R</div>
+          <div class="ranking-info">
+            <div class="ranking-name">Romina</div>
+            <div class="ranking-meta">Nivel 4 · 6W 2L · 88% Rep</div>
+          </div>
+          <div class="ranking-score">1120</div>
+        </div>
+        <div class="ranking-row">
+          <div class="ranking-pos">6</div>
+          <div class="ranking-avatar">J</div>
+          <div class="ranking-info">
+            <div class="ranking-name">Joaquín</div>
+            <div class="ranking-meta">Nivel 6 · 5W 5L · 60% Rep</div>
+          </div>
+          <div class="ranking-score">1080</div>
+        </div>
+        <div class="ranking-row">
+          <div class="ranking-pos">7</div>
+          <div class="ranking-avatar">F</div>
+          <div class="ranking-info">
+            <div class="ranking-name">Federico</div>
+            <div class="ranking-meta">Nivel 7 · 3W 4L · 100% Rep</div>
+          </div>
+          <div class="ranking-score">1050</div>
+        </div>
+        <div class="ranking-row me">
+          <div class="ranking-pos">8</div>
+          <div class="ranking-avatar" style="background:rgba(251,191,36,0.2);color:var(--primary);">D</div>
+          <div class="ranking-info">
+            <div class="ranking-name">DevPlayer (Tú)</div>
+            <div class="ranking-meta">Nivel 6 · 0W 0L · 100% Rep</div>
+          </div>
+          <div class="ranking-score">1000</div>
+        </div>
+        <div class="ranking-row">
+          <div class="ranking-pos">9</div>
+          <div class="ranking-avatar">C</div>
+          <div class="ranking-info">
+            <div class="ranking-name">Carla</div>
+            <div class="ranking-meta">Nivel 5 · 2W 3L · 80% Rep</div>
+          </div>
+          <div class="ranking-score">980</div>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="bottomnav">
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inicio</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turnos</div>
+          <div class="nav-fab"><svg class="icon" viewBox="0 0 24 24" style="stroke:#0a0a0b;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <div class="nav-item active"><svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Ranking</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Ranking con podio visual arriba, lista limpia abajo con info esencial. Tu posición destacada con amarillo.</div>
+  </div>
+
+  <!-- ===== MATCH DETAIL ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Detalle de Partido</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-back"><svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver</div>
+          <div style="font-size:18px;font-weight:800;color:var(--primary);">Partido</div>
+          <div style="width:32px;"></div>
+        </div>
+
+        <div class="match-header">
+          <div class="match-club">Ital, Mier 19hs</div>
+          <div class="match-date">Mié 8 Jul · 19:00</div>
+          <div class="match-status"><span class="badge badge-emerald">Confirmado</span></div>
+        </div>
+
+        <div class="score-board">
+          <div class="score-team">
+            <div class="score-team-name">Pareja A</div>
+            <div class="score-team-players">DevPlayer & Martín</div>
+            <div class="score-number winner">6</div>
+          </div>
+          <div class="score-divider">-</div>
+          <div class="score-team">
+            <div class="score-team-name">Pareja B</div>
+            <div class="score-team-players">Lucas & Sofía</div>
+            <div class="score-number">3</div>
+          </div>
+        </div>
+
+        <div class="section-title">Equipos</div>
+        <div class="team-card">
+          <div class="team-label">Pareja A (Ganadores)</div>
+          <div class="team-player">
+            <div class="team-player-avatar">D</div>
+            <div><div class="team-player-name">DevPlayer</div><div class="team-player-level">Nivel 6 · Organizador</div></div>
+            <span class="badge badge-emerald" style="margin-left:auto;">Confirmado</span>
+          </div>
+          <div class="team-player">
+            <div class="team-player-avatar">M</div>
+            <div><div class="team-player-name">Martín</div><div class="team-player-level">Nivel 5</div></div>
+            <span class="badge badge-emerald" style="margin-left:auto;">Confirmado</span>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-label">Pareja B</div>
+          <div class="team-player">
+            <div class="team-player-avatar">L</div>
+            <div><div class="team-player-name">Lucas</div><div class="team-player-level">Nivel 4</div></div>
+            <span class="badge badge-neutral" style="margin-left:auto;">Pendiente</span>
+          </div>
+          <div class="team-player">
+            <div class="team-player-avatar">S</div>
+            <div><div class="team-player-name">Sofía</div><div class="team-player-level">Nivel 5</div></div>
+            <span class="badge badge-neutral" style="margin-left:auto;">Pendiente</span>
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="bottomnav">
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inicio</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turnos</div>
+          <div class="nav-fab"><svg class="icon" viewBox="0 0 24 24" style="stroke:#0a0a0b;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Ranking</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Detalle con scoreboard grande arriba, equipos con estado de confirmación. Topbar con back consistente.</div>
+  </div>
+
+  <!-- ===== PUBLIC TURN ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Turno Público (/t/[id])</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-back"><svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver</div>
+          <div style="width:32px;"></div>
+          <div style="width:32px;"></div>
+        </div>
+
+        <div class="public-hero">
+          <div class="public-badge">🎾 Turno Abierto</div>
+          <div class="public-club">Ital, Mier 19hs</div>
+          <div class="public-date">Miércoles 8 de julio · 19:00</div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-cell">
+            <div class="info-cell-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="info-cell-value">120 min</div>
+            <div class="info-cell-label">Duración</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="info-cell-value">Nivel 6</div>
+            <div class="info-cell-label">Sugerido</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="info-cell-value">1/6</div>
+            <div class="info-cell-label">Jugadores</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="info-cell-value">Ital</div>
+            <div class="info-cell-label">Club</div>
+          </div>
+        </div>
+
+        <div class="section-title">Jugadores</div>
+        <div class="slot-list">
+          <div class="slot-row">
+            <div class="slot-avatar filled">D</div>
+            <div><div class="slot-name">DevPlayer</div><div class="slot-meta">Nivel 6 · Organizador</div></div>
+            <span class="badge badge-primary" style="margin-left:auto;">Organizador</span>
+          </div>
+          <div class="slot-row">
+            <div class="slot-avatar empty">?</div>
+            <div><div class="slot-name empty">Cupo disponible</div><div class="slot-meta">Esperando jugador...</div></div>
+          </div>
+          <div class="slot-row">
+            <div class="slot-avatar empty">?</div>
+            <div><div class="slot-name empty">Cupo disponible</div><div class="slot-meta">Esperando jugador...</div></div>
+          </div>
+          <div class="slot-row">
+            <div class="slot-avatar empty">?</div>
+            <div><div class="slot-name empty">Cupo disponible</div><div class="slot-meta">Esperando jugador...</div></div>
+          </div>
+        </div>
+
+        <div style="height:120px;"></div>
+        <div class="cta-bar">
+          <div class="cta-bar-content">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:center;">5 cupos disponibles · Anotate hasta las 18:59</div>
+            <button class="btn btn-primary">Anotarme ahora</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Página pública con info clara arriba, grid 2x2 de specs, lista de jugadores y CTA fijo abajo. Topbar con back.</div>
+  </div>
+
+  <!-- ===== CREATE MATCH ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Crear Partido (Step 1)</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-back"><svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Cancelar</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text-muted);">1/4</div>
+          <div style="width:32px;"></div>
+        </div>
+
+        <div class="create-progress">
+          <div class="create-progress-dot active"></div>
+          <div class="create-progress-dot"></div>
+          <div class="create-progress-dot"></div>
+          <div class="create-progress-dot"></div>
+        </div>
+
+        <div class="create-step">
+          <div class="create-title">Nuevo partido</div>
+          <div class="create-subtitle">Contanos dónde y cuándo jugás</div>
+
+          <div class="input-group">
+            <label class="input-label">Club</label>
+            <input class="input-field" placeholder="Ej: Padel City" value="Ital">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Cancha (opcional)</label>
+            <input class="input-field" placeholder="Ej: Cancha 3" value="">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Fecha</label>
+            <input class="input-field" type="date" value="2025-07-08">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Hora</label>
+            <input class="input-field" type="time" value="19:00">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Duración</label>
+            <div class="option-grid">
+              <div class="option-btn">60 min</div>
+              <div class="option-btn selected">90 min</div>
+              <div class="option-btn">120 min</div>
+            </div>
+          </div>
+
+          <div style="height:80px;"></div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:var(--bg);border-top:1px solid var(--border);">
+            <button class="btn btn-primary">Continuar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Creación multi-paso con progress bar, inputs nativos del sistema, selectores táctiles. CTA fijo abajo.</div>
+  </div>
+
+  <!-- ===== PROFILE ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Perfil</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-logo">Perfil</div>
+          <div style="display:flex;gap:12px;">
+            <svg class="icon" style="color:var(--text-muted);" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+        </div>
+
+        <div class="profile-hero">
+          <div class="profile-avatar">D</div>
+          <div class="profile-name">DevPlayer</div>
+          <div class="profile-level">Nivel 6 · Intermedio</div>
+          <div class="recent-form">
+            <div class="form-dot w"></div>
+            <div class="form-dot w"></div>
+            <div class="form-dot l"></div>
+            <div class="form-dot w"></div>
+            <div class="form-dot l"></div>
+          </div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="profile-stat-value">#8</div>
+            <div class="profile-stat-label">Ranking</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value">1000</div>
+            <div class="profile-stat-label">Puntos</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value">100%</div>
+            <div class="profile-stat-label">Reputación</div>
+          </div>
+        </div>
+
+        <div class="section-title">Estadísticas</div>
+        <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div><div style="font-size:24px;font-weight:800;color:var(--text);">0</div><div style="font-size:11px;color:var(--text-dim);">Victorias</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--text);">0</div><div style="font-size:11px;color:var(--text-dim);">Derrotas</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--emerald);">—</div><div style="font-size:11px;color:var(--text-dim);">Racha actual</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--text);">0%</div><div style="font-size:11px;color:var(--text-dim);">Win Rate</div></div>
+        </div>
+
+        <div class="section-title">Partidos recientes</div>
+        <div class="card" style="text-align:center;padding:32px;">
+          <div style="font-size:32px;margin-bottom:8px;">🎾</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);">Sin partidos todavía</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Creá tu primer partido para aparecer en el ranking</div>
+          <button class="btn btn-primary" style="margin-top:16px;">Crear partido</button>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="bottomnav">
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inicio</div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turnos</div>
+          <div class="nav-fab"><svg class="icon" viewBox="0 0 24 24" style="stroke:#0a0a0b;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <div class="nav-item"><svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Ranking</div>
+          <div class="nav-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Perfil con avatar grande, stats en grid, forma reciente (W/L dots) y historial. Empty state con CTA claro.</div>
+  </div>
+
+  <!-- ===== REGISTER RESULT ===== -->
+  <div class="screen-group">
+    <div class="screen-label">Registrar Resultado</div>
+    <div class="phone">
+      <div class="phone-content">
+        <div class="topbar">
+          <div class="topbar-back"><svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text-muted);">Registrar</div>
+          <div style="width:32px;"></div>
+        </div>
+
+        <!-- Match context -->
+        <div style="padding:16px 20px;text-align:center;border-bottom:1px solid var(--border);">
+          <div style="font-size:16px;font-weight:800;color:var(--text);">Ital, Mier 19hs</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">Mié 8 Jul · 19:00 · 3 sets</div>
+        </div>
+
+        <!-- Teams preview -->
+        <div style="display:flex;padding:16px 20px;gap:12px;">
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;">
+            <div style="display:flex;justify-content:center;gap:-8px;margin-bottom:8px;">
+              <div class="player-chip" style="width:32px;height:32px;font-size:11px;">D</div>
+              <div class="player-chip" style="width:32px;height:32px;font-size:11px;margin-left:-10px;">M</div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);">DevPlayer & Martín</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:2px;">Pareja A</div>
+          </div>
+          <div style="display:flex;align-items:center;font-size:18px;font-weight:300;color:var(--text-dim);">vs</div>
+          <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;">
+            <div style="display:flex;justify-content:center;gap:-8px;margin-bottom:8px;">
+              <div class="player-chip" style="width:32px;height:32px;font-size:11px;">L</div>
+              <div class="player-chip" style="width:32px;height:32px;font-size:11px;margin-left:-10px;">S</div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);">Lucas & Sofía</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:2px;">Pareja B</div>
+          </div>
+        </div>
+
+<!-- Score entry per set -->
+<div style="padding:0 20px;">
+  <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Marcador</div>
+
+  <!-- Set 1 -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">Set 1</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja A</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px;">
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">0</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">1</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">2</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">3</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">4</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary);">6</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">7</div>
+        </div>
+      </div>
+      <div style="font-size:20px;font-weight:300;color:var(--text-dim);">:</div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja B</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px;">
+          <div style="width:36px;height:44px;border-radius:10px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary);">4</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">5</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">6</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">7</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set 2 -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">Set 2</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja A</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px;">
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">0</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">1</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">2</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">3</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary);">6</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">7</div>
+        </div>
+      </div>
+      <div style="font-size:20px;font-weight:300;color:var(--text-dim);">:</div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja B</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px;">
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">0</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">1</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">2</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary);">3</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">4</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">5</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">6</div>
+          <div style="width:36px;height:44px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--text);">7</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set 3 (tie-break) -->
+  <div style="margin-bottom:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);">Set 3 (Tie-break)</div>
+      <span class="badge badge-neutral">Opcional</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja A</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:4px;">
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">0</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">1</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">2</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">3</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">4</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">5</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">6</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">7</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">8</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">9</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--primary);">10</div>
+        </div>
+      </div>
+      <div style="font-size:20px;font-weight:300;color:var(--text-dim);">:</div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">Pareja B</div>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:4px;">
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">0</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">1</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">2</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">3</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">4</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">5</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">6</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:rgba(251,191,36,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--primary);">7</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">8</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">9</div>
+          <div style="width:28px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text);">10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner display -->
+  <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+    <div style="width:40px;height:40px;border-radius:12px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;">
+      <svg class="icon" style="color:var(--emerald);" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--emerald);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Ganadores</div>
+      <div style="font-size:15px;font-weight:800;color:var(--text);margin-top:2px;">DevPlayer & Martín</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">6-4, 6-3, 10-7</div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div style="margin-bottom:16px;">
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;display:block;">Notas (opcional)</label>
+    <div style="width:100%;min-height:60px;border-radius:12px;background:var(--surface);border:1px solid var(--border);padding:12px;font-size:13px;color:var(--text-dim);">Partido intenso, buen nivel de ambos equipos...</div>
+  </div>
+
+  <!-- Info note -->
+  <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--surface);border-radius:12px;border:1px solid var(--border);margin-bottom:16px;">
+    <svg class="icon" style="color:var(--text-dim);flex-shrink:0;margin-top:2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.5;">El resultado debe ser confirmado por al menos un jugador de cada equipo para sumar puntos al ranking.</div>
+  </div>
+</div>
+
+        <div style="height:80px;"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 24px;background:linear-gradient(180deg,transparent,var(--bg) 30%);">
+          <button class="btn btn-primary">Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+    <div class="screen-desc">Registro de marcador set por set con selectores táctiles. Winner detectado automáticamente. Notas opcionales. CTA fijo abajo.</div>
+  </div>
+
+</div>
+
+</body>
+</html>
