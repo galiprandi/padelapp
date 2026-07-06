@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -21,31 +21,34 @@ export async function recalculateRankingAction() {
     // We include all matches where the user was a player to calculate attendanceScore
     const allMatchPlayers = await prisma.matchPlayer.findMany({
       where: {
-        userId: { not: null }
+        userId: { not: null },
       },
       include: {
         match: true,
       },
       orderBy: {
         match: {
-          date: "asc"
-        }
-      }
+          date: "asc",
+        },
+      },
     });
 
-    const userStats = new Map<string, {
-      wins: number;
-      losses: number;
-      streak: number;
-      matchesPlayed: number;
-      lastMatchAt: Date | null;
-      setsWonBonus: number;
-      confirmedMatchesCount: number;
-      totalMatchesCount: number;
-    }>();
+    const userStats = new Map<
+      string,
+      {
+        wins: number;
+        losses: number;
+        streak: number;
+        matchesPlayed: number;
+        lastMatchAt: Date | null;
+        setsWonBonus: number;
+        confirmedMatchesCount: number;
+        totalMatchesCount: number;
+      }
+    >();
 
     // Initialize stats for all users
-    users.forEach(user => {
+    users.forEach((user) => {
       userStats.set(user.id, {
         wins: 0,
         losses: 0,
@@ -59,7 +62,7 @@ export async function recalculateRankingAction() {
     });
 
     // 3. Process match players
-    allMatchPlayers.forEach(mp => {
+    allMatchPlayers.forEach((mp) => {
       if (!mp.userId) return;
       const stats = userStats.get(mp.userId);
       if (!stats) return;
@@ -86,7 +89,9 @@ export async function recalculateRankingAction() {
           const isWinner = playerTeam === winningTeam;
 
           // Parse sets for bonus
-          const sets = match.score.split(",").map(s => s.trim().split("-").map(Number));
+          const sets = match.score
+            .split(",")
+            .map((s) => s.trim().split("-").map(Number));
           let setsWon = 0;
           sets.forEach(([scoreA, scoreB]) => {
             if (playerTeam === "A" && scoreA > scoreB) setsWon++;
@@ -112,7 +117,8 @@ export async function recalculateRankingAction() {
     const ONE_HUNDRED_TWENTY_DAYS = 120 * 24 * 60 * 60 * 1000;
 
     const ranking = Array.from(userStats.entries()).map(([userId, stats]) => {
-      let score = 1000 + (stats.wins * 15) + (stats.streak * 5) + stats.setsWonBonus;
+      let score =
+        1000 + stats.wins * 15 + stats.streak * 5 + stats.setsWonBonus;
 
       // Time attenuation based on lastMatchAt
       if (stats.lastMatchAt) {
@@ -124,9 +130,10 @@ export async function recalculateRankingAction() {
         }
       }
 
-      const attendanceScore = stats.totalMatchesCount > 0
-        ? stats.confirmedMatchesCount / stats.totalMatchesCount
-        : 1.0;
+      const attendanceScore =
+        stats.totalMatchesCount > 0
+          ? stats.confirmedMatchesCount / stats.totalMatchesCount
+          : 1.0;
 
       return {
         userId,
@@ -145,7 +152,8 @@ export async function recalculateRankingAction() {
     // 4) lastMatchAt (desc)
     ranking.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      if (b.attendanceScore !== a.attendanceScore) return b.attendanceScore - a.attendanceScore;
+      if (b.attendanceScore !== a.attendanceScore)
+        return b.attendanceScore - a.attendanceScore;
       if (b.wins !== a.wins) return b.wins - a.wins;
       if (!a.lastMatchAt) return 1;
       if (!b.lastMatchAt) return -1;
@@ -155,7 +163,7 @@ export async function recalculateRankingAction() {
     // 6. Update database
     await prisma.$transaction(
       ranking.map((item, index) => {
-        const user = users.find(u => u.id === item.userId);
+        const user = users.find((u) => u.id === item.userId);
         const oldPosition = user?.rankingPosition;
         const newPosition = index + 1;
 
@@ -176,11 +184,12 @@ export async function recalculateRankingAction() {
             attendanceScore: item.attendanceScore,
           },
         });
-      })
+      }),
     );
 
     revalidatePath("/ranking");
     revalidatePath("/me");
+    revalidateTag("ranking", "default");
 
     return { status: "ok" };
   } catch (error) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -13,7 +13,7 @@ export type UpdateProfileResponse =
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
-  levelInput: number
+  levelInput: number,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -21,7 +21,10 @@ export async function updateUserProfileAction(
   }
 
   const trimmed = aliasInput?.trim() ?? "";
-  if (trimmed.length > 0 && (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)) {
+  if (
+    trimmed.length > 0 &&
+    (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)
+  ) {
     return {
       status: "error",
       message: `Alias must be between ${MIN_ALIAS_LENGTH} and ${MAX_ALIAS_LENGTH} characters.`,
@@ -41,6 +44,7 @@ export async function updateUserProfileAction(
   revalidatePath("/me");
   revalidatePath("/me/profile");
   revalidatePath("/ranking");
+  revalidateTag("ranking", "default");
 
   return { status: "ok", alias: aliasToSave, level: levelInput };
 }

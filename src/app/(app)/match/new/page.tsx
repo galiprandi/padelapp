@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
@@ -11,12 +11,18 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import appSettings from "@/config/app-settings.json";
 
-export default function RegisterMatchPage() {
+function RegisterMatchInner() {
   const searchParams = useSearchParams();
   const turnId = searchParams.get("turnId");
 
-  const [activeSlot, setActiveSlot] = useState<{ team: TeamKey; index: 0 | 1 }>({ team: "A", index: 1 });
-  const [manageModal, setManageModal] = useState<{ open: boolean; team: TeamKey; index: 0 | 1 }>({
+  const [activeSlot, setActiveSlot] = useState<{ team: TeamKey; index: 0 | 1 }>(
+    { team: "A", index: 1 },
+  );
+  const [manageModal, setManageModal] = useState<{
+    open: boolean;
+    team: TeamKey;
+    index: 0 | 1;
+  }>({
     open: false,
     team: "A",
     index: 1,
@@ -69,9 +75,13 @@ export default function RegisterMatchPage() {
   }
 
   function handleReleaseSlot() {
-     const placeholderName = `Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`;
-     updateSlot(manageModal.team, manageModal.index, createPlaceholderSlot(placeholderName));
-     handleCloseManageModal();
+    const placeholderName = `Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`;
+    updateSlot(
+      manageModal.team,
+      manageModal.index,
+      createPlaceholderSlot(placeholderName),
+    );
+    handleCloseManageModal();
   }
 
   async function handleShareIntent(nameToShare: string) {
@@ -97,14 +107,18 @@ export default function RegisterMatchPage() {
 
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       try {
-        await navigator.clipboard.writeText(`${appSettings.share.inviteTitle}\nSumate al partido como ${trimmed}\n${appSettings.baseUrl}`);
+        await navigator.clipboard.writeText(
+          `${appSettings.share.inviteTitle}\nSumate al partido como ${trimmed}\n${appSettings.baseUrl}`,
+        );
       } catch (error) {
         console.error("navigator.clipboard.writeText failed", error);
       }
     }
   }
 
-  const modalSlot = manageModal.open ? teamState[manageModal.team][manageModal.index] : null;
+  const modalSlot = manageModal.open
+    ? teamState[manageModal.team][manageModal.index]
+    : null;
 
   return (
     <>
@@ -123,7 +137,9 @@ export default function RegisterMatchPage() {
         scores={scores}
         isSubmitting={isSubmitting}
         onSlotClick={(team, index) => setActiveSlot({ team, index })}
-        onManageClick={(team, index) => setManageModal({ open: true, team, index })}
+        onManageClick={(team, index) =>
+          setManageModal({ open: true, team, index })
+        }
         onMatchTypeChange={setMatchType}
         onSetsChange={setSets}
         onCountsForRankingChange={setCountsForRanking}
@@ -139,7 +155,9 @@ export default function RegisterMatchPage() {
       {formError ? (
         <div className="fixed bottom-32 left-0 right-0 px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-4 backdrop-blur-md">
-            <p className="text-sm font-black text-destructive text-center uppercase tracking-widest">{formError}</p>
+            <p className="text-sm font-black text-destructive text-center uppercase tracking-widest">
+              {formError}
+            </p>
           </div>
         </div>
       ) : null}
@@ -154,5 +172,13 @@ export default function RegisterMatchPage() {
         onClose={handleCloseManageModal}
       />
     </>
+  );
+}
+
+export default function RegisterMatchPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterMatchInner />
+    </Suspense>
   );
 }

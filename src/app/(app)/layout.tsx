@@ -5,8 +5,6 @@ import { BottomNav } from "@/components/navigation/bottom-nav";
 import { TopBar } from "@/components/navigation/top-bar";
 import { getPendingActions } from "@/lib/match-queries";
 
-export const dynamic = "force-dynamic";
-
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await auth();
   const userId = session?.user?.id;

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
@@ -80,7 +81,9 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
         </p>
       </div>
 
-      <RankingSearch />
+      <Suspense fallback={null}>
+        <RankingSearch />
+      </Suspense>
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <UserRankingBanner

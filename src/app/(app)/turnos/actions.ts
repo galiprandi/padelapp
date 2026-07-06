@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export type CreateTurnInput = {
@@ -39,6 +39,7 @@ export async function createTurnAction(input: CreateTurnInput) {
     });
 
     revalidatePath("/turnos");
+    revalidateTag("turns", "default");
     return { status: "ok", turnId: turn.id };
   } catch (error) {
     console.error("Error creating turn:", error);
@@ -63,11 +64,17 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
     }
 
     if (turn.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede editar el turno" };
+      return {
+        status: "error",
+        message: "Solo el organizador puede editar el turno",
+      };
     }
 
     if (turn.status === "COMPLETED") {
-      return { status: "error", message: "No se puede editar un turno ya finalizado" };
+      return {
+        status: "error",
+        message: "No se puede editar un turno ya finalizado",
+      };
     }
 
     await prisma.turn.update({
@@ -84,6 +91,7 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
 
     revalidatePath("/turnos");
     revalidatePath(`/t/${turnId}`);
+    revalidateTag("turns", "default");
 
     return { status: "ok" };
   } catch (error) {
@@ -134,6 +142,7 @@ export async function joinTurnAction(turnId: string) {
 
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
+    revalidateTag("turns", "default");
     return { status: "ok" };
   } catch (error) {
     console.error("Error joining turn:", error);
@@ -172,6 +181,7 @@ export async function leaveTurnAction(turnId: string) {
 
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
+    revalidateTag("turns", "default");
     return { status: "ok" };
   } catch (error) {
     console.error("Error leaving turn:", error);
@@ -246,11 +256,17 @@ export async function convertTurnToMatchAction(turnId: string) {
     }
 
     if (turn.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede iniciar el partido" };
+      return {
+        status: "error",
+        message: "Solo el organizador puede iniciar el partido",
+      };
     }
 
     if (turn.players.length < 4) {
-      return { status: "error", message: "Se necesitan 4 jugadores para iniciar el partido" };
+      return {
+        status: "error",
+        message: "Se necesitan 4 jugadores para iniciar el partido",
+      };
     }
 
     // Use a transaction to create the match and update the turn
@@ -293,11 +309,16 @@ export async function convertTurnToMatchAction(turnId: string) {
     revalidatePath("/turnos");
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/me");
+    revalidateTag("turns", "default");
+    revalidateTag("matches", "default");
 
     return { status: "ok", matchId };
   } catch (error) {
     console.error("Error converting turn to match:", error);
-    return { status: "error", message: "Error al convertir el turno en partido" };
+    return {
+      status: "error",
+      message: "Error al convertir el turno en partido",
+    };
   }
 }
 
@@ -318,11 +339,17 @@ export async function cancelTurnAction(turnId: string) {
     }
 
     if (turn.creatorId !== session.user.id) {
-      return { status: "error", message: "Solo el organizador puede cancelar el turno" };
+      return {
+        status: "error",
+        message: "Solo el organizador puede cancelar el turno",
+      };
     }
 
     if (turn.status === "COMPLETED") {
-      return { status: "error", message: "No se puede cancelar un turno ya finalizado" };
+      return {
+        status: "error",
+        message: "No se puede cancelar un turno ya finalizado",
+      };
     }
 
     await prisma.turn.update({
@@ -333,6 +360,7 @@ export async function cancelTurnAction(turnId: string) {
     revalidatePath("/turnos");
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/me");
+    revalidateTag("turns", "default");
 
     return { status: "ok" };
   } catch (error) {

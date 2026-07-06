@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink } from "@/lib/magic-link";
@@ -304,6 +304,8 @@ export async function createMatchAction(
     );
 
     revalidatePath("/match");
+    revalidateTag("matches", "default");
+    revalidateTag("turns", "default");
 
     const shareUrl = createMagicLink({
       resource: "match",
@@ -412,6 +414,7 @@ export async function cancelMatchAction(
     revalidatePath("/match");
     revalidatePath(`/match/${matchId}`);
     revalidatePath("/me");
+    revalidateTag("matches", "default");
 
     return { status: "ok" };
   } catch (error) {
@@ -808,6 +811,7 @@ export async function confirmMatchResultAction(
     }
 
     revalidatePath(`/match/${matchId}`);
+    revalidateTag("matches", "default");
 
     return { status: "ok" };
   } catch (error) {
@@ -1208,6 +1212,7 @@ export async function saveMatchResultAction(
 
     revalidatePath(`/match/${input.matchId}`);
     revalidatePath(`/match/${input.matchId}/result`);
+    revalidateTag("matches", "default");
 
     return { status: "ok" };
   } catch (error) {
@@ -1396,6 +1401,7 @@ export async function joinMatchPlayerAction(
 
     revalidatePath(`/match/${player.matchId}`);
     revalidatePath(`/j/${playerId}`);
+    revalidateTag("matches", "default");
 
     return { status: "ok" };
   } catch (error) {
