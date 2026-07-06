@@ -82,6 +82,7 @@ export default function NewTurnPage() {
         <div className="space-y-2">
           <Label
             htmlFor="club"
+            requiredIndicator="*"
             className="text-sm font-semibold text-foreground"
           >
             Club y cancha
@@ -92,6 +93,7 @@ export default function NewTurnPage() {
             value={formData.club}
             onChange={(e) => setFormData({ ...formData, club: e.target.value })}
             required
+            aria-required="true"
             className="h-12"
           />
         </div>
@@ -100,6 +102,7 @@ export default function NewTurnPage() {
           <div className="space-y-2">
             <Label
               htmlFor="date"
+              requiredIndicator="*"
               className="text-sm font-semibold text-foreground"
             >
               Fecha
@@ -112,12 +115,14 @@ export default function NewTurnPage() {
                 setFormData({ ...formData, date: e.target.value })
               }
               required
+              aria-required="true"
               className="h-12"
             />
           </div>
           <div className="space-y-2">
             <Label
               htmlFor="time"
+              requiredIndicator="*"
               className="text-sm font-semibold text-foreground"
             >
               Hora
@@ -130,22 +135,29 @@ export default function NewTurnPage() {
                 setFormData({ ...formData, time: e.target.value })
               }
               required
+              aria-required="true"
               className="h-12"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-semibold text-foreground">
+          <Label id="duration-label" className="text-sm font-semibold text-foreground">
             Duración
           </Label>
-          <div className="grid grid-cols-3 gap-2">
+          <div
+            role="radiogroup"
+            aria-labelledby="duration-label"
+            className="grid grid-cols-3 gap-2"
+          >
             {DURATION_OPTIONS.map((option) => {
               const isSelected = formData.duration === option.value;
               return (
                 <button
                   key={option.value}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() =>
                     setFormData({ ...formData, duration: option.value })
                   }
@@ -164,16 +176,22 @@ export default function NewTurnPage() {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-semibold text-foreground">
+          <Label id="players-label" className="text-sm font-semibold text-foreground">
             Cupos totales
           </Label>
-          <div className="grid grid-cols-2 gap-2">
+          <div
+            role="radiogroup"
+            aria-labelledby="players-label"
+            className="grid grid-cols-2 gap-2"
+          >
             {PLAYER_OPTIONS.map((option) => {
               const isSelected = formData.maxPlayers === option.value;
               return (
                 <button
                   key={option.value}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() =>
                     setFormData({ ...formData, maxPlayers: option.value })
                   }
@@ -193,16 +211,22 @@ export default function NewTurnPage() {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-semibold text-foreground">
+          <Label id="level-label" className="text-sm font-semibold text-foreground">
             Nivel sugerido
           </Label>
-          <div className="grid grid-cols-2 gap-2">
+          <div
+            role="radiogroup"
+            aria-labelledby="level-label"
+            className="grid grid-cols-2 gap-2"
+          >
             {levelOptions.map((option) => {
               const isSelected = formData.suggestedLevel === option.value;
               return (
                 <button
                   key={option.value}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() =>
                     setFormData({ ...formData, suggestedLevel: option.value })
                   }
