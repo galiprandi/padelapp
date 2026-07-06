@@ -4,9 +4,22 @@ import { auth } from "@/auth";
 import { PageHeader } from "@/components/page-header";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { MatchResultCompact, type MatchResultCompactMatch } from "@/components/matches/match-result-card";
+import {
+  MatchResultCompact,
+  type MatchResultCompactMatch,
+} from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
-import { Trophy, CalendarDays, Target, TrendingUp, Zap, Flame, Users, Swords } from "lucide-react";
+import {
+  Trophy,
+  CalendarDays,
+  Target,
+  TrendingUp,
+  Zap,
+  Flame,
+  Users,
+  Swords,
+  ChevronLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -17,7 +30,9 @@ interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
 }
 
-export default async function PublicProfilePage({ params }: PublicProfilePageProps) {
+export default async function PublicProfilePage({
+  params,
+}: PublicProfilePageProps) {
   const { userId } = await params;
   const session = await auth();
   const viewerId = session?.user?.id;
@@ -63,7 +78,6 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     take: 5,
   });
 
-
   const formattedMatches = matches.map<MatchResultCompactMatch>((match) => ({
     id: match.id,
     createdAt: match.date,
@@ -71,56 +85,76 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     status: match.status,
     date: match.date,
     players: match.players.map((player) => {
-      const preferredName = player.user && player.user.alias
-        ? player.user.alias
-        : player.user?.displayName;
+      const preferredName =
+        player.user && player.user.alias
+          ? player.user.alias
+          : player.user?.displayName;
       return {
         id: player.id,
         position: player.position,
         displayName: player.displayName,
         user: player.user
           ? {
-            id: player.user.id,
-            displayName: preferredName ?? null,
-            image: player.user.image ?? undefined,
-          }
+              id: player.user.id,
+              displayName: preferredName ?? null,
+              image: player.user.image ?? undefined,
+            }
           : null,
       };
     }),
   }));
 
   const displayName = user.alias ?? user.displayName ?? "Jugador";
-  const winRate = user.matchesPlayed > 0 ? Math.round((user.wins / user.matchesPlayed) * 100) : 0;
+  const winRate =
+    user.matchesPlayed > 0
+      ? Math.round((user.wins / user.matchesPlayed) * 100)
+      : 0;
 
   // Determinar forma reciente (W/L) de los últimos 5 partidos
-  const recentForm = matches.map(match => {
-    if (!match.score) return 'L';
+  const recentForm = matches.map((match) => {
+    if (!match.score) return "L";
     const winner = getMatchWinner(match.score);
-    if (!winner) return 'L';
+    if (!winner) return "L";
 
-    const playerPosition = match.players.find(p => p.userId === userId)?.position ?? 0;
-    const playerTeam = playerPosition < 2 ? 'A' : 'B';
+    const playerPosition =
+      match.players.find((p) => p.userId === userId)?.position ?? 0;
+    const playerTeam = playerPosition < 2 ? "A" : "B";
 
-    return winner === playerTeam ? 'W' : 'L';
+    return winner === playerTeam ? "W" : "L";
   });
 
   // Calcular racha actual
   let currentStreak = 0;
   for (const result of recentForm) {
-    if (result === 'W') {
+    if (result === "W") {
       currentStreak++;
     } else {
       break;
     }
   }
 
-  const h2h = (viewerId && viewerId !== userId) ? await getHeadToHeadStats(viewerId, userId) : null;
+  const h2h =
+    viewerId && viewerId !== userId
+      ? await getHeadToHeadStats(viewerId, userId)
+      : null;
 
   return (
     <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
       {/* Ambient Light Effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] pointer-events-none">
         <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
+      </div>
+
+      <div className="relative z-10 flex justify-center animate-in fade-in slide-in-from-left-4 duration-500">
+        <Link
+          href={viewerId ? "/me" : "/"}
+          className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-all active:scale-95"
+        >
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted/20 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+          </div>
+          Volver
+        </Link>
       </div>
 
       <section className="relative z-10 space-y-8 text-center animate-in fade-in slide-in-from-top-8 duration-1000">
@@ -143,19 +177,23 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
           </div>
 
           <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tight text-foreground">{displayName}</h1>
+            <h1 className="text-4xl font-black tracking-tight text-foreground">
+              {displayName}
+            </h1>
             <div className="flex flex-col items-center gap-2">
               <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none">
                 Jugador de Pádel • Nivel {user.level}
               </p>
               {currentStreak >= 2 && (
-                <Badge variant="outline" className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-black uppercase tracking-[0.2em] text-[9px] px-3 py-1 animate-pulse">
-                   Racha: {currentStreak} Victorias 🔥
+                <Badge
+                  variant="outline"
+                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-black uppercase tracking-[0.2em] text-[9px] px-3 py-1 animate-pulse"
+                >
+                  Racha: {currentStreak} Victorias 🔥
                 </Badge>
               )}
             </div>
           </div>
-
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 px-2">
@@ -179,8 +217,12 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
               Efectividad
             </div>
             <div className="flex items-baseline gap-1 relative z-10">
-              <span className="text-4xl font-black tracking-tighter">{winRate}%</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">WR</span>
+              <span className="text-4xl font-black tracking-tighter">
+                {winRate}%
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+                WR
+              </span>
             </div>
           </div>
 
@@ -198,12 +240,16 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
                     key={i}
                     className={cn(
                       "h-2.5 w-2.5 rounded-full shadow-sm transition-transform hover:scale-125",
-                      result === "W" ? "bg-emerald-500 shadow-[0_0_8px_theme(colors.emerald.500/0.4)]" : "bg-rose-500/30"
+                      result === "W"
+                        ? "bg-emerald-500 shadow-[0_0_8px_theme(colors.emerald.500/0.4)]"
+                        : "bg-rose-500/30",
                     )}
                   />
                 ))
               ) : (
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">—</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">
+                  —
+                </span>
               )}
             </div>
           </div>
@@ -227,8 +273,12 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
                     Socios
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black">{h2h.together.wins}</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">de {h2h.together.total} ganados</span>
+                    <span className="text-2xl font-black">
+                      {h2h.together.wins}
+                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                      de {h2h.together.total} ganados
+                    </span>
                   </div>
                 </div>
 
@@ -238,8 +288,12 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
                     Rivales
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-primary">{h2h.against.wins}</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">de {h2h.against.total} ganados</span>
+                    <span className="text-2xl font-black text-primary">
+                      {h2h.against.wins}
+                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                      de {h2h.against.total} ganados
+                    </span>
                   </div>
                 </div>
               </div>
@@ -247,15 +301,29 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
               {h2h.lastMatch && (
                 <div className="mt-6 pt-4 border-t border-border/20 flex items-center justify-between">
                   <div className="flex flex-col gap-0.5 text-left">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Último duelo</span>
-                    <span className={cn(
-                      "text-[10px] font-black uppercase tracking-widest",
-                      h2h.lastMatch.winner === h2h.lastMatch.viewerTeam ? "text-emerald-500" : "text-rose-500"
-                    )}>
-                      {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam ? "Victoria" : "Derrota"} • {h2h.lastMatch.score}
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
+                      Último duelo
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[10px] font-black uppercase tracking-widest",
+                        h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
+                          ? "text-emerald-500"
+                          : "text-rose-500",
+                      )}
+                    >
+                      {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
+                        ? "Victoria"
+                        : "Derrota"}{" "}
+                      • {h2h.lastMatch.score}
                     </span>
                   </div>
-                  <Button size="sm" variant="ghost" className="h-8 rounded-xl font-black uppercase tracking-[0.2em] text-[8px] active:scale-95" asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 rounded-xl font-black uppercase tracking-[0.2em] text-[8px] active:scale-95"
+                    asChild
+                  >
                     <Link href={`/match/${h2h.lastMatch.id}`}>Ver detalle</Link>
                   </Button>
                 </div>
@@ -281,7 +349,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
               <div
                 key={match.id}
                 className="animate-in fade-in slide-in-from-bottom-4 duration-500"
-                style={{ animationDelay: `${400 + (index * 100)}ms` }}
+                style={{ animationDelay: `${400 + index * 100}ms` }}
               >
                 <MatchResultCompact
                   match={match}
@@ -299,12 +367,6 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
           )}
         </div>
       </section>
-
-      <div className="relative z-10 flex flex-col gap-3 pt-6 px-2 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-700">
-        <Button asChild variant="outline" className="w-full rounded-[2rem] h-16 font-black uppercase tracking-[0.2em] text-[11px] border-border/40 bg-card/60 backdrop-blur-2xl active:scale-[0.98] shadow-sm transition-all duration-300">
-          <Link href="/ranking">Volver al ranking global</Link>
-        </Button>
-      </div>
     </div>
   );
 }
