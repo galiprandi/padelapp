@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
@@ -326,8 +327,8 @@ export async function createMatchAction(
 
     const slots = creationResult.match.players
       .slice()
-      .sort((a, b) => a.position - b.position)
-      .map((player) => {
+      .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
+      .map((player: { id: string; position: number; teamId: string | null; displayName: string | null; userId: string | null }) => {
         const teamInfo = player.teamId
           ? teamLabelById[player.teamId]
           : { team: "A" as TeamKey, label: teamLabelA };

@@ -44,7 +44,7 @@ export function RankingSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-lg bg-card border-border text-sm font-medium shadow-sm"
+        className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md placeholder:text-muted-foreground/30 focus:bg-card/60 focus:ring-primary/20 transition-all shadow-sm"
       />
       {query && (
         <button
