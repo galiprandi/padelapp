@@ -29,7 +29,7 @@ export function TopBar({
         {backHref ? (
           <Link
             href={backHref}
-            className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground active:scale-95"
+            className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <ChevronLeft className="h-5 w-5" />
             Volver

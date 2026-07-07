@@ -43,6 +43,7 @@ Context and responsibilities for automated agents or contributors working on **P
 ## 6. Current State
 
 ### Implemented
+- **Minimal Design Cleanup**: Core shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`) refactored to Minimal Design standards, removing V9+ remnants (glassmorphism, tactile scale, micro-typography).
 - Google OAuth login with NextAuth + Prisma adapter.
 - Dashboard (`/me`) with agenda, pending actions, and recent results.
 - Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`).

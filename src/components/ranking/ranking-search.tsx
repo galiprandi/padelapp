@@ -30,7 +30,7 @@ export function RankingSearch() {
   }, [query, router, searchParams]);
 
   return (
-    <div className="relative group animate-in fade-in slide-in-from-top-4 duration-700">
+    <div className="relative group">
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
           "h-4 w-4 transition-colors duration-300",
@@ -40,17 +40,17 @@ export function RankingSearch() {
       </div>
       <Input
         type="search"
-        placeholder="BUSCAR JUGADOR O ALIAS..."
+        placeholder="Buscar jugador o alias..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         autoComplete="off"
-        className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md font-black text-[11px] uppercase tracking-[0.2em] placeholder:text-muted-foreground/30 focus:bg-card/60 focus:ring-primary/20 transition-all shadow-sm"
+        className="h-12 pl-11 pr-11 rounded-lg bg-card border-border text-sm font-medium shadow-sm"
       />
       {query && (
         <button
           onClick={() => setQuery("")}
           aria-label="Limpiar búsqueda"
-          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors active:scale-90"
+          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
