@@ -301,3 +301,16 @@ The following patterns were explicitly removed from the codebase and must not be
 - Turns act as player funnel.
 - `convertTurnToMatchAction` inherits club, players, positions.
 - `useMatchForm` supports `turnId` pre-fill.
+
+---
+
+## 7. Refinements
+
+### 7.1 Shared Component Sanitization
+All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`) have been refactored to the Minimal Design System.
+
+- **Standardized Button Heights**: Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions) are `h-8`.
+- **Absolute Removal of Tactile Feedback**: All `active:scale-*` effects have been removed. Interaction feedback must rely solely on color or border changes (`transition-colors`).
+- **Elimination of Glassmorphism**: Semi-transparent backgrounds (`bg-card/40`, `bg-background/50`) and `backdrop-blur-*` have been replaced by solid `bg-card` or `bg-background`.
+- **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.
+- **Typography**: Micro-typography below 11px and heavy `font-black` weights have been replaced by standard Tailwind weights (`font-medium`, `font-semibold`, `font-bold`) and sizes (`text-xs`, `text-sm`).
