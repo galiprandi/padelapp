@@ -64,7 +64,7 @@ export function BottomNav({
         {/* FAB Central */}
         <Link
           href="/match/new"
-          className="relative -mt-6 flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-transform active:scale-95"
+          className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm"
           aria-label="Crear partido"
         >
           <Plus className="h-6 w-6" aria-hidden="true" />
@@ -99,7 +99,7 @@ export function BottomNav({
           <Link
             href={notificationsHref}
             aria-label="Notificaciones"
-            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-[11px] font-bold text-primary-foreground transition-transform active:scale-90"
+            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-[10px] font-bold text-primary-foreground"
           >
             {notificationsCount}
           </Link>

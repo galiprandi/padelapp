@@ -66,7 +66,7 @@ export function TurnCard({
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30 active:scale-[0.98]",
+          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30",
           isRecommended && "border-primary/20 bg-primary/5",
           isPending && "opacity-70 pointer-events-none",
         )}
@@ -117,7 +117,7 @@ export function TurnCard({
           <button
             onClick={handleQuickJoin}
             disabled={isPending}
-            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shrink-0 transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[72px]"
+            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shrink-0 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[72px]"
           >
             {isPending ? (
               <Loader2 className="h-3 w-3 animate-spin" />

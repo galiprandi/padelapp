@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { JoinSlotButton } from "./join-slot-button";
-import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import {
   AlertCircle,
@@ -13,7 +12,6 @@ import {
   Trophy,
   MapPin,
   Users,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -114,79 +112,66 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
   return (
-    <main className="relative mx-auto min-h-screen w-full max-w-md flex-col gap-12 px-6 py-10 pb-48 overflow-hidden animate-in fade-in duration-1000">
-      {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
+      <div className="flex flex-col gap-4">
+        <Link
+          href={session?.user ? "/me" : "/"}
+          className="text-sm font-semibold text-primary hover:underline"
+        >
+          Volver
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Invitación a jugar</h1>
+          <p className="text-sm text-muted-foreground">Invitación directa de {match.creator.displayName}</p>
+        </div>
+        <div className="rounded-lg bg-muted/50 p-4 border border-border">
+          <p className="text-sm font-medium text-muted-foreground">
+            Te invitaron a sumarte como{" "}
+            <span className="font-bold text-foreground">
+              {teamLabel}
+            </span>.
+          </p>
+        </div>
+      </div>
 
-      <PageHeader
-        title={`Invitación a jugar`}
-        align="center"
-        backHref={session?.user ? "/me" : "/"}
-        description={
-          <span className="flex flex-col items-center gap-4 mt-2">
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 shadow-sm">
-              Invitación directa
-            </span>
-            <span className="text-sm font-medium text-muted-foreground text-center max-w-[280px]">
-              {match.creator.displayName} te invitó a sumarte como{" "}
-              <span className="font-black text-foreground underline decoration-primary decoration-2 underline-offset-2">
-                {teamLabel}
-              </span>
-              .
-            </span>
-          </span>
-        }
-      />
-
-      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 blur-[80px] rounded-full pointer-events-none opacity-40" />
-
-        <CardHeader className="relative z-10 pb-4 pt-8 text-center border-b border-border/20 bg-muted/10">
-          <CardTitle className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+      <Card className="rounded-xl border-border bg-card overflow-hidden">
+        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
+          <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Detalle del partido
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative z-10 grid grid-cols-2 gap-px bg-border/10 p-0">
-          <div className="bg-card/20 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
-              <Trophy className="h-5 w-5" />
+        <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
+          <div className="bg-card p-4 flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Trophy className="h-4 w-4" />
+              <span className="text-xs font-semibold">Modalidad</span>
             </div>
-            <div>
-              <p className="text-xl font-black tracking-tight">
-                {match.sets} sets
-              </p>
-              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                Modalidad
-              </p>
-            </div>
+            <p className="text-lg font-bold">{match.sets} sets</p>
           </div>
-          <div className="bg-card/20 p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-inner">
-              <Sparkles className="h-5 w-5" />
+          <div className="bg-card p-4 flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span className="text-xs font-semibold">Estado</span>
             </div>
-            <div>
+            <div className="flex items-center pt-1">
               <Badge
                 variant={match.status === "CONFIRMED" ? "success" : "default"}
-                className="uppercase text-[8px] font-black tracking-[0.2em] py-0.5 px-2 rounded-lg"
+                className="text-[10px] font-bold px-2 py-0.5 rounded"
               >
                 {formatStatus(match.status)}
               </Badge>
-              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
-                Estado
-              </p>
             </div>
           </div>
           {match.club && (
-            <div className="col-span-2 bg-card/20 p-5 flex items-center justify-center gap-4 border-t border-border/20">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 shadow-inner">
+            <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
                 <MapPin className="h-5 w-5" />
               </div>
-              <div className="text-left min-w-0">
-                <p className="text-base font-black tracking-tight truncate">
+              <div className="min-w-0">
+                <p className="text-sm font-bold truncate">
                   {match.club}{" "}
                   {match.courtNumber ? `(Cancha ${match.courtNumber})` : ""}
                 </p>
-                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                <p className="text-xs text-muted-foreground">
                   Sede del encuentro
                 </p>
               </div>
@@ -195,14 +180,12 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
         </CardContent>
       </Card>
 
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-        <div className="flex items-center justify-between px-2">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-foreground">
             Formación actual
           </h2>
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Users className="h-3.5 w-3.5" />
-          </div>
+          <Users className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="grid gap-6">
           {(["A", "B"] as const).map((key) => {
@@ -213,14 +196,13 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
 
             return (
               <div key={key} className="space-y-3">
-                <div className="flex items-center gap-3 px-1">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
-                  <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                     {label}
-                  </p>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/20 to-transparent" />
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
                 </div>
-                <div className="grid gap-3">
+                <div className="grid gap-2">
                   {slots.map((slot) => {
                     const name =
                       slot.user?.displayName ??
@@ -233,18 +215,18 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                       <div
                         key={slot.id}
                         className={cn(
-                          "flex items-center gap-4 rounded-[2rem] p-4 border transition-all duration-300 backdrop-blur-sm",
+                          "flex items-center gap-3 rounded-xl p-3 border",
                           isViewer
-                            ? "bg-primary/5 border-primary/20 shadow-sm"
-                            : "bg-card/40 border-border/40",
+                            ? "bg-primary/5 border-primary/20"
+                            : "bg-card border-border",
                         )}
                       >
                         <div
                           className={cn(
-                            "flex h-11 w-11 items-center justify-center rounded-xl text-sm font-black shadow-inner shrink-0",
+                            "flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold shrink-0",
                             isOccupied
                               ? "bg-primary/10 text-primary"
-                              : "bg-muted/30 text-muted-foreground/30",
+                              : "bg-muted text-muted-foreground/30",
                           )}
                         >
                           {isOccupied
@@ -259,22 +241,22 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                         <div className="flex-1 min-w-0">
                           <p
                             className={cn(
-                              "text-base font-black truncate leading-tight tracking-tight",
+                              "text-sm font-bold truncate leading-tight",
                               isOccupied
                                 ? "text-foreground"
-                                : "text-muted-foreground/40 italic",
+                                : "text-muted-foreground italic",
                             )}
                           >
                             {name}
                           </p>
-                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 mt-1">
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
                             Jugador {slot.position + 1}
                           </p>
                         </div>
                         {isOccupied && (
                           <Badge
                             variant="outline"
-                            className="text-[8px] uppercase font-black tracking-[0.2em] border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded-lg"
+                            className="text-[10px] font-bold border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded"
                           >
                             {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
                           </Badge>
@@ -289,77 +271,71 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background via-background to-background pointer-events-none z-50 pb-10">
-        <div className="max-w-md mx-auto pointer-events-auto">
-          <Card className="rounded-[2.5rem] border-primary/20 bg-card/80 shadow-2xl backdrop-blur-xl border-2 overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            <CardContent className="p-8 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/30 shrink-0">
-                  <UserCheck className="h-8 w-8" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 leading-none mb-1">
-                    Te unirás como
-                  </p>
-                  <p className="text-2xl font-black text-foreground truncate tracking-tight">
-                    {teamLabel}
-                  </p>
-                </div>
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background/90 backdrop-blur-sm border-t border-border z-50">
+        <div className="max-w-md mx-auto">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0">
+                <UserCheck className="h-6 w-6" />
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase text-muted-foreground leading-none mb-1">
+                  Te unirás como
+                </p>
+                <p className="text-xl font-bold text-foreground truncate">
+                  {teamLabel}
+                </p>
+              </div>
+            </div>
 
-              {helperMessage && (
-                <div className="flex items-center gap-3 rounded-2xl bg-destructive/5 p-4 text-destructive border border-destructive/20 animate-in shake duration-500">
-                  <AlertCircle className="h-5 w-5 shrink-0" />
-                  <p className="text-[11px] font-black uppercase tracking-[0.2em] leading-relaxed">
-                    {helperMessage}
-                  </p>
-                </div>
+            {helperMessage && (
+              <div className="flex items-center gap-3 rounded-lg bg-destructive/5 p-3 text-destructive border border-destructive/20">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <p className="text-xs font-bold uppercase">
+                  {helperMessage}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {!session?.user ? (
+                <Button
+                  asChild
+                  className="w-full h-12 rounded-lg text-base font-bold"
+                >
+                  <Link
+                    href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}
+                  >
+                    Continuar con Google
+                  </Link>
+                </Button>
+              ) : slotTakenByViewer ? (
+                <Button
+                  asChild
+                  variant="secondary"
+                  className="w-full h-12 rounded-lg text-base font-bold"
+                >
+                  <Link href={`/match/${match.id}`}>
+                    Ya estás unido · Ver partido
+                  </Link>
+                </Button>
+              ) : (
+                <JoinSlotButton
+                  playerId={player.id}
+                  matchId={match.id}
+                  disabled={joinDisabled}
+                  redirectOnSuccess={`/match/${match.id}`}
+                />
               )}
 
-              <div className="space-y-4">
-                {!session?.user ? (
-                  <Button
-                    asChild
-                    className="w-full rounded-2xl h-16 text-lg font-black shadow-xl shadow-primary/30 transition-all active:scale-[0.98]"
-                    size="lg"
-                  >
-                    <Link
-                      href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}
-                    >
-                      Continuar con Google
-                    </Link>
-                  </Button>
-                ) : slotTakenByViewer ? (
-                  <Button
-                    asChild
-                    variant="secondary"
-                    className="w-full rounded-2xl h-16 text-lg font-black shadow-lg active:scale-[0.98]"
-                    size="lg"
-                  >
-                    <Link href={`/match/${match.id}`}>
-                      Ya estás unido · Ver partido
-                    </Link>
-                  </Button>
-                ) : (
-                  <JoinSlotButton
-                    playerId={player.id}
-                    matchId={match.id}
-                    disabled={joinDisabled}
-                    redirectOnSuccess={`/match/${match.id}`}
-                  />
-                )}
-
-                <div className="flex flex-col gap-2">
-                  <Link
-                    href={`/match/${match.id}`}
-                    className="text-center text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-colors py-2"
-                  >
-                    Ver todos los detalles del encuentro
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <Link
+                href={`/match/${match.id}`}
+                className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1"
+              >
+                Ver todos los detalles del encuentro
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </main>

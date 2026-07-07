@@ -30,7 +30,7 @@ export function RankingSearch() {
   }, [query, router, searchParams]);
 
   return (
-    <div className="relative group animate-in fade-in slide-in-from-top-4 duration-700">
+    <div className="relative group">
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
           "h-4 w-4 transition-colors duration-300",
@@ -50,7 +50,7 @@ export function RankingSearch() {
         <button
           onClick={() => setQuery("")}
           aria-label="Limpiar búsqueda"
-          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors active:scale-90"
+          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>

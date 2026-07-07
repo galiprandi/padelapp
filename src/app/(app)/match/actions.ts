@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { createMagicLink } from "@/lib/magic-link";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 
@@ -250,7 +251,7 @@ export async function createMatchAction(
 
   try {
     const creationResult = await prisma.$transaction(
-      async (tx: Prisma.TransactionClient) => {
+      async (tx) => {
         if (
           typeof (tx as { team?: typeof prisma.team }).team?.create !==
           "function"

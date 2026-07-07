@@ -184,10 +184,10 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
   return (
     <>
       {swapSourceId && (
-        <div className="fixed inset-x-0 top-20 z-50 flex justify-center px-5 animate-in slide-in-from-top-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-primary px-4 py-2 text-primary-foreground shadow-xl">
+        <div className="fixed inset-x-0 top-20 z-50 flex justify-center px-5">
+          <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
             <ArrowUpDown className="h-4 w-4" />
-            <span className="text-xs font-black uppercase tracking-widest">Modo intercambio activo</span>
+            <span className="text-xs font-bold">Modo intercambio activo</span>
             <Button
               size="icon"
               variant="ghost"
