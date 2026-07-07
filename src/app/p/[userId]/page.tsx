@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { PageHeader } from "@/components/page-header";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import {
@@ -11,11 +10,7 @@ import {
 import { EmptyState } from "@/components/empty-state";
 import {
   Trophy,
-  CalendarDays,
-  Target,
-  TrendingUp,
   Zap,
-  Flame,
   Users,
   Swords,
   ChevronLeft,
@@ -110,7 +105,6 @@ export default async function PublicProfilePage({
       ? Math.round((user.wins / user.matchesPlayed) * 100)
       : 0;
 
-  // Determinar forma reciente (W/L) de los últimos 5 partidos
   const recentForm = matches.map((match) => {
     if (!match.score) return "L";
     const winner = getMatchWinner(match.score);
@@ -123,7 +117,6 @@ export default async function PublicProfilePage({
     return winner === playerTeam ? "W" : "L";
   });
 
-  // Calcular racha actual
   let currentStreak = 0;
   for (const result of recentForm) {
     if (result === "W") {
@@ -139,55 +132,46 @@ export default async function PublicProfilePage({
       : null;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-md flex-col gap-12 px-6 py-10 pb-20 overflow-hidden min-h-screen">
-      {/* Ambient Light Effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] pointer-events-none">
-        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
-      </div>
-
-      <div className="relative z-10 flex justify-center animate-in fade-in slide-in-from-left-4 duration-500">
+    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
+      <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
-          className="group flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 hover:text-primary transition-all active:scale-95"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
         >
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted/20 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-          </div>
-          Volver
+          <ChevronLeft className="h-5 w-5" />
         </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
+          <p className="text-sm text-muted-foreground">Estadísticas de {displayName}</p>
+        </div>
       </div>
 
-      <section className="relative z-10 space-y-8 text-center animate-in fade-in slide-in-from-top-8 duration-1000">
-        <div className="flex flex-col items-center gap-6">
+      <section className="space-y-6">
+        <div className="flex flex-col items-center gap-4 text-center">
           <div className="relative">
             <PlayerAvatar
               name={displayName}
               image={user.image ?? undefined}
-              size={128}
-              className="border-4 border-background shadow-2xl ring-1 ring-primary/20"
+              size={96}
+              className="border-2 border-border"
             />
-            <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-black text-lg shadow-lg border-4 border-background ring-1 ring-primary/20">
+            <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm border-2 border-background">
               {user.level}
             </div>
-            {currentStreak >= 2 && (
-              <div className="absolute -top-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg border-4 border-background animate-bounce">
-                <Flame className="h-5 w-5 fill-current" />
-              </div>
-            )}
           </div>
 
           <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tight text-foreground">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
               {displayName}
-            </h1>
+            </h2>
             <div className="flex flex-col items-center gap-2">
-              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 leading-none">
-                Jugador de Pádel • Nivel {user.level}
+              <p className="text-sm font-semibold text-muted-foreground">
+                Nivel {user.level}
               </p>
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-black uppercase tracking-[0.2em] text-[9px] px-3 py-1 animate-pulse"
+                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-bold px-3 py-1"
                 >
                   Racha: {currentStreak} Victorias 🔥
                 </Badge>
@@ -196,58 +180,50 @@ export default async function PublicProfilePage({
           </div>
         </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 px-2">
-          <UserRankingBanner
-            position={user.rankingPosition}
-            score={user.rankingScore}
-            delta={user.rankingDelta}
-            wins={user.wins}
-            losses={user.losses}
-            level={user.level}
-            matchesPlayed={user.matchesPlayed}
-          />
-        </div>
+        <UserRankingBanner
+          position={user.rankingPosition}
+          score={user.rankingScore}
+          delta={user.rankingDelta}
+          wins={user.wins}
+          losses={user.losses}
+          level={user.level}
+          matchesPlayed={user.matchesPlayed}
+        />
 
-        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400 px-2">
-          <div className="flex flex-col gap-4 rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden group">
-            <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <Target className="h-16 w-16 text-primary" />
-            </div>
-            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 relative z-10">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Efectividad
             </div>
-            <div className="flex items-baseline gap-1 relative z-10">
-              <span className="text-4xl font-black tracking-tighter">
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold">
                 {winRate}%
               </span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+              <span className="text-xs font-semibold text-muted-foreground">
                 WR
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl relative overflow-hidden group">
-            <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <TrendingUp className="h-16 w-16 text-primary" />
-            </div>
-            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 relative z-10">
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Forma
             </div>
-            <div className="flex gap-2 pt-2 relative z-10">
+            <div className="flex gap-1.5 pt-1">
               {recentForm.length > 0 ? (
                 recentForm.map((result, i) => (
                   <div
                     key={i}
                     className={cn(
-                      "h-2.5 w-2.5 rounded-full shadow-sm transition-transform hover:scale-125",
+                      "h-2.5 w-2.5 rounded-full",
                       result === "W"
-                        ? "bg-emerald-500 shadow-[0_0_8px_theme(colors.emerald.500/0.4)]"
+                        ? "bg-emerald-500"
                         : "bg-rose-500/30",
                     )}
                   />
                 ))
               ) : (
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">
+                <span className="text-xs font-semibold text-muted-foreground">
                   —
                 </span>
               )}
@@ -256,107 +232,96 @@ export default async function PublicProfilePage({
         </div>
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500">
-            <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 p-6 backdrop-blur-2xl shadow-xl">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <Swords className="h-16 w-16 text-primary" />
-              </div>
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Cara a Cara
+            </h3>
 
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-6 text-left">
-                Inteligencia Cara a Cara
-              </h3>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-1 text-left">
-                  <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    <Users className="h-3 w-3" />
-                    Socios
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black">
-                      {h2h.together.wins}
-                    </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
-                      de {h2h.together.total} ganados
-                    </span>
-                  </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                  <Users className="h-3.5 w-3.5" />
+                  Como socios
                 </div>
-
-                <div className="space-y-1 text-left">
-                  <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    <Swords className="h-3 w-3" />
-                    Rivales
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-primary">
-                      {h2h.against.wins}
-                    </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
-                      de {h2h.against.total} ganados
-                    </span>
-                  </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-bold">
+                    {h2h.together.wins}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    / {h2h.together.total}
+                  </span>
                 </div>
               </div>
 
-              {h2h.lastMatch && (
-                <div className="mt-6 pt-4 border-t border-border/20 flex items-center justify-between">
-                  <div className="flex flex-col gap-0.5 text-left">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                      Último duelo
-                    </span>
-                    <span
-                      className={cn(
-                        "text-[10px] font-black uppercase tracking-widest",
-                        h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
-                          ? "text-emerald-500"
-                          : "text-rose-500",
-                      )}
-                    >
-                      {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
-                        ? "Victoria"
-                        : "Derrota"}{" "}
-                      • {h2h.lastMatch.score}
-                    </span>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 rounded-xl font-black uppercase tracking-[0.2em] text-[8px] active:scale-95"
-                    asChild
-                  >
-                    <Link href={`/match/${h2h.lastMatch.id}`}>Ver detalle</Link>
-                  </Button>
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                  <Swords className="h-3.5 w-3.5" />
+                  Como rivales
                 </div>
-              )}
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-bold text-primary">
+                    {h2h.against.wins}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    / {h2h.against.total}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {h2h.lastMatch && (
+              <div className="pt-3 border-t border-border flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold uppercase text-muted-foreground">
+                    Último duelo
+                  </span>
+                  <span
+                    className={cn(
+                      "text-xs font-bold",
+                      h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
+                        ? "text-emerald-600"
+                        : "text-rose-600",
+                    )}
+                  >
+                    {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
+                      ? "Victoria"
+                      : "Derrota"}{" "}
+                    • {h2h.lastMatch.score}
+                  </span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 rounded-lg text-xs font-bold"
+                  asChild
+                >
+                  <Link href={`/match/${h2h.lastMatch.id}`}>Detalle</Link>
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </section>
 
-      <section className="relative z-10 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
-        <div className="flex items-center justify-between px-2">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-foreground">
             Historial Reciente
           </h2>
-          <div className="flex items-center gap-1.5 text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2.5 py-1 rounded-full border border-primary/10">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
             <Zap className="h-3 w-3 fill-current" />
             {winRate}% WR
           </div>
         </div>
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           {formattedMatches.length > 0 ? (
-            formattedMatches.map((match, index) => (
-              <div
+            formattedMatches.map((match) => (
+              <MatchResultCompact
                 key={match.id}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-500"
-                style={{ animationDelay: `${400 + index * 100}ms` }}
-              >
-                <MatchResultCompact
-                  match={match}
-                  detailUrl={`/match/${match.id}`}
-                  viewerId={userId}
-                />
-              </div>
+                match={match}
+                detailUrl={`/match/${match.id}`}
+                viewerId={userId}
+              />
             ))
           ) : (
             <EmptyState
