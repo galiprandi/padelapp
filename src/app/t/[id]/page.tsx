@@ -10,7 +10,6 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { PageHeader } from "@/components/page-header";
 import { levelOptions } from "@/lib/mock-data";
 import {
   Calendar,
@@ -29,7 +28,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import appSettings from "@/config/app-settings.json";
 import type { Metadata } from "next";
-import { cn } from "@/lib/utils";
 
 interface TurnPageProps {
   params: Promise<{ id: string }>;
@@ -73,23 +71,22 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
 
   if (isCancelled) {
     return (
-      <main className="relative mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-48 overflow-hidden">
-        <PageHeader
-          title="Turno cancelado"
-          align="center"
-          size="lg"
-          description="Este turno ha sido cancelado por el organizador."
-          backHref={viewerId ? "/me" : "/"}
-        />
+      <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10">
         <div className="flex flex-col gap-4">
-          <Button
-            asChild
-            className="w-full rounded-[2rem] h-16 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]"
-            size="lg"
+          <Link
+            href={viewerId ? "/me" : "/"}
+            className="text-sm font-semibold text-primary hover:underline"
           >
-            <Link href="/turnos">Ver otros turnos</Link>
-          </Button>
+            Volver
+          </Link>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Turno cancelado</h1>
+            <p className="text-sm text-muted-foreground">Este turno ha sido cancelado por el organizador.</p>
+          </div>
         </div>
+        <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
+          <Link href="/turnos">Ver otros turnos</Link>
+        </Button>
       </main>
     );
   }
@@ -110,82 +107,80 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   });
 
   return (
-    <main className="relative mx-auto min-h-screen w-full max-w-md space-y-10 px-6 py-10 pb-48 overflow-hidden">
-      {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-[100px] -z-10 rounded-full" />
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
+      <div className="flex flex-col gap-4">
+        <Link
+          href={viewerId ? "/me" : "/"}
+          className="text-sm font-semibold text-primary hover:underline"
+        >
+          Volver
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">{turn.club}</h1>
+          <p className="text-sm text-muted-foreground">Detalle del Turno</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase">
+            <Zap className="h-3 w-3 fill-current" />
+            Turno Abierto
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-[10px] font-bold text-foreground uppercase">
+            <Calendar className="h-3 w-3 text-primary" />
+            {dateStr}
+          </div>
+        </div>
+      </div>
 
-      <PageHeader
-        title={turn.club}
-        align="center"
-        size="lg"
-        backHref={viewerId ? "/me" : "/"}
-        description={
-          <span className="flex flex-col items-center gap-3 mt-2">
-            <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black uppercase tracking-widest text-primary">
-              <Zap className="h-3 w-3 fill-current animate-pulse" />
-              Turno Abierto
-            </span>
-            <span className="flex items-center gap-2 capitalize font-black text-foreground/80 tracking-tight">
-              <Calendar className="h-4 w-4 text-primary" />
-              {dateStr}
-            </span>
-          </span>
-        }
-      />
-
-      <Card className="relative rounded-[2.5rem] border-border/40 bg-card/40 shadow-2xl backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/20 blur-[100px] rounded-full pointer-events-none opacity-40" />
-
-        <CardHeader className="relative z-10 pb-6 pt-10 text-center">
-          <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+      <Card className="rounded-xl border-border bg-card overflow-hidden">
+        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
+          <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Especificaciones
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative z-10 grid grid-cols-2 gap-px bg-border/10 p-0">
-          <div className="bg-card/30 p-8 flex flex-col items-center text-center gap-3 transition-colors hover:bg-card/40">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-primary/10 text-primary shadow-inner">
-              <Clock className="h-7 w-7" />
+        <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
+          <div className="bg-card p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Clock className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-3xl font-black tracking-tight">{timeStr}</p>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mt-1">
+              <p className="text-xl font-bold">{timeStr}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
                 {turn.duration} min
               </p>
             </div>
           </div>
 
-          <div className="bg-card/30 p-8 flex flex-col items-center text-center gap-3 transition-colors hover:bg-card/40">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-primary/10 text-primary shadow-inner">
-              <Trophy className="h-7 w-7" />
+          <div className="bg-card p-6 flex flex-col items-center text-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Trophy className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-3xl font-black tracking-tight">
+              <p className="text-xl font-bold">
                 {suggestedLevelLabel}
               </p>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mt-1">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
                 Nivel
               </p>
             </div>
           </div>
 
-          <div className="col-span-2 bg-card/40 p-8 flex items-center justify-center gap-6 border-t border-border/20 transition-colors hover:bg-card/50">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-primary/10 text-primary shrink-0 shadow-inner">
-              <Users className="h-7 w-7" />
+          <div className="col-span-2 bg-card p-6 flex items-center justify-center gap-4 border-t border-border">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+              <Users className="h-5 w-5" />
             </div>
             <div className="text-left">
-              <p className="text-3xl font-black tracking-tight">
+              <p className="text-xl font-bold">
                 {turn.players.length} / {turn.maxPlayers}
               </p>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mt-1">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
                 Jugadores confirmados
               </p>
             </div>
           </div>
         </CardContent>
         {turn.notes && (
-          <div className="bg-primary/5 p-8 text-center text-sm font-medium text-muted-foreground/80 border-t border-border/20 italic leading-relaxed">
-            <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 not-italic mb-2">
+          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic">
+            <span className="block text-xs font-bold not-italic mb-1">
               Notas del organizador
             </span>
             "{turn.notes}"
@@ -193,43 +188,42 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         )}
       </Card>
 
-      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
-        <div className="flex items-center justify-between px-2">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-foreground">
             Lista de jugadores
           </h2>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-            {turn.maxPlayers - turn.players.length} cupos disponibles
+          <span className="text-[10px] font-bold text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+            {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
-        <div className="grid gap-3">
-          {turn.players.map((p, index) => (
+        <div className="grid gap-2">
+          {turn.players.map((p) => (
             <Link
               key={p.id}
               href={`/p/${p.userId}`}
-              className="flex items-center gap-4 rounded-[2rem] bg-card/40 p-5 border border-border/40 backdrop-blur-md shadow-sm transition-all hover:bg-card/60 active:scale-[0.98] group/player animate-in fade-in slide-in-from-bottom-6 duration-700"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
             >
               <PlayerAvatar
                 name={p.user.alias ?? p.user.displayName}
                 image={p.user.image ?? undefined}
-                className="h-14 w-14 border-2 border-background shadow-md transition-transform group-hover/player:scale-105"
+                className="h-10 w-10"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-black text-foreground text-lg truncate leading-tight group-hover/player:text-primary transition-colors tracking-tight">
+                <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
                   {p.user.alias ?? p.user.displayName}
                 </p>
-                <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                <p className="mt-0.5 text-[10px] font-bold text-muted-foreground uppercase">
                   Nivel {p.user.level}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {p.userId === turn.creatorId && (
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-[8px] font-black uppercase tracking-widest text-primary border border-primary/20 shrink-0">
+                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[8px] font-bold text-primary border border-primary/20">
                     Organizador
                   </span>
                 )}
-                <ChevronRight className="h-5 w-5 text-muted-foreground/20 group-hover/player:text-primary/40 transition-colors" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
               </div>
             </Link>
           ))}
@@ -237,20 +231,14 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             (_, i) => (
               <div
                 key={`empty-${i}`}
-                className="flex items-center gap-4 rounded-[2rem] border-2 border-dashed border-primary/20 bg-primary/5 p-5 text-primary/30 transition-all hover:bg-primary/10 animate-in fade-in slide-in-from-bottom-6 duration-1000"
-                style={{
-                  animationDelay: `${(turn.players.length + i) * 100}ms`,
-                }}
+                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-muted-foreground"
               >
-                <div className="h-14 w-14 rounded-full bg-primary/5 border-2 border-dashed border-primary/20 flex items-center justify-center text-2xl grayscale opacity-20">
+                <div className="h-10 w-10 rounded-lg bg-muted border border-dashed border-border flex items-center justify-center text-xl">
                   🎾
                 </div>
                 <div className="flex-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] italic opacity-40">
+                  <p className="text-[10px] font-bold uppercase italic opacity-60">
                     Lugar reservado
-                  </p>
-                  <p className="text-[11px] font-black uppercase tracking-widest mt-1 opacity-20">
-                    Esperando jugador...
                   </p>
                 </div>
               </div>
@@ -259,28 +247,27 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background via-background to-background pointer-events-none z-50 pb-12">
-        <div className="max-w-md mx-auto pointer-events-auto animate-in slide-in-from-bottom-10 duration-1000 fill-mode-both">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background/80 backdrop-blur-sm border-t border-border z-50">
+        <div className="max-w-md mx-auto">
           {!viewerId ? (
             <Button
               asChild
-              className="w-full rounded-[2rem] h-16 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]"
-              size="lg"
+              className="w-full h-12 rounded-lg text-base font-bold"
             >
               <Link href={`/login?callbackUrl=/t/${id}`}>
                 Iniciá sesión para anotarte
               </Link>
             </Button>
           ) : isFull ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
                 <>
                   <StartMatchForm turnId={id} />
-                  <div className="flex gap-4">
+                  <div className="flex gap-2">
                     <Button
                       asChild
                       variant="outline"
-                      className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary"
+                      className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
                     >
                       <Link href={`/turnos/${id}/editar`}>
                         <Edit3 className="mr-2 h-4 w-4" />
@@ -293,8 +280,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               )}
               <Button
                 disabled
-                className="w-full rounded-[2rem] h-16 opacity-50 bg-muted text-muted-foreground cursor-not-allowed font-black"
-                size="lg"
+                className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
               >
                 {turn.status === "COMPLETED"
                   ? "Turno finalizado"
@@ -305,16 +291,16 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               )}
             </div>
           ) : isJoined ? (
-            <div className="flex flex-col gap-4">
-              <div className="w-full rounded-[2rem] h-16 flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-black text-xl shadow-inner animate-in zoom-in-95 duration-500">
+            <div className="flex flex-col gap-3">
+              <div className="w-full h-12 rounded-lg flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold">
                 ¡Ya estás anotado!
               </div>
               {viewerId === turn.creatorId && (
-                <div className="flex gap-4">
+                <div className="flex gap-2">
                   <Button
                     asChild
                     variant="outline"
-                    className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary"
+                    className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
                   >
                     <Link href={`/turnos/${id}/editar`}>
                       <Edit3 className="mr-2 h-4 w-4" />
@@ -327,13 +313,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <LeaveTurnForm turnId={id} />
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {viewerId === turn.creatorId && (
-                <div className="flex gap-4">
+                <div className="flex gap-2">
                   <Button
                     asChild
                     variant="outline"
-                    className="flex-1 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98] border-primary/20 text-primary"
+                    className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
                   >
                     <Link href={`/turnos/${id}/editar`}>
                       <Edit3 className="mr-2 h-4 w-4" />
@@ -366,8 +352,7 @@ function CancelTurnForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         variant="ghost"
-        className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98]"
-        size="sm"
+        className="w-full h-10 rounded-lg text-xs font-bold uppercase text-destructive"
       >
         <Trash2 className="mr-2 h-4 w-4" />
         Eliminar
@@ -389,10 +374,9 @@ function StartMatchForm({ turnId }: { turnId: string }) {
     <form action={handleStart}>
       <Button
         type="submit"
-        className="w-full rounded-[2rem] h-16 text-lg font-black shadow-2xl bg-emerald-500 hover:bg-emerald-600 text-white border-none transition-all active:scale-[0.98] shadow-emerald-500/20"
-        size="lg"
+        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
       >
-        <Play className="mr-2 h-6 w-6 fill-current" />
+        <Play className="mr-2 h-5 w-5 fill-current" />
         Iniciar partido
       </Button>
     </form>
@@ -410,8 +394,7 @@ function LeaveTurnForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         variant="ghost"
-        className="w-full text-destructive hover:bg-destructive/10 rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[10px] transition-all active:scale-[0.98]"
-        size="sm"
+        className="w-full h-10 rounded-lg text-xs font-bold uppercase text-destructive"
       >
         <LogOut className="mr-2 h-4 w-4" />
         Bajarme del turno
@@ -430,10 +413,9 @@ function JoinTurnForm({ turnId }: { turnId: string }) {
     <form action={handleJoin}>
       <Button
         type="submit"
-        className="w-full rounded-[2rem] h-16 text-lg font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]"
-        size="lg"
+        className="w-full h-12 rounded-lg text-base font-bold"
       >
-        <UserPlus className="mr-2 h-6 w-6" />
+        <UserPlus className="mr-2 h-5 w-5" />
         Anotarme ahora
       </Button>
     </form>
