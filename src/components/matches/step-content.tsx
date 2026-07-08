@@ -52,13 +52,14 @@ function ScoreSelector({
   currentValue: number;
   onValueChange: (val: number) => void;
 }) {
+  const groupLabelId = `score-label-${setIndex}-${teamIndex}`;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="text-xs text-muted-foreground">{teamLabel}</span>
-          <span className="text-sm font-semibold text-foreground truncate leading-tight">
-            {players}
+          <span id={groupLabelId} className="text-xs text-muted-foreground">
+            {teamLabel}: {players}
           </span>
         </div>
         <div
@@ -68,18 +69,25 @@ function ScoreSelector({
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground",
           )}
+          aria-hidden="true"
         >
           {currentValue}
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div
+        role="radiogroup"
+        aria-labelledby={groupLabelId}
+        className="grid grid-cols-4 gap-2"
+      >
         {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
           const isSelected = currentValue === num;
           return (
             <button
               key={num}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => onValueChange(num)}
               className={cn(
                 "h-12 rounded-lg border text-lg font-bold transition-colors flex items-center justify-center",
@@ -231,14 +239,22 @@ export function StepContent({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-semibold">Tipo de formato</Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <Label id="match-type-label" className="text-sm font-semibold">
+                Tipo de formato
+              </Label>
+              <div
+                role="radiogroup"
+                aria-labelledby="match-type-label"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-2"
+              >
                 {MATCH_TYPE_OPTIONS.map((option) => {
                   const isSelected = matchType === option.value;
                   return (
                     <button
                       key={option.value}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
                         "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-colors",
@@ -256,14 +272,22 @@ export function StepContent({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-semibold">Cantidad de sets</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="sets-count-label" className="text-sm font-semibold">
+                Cantidad de sets
+              </Label>
+              <div
+                role="radiogroup"
+                aria-labelledby="sets-count-label"
+                className="grid grid-cols-3 gap-2"
+              >
                 {["1", "3", "5"].map((option) => {
                   const isSelected = sets === option;
                   return (
                     <button
                       key={option}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       onClick={() => onSetsChange(option)}
                       className={cn(
                         "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-colors",

@@ -198,7 +198,7 @@ export function ManageSlotModal({
                       <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold truncate">{player.displayName}</p>
-                        <p className="text-[10px] font-medium text-muted-foreground truncate opacity-60">{player.email}</p>
+                        <p className="text-xs font-medium text-muted-foreground truncate opacity-60">{player.email}</p>
                       </div>
                       <UserPlus className="h-4 w-4 text-primary" />
                     </button>
@@ -243,7 +243,7 @@ export function ManageSlotModal({
               )}
             </div>
             {isUserSlot && (
-              <p className="text-[10px] font-medium text-muted-foreground/60 leading-relaxed px-1">
+              <p className="text-xs font-medium text-muted-foreground/60 leading-relaxed px-1">
                 Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.
               </p>
             )}
