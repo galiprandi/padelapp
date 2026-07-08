@@ -30,15 +30,15 @@ export function PlayerPreview({
       role="button"
       tabIndex={0}
       className={cn(
-        "flex items-center gap-3 rounded-2xl border border-border/40 bg-card/50 px-4 py-3 text-left backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
+        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       )}
     >
-      <PlayerAvatar name={name} image={image} className="rounded-xl" />
+      <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
       <div className="flex-1 truncate">
-        <p className="truncate text-sm font-black tracking-tight text-foreground">{name}</p>
+        <p className="truncate text-sm font-bold text-foreground">{name}</p>
         {role || category ? (
-          <p className="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-0.5">
+          <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
             {role}
             {role && typeof category === "number" ? " · " : ""}
             {typeof category === "number" ? `Cat. ${category}` : ""}
@@ -73,14 +73,14 @@ export function PlayerWithRanking({ name, role, image, ranking, category }: Play
     <div
       role="button"
       tabIndex={0}
-      className="flex items-center gap-3 rounded-2xl border border-border/40 bg-card/50 px-4 py-3 text-left backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+      className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
-      <PlayerAvatar name={name} image={image} className="rounded-xl" />
+      <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
       <div className="flex-1 truncate">
-        <p className="truncate text-sm font-black tracking-tight text-foreground">{name}</p>
+        <p className="truncate text-sm font-bold text-foreground">{name}</p>
         {role || category ? (
-          <p className="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-0.5">
+          <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
             {role}
             {role && typeof category === "number" ? " · " : ""}
             {typeof category === "number" ? `Cat. ${category}` : ""}
@@ -89,7 +89,7 @@ export function PlayerWithRanking({ name, role, image, ranking, category }: Play
       </div>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-primary/10 px-2 text-[10px] font-black uppercase tracking-widest text-primary border border-primary/20">
+        <span className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-primary/10 px-2 text-xs font-bold text-primary border border-primary/20">
           #{ranking}
         </span>
       ) : null}
@@ -102,14 +102,14 @@ export function PlayerCompact({ name, image, ranking }: PlayerPreviewProps) {
     <div
       role="button"
       tabIndex={0}
-      className="flex items-center gap-3 rounded-2xl border border-border/40 bg-card/50 px-4 py-3 text-left backdrop-blur-sm transition-all hover:bg-card/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+      className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <PlayerAvatar name={name} image={image} size={32} className="rounded-lg" />
 
-      <p className="flex-1 truncate text-sm font-black tracking-tight text-foreground">{name}</p>
+      <p className="flex-1 truncate text-sm font-bold text-foreground">{name}</p>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-secondary/50 px-1.5 text-[9px] font-black uppercase tracking-widest text-secondary-foreground border border-secondary/20">
+        <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-secondary/50 px-1.5 text-xs font-bold text-secondary-foreground border border-secondary/20">
           #{ranking}
         </span>
       ) : null}
@@ -121,14 +121,14 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
   const hasConnector = players.length > 1;
 
   return (
-    <div className="relative rounded-[2rem] border border-border/40 bg-card/30 mt-8 backdrop-blur-md shadow-sm">
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border/40 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm z-10">
+    <div className="relative rounded-xl border border-border bg-card mt-8 shadow-sm">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
         {label}
       </span>
       <div className="relative space-y-3 p-5 pt-6">
         {hasConnector ? (
           <div
-            className="pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-gradient-to-b from-primary/30 via-primary/50 to-primary/30"
+            className="pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-border"
             aria-hidden
           />
         ) : null}
@@ -136,7 +136,7 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
           <div key={`pair-${label}-${player.id}`} className="relative">
             {hasConnector ? (
               <span
-                className="pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-primary/40"
+                className="pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-border"
                 aria-hidden
               />
             ) : null}
@@ -150,8 +150,8 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
 
 export function PairInline({ players, label }: { players: PlayerPreviewProps[]; label: string }) {
   return (
-    <div className="relative rounded-[2rem] border border-border/40 bg-card/30 backdrop-blur-md shadow-sm">
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border/40 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 shadow-sm z-10">
+    <div className="relative rounded-xl border border-border bg-card shadow-sm">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
         {label}
       </span>
 
@@ -159,12 +159,12 @@ export function PairInline({ players, label }: { players: PlayerPreviewProps[]; 
         {players.map((player, index) => {
           return (
             <Fragment key={`pair-inline-${label}-${player.id}`}>
-              <div className="flex min-w-0 flex-1 items-center gap-3 group transition-transform active:scale-[0.98]">
-                <PlayerAvatar name={player.name} image={player.image} className="rounded-xl border border-border/20 shadow-sm" />
+              <div className="flex min-w-0 flex-1 items-center gap-3 group transition-colors">
+                <PlayerAvatar name={player.name} image={player.image} className="rounded-lg border border-border/20 shadow-sm" />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-black tracking-tight text-foreground">{player.name}</p>
+                  <p className="truncate text-sm font-bold text-foreground">{player.name}</p>
                   {typeof player.category === "number" ? (
-                    <p className="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-0.5">Cat. {player.category}</p>
+                    <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">Cat. {player.category}</p>
                   ) : null}
                 </div>
               </div>

@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PageHeader } from "@/components/page-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMatchByIdAction, updateMatchDetailsAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
-import { Loader2, Check, Zap, Info, MapPin } from "lucide-react";
+import { Loader2, MapPin, Zap, Info, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const MATCH_TYPE_OPTIONS = [
   { value: "FRIENDLY", label: "Amistoso" },
@@ -106,168 +106,163 @@ export default function EditMatchPage({ params }: EditMatchPageProps) {
   }
 
   return (
-    <div className="relative flex flex-col gap-6 pb-20 min-h-screen">
-      {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-64 bg-primary/10 blur-[100px] -z-10" />
-
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 px-6">
-        <PageHeader
-          size="lg"
-          title="Editar detalles"
-          description="Ajustá la información del partido."
-          backHref={`/match/${matchId}`}
-          descriptionClassName="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50"
-        />
+    <div className="flex flex-col gap-6 pb-20">
+      <div className="flex flex-col gap-4">
+        <Link
+          href={`/match/${matchId}`}
+          className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-fit"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Volver
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Editar detalles</h1>
+          <p className="text-sm text-muted-foreground">Ajustá la información del partido.</p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 px-6">
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100 fill-mode-both">
-          <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-2xl shadow-2xl overflow-hidden">
-            <CardHeader className="pb-8 pt-10">
-               <div className="flex items-center gap-2 mb-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                <CardTitle className="text-2xl font-black tracking-tight">Ubicación y Tiempo</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-8 pb-12">
-              <div className="space-y-4">
-                <Label htmlFor="club" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Club</Label>
-                <Input
-                  id="club"
-                  value={formData.club}
-                  onChange={(e) => setFormData({ ...formData, club: e.target.value })}
-                  className="h-14 rounded-2xl bg-background/50 border-border/40 font-bold px-6"
-                />
-              </div>
-
-              <div className="space-y-4">
-                <Label htmlFor="courtNumber" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Cancha</Label>
-                <Input
-                  id="courtNumber"
-                  value={formData.courtNumber}
-                  onChange={(e) => setFormData({ ...formData, courtNumber: e.target.value })}
-                  className="h-14 rounded-2xl bg-background/50 border-border/40 font-bold px-6"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <Label htmlFor="date" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Fecha</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="h-14 rounded-2xl bg-background/50 border-border/40 font-bold px-4"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <Label htmlFor="time" className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Hora</Label>
-                  <Input
-                    id="time"
-                    type="time"
-                    value={formData.time}
-                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="h-14 rounded-2xl bg-background/50 border-border/40 font-bold px-4"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 fill-mode-both">
-          <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-2xl shadow-2xl overflow-hidden">
-            <CardHeader className="pb-8 pt-10">
-               <div className="flex items-center gap-2 mb-2">
-                <Zap className="h-4 w-4 text-primary fill-current" />
-                <CardTitle className="text-2xl font-black tracking-tight">Formato</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-8 pb-12">
-              <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Tipo de partido</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {MATCH_TYPE_OPTIONS.map((option) => {
-                    const isSelected = formData.matchType === option.value;
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        disabled={isClosed}
-                        onClick={() => setFormData({ ...formData, matchType: option.value })}
-                        className={cn(
-                          "flex items-center justify-center py-4 rounded-2xl border transition-all text-sm font-black active:scale-[0.96]",
-                          isSelected
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
-                            : "bg-background/40 border-border/40 text-muted-foreground",
-                          isClosed && isSelected && "opacity-50"
-                        )}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 px-2">Cantidad de sets</Label>
-                <div className="grid grid-cols-3 gap-3">
-                  {SETS_OPTIONS.map((option) => {
-                    const isSelected = formData.sets === option.value;
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        disabled={isClosed}
-                        onClick={() => setFormData({ ...formData, sets: option.value })}
-                        className={cn(
-                          "flex items-center justify-center py-4 rounded-2xl border transition-all text-sm font-black active:scale-[0.96]",
-                          isSelected
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
-                            : "bg-background/40 border-border/40 text-muted-foreground",
-                          isClosed && isSelected && "opacity-50"
-                        )}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both">
-          <Card className="rounded-[2.5rem] border-border/40 bg-card/50 backdrop-blur-2xl shadow-2xl overflow-hidden">
-            <CardHeader className="pb-8 pt-10">
-               <div className="flex items-center gap-2 mb-2">
-                <Info className="h-4 w-4 text-primary" />
-                <CardTitle className="text-2xl font-black tracking-tight">Notas</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="pb-12">
-              <Textarea
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="min-h-[120px] rounded-[2rem] bg-background/50 border-border/40 focus:bg-background transition-all resize-none px-6 py-6 font-medium"
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <Card className="rounded-xl border border-border bg-card">
+          <CardHeader className="pb-4">
+             <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base font-bold">Ubicación y Tiempo</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="club" className="text-sm font-semibold">Club</Label>
+              <Input
+                id="club"
+                value={formData.club}
+                onChange={(e) => setFormData({ ...formData, club: e.target.value })}
+                className="h-10 rounded-lg"
               />
-            </CardContent>
-          </Card>
-        </div>
+            </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 fill-mode-both">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="courtNumber" className="text-sm font-semibold">Cancha</Label>
+              <Input
+                id="courtNumber"
+                value={formData.courtNumber}
+                onChange={(e) => setFormData({ ...formData, courtNumber: e.target.value })}
+                className="h-10 rounded-lg"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="date" className="text-sm font-semibold">Fecha</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="h-10 rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="time" className="text-sm font-semibold">Hora</Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={formData.time}
+                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                  className="h-10 rounded-lg"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-xl border border-border bg-card">
+          <CardHeader className="pb-4">
+             <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base font-bold">Formato</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              <Label className="text-sm font-semibold">Tipo de partido</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {MATCH_TYPE_OPTIONS.map((option) => {
+                  const isSelected = formData.matchType === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      disabled={isClosed}
+                      onClick={() => setFormData({ ...formData, matchType: option.value })}
+                      className={cn(
+                        "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground"
+                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                        isClosed && isSelected && "opacity-50"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label className="text-sm font-semibold">Cantidad de sets</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {SETS_OPTIONS.map((option) => {
+                  const isSelected = formData.sets === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      disabled={isClosed}
+                      onClick={() => setFormData({ ...formData, sets: option.value })}
+                      className={cn(
+                        "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground"
+                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                        isClosed && isSelected && "opacity-50"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-xl border border-border bg-card">
+          <CardHeader className="pb-4">
+             <div className="flex items-center gap-2">
+              <Info className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base font-bold">Notas</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              className="min-h-[100px] rounded-lg resize-none"
+              placeholder="Notas adicionales sobre el partido..."
+            />
+          </CardContent>
+        </Card>
+
+        <div className="flex flex-col gap-3">
           <Button
             type="submit"
-            className="w-full rounded-[2rem] h-20 text-xl font-black shadow-2xl shadow-primary/30 transition-all active:scale-[0.98]"
-            size="lg"
+            className="w-full h-12 text-base font-bold rounded-lg"
             disabled={isPending}
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-3 h-8 w-8 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Guardando...
               </>
             ) : (
@@ -275,7 +270,7 @@ export default function EditMatchPage({ params }: EditMatchPageProps) {
             )}
           </Button>
           {isClosed && (
-              <p className="text-center mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">
+              <p className="text-center text-xs text-muted-foreground">
                 El formato no puede editarse en un partido ya confirmado.
               </p>
           )}
