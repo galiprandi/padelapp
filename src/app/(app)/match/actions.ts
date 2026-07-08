@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import { createMagicLink } from "@/lib/magic-link";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 
