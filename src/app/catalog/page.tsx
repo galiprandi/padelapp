@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense, Fragment } from "react";
 import {
   PairInline,
   PairPreview,
@@ -27,7 +27,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Check, UserCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Suspense } from "react";
 
 // The catalog is a tool for developers to see UI components in isolation.
 const SAMPLE_PLAYERS: PlayerPreviewProps[] = [

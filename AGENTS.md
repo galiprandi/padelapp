@@ -43,7 +43,7 @@ Context and responsibilities for automated agents or contributors working on **P
 ## 6. Current State
 
 ### Implemented
-- **Minimal Design Cleanup**: Core shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`) refactored to Minimal Design standards, removing V9+ remnants (glassmorphism, tactile scale, micro-typography).
+- **Minimal Design Cleanup**: Core shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `PlayerPreview`, `PairPreview`, `RankingSearch`) refactored to Minimal Design standards.
 - Google OAuth login with NextAuth + Prisma adapter.
 - Dashboard (`/me`) with agenda, pending actions, and recent results.
 - Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`).
@@ -53,12 +53,12 @@ Context and responsibilities for automated agents or contributors working on **P
 - Profile management (`/me/profile`) with alias and level selection.
 - Notifications center (`/notifications`) for pending match actions.
 - PWA installable with install guide (`/install`).
-- Component catalog (`/catalog`).
+- Component catalog (`/catalog`) fully migrated to Minimal Design System.
 
 ### Design System
 - Clean minimal UI per `DESIGN.md`.
 - All redesigned pages use plain `<h1>`/`<p>` headers, standard Tailwind sizes, no decorative effects.
-- Remaining pages with V9+ styling (public views, edit pages, catalog, shared components) are pending redesign.
+- `PageHeader` component removed; all views use semantic HTML for headers.
 
 ### Architecture
 - **Prisma + PostgreSQL**: single source of truth.

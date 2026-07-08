@@ -33,7 +33,7 @@ export function RankingSearch() {
     <div className="relative group">
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
-          "h-4 w-4 transition-colors duration-300",
+          "h-4 w-4 transition-colors",
           query ? "text-primary" : "text-muted-foreground/40",
           isPending && "animate-pulse"
         )} />
@@ -44,7 +44,7 @@ export function RankingSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         autoComplete="off"
-        className="h-14 pl-11 pr-11 rounded-2xl bg-card/40 border-border/40 backdrop-blur-md placeholder:text-muted-foreground/30 focus:bg-card/60 focus:ring-primary/20 transition-all shadow-sm"
+        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground/50 focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm"
       />
       {query && (
         <button
@@ -57,7 +57,7 @@ export function RankingSearch() {
       )}
 
       {isPending && (
-        <div className="absolute -bottom-1 left-6 right-6 h-0.5 bg-primary/20 overflow-hidden rounded-full">
+        <div className="absolute -bottom-1 left-6 right-6 h-0.5 bg-primary/10 overflow-hidden rounded-full">
           <div className="h-full bg-primary w-1/3 animate-[loading_1s_infinite_linear]" />
         </div>
       )}
