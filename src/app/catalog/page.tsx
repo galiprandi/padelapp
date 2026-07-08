@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { Check, UserCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
+// The catalog is a tool for developers to see UI components in isolation.
 const SAMPLE_PLAYERS: PlayerPreviewProps[] = [
   {
     id: "catalog-player-1",
@@ -110,7 +111,6 @@ export default function ComponentCatalogPage() {
 
   const sections = [
     { id: "headers", name: "Encabezados", icon: "📝" },
-    { id: "profile", name: "Perfil", icon: "👤" },
     { id: "ui", name: "UI Básica", icon: "🎨" },
     { id: "forms", name: "Formularios", icon: "📋" },
     { id: "players", name: "Jugadores", icon: "👥" },
@@ -123,17 +123,17 @@ export default function ComponentCatalogPage() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto flex gap-12 max-w-none">
-        <aside className="w-64 shrink-0 hidden md:block">
+        <aside className="w-64 shrink-0 hidden lg:block">
           <div className="sticky top-6 space-y-6">
             <div className="space-y-3">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Vista
               </h3>
-              <div className="flex bg-muted rounded-lg p-1 border border-border">
+              <div className="flex bg-muted rounded-xl p-1 border border-border">
                 <button
                   onClick={() => setViewportMode("mobile")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors ${viewportMode === "mobile"
-                    ? "bg-primary text-primary-foreground shadow-sm"
+                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "mobile"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
@@ -141,8 +141,8 @@ export default function ComponentCatalogPage() {
                 </button>
                 <button
                   onClick={() => setViewportMode("desktop")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors ${viewportMode === "desktop"
-                    ? "bg-primary text-primary-foreground shadow-sm"
+                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "desktop"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
@@ -161,14 +161,14 @@ export default function ComponentCatalogPage() {
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
                     className={cn(
-                      "w-full flex items-center gap-3 px-4 py-2.5 text-left rounded-lg transition-colors",
+                      "w-full flex items-center gap-3 px-4 py-2 text-left rounded-lg transition-colors",
                       activeCategory === section.id
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/10 text-primary font-semibold"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     )}
                   >
                     <span className="text-lg">{section.icon}</span>
-                    <span className="font-semibold text-sm">{section.name}</span>
+                    <span className="text-sm">{section.name}</span>
                   </button>
                 ))}
               </nav>
@@ -178,8 +178,8 @@ export default function ComponentCatalogPage() {
 
         <div className="flex-1 min-w-0">
           <header className="mb-12">
-            <h1 className="text-2xl font-bold text-foreground">Catálogo de componentes</h1>
-            <p className="text-muted-foreground">Centralizamos ejemplos reutilizables para mantener consistencia bajo el Minimal Design System.</p>
+            <h1 className="text-xl font-bold text-foreground">Catálogo de componentes</h1>
+            <p className="text-sm text-muted-foreground">Componentes estandarizados bajo el Minimal Design System.</p>
           </header>
 
           <div
@@ -189,80 +189,47 @@ export default function ComponentCatalogPage() {
               }`}
           >
             <section id="headers" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">📝 Encabezado de Página</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📝 Encabezados</h2>
+              <div className="p-6 border border-border rounded-xl bg-card">
                 <h1 className="text-xl font-bold text-foreground">Título de la Página</h1>
-                <p className="text-sm text-muted-foreground">Descripción opcional con jerarquía visual de bajo impacto y alta claridad.</p>
-              </div>
-            </section>
-
-            <section id="profile" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">👤 Perfil</h2>
-              <div className="space-y-4">
-                <Card className="rounded-xl bg-card border-border overflow-hidden">
-                  <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
-                    <div className="relative w-20 h-20 rounded-lg bg-muted flex items-center justify-center border border-border">
-                      <UserCircle className="w-10 h-10 text-muted-foreground" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs font-semibold text-muted-foreground">Nombre de Google</p>
-                      <h2 className="text-lg font-bold text-foreground">Carolina Ferrante</h2>
-                    </div>
-                  </CardContent>
-                </Card>
+                <p className="text-sm text-muted-foreground">Descripción clara y directa del contenido.</p>
               </div>
             </section>
 
             <section id="ui" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">🎨 UI Básica</h2>
-              <div className="p-6 border border-border rounded-xl bg-card space-y-8 shadow-sm">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🎨 UI Básica</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Botones Primarios</h3>
+                  <h3 className="text-sm font-semibold">Botones</h3>
                   <div className="flex flex-col gap-3">
-                    <Button className="w-full rounded-lg font-bold h-12">Primary Action</Button>
+                    <Button className="h-12 w-full rounded-lg">Acción Primaria (h-12)</Button>
+                    <Button variant="secondary" className="h-10 w-full rounded-lg">Acción Secundaria (h-10)</Button>
+                    <Button variant="ghost" className="h-10 w-full rounded-lg text-muted-foreground">Botón Ghost (h-10)</Button>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Variantes de Botón</h3>
-                  <div className="flex flex-wrap gap-3">
-                    <Button className="rounded-lg font-bold h-10">Primary</Button>
-                    <Button variant="secondary" className="rounded-lg font-bold h-10">Secondary</Button>
-                    <Button variant="outline" className="rounded-lg font-bold h-10">Outline</Button>
-                    <Button variant="ghost" className="rounded-lg font-bold h-10">Ghost</Button>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Badges</h3>
-                  <div className="flex flex-wrap gap-3">
-                    <Badge className="rounded-md font-bold px-2 py-0.5">Default</Badge>
-                    <Badge variant="success" className="rounded-md font-bold px-2 py-0.5">Success</Badge>
-                    <Badge className="rounded-md bg-primary/10 text-primary border border-primary/20 px-2 py-0.5">Premium</Badge>
+                  <h3 className="text-sm font-semibold">Badges</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="default" className="rounded-md px-2 py-0.5 text-xs font-semibold">Default</Badge>
+                    <Badge variant="success" className="rounded-md px-2 py-0.5 text-xs font-semibold">Success</Badge>
+                    <Badge variant="outline" className="rounded-md px-2 py-0.5 text-xs font-semibold">Outline</Badge>
                   </div>
                 </div>
               </div>
             </section>
 
             <section id="forms" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">📋 Formularios</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm space-y-6">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Formularios</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-6">
                 <div className="space-y-2">
-                  <Label
-                    requiredIndicator="*"
-                    className="text-sm font-semibold"
-                  >
-                    Campo Requerido
-                  </Label>
-                  <Input
-                    placeholder="Input con aria-required"
-                    required
-                    aria-required="true"
-                    className="h-10 rounded-lg"
-                  />
+                  <Label className="text-sm font-semibold">Nombre Completo</Label>
+                  <Input placeholder="Ej: Carolina Ferrante" className="h-10 rounded-lg" />
+                  <p className="text-xs text-muted-foreground">Ingresá tu nombre tal como aparece en tu DNI.</p>
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Selector de Opción</Label>
-                  <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm font-semibold">Selección de Nivel</Label>
+                  <div className="flex flex-col gap-2">
                     {[
                       { label: "Nivel 5 - Avanzado", selected: true },
                       { label: "Nivel 4 - Intermedio", selected: false }
@@ -270,20 +237,14 @@ export default function ComponentCatalogPage() {
                       <button
                         key={opt.label}
                         className={cn(
-                          "flex items-center justify-between px-4 py-3 rounded-lg border transition-colors text-sm font-bold text-left",
+                          "flex items-center justify-between px-4 py-3 rounded-xl border transition-colors text-sm font-medium text-left",
                           opt.selected
-                            ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                            : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
+                            ? "bg-primary/5 border-primary text-foreground"
+                            : "bg-card border-border text-muted-foreground hover:bg-muted"
                         )}
                       >
                         <span>{opt.label}</span>
-                        {opt.selected ? (
-                          <div className="h-5 w-5 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                            <Check className="h-3 w-3" />
-                          </div>
-                        ) : (
-                          <div className="h-5 w-5 rounded-full border border-border" />
-                        )}
+                        {opt.selected && <Check className="h-4 w-4 text-primary" />}
                       </button>
                     ))}
                   </div>
@@ -292,88 +253,66 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="players" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">👥 Jugadores</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Individual (Cards)</h3>
-                  <div className="grid gap-3">
-                    <PlayerPreview {...SAMPLE_PLAYERS[0]} />
-                    <PlayerWithRanking {...SAMPLE_PLAYERS[1]} ranking={12} />
-                    <PlayerCompact {...SAMPLE_PLAYERS[0]} ranking={1} />
-                  </div>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">👥 Jugadores</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-8">
+                <div className="grid gap-3">
+                  <PlayerPreview {...SAMPLE_PLAYERS[0]} />
+                  <PlayerWithRanking {...SAMPLE_PLAYERS[1]} ranking={12} />
+                  <PlayerCompact {...SAMPLE_PLAYERS[0]} ranking={1} />
                 </div>
-
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Parejas</h3>
+                  <h3 className="text-sm font-semibold">Parejas</h3>
                   <PairPreview label="Pareja A" players={SAMPLE_PLAYERS} />
                 </div>
               </div>
             </section>
 
             <section id="ranking" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">🏆 Ranking</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Buscador</h3>
-                  <Suspense fallback={<div className="h-12 w-full bg-muted animate-pulse rounded-lg" />}>
-                    <RankingSearch />
-                  </Suspense>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Item de Lista</h3>
-                  <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
-                </div>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🏆 Ranking</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-6">
+                <Suspense fallback={<div className="h-10 w-full bg-muted animate-pulse rounded-lg" />}>
+                  <RankingSearch />
+                </Suspense>
+                <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
               </div>
             </section>
 
             <section id="matches" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">🎾 Partidos y Turnos</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Resultado</h3>
-                  <MatchResultCompact
-                    label="Resultado ejemplo"
-                    match={SAMPLE_MATCH}
-                    detailUrl={`/match/${SAMPLE_MATCH.id}`}
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🎾 Partidos y Turnos</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-8">
+                <MatchResultCompact
+                  label="Último partido"
+                  match={SAMPLE_MATCH}
+                  detailUrl={`/match/${SAMPLE_MATCH.id}`}
+                />
+                <TurnCard turn={SAMPLE_TURN} />
+                <div className="flex gap-2">
+                  <ShareButton
+                    url="https://padelapp.app"
+                    title="PadelApp"
+                    text="¡Sumate a PadelApp!"
+                    className="flex-1 h-10"
+                    variant="outline"
                   />
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Botón de Compartir</h3>
-                  <div className="flex gap-4">
-                    <ShareButton
-                      url="https://padelapp.app"
-                      title="PadelApp"
-                      text="¡Sumate a PadelApp!"
-                      className="rounded-lg font-bold h-10"
-                      variant="outline"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase">Turno</h3>
-                  <TurnCard turn={SAMPLE_TURN} />
                 </div>
               </div>
             </section>
 
             <section id="states" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">📋 Estados</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Estados</h2>
+              <div className="p-6 border border-border rounded-xl bg-card">
                 <EmptyState
-                  title="Estado vacío"
-                  description="Descripción del estado vacío con estética unificada."
-                  action={<Button className="rounded-lg font-bold px-8 h-10">Acción</Button>}
+                  title="No hay partidos programados"
+                  description="Cuando crees o te sumes a un partido, aparecerá aquí."
+                  action={<Button className="h-10 rounded-lg">Crear primer partido</Button>}
                 />
               </div>
             </section>
 
-            <section id="navigation" className="space-y-6">
-              <h2 className="text-sm font-bold text-muted-foreground uppercase border-b border-border pb-2">🧭 Navegación</h2>
-              <div className="p-6 border border-border rounded-xl bg-card shadow-sm overflow-hidden">
-                <BottomNav
-                  position="static"
-                  notificationsCount={3}
-                />
+            <section id="navigation" className="space-y-6 pb-20">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🧭 Navegación</h2>
+              <div className="border border-border rounded-xl bg-card overflow-hidden">
+                <BottomNav position="static" notificationsCount={3} />
               </div>
             </section>
           </div>
