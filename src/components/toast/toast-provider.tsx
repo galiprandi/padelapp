@@ -63,16 +63,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   <div
                     key={toast.id}
                     className={cn(
-                      "pointer-events-auto flex items-center gap-3 rounded-[2rem] border bg-zinc-950/90 px-6 py-4 shadow-2xl backdrop-blur-2xl transition-all duration-500 animate-in fade-in slide-in-from-right-8",
+                      "pointer-events-auto flex items-center gap-3 rounded-xl border bg-card px-4 py-3 shadow-sm transition-opacity",
                       isError
-                        ? "border-destructive/40 text-destructive shadow-destructive/10"
-                        : "border-primary/20 text-primary shadow-primary/20"
+                        ? "border-destructive text-destructive"
+                        : "border-primary text-primary"
                     )}
                   >
                     <div
                       className={cn(
-                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-sm",
-                        isError ? "bg-destructive/20" : "bg-primary/20"
+                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm",
+                        isError ? "bg-destructive/10" : "bg-primary/10"
                       )}
                     >
                       {isError ? (
@@ -81,7 +81,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         <Check className="h-4 w-4" />
                       )}
                     </div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] leading-none pt-0.5">
+                    <span className="text-xs font-semibold leading-none">
                       {toast.message}
                     </span>
                   </div>

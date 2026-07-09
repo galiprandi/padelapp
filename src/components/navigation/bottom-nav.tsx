@@ -54,7 +54,7 @@ export function BottomNav({
               aria-current={isActive ? "page" : undefined}
             >
               <item.icon className="h-5 w-5" aria-hidden="true" />
-              <span className="mt-1 text-[10px] font-semibold">
+              <span className="mt-1 text-xs font-semibold">
                 {item.label}
               </span>
             </Link>
@@ -88,7 +88,7 @@ export function BottomNav({
               aria-current={isActive ? "page" : undefined}
             >
               <item.icon className="h-5 w-5" aria-hidden="true" />
-              <span className="mt-1 text-[10px] font-semibold">
+              <span className="mt-1 text-xs font-semibold">
                 {item.label}
               </span>
             </Link>
@@ -99,7 +99,7 @@ export function BottomNav({
           <Link
             href={notificationsHref}
             aria-label="Notificaciones"
-            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-[10px] font-bold text-primary-foreground"
+            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground"
           >
             {notificationsCount}
           </Link>
