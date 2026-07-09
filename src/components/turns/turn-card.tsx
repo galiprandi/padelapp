@@ -73,7 +73,7 @@ export function TurnCard({
       >
         {/* Date */}
         <div className="flex flex-col items-center justify-center rounded-lg bg-primary/10 px-2.5 py-2 min-w-[52px]">
-          <span className="text-[10px] font-medium uppercase text-primary">
+          <span className="text-xs font-semibold text-primary capitalize">
             {month}
           </span>
           <span className="text-xl font-bold text-primary leading-none mt-0.5">
@@ -88,12 +88,12 @@ export function TurnCard({
               {turn.club}
             </p>
             {isTodayDate && (
-              <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
+              <span className="rounded bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
                 Hoy
               </span>
             )}
             {isTomorrowDate && (
-              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">
+              <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-bold text-muted-foreground">
                 Mañana
               </span>
             )}
@@ -108,7 +108,7 @@ export function TurnCard({
               <Users className="h-3 w-3" />
               {turn.players.length}/{turn.maxPlayers}
             </span>
-            <span className="text-primary">{levelLabel}</span>
+            <span className="text-primary font-semibold">{levelLabel}</span>
           </div>
         </div>
 

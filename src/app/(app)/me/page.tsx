@@ -164,7 +164,7 @@ export default async function DashboardPage() {
               <h2 className="text-sm font-bold text-foreground">
                 Acciones pendientes
               </h2>
-              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">
                 {pendingActionMatches.length}
               </span>
             </div>

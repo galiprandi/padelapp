@@ -218,7 +218,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
             <div className="flex items-center gap-2">
               <span
                 className={cn(
-                  "rounded-md px-2 py-0.5 text-[10px] font-semibold",
+                  "rounded-md px-2 py-0.5 text-xs font-semibold",
                   statusClassName,
                 )}
               >
@@ -241,7 +241,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <button
                   onClick={handleQuickConfirm}
                   disabled={isConfirming}
-                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 rounded-md text-[10px] font-semibold transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
                 >
                   {isConfirming ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
@@ -385,7 +385,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
               {!isLastTeam ? (
                 <div className="flex items-center gap-2 py-0.5">
                   <div className="h-px flex-1 bg-border" />
-                  <span className="text-[10px] font-medium text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     vs
                   </span>
                   <div className="h-px flex-1 bg-border" />

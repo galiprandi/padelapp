@@ -180,7 +180,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             return (
               <div key={teamKey} className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  <span className="text-xs font-bold text-muted-foreground uppercase">
                     {label}
                   </span>
                   <div className="h-px flex-1 bg-border" />
@@ -235,7 +235,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                           <div className="flex items-center gap-2 mt-0.5">
                             <p
                               className={cn(
-                                "text-[10px] font-semibold uppercase",
+                                "text-xs font-semibold uppercase",
                                 isConfirmed
                                   ? "text-emerald-600"
                                   : "text-muted-foreground",
@@ -244,14 +244,14 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                               {isConfirmed ? "Confirmado" : "Pendiente"}
                             </p>
                             {player.user?.level && (
-                              <span className="text-[10px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded border border-primary/20">
+                              <span className="text-xs font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded border border-primary/20">
                                 Nivel {player.user.level}
                               </span>
                             )}
                           </div>
                         </div>
                         {isCreator && (
-                          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary border border-primary/20">
+                          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
                             Organizador
                           </span>
                         )}
