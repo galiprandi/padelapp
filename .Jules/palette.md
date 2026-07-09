@@ -9,3 +9,7 @@
 ## 2025-06-02 - [Design System Constraints as UX North Star]
 **Learning:** In systems prioritizing clarity (like PadelApp's Minimal Design), standard "delight" features such as entry animations and backdrop blurs are explicitly listed as anti-patterns. True UX excellence in these contexts means removing visual noise to meet accessibility maxims (e.g., removing text below 11px).
 **Action:** Prioritize `DESIGN.md` maxims over generic UX "best practices" when they conflict. Removing prohibited flourishes is as much a "Palette" win as adding ARIA labels.
+
+## 2026-07-09 - [Accessible Semantic Indicators]
+**Learning:** Decorative status indicators like "recent form" dots are often omitted from the accessibility tree. Wrapping them in a container with a descriptive, localized `aria-label` (e.g., "Forma reciente: G, G, P") while hiding the individual dots ensures the information is communicated to all users without redundant noise.
+**Action:** When implementing visual status summaries, always provide a high-level programmatic description for assistive technologies and use semantic colors (emerald/rose) for high-contrast clarity.
