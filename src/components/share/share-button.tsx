@@ -123,7 +123,7 @@ export function ShareButton({
     >
       {iconOnly ? (
         isSuccess ? (
-          <Check className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-300" />
+          <Check className="h-4 w-4 text-emerald-500" />
         ) : (
           <Share2 className="h-4 w-4" />
         )
@@ -131,7 +131,7 @@ export function ShareButton({
         children ?? (
           <span className="flex items-center gap-2">
             {isSuccess ? (
-              <Check className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-300" />
+              <Check className="h-4 w-4 text-emerald-500" />
             ) : (
               <Share2 className="h-4 w-4" />
             )}

@@ -25,13 +25,13 @@ export function PlayerAvatar({ name, image, className, size = 40 }: PlayerAvatar
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary",
+        "flex shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary",
         className,
       )}
       style={{ width: dimension, height: dimension }}
     >
       {image ? (
-        <Image src={image} alt={name} width={size} height={size} className="h-full w-full rounded-full object-cover" />
+        <Image src={image} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />
       ) : (
         initials
       )}
