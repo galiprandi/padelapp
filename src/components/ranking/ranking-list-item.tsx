@@ -90,14 +90,20 @@ export function RankingListItem({
               {player.wins}V-{player.losses}D
             </span>
             {recentForm.length > 0 && (
-              <div className="flex gap-0.5">
+              <div
+                className="flex gap-0.5"
+                aria-label={`Forma reciente: ${recentForm
+                  .map((r) => (r === "W" ? "G" : "P"))
+                  .join(", ")}`}
+              >
                 {recentForm.map((result, i) => (
                   <div
                     key={i}
                     className={cn(
                       "h-1.5 w-1.5 rounded-full",
-                      result === "W" ? "bg-primary" : "bg-muted-foreground/30",
+                      result === "W" ? "bg-emerald-500" : "bg-rose-500",
                     )}
+                    aria-hidden="true"
                   />
                 ))}
               </div>
