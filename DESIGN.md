@@ -307,7 +307,7 @@ The following patterns were explicitly removed from the codebase and must not be
 ## 7. Refinements
 
 ### 7.1 Shared Component Sanitization
-All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`) have been refactored to the Minimal Design System.
+All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) have been refactored to the Minimal Design System.
 
 - **Standardized Button Heights**: Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions) are `h-8`.
 - **Absolute Removal of Tactile Feedback**: All `active:scale-*` effects have been removed. Interaction feedback must rely solely on color or border changes (`transition-colors`).
