@@ -378,7 +378,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           </span>
                           <span
                             className={cn(
-                              "text-[10px]",
+                              "text-xs",
                               isConfirmed
                                 ? "text-primary"
                                 : "text-muted-foreground",

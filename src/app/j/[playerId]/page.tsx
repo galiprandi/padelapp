@@ -155,7 +155,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             <div className="flex items-center pt-1">
               <Badge
                 variant={match.status === "CONFIRMED" ? "success" : "default"}
-                className="text-[10px] font-bold px-2 py-0.5 rounded"
+                className="text-xs font-bold px-2 py-0.5 rounded"
               >
                 {formatStatus(match.status)}
               </Badge>
@@ -249,14 +249,14 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                           >
                             {name}
                           </p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             Jugador {slot.position + 1}
                           </p>
                         </div>
                         {isOccupied && (
                           <Badge
                             variant="outline"
-                            className="text-[10px] font-bold border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded"
+                            className="text-xs font-bold border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded"
                           >
                             {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
                           </Badge>
@@ -279,7 +279,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                 <UserCheck className="h-6 w-6" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-bold uppercase text-muted-foreground leading-none mb-1">
+                <p className="text-xs font-bold uppercase text-muted-foreground leading-none mb-1">
                   Te unirás como
                 </p>
                 <p className="text-xl font-bold text-foreground truncate">

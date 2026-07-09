@@ -120,11 +120,11 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           <p className="text-sm text-muted-foreground">Detalle del Turno</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary">
             <Zap className="h-3 w-3 fill-current" />
             Turno Abierto
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-[10px] font-bold text-foreground uppercase">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted border border-border text-xs font-bold text-foreground">
             <Calendar className="h-3 w-3 text-primary" />
             {dateStr}
           </div>
@@ -132,8 +132,8 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       </div>
 
       <Card className="rounded-xl border-border bg-card overflow-hidden">
-        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
-          <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
+          <CardTitle className="text-xs font-bold text-muted-foreground uppercase">
             Especificaciones
           </CardTitle>
         </CardHeader>
@@ -144,7 +144,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </div>
             <div>
               <p className="text-xl font-bold">{timeStr}</p>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
+              <p className="text-xs font-bold text-muted-foreground mt-0.5">
                 {turn.duration} min
               </p>
             </div>
@@ -158,7 +158,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <p className="text-xl font-bold">
                 {suggestedLevelLabel}
               </p>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
+              <p className="text-xs font-bold text-muted-foreground mt-0.5">
                 Nivel
               </p>
             </div>
@@ -172,7 +172,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <p className="text-xl font-bold">
                 {turn.players.length} / {turn.maxPlayers}
               </p>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase mt-0.5">
+              <p className="text-xs font-bold text-muted-foreground mt-0.5">
                 Jugadores confirmados
               </p>
             </div>
@@ -193,7 +193,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           <h2 className="text-sm font-bold text-foreground">
             Lista de jugadores
           </h2>
-          <span className="text-[10px] font-bold text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+          <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
             {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
@@ -213,13 +213,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
                   {p.user.alias ?? p.user.displayName}
                 </p>
-                <p className="mt-0.5 text-[10px] font-bold text-muted-foreground uppercase">
+                <p className="mt-0.5 text-xs font-bold text-muted-foreground">
                   Nivel {p.user.level}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 {p.userId === turn.creatorId && (
-                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[8px] font-bold text-primary border border-primary/20">
+                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
                     Organizador
                   </span>
                 )}
@@ -231,13 +231,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             (_, i) => (
               <div
                 key={`empty-${i}`}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-muted-foreground"
+                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
               >
                 <div className="h-10 w-10 rounded-lg bg-muted border border-dashed border-border flex items-center justify-center text-xl">
                   🎾
                 </div>
                 <div className="flex-1">
-                  <p className="text-[10px] font-bold uppercase italic opacity-60">
+                  <p className="text-xs font-bold italic opacity-60">
                     Lugar reservado
                   </p>
                 </div>
