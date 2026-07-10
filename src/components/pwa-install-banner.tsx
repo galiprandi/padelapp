@@ -30,9 +30,9 @@ export function PwaInstallBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-        <Smartphone className="h-4 w-4 text-primary" aria-hidden="true" />
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+        <Smartphone className="h-4 w-4" aria-hidden="true" />
       </div>
 
       <div className="flex-1 space-y-0.5">

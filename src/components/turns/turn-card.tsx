@@ -66,17 +66,17 @@ export function TurnCard({
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30",
-          isRecommended && "border-primary/20 bg-primary/5",
+          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50",
+          isRecommended && "border-primary bg-primary/5",
           isPending && "opacity-70 pointer-events-none",
         )}
       >
         {/* Date */}
-        <div className="flex flex-col items-center justify-center rounded-lg bg-primary/10 px-2.5 py-2 min-w-[52px]">
-          <span className="text-xs font-semibold text-primary capitalize">
+        <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-2 min-w-[52px]">
+          <span className="text-xs font-semibold text-muted-foreground capitalize leading-none">
             {month}
           </span>
-          <span className="text-xl font-bold text-primary leading-none mt-0.5">
+          <span className="text-xl font-bold text-foreground leading-none mt-1">
             {day}
           </span>
         </div>
@@ -117,20 +117,21 @@ export function TurnCard({
           <button
             onClick={handleQuickJoin}
             disabled={isPending}
-            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shrink-0 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[72px]"
+            aria-label={`Unirse al turno en ${turn.club}`}
+            className="h-9 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground shrink-0 transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
           >
             {isPending ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
               "Unirse"
             )}
           </button>
         ) : isJoined ? (
-          <span className="rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary shrink-0">
+          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary shrink-0">
             Inscripto
           </span>
         ) : turn.status === "FULL" ? (
-          <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground shrink-0">
+          <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground shrink-0">
             Completo
           </span>
         ) : null}
