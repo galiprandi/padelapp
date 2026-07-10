@@ -45,15 +45,15 @@ export default async function TurnsPage() {
         </Button>
       </div>
 
-      <div className="space-y-3">
+      <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">Próximos turnos</h2>
-          <span className="text-xs text-muted-foreground">
+          <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
             {turns.length} {turns.length === 1 ? "disponible" : "disponibles"}
           </span>
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           {turns.length > 0 ? (
             turns.map((turn) => (
               <TurnCard
@@ -78,7 +78,7 @@ export default async function TurnsPage() {
             />
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

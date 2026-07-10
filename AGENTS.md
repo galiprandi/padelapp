@@ -59,6 +59,7 @@ Context and responsibilities for automated agents or contributors working on **P
 - Clean minimal UI per `DESIGN.md`.
 - All redesigned pages use plain `<h1>`/`<p>` headers, standard Tailwind sizes, no decorative effects.
 - `PageHeader` component removed; all views use semantic HTML for headers.
+- Dashboard and main list views (`/me`, `/turnos`, `/match`) refined for UX consistency and accessibility (aria-labels, color standards for W/L).
 
 ### Architecture
 - **Prisma + PostgreSQL**: single source of truth.

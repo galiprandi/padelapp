@@ -128,7 +128,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-3 gap-2">
           <Link
             href="/ranking"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30"
+            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
           >
             <p className="text-xs text-muted-foreground">Ranking</p>
             <p className="text-lg font-bold text-foreground">
@@ -137,7 +137,7 @@ export default async function DashboardPage() {
           </Link>
           <Link
             href="/match"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30"
+            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
           >
             <p className="text-xs text-muted-foreground">Partidos</p>
             <p className="text-lg font-bold text-foreground">
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
           </Link>
           <Link
             href="/ranking"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/30"
+            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
           >
             <p className="text-xs text-muted-foreground">Victorias</p>
             <p className="text-lg font-bold text-primary">{user.wins}</p>
@@ -164,7 +164,7 @@ export default async function DashboardPage() {
               <h2 className="text-sm font-bold text-foreground">
                 Acciones pendientes
               </h2>
-              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">
+              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
                 {pendingActionMatches.length}
               </span>
             </div>
@@ -278,13 +278,19 @@ export default async function DashboardPage() {
               Últimos resultados
             </h2>
             {recentForm.length > 0 && (
-              <div className="flex gap-1">
+              <div
+                className="flex gap-1"
+                aria-label={`Forma reciente: ${recentForm
+                  .map((r) => (r === "W" ? "G" : "P"))
+                  .join(", ")}`}
+              >
                 {recentForm.map((result, i) => (
                   <div
                     key={i}
+                    aria-hidden="true"
                     className={cn(
                       "h-2 w-2 rounded-full",
-                      result === "W" ? "bg-primary" : "bg-muted-foreground/30",
+                      result === "W" ? "bg-emerald-500" : "bg-rose-500",
                     )}
                   />
                 ))}

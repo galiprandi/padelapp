@@ -202,6 +202,10 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 - Heading: `text-sm font-bold`.
 - Description: `text-xs text-muted-foreground`.
 
+### 2.9 Recent Form
+- Use `bg-emerald-500` for wins (W) and `bg-rose-500` for losses (L).
+- Must include Spanish `aria-label` for accessibility (e.g., 'Forma reciente: G, P, G').
+
 ---
 
 ## 3. Page Structure

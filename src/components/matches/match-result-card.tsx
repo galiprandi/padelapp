@@ -189,7 +189,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     }
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
-        return "bg-primary/10 text-primary";
+        return "bg-emerald-500/10 text-emerald-500";
       case "DISPUTED":
         return "bg-amber-500/10 text-amber-500";
       default:
@@ -295,9 +295,8 @@ export const MatchResultCompact = memo(function MatchResultCompact({
             <Fragment key={team.id}>
               <div
                 className={cn(
-                  "grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-2",
+                  "grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-2 transition-colors",
                   team.hasViewer && "bg-primary/5",
-                  team.isWinner && "bg-primary/5",
                 )}
               >
                 <div className="flex items-center">
