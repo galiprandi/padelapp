@@ -153,7 +153,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     match.players.some((p) => p.userId === viewerId && !p.resultConfirmed);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", userNeedsToConfirm && "pb-32")}>
       <div>
         <h1 className="text-xl font-bold text-foreground">
           Partido {getMatchTypeLabel(match.matchType)}
@@ -270,7 +270,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
       {isClosed ? (
         <div className="space-y-6">
-          <section className="flex flex-col items-center justify-center text-center py-10 rounded-2xl border border-border bg-card">
+          <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
             <span className="text-xs text-muted-foreground mb-4">
               Resultado Final
             </span>
@@ -392,12 +392,28 @@ export default async function MatchPage({ params }: MatchPageProps) {
                   })}
               </div>
 
-              {userNeedsToConfirm && (
-                <div className="pt-3 border-t border-border">
-                  <ConfirmResultForm matchId={match.id} />
-                </div>
-              )}
             </section>
+          )}
+
+          {userNeedsToConfirm && (
+            <div className="fixed bottom-20 left-0 right-0 z-30 px-5 pb-4">
+              <div className="mx-auto max-w-md rounded-xl border border-primary/20 bg-card p-4 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <CheckCircle2 className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-foreground">
+                      Confirmación pendiente
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Validá el resultado para impactar el ranking.
+                    </span>
+                  </div>
+                </div>
+                <ConfirmResultForm matchId={match.id} />
+              </div>
+            </div>
           )}
 
           {!isPendingConfirmation && match.status === "CONFIRMED" && (

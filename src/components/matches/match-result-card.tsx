@@ -24,9 +24,9 @@ export function MatchResultCard({
   footer,
 }: MatchResultCardProps) {
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
-      <div className="border-b border-border px-4 py-2 bg-muted/50">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-tight">
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="border-b border-border px-4 py-2">
+        <span className="text-xs font-semibold text-muted-foreground">
           {label}
         </span>
       </div>
