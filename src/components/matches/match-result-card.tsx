@@ -24,7 +24,7 @@ export function MatchResultCard({
   footer,
 }: MatchResultCardProps) {
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="border-b border-border px-4 py-2">
         <span className="text-xs font-semibold text-muted-foreground">
           {label}

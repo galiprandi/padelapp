@@ -247,7 +247,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background/80 backdrop-blur-sm border-t border-border z-50">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
         <div className="max-w-md mx-auto">
           {!viewerId ? (
             <Button

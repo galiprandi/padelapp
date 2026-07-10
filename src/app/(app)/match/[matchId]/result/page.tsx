@@ -183,7 +183,7 @@ export default function MatchResultPage({
 
       <div className="flex flex-col gap-6">
         {isClosed ? (
-          <section className="flex flex-col items-center justify-center text-center py-10 rounded-2xl border border-border bg-card">
+          <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
             <Trophy className="h-8 w-8 text-primary mb-3" />
             <h2 className="text-3xl font-bold mb-1">{match.score}</h2>
             <p className="text-xs text-muted-foreground mb-6">
