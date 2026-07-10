@@ -202,6 +202,10 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 - Heading: `text-sm font-bold`.
 - Description: `text-xs text-muted-foreground`.
 
+### 2.9 Recent Form
+- Use `bg-emerald-500` for wins (W) and `bg-rose-500` for losses (L).
+- Must include Spanish `aria-label` for accessibility (e.g., 'Forma reciente: G, P, G').
+
 ---
 
 ## 3. Page Structure
@@ -309,7 +313,7 @@ The following patterns were explicitly removed from the codebase and must not be
 ### 7.1 Shared Component Sanitization
 All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) have been refactored to the Minimal Design System.
 
-- **Standardized Button Heights**: Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions) are `h-8`.
+- **Standardized Button Heights**: Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions or TurnCard quick join) are `h-8` or `h-9`.
 - **Absolute Removal of Tactile Feedback**: All `active:scale-*` effects have been removed. Interaction feedback must rely solely on color or border changes (`transition-colors`).
 - **Elimination of Glassmorphism**: Semi-transparent backgrounds (`bg-card/40`, `bg-background/50`) and `backdrop-blur-*` have been replaced by solid `bg-card` or `bg-background`.
 - **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.

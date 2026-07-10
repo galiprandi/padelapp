@@ -130,7 +130,7 @@ export default async function MatchListPage() {
       )}
 
       {pendingActions.length > 0 && (
-        <div className="space-y-2">
+        <section className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">Pendientes</h2>
@@ -141,13 +141,13 @@ export default async function MatchListPage() {
             {pendingActions.length > 3 && (
               <Link
                 href="/notifications"
-                className="flex items-center gap-0.5 text-xs font-semibold text-primary"
+                className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
               >
                 Ver todas <ChevronRight className="h-3 w-3" />
               </Link>
             )}
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             {pendingActions.slice(0, 3).map((match) => {
               const needsScore = !match.score;
               return (
@@ -165,21 +165,21 @@ export default async function MatchListPage() {
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
-      <div className="space-y-4">
+      <section className="flex flex-col gap-3">
         <h2 className="text-sm font-bold text-foreground">Historial</h2>
         {viewerId ? (
           matches.length > 0 ? (
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               {Object.entries(groupedMatches).map(
                 ([monthYear, monthMatches]) => (
-                  <div key={monthYear} className="space-y-2">
+                  <div key={monthYear} className="flex flex-col gap-2">
                     <h3 className="text-xs font-semibold text-muted-foreground capitalize">
                       {monthYear}
                     </h3>
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                       {monthMatches.map((match) => (
                         <MatchResultCompact
                           key={match.id}
@@ -215,7 +215,7 @@ export default async function MatchListPage() {
             </Button>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
