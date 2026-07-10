@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,20 @@ export function RankingSearch() {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
+
+  const handleClear = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setQuery("");
+    inputRef.current?.focus();
+
+    const params = new URLSearchParams(searchParams);
+    params.delete("q");
+    startTransition(() => {
+      router.push(`/ranking?${params.toString()}`, { scroll: false });
+    });
+  }, [router, searchParams]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,6 +40,7 @@ export function RankingSearch() {
       });
     }, 300);
 
+    timeoutRef.current = timer;
     return () => clearTimeout(timer);
   }, [query, router, searchParams]);
 
@@ -39,16 +54,24 @@ export function RankingSearch() {
         )} />
       </div>
       <Input
+        ref={inputRef}
         type="search"
         placeholder="Buscar jugador o alias..."
+        aria-label="Buscar jugadores por nombre o alias"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            handleClear();
+          }
+        }}
         autoComplete="off"
         className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground/50 focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm"
       />
       {query && (
         <button
-          onClick={() => setQuery("")}
+          type="button"
+          onClick={handleClear}
           aria-label="Limpiar búsqueda"
           className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
         >
