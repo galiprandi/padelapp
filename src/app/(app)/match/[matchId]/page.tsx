@@ -226,7 +226,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               </Button>
               <ShareButton
                 title="Invitación a partido de Pádel"
-                text={`¡Sumate a mi partido de pádel el ${new Date(match.date).toLocaleDateString()}!`}
+                text={`¡Sumate a mi partido de pádel en ${match.club || "el club"} el ${new Date(match.date).toLocaleDateString("es-AR")}!`}
                 url={
                   createMagicLink({ resource: "match", identifier: match.id })
                     .url
@@ -251,7 +251,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               </Button>
               <ShareButton
                 title="Resultado de Pádel"
-                text="¡Mira el resultado de nuestro partido de pádel!"
+                text={`¡Mirá el resultado de nuestro partido de pádel! Marcador: ${match.score}`}
                 url={
                   createMagicLink({ resource: "match", identifier: match.id })
                     .url
@@ -271,20 +271,20 @@ export default async function MatchPage({ params }: MatchPageProps) {
       {isClosed ? (
         <div className="space-y-6">
           <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
-            <span className="text-xs text-muted-foreground mb-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-tight mb-6">
               Resultado Final
             </span>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4">
               {match.score?.split(",").map((set, idx) => (
                 <div
                   key={idx}
-                  className="text-5xl font-bold tracking-tight text-foreground leading-none"
+                  className="text-5xl font-bold tracking-tighter text-foreground leading-none"
                 >
                   {set.trim()}
                 </div>
               ))}
             </div>
-            <div className="mt-6 flex flex-col items-center gap-3">
+            <div className="mt-8 flex flex-col items-center gap-3">
               <div className="flex -space-x-2 items-center">
                 {match.players
                   .sort((a, b) => a.position - b.position)
@@ -293,12 +293,12 @@ export default async function MatchPage({ params }: MatchPageProps) {
                       key={p.id}
                       name={p.displayName || p.user?.displayName || ""}
                       image={p.user?.image ?? undefined}
-                      className="border-2 border-background"
+                      className="border-2 border-card"
                       size={40}
                     />
                   ))}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Modalidad {getMatchTypeLabel(match.matchType)}
               </p>
             </div>
@@ -315,11 +315,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <section className="space-y-4 rounded-xl border border-border bg-card p-4">
               <div className="space-y-1">
                 <h2 className="text-sm font-bold text-foreground">
-                  Estado de Confirmación
+                  Confirmaciones
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Para que este resultado impacte en el ranking, un jugador de
-                  cada equipo debe validarlo.
+                  Un jugador de cada equipo debe validar el marcador.
                 </p>
               </div>
 
@@ -338,10 +337,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
                       <div
                         key={player.id}
                         className={cn(
-                          "flex flex-col items-center gap-2 p-3 rounded-lg border",
+                          "flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors",
                           isConfirmed
                             ? "bg-primary/5 border-primary/20"
-                            : "bg-card border-border",
+                            : "bg-muted/50 border-border opacity-70",
                         )}
                       >
                         <div className="relative">
@@ -349,26 +348,20 @@ export default async function MatchPage({ params }: MatchPageProps) {
                             name={displayName}
                             image={player.user?.image ?? undefined}
                             className={cn(
-                              "h-12 w-12 border-2 border-background",
-                              !isConfirmed && "opacity-60",
+                              "h-10 w-10 border-2 border-card",
                             )}
                           />
-                          <div
-                            className={cn(
-                              "absolute -right-0.5 -bottom-0.5 rounded-full p-0.5 border border-background",
-                              isConfirmed ? "bg-primary" : "bg-muted",
-                            )}
-                          >
-                            {isConfirmed ? (
+                          {isConfirmed && (
+                            <div className="absolute -right-1 -bottom-1 rounded-full bg-primary p-0.5 border-2 border-card shadow-sm">
                               <CheckCircle2 className="h-3 w-3 text-primary-foreground" />
-                            ) : null}
-                          </div>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex flex-col items-center text-center gap-0.5 min-w-0 w-full">
                           <span
                             className={cn(
-                              "text-xs font-semibold truncate w-full",
+                              "text-xs font-bold truncate w-full",
                               isConfirmed
                                 ? "text-foreground"
                                 : "text-muted-foreground",
@@ -378,10 +371,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           </span>
                           <span
                             className={cn(
-                              "text-xs",
+                              "text-xs font-semibold uppercase tracking-tight",
                               isConfirmed
                                 ? "text-primary"
-                                : "text-muted-foreground",
+                                : "text-muted-foreground/60",
                             )}
                           >
                             {isConfirmed ? "Confirmado" : "Pendiente"}
@@ -391,7 +384,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
                     );
                   })}
               </div>
-
             </section>
           )}
 

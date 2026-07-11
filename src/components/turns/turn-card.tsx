@@ -7,6 +7,8 @@ import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
 import { joinTurnAction } from "@/app/(app)/turnos/actions";
+import { ShareButton } from "@/components/share/share-button";
+import { createMagicLink } from "@/lib/magic-link";
 
 interface TurnCardProps {
   turn: {
@@ -113,28 +115,43 @@ export function TurnCard({
         </div>
 
         {/* Status / Action */}
-        {canJoin ? (
-          <button
-            onClick={handleQuickJoin}
-            disabled={isPending}
-            aria-label={`Unirse al turno en ${turn.club}`}
-            className="h-9 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground shrink-0 transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
-          >
-            {isPending ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              "Unirse"
-            )}
-          </button>
-        ) : isJoined ? (
-          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary shrink-0">
-            Inscripto
-          </span>
-        ) : turn.status === "FULL" ? (
-          <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground shrink-0">
-            Completo
-          </span>
-        ) : null}
+        <div className="flex items-center gap-2 shrink-0">
+          <ShareButton
+            url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
+            title="Sumate al Turno"
+            text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+            variant="ghost"
+            size="icon"
+            iconOnly
+            className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+          {canJoin ? (
+            <button
+              onClick={handleQuickJoin}
+              disabled={isPending}
+              aria-label={`Unirse al turno en ${turn.club}`}
+              className="h-9 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
+            >
+              {isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                "Unirse"
+              )}
+            </button>
+          ) : isJoined ? (
+            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+              Inscripto
+            </span>
+          ) : turn.status === "FULL" ? (
+            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
+              Completo
+            </span>
+          ) : null}
+        </div>
       </div>
     </Link>
   );
