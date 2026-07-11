@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export interface PlayerPreviewProps {
@@ -14,6 +13,7 @@ export interface PlayerPreviewProps {
   category?: number;
   onManageClick?: () => void;
   manageAriaLabel?: string;
+  onClick?: () => void;
 }
 
 export function PlayerPreview({
@@ -23,14 +23,29 @@ export function PlayerPreview({
   isConfirmed,
   category,
   onManageClick,
-  manageAriaLabel
+  manageAriaLabel,
+  onClick
 }: PlayerPreviewProps) {
+  const isInteractive = !!(onClick || onManageClick);
+  const mainAction = onManageClick || onClick;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      mainAction?.();
+    }
+  };
+
   return (
     <div
-      role="button"
-      tabIndex={0}
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={mainAction}
+      onKeyDown={handleKeyDown}
+      aria-label={isInteractive ? (manageAriaLabel || (onManageClick ? (isConfirmed ? `Gestionar jugador ${name}` : `Invitar jugador ${name}`) : `Ver perfil de ${name}`)) : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
       )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
@@ -47,33 +62,35 @@ export function PlayerPreview({
       </div>
 
       {onManageClick ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10"
-          aria-label={
-            manageAriaLabel ||
-            (isConfirmed ? "Gestionar jugador" : "Invitar jugador")
-          }
-          onClick={(event) => {
-            event.stopPropagation();
-            onManageClick();
-          }}
-        >
+        <div className="flex h-8 w-8 items-center justify-center text-muted-foreground" aria-hidden="true">
           {isConfirmed ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-        </Button>
+        </div>
       ) : null}
     </div>
   );
 }
 
-export function PlayerWithRanking({ name, role, image, ranking, category }: PlayerPreviewProps) {
+export function PlayerWithRanking({ name, role, image, ranking, category, onClick }: PlayerPreviewProps) {
+  const isInteractive = !!onClick;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
+
   return (
     <div
-      role="button"
-      tabIndex={0}
-      className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
+      className={cn(
+        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
@@ -97,12 +114,27 @@ export function PlayerWithRanking({ name, role, image, ranking, category }: Play
   );
 }
 
-export function PlayerCompact({ name, image, ranking }: PlayerPreviewProps) {
+export function PlayerCompact({ name, image, ranking, onClick }: PlayerPreviewProps) {
+  const isInteractive = !!onClick;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
+
   return (
     <div
-      role="button"
-      tabIndex={0}
-      className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
+      className={cn(
+        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      )}
     >
       <PlayerAvatar name={name} image={image} size={32} className="rounded-lg" />
 
