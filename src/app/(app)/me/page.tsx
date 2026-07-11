@@ -124,32 +124,32 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats row */}
-      {user && user.matchesPlayed > 0 && (
-        <div className="grid grid-cols-3 gap-2">
+      {user && (
+        <div className="grid grid-cols-3 gap-3">
           <Link
             href="/ranking"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <p className="text-xs text-muted-foreground">Ranking</p>
-            <p className="text-lg font-bold text-foreground">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
+            <span className="text-xl font-bold text-foreground">
               #{user.rankingPosition ?? "-"}
-            </p>
+            </span>
           </Link>
           <Link
             href="/match"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <p className="text-xs text-muted-foreground">Partidos</p>
-            <p className="text-lg font-bold text-foreground">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
+            <span className="text-xl font-bold text-foreground">
               {user.matchesPlayed}
-            </p>
+            </span>
           </Link>
           <Link
             href="/ranking"
-            className="rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <p className="text-xs text-muted-foreground">Victorias</p>
-            <p className="text-lg font-bold text-primary">{user.wins}</p>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
+            <span className="text-xl font-bold text-primary">{user.wins}</span>
           </Link>
         </div>
       )}

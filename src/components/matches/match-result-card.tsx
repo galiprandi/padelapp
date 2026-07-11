@@ -258,12 +258,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                       .url
                   }
                   title="Resultado de Pádel"
-                  text={`Mirá el resultado: ${match.score}`}
+                  text={`Mirá el resultado de nuestro partido: ${match.score}`}
                   variant="ghost"
-                  size="sm"
+                  size="icon"
                   iconOnly
                   aria-label="Compartir resultado"
-                  className="h-7 w-7 rounded-md text-primary hover:bg-primary/10"
+                  className="h-8 w-8 rounded-lg text-primary hover:bg-primary/10"
                 />
               )}
               {matchDetailUrl ? (
