@@ -271,14 +271,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
       {isClosed ? (
         <div className="space-y-6">
           <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
-            <span className="text-xs font-semibold text-muted-foreground tracking-tight mb-6">
+            <span className="text-xs font-semibold text-muted-foreground mb-6">
               Resultado Final
             </span>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4">
               {match.score?.split(",").map((set, idx) => (
                 <div
                   key={idx}
-                  className="text-5xl font-bold tracking-tighter text-foreground leading-none"
+                  className="text-5xl font-bold text-foreground leading-none"
                 >
                   {set.trim()}
                 </div>
@@ -372,7 +372,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           </span>
                           <span
                             className={cn(
-                              "text-xs font-semibold tracking-tight",
+                              "text-xs font-semibold",
                               isConfirmed
                                 ? "text-primary"
                                 : "text-muted-foreground/60",

@@ -243,7 +243,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <button
                   onClick={handleQuickConfirm}
                   disabled={isConfirming}
-                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 h-8 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
                 >
                   {isConfirming ? (
                     <Loader2 className="h-3 w-3 animate-spin" />

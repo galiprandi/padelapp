@@ -192,7 +192,7 @@ export default async function PublicProfilePage({
 
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
-            <div className="text-xs font-bold text-muted-foreground uppercase">
+            <div className="text-xs font-bold text-muted-foreground">
               Efectividad
             </div>
             <div className="flex items-baseline gap-1">
@@ -206,7 +206,7 @@ export default async function PublicProfilePage({
           </div>
 
           <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
-            <div className="text-xs font-bold text-muted-foreground uppercase">
+            <div className="text-xs font-bold text-muted-foreground">
               Forma
             </div>
             <div className="flex gap-1.5 pt-1">
@@ -233,7 +233,7 @@ export default async function PublicProfilePage({
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
           <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-            <h3 className="text-xs font-bold uppercase text-muted-foreground">
+            <h3 className="text-xs font-bold text-muted-foreground">
               Cara a Cara
             </h3>
 
@@ -272,7 +272,7 @@ export default async function PublicProfilePage({
             {h2h.lastMatch && (
               <div className="pt-3 border-t border-border flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold uppercase text-muted-foreground">
+                  <span className="text-xs font-bold text-muted-foreground">
                     Último duelo
                   </span>
                   <span

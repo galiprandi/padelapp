@@ -180,7 +180,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             return (
               <div key={teamKey} className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-muted-foreground uppercase">
+                  <span className="text-xs font-bold text-muted-foreground">
                     {label}
                   </span>
                   <div className="h-px flex-1 bg-border" />
@@ -235,7 +235,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                           <div className="flex items-center gap-2 mt-0.5">
                             <p
                               className={cn(
-                                "text-xs font-semibold uppercase",
+                                "text-xs font-semibold",
                                 isConfirmed
                                   ? "text-emerald-600"
                                   : "text-muted-foreground",

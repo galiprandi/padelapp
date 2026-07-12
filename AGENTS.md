@@ -43,7 +43,7 @@ Context and responsibilities for automated agents or contributors working on **P
 ## 6. Current State
 
 ### Implemented
-- **Minimal Design Cleanup**: Core shared components (`Button`, `Card`, `BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `PlayerPreview`, `PairPreview`, `RankingSearch`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) refactored to Minimal Design standards.
+- **Minimal Design Cleanup**: Core shared components (`Button`, `Card`, `BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `PlayerPreview`, `PairPreview`, `RankingSearch`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) refactored to Minimal Design standards. Standardized typography by removing `uppercase` and non-standard `tracking-*` classes across all views. Standardized button heights and radius for inline actions.
 - Google OAuth login with NextAuth + Prisma adapter.
 - Dashboard (`/me`) with agenda, pending actions, and recent results.
 - Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`).
