@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { TurnCard } from "@/components/turns/turn-card";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, ChevronRight } from "lucide-react";
+import { CalendarDays, Trophy, ChevronRight, Activity } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
 import { getGreeting, cn, getMatchWinner } from "@/lib/utils";
@@ -35,6 +35,7 @@ export default async function DashboardPage() {
         wins: true,
         losses: true,
         image: true,
+        attendanceScore: true,
       },
     }),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -93,6 +94,16 @@ export default async function DashboardPage() {
     })),
   ].sort((a, b) => a.date.getTime() - b.date.getTime());
 
+  const heroActivity =
+    agendaItems.length > 0 &&
+    agendaItems[0].date.getTime() - now.getTime() < 24 * 60 * 60 * 1000
+      ? agendaItems[0]
+      : null;
+
+  const remainingAgendaItems = heroActivity
+    ? agendaItems.slice(1)
+    : agendaItems;
+
   const greeting = getGreeting();
 
   const recentForm = recentMatches.slice(0, 5).map((match) => {
@@ -125,36 +136,81 @@ export default async function DashboardPage() {
 
       {/* Stats row */}
       {user && (
-        <div className="grid grid-cols-3 gap-3">
-          <Link
-            href="/ranking"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-          >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
-            <span className="text-xl font-bold text-foreground">
-              #{user.rankingPosition ?? "-"}
-            </span>
-          </Link>
-          <Link
-            href="/match"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-          >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
-            <span className="text-xl font-bold text-foreground">
-              {user.matchesPlayed}
-            </span>
-          </Link>
-          <Link
-            href="/ranking"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-          >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
-            <span className="text-xl font-bold text-primary">{user.wins}</span>
-          </Link>
+        <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Link
+              href="/ranking"
+              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            >
+              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
+              <span className="text-xl font-bold text-foreground">
+                #{user.rankingPosition ?? "-"}
+              </span>
+            </Link>
+            <Link
+              href="/me/profile"
+              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            >
+              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Nivel</span>
+              <span className="text-xl font-bold text-foreground">
+                {user.level}
+              </span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Link
+              href="/match"
+              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            >
+              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
+              <span className="text-lg font-bold text-foreground">
+                {user.matchesPlayed}
+              </span>
+            </Link>
+            <Link
+              href="/ranking"
+              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            >
+              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
+              <span className="text-lg font-bold text-primary">{user.wins}</span>
+            </Link>
+            <div
+              className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3"
+            >
+              <span className="text-xs font-semibold text-muted-foreground">Reputación</span>
+              <span className="text-lg font-bold text-foreground">
+                {Math.round((user.attendanceScore ?? 1) * 100)}%
+              </span>
+            </div>
+          </div>
         </div>
       )}
 
       <PwaInstallBanner />
+
+      {/* Hero Activity */}
+      {heroActivity && (
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-bold text-foreground">Próxima actividad</h2>
+          </div>
+          {heroActivity.type === "turn" ? (
+            <TurnCard
+              turn={heroActivity.data}
+              isJoined={true}
+              isCreator={heroActivity.data.creatorId === viewerId}
+            />
+          ) : (
+            <MatchResultCompact
+              match={heroActivity.data as MatchResultCompactMatch}
+              detailUrl={`/match/${heroActivity.id}`}
+              label="Partido inminente"
+              viewerId={viewerId}
+            />
+          )}
+        </section>
+      )}
 
       {/* Pending actions */}
       {pendingActionMatches.length > 0 && (
@@ -212,28 +268,32 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="space-y-2">
-          {agendaItems.length > 0 ? (
-            agendaItems.map((item) => {
+          {remainingAgendaItems.length > 0 ? (
+            remainingAgendaItems.map((item) => {
               return item.type === "turn" ? (
-                <TurnCard
-                  key={item.id}
-                  turn={item.data}
-                  isJoined={item.data.players.some(
-                    (p: { userId: string }) => p.userId === viewerId,
-                  )}
-                  isCreator={item.data.creatorId === viewerId}
-                />
+                <div key={item.id} className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/20 rounded-l-xl z-10" />
+                  <TurnCard
+                    turn={item.data}
+                    isJoined={item.data.players.some(
+                      (p: { userId: string }) => p.userId === viewerId,
+                    )}
+                    isCreator={item.data.creatorId === viewerId}
+                  />
+                </div>
               ) : (
-                <MatchResultCompact
-                  key={item.id}
-                  match={item.data as MatchResultCompactMatch}
-                  detailUrl={`/match/${item.id}`}
-                  label="Próximo partido"
-                  viewerId={viewerId}
-                />
+                <div key={item.id} className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 rounded-l-xl z-10" />
+                  <MatchResultCompact
+                    match={item.data as MatchResultCompactMatch}
+                    detailUrl={`/match/${item.id}`}
+                    label="Próximo partido"
+                    viewerId={viewerId}
+                  />
+                </div>
               );
             })
-          ) : (
+          ) : !heroActivity ? (
             <EmptyState
               icon={CalendarDays}
               title="Tu agenda está vacía"
@@ -244,6 +304,10 @@ export default async function DashboardPage() {
                 </Button>
               }
             />
+          ) : (
+            <div className="rounded-xl border border-dashed border-border p-8 flex flex-col items-center justify-center text-center">
+              <p className="text-xs text-muted-foreground">No hay más actividades programadas.</p>
+            </div>
           )}
         </div>
       </section>
