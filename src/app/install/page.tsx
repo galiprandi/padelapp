@@ -31,7 +31,7 @@ export default function InstallPage() {
             📲
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold tracking-tight">PadelApp</CardTitle>
+            <CardTitle className="text-3xl font-bold">PadelApp</CardTitle>
             <CardDescription className="text-balance px-4 text-sm text-muted-foreground">
               Disfrutá de la mejor experiencia agregando la app a tu pantalla de inicio.
             </CardDescription>
@@ -56,7 +56,7 @@ export default function InstallPage() {
           </div>
 
           <section className="rounded-xl border border-primary/20 bg-primary/5 p-5">
-            <p className="mb-2 text-xs font-bold uppercase text-primary/60">¿No ves la opción?</p>
+            <p className="mb-2 text-xs font-bold text-primary/60">¿No ves la opción?</p>
             <p className="text-sm text-muted-foreground">
               Asegurate de estar usando el navegador por defecto (<span className="text-foreground font-bold">Safari</span> en iOS o <span className="text-foreground font-bold">Chrome</span> en Android).
             </p>

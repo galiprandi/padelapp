@@ -90,12 +90,12 @@ export function TurnCard({
               {turn.club}
             </p>
             {isTodayDate && (
-              <span className="rounded bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
                 Hoy
               </span>
             )}
             {isTomorrowDate && (
-              <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-bold text-muted-foreground">
+              <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-bold text-muted-foreground">
                 Mañana
               </span>
             )}
@@ -134,7 +134,7 @@ export function TurnCard({
               onClick={handleQuickJoin}
               disabled={isPending}
               aria-label={`Unirse al turno en ${turn.club}`}
-              className="h-9 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
+              className="h-10 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
             >
               {isPending ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

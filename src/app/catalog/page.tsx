@@ -126,7 +126,7 @@ export default function ComponentCatalogPage() {
         <aside className="w-64 shrink-0 hidden lg:block">
           <div className="sticky top-6 space-y-6">
             <div className="space-y-3">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-muted-foreground">
                 Vista
               </h3>
               <div className="flex bg-muted rounded-xl p-1 border border-border">
@@ -152,7 +152,7 @@ export default function ComponentCatalogPage() {
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-muted-foreground">
                 Secciones
               </h3>
               <nav className="space-y-1">

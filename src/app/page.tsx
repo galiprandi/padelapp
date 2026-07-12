@@ -25,7 +25,7 @@ export default function MarketingLanding() {
             🎾
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold tracking-tight">PadelApp</CardTitle>
+            <CardTitle className="text-3xl font-bold">PadelApp</CardTitle>
             <CardDescription className="text-balance px-4 text-sm font-medium leading-relaxed">
               Registrá tus partidos, armá equipos y escalá en la comunidad de pádel.
             </CardDescription>

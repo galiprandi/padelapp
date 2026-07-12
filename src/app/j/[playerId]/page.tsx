@@ -136,7 +136,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
 
       <Card className="rounded-xl border-border bg-card overflow-hidden">
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
-          <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+          <CardTitle className="text-xs font-bold text-muted-foreground">
             Detalle del partido
           </CardTitle>
         </CardHeader>
@@ -197,7 +197,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             return (
               <div key={key} className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  <span className="text-xs font-bold text-muted-foreground">
                     {label}
                   </span>
                   <div className="h-px flex-1 bg-border" />
@@ -279,7 +279,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
                 <UserCheck className="h-6 w-6" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold uppercase text-muted-foreground leading-none mb-1">
+                <p className="text-xs font-bold text-muted-foreground leading-none mb-1">
                   Te unirás como
                 </p>
                 <p className="text-xl font-bold text-foreground truncate">
@@ -291,7 +291,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             {helperMessage && (
               <div className="flex items-center gap-3 rounded-lg bg-destructive/5 p-3 text-destructive border border-destructive/20">
                 <AlertCircle className="h-4 w-4 shrink-0" />
-                <p className="text-xs font-bold uppercase">
+                <p className="text-xs font-bold">
                   {helperMessage}
                 </p>
               </div>

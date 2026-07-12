@@ -133,7 +133,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
 
       <Card className="rounded-xl border-border bg-card overflow-hidden">
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
-          <CardTitle className="text-xs font-bold text-muted-foreground uppercase">
+          <CardTitle className="text-xs font-bold text-muted-foreground">
             Especificaciones
           </CardTitle>
         </CardHeader>
@@ -267,7 +267,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                     <Button
                       asChild
                       variant="outline"
-                      className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
+                      className="flex-1 h-10 rounded-lg font-bold text-xs"
                     >
                       <Link href={`/turnos/${id}/editar`}>
                         <Edit3 className="mr-2 h-4 w-4" />
@@ -300,7 +300,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   <Button
                     asChild
                     variant="outline"
-                    className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
+                    className="flex-1 h-10 rounded-lg font-bold text-xs"
                   >
                     <Link href={`/turnos/${id}/editar`}>
                       <Edit3 className="mr-2 h-4 w-4" />
@@ -319,7 +319,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   <Button
                     asChild
                     variant="outline"
-                    className="flex-1 h-10 rounded-lg font-bold text-xs uppercase"
+                    className="flex-1 h-10 rounded-lg font-bold text-xs"
                   >
                     <Link href={`/turnos/${id}/editar`}>
                       <Edit3 className="mr-2 h-4 w-4" />
@@ -352,7 +352,7 @@ function CancelTurnForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold uppercase text-destructive"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
       >
         <Trash2 className="mr-2 h-4 w-4" />
         Eliminar
@@ -394,7 +394,7 @@ function LeaveTurnForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold uppercase text-destructive"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
       >
         <LogOut className="mr-2 h-4 w-4" />
         Bajarme del turno
