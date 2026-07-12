@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2, UserMinus, ArrowUpDown, Search, UserPlus, Check, Loader2 } from "lucide-react";
+import { Share2, UserMinus, ArrowUpDown, Search, UserPlus, Check, Loader2, X } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn } from "@/lib/utils";
 import type { SlotValue, PlayerOption } from "@/lib/match-types";
@@ -35,6 +35,13 @@ export function ManageSlotModal({
   const [searchResults, setSearchResults] = useState<PlayerOption[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    setSearchResults([]);
+    inputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -54,8 +61,11 @@ export function ManageSlotModal({
 
   // Debounced search
   useEffect(() => {
+    let active = true;
+
     if (searchQuery.trim().length < 2) {
       setSearchResults([]);
+      setIsSearching(false);
       return;
     }
 
@@ -64,17 +74,20 @@ export function ManageSlotModal({
       try {
         const response = await fetch(`/api/players?q=${encodeURIComponent(searchQuery)}`);
         const data = await response.json();
-        if (data.players) {
+        if (active && data.players) {
           setSearchResults(data.players);
         }
       } catch (err) {
-        console.error("Failed to fetch players", err);
+        if (active) console.error("Failed to fetch players", err);
       } finally {
-        setIsSearching(false);
+        if (active) setIsSearching(false);
       }
     }, 300);
 
-    return () => clearTimeout(handler);
+    return () => {
+      active = false;
+      clearTimeout(handler);
+    };
   }, [searchQuery]);
 
   if (!open) {
@@ -168,14 +181,34 @@ export function ManageSlotModal({
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
                 <Input
+                  ref={inputRef}
                   id="player-search"
+                  type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      handleClearSearch();
+                    }
+                  }}
                   placeholder="Nombre o email..."
-                  className="h-12 pl-11 pr-4 rounded-lg bg-background border-border text-sm font-medium"
+                  className="h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium"
                 />
                 {isSearching && (
-                  <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
+                  <Loader2 className={cn(
+                    "absolute top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin",
+                    searchQuery ? "right-10" : "right-4"
+                  )} />
+                )}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    aria-label="Limpiar búsqueda"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 )}
               </div>
 
@@ -193,6 +226,7 @@ export function ManageSlotModal({
                     <button
                       key={player.id}
                       onClick={() => handleSelectPlayer(player)}
+                      aria-label={`Seleccionar a ${player.displayName}`}
                       className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-colors text-left"
                     >
                       <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
