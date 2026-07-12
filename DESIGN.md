@@ -318,3 +318,11 @@ All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch
 - **Elimination of Glassmorphism**: Semi-transparent backgrounds (`bg-card/40`, `bg-background/50`) and `backdrop-blur-*` have been replaced by solid `bg-card` or `bg-background`.
 - **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.
 - **Typography**: Micro-typography below 11px and heavy `font-black` weights have been replaced by standard Tailwind weights (`font-medium`, `font-semibold`, `font-bold`) and sizes (`text-xs`, `text-sm`).
+
+### 7.2 Dashboard Hero Pattern
+Implements a priority "Hero Activity" section for events starting within 24 hours. The pattern uses a high-context activity card (Turn or Match) following the standard `rounded-xl` and solid `bg-card` layout, preceded by a functional `Activity` icon and label to reduce "Time to Action".
+
+### 7.3 Stats Grid Evolution
+Dashboard stats are standardized into a hierarchical grid:
+- Top row: Critical status (`Ranking`, `Level`) in a `grid-cols-2`.
+- Bottom row: Activity metrics (`Matches`, `Wins`, `Reputation`) in a `grid-cols-3` with `text-xs` labels.
