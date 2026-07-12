@@ -73,6 +73,7 @@ export interface MatchResultCompactProps {
   matchDate?: Date | string;
   detailUrl?: string;
   viewerId?: string;
+  showDetailLink?: boolean;
 }
 
 function parseScoreSets(score?: string | null): Array<[number, number]> {
@@ -100,6 +101,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   matchDate,
   detailUrl,
   viewerId: propViewerId,
+  showDetailLink = true,
 }: MatchResultCompactProps) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -266,10 +268,11 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   className="h-8 w-8 rounded-lg text-primary hover:bg-primary/10"
                 />
               )}
-              {matchDetailUrl ? (
+              {showDetailLink && matchDetailUrl ? (
                 <Link
                   href={matchDetailUrl}
                   className="flex items-center gap-0.5 text-xs font-semibold text-primary"
+                  aria-label={`Ver detalle del partido del ${formattedDate || ""}`}
                 >
                   Detalle
                   <ChevronRight className="h-3 w-3" />

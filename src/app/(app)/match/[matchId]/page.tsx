@@ -271,7 +271,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
       {isClosed ? (
         <div className="space-y-6">
           <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-tight mb-6">
+            <span className="text-xs font-semibold text-muted-foreground tracking-tight mb-6">
               Resultado Final
             </span>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4">
@@ -309,6 +309,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
             matchDate={match.createdAt}
             detailUrl={`/match/${match.id}`}
             viewerId={viewerId}
+            showDetailLink={false}
           />
 
           {isPendingConfirmation && (
@@ -371,7 +372,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           </span>
                           <span
                             className={cn(
-                              "text-xs font-semibold uppercase tracking-tight",
+                              "text-xs font-semibold tracking-tight",
                               isConfirmed
                                 ? "text-primary"
                                 : "text-muted-foreground/60",

@@ -218,7 +218,7 @@ export default function MatchResultPage({
                                     key={p.id}
                                     name={p.name}
                                     image={p.image}
-                                    className="h-8 w-8 border-2 border-background"
+                                    className="h-8 w-8 border-2 border-card"
                                   />
                                 ))}
                               </div>
@@ -236,7 +236,14 @@ export default function MatchResultPage({
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-4 gap-2">
+                          <div
+                            className="grid grid-cols-4 gap-2"
+                            role="radiogroup"
+                            aria-labelledby={`team-${team.id}-label`}
+                          >
+                            <span id={`team-${team.id}-label`} className="sr-only">
+                              Puntaje para {team.label}
+                            </span>
                             {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
                               const isSelected =
                                 (scores[setIndex]?.[teamIndex] ?? 0) === num;
@@ -244,6 +251,9 @@ export default function MatchResultPage({
                                 <button
                                   key={num}
                                   type="button"
+                                  role="radio"
+                                  aria-checked={isSelected}
+                                  aria-label={`${num} juegos`}
                                   onClick={() => {
                                     setScores((prev) => {
                                       const newScores = prev.map((s) => [...s]);
