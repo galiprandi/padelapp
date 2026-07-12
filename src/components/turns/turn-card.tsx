@@ -9,6 +9,7 @@ import { levelOptions } from "@/lib/mock-data";
 import { joinTurnAction } from "@/app/(app)/turnos/actions";
 import { ShareButton } from "@/components/share/share-button";
 import { createMagicLink } from "@/lib/magic-link";
+import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 
 interface TurnCardProps {
   turn: {
@@ -29,18 +30,10 @@ export function TurnCard({
   turn,
   variant = "default",
   isJoined,
-  isCreator,
 }: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const dateObj = new Date(turn.date);
-
-  const day = dateObj.getDate();
-  const month = dateObj.toLocaleDateString("es-ES", { month: "short" });
-  const timeStr = dateObj.toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
   const isRecommended = variant === "recommended";
   const levelLabel =
@@ -76,10 +69,10 @@ export function TurnCard({
         {/* Date */}
         <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-2 min-w-[52px]">
           <span className="text-xs font-semibold text-muted-foreground capitalize leading-none">
-            {month}
+            <LocalMonth date={turn.date} />
           </span>
           <span className="text-xl font-bold text-foreground leading-none mt-1">
-            {day}
+            <LocalDay date={turn.date} />
           </span>
         </div>
 
@@ -104,7 +97,7 @@ export function TurnCard({
           <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              {timeStr}
+              <LocalTime date={turn.date} />
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
@@ -125,7 +118,6 @@ export function TurnCard({
             iconOnly
             className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted"
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
             }}
           />

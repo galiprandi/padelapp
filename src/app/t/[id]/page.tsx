@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { levelOptions } from "@/lib/mock-data";
+import { LocalDate, LocalTime } from "@/components/ui/local-date";
+import { ShareButton } from "@/components/share/share-button";
+import { createMagicLink } from "@/lib/magic-link";
 import {
   Calendar,
   Clock,
@@ -47,7 +50,8 @@ export async function generateMetadata({
 
   const turn = result.turn;
   const title = `Turno en ${turn.club} - ${brandWithEmoji}`;
-  const description = `Unite al turno en ${turn.club} el ${new Date(turn.date).toLocaleDateString("es-ES")}.`;
+  // Keep server-side string description format. To avoid server rendering errors, we use America/Argentina/Buenos_Aires or simple es-ES.
+  const description = `Unite al turno en ${turn.club} el ${new Date(turn.date).toLocaleDateString("es-ES", { timeZone: "America/Argentina/Buenos_Aires" })}.`;
 
   return {
     title,
@@ -95,17 +99,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
     levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
       ?.label ?? turn.suggestedLevel;
 
-  const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-
-  const timeStr = new Date(turn.date).toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   return (
     <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
       <div className="flex flex-col gap-4">
@@ -126,7 +119,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted border border-border text-xs font-bold text-foreground">
             <Calendar className="h-3 w-3 text-primary" />
-            {dateStr}
+            <LocalDate date={turn.date} />
           </div>
         </div>
       </div>
@@ -143,7 +136,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <Clock className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xl font-bold">{timeStr}</p>
+              <p className="text-xl font-bold">
+                <LocalTime date={turn.date} />
+              </p>
               <p className="text-xs font-bold text-muted-foreground mt-0.5">
                 {turn.duration} min
               </p>
@@ -250,14 +245,23 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
         <div className="max-w-md mx-auto">
           {!viewerId ? (
-            <Button
-              asChild
-              className="w-full h-12 rounded-lg text-base font-bold"
-            >
-              <Link href={`/login?callbackUrl=/t/${id}`}>
-                Iniciá sesión para anotarte
-              </Link>
-            </Button>
+            <div className="flex flex-col gap-3">
+              <Button
+                asChild
+                className="w-full h-12 rounded-lg text-base font-bold"
+              >
+                <Link href={`/login?callbackUrl=/t/${id}`}>
+                  Iniciá sesión para anotarte
+                </Link>
+              </Button>
+              <ShareButton
+                title="Sumate al Turno"
+                text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                url={createMagicLink({ resource: "turn", identifier: id }).url}
+                variant="outline"
+                className="w-full h-12 rounded-lg text-base font-bold"
+              />
+            </div>
           ) : isFull ? (
             <div className="flex flex-col gap-3">
               {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
@@ -286,6 +290,15 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   ? "Turno finalizado"
                   : "Turno completo"}
               </Button>
+              {turn.status !== "COMPLETED" && (
+                <ShareButton
+                  title="Sumate al Turno"
+                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  url={createMagicLink({ resource: "turn", identifier: id }).url}
+                  variant="outline"
+                  className="w-full h-12 rounded-lg text-base font-bold text-primary border-primary/20 hover:bg-primary/5"
+                />
+              )}
               {isJoined && turn.status !== "COMPLETED" && (
                 <LeaveTurnForm turnId={id} />
               )}
@@ -295,6 +308,14 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <div className="w-full h-12 rounded-lg flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold">
                 ¡Ya estás anotado!
               </div>
+              {turn.status !== "COMPLETED" && (
+                <ShareButton
+                  title="Sumate al Turno"
+                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  url={createMagicLink({ resource: "turn", identifier: id }).url}
+                  className="w-full h-12 rounded-lg text-base font-bold"
+                />
+              )}
               {viewerId === turn.creatorId && (
                 <div className="flex gap-2">
                   <Button
@@ -329,7 +350,21 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   <CancelTurnForm turnId={id} />
                 </div>
               )}
-              <JoinTurnForm turnId={id} />
+              <div className="flex gap-2 w-full">
+                <div className="flex-1">
+                  <JoinTurnForm turnId={id} />
+                </div>
+                {turn.status !== "COMPLETED" && (
+                  <ShareButton
+                    title="Sumate al Turno"
+                    text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                    url={createMagicLink({ resource: "turn", identifier: id }).url}
+                    variant="outline"
+                    iconOnly
+                    className="h-12 w-12 rounded-lg text-primary border-primary/20 hover:bg-primary/5 shrink-0"
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -410,7 +445,7 @@ function JoinTurnForm({ turnId }: { turnId: string }) {
   }
 
   return (
-    <form action={handleJoin}>
+    <form action={handleJoin} className="w-full">
       <Button
         type="submit"
         className="w-full h-12 rounded-lg text-base font-bold"
