@@ -8,7 +8,6 @@ import {
 } from "@/app/(app)/turnos/actions";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { levelOptions } from "@/lib/mock-data";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
@@ -23,9 +22,10 @@ import {
   Play,
   Users,
   ChevronRight,
-  Zap,
+  ChevronLeft,
   Edit3,
   Trash2,
+  MapPin,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -50,7 +50,6 @@ export async function generateMetadata({
 
   const turn = result.turn;
   const title = `Turno en ${turn.club} - ${brandWithEmoji}`;
-  // Keep server-side string description format. To avoid server rendering errors, we use America/Argentina/Buenos_Aires or simple es-ES.
   const description = `Unite al turno en ${turn.club} el ${new Date(turn.date).toLocaleDateString("es-ES", { timeZone: "America/Argentina/Buenos_Aires" })}.`;
 
   return {
@@ -79,9 +78,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         <div className="flex flex-col gap-4">
           <Link
             href={viewerId ? "/me" : "/"}
-            className="text-sm font-semibold text-primary hover:underline"
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
           >
-            Volver
+            <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-foreground">Turno cancelado</h1>
@@ -100,98 +99,83 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       ?.label ?? turn.suggestedLevel;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
-      <div className="flex flex-col gap-4">
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+      <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
-          className="text-sm font-semibold text-primary hover:underline"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
         >
-          Volver
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">{turn.club}</h1>
-          <p className="text-sm text-muted-foreground">Detalle del Turno</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary">
-            <Zap className="h-3 w-3 fill-current" />
-            Turno Abierto
-          </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted border border-border text-xs font-bold text-foreground">
-            <Calendar className="h-3 w-3 text-primary" />
-            <LocalDate date={turn.date} />
-          </div>
+          <h1 className="text-xl font-bold text-foreground">Detalle del Turno</h1>
+          <p className="text-sm text-muted-foreground">
+            {isFull ? "Turno completo" : "¡Sumate a este partido!"}
+          </p>
         </div>
       </div>
 
-      <Card className="rounded-xl border-border bg-card overflow-hidden">
-        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
-          <CardTitle className="text-xs font-bold text-muted-foreground">
-            Especificaciones
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
-          <div className="bg-card p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Clock className="h-5 w-5" />
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="bg-muted/30 border-b border-border px-4 py-3">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Información del turno
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 gap-px bg-border">
+          <div className="bg-card p-4 flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              <span className="text-xs font-semibold">Horario</span>
             </div>
-            <div>
-              <p className="text-xl font-bold">
-                <LocalTime date={turn.date} />
-              </p>
-              <p className="text-xs font-bold text-muted-foreground mt-0.5">
-                {turn.duration} min
-              </p>
-            </div>
+            <p className="text-lg font-bold">
+              <LocalTime date={turn.date} />
+            </p>
           </div>
 
-          <div className="bg-card p-6 flex flex-col items-center text-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Trophy className="h-5 w-5" />
+          <div className="bg-card p-4 flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Trophy className="h-3.5 w-3.5" />
+              <span className="text-xs font-semibold">Nivel sugerido</span>
             </div>
-            <div>
-              <p className="text-xl font-bold">
-                {suggestedLevelLabel}
-              </p>
-              <p className="text-xs font-bold text-muted-foreground mt-0.5">
-                Nivel
-              </p>
-            </div>
+            <p className="text-lg font-bold">{suggestedLevelLabel}</p>
           </div>
 
-          <div className="col-span-2 bg-card p-6 flex items-center justify-center gap-4 border-t border-border">
+          <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
-              <Users className="h-5 w-5" />
+              <MapPin className="h-5 w-5" />
             </div>
-            <div className="text-left">
-              <p className="text-xl font-bold">
-                {turn.players.length} / {turn.maxPlayers}
-              </p>
-              <p className="text-xs font-bold text-muted-foreground mt-0.5">
-                Jugadores confirmados
+            <div className="min-w-0">
+              <p className="text-sm font-bold truncate">{turn.club}</p>
+              <p className="text-xs text-muted-foreground">
+                <LocalDate date={turn.date} />
               </p>
             </div>
           </div>
-        </CardContent>
+        </div>
+
         {turn.notes && (
-          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic">
-            <span className="block text-xs font-bold not-italic mb-1">
+          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic leading-relaxed">
+            <span className="block text-xs font-bold not-italic mb-1 text-foreground">
               Notas del organizador
             </span>
-            "{turn.notes}"
+            &ldquo;{turn.notes}&rdquo;
           </div>
         )}
-      </Card>
+      </div>
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
             Lista de jugadores
           </h2>
-          <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
             {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
+
         <div className="grid gap-2">
           {turn.players.map((p) => (
             <Link
@@ -202,13 +186,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               <PlayerAvatar
                 name={p.user.alias ?? p.user.displayName}
                 image={p.user.image ?? undefined}
-                className="h-10 w-10"
+                size={40}
               />
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
                   {p.user.alias ?? p.user.displayName}
                 </p>
-                <p className="mt-0.5 text-xs font-bold text-muted-foreground">
+                <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
                   Nivel {p.user.level}
                 </p>
               </div>
@@ -226,14 +210,14 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             (_, i) => (
               <div
                 key={`empty-${i}`}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
+                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-muted-foreground"
               >
                 <div className="h-10 w-10 rounded-lg bg-muted border border-dashed border-border flex items-center justify-center text-xl">
                   🎾
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs font-bold italic opacity-60">
-                    Lugar reservado
+                  <p className="text-xs font-semibold italic opacity-60">
+                    Cupo disponible
                   </p>
                 </div>
               </div>
@@ -296,7 +280,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
                   url={createMagicLink({ resource: "turn", identifier: id }).url}
                   variant="outline"
-                  className="w-full h-12 rounded-lg text-base font-bold text-primary border-primary/20 hover:bg-primary/5"
+                  className="w-full h-12 rounded-lg text-base font-bold"
                 />
               )}
               {isJoined && turn.status !== "COMPLETED" && (
@@ -305,7 +289,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </div>
           ) : isJoined ? (
             <div className="flex flex-col gap-3">
-              <div className="w-full h-12 rounded-lg flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold">
+              <div className="w-full h-12 rounded-lg flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold shadow-sm">
                 ¡Ya estás anotado!
               </div>
               {turn.status !== "COMPLETED" && (
@@ -361,7 +345,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                     url={createMagicLink({ resource: "turn", identifier: id }).url}
                     variant="outline"
                     iconOnly
-                    className="h-12 w-12 rounded-lg text-primary border-primary/20 hover:bg-primary/5 shrink-0"
+                    className="h-12 w-12 rounded-lg shrink-0"
                   />
                 )}
               </div>
