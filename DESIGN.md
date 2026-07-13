@@ -318,3 +318,4 @@ All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch
 - **Elimination of Glassmorphism**: Semi-transparent backgrounds (`bg-card/40`, `bg-background/50`) and `backdrop-blur-*` have been replaced by solid `bg-card` or `bg-background`.
 - **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.
 - **Typography**: Micro-typography below 11px, `uppercase` transforms, non-standard `tracking-*`, and heavy `font-black` weights have been replaced by standard Tailwind weights (`font-medium`, `font-semibold`, `font-bold`) and sizes (`text-xs`, `text-sm`).
+- **Semantic Invitation Pages**: Invitation routes (`/t/[id]`, `/m/[matchId]`) are refactored to use semantic HTML and solid backgrounds, ensuring maximum mobile performance and clarity for guest users.

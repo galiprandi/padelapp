@@ -1,19 +1,45 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlayerAvatar } from "@/components/players/player-avatar";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import {
   Calendar,
   Clock,
   Trophy,
+  MapPin,
   Users,
   CheckCircle2,
-  MapPin,
+  ChevronLeft,
 } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { PlayerAvatar } from "@/components/players/player-avatar";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import appSettings from "@/config/app-settings.json";
+
+interface InvitationPageProps {
+  params: Promise<{ matchId: string }>;
+}
+
+const brandWithEmoji = `🎾 ${appSettings.shortName}`;
+
+export async function generateMetadata({
+  params,
+}: InvitationPageProps): Promise<Metadata> {
+  const { matchId } = await params;
+  const match = await prisma.match.findUnique({
+    where: { id: matchId },
+  });
+
+  if (!match) {
+    return { title: "Partido no encontrado" };
+  }
+
+  return {
+    title: `Invitación a Partido - ${brandWithEmoji}`,
+    description: `Sumate al partido en ${match.club || "el club"} el ${new Date(match.date).toLocaleDateString("es-AR")}.`,
+  };
+}
 
 const MATCH_STATUS = {
   PENDING: "PENDING",
@@ -24,21 +50,18 @@ const MATCH_STATUS = {
 
 type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
 
-interface InvitationPageProps {
-  params: Promise<{ matchId: string }>;
-}
-
-function formatStatus(status: MatchStatus): string {
+function formatStatus(status: string) {
   switch (status) {
+    case MATCH_STATUS.PENDING:
+      return "Pendiente";
     case MATCH_STATUS.CONFIRMED:
       return "Confirmado";
     case MATCH_STATUS.DISPUTED:
       return "En disputa";
     case MATCH_STATUS.CANCELLED:
       return "Cancelado";
-    case MATCH_STATUS.PENDING:
     default:
-      return "Pendiente";
+      return status;
   }
 }
 
@@ -95,13 +118,13 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   });
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10">
-      <div className="flex flex-col gap-4">
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+      <div className="flex items-center gap-4">
         <Link
           href={session?.user ? "/me" : "/"}
-          className="text-sm font-semibold text-primary hover:underline"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
         >
-          Volver
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">
@@ -109,22 +132,20 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
           </h1>
           <p className="text-sm text-muted-foreground">Invitación de Partido</p>
         </div>
-        <div className="flex items-center gap-2 text-sm font-semibold text-foreground bg-muted/50 w-fit px-3 py-1.5 rounded-lg border border-border">
-          <Calendar className="h-4 w-4 text-primary" />
-          {dateStr}
-        </div>
       </div>
 
-      <Card className="rounded-xl border-border bg-card overflow-hidden">
-        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
-          <CardTitle className="text-sm font-bold text-foreground">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="bg-muted/30 border-b border-border px-4 py-3">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
             Información del encuentro
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 gap-px bg-border">
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Trophy className="h-4 w-4" />
+              <Trophy className="h-3.5 w-3.5" />
               <span className="text-xs font-semibold">Modalidad</span>
             </div>
             <p className="text-lg font-bold">{match.sets} sets</p>
@@ -132,7 +153,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
 
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-3.5 w-3.5" />
               <span className="text-xs font-semibold">Estado</span>
             </div>
             <p className="text-lg font-bold">{formatStatus(match.status)}</p>
@@ -147,28 +168,31 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                 {match.club || "Club por definir"}
               </p>
               <p className="text-xs text-muted-foreground">
-                {match.courtNumber
-                  ? `Cancha ${match.courtNumber}`
-                  : "Sede del encuentro"}
+                {dateStr}
+                {match.courtNumber ? ` • Cancha ${match.courtNumber}` : ""}
               </p>
             </div>
           </div>
-        </CardContent>
+        </div>
+
         {match.notes && (
-          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic">
-            <span className="block text-xs font-bold not-italic mb-1">
+          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic leading-relaxed">
+            <span className="block text-xs font-bold not-italic mb-1 text-foreground">
               Notas del organizador
             </span>
-            "{match.notes}"
+            &ldquo;{match.notes}&rdquo;
           </div>
         )}
-      </Card>
+      </div>
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground">Jugadores convocados</h2>
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            Jugadores convocados
+          </h2>
         </div>
+
         <div className="grid gap-6">
           {(["A", "B"] as const).map((teamKey) => {
             const teamPlayers = teamGroups[teamKey];
@@ -220,11 +244,11 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                           <PlayerAvatar
                             name={name}
                             image={player.user?.image ?? undefined}
-                            className="h-10 w-10"
+                            size={40}
                           />
                           {isConfirmed && (
-                            <div className="absolute -right-1 -bottom-1 rounded-full bg-emerald-500 p-0.5 border-2 border-background">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-white" />
+                            <div className="absolute -right-1 -bottom-1 rounded-full bg-emerald-500 p-0.5 border-2 border-card">
+                              <CheckCircle2 className="h-3 w-3 text-white" />
                             </div>
                           )}
                         </div>
@@ -244,7 +268,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                               {isConfirmed ? "Confirmado" : "Pendiente"}
                             </p>
                             {player.user?.level && (
-                              <span className="text-xs font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded border border-primary/20">
+                              <span className="rounded-md bg-primary/10 px-1.5 py-0.5 text-xs font-bold text-primary border border-primary/20">
                                 Nivel {player.user.level}
                               </span>
                             )}
@@ -265,36 +289,38 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         </div>
       </section>
 
-      <div className="flex flex-col gap-3 pt-6 border-t border-border">
-        <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
-          <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
-        </Button>
-
-        {!session?.user ? (
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full h-10 rounded-lg text-sm text-muted-foreground"
-          >
-            <Link
-              href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}
-            >
-              Iniciar sesión con Google
-            </Link>
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+        <div className="max-w-md mx-auto flex flex-col gap-3">
+          <Button asChild className="w-full h-12 rounded-lg text-base font-bold shadow-sm">
+            <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
           </Button>
-        ) : !isParticipant ? (
-          <div className="rounded-xl p-4 bg-muted/50 border border-border text-center">
-            <p className="text-xs text-muted-foreground">
-              Para unirte, pedile al organizador tu enlace de cupo directo
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-xl p-4 bg-primary/5 border border-primary/20 text-center">
-            <p className="text-xs font-bold text-primary">
-              ¡Ya formás parte de este partido!
-            </p>
-          </div>
-        )}
+
+          {!session?.user ? (
+            <Button
+              asChild
+              variant="ghost"
+              className="w-full h-10 rounded-lg text-sm font-semibold text-muted-foreground"
+            >
+              <Link
+                href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}
+              >
+                Iniciar sesión con Google
+              </Link>
+            </Button>
+          ) : !isParticipant ? (
+            <div className="rounded-xl p-3 bg-muted/50 border border-border text-center">
+              <p className="text-xs font-medium text-muted-foreground">
+                Para unirte, pedile al organizador tu enlace de cupo directo
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl p-3 bg-primary/5 border border-primary/20 text-center">
+              <p className="text-xs font-bold text-primary">
+                ¡Ya formás parte de este partido!
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );

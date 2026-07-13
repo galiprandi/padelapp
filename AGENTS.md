@@ -61,6 +61,7 @@ Context and responsibilities for automated agents or contributors working on **P
 - `PageHeader` component removed; all views use semantic HTML for headers.
 - Dashboard and main list views (`/me`, `/turnos`, `/match`) refined for UX consistency and accessibility (aria-labels, color standards for W/L).
 - **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) and expanded stats summary (Level, Reputation) to maximize user "Time to Value".
+- **Semantic Invitations Refactor**: Migrated `/t/[id]` and `/m/[matchId]` to semantic HTML structures, removing complex UI wrappers to improve mobile rendering and focus on clear conversion actions.
 
 ### Architecture
 - **Prisma + PostgreSQL**: single source of truth.
