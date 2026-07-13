@@ -10,6 +10,7 @@ import { joinTurnAction } from "@/app/(app)/turnos/actions";
 import { ShareButton } from "@/components/share/share-button";
 import { createMagicLink } from "@/lib/magic-link";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
+import { Badge } from "@/components/ui/badge";
 
 interface TurnCardProps {
   turn: {
@@ -61,7 +62,7 @@ export function TurnCard({
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50",
+          "flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
           isRecommended && "border-primary bg-primary/5",
           isPending && "opacity-70 pointer-events-none",
         )}
@@ -83,14 +84,10 @@ export function TurnCard({
               {turn.club}
             </p>
             {isTodayDate && (
-              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
-                Hoy
-              </span>
+              <Badge variant="success">Hoy</Badge>
             )}
             {isTomorrowDate && (
-              <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-bold text-muted-foreground">
-                Mañana
-              </span>
+              <Badge variant="default">Mañana</Badge>
             )}
           </div>
 
@@ -135,13 +132,9 @@ export function TurnCard({
               )}
             </button>
           ) : isJoined ? (
-            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-              Inscripto
-            </span>
+            <Badge variant="primary">Inscripto</Badge>
           ) : turn.status === "FULL" ? (
-            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
-              Completo
-            </span>
+            <Badge variant="default">Completo</Badge>
           ) : null}
         </div>
       </div>

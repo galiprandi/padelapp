@@ -118,7 +118,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Greeting */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <PlayerAvatar
           name={displayName}
           image={user?.image ?? undefined}
@@ -136,52 +136,48 @@ export default async function DashboardPage() {
 
       {/* Stats row */}
       {user && (
-        <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-2 gap-3">
-            <Link
-              href="/ranking"
-              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-            >
-              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
-              <span className="text-xl font-bold text-foreground">
-                #{user.rankingPosition ?? "-"}
-              </span>
-            </Link>
-            <Link
-              href="/me/profile"
-              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-            >
-              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Nivel</span>
-              <span className="text-xl font-bold text-foreground">
-                {user.level}
-              </span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <Link
-              href="/match"
-              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-            >
-              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
-              <span className="text-lg font-bold text-foreground">
-                {user.matchesPlayed}
-              </span>
-            </Link>
-            <Link
-              href="/ranking"
-              className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-            >
-              <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
-              <span className="text-lg font-bold text-primary">{user.wins}</span>
-            </Link>
-            <div
-              className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3"
-            >
-              <span className="text-xs font-semibold text-muted-foreground">Reputación</span>
-              <span className="text-lg font-bold text-foreground">
-                {Math.round((user.attendanceScore ?? 1) * 100)}%
-              </span>
-            </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          <Link
+            href="/ranking"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+          >
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
+            <span className="text-xl font-bold text-foreground">
+              #{user.rankingPosition ?? "-"}
+            </span>
+          </Link>
+          <Link
+            href="/me/profile"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+          >
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Nivel</span>
+            <span className="text-xl font-bold text-foreground">
+              {user.level}
+            </span>
+          </Link>
+          <Link
+            href="/match"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+          >
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
+            <span className="text-xl font-bold text-foreground">
+              {user.matchesPlayed}
+            </span>
+          </Link>
+          <Link
+            href="/ranking"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+          >
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
+            <span className="text-xl font-bold text-primary">{user.wins}</span>
+          </Link>
+          <div
+            className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4"
+          >
+            <span className="text-xs font-semibold text-muted-foreground">Reputación</span>
+            <span className="text-xl font-bold text-foreground">
+              {Math.round((user.attendanceScore ?? 1) * 100)}%
+            </span>
           </div>
         </div>
       )}
@@ -190,8 +186,8 @@ export default async function DashboardPage() {
 
       {/* Hero Activity */}
       {heroActivity && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
+        <section className="space-y-3 rounded-xl border border-primary/20 bg-primary/[0.02] p-4">
+          <div className="flex items-center gap-3">
             <Activity className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-bold text-foreground">Próxima actividad</h2>
           </div>
@@ -267,12 +263,11 @@ export default async function DashboardPage() {
             Ver todos <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {remainingAgendaItems.length > 0 ? (
             remainingAgendaItems.map((item) => {
               return item.type === "turn" ? (
-                <div key={item.id} className="relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/20 rounded-l-xl z-10" />
+                <div key={item.id} className="border-l-4 border-l-blue-500/40 rounded-r-xl overflow-hidden">
                   <TurnCard
                     turn={item.data}
                     isJoined={item.data.players.some(
@@ -282,8 +277,7 @@ export default async function DashboardPage() {
                   />
                 </div>
               ) : (
-                <div key={item.id} className="relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 rounded-l-xl z-10" />
+                <div key={item.id} className="border-l-4 border-l-primary/40 rounded-r-xl overflow-hidden">
                   <MatchResultCompact
                     match={item.data as MatchResultCompactMatch}
                     detailUrl={`/match/${item.id}`}

@@ -210,9 +210,11 @@ export default function ComponentCatalogPage() {
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold">Badges</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="default" className="rounded-md px-2 py-0.5 text-xs font-semibold">Default</Badge>
-                    <Badge variant="success" className="rounded-md px-2 py-0.5 text-xs font-semibold">Success</Badge>
-                    <Badge variant="outline" className="rounded-md px-2 py-0.5 text-xs font-semibold">Outline</Badge>
+                    <Badge variant="default">Neutral (Default)</Badge>
+                    <Badge variant="primary">Primary</Badge>
+                    <Badge variant="success">Success</Badge>
+                    <Badge variant="warning">Warning</Badge>
+                    <Badge variant="outline">Outline</Badge>
                   </div>
                 </div>
               </div>
