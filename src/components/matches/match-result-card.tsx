@@ -9,6 +9,8 @@ import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Trophy, ChevronRight, Share2, Check, Loader2 } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
+import { Badge, type badgeVariants } from "@/components/ui/badge";
+import { VariantProps } from "class-variance-authority";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
 
@@ -185,17 +187,15 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     match.score &&
     match.players.some((p) => p.user?.id === viewerId && !p.resultConfirmed);
 
-  const statusClassName = (() => {
-    if (needsConfirmation) {
-      return "bg-primary text-primary-foreground";
-    }
+  const statusVariant = ((): VariantProps<typeof badgeVariants>["variant"] => {
+    if (needsConfirmation) return "primary";
     switch (statusLabel.toUpperCase()) {
       case "CONFIRMED":
-        return "bg-emerald-500/10 text-emerald-500";
+        return "success";
       case "DISPUTED":
-        return "bg-amber-500/10 text-amber-500";
+        return "warning";
       default:
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   })();
 
@@ -218,12 +218,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
         formattedDate || matchDetailUrl ? (
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span
-                className={cn(
-                  "rounded-md px-2 py-0.5 text-xs font-semibold",
-                  statusClassName,
-                )}
-              >
+              <Badge variant={statusVariant}>
                 {needsConfirmation
                   ? "Confirmar"
                   : statusLabel === "PENDING"
@@ -233,7 +228,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                       : statusLabel === "DISPUTED"
                         ? "Disputa"
                         : statusLabel}
-              </span>
+              </Badge>
               <span className="text-xs text-muted-foreground">
                 {formattedDate ?? "—"}
               </span>
