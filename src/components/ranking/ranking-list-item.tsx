@@ -43,8 +43,8 @@ export function RankingListItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-xl border p-3",
-        isViewer ? "border-primary/30 bg-primary/5" : "border-border bg-card",
+        "flex items-center gap-3 rounded-xl border p-3 transition-colors",
+        isViewer ? "border-primary/30 bg-primary/5" : "border-border bg-card hover:bg-muted/50",
       )}
     >
       <div
@@ -60,33 +60,33 @@ export function RankingListItem({
 
       <Link
         href={`/p/${player.id}`}
-        className="flex items-center gap-2 flex-1 min-w-0"
+        className="flex items-center gap-3 flex-1 min-w-0"
       >
         <PlayerAvatar
           name={player.alias ?? player.displayName ?? "Player"}
           image={player.image ?? undefined}
-          size={32}
+          size={36}
           className="rounded-lg"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <p
               className={cn(
-                "text-sm font-semibold truncate",
+                "text-sm font-bold truncate",
                 isViewer ? "text-primary" : "text-foreground",
               )}
             >
               {player.alias ?? player.displayName}
             </p>
             {player.attendanceScore >= 0.9 && (
-              <ShieldCheck className="h-3 w-3 text-primary" />
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
             )}
           </div>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               Nivel {player.level}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground/80">
               {player.wins}V-{player.losses}D
             </span>
             {recentForm.length > 0 && (
