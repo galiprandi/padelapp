@@ -17,6 +17,8 @@ import {
 } from "@/components/matches/match-result-card";
 import { RankingSearch } from "@/components/ranking/ranking-search";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
+import { RankingPodium } from "@/components/ranking/ranking-podium";
+import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { ShareButton } from "@/components/share/share-button";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { EmptyState } from "@/components/empty-state";
@@ -271,11 +273,42 @@ export default function ComponentCatalogPage() {
 
             <section id="ranking" className="space-y-6">
               <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🏆 Ranking</h2>
-              <div className="p-6 border border-border rounded-xl bg-card space-y-6">
-                <Suspense fallback={<div className="h-10 w-full bg-muted animate-pulse rounded-lg" />}>
-                  <RankingSearch />
-                </Suspense>
-                <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
+              <div className="p-6 border border-border rounded-xl bg-card space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold">Stats del Usuario</h3>
+                  <UserRankingBanner
+                    position={1}
+                    score={1250}
+                    delta={5}
+                    wins={15}
+                    losses={5}
+                    level={5}
+                    attendanceScore={0.95}
+                    matchesPlayed={20}
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold">Podio</h3>
+                  <RankingPodium
+                    topThree={[
+                      { ...SAMPLE_RANKING_PLAYER, id: "1", rankingScore: 1250 },
+                      { ...SAMPLE_RANKING_PLAYER, id: "2", rankingScore: 1100 },
+                      { ...SAMPLE_RANKING_PLAYER, id: "3", rankingScore: 1050 },
+                    ]}
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold">Búsqueda y Lista</h3>
+                  <Suspense fallback={<div className="h-10 w-full bg-muted animate-pulse rounded-lg" />}>
+                    <RankingSearch />
+                  </Suspense>
+                  <div className="space-y-2">
+                    <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
+                    <RankingListItem player={{ ...SAMPLE_RANKING_PLAYER, id: "viewer" }} index={1} viewerId="viewer" />
+                  </div>
+                </div>
               </div>
             </section>
 
