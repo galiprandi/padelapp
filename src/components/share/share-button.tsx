@@ -20,7 +20,7 @@ const DEFAULT_COPY = "Link copiado al portapapeles";
 const DEFAULT_ERROR = "No pudimos compartir el link";
 
 export function ShareButton({
-  url,
+  url: urlProp,
   title,
   text,
   successMessage,
@@ -34,6 +34,22 @@ export function ShareButton({
   const { showToast } = useToast();
   const [isSharing, setIsSharing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [url, setUrl] = useState(urlProp);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const parsed = new URL(urlProp, window.location.origin);
+        if (parsed.origin !== window.location.origin) {
+          parsed.protocol = window.location.protocol;
+          parsed.host = window.location.host;
+          setUrl(parsed.toString());
+        }
+      } catch {
+        setUrl(urlProp);
+      }
+    }
+  }, [urlProp]);
 
   useEffect(() => {
     if (isSuccess) {
