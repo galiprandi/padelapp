@@ -70,6 +70,54 @@ export async function getPendingActions(userId: string) {
     });
 }
 
+export async function getPendingAttendanceActions(userId: string) {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+  const matchesNeedingAttendance = await prisma.match.findMany({
+    where: {
+      creatorId: userId,
+      status: { in: ["PENDING", "CONFIRMED"] },
+      date: { lt: oneHourAgo },
+      players: {
+        some: {
+          userId: { not: null },
+          attendance: null,
+        },
+      },
+    },
+    include: {
+      players: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+        },
+        orderBy: { position: "asc" },
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+    take: 10,
+  });
+
+  return matchesNeedingAttendance.map((match) => ({
+    id: match.id,
+    date: match.date,
+    club: match.club,
+    score: match.score,
+    status: match.status,
+    playersWithoutAttendance: match.players.filter(
+      (p) => p.userId !== null && p.attendance === null,
+    ).length,
+  }));
+}
+
 export async function getHeadToHeadStats(viewerId: string, profileId: string) {
   const sharedMatches = await prisma.match.findMany({
     where: {

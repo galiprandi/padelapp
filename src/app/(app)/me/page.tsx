@@ -11,7 +11,7 @@ import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight, Activity } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
+import { getEnhancedUserMatches, getPendingActions, getPendingAttendanceActions } from "@/lib/match-queries";
 import { getGreeting, cn, getMatchWinner } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -45,6 +45,7 @@ export default async function DashboardPage() {
   const now = new Date();
 
   const pendingActionMatches = await getPendingActions(viewerId);
+  const pendingAttendance = await getPendingAttendanceActions(viewerId);
 
   const upcomingMatches = allPendingMatches
     .filter((m) => new Date(m.date || m.createdAt) >= now)
@@ -248,6 +249,43 @@ export default async function DashboardPage() {
                 />
               );
             })}
+          </div>
+        </section>
+      )}
+
+      {/* Pending attendance marking (creator only) */}
+      {pendingAttendance.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-foreground">
+              Marcar asistencia
+            </h2>
+            <span className="rounded-md bg-amber-500/20 px-1.5 py-0.5 text-xs font-bold text-amber-600">
+              {pendingAttendance.length}
+            </span>
+          </div>
+          <div className="space-y-2">
+            {pendingAttendance.slice(0, 3).map((match) => (
+              <Link
+                key={match.id}
+                href={`/match/${match.id}/result`}
+                className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 transition-colors hover:bg-amber-500/10"
+              >
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="text-sm font-semibold text-foreground truncate">
+                    {match.club || "Partido"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(match.date).toLocaleDateString("es-AR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                    })}{" "}
+                    · {match.playersWithoutAttendance} sin marcar
+                  </span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </Link>
+            ))}
           </div>
         </section>
       )}

@@ -890,7 +890,12 @@ export async function finalizeMatchAction(
           players: {
             updateMany: {
               where: { matchId },
-              data: { resultConfirmed: true },
+              data: {
+                resultConfirmed: true,
+                attendance: "ATTENDED",
+                attendanceBy: session.user.id,
+                attendanceAt: new Date(),
+              },
             },
           },
         },
@@ -1259,6 +1264,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
       teamId: string | null;
       resultConfirmed: boolean;
       joinedAt: Date | null;
+      attendance: string | null;
       user?: {
         id: string;
         displayName: string | null;
@@ -1410,6 +1416,100 @@ export async function joinMatchPlayerAction(
     return {
       status: "error",
       message: "No pudimos unir al jugador. Intentá nuevamente.",
+    };
+  }
+}
+
+export interface AttendanceEntry {
+  matchPlayerId: string;
+  status: "ATTENDED" | "LATE" | "NO_SHOW";
+}
+
+export async function markAttendanceAction(
+  matchId: string,
+  entries: AttendanceEntry[],
+): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para marcar la asistencia.",
+    };
+  }
+
+  if (!matchId || matchId.trim().length === 0) {
+    return { status: "error", message: "Identificador de partido inválido." };
+  }
+
+  if (!entries || entries.length === 0) {
+    return { status: "error", message: "No se enviaron datos de asistencia." };
+  }
+
+  try {
+    const match = await prisma.match.findUnique({
+      where: { id: matchId },
+      include: { players: true },
+    });
+
+    if (!match) {
+      return { status: "error", message: "Partido no encontrado." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede marcar la asistencia.",
+      };
+    }
+
+    // Only allow marking after match date + 1h
+    const oneHourAfterMatch = new Date(match.date.getTime() + 60 * 60 * 1000);
+    if (new Date() < oneHourAfterMatch) {
+      return {
+        status: "error",
+        message: "Podés marcar la asistencia 1 hora después de la hora del partido.",
+      };
+    }
+
+    // Validate all entries belong to this match
+    const validPlayerIds = new Set(match.players.map((p) => p.id));
+    for (const entry of entries) {
+      if (!validPlayerIds.has(entry.matchPlayerId)) {
+        return { status: "error", message: "Jugador no pertenece a este partido." };
+      }
+    }
+
+    const now = new Date();
+
+    await prisma.$transaction(
+      entries.map((entry) =>
+        prisma.matchPlayer.update({
+          where: { id: entry.matchPlayerId },
+          data: {
+            attendance: entry.status,
+            attendanceBy: session.user.id,
+            attendanceAt: now,
+          },
+        }),
+      ),
+    );
+
+    // If match is already CONFIRMED, recalculate ranking with new attendance data
+    if (match.status === MATCH_STATUS.CONFIRMED) {
+      await recalculateRankingAction();
+    }
+
+    revalidatePath(`/match/${matchId}`);
+    revalidatePath("/me");
+    revalidateTag("matches", "default");
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("markAttendanceAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos guardar la asistencia. Intentá nuevamente.",
     };
   }
 }

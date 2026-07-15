@@ -44,6 +44,11 @@ export async function recalculateRankingAction() {
         setsWonBonus: number;
         confirmedMatchesCount: number;
         totalMatchesCount: number;
+        noShowPenalty: number;
+        latePenalty: number;
+        attendedCount: number;
+        noShowCount: number;
+        lateCount: number;
       }
     >();
 
@@ -58,6 +63,11 @@ export async function recalculateRankingAction() {
         setsWonBonus: 0,
         confirmedMatchesCount: 0,
         totalMatchesCount: 0,
+        noShowPenalty: 0,
+        latePenalty: 0,
+        attendedCount: 0,
+        noShowCount: 0,
+        lateCount: 0,
       });
     });
 
@@ -69,11 +79,21 @@ export async function recalculateRankingAction() {
 
       const match = mp.match;
 
-      // Attendance tracking: any match they were part of and has a score/is confirmed
-      // or simply any match they joined.
+      // Attendance tracking
       stats.totalMatchesCount++;
       if (mp.resultConfirmed) {
         stats.confirmedMatchesCount++;
+      }
+
+      // Track attendance status
+      if (mp.attendance === "ATTENDED") {
+        stats.attendedCount++;
+      } else if (mp.attendance === "NO_SHOW") {
+        stats.noShowCount++;
+        stats.noShowPenalty += 25;
+      } else if (mp.attendance === "LATE") {
+        stats.lateCount++;
+        stats.latePenalty += 10;
       }
 
       // Competitive stats only for CONFIRMED matches
@@ -120,6 +140,9 @@ export async function recalculateRankingAction() {
       let score =
         1000 + stats.wins * 15 + stats.streak * 5 + stats.setsWonBonus;
 
+      // Apply no-show and late penalties
+      score -= stats.noShowPenalty + stats.latePenalty;
+
       // Time attenuation based on lastMatchAt
       if (stats.lastMatchAt) {
         const diff = now.getTime() - stats.lastMatchAt.getTime();
@@ -130,10 +153,17 @@ export async function recalculateRankingAction() {
         }
       }
 
+      // Attendance score: based on actual attendance status
+      // (attended + late) / (attended + late + no_show)
+      // Falls back to result confirmation ratio if no attendance data
+      const totalAttendanceTracked =
+        stats.attendedCount + stats.lateCount + stats.noShowCount;
       const attendanceScore =
-        stats.totalMatchesCount > 0
-          ? stats.confirmedMatchesCount / stats.totalMatchesCount
-          : 1.0;
+        totalAttendanceTracked > 0
+          ? (stats.attendedCount + stats.lateCount) / totalAttendanceTracked
+          : stats.totalMatchesCount > 0
+            ? stats.confirmedMatchesCount / stats.totalMatchesCount
+            : 1.0;
 
       return {
         userId,

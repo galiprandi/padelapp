@@ -10,6 +10,7 @@ import { MatchPlayersManager } from "@/components/matches/match-players-manager"
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
 import { FileText, CheckCircle2, Edit3, Trash2 } from "lucide-react";
+import { AttendanceBadge } from "@/components/matches/attendance-badge";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
@@ -416,6 +417,38 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 Partido procesado en el Ranking
               </span>
             </div>
+          )}
+
+          {match.players.some((p) => p.attendance) && (
+            <section className="space-y-3 rounded-xl border border-border bg-card p-4">
+              <h2 className="text-sm font-bold text-foreground">Asistencia</h2>
+              <div className="space-y-2">
+                {match.players
+                  .filter((p) => p.userId)
+                  .sort((a, b) => a.position - b.position)
+                  .map((player) => {
+                    const displayName =
+                      player.displayName ||
+                      player.user?.displayName ||
+                      `Jugador ${player.position + 1}`;
+                    return (
+                      <div
+                        key={player.id}
+                        className="flex items-center justify-between gap-2"
+                      >
+                        <span className="text-sm font-semibold text-foreground truncate">
+                          {displayName}
+                        </span>
+                        <AttendanceBadge
+                          status={
+                            (player.attendance as "ATTENDED" | "LATE" | "NO_SHOW" | null) ?? null
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </section>
           )}
         </div>
       ) : (

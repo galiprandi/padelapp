@@ -115,19 +115,22 @@ model TurnPlayer {
 }
 
 model MatchPlayer {
-  id              String    @id @default(cuid())
+  id              String           @id @default(cuid())
   matchId         String
   userId          String?
   position        Int
-  resultConfirmed Boolean   @default(false)
+  resultConfirmed Boolean           @default(false)
   displayName     String?
   teamId          String?
   joinedAt        DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  match           Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  team            Team?     @relation(fields: [teamId], references: [id])
-  user            User?     @relation(fields: [userId], references: [id])
+  attendance      AttendanceStatus?
+  attendanceBy    String?
+  attendanceAt    DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  match           Match            @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team            Team?            @relation(fields: [teamId], references: [id])
+  user            User?            @relation(fields: [userId], references: [id])
 
   @@unique([matchId, position])
   @@unique([matchId, userId])
@@ -158,4 +161,10 @@ enum MatchStatus {
 enum MatchType {
   FRIENDLY
   LOCAL_TOURNAMENT
+}
+
+enum AttendanceStatus {
+  ATTENDED
+  LATE
+  NO_SHOW
 }

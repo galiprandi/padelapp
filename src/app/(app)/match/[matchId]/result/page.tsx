@@ -3,6 +3,7 @@
 import { Fragment, useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   getMatchByIdAction,
   saveMatchResultAction,
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Trophy } from "lucide-react";
 import { MatchNavigation } from "@/components/matches/match-navigation";
 import { PlayerAvatar } from "@/components/players/player-avatar";
+import { AttendanceMarker } from "@/components/matches/attendance-marker";
 import { useToast } from "@/components/toast/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +24,7 @@ interface MatchPlayer {
   teamId: string | null;
   resultConfirmed: boolean;
   joinedAt: Date | null;
+  attendance: string | null;
   user?: {
     id: string;
     displayName: string | null;
@@ -35,6 +38,7 @@ interface MatchPlayer {
 
 interface MatchData {
   id: string;
+  creatorId: string;
   status: string;
   sets: number;
   matchType: string;
@@ -42,6 +46,7 @@ interface MatchData {
   courtNumber: string | null;
   notes: string | null;
   score: string | null;
+  date: Date;
   createdAt: Date;
   creator?: {
     id: string;
@@ -76,6 +81,7 @@ export default function MatchResultPage({
   const [pending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
+  const { data: session } = useSession();
 
   useEffect(() => {
     params.then(({ matchId }) => {
@@ -173,6 +179,25 @@ export default function MatchResultPage({
   const subtitle = isClosed
     ? `Marcador registrado: ${match.score}`
     : "Ingresá los juegos ganados por cada equipo.";
+
+  const isCreator = session?.user?.id === match.creatorId;
+  const oneHourAfterMatch = new Date(
+    new Date(match.date).getTime() + 60 * 60 * 1000,
+  );
+  const canMarkAttendance =
+    isCreator && new Date() > oneHourAfterMatch;
+
+  const attendancePlayers = match.players
+    .filter((p) => p.userId !== null)
+    .map((p) => ({
+      id: p.id,
+      name:
+        p.displayName ||
+        p.user?.displayName ||
+        `Jugador ${p.position + 1}`,
+      image: p.user?.image ?? undefined,
+      currentStatus: (p.attendance as "ATTENDED" | "LATE" | "NO_SHOW" | null) ?? null,
+    }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -296,6 +321,14 @@ export default function MatchResultPage({
           </Fragment>
         )}
       </div>
+
+      {canMarkAttendance && (
+        <AttendanceMarker
+          matchId={match.id}
+          players={attendancePlayers}
+          onSaved={() => router.refresh()}
+        />
+      )}
     </div>
   );
 }
