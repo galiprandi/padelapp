@@ -161,7 +161,7 @@ export default async function PublicProfilePage({
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            <h2 className="text-2xl font-bold text-foreground">
               {displayName}
             </h2>
             <div className="flex flex-col items-center gap-2">
@@ -218,7 +218,7 @@ export default async function PublicProfilePage({
                       "h-2.5 w-2.5 rounded-full",
                       result === "W"
                         ? "bg-emerald-500"
-                        : "bg-rose-500/30",
+                        : "bg-rose-500",
                     )}
                   />
                 ))

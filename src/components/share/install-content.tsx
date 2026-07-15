@@ -58,8 +58,8 @@ export function InstallContent() {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-card px-2 text-muted-foreground font-semibold">
               O instalá manualmente
             </span>
           </div>
@@ -70,7 +70,7 @@ export function InstallContent() {
         {steps.map((step, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 rounded-xl bg-muted/50 p-4 border border-border"
+            className="flex items-center gap-4 rounded-xl bg-muted p-4 border border-border"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/10">
               {step.icon}
