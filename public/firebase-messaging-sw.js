@@ -20,7 +20,7 @@ self.addEventListener("message", (event) => {
   }
 });
 
-async function initFirebaseMessaging(config: any, vapidKey: string) {
+async function initFirebaseMessaging(config, vapidKey) {
   try {
     // Load Firebase from CDN (compat version for service worker)
     self.importScripts(
@@ -30,25 +30,22 @@ async function initFirebaseMessaging(config: any, vapidKey: string) {
       "https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"
     );
 
-    const app = (self as any).firebase.initializeApp(config);
-    const messaging = (self as any).firebase.messaging(app);
+    const app = self.firebase.initializeApp(config);
+    const messaging = self.firebase.messaging(app);
 
     // Handle background messages
-    messaging.onBackgroundMessage((payload: any) => {
-      const { title, body } = payload.notification || {};
-      const url = payload.data?.url || "/";
+    messaging.onBackgroundMessage(function (payload) {
+      var notification = payload.notification || {};
+      var title = notification.title;
+      var body = notification.body || "";
+      var url = (payload.data && payload.data.url) || "/";
 
-      const notificationOptions: NotificationOptions = {
-        body: body || "",
+      self.registration.showNotification(title || "PadelApp", {
+        body: body,
         icon: "/icon.svg",
         badge: "/icon.svg",
-        data: { url },
-      };
-
-      (self as any).registration.showNotification(
-        title || "PadelApp",
-        notificationOptions
-      );
+        data: { url: url },
+      });
     });
   } catch (error) {
     console.error("Error initializing Firebase Messaging in SW:", error);
@@ -59,22 +56,23 @@ async function initFirebaseMessaging(config: any, vapidKey: string) {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const url = (event.notification as any).data?.url || "/";
+  var url = (event.notification.data && event.notification.data.url) || "/";
 
   event.waitUntil(
-    (self as any).clients.matchAll({
+    self.clients.matchAll({
       type: "window",
       includeUncontrolled: true,
-    }).then((clientList: any[]) => {
+    }).then(function (clientList) {
       // Focus existing window if found
-      for (const client of clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
         if (client.url.includes(url) && "focus" in client) {
           return client.focus();
         }
       }
       // Open new window
-      if ((self as any).clients.openWindow) {
-        return (self as any).clients.openWindow(url);
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url);
       }
     })
   );
