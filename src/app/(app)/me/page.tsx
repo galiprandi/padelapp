@@ -7,10 +7,11 @@ import {
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { TurnCard } from "@/components/turns/turn-card";
+import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { PushPermissionPrompt } from "@/components/pwa/push-permission-prompt";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, ChevronRight, Activity } from "lucide-react";
+import { CalendarDays, Trophy, ChevronRight, Activity, AlertTriangle } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { getEnhancedUserMatches, getPendingActions, getPendingAttendanceActions } from "@/lib/match-queries";
 import { getGreeting, cn, getMatchWinner } from "@/lib/utils";
@@ -190,17 +191,55 @@ export default async function DashboardPage() {
 
       {/* Hero Activity */}
       {heroActivity && (
-        <section className="space-y-3 rounded-xl border border-primary/20 bg-primary/[0.02] p-4">
-          <div className="flex items-center gap-3">
-            <Activity className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-bold text-foreground">Próxima actividad</h2>
+        <section
+          className={cn(
+            "space-y-3 rounded-xl border p-4",
+            heroActivity.type === "turn" &&
+              heroActivity.data.players.length < heroActivity.data.maxPlayers
+              ? "border-amber-500/30 bg-amber-500/[0.02]"
+              : "border-primary/20 bg-primary/[0.02]",
+          )}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {heroActivity.type === "turn" &&
+              heroActivity.data.players.length < heroActivity.data.maxPlayers ? (
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
+              ) : (
+                <Activity className="h-4 w-4 text-primary" />
+              )}
+              <h2 className="text-sm font-bold text-foreground">
+                {heroActivity.type === "turn" &&
+                heroActivity.data.players.length < heroActivity.data.maxPlayers
+                  ? "Turno incompleto"
+                  : "Próxima actividad"}
+              </h2>
+            </div>
+            {heroActivity.type === "turn" &&
+              heroActivity.data.players.length < heroActivity.data.maxPlayers && (
+                <span className="text-xs font-bold text-amber-600">
+                  ¡Faltan {heroActivity.data.maxPlayers - heroActivity.data.players.length}!
+                </span>
+              )}
           </div>
+
           {heroActivity.type === "turn" ? (
-            <TurnCard
-              turn={heroActivity.data}
-              isJoined={true}
-              isCreator={heroActivity.data.creatorId === viewerId}
-            />
+            <div className="flex flex-col gap-3">
+              <TurnCard
+                turn={heroActivity.data}
+                isJoined={true}
+                isCreator={heroActivity.data.creatorId === viewerId}
+              />
+              {heroActivity.data.players.length < heroActivity.data.maxPlayers && (
+                <OpenToNetworkButton
+                  turnId={heroActivity.id}
+                  club={heroActivity.data.club}
+                  variant="default"
+                  label="Salvar turno: Notificar a mi red"
+                  className="h-10 bg-amber-500 hover:bg-amber-600"
+                />
+              )}
+            </div>
           ) : (
             <MatchResultCompact
               match={heroActivity.data as MatchResultCompactMatch}

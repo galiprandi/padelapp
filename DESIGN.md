@@ -311,9 +311,9 @@ The following patterns were explicitly removed from the codebase and must not be
 ## 7. Refinements
 
 ### 7.1 Shared Component Sanitization
-All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) have been refactored to the Minimal Design System.
+All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`, `OpenToNetworkButton`) have been refactored to the Minimal Design System.
 
-- **Standardized Button Radius & Heights**: Buttons use `rounded-lg`. Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions) are `h-8`.
+- **Standardized Button Radius & Heights**: Buttons use `rounded-lg`. Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions, TurnCard actions) are `h-8` or `h-9`.
 - **Tactile Feedback Standard**: Primary and secondary buttons utilize `active:scale-[0.98]` to provide delightful micro-interaction feedback. Purely decorative scale effects remain prohibited.
 - **Elimination of Glassmorphism**: Semi-transparent backgrounds (`bg-card/40`, `bg-background/50`) and `backdrop-blur-*` have been replaced by solid `bg-card` or `bg-background`.
 - **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.
