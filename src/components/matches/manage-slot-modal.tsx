@@ -14,7 +14,7 @@ interface ManageSlotModalProps {
   slot: SlotValue | null;
   placeholderName: string;
   onSave: (value: SlotValue) => void;
-  onShare: (name: string) => void;
+  onShare?: (name: string) => void;
   onRelease?: () => void;
   onSwap?: () => void;
   onClose: () => void;
@@ -109,6 +109,7 @@ export function ManageSlotModal({
   }
 
   async function handleShare() {
+    if (!onShare) return;
     const trimmed = name.trim();
     if (trimmed.length === 0) {
       setError("Ingresá un nombre antes de compartir");
@@ -263,7 +264,7 @@ export function ManageSlotModal({
                 />
                 {isUserSlot && <Check className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />}
               </div>
-              {!isUserSlot && (
+              {!isUserSlot && onShare && (
                 <Button
                   type="button"
                   size="icon"

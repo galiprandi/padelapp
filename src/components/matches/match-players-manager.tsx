@@ -105,7 +105,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
   async function handleShareIntent(nameToShare: string) {
     if (!manageModal.playerId) return;
 
-    const shareUrl = `${window.location.origin}/j/${manageModal.playerId}`;
+    const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/j/${manageModal.playerId}`;
     const shareText = `Sumate al partido como ${nameToShare}`;
 
     if (typeof navigator !== "undefined" && navigator.share) {
