@@ -368,3 +368,76 @@ export async function cancelTurnAction(turnId: string) {
     return { status: "error", message: "Error al cancelar el turno" };
   }
 }
+
+export async function openToNetworkAction(turnId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await prisma.turn.findUnique({
+      where: { id: turnId },
+      include: { players: { select: { userId: true } } },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    // Only enrolled players can open to their network
+    const isEnrolled = turn.players.some((p) => p.userId === session.user.id);
+    if (!isEnrolled) {
+      return {
+        status: "error",
+        message: "Solo los inscriptos pueden abrir el turno a su red",
+      };
+    }
+
+    if (turn.status === "COMPLETED" || turn.status === "CANCELLED") {
+      return { status: "error", message: "Este turno ya no está disponible" };
+    }
+
+    if (turn.players.length >= turn.maxPlayers) {
+      return { status: "error", message: "El turno ya está completo" };
+    }
+
+    const { getTurnNetworkContacts } = await import("@/lib/padel-contacts");
+    const { sendPushToUser } = await import("@/lib/firebase-admin");
+
+    const contacts = await getTurnNetworkContacts(turnId);
+
+    if (contacts.length === 0) {
+      return {
+        status: "error",
+        message: "No hay contactos recientes para notificar",
+      };
+    }
+
+    const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+    const openSlots = turn.maxPlayers - turn.players.length;
+    const organizerName = (await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { alias: true, displayName: true },
+    }))?.alias ?? "Un jugador";
+
+    let sent = 0;
+    for (const contact of contacts) {
+      const success = await sendPushToUser(contact.id, {
+        title: `¡Cupo abierto en ${turn.club}!`,
+        body: `${organizerName} busca jugadores para ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"}. ${turn.club} — ${new Date(turn.date).toLocaleDateString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`,
+        url: turnUrl,
+      });
+      if (success > 0) sent++;
+    }
+
+    return {
+      status: "ok",
+      notifiedCount: sent,
+      totalContacts: contacts.length,
+    };
+  } catch (error) {
+    console.error("Error opening turn to network:", error);
+    return { status: "error", message: "Error al abrir el turno a tu red" };
+  }
+}

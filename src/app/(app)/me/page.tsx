@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { TurnCard } from "@/components/turns/turn-card";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
+import { PushPermissionPrompt } from "@/components/pwa/push-permission-prompt";
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight, Activity } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
@@ -184,6 +185,8 @@ export default async function DashboardPage() {
       )}
 
       <PwaInstallBanner />
+
+      <PushPermissionPrompt />
 
       {/* Hero Activity */}
       {heroActivity && (

@@ -28,6 +28,7 @@ model User {
   accounts        Account[]
   matches         Match[]       @relation("MatchCreator")
   matchPlayers    MatchPlayer[]
+  pushSubscriptions PushSubscription[]
   sessions        Session[]
   turnsCreated    Turn[]        @relation("TurnCreator")
   turnPlayers     TurnPlayer[]
@@ -167,4 +168,15 @@ enum AttendanceStatus {
   ATTENDED
   LATE
   NO_SHOW
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String
+  keys      Json
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint])
 }

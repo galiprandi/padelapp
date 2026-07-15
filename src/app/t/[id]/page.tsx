@@ -31,6 +31,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import appSettings from "@/config/app-settings.json";
 import type { Metadata } from "next";
+import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 
 interface TurnPageProps {
   params: Promise<{ id: string }>;
@@ -224,6 +225,10 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             ),
           )}
         </div>
+
+        {isJoined && !isFull && turn.status === "OPEN" && (
+          <OpenToNetworkButton turnId={id} club={turn.club} />
+        )}
       </section>
 
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
