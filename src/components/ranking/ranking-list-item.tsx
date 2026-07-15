@@ -65,14 +65,14 @@ export function RankingListItem({
         <PlayerAvatar
           name={displayName}
           image={player.image ?? undefined}
-          size={32}
+          size={36}
           className="rounded-lg"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <p
               className={cn(
-                "text-sm font-semibold truncate",
+                "text-sm font-bold truncate",
                 isViewer ? "text-primary" : "text-foreground",
               )}
             >
@@ -86,10 +86,10 @@ export function RankingListItem({
             )}
           </div>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               Nivel {player.level}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground/80">
               {player.wins}V-{player.losses}D
             </span>
             {recentForm.length > 0 && (
