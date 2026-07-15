@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -132,8 +133,10 @@ export async function joinTurnAction(turnId: string) {
       },
     });
 
+    const willBeFull = turn.players.length + 1 >= turn.maxPlayers;
+
     // Update status if full
-    if (turn.players.length + 1 >= turn.maxPlayers) {
+    if (willBeFull) {
       await prisma.turn.update({
         where: { id: turnId },
         data: { status: "FULL" },
@@ -143,6 +146,38 @@ export async function joinTurnAction(turnId: string) {
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
+
+    // Push notifications (non-blocking, best-effort)
+    const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+    const joinerName = await getUserDisplayName(session.user.id);
+    const newPlayerCount = turn.players.length + 1;
+
+    if (willBeFull) {
+      // #3: Turn complete — notify all enrolled players
+      const allUserIds = [
+        ...turn.players.map((p) => p.userId),
+        session.user.id,
+      ];
+      void notifyUsers(allUserIds, {
+        title: `¡Turno completo en ${turn.club}!`,
+        body: `Nos vemos ${new Date(turn.date).toLocaleDateString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}.`,
+        url: turnUrl,
+      });
+    } else {
+      // #4: New player joined — notify existing players + creator (excluding joiner)
+      const recipientIds = [
+        ...new Set([
+          ...turn.players.map((p) => p.userId),
+          turn.creatorId,
+        ]),
+      ].filter((id) => id !== session.user.id);
+      void notifyUsers(recipientIds, {
+        title: `${joinerName} se sumó al turno`,
+        body: `${turn.club} — ${newPlayerCount}/${turn.maxPlayers} jugadores.`,
+        url: turnUrl,
+      });
+    }
+
     return { status: "ok" };
   } catch (error) {
     console.error("Error joining turn:", error);
@@ -159,8 +194,12 @@ export async function leaveTurnAction(turnId: string) {
   try {
     const turn = await prisma.turn.findUnique({
       where: { id: turnId },
-      select: { status: true },
+      include: { players: { select: { userId: true } } },
     });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
 
     await prisma.turnPlayer.delete({
       where: {
@@ -172,7 +211,7 @@ export async function leaveTurnAction(turnId: string) {
     });
 
     // Re-open turn ONLY if it was full
-    if (turn?.status === "FULL") {
+    if (turn.status === "FULL") {
       await prisma.turn.update({
         where: { id: turnId },
         data: { status: "OPEN" },
@@ -182,6 +221,24 @@ export async function leaveTurnAction(turnId: string) {
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
+
+    // #2: Player left — notify remaining players + creator (excluding leaver)
+    const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
+    const leaverName = await getUserDisplayName(session.user.id);
+    const recipientIds = [
+      ...new Set([
+        ...turn.players.map((p) => p.userId),
+        turn.creatorId,
+      ]),
+    ].filter((id) => id !== session.user.id);
+
+    const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+    void notifyUsers(recipientIds, {
+      title: `${leaverName} salió del turno`,
+      body: `Faltan ${remainingSlots} ${remainingSlots === 1 ? "cupo" : "cupos"} en ${turn.club}.`,
+      url: turnUrl,
+    });
+
     return { status: "ok" };
   } catch (error) {
     console.error("Error leaving turn:", error);
@@ -331,7 +388,7 @@ export async function cancelTurnAction(turnId: string) {
   try {
     const turn = await prisma.turn.findUnique({
       where: { id: turnId },
-      select: { creatorId: true, status: true },
+      include: { players: { select: { userId: true } } },
     });
 
     if (!turn) {
@@ -361,6 +418,23 @@ export async function cancelTurnAction(turnId: string) {
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/me");
     revalidateTag("turns", "default");
+
+    // #6: Turn cancelled — notify all enrolled players (excluding creator)
+    const recipientIds = turn.players
+      .map((p) => p.userId)
+      .filter((id) => id !== session.user.id);
+
+    const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+    const dateStr = new Date(turn.date).toLocaleDateString("es-ES", {
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    void notifyUsers(recipientIds, {
+      title: `Turno cancelado en ${turn.club}`,
+      body: `El turno de ${dateStr} fue cancelado por el organizador.`,
+      url: turnUrl,
+    });
 
     return { status: "ok" };
   } catch (error) {

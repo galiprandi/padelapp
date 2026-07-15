@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createMagicLink } from "@/lib/magic-link";
+import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 
 const MIN_SETS = 1;
@@ -624,6 +625,34 @@ export async function submitMatchResultAction(
     }
 
     revalidatePath(`/match/${input.matchId}`);
+
+    // #7: Result submitted — notify opposing team players to confirm
+    const submitter = updatedMatch.players.find(
+      (p) => p.userId === session.user.id,
+    );
+    if (submitter) {
+      const totalPlayers = updatedMatch.players.length;
+      const submitterTeam = teamForPosition(submitter.position, totalPlayers);
+      const opposingUserIds = updatedMatch.players
+        .filter(
+          (p) =>
+            p.userId &&
+            teamForPosition(p.position, totalPlayers) !== submitterTeam,
+        )
+        .map((p) => p.userId!)
+        .filter((id) => id !== session.user.id);
+
+      if (opposingUserIds.length > 0) {
+        const submitterName = await getUserDisplayName(session.user.id);
+        const matchUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/match/${input.matchId}`;
+        const clubName = updatedMatch.club ?? "el partido";
+        void notifyUsers(opposingUserIds, {
+          title: `Resultado cargado por ${submitterName}`,
+          body: `Confirmá el resultado en ${clubName}.`,
+          url: matchUrl,
+        });
+      }
+    }
 
     return { status: "ok" };
   } catch (error) {
@@ -1503,6 +1532,23 @@ export async function markAttendanceAction(
     revalidatePath(`/match/${matchId}`);
     revalidatePath("/me");
     revalidateTag("matches", "default");
+
+    // #8: NO_SHOW marked — notify the marked player
+    const noShowEntries = entries.filter((e) => e.status === "NO_SHOW");
+    if (noShowEntries.length > 0) {
+      const matchUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/match/${matchId}`;
+      const clubName = match.club ?? "el partido";
+      for (const entry of noShowEntries) {
+        const player = match.players.find((p) => p.id === entry.matchPlayerId);
+        if (player?.userId) {
+          void notifyUsers([player.userId], {
+            title: `Te marcaron ausente en ${clubName}`,
+            body: "Si es incorrecto, contactá al organizador.",
+            url: matchUrl,
+          });
+        }
+      }
+    }
 
     return { status: "ok" };
   } catch (error) {
