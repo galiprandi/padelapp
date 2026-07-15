@@ -1,6 +1,6 @@
 # PadelApp
 
-PWA mobile-first para registrar partidos, organizar turnos abiertos y mantener rankings/reputación de jugadores de pádel.
+PWA mobile-first para **organizar turnos fijos de pádel y salvarlos cuando faltan jugadores**. El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Si el turno corre riesgo de cancelación, la app notifica automáticamente a la red de contactos de pádel del organizador. Incluye un ranking simple como gancho de engagement competitivo.
 
 ## Scripts
 
@@ -24,6 +24,7 @@ npm run db:studio       # abrir Prisma Studio
 - **Prisma + PostgreSQL** (local via Docker, producción via Supabase).
 - **NextAuth.js** con Google OAuth y Prisma Adapter.
 - **PWA** instalable con service worker y manifest.
+- **Firebase Cloud Messaging** (pendiente — bloqueante para lanzamiento).
 
 ## Rutas
 
@@ -42,13 +43,13 @@ npm run db:studio       # abrir Prisma Studio
 | `/match/new` | Crear partido |
 | `/match/[matchId]` | Detalle de partido |
 | `/match/[matchId]/edit` | Editar partido |
-| `/match/[matchId]/result` | Cargar resultado |
+| `/match/[matchId]/result` | Cargar resultado y asistencia |
 | `/m/[matchId]` | Invitación pública de partido |
 | `/j/[playerId]` | Unirse a cupo directo |
 | `/p/[userId]` | Perfil público de jugador |
-| `/ranking` | Ranking global |
+| `/ranking` | Ranking global (gancho competitivo) |
 | `/notifications` | Acciones pendientes |
-| `/catalog` | Catálogo de componentes |
+| `/catalog` | Catálogo de componentes (dev) |
 
 ## Base de datos local
 
@@ -59,7 +60,8 @@ npm run db:studio       # abrir Prisma Studio
 
 ## Documentación
 
+- `PRODUCT.md` — Visión del producto, misión y principios de UX.
+- `padelapp-product-brief.md` — Brief completo del producto y roadmap.
 - `DESIGN.md` — Política de diseño con máximas y ejemplos.
 - `AGENTS.md` — Contexto y reglas para agentes/contribuyentes.
-- `PRODUCT.md` — Visión del producto y principios de UX.
 - `specs/` — Especificaciones de vistas y secciones.

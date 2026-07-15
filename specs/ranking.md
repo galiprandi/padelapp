@@ -1,11 +1,13 @@
-# Especificación de Ranking (MVP)
+# Especificación de Ranking
 
 - Path: `/ranking`
-- Estado: Not Implemented (este documento define el MVP y próximas iteraciones)
+- Estado: Implemented
 - Público: solo usuarios autenticados (mismo guard que layout `(app)`)
+- Rol: **gancho de engagement competitivo** — no es un sistema técnico de medición de nivel. El nivel auto-reportado (1–8) sigue siendo la referencia práctica para armar partidos.
 
 ## Objetivo
-- Mostrar la tabla de posiciones de jugadores de pádel considerando desempeño reciente y confiabilidad (asistencia).
+- Proveer un ranking simple que motive a los jugadores a registrar resultados y volver a la app.
+- Generar conversación y rivalidad sana dentro del grupo de juego.
 - Permitir al usuario ver su posición actual, puntos y variación.
 - Prioridad mobile-first, CTA y affordances claros.
 
@@ -18,23 +20,12 @@
 - Recalculo manual (server action) o automático tras guardar resultado; cron es “nice to have”.
 - Sin perfiles públicos aún; link del usuario propio va a `/me`.
 
-## Modelo de datos propuesto
-- Tabla `User` ya tiene `alias`, `displayName`, `level`.
-- Nueva tabla `RankingSnapshot` (para históricos y auditoría):
-  - `id`, `createdAt`, `season` (string, ej. `"global-2025-q1"`), `computedAt`.
-  - `entries`: modelado como tabla `RankingEntry`:
-    - `id`
-    - `userId` (FK User)
-    - `score` (float) — valor final para ordenar.
-    - `wins` (int), `losses` (int), `matchesPlayed` (int)
-    - `attendanceScore` (float 0–1) — penaliza no-shows.
-    - `streak` (int, positivos = victorias consecutivas, negativos = derrotas).
-    - `lastMatchAt` (DateTime)
-    - `position` (int)
-    - `positionChange` (int) — comparación contra snapshot previo (misma season).
-- Para MVP se puede persistir solo en `User` (`rankingScore`, `rankingPosition`, `rankingDelta`, `matchesPlayed`, `wins`, `losses`, `attendanceScore`, `lastMatchAt`) y luego migrar a snapshots.
+## Modelo de datos (implementado)
+- Ranking data cached in `User` model: `rankingScore`, `rankingPosition`, `rankingDelta`, `matchesPlayed`, `wins`, `losses`, `attendanceScore`, `lastMatchAt`.
+- No historical snapshot tables (`RankingSnapshot` / `RankingEntry`) — these were proposed but not implemented. The current approach is sufficient for the ranking's role as a competitive hook.
+- Future: consider snapshot tables only if historical analysis becomes a real need.
 
-## Fórmula MVP (sujeta a ajuste)
+## Fórmula (implementada)
 - Base: `score = 1000 + (wins * 15) + (losses * 0) + (streak * 5)`.
 - Bonus por sets ganados en victoria: +2 por set ganado; en derrota +1 por set ganado.
 - Penalización por no-show registrado: -25 por evento y reduce `attendanceScore`.
@@ -46,15 +37,10 @@
   3) `wins` (desc)
   4) `lastMatchAt` (más reciente primero)
 
-## Backend / Server Actions
-- `recalculateRankingAction({ season?: string })`
-  - Requiere sesión admin (por ahora permitir cualquier usuario hasta tener roles).
-  - Lee partidos `status=CONFIRMED`, agrupa por jugador.
-  - Calcula métricas y score; guarda en `RankingEntry` y opcionalmente en `User` (campo cache).
-  - Revalida `/ranking` y `/me`.
-- `getRankingAction({ limit?: number, season?: string })`
-  - Devuelve array ordenado con: userId, displayNamePreferido, score, position, positionChange, level, attendanceScore, wins, losses, matchesPlayed, lastMatchAt.
-  - Incluye posición del usuario actual aunque esté fuera del top N (append “tu posición”).
+## Backend / Server Actions (implementado)
+- `recalculateRankingAction` in `src/app/(app)/ranking/actions.ts` — recalculates scores, applies attendance penalties (no-show / late), updates `User` cache fields, revalidates `/ranking` and `/me`.
+- Ranking query in `src/app/(app)/ranking/page.tsx` — returns ordered list with position, name (alias preferred), level, score, delta, attendance, wins, losses.
+- User's own position shown via `UserRankingBanner` component.
 
 ## UI / UX
 - **Vista Ranking** (`/ranking`):
@@ -77,9 +63,9 @@
 - Colores: mantener tema amarillo (primario) y uso de `text-muted-foreground` para subtítulos.
 - Accesibilidad: `aria-sort` en headers si se habilita orden; roles `row`/`cell`; texto alternativo en avatares (iniciales).
 
-## Validaciones y estados
+## Validaciones y estados (implementado)
 - Loading: skeleton de header + 5 filas.
-- Error: mensaje inline con retry (reinvocar `getRankingAction`).
+- Error: mensaje inline con retry.
 - Sin datos: empty state descrito arriba.
 - Inyección de preferencia de nombre: usar helper `getUserDisplayName(user)` (alias > displayName).
 
@@ -93,9 +79,10 @@
 - Guardar timestamp de último recalculo para mostrar “Actualizado hace X min”.
 - (Futuro) telemetry/analytics de clics en filas y CTAs.
 
-## Roadmap posterior
+## Roadmap posterior (no prioritario — el ranking es un gancho, no el valor central)
 - Filtros por club/zona.
 - Temporadas / ladders independientes.
 - Perfiles públicos de jugador desde fila del ranking.
 - Ajustar fórmula con ELO simplificado (K-factor) cuando haya suficientes datos.
 - Cron programado (Vercel cron) diario.
+- Mínimo de partidos para aparecer en ranking público (evitar ruido con pocos datos).
