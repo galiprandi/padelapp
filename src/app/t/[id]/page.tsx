@@ -117,7 +117,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
       </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="bg-muted/30 border-b border-border px-4 py-3">
+        <div className="bg-muted border-b border-border px-4 py-3">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />
             Información del turno
@@ -157,7 +157,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         </div>
 
         {turn.notes && (
-          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic leading-relaxed">
+          <div className="p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed">
             <span className="block text-xs font-bold not-italic mb-1 text-foreground">
               Notas del organizador
             </span>
@@ -211,9 +211,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             (_, i) => (
               <div
                 key={`empty-${i}`}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-muted-foreground"
+                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
               >
-                <div className="h-10 w-10 rounded-lg bg-muted border border-dashed border-border flex items-center justify-center text-xl">
+                <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center text-xl">
                   🎾
                 </div>
                 <div className="flex-1">

@@ -135,7 +135,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
       </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="bg-muted/30 border-b border-border px-4 py-3">
+        <div className="bg-muted border-b border-border px-4 py-3">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />
             Información del encuentro
@@ -176,7 +176,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         </div>
 
         {match.notes && (
-          <div className="p-4 bg-muted/20 border-t border-border text-sm text-muted-foreground italic leading-relaxed">
+          <div className="p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed">
             <span className="block text-xs font-bold not-italic mb-1 text-foreground">
               Notas del organizador
             </span>
@@ -223,9 +223,9 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                       return (
                         <div
                           key={player.id}
-                          className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-muted-foreground"
+                          className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
                         >
-                          <div className="h-10 w-10 rounded-lg bg-muted border border-dashed border-border flex items-center justify-center text-lg">
+                          <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center text-lg">
                             🎾
                           </div>
                           <p className="text-xs font-semibold italic">
@@ -308,7 +308,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
               </Link>
             </Button>
           ) : !isParticipant ? (
-            <div className="rounded-xl p-3 bg-muted/50 border border-border text-center">
+            <div className="rounded-xl p-3 bg-muted border border-border text-center">
               <p className="text-xs font-medium text-muted-foreground">
                 Para unirte, pedile al organizador tu enlace de cupo directo
               </p>

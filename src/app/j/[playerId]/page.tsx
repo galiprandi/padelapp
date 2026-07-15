@@ -124,7 +124,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
           <h1 className="text-xl font-bold text-foreground">Invitación a jugar</h1>
           <p className="text-sm text-muted-foreground">Invitación directa de {match.creator.displayName}</p>
         </div>
-        <div className="rounded-lg bg-muted/50 p-4 border border-border">
+        <div className="rounded-lg bg-muted p-4 border border-border">
           <p className="text-sm font-medium text-muted-foreground">
             Te invitaron a sumarte como{" "}
             <span className="font-bold text-foreground">
@@ -135,7 +135,7 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
       </div>
 
       <Card className="rounded-xl border-border bg-card overflow-hidden">
-        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted/30">
+        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
           <CardTitle className="text-xs font-bold text-muted-foreground">
             Detalle del partido
           </CardTitle>

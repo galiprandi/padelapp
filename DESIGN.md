@@ -38,11 +38,11 @@ className="rounded-[2.5rem] border border-primary/20 bg-primary/5 p-10 shadow-2x
 ```
 
 ### 1.3 No ambient lighting or glassmorphism
-No `blur-[Npx]` decorative gradients, no `backdrop-blur-*`, no radial lighting divs. Backgrounds are solid or use `bg-card` / `bg-muted`.
+No `blur-[Npx]` decorative gradients, no `backdrop-blur-*`, no radial lighting divs. Backgrounds are solid or use `bg-card` / `bg-muted`. Avoid semi-transparent background utilities like `bg-muted/30` or `bg-card/50` for primary content containers.
 
 **Do:**
 ```tsx
-<section className="flex flex-col gap-6">
+<section className="flex flex-col gap-6 bg-muted">
 ```
 
 **Don't:**
@@ -163,7 +163,7 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 ### 2.1 Cards and containers
 - Use `rounded-xl border border-border bg-card` for all card-like containers.
 - Padding: `p-4` for compact cards, `p-6` for section containers.
-- No `backdrop-blur`, no `bg-card/40` or `bg-card/60` — use solid `bg-card`.
+- No `backdrop-blur`, no `bg-card/40`, `bg-card/60` or `bg-muted/20` — use solid `bg-card` or `bg-muted`.
 
 ### 2.2 Lists and items
 - List items: `rounded-xl border border-border bg-card px-4 py-3`.
