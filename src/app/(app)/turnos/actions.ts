@@ -443,6 +443,68 @@ export async function cancelTurnAction(turnId: string) {
   }
 }
 
+export async function scheduleNextTurnAction(turnId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await prisma.turn.findUnique({
+      where: { id: turnId },
+      select: {
+        creatorId: true,
+        club: true,
+        date: true,
+        duration: true,
+        maxPlayers: true,
+        suggestedLevel: true,
+        notes: true,
+      },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede programar el próximo turno",
+      };
+    }
+
+    // Same day next week (+7 days)
+    const nextDate = new Date(turn.date);
+    nextDate.setDate(nextDate.getDate() + 7);
+
+    const newTurn = await prisma.turn.create({
+      data: {
+        creatorId: session.user.id,
+        club: turn.club,
+        date: nextDate,
+        duration: turn.duration,
+        maxPlayers: turn.maxPlayers,
+        suggestedLevel: turn.suggestedLevel,
+        notes: turn.notes,
+        players: {
+          create: {
+            userId: session.user.id,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/turnos");
+    revalidateTag("turns", "default");
+
+    return { status: "ok", turnId: newTurn.id };
+  } catch (error) {
+    console.error("Error scheduling next turn:", error);
+    return { status: "error", message: "Error al programar el próximo turno" };
+  }
+}
+
 export async function openToNetworkAction(turnId: string) {
   const session = await auth();
   if (!session?.user?.id) {

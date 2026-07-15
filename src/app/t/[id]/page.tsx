@@ -5,6 +5,7 @@ import {
   leaveTurnAction,
   convertTurnToMatchAction,
   cancelTurnAction,
+  scheduleNextTurnAction,
 } from "@/app/(app)/turnos/actions";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
   Edit3,
   Trash2,
   MapPin,
+  CalendarPlus,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -256,6 +258,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
                 <>
                   <StartMatchForm turnId={id} />
+                  <ScheduleNextTurnForm turnId={id} />
                   <div className="flex gap-2">
                     <Button
                       asChild
@@ -306,38 +309,44 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 />
               )}
               {viewerId === turn.creatorId && (
-                <div className="flex gap-2">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="flex-1 h-10 rounded-lg font-bold text-xs"
-                  >
-                    <Link href={`/turnos/${id}/editar`}>
-                      <Edit3 className="mr-2 h-4 w-4" />
-                      Editar
-                    </Link>
-                  </Button>
-                  <CancelTurnForm turnId={id} />
-                </div>
+                <>
+                  <ScheduleNextTurnForm turnId={id} />
+                  <div className="flex gap-2">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="flex-1 h-10 rounded-lg font-bold text-xs"
+                    >
+                      <Link href={`/turnos/${id}/editar`}>
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Editar
+                      </Link>
+                    </Button>
+                    <CancelTurnForm turnId={id} />
+                  </div>
+                </>
               )}
               <LeaveTurnForm turnId={id} />
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               {viewerId === turn.creatorId && (
-                <div className="flex gap-2">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="flex-1 h-10 rounded-lg font-bold text-xs"
-                  >
-                    <Link href={`/turnos/${id}/editar`}>
-                      <Edit3 className="mr-2 h-4 w-4" />
-                      Editar
-                    </Link>
-                  </Button>
-                  <CancelTurnForm turnId={id} />
-                </div>
+                <>
+                  <ScheduleNextTurnForm turnId={id} />
+                  <div className="flex gap-2">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="flex-1 h-10 rounded-lg font-bold text-xs"
+                    >
+                      <Link href={`/turnos/${id}/editar`}>
+                        <Edit3 className="mr-2 h-4 w-4" />
+                        Editar
+                      </Link>
+                    </Button>
+                    <CancelTurnForm turnId={id} />
+                  </div>
+                </>
               )}
               <div className="flex gap-2 w-full">
                 <div className="flex-1">
@@ -441,6 +450,29 @@ function JoinTurnForm({ turnId }: { turnId: string }) {
       >
         <UserPlus className="mr-2 h-5 w-5" />
         Anotarme ahora
+      </Button>
+    </form>
+  );
+}
+
+function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
+  async function handleScheduleNext() {
+    "use server";
+    const result = await scheduleNextTurnAction(turnId);
+    if (result.status === "ok" && result.turnId) {
+      redirect(`/t/${result.turnId}`);
+    }
+  }
+
+  return (
+    <form action={handleScheduleNext}>
+      <Button
+        type="submit"
+        variant="outline"
+        className="w-full h-10 rounded-lg text-xs font-bold"
+      >
+        <CalendarPlus className="mr-2 h-4 w-4" />
+        Programar próximo turno
       </Button>
     </form>
   );
