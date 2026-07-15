@@ -63,18 +63,67 @@ export function usePushNotifications() {
         return null;
       }
 
-      const { initializeApp } = await import("firebase/app");
-      const { getMessaging, getToken } = await import("firebase/messaging");
-
-      const app = initializeApp(config);
-      const messaging = getMessaging(app);
-
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
       if (!vapidKey) {
         console.warn("VAPID key not set — cannot get FCM token");
         return null;
       }
 
+      // 1. Register the service worker (required for background push)
+      if (!("serviceWorker" in navigator)) {
+        console.warn("Service Worker not supported — push limited to foreground");
+      }
+
+      let swRegistration: ServiceWorkerRegistration | undefined;
+      if ("serviceWorker" in navigator) {
+        swRegistration = await navigator.serviceWorker.register(
+          "/firebase-messaging-sw.js",
+        );
+        // Wait for the SW to be active
+        if (swRegistration.active) {
+          swRegistration.active.postMessage({
+            type: "INIT_FIREBASE",
+            config,
+            vapidKey,
+          });
+        } else {
+          await new Promise<void>((resolve) => {
+            const sw = swRegistration.installing ?? swRegistration.waiting;
+            if (sw) {
+              sw.addEventListener("statechange", () => {
+                if (sw.state === "activated") {
+                  sw.postMessage({ type: "INIT_FIREBASE", config, vapidKey });
+                  resolve();
+                }
+              });
+            } else {
+              resolve();
+            }
+          });
+        }
+      }
+
+      // 2. Initialize Firebase Messaging with the SW registration
+      const { initializeApp } = await import("firebase/app");
+      const { getMessaging, getToken, onMessage } = await import("firebase/messaging");
+
+      const app = initializeApp(config);
+      const messaging = getMessaging(app, swRegistration as ServiceWorkerRegistration | undefined);
+
+      // 3. Handle foreground messages
+      onMessage(messaging, (payload) => {
+        const { title, body } = payload.notification ?? {};
+        if (title && body && Notification.permission === "granted") {
+          new Notification(title, {
+            body,
+            icon: "/icon.svg",
+            badge: "/icon.svg",
+            data: payload.data,
+          });
+        }
+      });
+
+      // 4. Get the FCM token
       const fcmToken = await getToken(messaging, { vapidKey });
       setToken(fcmToken);
 
