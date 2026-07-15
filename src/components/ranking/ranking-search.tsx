@@ -66,7 +66,7 @@ export function RankingSearch() {
           }
         }}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground/50 focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm"
+        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground/50 transition-colors shadow-sm"
       />
       {query && (
         <button
