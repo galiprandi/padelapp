@@ -13,6 +13,7 @@ interface SlotDisplayProps {
   slot: SlotValue | null;
   userDisplayName: string;
   isActive: boolean;
+  isSwapping?: boolean;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
 }
@@ -23,6 +24,7 @@ export function SlotDisplay({
   slot,
   userDisplayName,
   isActive,
+  isSwapping = false,
   onSlotClick,
   onManageClick,
 }: SlotDisplayProps) {
@@ -53,17 +55,18 @@ export function SlotDisplay({
       }}
       className={cn(
         "group relative flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
-        isActive
-          ? "border-primary bg-primary/5"
+        isActive || isSwapping
+          ? "border-primary bg-primary/10 shadow-sm"
           : isUser
             ? "border-primary/20 bg-primary/5"
             : "border-border bg-card hover:bg-muted/50",
+        isSwapping && "ring-2 ring-primary ring-offset-2",
       )}
     >
       <div
         className={cn(
           "relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold transition-colors",
-          isActive
+          isActive || isSwapping
             ? "bg-primary text-primary-foreground"
             : isUser
               ? "bg-primary/20 text-primary"
@@ -109,30 +112,17 @@ export function SlotDisplay({
         </div>
       ) : (
         <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
+          <div
             className={cn(
-              "h-9 w-9 rounded-lg transition-colors",
-              isActive
-                ? "bg-primary/10 text-primary hover:bg-primary/20"
-                : "text-muted-foreground hover:bg-muted",
+              "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
+              isActive || isSwapping
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground group-hover:bg-muted",
             )}
-            aria-label={
-              slot?.kind === "placeholder"
-                ? "Gestionar nombre del cupo"
-                : slot?.kind === "user"
-                  ? "Cambiar jugador"
-                  : "Asignar jugador"
-            }
-            onClick={(event) => {
-              event.stopPropagation();
-              onManageClick(team, index);
-            }}
+            aria-hidden="true"
           >
             <UsersRound className="h-4 w-4" />
-          </Button>
+          </div>
         </div>
       )}
     </div>

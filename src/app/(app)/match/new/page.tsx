@@ -27,8 +27,13 @@ function RegisterMatchInner() {
     team: "A",
     index: 1,
   });
+  const [swapSource, setSwapSource] = useState<{
+    team: TeamKey;
+    index: 0 | 1;
+  } | null>(null);
 
-  const { teamState, updateSlot, setWholeState } = useTeamManagement();
+  const { teamState, updateSlot, setWholeState, userDisplayName } =
+    useTeamManagement();
   const {
     currentStep,
     matchType,
@@ -62,6 +67,46 @@ function RegisterMatchInner() {
 
   function handleCloseManageModal() {
     setManageModal((previous) => ({ ...previous, open: false }));
+  }
+
+  function handleSlotClick(team: TeamKey, index: 0 | 1) {
+    if (swapSource) {
+      if (swapSource.team === team && swapSource.index === index) {
+        setSwapSource(null);
+        return;
+      }
+
+      // Cannot move anyone to A0 (fixed owner)
+      if (team === "A" && index === 0) {
+        return;
+      }
+
+      const sourceValue = teamState[swapSource.team][swapSource.index];
+      const targetValue = teamState[team][index];
+
+      const nextState = {
+        A: [...teamState.A] as [SlotValue | null, SlotValue | null],
+        B: [...teamState.B] as [SlotValue | null, SlotValue | null],
+      };
+
+      nextState[swapSource.team][swapSource.index] = targetValue;
+      nextState[team][index] = sourceValue;
+
+      setWholeState(nextState);
+      setSwapSource(null);
+      setActiveSlot({ team, index });
+      return;
+    }
+
+    setActiveSlot({ team, index });
+    if (!(team === "A" && index === 0)) {
+      setManageModal({ open: true, team, index });
+    }
+  }
+
+  function handleStartSwap() {
+    setSwapSource({ team: manageModal.team, index: manageModal.index });
+    handleCloseManageModal();
   }
 
   function handleSaveSlot(value: SlotValue) {
@@ -126,7 +171,8 @@ function RegisterMatchInner() {
         currentStep={currentStep}
         teamState={teamState}
         activeSlot={activeSlot}
-        userDisplayName="Usuario" // This should come from session
+        swapSource={swapSource}
+        userDisplayName={userDisplayName}
         matchType={matchType}
         sets={sets}
         setsValid={setsValid}
@@ -136,10 +182,8 @@ function RegisterMatchInner() {
         recordScore={recordScore}
         scores={scores}
         isSubmitting={isSubmitting}
-        onSlotClick={(team, index) => setActiveSlot({ team, index })}
-        onManageClick={(team, index) =>
-          setManageModal({ open: true, team, index })
-        }
+        onSlotClick={handleSlotClick}
+        onManageClick={handleSlotClick}
         onMatchTypeChange={setMatchType}
         onSetsChange={setSets}
         onCountsForRankingChange={setCountsForRanking}
@@ -169,6 +213,7 @@ function RegisterMatchInner() {
         onSave={handleSaveSlot}
         onShare={handleShareIntent}
         onRelease={handleReleaseSlot}
+        onSwap={handleStartSwap}
         onClose={handleCloseManageModal}
       />
     </>

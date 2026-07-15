@@ -81,5 +81,7 @@ export function useTeamManagement() {
     teamState,
     updateSlot,
     setWholeState,
+    userId,
+    userDisplayName,
   };
 }

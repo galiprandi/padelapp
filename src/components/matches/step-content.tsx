@@ -13,6 +13,7 @@ interface StepContentProps {
   currentStep: 0 | 1 | 2 | 3;
   teamState: TeamState;
   activeSlot: { team: TeamKey; index: 0 | 1 };
+  swapSource?: { team: TeamKey; index: 0 | 1 } | null;
   userDisplayName: string;
   matchType: MatchTypeValue;
   sets: string;
@@ -114,6 +115,7 @@ export function StepContent({
   currentStep,
   teamState,
   activeSlot,
+  swapSource,
   userDisplayName,
   matchType,
   sets,
@@ -147,10 +149,18 @@ export function StepContent({
           <div>
             <h1 className="text-xl font-bold text-foreground">Nuevo Partido</h1>
             <p className="text-sm text-muted-foreground">
-              Armá tu partido seleccionando las parejas. Tocá el botón de cada
-              jugador para gestionar nombres y enlaces de invitación.
+              Armá tu partido seleccionando las parejas. Tocá un jugador para
+              gestionar su nombre o moverlo de posición.
             </p>
           </div>
+
+          {swapSource && (
+            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 animate-pulse">
+              <p className="text-sm font-bold text-primary text-center">
+                Modo mover: Tocá otra posición para cambiar al jugador de lugar.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-6">
             <div className="space-y-3">
@@ -165,6 +175,9 @@ export function StepContent({
                     userDisplayName={userDisplayName}
                     isActive={
                       activeSlot.team === "A" && activeSlot.index === index
+                    }
+                    isSwapping={
+                      swapSource?.team === "A" && swapSource?.index === index
                     }
                     onSlotClick={onSlotClick}
                     onManageClick={onManageClick}
@@ -184,6 +197,9 @@ export function StepContent({
                     userDisplayName={userDisplayName}
                     isActive={
                       activeSlot.team === "B" && activeSlot.index === index
+                    }
+                    isSwapping={
+                      swapSource?.team === "B" && swapSource?.index === index
                     }
                     onSlotClick={onSlotClick}
                     onManageClick={onManageClick}
