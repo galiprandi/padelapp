@@ -364,7 +364,7 @@ export default function ComponentCatalogPage() {
 
                 <div className="flex gap-2">
                   <ShareButton
-                    url="https://padelapp.app"
+                    url="https://padelap.vercel.app"
                     title="PadelApp"
                     text="¡Sumate a PadelApp!"
                     className="flex-1 h-10"
