@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { auth, signIn } from "@/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { InstallLinkButton } from "@/components/pwa-install-link";
 
 export const dynamic = "force-dynamic";
 
@@ -42,13 +42,7 @@ export default function MarketingLanding() {
             </Button>
           </form>
           <div className="flex flex-col gap-2">
-            <Button
-              variant="ghost"
-              className="h-10 w-full rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground"
-              asChild
-            >
-              <Link href="/install">Instalar App</Link>
-            </Button>
+            <InstallLinkButton />
           </div>
         </CardContent>
       </Card>

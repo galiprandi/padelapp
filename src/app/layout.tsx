@@ -52,6 +52,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        {process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN && (
+          <meta
+            http-equiv="origin-trial"
+            content={process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN}
+          />
+        )}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-foreground`}
       >

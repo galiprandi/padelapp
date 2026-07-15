@@ -1,30 +1,67 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Smartphone, X } from "lucide-react";
+import { Smartphone, X, Download, Loader2 } from "lucide-react";
+import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
+const DISMISS_KEY = "pwa-banner-dismissed";
 
 export function PwaInstallBanner() {
   const [isVisible, setIsVisible] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstalling, setIsInstalling] = useState(false);
+  const isInstalled = usePwaInstalled();
 
   useEffect(() => {
-    // Verificar si ya está en modo standalone
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as any).standalone ||
-      document.referrer.includes("android-app://");
+    if (isInstalled) {
+      setIsVisible(false);
+      localStorage.removeItem(DISMISS_KEY);
+      return;
+    }
 
-    // Verificar si el usuario ya lo cerró en esta sesión
-    const isDismissed = sessionStorage.getItem("pwa-banner-dismissed");
-
-    if (!isStandalone && !isDismissed) {
+    const isDismissed = localStorage.getItem(DISMISS_KEY);
+    if (!isDismissed) {
       setIsVisible(true);
     }
-  }, []);
+  }, [isInstalled]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isInstalled) return;
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, [isInstalled]);
+
+  const handleInstall = useCallback(async () => {
+    if (!deferredPrompt) return;
+    setIsInstalling(true);
+    try {
+      await deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice.outcome === "accepted") {
+        setIsVisible(false);
+      }
+    } finally {
+      setIsInstalling(false);
+      setDeferredPrompt(null);
+    }
+  }, [deferredPrompt]);
 
   const handleDismiss = () => {
     setIsVisible(false);
-    sessionStorage.setItem("pwa-banner-dismissed", "true");
+    localStorage.setItem(DISMISS_KEY, "true");
   };
 
   if (!isVisible) return null;
@@ -52,12 +89,27 @@ export function PwaInstallBanner() {
         <X className="h-4 w-4" aria-hidden="true" />
       </button>
 
-      <Link
-        href="/install"
-        className="text-xs font-semibold text-primary whitespace-nowrap"
-      >
-        Ver cómo
-      </Link>
+      {deferredPrompt ? (
+        <button
+          onClick={handleInstall}
+          disabled={isInstalling}
+          className="flex items-center gap-1.5 text-xs font-semibold text-primary whitespace-nowrap disabled:opacity-50"
+        >
+          {isInstalling ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Download className="h-3.5 w-3.5" />
+          )}
+          Instalar
+        </button>
+      ) : (
+        <Link
+          href="/install"
+          className="text-xs font-semibold text-primary whitespace-nowrap"
+        >
+          Ver cómo
+        </Link>
+      )}
     </div>
   );
 }

@@ -3,8 +3,8 @@
   "short_name": "PadelApp",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0b",
-  "theme_color": "#0a0a0b",
+  "background_color": "#fef9c3",
+  "theme_color": "#facc15",
   "lang": "es",
   "description": "Organiza turnos, registra partidos y escala en el ranking de pádel desde tu móvil.",
   "icons": [

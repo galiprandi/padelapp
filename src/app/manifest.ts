@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "🎾 PadelApp",
-    short_name: "🎾 PadelApp",
+    id: "/",
+    name: "PadelApp",
+    short_name: "PadelApp",
     start_url: "/",
     display: "standalone",
     background_color: "#fef9c3",
