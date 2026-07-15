@@ -12,6 +12,9 @@ import {
   TurnCard,
 } from "@/components/turns/turn-card";
 import {
+  OpenToNetworkButton,
+} from "@/components/turns/open-to-network-button";
+import {
   MatchResultCompact,
   type MatchResultCompactMatch,
 } from "@/components/matches/match-result-card";
@@ -315,12 +318,50 @@ export default function ComponentCatalogPage() {
             <section id="matches" className="space-y-6">
               <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🎾 Partidos y Turnos</h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-8">
-                <MatchResultCompact
-                  label="Último partido"
-                  match={SAMPLE_MATCH}
-                  detailUrl={`/match/${SAMPLE_MATCH.id}`}
-                />
-                <TurnCard turn={SAMPLE_TURN} />
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-foreground">Turnos</h3>
+                  <div className="space-y-2">
+                    <TurnCard turn={SAMPLE_TURN} />
+                    <TurnCard
+                      turn={SAMPLE_TURN}
+                      isJoined={true}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-foreground">Botón "Abrir a mi red"</h3>
+                  <div className="space-y-3">
+                    <OpenToNetworkButton turnId="sample" club="Padel Center" variant="default" />
+                    <OpenToNetworkButton
+                      turnId="sample"
+                      club="Padel Center"
+                      variant="default"
+                      label="Salvar turno: Notificar a mi red"
+                      className="bg-amber-500 hover:bg-amber-600"
+                    />
+                    <div className="flex gap-2 items-center">
+                      <p className="text-xs text-muted-foreground mr-2">Icono solo:</p>
+                      <OpenToNetworkButton
+                        turnId="sample"
+                        club="Padel Center"
+                        variant="outline"
+                        size="icon"
+                        showText={false}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-foreground">Resultado de Partido</h3>
+                  <MatchResultCompact
+                    label="Último partido"
+                    match={SAMPLE_MATCH}
+                    detailUrl={`/match/${SAMPLE_MATCH.id}`}
+                  />
+                </div>
+
                 <div className="flex gap-2">
                   <ShareButton
                     url="https://padelapp.app"

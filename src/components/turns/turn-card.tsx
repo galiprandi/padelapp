@@ -8,6 +8,7 @@ import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
 import { joinTurnAction } from "@/app/(app)/turnos/actions";
 import { ShareButton } from "@/components/share/share-button";
+import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { createMagicLink } from "@/lib/magic-link";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
@@ -106,6 +107,19 @@ export function TurnCard({
 
         {/* Status / Action */}
         <div className="flex items-center gap-2 shrink-0">
+          {isJoined && turn.players.length < turn.maxPlayers && (
+            <OpenToNetworkButton
+              turnId={turn.id}
+              club={turn.club}
+              variant="outline"
+              size="icon"
+              iconOnly
+              showText={false}
+              label="Notificar red"
+              className="h-9 w-9"
+            />
+          )}
+
           <ShareButton
             url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
             title="Sumate al Turno"
@@ -118,6 +132,7 @@ export function TurnCard({
               e.stopPropagation();
             }}
           />
+
           {canJoin ? (
             <button
               onClick={handleQuickJoin}
