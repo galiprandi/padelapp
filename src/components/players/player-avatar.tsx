@@ -7,6 +7,7 @@ export interface PlayerAvatarProps {
   image?: string;
   className?: string;
   size?: number;
+  "aria-hidden"?: boolean | "true" | "false";
 }
 
 export function getPlayerInitials(name: string): string {
@@ -18,7 +19,13 @@ export function getPlayerInitials(name: string): string {
     .toUpperCase();
 }
 
-export function PlayerAvatar({ name, image, className, size = 40 }: PlayerAvatarProps) {
+export function PlayerAvatar({
+  name,
+  image,
+  className,
+  size = 40,
+  "aria-hidden": ariaHidden,
+}: PlayerAvatarProps) {
   const initials = getPlayerInitials(name);
   const dimension = `${size}px`;
 
@@ -29,6 +36,7 @@ export function PlayerAvatar({ name, image, className, size = 40 }: PlayerAvatar
         className,
       )}
       style={{ width: dimension, height: dimension }}
+      aria-hidden={ariaHidden}
     >
       {image ? (
         <Image src={image} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />

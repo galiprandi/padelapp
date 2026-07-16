@@ -67,6 +67,7 @@ export function RankingListItem({
           image={player.image ?? undefined}
           size={36}
           className="rounded-lg"
+          aria-hidden="true"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
