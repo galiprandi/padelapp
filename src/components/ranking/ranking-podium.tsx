@@ -28,7 +28,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
         {second && (
           <Link
             href={`/p/${second.id}`}
-            className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
+            className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative">
               <PlayerAvatar
@@ -56,7 +56,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
         {first && (
           <Link
             href={`/p/${first.id}`}
-            className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
+            className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative">
               <PlayerAvatar
@@ -84,7 +84,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
         {third && (
           <Link
             href={`/p/${third.id}`}
-            className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50"
+            className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative">
               <PlayerAvatar
