@@ -59,20 +59,14 @@ export function ManageSlotModal({
     }
   }, [open, slot, placeholderName]);
 
-  // Debounced search
+  // Debounced search & Initial contacts fetch
   useEffect(() => {
     let active = true;
 
-    if (searchQuery.trim().length < 2) {
-      setSearchResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    const handler = setTimeout(async () => {
+    const fetchPlayers = async (query: string) => {
       setIsSearching(true);
       try {
-        const response = await fetch(`/api/players?q=${encodeURIComponent(searchQuery)}`);
+        const response = await fetch(`/api/players${query ? `?q=${encodeURIComponent(query)}` : ""}`);
         const data = await response.json();
         if (active && data.players) {
           setSearchResults(data.players);
@@ -82,6 +76,22 @@ export function ManageSlotModal({
       } finally {
         if (active) setIsSearching(false);
       }
+    };
+
+    if (searchQuery.trim().length === 0) {
+      // Fetch recent contacts immediately when empty
+      fetchPlayers("");
+      return;
+    }
+
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const handler = setTimeout(() => {
+      fetchPlayers(searchQuery);
     }, 300);
 
     return () => {
@@ -177,7 +187,7 @@ export function ManageSlotModal({
                 htmlFor="player-search"
                 className="text-sm font-semibold text-muted-foreground px-1"
               >
-                Buscar en la plataforma
+                {searchQuery.length > 0 ? "Resultados de búsqueda" : "Contactos recientes"}
               </Label>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
@@ -222,7 +232,7 @@ export function ManageSlotModal({
               )}
 
               {searchResults.length > 0 && (
-                <div className="max-h-48 overflow-y-auto rounded-lg border border-border bg-muted/30 p-2 space-y-1">
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-border bg-muted p-2 space-y-1">
                   {searchResults.map((player) => (
                     <button
                       key={player.id}
@@ -232,8 +242,15 @@ export function ManageSlotModal({
                     >
                       <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold truncate">{player.displayName}</p>
-                        <p className="text-xs font-medium text-muted-foreground truncate opacity-60">{player.email}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold truncate">{player.displayName}</p>
+                          {player.isContact && (
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        {player.email && (
+                          <p className="text-xs font-medium text-muted-foreground truncate opacity-60">{player.email}</p>
+                        )}
                       </div>
                       <UserPlus className="h-4 w-4 text-primary" />
                     </button>
