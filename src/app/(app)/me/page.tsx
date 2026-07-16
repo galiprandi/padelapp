@@ -174,14 +174,15 @@ export default async function DashboardPage() {
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
             <span className="text-xl font-bold text-primary">{user.wins}</span>
           </Link>
-          <div
-            className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4"
+          <Link
+            href="/ranking"
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground">Reputación</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Reputación</span>
             <span className="text-xl font-bold text-foreground">
               {Math.round((user.attendanceScore ?? 1) * 100)}%
             </span>
-          </div>
+          </Link>
         </div>
       )}
 
@@ -196,8 +197,8 @@ export default async function DashboardPage() {
             "space-y-3 rounded-xl border p-4",
             heroActivity.type === "turn" &&
               heroActivity.data.players.length < heroActivity.data.maxPlayers
-              ? "border-amber-500/30 bg-amber-500/[0.02]"
-              : "border-primary/20 bg-primary/[0.02]",
+              ? "border-amber-500/30 bg-amber-50"
+              : "border-primary/20 bg-muted/30",
           )}
         >
           <div className="flex items-center justify-between">

@@ -37,7 +37,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
                 size={48}
                 className="border-2 border-muted"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground border-2 border-card">
+              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground border-2 border-card">
                 2
               </div>
             </div>
@@ -65,7 +65,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
                 size={56}
                 className="border-2 border-primary"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground border-2 border-background">
+              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground border-2 border-background">
                 1
               </div>
             </div>
@@ -93,7 +93,7 @@ export function RankingPodium({ topThree }: RankingPodiumProps) {
                 size={44}
                 className="border-2 border-muted"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground border-2 border-card">
+              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground border-2 border-card">
                 3
               </div>
             </div>
