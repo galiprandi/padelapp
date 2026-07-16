@@ -66,14 +66,14 @@ export function RankingSearch() {
           }
         }}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground/50 focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm [&::-webkit-search-cancel-button]:hidden"
+        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm [&::-webkit-search-cancel-button]:hidden"
       />
       {query && (
         <button
           type="button"
           onClick={handleClear}
           aria-label="Limpiar búsqueda"
-          className="absolute inset-y-0 right-4 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
+          className="absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <X className="h-4 w-4" />
         </button>
