@@ -81,8 +81,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - All redesigned pages use plain `<h1>`/`<p>` headers, standard Tailwind sizes, no decorative effects.
 - `PageHeader` component removed; all views use semantic HTML for headers.
 - Dashboard and main list views (`/me`, `/turnos`, `/match`) refined for UX consistency and accessibility (aria-labels, color standards for W/L).
-- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) and expanded stats summary (Level, Reputation) to maximize user "Time to Value".
-- **Player Selection Optimization**: Enhanced the player selection flow in matches by proactively suggesting recent padel contacts (players from confirmed matches in the last 12 months) before the user starts typing, reducing friction in match assembly.
+- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) with context-aware backgrounds and expanded stats summary (Level, Reputation) to maximize user "Time to Value". Standardized stats grid with interactive links.
 - **Turn Salvage Optimization**: Enhanced the Dashboard "Hero Activity" and Turn Cards with a proactive "Salvar Turno" (Save Turn) action for incomplete matches, integrating the "Open to my network" push notification flow directly into the main views to ensure turn fulfillment.
 - **Semantic Invitations Refactor**: Migrated `/t/[id]` and `/m/[matchId]` to semantic HTML structures, removing complex UI wrappers to improve mobile rendering and focus on clear conversion actions.
 

@@ -79,16 +79,17 @@ export function usePushNotifications() {
         swRegistration = await navigator.serviceWorker.register(
           "/firebase-messaging-sw.js",
         );
+        const registration = swRegistration;
         // Wait for the SW to be active
-        if (swRegistration.active) {
-          swRegistration.active.postMessage({
+        if (registration.active) {
+          registration.active.postMessage({
             type: "INIT_FIREBASE",
             config,
             vapidKey,
           });
         } else {
           await new Promise<void>((resolve) => {
-            const sw = swRegistration.installing ?? swRegistration.waiting;
+            const sw = registration.installing ?? registration.waiting;
             if (sw) {
               sw.addEventListener("statechange", () => {
                 if (sw.state === "activated") {
@@ -108,7 +109,7 @@ export function usePushNotifications() {
       const { getMessaging, getToken, onMessage } = await import("firebase/messaging");
 
       const app = initializeApp(config);
-      const messaging = getMessaging(app, swRegistration as ServiceWorkerRegistration | undefined);
+      const messaging = getMessaging(app);
 
       // 3. Handle foreground messages
       onMessage(messaging, (payload) => {

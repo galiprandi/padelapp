@@ -162,9 +162,9 @@ export default function NewTurnPage() {
                     setFormData({ ...formData, duration: option.value })
                   }
                   className={cn(
-                    "flex items-center justify-center py-2.5 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98]",
                     isSelected
-                      ? "bg-primary border-primary text-primary-foreground"
+                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
                       : "bg-card border-border text-muted-foreground hover:bg-muted",
                   )}
                 >
@@ -196,9 +196,9 @@ export default function NewTurnPage() {
                     setFormData({ ...formData, maxPlayers: option.value })
                   }
                   className={cn(
-                    "flex items-center justify-between px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98]",
                     isSelected
-                      ? "bg-primary border-primary text-primary-foreground"
+                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
                       : "bg-card border-border text-muted-foreground hover:bg-muted",
                   )}
                 >
@@ -231,9 +231,9 @@ export default function NewTurnPage() {
                     setFormData({ ...formData, suggestedLevel: option.value })
                   }
                   className={cn(
-                    "flex items-center justify-between px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98]",
                     isSelected
-                      ? "bg-primary border-primary text-primary-foreground"
+                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
                       : "bg-card border-border text-muted-foreground hover:bg-muted",
                   )}
                 >
