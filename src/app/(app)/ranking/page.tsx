@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { Users } from "lucide-react";
 import { auth } from "@/auth";
@@ -123,6 +125,13 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
               query
                 ? `No hay resultados para "${query}".`
                 : "Aún no hay jugadores registrados."
+            }
+            action={
+              query ? (
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/ranking">Limpiar búsqueda</Link>
+                </Button>
+              ) : null
             }
           />
         )}
