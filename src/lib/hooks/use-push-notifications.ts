@@ -69,6 +69,18 @@ export function usePushNotifications() {
       return null;
     }
 
+    // VAPID key validation: a valid Firebase VAPID key is a base64url-encoded
+    // P-256 public key, typically ~88 chars. If it's too short, it was likely
+    // truncated when pasted into the env var.
+    if (vapidKey.length < 80) {
+      console.error(
+        `VAPID key appears invalid (length=${vapidKey.length}, expected ~88). ` +
+        `Check NEXT_PUBLIC_FIREBASE_VAPID_KEY in Vercel env vars — it may have been truncated. ` +
+        `Get the full key from Firebase Console → Project Settings → Cloud Messaging → Web Configuration.`
+      );
+      return null;
+    }
+
     try {
       // Register the service worker (required for background push)
       let swRegistration: ServiceWorkerRegistration | undefined;

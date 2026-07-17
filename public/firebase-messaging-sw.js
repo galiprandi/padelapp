@@ -22,13 +22,9 @@ self.addEventListener("message", (event) => {
 
 async function initFirebaseMessaging(config, vapidKey) {
   try {
-    // Load Firebase from CDN (compat version for service worker)
-    self.importScripts(
-      "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"
-    );
-    self.importScripts(
-      "https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"
-    );
+    // Load Firebase from local files (avoids CSP issues with CDN)
+    self.importScripts("/firebase/firebase-app-compat.js");
+    self.importScripts("/firebase/firebase-messaging-compat.js");
 
     const app = self.firebase.initializeApp(config);
     const messaging = self.firebase.messaging(app);
