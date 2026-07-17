@@ -103,7 +103,7 @@ export function ProfileForm({ initialAlias, initialLevel, initialImage }: Profil
               />
             ) : (
               <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center border border-border text-lg font-bold text-primary">
-                {getPlayerInitials(alias || "Jugador")}
+                {getPlayerInitials((alias || "Jugador").replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, ""))}
               </div>
             )}
             {image && (
