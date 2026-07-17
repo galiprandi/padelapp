@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { auth, signIn } from "@/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InstallLinkButton } from "@/components/pwa-install-link";
+import { SignInButton } from "@/components/auth/sign-in-button";
 
 export const dynamic = "force-dynamic";
 
@@ -34,12 +34,7 @@ export default function MarketingLanding() {
 
         <CardContent className="space-y-4 pb-12">
           <form action={handleContinue}>
-            <Button
-              type="submit"
-              className="h-12 w-full rounded-xl text-base font-semibold"
-            >
-              Comenzar ahora
-            </Button>
+            <SignInButton label="Comenzar ahora" />
           </form>
           <div className="flex flex-col gap-2">
             <InstallLinkButton />

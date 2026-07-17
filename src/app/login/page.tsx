@@ -1,19 +1,24 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/auth";
-import { Button } from "@/components/ui/button";
+import { SignInButton } from "@/components/auth/sign-in-button";
 import { Trophy, Users, Zap } from "lucide-react";
 
-export default async function LoginPage() {
+interface LoginPageProps {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
   const session = await auth();
+  const { callbackUrl } = await searchParams;
 
   if (session?.user) {
-    redirect("/me");
+    redirect(callbackUrl || "/me");
   }
 
   async function handleSignIn() {
     "use server";
-    await signIn("google", { redirectTo: "/me" });
+    await signIn("google", { redirectTo: callbackUrl || "/me" });
   }
 
   return (
@@ -74,13 +79,7 @@ export default async function LoginPage() {
 
         {/* CTA */}
         <form action={handleSignIn}>
-          <Button
-            type="submit"
-            className="h-12 w-full rounded-xl text-base font-semibold"
-            size="lg"
-          >
-            Continuar con Google
-          </Button>
+          <SignInButton />
         </form>
 
         <p className="text-center text-xs text-muted-foreground">

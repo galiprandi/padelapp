@@ -1,33 +1,38 @@
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import {
+  matches as matchesTable,
+  matchPlayers,
+} from "@/db/schema";
+import { eq, and, ne, lt, inArray, desc, asc, count } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { type MatchResultCompactMatch } from "@/components/matches/match-result-card";
-import { getMatchWinner } from "./utils";
+import { getMatchWinner } from "@/lib/utils";
+import { userInMatch, userInMatchByRef, hasPlayerWithoutAttendance } from "./helpers";
 
 export async function getEnhancedUserMatches(
   userId: string,
   statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED" | "CANCELLED",
   limit = 20
 ): Promise<MatchResultCompactMatch[]> {
-  const matches = await prisma.match.findMany({
-    where: {
-      status: statusFilter ?? { not: "CANCELLED" },
+  const result = await db.query.matches.findMany({
+    where: and(
+      statusFilter
+        ? eq(matchesTable.status, statusFilter)
+        : ne(matchesTable.status, "CANCELLED"),
+      userInMatch(userId),
+    ),
+    with: {
       players: {
-        some: { userId },
-      },
-    },
-    include: {
-      players: {
-        include: {
+        with: {
           user: true,
         },
       },
     },
-    orderBy: {
-      date: "desc",
-    },
-    take: limit,
+    orderBy: desc(matchesTable.date),
+    limit,
   });
 
-  return matches.map((match) => ({
+  return result.map((match) => ({
     id: match.id,
     createdAt: match.date,
     score: match.score,
@@ -70,41 +75,40 @@ export async function getPendingActions(
       if (a.score && !b.score) return -1;
       if (!a.score && b.score) return 1;
       // Secondary: most recent first
-      return new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime();
+      return new Date(b.date || b.createdAt).getTime() - new Date(a.date || b.createdAt).getTime();
     });
 }
 
 export async function getPendingActionsCount(userId: string): Promise<number> {
   const now = new Date();
-  return prisma.match.count({
-    where: {
-      status: "PENDING",
-      date: { lt: now },
-      players: { some: { userId } },
-    },
-  });
+  const [{ count: total }] = await db
+    .select({ count: count() })
+    .from(matchesTable)
+    .where(
+      and(
+        eq(matchesTable.status, "PENDING"),
+        lt(matchesTable.date, now),
+        userInMatchByRef(userId),
+      ),
+    );
+  return total;
 }
 
 export async function getPendingAttendanceActions(userId: string) {
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
-  const matchesNeedingAttendance = await prisma.match.findMany({
-    where: {
-      creatorId: userId,
-      status: { in: ["PENDING", "CONFIRMED"] },
-      date: { lt: oneHourAgo },
+  const matchesNeedingAttendance = await db.query.matches.findMany({
+    where: and(
+      eq(matchesTable.creatorId, userId),
+      inArray(matchesTable.status, ["PENDING", "CONFIRMED"]),
+      lt(matchesTable.date, oneHourAgo),
+      hasPlayerWithoutAttendance(),
+    ),
+    with: {
       players: {
-        some: {
-          userId: { not: null },
-          attendance: null,
-        },
-      },
-    },
-    include: {
-      players: {
-        include: {
+        with: {
           user: {
-            select: {
+            columns: {
               id: true,
               displayName: true,
               image: true,
@@ -112,13 +116,11 @@ export async function getPendingAttendanceActions(userId: string) {
             },
           },
         },
-        orderBy: { position: "asc" },
+        orderBy: asc(matchPlayers.position),
       },
     },
-    orderBy: {
-      date: "desc",
-    },
-    take: 10,
+    orderBy: desc(matchesTable.date),
+    limit: 10,
   });
 
   return matchesNeedingAttendance.map((match) => ({
@@ -134,24 +136,20 @@ export async function getPendingAttendanceActions(userId: string) {
 }
 
 export async function getHeadToHeadStats(viewerId: string, profileId: string) {
-  const sharedMatches = await prisma.match.findMany({
-    where: {
-      status: "CONFIRMED",
-      AND: [
-        { players: { some: { userId: viewerId } } },
-        { players: { some: { userId: profileId } } },
-      ],
-    },
-    include: {
+  const sharedMatches = await db.query.matches.findMany({
+    where: and(
+      eq(matchesTable.status, "CONFIRMED"),
+      userInMatch(viewerId),
+      userInMatch(profileId),
+    ),
+    with: {
       players: {
-        include: {
+        with: {
           user: true,
         },
       },
     },
-    orderBy: {
-      date: "desc",
-    },
+    orderBy: desc(matchesTable.date),
   });
 
   const stats = {
@@ -187,4 +185,48 @@ export async function getHeadToHeadStats(viewerId: string, profileId: string) {
   });
 
   return stats;
+}
+
+/**
+ * Cached confirmed matches for a user.
+ * Keyed by userId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedConfirmedMatches = unstable_cache(
+  async (userId: string) => {
+    return db.query.matches.findMany({
+      where: and(
+        eq(matchesTable.status, "CONFIRMED"),
+        userInMatch(userId),
+      ),
+      with: {
+        players: {
+          with: {
+            user: true,
+          },
+        },
+      },
+      orderBy: desc(matchesTable.date),
+      limit: 20,
+    });
+  },
+  ["confirmed-matches"],
+  { tags: ["matches"], revalidate: 60 }
+);
+
+/**
+ * Get confirmed matches for a public profile (limited to 5, with players).
+ * Used by /p/[userId] page.
+ */
+export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
+  const result = await db.query.matches.findMany({
+    where: and(
+      eq(matchesTable.status, "CONFIRMED"),
+      userInMatch(userId),
+    ),
+    with: { players: { with: { user: true } } },
+    orderBy: desc(matchesTable.date),
+    limit,
+  });
+  return result;
 }

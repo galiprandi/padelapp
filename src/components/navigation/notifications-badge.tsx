@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { getPendingActionsCount } from "@/lib/match-queries";
+import { getPendingActionsCount } from "@/lib/queries";
 
 async function NotificationsCount({ userId }: { userId: string }) {
   const count = await getPendingActionsCount(userId);

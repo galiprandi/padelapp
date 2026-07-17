@@ -1,8 +1,11 @@
 import NextAuth, { type Session } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
 import Google, { type GoogleProfile } from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { eq } from "drizzle-orm";
+
+import { db } from "@/db";
+import { accounts, sessions, users, verificationTokens } from "@/db/schema";
 
 type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
 
@@ -22,7 +25,12 @@ const {
   signIn,
   signOut,
 } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  } as any),
   session: { strategy: "database" },
   trustHost: true,
   providers: [
@@ -48,9 +56,9 @@ const {
       if (session.user) {
         const adapterUser = user as AdapterUserWithAlias;
         session.user.id = adapterUser.id;
-        session.user.displayName = adapterUser.displayName;
-        session.user.alias = adapterUser.alias;
-        session.user.level = adapterUser.level;
+        session.user.displayName = (adapterUser as any).displayName;
+        session.user.alias = (adapterUser as any).alias;
+        session.user.level = (adapterUser as any).level;
         session.user.email = adapterUser.email;
         session.user.image = adapterUser.image;
       }
@@ -76,40 +84,18 @@ const {
       }
 
       const emailVerifiedAt = new Date();
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: emailVerifiedAt },
-      });
+      if (user.id) {
+        await db
+          .update(users)
+          .set({ emailVerified: emailVerifiedAt })
+          .where(eq(users.id, user.id));
+      }
       adapterUser.emailVerified = emailVerifiedAt;
     },
   },
 });
 
 export async function auth(): Promise<Session | null> {
-  if (process.env.AUTH_BYPASS === "true") {
-    const devUser = await prisma.user.upsert({
-      where: { email: "dev@padelapp.local" },
-      update: {},
-      create: {
-        email: "dev@padelapp.local",
-        displayName: "Dev Player",
-        alias: "DevPlayer",
-        level: 6,
-      },
-    });
-
-    return {
-      user: {
-        id: devUser.id,
-        displayName: devUser.displayName,
-        alias: devUser.alias,
-        level: devUser.level,
-        email: devUser.email,
-        image: devUser.image,
-      } as Session["user"],
-      expires: new Date(Date.now() + 86400000).toISOString(),
-    } as Session;
-  }
   return _auth() as Promise<Session | null>;
 }
 

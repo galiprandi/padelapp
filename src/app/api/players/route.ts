@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { and, eq, ilike, ne, or } from "drizzle-orm";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import { getPadelContacts } from "@/lib/padel-contacts";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { getPadelContacts } from "@/lib/queries";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -30,18 +32,27 @@ export async function GET(request: Request) {
   }
 
   // Search globally
-  const globalPlayers = await prisma.user.findMany({
-    where: {
-      OR: [
-        { displayName: { contains: query, mode: "insensitive" } },
-        { email: { contains: query, mode: "insensitive" } },
-        { alias: { contains: query, mode: "insensitive" } },
-      ],
-      NOT: { id: session.user.id },
-    },
-    take: 20,
-    orderBy: { displayName: "asc" },
-  });
+  const globalPlayers = await db
+    .select({
+      id: users.id,
+      displayName: users.displayName,
+      alias: users.alias,
+      email: users.email,
+      image: users.image,
+    })
+    .from(users)
+    .where(
+      and(
+        ne(users.id, session.user.id),
+        or(
+          ilike(users.displayName, `%${query}%`),
+          ilike(users.email, `%${query}%`),
+          ilike(users.alias, `%${query}%`),
+        ),
+      ),
+    )
+    .orderBy(users.displayName)
+    .limit(20);
 
   // Merge and prioritize contacts
   const contactIds = new Set(contacts.map((c) => c.id));

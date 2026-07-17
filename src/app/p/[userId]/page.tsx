@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { PlayerAvatar } from "@/components/players/player-avatar";
@@ -19,7 +18,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { cn, getMatchWinner } from "@/lib/utils";
-import { getHeadToHeadStats } from "@/lib/match-queries";
+import {
+  getHeadToHeadStats,
+  getPublicProfileUser,
+  getConfirmedMatchesForProfile,
+} from "@/lib/queries";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -32,48 +35,15 @@ export default async function PublicProfilePage({
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      displayName: true,
-      alias: true,
-      image: true,
-      level: true,
-      rankingScore: true,
-      rankingPosition: true,
-      rankingDelta: true,
-      wins: true,
-      losses: true,
-      matchesPlayed: true,
-    },
-  });
+  const user = await getPublicProfileUser(userId);
 
   if (!user) {
     notFound();
   }
 
-  const matches = await prisma.match.findMany({
-    where: {
-      status: "CONFIRMED",
-      players: {
-        some: { userId },
-      },
-    },
-    include: {
-      players: {
-        include: {
-          user: true,
-        },
-      },
-    },
-    orderBy: {
-      date: "desc",
-    },
-    take: 5,
-  });
+  const matches_result = await getConfirmedMatchesForProfile(userId, 5);
 
-  const formattedMatches = matches.map<MatchResultCompactMatch>((match) => ({
+  const formattedMatches = matches_result.map<MatchResultCompactMatch>((match) => ({
     id: match.id,
     createdAt: match.date,
     score: match.score,
@@ -105,7 +75,7 @@ export default async function PublicProfilePage({
       ? Math.round((user.wins / user.matchesPlayed) * 100)
       : 0;
 
-  const recentForm = matches.map((match) => {
+  const recentForm = matches_result.map((match) => {
     if (!match.score) return "L";
     const winner = getMatchWinner(match.score);
     if (!winner) return "L";

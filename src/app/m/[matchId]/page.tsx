@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { matches, matchPlayers } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -28,9 +30,11 @@ export async function generateMetadata({
   params,
 }: InvitationPageProps): Promise<Metadata> {
   const { matchId } = await params;
-  const match = await prisma.match.findUnique({
-    where: { id: matchId },
-  });
+  const [match] = await db
+    .select()
+    .from(matches)
+    .where(eq(matches.id, matchId))
+    .limit(1);
 
   if (!match) {
     return { title: "Partido no encontrado" };
@@ -84,13 +88,13 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   const { matchId } = await params;
   const session = await auth();
 
-  const match = await prisma.match.findUnique({
-    where: { id: matchId },
-    include: {
+  const match = await db.query.matches.findFirst({
+    where: eq(matches.id, matchId),
+    with: {
       creator: true,
       players: {
-        orderBy: { position: "asc" },
-        include: { user: true, team: true },
+        orderBy: asc(matchPlayers.position),
+        with: { user: true, team: true },
       },
     },
   });

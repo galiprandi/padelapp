@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { users, matches, matchPlayers } from "@/db/schema";
+import { eq, and, inArray, isNotNull, exists } from "drizzle-orm";
 import { getMatchWinner } from "@/lib/utils";
 
 interface UserStats {
@@ -125,12 +127,15 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
     let userScores: Map<string, { score: number; attendanceScore: number; stats: UserStats }>;
 
     if (isIncremental) {
-      const matchPlayers = await prisma.matchPlayer.findMany({
-        where: { userId: { in: affectedUserIds } },
-        include: { match: { select: { status: true, score: true, date: true } } },
-        orderBy: { match: { date: "asc" } },
+      const matchPlayersData = await db.query.matchPlayers.findMany({
+        where: inArray(matchPlayers.userId, affectedUserIds),
+        with: { match: { columns: { status: true, score: true, date: true } } },
       });
-      const userStats = computeStatsForUsers(matchPlayers);
+      // orderBy by match.date is not supported in nested relations — sort in JS.
+      matchPlayersData.sort(
+        (a, b) => a.match.date.getTime() - b.match.date.getTime(),
+      );
+      const userStats = computeStatsForUsers(matchPlayersData);
       userScores = new Map();
       for (const [userId, stats] of userStats) {
         userScores.set(userId, {
@@ -140,11 +145,14 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
         });
       }
     } else {
-      const allMatchPlayers = await prisma.matchPlayer.findMany({
-        where: { userId: { not: null } },
-        include: { match: { select: { status: true, score: true, date: true } } },
-        orderBy: { match: { date: "asc" } },
+      const allMatchPlayers = await db.query.matchPlayers.findMany({
+        where: isNotNull(matchPlayers.userId),
+        with: { match: { columns: { status: true, score: true, date: true } } },
       });
+      // orderBy by match.date is not supported in nested relations — sort in JS.
+      allMatchPlayers.sort(
+        (a, b) => a.match.date.getTime() - b.match.date.getTime(),
+      );
       const userStats = computeStatsForUsers(allMatchPlayers);
       userScores = new Map();
       for (const [userId, stats] of userStats) {
@@ -157,12 +165,19 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
     }
 
     // 2. Read all users for position calculation (lightweight — no match data)
-    const users = await prisma.user.findMany({
-      select: { id: true, rankingPosition: true, rankingScore: true, wins: true, losses: true, matchesPlayed: true, lastMatchAt: true, attendanceScore: true },
-    });
+    const usersData = await db.select({
+      id: users.id,
+      rankingPosition: users.rankingPosition,
+      rankingScore: users.rankingScore,
+      wins: users.wins,
+      losses: users.losses,
+      matchesPlayed: users.matchesPlayed,
+      lastMatchAt: users.lastMatchAt,
+      attendanceScore: users.attendanceScore,
+    }).from(users);
 
     // 3. Merge computed scores with existing user data
-    const ranking = users.map((user) => {
+    const ranking = usersData.map((user) => {
       const computed = userScores.get(user.id);
       return {
         userId: user.id,
@@ -187,7 +202,7 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
     });
 
     // 5. Update only changed users
-    const updates = ranking
+    const toUpdate = ranking
       .map((item, index) => {
         const newPosition = index + 1;
         const delta = item.oldPosition ? item.oldPosition - newPosition : 0;
@@ -196,8 +211,8 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
         // Skip users whose score didn't change (incremental mode only)
         if (isIncremental && !computed) return null;
 
-        return prisma.user.update({
-          where: { id: item.userId },
+        return {
+          userId: item.userId,
           data: {
             rankingScore: item.score,
             rankingPosition: newPosition,
@@ -210,12 +225,16 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
               attendanceScore: item.attendanceScore,
             } : {}),
           },
-        });
+        };
       })
       .filter((u): u is NonNullable<typeof u> => u !== null);
 
-    if (updates.length > 0) {
-      await prisma.$transaction(updates);
+    if (toUpdate.length > 0) {
+      await db.transaction(async (tx) => {
+        for (const item of toUpdate) {
+          await tx.update(users).set(item.data).where(eq(users.id, item.userId));
+        }
+      });
     }
 
     revalidatePath("/ranking");

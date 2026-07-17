@@ -10,7 +10,6 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { PushPermissionPrompt } from "@/components/pwa/push-permission-prompt";
-import { prisma } from "@/lib/prisma";
 import {
   CalendarDays,
   Trophy,
@@ -23,7 +22,10 @@ import {
   getEnhancedUserMatches,
   getPendingActions,
   getPendingAttendanceActions,
-} from "@/lib/match-queries";
+  getDashboardUserStats,
+  getMyUpcomingTurns,
+  getRecommendedTurns,
+} from "@/lib/queries";
 import { cn, getMatchWinner } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
@@ -37,54 +39,22 @@ export default async function DashboardPage() {
   const now = new Date();
 
   const [
-    user,
+    userStats,
     allPendingMatches,
     recentMatches,
     pendingAttendance,
     myTurns,
     recommendedTurns,
   ] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: viewerId },
-      select: {
-        id: true,
-        displayName: true,
-        alias: true,
-        rankingScore: true,
-        rankingPosition: true,
-        rankingDelta: true,
-        level: true,
-        matchesPlayed: true,
-        wins: true,
-        losses: true,
-        image: true,
-        attendanceScore: true,
-      },
-    }),
+    getDashboardUserStats(viewerId),
     getEnhancedUserMatches(viewerId, "PENDING"),
     getEnhancedUserMatches(viewerId, "CONFIRMED"),
     getPendingAttendanceActions(viewerId),
-    prisma.turn.findMany({
-      where: {
-        players: { some: { userId: viewerId } },
-        date: { gte: now },
-        status: { in: ["OPEN", "FULL"] },
-      },
-      include: { players: true },
-      orderBy: { date: "asc" },
-      take: 3,
-    }),
-    prisma.turn.findMany({
-      where: {
-        players: { none: { userId: viewerId } },
-        date: { gte: now },
-        status: "OPEN",
-      },
-      include: { players: true },
-      orderBy: { date: "asc" },
-      take: 3,
-    }),
+    getMyUpcomingTurns(viewerId, 3),
+    getRecommendedTurns(viewerId, 3),
   ]);
+
+  const user = userStats;
 
   const pendingActionMatches = await getPendingActions(
     viewerId,

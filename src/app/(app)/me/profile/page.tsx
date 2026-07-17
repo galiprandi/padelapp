@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { ProfileForm } from "./profile-form";
-import { prisma } from "@/lib/prisma";
+import { getEditableProfile } from "@/lib/queries";
 import { UserCircle } from "lucide-react";
 
 export default async function ProfilePage() {
@@ -10,16 +10,7 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      displayName: true,
-      alias: true,
-      level: true,
-      image: true,
-      email: true,
-    },
-  });
+  const user = await getEditableProfile(session.user.id);
 
   if (!user) {
     redirect("/login");

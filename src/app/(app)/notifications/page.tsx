@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getPendingActions } from "@/lib/match-queries";
+import { getPendingActions } from "@/lib/queries";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { EmptyState } from "@/components/empty-state";
 import { BellOff } from "lucide-react";

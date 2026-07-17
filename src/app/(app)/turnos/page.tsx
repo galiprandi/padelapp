@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { TurnCard } from "@/components/turns/turn-card";
-import { getCachedOpenTurns } from "@/lib/cached-queries";
+import { getCachedOpenTurns } from "@/lib/queries";
 import Link from "next/link";
 import { CalendarOff, Plus } from "lucide-react";
 import { auth } from "@/auth";

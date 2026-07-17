@@ -1,3 +1,7 @@
+import { eq } from "drizzle-orm";
+
+import { db } from "@/db";
+import { users } from "@/db/schema";
 import { sendPushToUser } from "@/lib/firebase-admin";
 
 /**
@@ -20,10 +24,10 @@ export async function notifyUsers(
  * Get a user's display name (alias preferred, fallback to displayName).
  */
 export async function getUserDisplayName(userId: string): Promise<string> {
-  const { prisma } = await import("@/lib/prisma");
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { alias: true, displayName: true },
-  });
+  const [user] = await db
+    .select({ alias: users.alias, displayName: users.displayName })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
   return user?.alias ?? user?.displayName ?? "Un jugador";
 }

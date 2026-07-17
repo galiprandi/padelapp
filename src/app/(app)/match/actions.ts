@@ -1,9 +1,10 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
+import { and, eq, asc, count, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { matches, matchPlayers, teams, users } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
@@ -115,6 +116,23 @@ function teamForPosition(position: number, totalPlayers: number): TeamKey {
     return position === 0 ? "A" : "B";
   }
   return position < 2 ? "A" : "B";
+}
+
+/**
+ * Helper: fetch a match with its players (used inside transactions).
+ */
+async function getMatchWithPlayers(
+  tx: Pick<typeof db, "select">,
+  matchId: string,
+) {
+  const [match] = await tx.select().from(matches).where(eq(matches.id, matchId)).limit(1);
+  if (!match) return null;
+  const players = await tx
+    .select()
+    .from(matchPlayers)
+    .where(eq(matchPlayers.matchId, matchId))
+    .orderBy(asc(matchPlayers.position));
+  return { ...match, players };
 }
 
 export async function createMatchAction(
@@ -250,60 +268,52 @@ export async function createMatchAction(
   const teamLabelB = sanitizeTeamLabel(input.teamLabels?.B, "B", input.format);
 
   try {
-    const creationResult = await prisma.$transaction(
-      async (tx) => {
-        if (
-          typeof (tx as { team?: typeof prisma.team }).team?.create !==
-          "function"
-        ) {
-          throw new Error("prisma-client-missing-team-delegate");
-        }
+    const creationResult = await db.transaction(async (tx) => {
+      const [teamA] = await tx.insert(teams).values({ label: teamLabelA }).returning();
+      const [teamB] = await tx.insert(teams).values({ label: teamLabelB }).returning();
 
-        const teamClient = (tx as { team: typeof prisma.team }).team;
+      const teamIdByKey: Record<TeamKey, string> = {
+        A: teamA.id,
+        B: teamB.id,
+      };
 
-        const teamA = await teamClient.create({ data: { label: teamLabelA } });
-        const teamB = await teamClient.create({ data: { label: teamLabelB } });
+      const [match] = await tx
+        .insert(matches)
+        .values({
+          creatorId: session.user.id,
+          status: MATCH_STATUS.PENDING,
+          date: input.date ? new Date(input.date) : new Date(),
+          sets: input.sets,
+          matchType: input.matchType,
+          club: input.club?.trim() || null,
+          courtNumber: input.courtNumber?.trim() || null,
+          notes: input.notes?.trim() || null,
+          score: input.score?.trim() || null,
+          turnId: input.turnId || null,
+        })
+        .returning();
 
-        const teamIdByKey: Record<TeamKey, string> = {
-          A: teamA.id,
-          B: teamB.id,
-        };
+      const playerValues = normalizedSlots.map((slot) => ({
+        matchId: match.id,
+        position: slot.position,
+        userId: slot.userId,
+        displayName: slot.displayName,
+        teamId: teamIdByKey[slot.team],
+        resultConfirmed: false,
+        joinedAt: slot.joinedAt,
+      }));
+      const insertedPlayers = await tx
+        .insert(matchPlayers)
+        .values(playerValues)
+        .returning();
 
-        const match = await tx.match.create({
-          data: {
-            creatorId: session.user.id,
-            status: MATCH_STATUS.PENDING,
-            date: input.date ? new Date(input.date) : new Date(),
-            sets: input.sets,
-            matchType: input.matchType,
-            club: input.club?.trim() || null,
-            courtNumber: input.courtNumber?.trim() || null,
-            notes: input.notes?.trim() || null,
-            score: input.score?.trim() || null,
-            turnId: input.turnId || null,
-            players: {
-              create: normalizedSlots.map((slot) => ({
-                position: slot.position,
-                userId: slot.userId,
-                displayName: slot.displayName,
-                teamId: teamIdByKey[slot.team],
-                resultConfirmed: false,
-                joinedAt: slot.joinedAt,
-              })),
-            },
-          },
-          include: {
-            players: true,
-          },
-        });
-
-        return {
-          match,
-          teamA,
-          teamB,
-        };
-      },
-    );
+      return {
+        match,
+        teamA,
+        teamB,
+        players: insertedPlayers,
+      };
+    });
 
     revalidatePath("/match");
     revalidateTag("matches", "default");
@@ -325,10 +335,10 @@ export async function createMatchAction(
       },
     };
 
-    const slots = creationResult.match.players
+    const slots = creationResult.players
       .slice()
-      .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
-      .map((player: { id: string; position: number; teamId: string | null; displayName: string | null; userId: string | null }) => {
+      .sort((a, b) => a.position - b.position)
+      .map((player) => {
         const teamInfo = player.teamId
           ? teamLabelById[player.teamId]
           : { team: "A" as TeamKey, label: teamLabelA };
@@ -351,19 +361,6 @@ export async function createMatchAction(
       slots,
     };
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === "prisma-client-missing-team-delegate"
-    ) {
-      console.error(
-        "createMatchAction error: Prisma client missing Team delegate. Run `npm run prisma:generate` and restart the dev server.",
-      );
-      return {
-        status: "error",
-        message:
-          "Necesitamos refrescar la base. Corré `npm run prisma:generate` y reiniciá el servidor de desarrollo.",
-      };
-    }
     console.error("createMatchAction failed", error);
     return {
       status: "error",
@@ -385,10 +382,11 @@ export async function cancelMatchAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
-      select: { creatorId: true, status: true },
-    });
+    const [match] = await db
+      .select({ creatorId: matches.creatorId, status: matches.status })
+      .from(matches)
+      .where(eq(matches.id, matchId))
+      .limit(1);
 
     if (!match) {
       return { status: "error", message: "No encontramos el partido." };
@@ -408,10 +406,10 @@ export async function cancelMatchAction(
       };
     }
 
-    await prisma.match.update({
-      where: { id: matchId },
-      data: { status: MATCH_STATUS.CANCELLED },
-    });
+    await db
+      .update(matches)
+      .set({ status: MATCH_STATUS.CANCELLED })
+      .where(eq(matches.id, matchId));
 
     revalidatePath("/match");
     revalidatePath(`/match/${matchId}`);
@@ -447,10 +445,11 @@ export async function swapMatchPlayersAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: input.matchId },
-      select: { creatorId: true },
-    });
+    const [match] = await db
+      .select({ creatorId: matches.creatorId })
+      .from(matches)
+      .where(eq(matches.id, input.matchId))
+      .limit(1);
 
     if (!match) {
       return { status: "error", message: "No encontramos el partido." };
@@ -463,10 +462,16 @@ export async function swapMatchPlayersAction(
       };
     }
 
-    const [p1, p2] = await Promise.all([
-      prisma.matchPlayer.findUnique({ where: { id: input.player1Id } }),
-      prisma.matchPlayer.findUnique({ where: { id: input.player2Id } }),
-    ]);
+    const [p1] = await db
+      .select()
+      .from(matchPlayers)
+      .where(eq(matchPlayers.id, input.player1Id))
+      .limit(1);
+    const [p2] = await db
+      .select()
+      .from(matchPlayers)
+      .where(eq(matchPlayers.id, input.player2Id))
+      .limit(1);
 
     if (
       !p1 ||
@@ -482,26 +487,20 @@ export async function swapMatchPlayersAction(
 
     // Atomic swap using a transaction.
     // We use a temporary position for one player to avoid unique constraint violations on (matchId, position).
-    await prisma.$transaction([
-      prisma.matchPlayer.update({
-        where: { id: p1.id },
-        data: { position: -1 },
-      }),
-      prisma.matchPlayer.update({
-        where: { id: p2.id },
-        data: {
-          position: p1.position,
-          teamId: p1.teamId,
-        },
-      }),
-      prisma.matchPlayer.update({
-        where: { id: p1.id },
-        data: {
-          position: p2.position,
-          teamId: p2.teamId,
-        },
-      }),
-    ]);
+    await db.transaction(async (tx) => {
+      await tx
+        .update(matchPlayers)
+        .set({ position: -1 })
+        .where(eq(matchPlayers.id, p1.id));
+      await tx
+        .update(matchPlayers)
+        .set({ position: p1.position, teamId: p1.teamId })
+        .where(eq(matchPlayers.id, p2.id));
+      await tx
+        .update(matchPlayers)
+        .set({ position: p2.position, teamId: p2.teamId })
+        .where(eq(matchPlayers.id, p1.id));
+    });
 
     revalidatePath(`/match/${input.matchId}`);
 
@@ -553,71 +552,74 @@ export async function submitMatchResultAction(
   }
 
   try {
-    const updatedMatch = await prisma.$transaction(async (tx) => {
-      const player = await tx.matchPlayer.findFirst({
-        where: {
-          matchId: input.matchId,
-          userId: session.user.id,
-        },
-      });
+    const updatedMatch = await db.transaction(async (tx) => {
+      const [player] = await tx
+        .select()
+        .from(matchPlayers)
+        .where(
+          and(
+            eq(matchPlayers.matchId, input.matchId),
+            eq(matchPlayers.userId, session.user.id),
+          ),
+        )
+        .limit(1);
 
       if (!player) {
         throw new Error("not-authorized");
       }
 
-      const baseMatch = await tx.match.update({
-        where: { id: input.matchId },
-        data: {
+      await tx
+        .update(matches)
+        .set({
           score,
           notes: input.notes?.trim() || null,
-          players: {
-            update: {
-              where: { id: player.id },
-              data: { resultConfirmed: true },
-            },
-          },
-        },
-        include: {
-          players: true,
-        },
-      });
+        })
+        .where(eq(matches.id, input.matchId));
 
-      const totalPlayers = baseMatch.players.length;
-      const teamAConfirmed = baseMatch.players.some(
-        (matchPlayer) =>
-          teamForPosition(matchPlayer.position, totalPlayers) === "A" &&
-          matchPlayer.resultConfirmed,
+      await tx
+        .update(matchPlayers)
+        .set({ resultConfirmed: true })
+        .where(eq(matchPlayers.id, player.id));
+
+      const result = await getMatchWithPlayers(tx, input.matchId);
+      if (!result) throw new Error("match-update-failed");
+
+      const totalPlayers = result.players.length;
+      const teamAConfirmed = result.players.some(
+        (mp) =>
+          teamForPosition(mp.position, totalPlayers) === "A" &&
+          mp.resultConfirmed,
       );
-      const teamBConfirmed = baseMatch.players.some(
-        (matchPlayer) =>
-          teamForPosition(matchPlayer.position, totalPlayers) === "B" &&
-          matchPlayer.resultConfirmed,
+      const teamBConfirmed = result.players.some(
+        (mp) =>
+          teamForPosition(mp.position, totalPlayers) === "B" &&
+          mp.resultConfirmed,
       );
 
       if (
         teamAConfirmed &&
         teamBConfirmed &&
-        baseMatch.status !== MATCH_STATUS.CONFIRMED
+        result.status !== MATCH_STATUS.CONFIRMED
       ) {
-        return tx.match.update({
-          where: { id: input.matchId },
-          data: { status: MATCH_STATUS.CONFIRMED },
-          include: { players: true },
-        });
+        await tx
+          .update(matches)
+          .set({ status: MATCH_STATUS.CONFIRMED })
+          .where(eq(matches.id, input.matchId));
+        return getMatchWithPlayers(tx, input.matchId);
       }
 
       if (
         (!teamAConfirmed || !teamBConfirmed) &&
-        baseMatch.status !== MATCH_STATUS.PENDING
+        result.status !== MATCH_STATUS.PENDING
       ) {
-        return tx.match.update({
-          where: { id: input.matchId },
-          data: { status: MATCH_STATUS.PENDING },
-          include: { players: true },
-        });
+        await tx
+          .update(matches)
+          .set({ status: MATCH_STATUS.PENDING })
+          .where(eq(matches.id, input.matchId));
+        return getMatchWithPlayers(tx, input.matchId);
       }
 
-      return baseMatch;
+      return result;
     });
 
     if (!updatedMatch) {
@@ -697,10 +699,11 @@ export async function updateMatchDetailsAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: input.matchId },
-      select: { creatorId: true, status: true },
-    });
+    const [match] = await db
+      .select({ creatorId: matches.creatorId, status: matches.status })
+      .from(matches)
+      .where(eq(matches.id, input.matchId))
+      .limit(1);
 
     if (!match) {
       return { status: "error", message: "Match not found." };
@@ -723,21 +726,20 @@ export async function updateMatchDetailsAction(
       };
     }
 
-    await prisma.match.update({
-      where: { id: input.matchId },
-      data: {
-        date: input.date ? new Date(input.date) : undefined,
-        sets: input.sets,
-        matchType: input.matchType,
-        club: input.club === undefined ? undefined : input.club?.trim() || null,
-        courtNumber:
-          input.courtNumber === undefined
-            ? undefined
-            : input.courtNumber?.trim() || null,
-        notes:
-          input.notes === undefined ? undefined : input.notes?.trim() || null,
-      },
-    });
+    const updateData: Record<string, unknown> = {};
+    if (input.date !== undefined) updateData.date = new Date(input.date);
+    if (input.sets !== undefined) updateData.sets = input.sets;
+    if (input.matchType !== undefined) updateData.matchType = input.matchType;
+    if (input.club !== undefined) updateData.club = input.club?.trim() || null;
+    if (input.courtNumber !== undefined)
+      updateData.courtNumber = input.courtNumber?.trim() || null;
+    if (input.notes !== undefined)
+      updateData.notes = input.notes?.trim() || null;
+
+    await db
+      .update(matches)
+      .set(updateData)
+      .where(eq(matches.id, input.matchId));
 
     revalidatePath("/match");
     revalidatePath(`/match/${input.matchId}`);
@@ -770,19 +772,23 @@ export async function confirmMatchResultAction(
   }
 
   try {
-    const updatedMatch = await prisma.$transaction(async (tx) => {
-      const player = await tx.matchPlayer.findFirst({
-        where: { matchId, userId: session.user.id },
-      });
+    const updatedMatch = await db.transaction(async (tx) => {
+      const [player] = await tx
+        .select()
+        .from(matchPlayers)
+        .where(
+          and(
+            eq(matchPlayers.matchId, matchId),
+            eq(matchPlayers.userId, session.user.id),
+          ),
+        )
+        .limit(1);
 
       if (!player) {
         throw new Error("not-authorized");
       }
 
-      const match = await tx.match.findUnique({
-        where: { id: matchId },
-        include: { players: true },
-      });
+      const match = await getMatchWithPlayers(tx, matchId);
 
       if (!match) {
         throw new Error("match-not-found");
@@ -796,18 +802,13 @@ export async function confirmMatchResultAction(
         return match;
       }
 
-      const updated = await tx.match.update({
-        where: { id: matchId },
-        data: {
-          players: {
-            update: {
-              where: { id: player.id },
-              data: { resultConfirmed: true },
-            },
-          },
-        },
-        include: { players: true },
-      });
+      await tx
+        .update(matchPlayers)
+        .set({ resultConfirmed: true })
+        .where(eq(matchPlayers.id, player.id));
+
+      const updated = await getMatchWithPlayers(tx, matchId);
+      if (!updated) throw new Error("match-update-failed");
 
       const totalPlayers = updated.players.length;
       const teamAConfirmed = updated.players.some(
@@ -826,17 +827,17 @@ export async function confirmMatchResultAction(
         teamBConfirmed &&
         updated.status !== MATCH_STATUS.CONFIRMED
       ) {
-        return tx.match.update({
-          where: { id: matchId },
-          data: { status: MATCH_STATUS.CONFIRMED },
-          include: { players: true },
-        });
+        await tx
+          .update(matches)
+          .set({ status: MATCH_STATUS.CONFIRMED })
+          .where(eq(matches.id, matchId));
+        return getMatchWithPlayers(tx, matchId);
       }
 
       return updated;
     });
 
-    if (updatedMatch.status === MATCH_STATUS.CONFIRMED) {
+    if (updatedMatch && updatedMatch.status === MATCH_STATUS.CONFIRMED) {
       const affectedIds = updatedMatch.players.map((p) => p.userId).filter((id): id is string => id !== null);
       await recalculateRankingAction(affectedIds);
     }
@@ -889,10 +890,7 @@ export async function finalizeMatchAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
-      include: { players: true },
-    });
+    const match = await getMatchWithPlayers(db, matchId);
 
     if (!match) {
       return { status: "error", message: "Match not found." };
@@ -912,24 +910,22 @@ export async function finalizeMatchAction(
       };
     }
 
-    await prisma.$transaction(async (tx) => {
-      await tx.match.update({
-        where: { id: matchId },
-        data: {
-          status: MATCH_STATUS.CONFIRMED,
-          players: {
-            updateMany: {
-              where: { matchId },
-              data: {
-                resultConfirmed: true,
-                attendance: "ATTENDED",
-                attendanceBy: session.user.id,
-                attendanceAt: new Date(),
-              },
-            },
-          },
-        },
-      });
+    const now = new Date();
+    await db.transaction(async (tx) => {
+      await tx
+        .update(matches)
+        .set({ status: MATCH_STATUS.CONFIRMED })
+        .where(eq(matches.id, matchId));
+
+      await tx
+        .update(matchPlayers)
+        .set({
+          resultConfirmed: true,
+          attendance: "ATTENDED",
+          attendanceBy: session.user.id,
+          attendanceAt: now,
+        })
+        .where(eq(matchPlayers.matchId, matchId));
     });
 
     // Trigger ranking recalculation
@@ -970,12 +966,9 @@ export async function releaseMatchSlotAction(
   }
 
   try {
-    const player = await prisma.matchPlayer.findUnique({
-      where: { id: input.playerId },
-      include: {
-        match: true,
-        user: true,
-      },
+    const player = await db.query.matchPlayers.findFirst({
+      where: eq(matchPlayers.id, input.playerId),
+      with: { match: true, user: true },
     });
 
     if (!player) {
@@ -995,15 +988,15 @@ export async function releaseMatchSlotAction(
         ? trimmedName
         : (player.displayName ?? player.user?.displayName ?? null);
 
-    await prisma.matchPlayer.update({
-      where: { id: input.playerId },
-      data: {
+    await db
+      .update(matchPlayers)
+      .set({
         userId: null,
         displayName: nextDisplayName,
         joinedAt: null,
         resultConfirmed: false,
-      },
-    });
+      })
+      .where(eq(matchPlayers.id, input.playerId));
 
     revalidatePath(`/match/${player.matchId}`);
 
@@ -1040,9 +1033,9 @@ export async function renamePlaceholderAction(
   }
 
   try {
-    const player = await prisma.matchPlayer.findUnique({
-      where: { id: input.playerId },
-      include: { match: true },
+    const player = await db.query.matchPlayers.findFirst({
+      where: eq(matchPlayers.id, input.playerId),
+      with: { match: true },
     });
 
     if (!player) {
@@ -1063,10 +1056,10 @@ export async function renamePlaceholderAction(
       };
     }
 
-    await prisma.matchPlayer.update({
-      where: { id: input.playerId },
-      data: { displayName: trimmedName },
-    });
+    await db
+      .update(matchPlayers)
+      .set({ displayName: trimmedName })
+      .where(eq(matchPlayers.id, input.playerId));
 
     revalidatePath(`/match/${player.matchId}`);
     revalidatePath(`/match`);
@@ -1108,10 +1101,11 @@ export async function updateTeamLabelAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: input.matchId },
-      select: { id: true, creatorId: true },
-    });
+    const [match] = await db
+      .select({ id: matches.id, creatorId: matches.creatorId })
+      .from(matches)
+      .where(eq(matches.id, input.matchId))
+      .limit(1);
 
     if (!match) {
       return { status: "error", message: "No encontramos el partido." };
@@ -1124,9 +1118,15 @@ export async function updateTeamLabelAction(
       };
     }
 
-    const linkedPlayers = await prisma.matchPlayer.count({
-      where: { matchId: input.matchId, teamId: input.teamId },
-    });
+    const [{ count: linkedPlayers }] = await db
+      .select({ count: count() })
+      .from(matchPlayers)
+      .where(
+        and(
+          eq(matchPlayers.matchId, input.matchId),
+          eq(matchPlayers.teamId, input.teamId),
+        ),
+      );
 
     if (linkedPlayers === 0) {
       return {
@@ -1135,10 +1135,10 @@ export async function updateTeamLabelAction(
       };
     }
 
-    await prisma.team.update({
-      where: { id: input.teamId },
-      data: { label: trimmedLabel },
-    });
+    await db
+      .update(teams)
+      .set({ label: trimmedLabel })
+      .where(eq(teams.id, input.teamId));
 
     revalidatePath(`/match/${input.matchId}`);
 
@@ -1183,36 +1183,39 @@ export async function saveMatchResultAction(
   }
 
   try {
-    const updatedMatch = await prisma.$transaction(async (tx) => {
+    const updatedMatch = await db.transaction(async (tx) => {
       // Verify the user is part of the match
-      const player = await tx.matchPlayer.findFirst({
-        where: {
-          matchId: input.matchId,
-          userId: session.user.id,
-        },
-      });
+      const [player] = await tx
+        .select()
+        .from(matchPlayers)
+        .where(
+          and(
+            eq(matchPlayers.matchId, input.matchId),
+            eq(matchPlayers.userId, session.user.id),
+          ),
+        )
+        .limit(1);
 
       if (!player) {
         throw new Error("not-authorized");
       }
 
       // Update the match score and status
-      const baseMatch = await tx.match.update({
-        where: { id: input.matchId },
-        data: {
+      await tx
+        .update(matches)
+        .set({
           score,
           status: (input.status as MatchStatus) || MATCH_STATUS.CONFIRMED,
-          players: {
-            update: {
-              where: { id: player.id },
-              data: { resultConfirmed: true },
-            },
-          },
-        },
-        include: {
-          players: true,
-        },
-      });
+        })
+        .where(eq(matches.id, input.matchId));
+
+      await tx
+        .update(matchPlayers)
+        .set({ resultConfirmed: true })
+        .where(eq(matchPlayers.id, player.id));
+
+      const baseMatch = await getMatchWithPlayers(tx, input.matchId);
+      if (!baseMatch) throw new Error("match-update-failed");
 
       // Check if at least one player from each team has confirmed the result
       const totalPlayers = baseMatch.players.length;
@@ -1233,11 +1236,11 @@ export async function saveMatchResultAction(
         teamBConfirmed &&
         baseMatch.status !== MATCH_STATUS.CONFIRMED
       ) {
-        return tx.match.update({
-          where: { id: input.matchId },
-          data: { status: MATCH_STATUS.CONFIRMED },
-          include: { players: true },
-        });
+        await tx
+          .update(matches)
+          .set({ status: MATCH_STATUS.CONFIRMED })
+          .where(eq(matches.id, input.matchId));
+        return getMatchWithPlayers(tx, input.matchId);
       }
 
       return baseMatch;
@@ -1314,33 +1317,33 @@ export async function getMatchByIdAction(matchId: string): Promise<{
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
-      include: {
+    const match = await db.query.matches.findFirst({
+      where: eq(matches.id, matchId),
+      with: {
         creator: {
-          select: {
+          columns: {
             id: true,
             displayName: true,
             image: true,
           },
         },
         players: {
-          include: {
+          with: {
             user: {
-              select: {
+              columns: {
                 id: true,
                 displayName: true,
                 image: true,
               },
             },
             team: {
-              select: {
+              columns: {
                 id: true,
                 label: true,
               },
             },
           },
-          orderBy: { position: "asc" },
+          orderBy: asc(matchPlayers.position),
         },
       },
     });
@@ -1390,9 +1393,9 @@ export async function joinMatchPlayerAction(
   }
 
   try {
-    const player = await prisma.matchPlayer.findUnique({
-      where: { id: playerId },
-      include: { match: true },
+    const player = await db.query.matchPlayers.findFirst({
+      where: eq(matchPlayers.id, playerId),
+      with: { match: true },
     });
 
     if (!player) {
@@ -1413,29 +1416,33 @@ export async function joinMatchPlayerAction(
       };
     }
 
-    const alreadyJoined = await prisma.matchPlayer.findFirst({
-      where: {
-        matchId: player.matchId,
-        userId: session.user.id,
-      },
-    });
+    const alreadyJoined = await db
+      .select()
+      .from(matchPlayers)
+      .where(
+        and(
+          eq(matchPlayers.matchId, player.matchId),
+          eq(matchPlayers.userId, session.user.id),
+        ),
+      )
+      .limit(1);
 
-    if (alreadyJoined) {
+    if (alreadyJoined.length > 0) {
       return {
         status: "error",
         message: "Ya estás inscripto en este partido.",
       };
     }
 
-    await prisma.matchPlayer.update({
-      where: { id: playerId },
-      data: {
+    await db
+      .update(matchPlayers)
+      .set({
         userId: session.user.id,
         displayName: null,
         joinedAt: new Date(),
         resultConfirmed: false,
-      },
-    });
+      })
+      .where(eq(matchPlayers.id, playerId));
 
     revalidatePath(`/match/${player.matchId}`);
     revalidatePath(`/j/${playerId}`);
@@ -1478,10 +1485,7 @@ export async function markAttendanceAction(
   }
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
-      include: { players: true },
-    });
+    const match = await getMatchWithPlayers(db, matchId);
 
     if (!match) {
       return { status: "error", message: "Partido no encontrado." };
@@ -1513,18 +1517,18 @@ export async function markAttendanceAction(
 
     const now = new Date();
 
-    await prisma.$transaction(
-      entries.map((entry) =>
-        prisma.matchPlayer.update({
-          where: { id: entry.matchPlayerId },
-          data: {
+    await db.transaction(async (tx) => {
+      for (const entry of entries) {
+        await tx
+          .update(matchPlayers)
+          .set({
             attendance: entry.status,
             attendanceBy: session.user.id,
             attendanceAt: now,
-          },
-        }),
-      ),
-    );
+          })
+          .where(eq(matchPlayers.id, entry.matchPlayerId));
+      }
+    });
 
     // If match is already CONFIRMED, recalculate ranking with new attendance data
     if (match.status === MATCH_STATUS.CONFIRMED) {

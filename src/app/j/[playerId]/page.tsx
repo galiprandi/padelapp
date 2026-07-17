@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { matchPlayers } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 import { JoinSlotButton } from "./join-slot-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -60,17 +62,17 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   const { playerId } = await params;
   const session = await auth();
 
-  const player = await prisma.matchPlayer.findUnique({
-    where: { id: playerId },
-    include: {
+  const player = await db.query.matchPlayers.findFirst({
+    where: eq(matchPlayers.id, playerId),
+    with: {
       user: true,
       team: true,
       match: {
-        include: {
+        with: {
           creator: true,
           players: {
-            orderBy: { position: "asc" },
-            include: { user: true, team: true },
+            orderBy: asc(matchPlayers.position),
+            with: { user: true, team: true },
           },
         },
       },

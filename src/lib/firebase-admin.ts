@@ -1,5 +1,9 @@
 import { initializeApp, cert, getApps, type App } from "firebase-admin/app";
 import { getMessaging, type Message } from "firebase-admin/messaging";
+import { eq, inArray } from "drizzle-orm";
+
+import { db } from "@/db";
+import { pushSubscriptions } from "@/db/schema";
 
 let app: App | null = null;
 let initError: string | null = null;
@@ -152,10 +156,10 @@ export async function sendPushToUser(
   userId: string,
   payload: { title: string; body: string; url?: string }
 ): Promise<number> {
-  const { prisma } = await import("@/lib/prisma");
-  const subscriptions = await prisma.pushSubscription.findMany({
-    where: { userId },
-  });
+  const subscriptions = await db
+    .select()
+    .from(pushSubscriptions)
+    .where(eq(pushSubscriptions.userId, userId));
 
   if (subscriptions.length === 0) return 0;
 
@@ -174,9 +178,9 @@ export async function sendPushToUser(
   // Clean up stale tokens in bulk
   if (staleTokenIds.length > 0) {
     try {
-      await prisma.pushSubscription.deleteMany({
-        where: { id: { in: staleTokenIds } },
-      });
+      await db
+        .delete(pushSubscriptions)
+        .where(inArray(pushSubscriptions.id, staleTokenIds));
       console.log(`[Push] Cleaned up ${staleTokenIds.length} stale token(s) for user ${userId}`);
     } catch (error) {
       console.error(`[Push] Failed to clean up stale tokens:`, error);

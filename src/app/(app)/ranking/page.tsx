@@ -4,8 +4,11 @@ import { EmptyState } from "@/components/empty-state";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
 import { Button } from "@/components/ui/button";
-import { prisma } from "@/lib/prisma";
-import { getCachedRanking, getCachedRankingSearch } from "@/lib/cached-queries";
+import {
+  getCachedRanking,
+  getCachedRankingSearch,
+  getCurrentUserRankingData,
+} from "@/lib/queries";
 import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
@@ -25,17 +28,7 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
     : await getCachedRanking();
 
   const currentUser = viewerId
-    ? await prisma.user.findUnique({
-        where: { id: viewerId },
-        include: {
-          matchPlayers: {
-            where: { match: { status: "CONFIRMED" } },
-            orderBy: { match: { date: "desc" } },
-            take: 5,
-            include: { match: { select: { score: true } } },
-          },
-        },
-      })
+    ? await getCurrentUserRankingData(viewerId)
     : null;
 
   const topThree = !query ? players.slice(0, 3) : [];
