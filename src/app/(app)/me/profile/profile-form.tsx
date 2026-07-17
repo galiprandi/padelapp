@@ -3,14 +3,13 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { updateUserProfileAction } from "@/app/(app)/me/actions";
-import { Loader2, Check, X } from "lucide-react";
+import { Loader2, Check, X, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/toast/use-toast";
 import { levelOptions } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { getPlayerInitials } from "@/components/players/player-avatar";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -102,8 +101,8 @@ export function ProfileForm({ initialAlias, initialLevel, initialImage }: Profil
                 className="w-16 h-16 rounded-xl object-cover border border-border"
               />
             ) : (
-              <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center border border-border text-lg font-bold text-primary">
-                {getPlayerInitials((alias || "Jugador").replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, ""))}
+              <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center border border-border">
+                <UserCircle className="w-10 h-10 text-muted-foreground" />
               </div>
             )}
             {image && (
