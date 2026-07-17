@@ -14,7 +14,8 @@ import { prisma } from "@/lib/prisma";
 import { CalendarDays, Trophy, ChevronRight, Activity, AlertTriangle } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { getEnhancedUserMatches, getPendingActions, getPendingAttendanceActions } from "@/lib/match-queries";
-import { getGreeting, cn, getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner } from "@/lib/utils";
+import { Greeting } from "@/components/greeting";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -105,8 +106,6 @@ export default async function DashboardPage() {
     ? agendaItems.slice(1)
     : agendaItems;
 
-  const greeting = getGreeting();
-
   const recentForm = recentMatches.slice(0, 5).map((match) => {
     const winner = getMatchWinner(match.score ?? null);
     if (!winner) return "L";
@@ -126,9 +125,7 @@ export default async function DashboardPage() {
           size={44}
         />
         <div className="space-y-0.5">
-          <h1 className="text-xl font-bold text-foreground">
-            {greeting}, {displayName}
-          </h1>
+          <Greeting name={displayName} />
           <p className="text-sm text-muted-foreground">
             Tu actividad de pádel en un solo lugar.
           </p>
