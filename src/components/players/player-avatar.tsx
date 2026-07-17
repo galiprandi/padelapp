@@ -7,18 +7,28 @@ export interface PlayerAvatarProps {
   image?: string;
   className?: string;
   size?: number;
+  "aria-hidden"?: boolean | "true" | "false";
 }
 
 export function getPlayerInitials(name: string): string {
-  return name
+  // Strip out non-alphanumeric characters to avoid security warning flow-throughs
+  const sanitized = name.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, "");
+  return sanitized
     .split(" ")
     .map((segment) => segment[0])
+    .filter(Boolean)
     .join("")
     .slice(0, 2)
     .toUpperCase();
 }
 
-export function PlayerAvatar({ name, image, className, size = 40 }: PlayerAvatarProps) {
+export function PlayerAvatar({
+  name,
+  image,
+  className,
+  size = 40,
+  "aria-hidden": ariaHidden,
+}: PlayerAvatarProps) {
   const initials = getPlayerInitials(name);
   const dimension = `${size}px`;
 
@@ -29,6 +39,7 @@ export function PlayerAvatar({ name, image, className, size = 40 }: PlayerAvatar
         className,
       )}
       style={{ width: dimension, height: dimension }}
+      aria-hidden={ariaHidden}
     >
       {image ? (
         <Image src={image} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />

@@ -311,7 +311,7 @@ The following patterns were explicitly removed from the codebase and must not be
 ## 7. Refinements
 
 ### 7.1 Shared Component Sanitization
-All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`, `OpenToNetworkButton`) have been refactored to the Minimal Design System.
+All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`, `OpenToNetworkButton`) have been refactored to the Minimal Design System. Refined `TurnCard` date indicator and action button heights (h-10) for tactile consistency.
 
 - **Standardized Button Radius & Heights**: Buttons use `rounded-lg`. Primary actions are strictly `h-12`, secondary/ghost are `h-10`. Small inline buttons (e.g., ManageSlotModal actions, TurnCard actions) are `h-8` or `h-9`.
 - **Tactile Feedback Standard**: Primary and secondary buttons utilize `active:scale-[0.98]` to provide delightful micro-interaction feedback. Purely decorative scale effects remain prohibited.
@@ -319,3 +319,4 @@ All core navigation and shared components (`BottomNav`, `TopBar`, `RankingSearch
 - **Shadow Normalization**: `shadow-2xl` and `shadow-xl` have been downgraded to `shadow-sm` or removed.
 - **Typography**: Micro-typography below 11px, `uppercase` transforms, non-standard `tracking-*`, and heavy `font-black` weights have been replaced by standard Tailwind weights (`font-medium`, `font-semibold`, `font-bold`) and sizes (`text-xs`, `text-sm`).
 - **Semantic Invitation Pages**: Invitation routes (`/t/[id]`, `/m/[matchId]`) are refactored to use semantic HTML and solid backgrounds, ensuring maximum mobile performance and clarity for guest users.
+- **Proactive Player Suggestions**: The player selection modal (`ManageSlotModal`) implements a proactive suggestion pattern, fetching and displaying recent padel contacts when the search input is empty. Suggestions use a solid `bg-muted` container and include a primary-colored marker for quick identification of frequent partners.

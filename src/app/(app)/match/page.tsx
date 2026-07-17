@@ -2,23 +2,48 @@ import { auth } from "@/auth";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
-import { getEnhancedUserMatches, getPendingActions } from "@/lib/match-queries";
+import { getPendingActions, getCachedConfirmedMatches } from "@/lib/queries";
 import Link from "next/link";
 import { CalendarOff, Plus, ChevronRight } from "lucide-react";
 import { calculateWinRate, getMatchWinner } from "@/lib/utils";
-
-export const dynamic = "force-dynamic";
 
 export default async function MatchListPage() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const [matches, pendingActions] = await Promise.all([
-    viewerId ? getEnhancedUserMatches(viewerId) : Promise.resolve([]),
+  const [confirmedMatchesRaw, pendingActions] = await Promise.all([
+    viewerId ? getCachedConfirmedMatches(viewerId) : Promise.resolve([]),
     viewerId ? getPendingActions(viewerId) : Promise.resolve([]),
   ]);
 
-  const confirmedMatches = matches.filter((m) => m.status === "CONFIRMED");
+  // Map to the same shape that getEnhancedUserMatches returns
+  // (the rest of the page expects MatchResultCompactMatch[])
+  const confirmedMatches = confirmedMatchesRaw.map((match) => ({
+    id: match.id,
+    createdAt: match.date,
+    score: match.score,
+    status: match.status,
+    date: match.date,
+    players: match.players.map((player) => {
+      const preferredName = player.user && "alias" in player.user && player.user.alias
+        ? player.user.alias
+        : player.user?.displayName;
+      return {
+        id: player.id,
+        position: player.position,
+        displayName: player.displayName,
+        resultConfirmed: player.resultConfirmed,
+        user: player.user
+          ? {
+            id: player.user.id,
+            displayName: preferredName ?? null,
+            image: player.user.image ?? undefined,
+          }
+          : null,
+      };
+    }),
+  }));
+
   const totalMatches = confirmedMatches.length;
 
   const matchResults = confirmedMatches.map((match) => {
@@ -62,8 +87,8 @@ export default async function MatchListPage() {
     (a, b) => b.wins - a.wins,
   )[0];
 
-  const groupedMatches = matches.reduce(
-    (groups: Record<string, typeof matches>, match) => {
+  const groupedMatches = confirmedMatches.reduce(
+    (groups: Record<string, typeof confirmedMatches>, match) => {
       const date = new Date(match.date || match.createdAt);
       const month = date.toLocaleString("es-AR", { month: "long" });
       const year = date.getFullYear();
@@ -171,7 +196,7 @@ export default async function MatchListPage() {
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-bold text-foreground">Historial</h2>
         {viewerId ? (
-          matches.length > 0 ? (
+          confirmedMatches.length > 0 ? (
             <div className="flex flex-col gap-4">
               {Object.entries(groupedMatches).map(
                 ([monthYear, monthMatches]) => (

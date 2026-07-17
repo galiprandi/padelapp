@@ -1,8 +1,12 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { ProfileForm } from "./profile-form";
-import { prisma } from "@/lib/prisma";
+import { getEditableProfile } from "@/lib/queries";
 import { UserCircle } from "lucide-react";
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -10,16 +14,7 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      displayName: true,
-      alias: true,
-      level: true,
-      image: true,
-      email: true,
-    },
-  });
+  const user = await getEditableProfile(session.user.id);
 
   if (!user) {
     redirect("/login");
@@ -56,7 +51,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      <ProfileForm initialAlias={user.alias ?? ""} initialLevel={user.level} />
+      <ProfileForm initialAlias={user.alias ?? ""} initialLevel={user.level} initialImage={user.image} />
     </div>
   );
 }

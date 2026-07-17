@@ -1,19 +1,22 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
+import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
 export type UpdateProfileResponse =
-  | { status: "ok"; alias: string | null; level: number }
+  | { status: "ok"; alias: string | null; level: number; image: string | null }
   | { status: "error"; message: string };
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
   levelInput: number,
+  imageInput?: string | null,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -32,19 +35,17 @@ export async function updateUserProfileAction(
   }
 
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
+  const imageToSave = imageInput?.trim() || null;
 
-  await prisma.user.update({
-    where: { id: session.user.id },
-    data: {
-      alias: aliasToSave,
-      level: levelInput,
-    },
-  });
+  await db
+    .update(users)
+    .set({ alias: aliasToSave, level: levelInput, image: imageToSave })
+    .where(eq(users.id, session.user.id));
 
   revalidatePath("/me");
   revalidatePath("/me/profile");
   revalidatePath("/ranking");
   revalidateTag("ranking", "default");
 
-  return { status: "ok", alias: aliasToSave, level: levelInput };
+  return { status: "ok", alias: aliasToSave, level: levelInput, image: imageToSave };
 }

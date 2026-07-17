@@ -46,13 +46,13 @@ export function RankingListItem({
     <Link
       href={`/p/${player.id}`}
       className={cn(
-        "flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         isViewer ? "border-primary/30 bg-primary/5" : "border-border bg-card",
       )}
     >
       <div
         className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold",
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold tabular-nums",
           isViewer
             ? "bg-primary text-primary-foreground"
             : "bg-muted text-muted-foreground",
@@ -67,6 +67,7 @@ export function RankingListItem({
           image={player.image ?? undefined}
           size={36}
           className="rounded-lg"
+          aria-hidden="true"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">

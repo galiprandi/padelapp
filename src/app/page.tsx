@@ -1,10 +1,7 @@
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { auth, signIn } from "@/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InstallLinkButton } from "@/components/pwa-install-link";
-
-export const dynamic = "force-dynamic";
+import { SignInButton } from "@/components/auth/sign-in-button";
 
 export default function MarketingLanding() {
   async function handleContinue() {
@@ -18,34 +15,37 @@ export default function MarketingLanding() {
   }
 
   return (
-    <main className="relative flex min-h-[100dvh] items-center justify-center bg-background px-6 py-10">
-      <Card className="w-full max-w-sm border-border bg-card shadow-sm">
-        <CardHeader className="space-y-4 pb-8 pt-10 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-4xl border border-primary/20">
-            🎾
+    <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+      <div className="flex w-full max-w-sm flex-col items-center gap-12">
+        {/* Logo + tagline */}
+        <div className="flex flex-col items-center gap-6">
+          <img
+            src="/icon.svg"
+            alt="PadelApp"
+            className="h-24 w-24"
+            width={96}
+            height={96}
+          />
+          <div className="space-y-3 text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              PadelApp
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-[240px]">
+              Turnos que no se cancelan.
+              <br />
+              Tu comunidad de pádel en un solo lugar.
+            </p>
           </div>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold">PadelApp</CardTitle>
-            <CardDescription className="text-balance px-4 text-sm font-medium leading-relaxed">
-              Registrá tus partidos, armá equipos y escalá en la comunidad de pádel.
-            </CardDescription>
-          </div>
-        </CardHeader>
+        </div>
 
-        <CardContent className="space-y-4 pb-12">
+        {/* CTA */}
+        <div className="w-full space-y-3">
           <form action={handleContinue}>
-            <Button
-              type="submit"
-              className="h-12 w-full rounded-xl text-base font-semibold"
-            >
-              Comenzar ahora
-            </Button>
+            <SignInButton label="Comenzar ahora" />
           </form>
-          <div className="flex flex-col gap-2">
-            <InstallLinkButton />
-          </div>
-        </CardContent>
-      </Card>
+          <InstallLinkButton />
+        </div>
+      </div>
     </main>
   );
 }

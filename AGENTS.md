@@ -41,7 +41,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 
 - **Frontend**: Next.js 15 (App Router, TypeScript, Server Components/Actions).
 - **UI**: Tailwind CSS + shadcn/ui (yellow theme). See `DESIGN.md` for design policy.
-- **Data**: Prisma + PostgreSQL (local dev via Docker, production via Supabase).
+- **Data**: Drizzle ORM + PostgreSQL (local dev via Docker, production via Neon serverless).
 - **Auth**: NextAuth with Google OAuth.
 - **Hosting**: Vercel, domain `padelapp.app`.
 - **Notifications**: Firebase Cloud Messaging (pending — blocking for launch).
@@ -64,7 +64,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 
 ### Implemented
 - **Minimal Design Cleanup**: Core shared components (`Button`, `Card`, `BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `PlayerPreview`, `PairPreview`, `RankingSearch`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) refactored to Minimal Design standards. Standardized typography by removing `uppercase` and non-standard `tracking-*` classes across all views. Standardized button heights and radius for inline actions.
-- Google OAuth login with NextAuth + Prisma adapter.
+- Google OAuth login with NextAuth + Drizzle adapter.
 - Dashboard (`/me`) with agenda, pending actions, recent results, and attendance marking.
 - Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`).
 - Match management: list (`/match`), create (`/match/new`), detail (`/match/[matchId]`), edit (`/match/[matchId]/edit`), result entry with attendance (`/match/[matchId]/result`).
@@ -81,12 +81,12 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - All redesigned pages use plain `<h1>`/`<p>` headers, standard Tailwind sizes, no decorative effects.
 - `PageHeader` component removed; all views use semantic HTML for headers.
 - Dashboard and main list views (`/me`, `/turnos`, `/match`) refined for UX consistency and accessibility (aria-labels, color standards for W/L).
-- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) and expanded stats summary (Level, Reputation) to maximize user "Time to Value".
+- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) with context-aware backgrounds and expanded stats summary (Level, Reputation) to maximize user "Time to Value". Standardized stats grid with interactive links.
 - **Turn Salvage Optimization**: Enhanced the Dashboard "Hero Activity" and Turn Cards with a proactive "Salvar Turno" (Save Turn) action for incomplete matches, integrating the "Open to my network" push notification flow directly into the main views to ensure turn fulfillment.
 - **Semantic Invitations Refactor**: Migrated `/t/[id]` and `/m/[matchId]` to semantic HTML structures, removing complex UI wrappers to improve mobile rendering and focus on clear conversion actions.
 
 ### Architecture
-- **Prisma + PostgreSQL**: single source of truth.
+- **Drizzle ORM + PostgreSQL**: single source of truth. Local dev uses `pg` driver over TCP; production uses `@neondatabase/serverless` (HTTP/WebSockets) for optimal serverless cold starts on Vercel.
 - **Server Actions**: all data mutations.
 - **Centralized queries**: `src/lib/match-queries.ts` for consistent reads.
 - **Ranking formula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWonBonus)` — simple hook formula, not ELO.

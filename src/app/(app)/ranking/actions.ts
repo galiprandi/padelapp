@@ -1,185 +1,196 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { users, matches, matchPlayers } from "@/db/schema";
+import { eq, and, inArray, isNotNull, exists } from "drizzle-orm";
 import { getMatchWinner } from "@/lib/utils";
 
+interface UserStats {
+  wins: number;
+  losses: number;
+  streak: number;
+  matchesPlayed: number;
+  lastMatchAt: Date | null;
+  setsWonBonus: number;
+  confirmedMatchesCount: number;
+  totalMatchesCount: number;
+  noShowPenalty: number;
+  latePenalty: number;
+  attendedCount: number;
+  noShowCount: number;
+  lateCount: number;
+}
+
+function computeScore(stats: UserStats): number {
+  let score = 1000 + stats.wins * 15 + stats.streak * 5 + stats.setsWonBonus;
+  score -= stats.noShowPenalty + stats.latePenalty;
+
+  const now = new Date();
+  const SIXTY_DAYS = 60 * 24 * 60 * 60 * 1000;
+  const ONE_HUNDRED_TWENTY_DAYS = 120 * 24 * 60 * 60 * 1000;
+
+  if (stats.lastMatchAt) {
+    const diff = now.getTime() - stats.lastMatchAt.getTime();
+    if (diff > ONE_HUNDRED_TWENTY_DAYS) {
+      score *= 0.25;
+    } else if (diff > SIXTY_DAYS) {
+      score *= 0.5;
+    }
+  }
+
+  return score;
+}
+
+function computeAttendanceScore(stats: UserStats): number {
+  const totalAttendanceTracked =
+    stats.attendedCount + stats.lateCount + stats.noShowCount;
+  return totalAttendanceTracked > 0
+    ? (stats.attendedCount + stats.lateCount) / totalAttendanceTracked
+    : stats.totalMatchesCount > 0
+      ? stats.confirmedMatchesCount / stats.totalMatchesCount
+      : 1.0;
+}
+
+function computeStatsForUsers(matchPlayers: Array<{
+  userId: string | null;
+  position: number;
+  resultConfirmed: boolean;
+  attendance: string | null;
+  match: { status: string; score: string | null; date: Date };
+}>) {
+  const userStats = new Map<string, UserStats>();
+
+  for (const mp of matchPlayers) {
+    if (!mp.userId) continue;
+    let stats = userStats.get(mp.userId);
+    if (!stats) {
+      stats = {
+        wins: 0, losses: 0, streak: 0, matchesPlayed: 0,
+        lastMatchAt: null, setsWonBonus: 0, confirmedMatchesCount: 0,
+        totalMatchesCount: 0, noShowPenalty: 0, latePenalty: 0,
+        attendedCount: 0, noShowCount: 0, lateCount: 0,
+      };
+      userStats.set(mp.userId, stats);
+    }
+
+    stats.totalMatchesCount++;
+    if (mp.resultConfirmed) stats.confirmedMatchesCount++;
+
+    if (mp.attendance === "ATTENDED") stats.attendedCount++;
+    else if (mp.attendance === "NO_SHOW") { stats.noShowCount++; stats.noShowPenalty += 25; }
+    else if (mp.attendance === "LATE") { stats.lateCount++; stats.latePenalty += 10; }
+
+    if (mp.match.status === "CONFIRMED" && mp.match.score) {
+      stats.matchesPlayed++;
+      if (!stats.lastMatchAt || mp.match.date > stats.lastMatchAt) {
+        stats.lastMatchAt = mp.match.date;
+      }
+
+      const winningTeam = getMatchWinner(mp.match.score);
+      if (winningTeam) {
+        const playerTeam = mp.position < 2 ? "A" : "B";
+        const isWinner = playerTeam === winningTeam;
+        const sets = mp.match.score.split(",").map((s) => s.trim().split("-").map(Number));
+        let setsWon = 0;
+        sets.forEach(([scoreA, scoreB]) => {
+          if (playerTeam === "A" && scoreA > scoreB) setsWon++;
+          if (playerTeam === "B" && scoreB > scoreA) setsWon++;
+        });
+
+        if (isWinner) {
+          stats.wins++;
+          stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
+          stats.setsWonBonus += setsWon * 2;
+        } else {
+          stats.losses++;
+          stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
+          stats.setsWonBonus += setsWon * 1;
+        }
+      }
+    }
+  }
+
+  return userStats;
+}
+
 /**
- * Recalculates the ranking for all users based on confirmed matches and attendance.
- * Formula from specs/ranking.md:
- * score = 1000 + (wins * 15) + (streak * 5) + (setsWonBonus)
- * Bonus: +2 per set won in victory, +1 per set won in loss.
- * Attendance: Ratio of confirmed results vs total matches played.
- * Time attenuation: >60 days factor 0.5, >120 days factor 0.25.
+ * Recalculates the ranking. When `affectedUserIds` is provided, only those
+ * users' scores are recomputed (incremental). Positions are always updated
+ * for all users since they are relative.
  */
-export async function recalculateRankingAction() {
+export async function recalculateRankingAction(affectedUserIds?: string[]) {
   try {
-    // 1. Get all users
-    const users = await prisma.user.findMany();
+    const isIncremental = affectedUserIds && affectedUserIds.length > 0;
 
-    // 2. Get all match players to calculate stats and attendance
-    // We include all matches where the user was a player to calculate attendanceScore
-    const allMatchPlayers = await prisma.matchPlayer.findMany({
-      where: {
-        userId: { not: null },
-      },
-      include: {
-        match: true,
-      },
-      orderBy: {
-        match: {
-          date: "asc",
-        },
-      },
-    });
+    // 1. Compute scores for affected users (or all if full recalc)
+    let userScores: Map<string, { score: number; attendanceScore: number; stats: UserStats }>;
 
-    const userStats = new Map<
-      string,
-      {
-        wins: number;
-        losses: number;
-        streak: number;
-        matchesPlayed: number;
-        lastMatchAt: Date | null;
-        setsWonBonus: number;
-        confirmedMatchesCount: number;
-        totalMatchesCount: number;
-        noShowPenalty: number;
-        latePenalty: number;
-        attendedCount: number;
-        noShowCount: number;
-        lateCount: number;
-      }
-    >();
-
-    // Initialize stats for all users
-    users.forEach((user) => {
-      userStats.set(user.id, {
-        wins: 0,
-        losses: 0,
-        streak: 0,
-        matchesPlayed: 0,
-        lastMatchAt: null,
-        setsWonBonus: 0,
-        confirmedMatchesCount: 0,
-        totalMatchesCount: 0,
-        noShowPenalty: 0,
-        latePenalty: 0,
-        attendedCount: 0,
-        noShowCount: 0,
-        lateCount: 0,
+    if (isIncremental) {
+      const matchPlayersData = await db.query.matchPlayers.findMany({
+        where: inArray(matchPlayers.userId, affectedUserIds),
+        with: { match: { columns: { status: true, score: true, date: true } } },
       });
-    });
-
-    // 3. Process match players
-    allMatchPlayers.forEach((mp) => {
-      if (!mp.userId) return;
-      const stats = userStats.get(mp.userId);
-      if (!stats) return;
-
-      const match = mp.match;
-
-      // Attendance tracking
-      stats.totalMatchesCount++;
-      if (mp.resultConfirmed) {
-        stats.confirmedMatchesCount++;
+      // orderBy by match.date is not supported in nested relations — sort in JS.
+      matchPlayersData.sort(
+        (a, b) => a.match.date.getTime() - b.match.date.getTime(),
+      );
+      const userStats = computeStatsForUsers(matchPlayersData);
+      userScores = new Map();
+      for (const [userId, stats] of userStats) {
+        userScores.set(userId, {
+          score: computeScore(stats),
+          attendanceScore: computeAttendanceScore(stats),
+          stats,
+        });
       }
-
-      // Track attendance status
-      if (mp.attendance === "ATTENDED") {
-        stats.attendedCount++;
-      } else if (mp.attendance === "NO_SHOW") {
-        stats.noShowCount++;
-        stats.noShowPenalty += 25;
-      } else if (mp.attendance === "LATE") {
-        stats.lateCount++;
-        stats.latePenalty += 10;
+    } else {
+      const allMatchPlayers = await db.query.matchPlayers.findMany({
+        where: isNotNull(matchPlayers.userId),
+        with: { match: { columns: { status: true, score: true, date: true } } },
+      });
+      // orderBy by match.date is not supported in nested relations — sort in JS.
+      allMatchPlayers.sort(
+        (a, b) => a.match.date.getTime() - b.match.date.getTime(),
+      );
+      const userStats = computeStatsForUsers(allMatchPlayers);
+      userScores = new Map();
+      for (const [userId, stats] of userStats) {
+        userScores.set(userId, {
+          score: computeScore(stats),
+          attendanceScore: computeAttendanceScore(stats),
+          stats,
+        });
       }
+    }
 
-      // Competitive stats only for CONFIRMED matches
-      if (match.status === "CONFIRMED" && match.score) {
-        stats.matchesPlayed++;
-        if (!stats.lastMatchAt || match.date > stats.lastMatchAt) {
-          stats.lastMatchAt = match.date;
-        }
+    // 2. Read all users for position calculation (lightweight — no match data)
+    const usersData = await db.select({
+      id: users.id,
+      rankingPosition: users.rankingPosition,
+      rankingScore: users.rankingScore,
+      wins: users.wins,
+      losses: users.losses,
+      matchesPlayed: users.matchesPlayed,
+      lastMatchAt: users.lastMatchAt,
+      attendanceScore: users.attendanceScore,
+    }).from(users);
 
-        const winningTeam = getMatchWinner(match.score);
-        if (winningTeam) {
-          const playerTeam = mp.position < 2 ? "A" : "B";
-          const isWinner = playerTeam === winningTeam;
-
-          // Parse sets for bonus
-          const sets = match.score
-            .split(",")
-            .map((s) => s.trim().split("-").map(Number));
-          let setsWon = 0;
-          sets.forEach(([scoreA, scoreB]) => {
-            if (playerTeam === "A" && scoreA > scoreB) setsWon++;
-            if (playerTeam === "B" && scoreB > scoreA) setsWon++;
-          });
-
-          if (isWinner) {
-            stats.wins++;
-            stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
-            stats.setsWonBonus += setsWon * 2;
-          } else {
-            stats.losses++;
-            stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
-            stats.setsWonBonus += setsWon * 1;
-          }
-        }
-      }
-    });
-
-    // 4. Calculate final scores and apply tie-breaking
-    const now = new Date();
-    const SIXTY_DAYS = 60 * 24 * 60 * 60 * 1000;
-    const ONE_HUNDRED_TWENTY_DAYS = 120 * 24 * 60 * 60 * 1000;
-
-    const ranking = Array.from(userStats.entries()).map(([userId, stats]) => {
-      let score =
-        1000 + stats.wins * 15 + stats.streak * 5 + stats.setsWonBonus;
-
-      // Apply no-show and late penalties
-      score -= stats.noShowPenalty + stats.latePenalty;
-
-      // Time attenuation based on lastMatchAt
-      if (stats.lastMatchAt) {
-        const diff = now.getTime() - stats.lastMatchAt.getTime();
-        if (diff > ONE_HUNDRED_TWENTY_DAYS) {
-          score *= 0.25;
-        } else if (diff > SIXTY_DAYS) {
-          score *= 0.5;
-        }
-      }
-
-      // Attendance score: based on actual attendance status
-      // (attended + late) / (attended + late + no_show)
-      // Falls back to result confirmation ratio if no attendance data
-      const totalAttendanceTracked =
-        stats.attendedCount + stats.lateCount + stats.noShowCount;
-      const attendanceScore =
-        totalAttendanceTracked > 0
-          ? (stats.attendedCount + stats.lateCount) / totalAttendanceTracked
-          : stats.totalMatchesCount > 0
-            ? stats.confirmedMatchesCount / stats.totalMatchesCount
-            : 1.0;
-
+    // 3. Merge computed scores with existing user data
+    const ranking = usersData.map((user) => {
+      const computed = userScores.get(user.id);
       return {
-        userId,
-        score,
-        attendanceScore,
-        wins: stats.wins,
-        lastMatchAt: stats.lastMatchAt,
-        stats,
+        userId: user.id,
+        score: computed?.score ?? user.rankingScore ?? 1000,
+        attendanceScore: computed?.attendanceScore ?? user.attendanceScore ?? 1.0,
+        wins: computed?.stats.wins ?? user.wins,
+        oldPosition: user.rankingPosition,
+        lastMatchAt: computed?.stats.lastMatchAt ?? user.lastMatchAt,
+        stats: computed?.stats,
       };
     });
 
-    // 5. Sort based on tie-breaking hierarchy:
-    // 1) score (desc)
-    // 2) attendanceScore (desc)
-    // 3) wins (desc)
-    // 4) lastMatchAt (desc)
+    // 4. Sort by tie-breaking hierarchy
     ranking.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (b.attendanceScore !== a.attendanceScore)
@@ -190,32 +201,41 @@ export async function recalculateRankingAction() {
       return b.lastMatchAt.getTime() - a.lastMatchAt.getTime();
     });
 
-    // 6. Update database
-    await prisma.$transaction(
-      ranking.map((item, index) => {
-        const user = users.find((u) => u.id === item.userId);
-        const oldPosition = user?.rankingPosition;
+    // 5. Update only changed users
+    const toUpdate = ranking
+      .map((item, index) => {
         const newPosition = index + 1;
+        const delta = item.oldPosition ? item.oldPosition - newPosition : 0;
+        const computed = userScores.get(item.userId);
 
-        // If it's a new user (no oldPosition) or first time ranking, delta is 0
-        // Otherwise calculate change. Note: position 1 is better than 5, so old - new.
-        const delta = oldPosition ? oldPosition - newPosition : 0;
+        // Skip users whose score didn't change (incremental mode only)
+        if (isIncremental && !computed) return null;
 
-        return prisma.user.update({
-          where: { id: item.userId },
+        return {
+          userId: item.userId,
           data: {
             rankingScore: item.score,
             rankingPosition: newPosition,
             rankingDelta: delta,
-            wins: item.stats.wins,
-            losses: item.stats.losses,
-            matchesPlayed: item.stats.matchesPlayed,
-            lastMatchAt: item.stats.lastMatchAt,
-            attendanceScore: item.attendanceScore,
+            ...(computed ? {
+              wins: computed.stats.wins,
+              losses: computed.stats.losses,
+              matchesPlayed: computed.stats.matchesPlayed,
+              lastMatchAt: computed.stats.lastMatchAt,
+              attendanceScore: item.attendanceScore,
+            } : {}),
           },
-        });
-      }),
-    );
+        };
+      })
+      .filter((u): u is NonNullable<typeof u> => u !== null);
+
+    if (toUpdate.length > 0) {
+      await db.transaction(async (tx) => {
+        for (const item of toUpdate) {
+          await tx.update(users).set(item.data).where(eq(users.id, item.userId));
+        }
+      });
+    }
 
     revalidatePath("/ranking");
     revalidatePath("/me");

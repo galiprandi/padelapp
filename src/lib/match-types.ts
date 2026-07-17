@@ -5,6 +5,7 @@ export type PlayerOption = {
   displayName: string;
   email: string;
   image: string | null;
+  isContact?: boolean;
 };
 
 export type SlotValue =

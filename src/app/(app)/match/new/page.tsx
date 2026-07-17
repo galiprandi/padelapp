@@ -9,7 +9,6 @@ import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
 import type { TeamKey, SlotValue } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import appSettings from "@/config/app-settings.json";
 
 function RegisterMatchInner() {
   const searchParams = useSearchParams();
@@ -84,38 +83,6 @@ function RegisterMatchInner() {
     handleCloseManageModal();
   }
 
-  async function handleShareIntent(nameToShare: string) {
-    const trimmed = nameToShare.trim();
-    if (trimmed.length === 0) {
-      return;
-    }
-
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({
-          title: appSettings.share.inviteTitle,
-          text: `Sumate al partido como ${trimmed}`,
-          url: appSettings.baseUrl,
-        });
-        return;
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          console.error("navigator.share failed", error);
-        }
-      }
-    }
-
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      try {
-        await navigator.clipboard.writeText(
-          `${appSettings.share.inviteTitle}\nSumate al partido como ${trimmed}\n${appSettings.baseUrl}`,
-        );
-      } catch (error) {
-        console.error("navigator.clipboard.writeText failed", error);
-      }
-    }
-  }
-
   const modalSlot = manageModal.open
     ? teamState[manageModal.team][manageModal.index]
     : null;
@@ -167,7 +134,6 @@ function RegisterMatchInner() {
         slot={modalSlot}
         placeholderName={`Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`}
         onSave={handleSaveSlot}
-        onShare={handleShareIntent}
         onRelease={handleReleaseSlot}
         onClose={handleCloseManageModal}
       />

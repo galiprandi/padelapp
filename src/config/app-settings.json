@@ -4,7 +4,7 @@
   "titleTemplate": "%s | Padel App",
   "description": "Padel App es una PWA mobile-first para organizar turnos, registrar partidos y escalar en el ranking con tu comunidad de p\u00e1del.",
   "applicationName": "Padel App",
-  "baseUrl": "https://padelapp.app",
+  "baseUrl": "https://padelap.vercel.app",
   "manifestPath": "/manifest.webmanifest",
   "keywords": ["padel", "ranking", "turnos", "pwa"],
   "category": "sports",
@@ -12,6 +12,6 @@
   "share": {
     "inviteTitle": "Invitaci\u00f3n PadelApp",
     "inviteMessage": "Sumate al partido en PadelApp",
-    "clipboardCopy": "Sumate al partido en PadelApp: https://padelapp.app"
+    "clipboardCopy": "Sumate al partido en PadelApp: https://padelap.vercel.app"
   }
 }

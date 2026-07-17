@@ -12,6 +12,7 @@ import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { createMagicLink } from "@/lib/magic-link";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
+import { useMounted } from "@/lib/hooks/use-mounted";
 
 interface TurnCardProps {
   turn: {
@@ -35,6 +36,7 @@ export function TurnCard({
 }: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const mounted = useMounted();
   const dateObj = new Date(turn.date);
 
   const isRecommended = variant === "recommended";
@@ -42,8 +44,10 @@ export function TurnCard({
     levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
       ?.label ?? turn.suggestedLevel.toString();
 
-  const isTodayDate = isToday(dateObj);
-  const isTomorrowDate = isTomorrow(dateObj);
+  // Only compute date-relative labels after mount to avoid hydration
+  // mismatch (server uses UTC, client uses local timezone).
+  const isTodayDate = mounted && isToday(dateObj);
+  const isTomorrowDate = mounted && isTomorrow(dateObj);
 
   const canJoin = !isJoined && turn.status === "OPEN";
 
@@ -69,11 +73,11 @@ export function TurnCard({
         )}
       >
         {/* Date */}
-        <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-2 min-w-[52px]">
-          <span className="text-xs font-semibold text-muted-foreground capitalize leading-none">
+        <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14">
+          <span className="text-xs font-bold text-muted-foreground leading-none">
             <LocalMonth date={turn.date} />
           </span>
-          <span className="text-xl font-bold text-foreground leading-none mt-1">
+          <span className="text-xl font-bold text-foreground leading-none mt-1 tabular-nums">
             <LocalDay date={turn.date} />
           </span>
         </div>
@@ -116,7 +120,7 @@ export function TurnCard({
               iconOnly
               showText={false}
               label="Notificar red"
-              className="h-9 w-9"
+              className="h-10 w-10"
             />
           )}
 
@@ -127,7 +131,7 @@ export function TurnCard({
             variant="ghost"
             size="icon"
             iconOnly
-            className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted"
+            className="h-10 w-10 rounded-lg text-muted-foreground hover:bg-muted"
             onClick={(e) => {
               e.stopPropagation();
             }}

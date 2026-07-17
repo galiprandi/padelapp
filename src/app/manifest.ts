@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "PadelApp",
     start_url: "/",
     display: "standalone",
-    background_color: "#fef9c3",
-    theme_color: "#facc15",
+    background_color: "#0a0a0b",
+    theme_color: "#0a0a0b",
     lang: "es",
     description:
       "Organiza turnos, registra partidos y escala en el ranking de pádel desde tu móvil.",
@@ -17,6 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/icons/logo.svg",
         sizes: "any",
         type: "image/svg+xml",
+        purpose: "any",
       },
       {
         src: "/icons/logo.svg",

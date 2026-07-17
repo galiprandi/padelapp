@@ -1,7 +1,16 @@
 "use server";
 
+import { and, eq, asc } from "drizzle-orm";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import {
+  turns,
+  turnPlayers,
+  users,
+  matches,
+  matchPlayers,
+  teams,
+} from "@/db/schema";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
@@ -22,8 +31,9 @@ export async function createTurnAction(input: CreateTurnInput) {
   }
 
   try {
-    const turn = await prisma.turn.create({
-      data: {
+    const [turn] = await db
+      .insert(turns)
+      .values({
         creatorId: session.user.id,
         club: input.club,
         date: new Date(input.date),
@@ -31,12 +41,12 @@ export async function createTurnAction(input: CreateTurnInput) {
         maxPlayers: input.maxPlayers,
         suggestedLevel: input.suggestedLevel,
         notes: input.notes,
-        players: {
-          create: {
-            userId: session.user.id,
-          },
-        },
-      },
+      })
+      .returning();
+
+    await db.insert(turnPlayers).values({
+      turnId: turn.id,
+      userId: session.user.id,
     });
 
     revalidatePath("/turnos");
@@ -55,10 +65,11 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      select: { creatorId: true, status: true },
-    });
+    const [turn] = await db
+      .select({ creatorId: turns.creatorId, status: turns.status })
+      .from(turns)
+      .where(eq(turns.id, turnId))
+      .limit(1);
 
     if (!turn) {
       return { status: "error", message: "Turno no encontrado" };
@@ -78,17 +89,17 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
       };
     }
 
-    await prisma.turn.update({
-      where: { id: turnId },
-      data: {
+    await db
+      .update(turns)
+      .set({
         club: input.club,
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
         suggestedLevel: input.suggestedLevel,
         notes: input.notes,
-      },
-    });
+      })
+      .where(eq(turns.id, turnId));
 
     revalidatePath("/turnos");
     revalidatePath(`/t/${turnId}`);
@@ -108,9 +119,9 @@ export async function joinTurnAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: { players: true },
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: { players: true },
     });
 
     if (!turn) {
@@ -126,21 +137,19 @@ export async function joinTurnAction(turnId: string) {
       return { status: "ok" };
     }
 
-    await prisma.turnPlayer.create({
-      data: {
-        turnId,
-        userId: session.user.id,
-      },
+    await db.insert(turnPlayers).values({
+      turnId,
+      userId: session.user.id,
     });
 
     const willBeFull = turn.players.length + 1 >= turn.maxPlayers;
 
     // Update status if full
     if (willBeFull) {
-      await prisma.turn.update({
-        where: { id: turnId },
-        data: { status: "FULL" },
-      });
+      await db
+        .update(turns)
+        .set({ status: "FULL" })
+        .where(eq(turns.id, turnId));
     }
 
     revalidatePath(`/t/${turnId}`);
@@ -185,6 +194,53 @@ export async function joinTurnAction(turnId: string) {
   }
 }
 
+async function notifyNetworkForTurn(
+  turnId: string,
+  turn: {
+    club: string;
+    date: Date;
+    maxPlayers: number;
+    players: { userId: string }[];
+    lastNetworkNotificationAt: Date | null;
+  }
+) {
+  const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+  const now = new Date();
+
+  if (
+    turn.lastNetworkNotificationAt &&
+    now.getTime() - turn.lastNetworkNotificationAt.getTime() < COOLDOWN_MS
+  ) {
+    return;
+  }
+
+  const { getTurnNetworkContacts } = await import("@/lib/queries");
+  const { sendPushToUser } = await import("@/lib/firebase-admin");
+
+  const contacts = await getTurnNetworkContacts(turnId);
+  if (contacts.length === 0) return;
+
+  const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+  const openSlots = turn.maxPlayers - turn.players.length;
+
+  let sent = 0;
+  for (const contact of contacts) {
+    const success = await sendPushToUser(contact.id, {
+      title: `¡Cupo abierto en ${turn.club}!`,
+      body: `${turn.club} — ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"} disponible${openSlots === 1 ? "" : "s"}. ${new Date(turn.date).toLocaleDateString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`,
+      url: turnUrl,
+    });
+    if (success > 0) sent++;
+  }
+
+  if (sent > 0) {
+    await db
+      .update(turns)
+      .set({ lastNetworkNotificationAt: now })
+      .where(eq(turns.id, turnId));
+  }
+}
+
 export async function leaveTurnAction(turnId: string) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -192,37 +248,39 @@ export async function leaveTurnAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: { players: { select: { userId: true } } },
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: { players: { columns: { userId: true } } },
     });
 
     if (!turn) {
       return { status: "error", message: "Turno no encontrado" };
     }
 
-    await prisma.turnPlayer.delete({
-      where: {
-        turnId_userId: {
-          turnId,
-          userId: session.user.id,
-        },
-      },
-    });
+    const wasFull = turn.status === "FULL";
+
+    await db
+      .delete(turnPlayers)
+      .where(
+        and(
+          eq(turnPlayers.turnId, turnId),
+          eq(turnPlayers.userId, session.user.id),
+        ),
+      );
 
     // Re-open turn ONLY if it was full
-    if (turn.status === "FULL") {
-      await prisma.turn.update({
-        where: { id: turnId },
-        data: { status: "OPEN" },
-      });
+    if (wasFull) {
+      await db
+        .update(turns)
+        .set({ status: "OPEN" })
+        .where(eq(turns.id, turnId));
     }
 
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
 
-    // #2: Player left — notify remaining players + creator (excluding leaver)
+    // Notify remaining players + creator (excluding leaver)
     const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
     const leaverName = await getUserDisplayName(session.user.id);
     const recipientIds = [
@@ -239,6 +297,11 @@ export async function leaveTurnAction(turnId: string) {
       url: turnUrl,
     });
 
+    // Auto-fire: notify network when turn drops from FULL to OPEN
+    if (wasFull) {
+      void notifyNetworkForTurn(turnId, turn);
+    }
+
     return { status: "ok" };
   } catch (error) {
     console.error("Error leaving turn:", error);
@@ -248,11 +311,11 @@ export async function leaveTurnAction(turnId: string) {
 
 export async function getTurnByIdAction(turnId: string) {
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: {
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: {
         creator: {
-          select: {
+          columns: {
             id: true,
             displayName: true,
             alias: true,
@@ -260,9 +323,9 @@ export async function getTurnByIdAction(turnId: string) {
           },
         },
         players: {
-          include: {
+          with: {
             user: {
-              select: {
+              columns: {
                 id: true,
                 displayName: true,
                 alias: true,
@@ -289,13 +352,13 @@ export async function convertTurnToMatchAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: {
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: {
         players: {
-          include: {
+          with: {
             user: {
-              select: {
+              columns: {
                 id: true,
                 displayName: true,
                 alias: true,
@@ -303,7 +366,7 @@ export async function convertTurnToMatchAction(turnId: string) {
               },
             },
           },
-          orderBy: { joinedAt: "asc" },
+          orderBy: asc(turnPlayers.joinedAt),
         },
       },
     });
@@ -327,14 +390,21 @@ export async function convertTurnToMatchAction(turnId: string) {
     }
 
     // Use a transaction to create the match and update the turn
-    const matchId = await prisma.$transaction(async (tx) => {
+    const matchId = await db.transaction(async (tx) => {
       // 1. Create Teams (Pareja A and Pareja B)
-      const teamA = await tx.team.create({ data: { label: "Pareja A" } });
-      const teamB = await tx.team.create({ data: { label: "Pareja B" } });
+      const [teamA] = await tx
+        .insert(teams)
+        .values({ label: "Pareja A" })
+        .returning();
+      const [teamB] = await tx
+        .insert(teams)
+        .values({ label: "Pareja B" })
+        .returning();
 
       // 2. Create the Match
-      const match = await tx.match.create({
-        data: {
+      const [match] = await tx
+        .insert(matches)
+        .values({
           creatorId: session.user.id,
           club: turn.club,
           status: "PENDING",
@@ -342,23 +412,25 @@ export async function convertTurnToMatchAction(turnId: string) {
           sets: 3,
           matchType: "FRIENDLY",
           turnId: turn.id,
-          players: {
-            create: turn.players.slice(0, 4).map((p, index) => ({
-              userId: p.userId,
-              position: index,
-              teamId: index < 2 ? teamA.id : teamB.id,
-              displayName: p.user.alias ?? p.user.displayName,
-              joinedAt: p.joinedAt,
-            })),
-          },
-        },
-      });
+        })
+        .returning();
 
-      // 3. Update Turn status to COMPLETED
-      await tx.turn.update({
-        where: { id: turnId },
-        data: { status: "COMPLETED" },
-      });
+      // 3. Create MatchPlayers
+      const playerValues = turn.players.slice(0, 4).map((p, index) => ({
+        matchId: match.id,
+        userId: p.userId,
+        position: index,
+        teamId: index < 2 ? teamA.id : teamB.id,
+        displayName: p.user.alias ?? p.user.displayName,
+        joinedAt: p.joinedAt,
+      }));
+      await tx.insert(matchPlayers).values(playerValues);
+
+      // 4. Update Turn status to COMPLETED
+      await tx
+        .update(turns)
+        .set({ status: "COMPLETED" })
+        .where(eq(turns.id, turnId));
 
       return match.id;
     });
@@ -386,9 +458,9 @@ export async function cancelTurnAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: { players: { select: { userId: true } } },
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: { players: { columns: { userId: true } } },
     });
 
     if (!turn) {
@@ -409,10 +481,10 @@ export async function cancelTurnAction(turnId: string) {
       };
     }
 
-    await prisma.turn.update({
-      where: { id: turnId },
-      data: { status: "CANCELLED" },
-    });
+    await db
+      .update(turns)
+      .set({ status: "CANCELLED" })
+      .where(eq(turns.id, turnId));
 
     revalidatePath("/turnos");
     revalidatePath(`/t/${turnId}`);
@@ -450,18 +522,19 @@ export async function scheduleNextTurnAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      select: {
-        creatorId: true,
-        club: true,
-        date: true,
-        duration: true,
-        maxPlayers: true,
-        suggestedLevel: true,
-        notes: true,
-      },
-    });
+    const [turn] = await db
+      .select({
+        creatorId: turns.creatorId,
+        club: turns.club,
+        date: turns.date,
+        duration: turns.duration,
+        maxPlayers: turns.maxPlayers,
+        suggestedLevel: turns.suggestedLevel,
+        notes: turns.notes,
+      })
+      .from(turns)
+      .where(eq(turns.id, turnId))
+      .limit(1);
 
     if (!turn) {
       return { status: "error", message: "Turno no encontrado" };
@@ -478,8 +551,9 @@ export async function scheduleNextTurnAction(turnId: string) {
     const nextDate = new Date(turn.date);
     nextDate.setDate(nextDate.getDate() + 7);
 
-    const newTurn = await prisma.turn.create({
-      data: {
+    const [newTurn] = await db
+      .insert(turns)
+      .values({
         creatorId: session.user.id,
         club: turn.club,
         date: nextDate,
@@ -487,12 +561,12 @@ export async function scheduleNextTurnAction(turnId: string) {
         maxPlayers: turn.maxPlayers,
         suggestedLevel: turn.suggestedLevel,
         notes: turn.notes,
-        players: {
-          create: {
-            userId: session.user.id,
-          },
-        },
-      },
+      })
+      .returning();
+
+    await db.insert(turnPlayers).values({
+      turnId: newTurn.id,
+      userId: session.user.id,
     });
 
     revalidatePath("/turnos");
@@ -512,16 +586,15 @@ export async function openToNetworkAction(turnId: string) {
   }
 
   try {
-    const turn = await prisma.turn.findUnique({
-      where: { id: turnId },
-      include: { players: { select: { userId: true } } },
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: { players: { columns: { userId: true } } },
     });
 
     if (!turn) {
       return { status: "error", message: "Turno no encontrado" };
     }
 
-    // Only enrolled players can open to their network
     const isEnrolled = turn.players.some((p) => p.userId === session.user.id);
     if (!isEnrolled) {
       return {
@@ -538,7 +611,23 @@ export async function openToNetworkAction(turnId: string) {
       return { status: "error", message: "El turno ya está completo" };
     }
 
-    const { getTurnNetworkContacts } = await import("@/lib/padel-contacts");
+    const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+    const now = new Date();
+
+    if (
+      turn.lastNetworkNotificationAt &&
+      now.getTime() - turn.lastNetworkNotificationAt.getTime() < COOLDOWN_MS
+    ) {
+      const minutesLeft = Math.ceil(
+        (COOLDOWN_MS - (now.getTime() - turn.lastNetworkNotificationAt.getTime())) / (60 * 1000)
+      );
+      return {
+        status: "error",
+        message: `Ya se notificó a la red recientemente. Esperá ${minutesLeft} ${minutesLeft === 1 ? "minuto" : "minutos"} para volver a enviar.`,
+      };
+    }
+
+    const { getTurnNetworkContacts } = await import("@/lib/queries");
     const { sendPushToUser } = await import("@/lib/firebase-admin");
 
     const contacts = await getTurnNetworkContacts(turnId);
@@ -552,10 +641,12 @@ export async function openToNetworkAction(turnId: string) {
 
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
     const openSlots = turn.maxPlayers - turn.players.length;
-    const organizerName = (await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { alias: true, displayName: true },
-    }))?.alias ?? "Un jugador";
+    const [organizer] = await db
+      .select({ alias: users.alias, displayName: users.displayName })
+      .from(users)
+      .where(eq(users.id, session.user.id))
+      .limit(1);
+    const organizerName = organizer?.alias ?? "Un jugador";
 
     let sent = 0;
     for (const contact of contacts) {
@@ -566,6 +657,12 @@ export async function openToNetworkAction(turnId: string) {
       });
       if (success > 0) sent++;
     }
+
+    // Update cooldown timestamp
+    await db
+      .update(turns)
+      .set({ lastNetworkNotificationAt: new Date() })
+      .where(eq(turns.id, turnId));
 
     return {
       status: "ok",

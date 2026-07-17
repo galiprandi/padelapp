@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/db";
+import { pushSubscriptions } from "@/db/schema";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -16,20 +18,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Token required" }, { status: 400 });
     }
 
-    await prisma.pushSubscription.upsert({
-      where: {
-        userId_endpoint: {
-          userId: session.user.id,
-          endpoint: token,
-        },
-      },
-      create: {
+    await db
+      .insert(pushSubscriptions)
+      .values({
         userId: session.user.id,
         endpoint: token,
         keys: {},
-      },
-      update: {},
-    });
+      })
+      .onConflictDoUpdate({
+        target: [pushSubscriptions.userId, pushSubscriptions.endpoint],
+        set: { endpoint: token },
+      });
 
     return NextResponse.json({ ok: true });
   } catch (error) {

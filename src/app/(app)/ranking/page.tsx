@@ -1,8 +1,14 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
-import { prisma } from "@/lib/prisma";
+import { Button } from "@/components/ui/button";
+import {
+  getCachedRanking,
+  getCachedRankingSearch,
+  getCurrentUserRankingData,
+} from "@/lib/queries";
 import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
@@ -17,55 +23,12 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
   const viewerId = session?.user?.id;
   const { q: query } = await searchParams;
 
-  const players = await prisma.user.findMany({
-    where: query
-      ? {
-          OR: [
-            { displayName: { contains: query, mode: "insensitive" } },
-            { alias: { contains: query, mode: "insensitive" } },
-          ],
-        }
-      : undefined,
-    orderBy: [
-      { rankingScore: "desc" },
-      { attendanceScore: "desc" },
-      { wins: "desc" },
-      { lastMatchAt: "desc" },
-      { displayName: "asc" },
-    ],
-    take: query ? 20 : 50,
-    include: {
-      matchPlayers: {
-        where: {
-          match: {
-            status: "CONFIRMED",
-          },
-        },
-        orderBy: {
-          match: {
-            date: "desc",
-          },
-        },
-        take: 5,
-        include: {
-          match: true,
-        },
-      },
-    },
-  });
+  const players = query
+    ? await getCachedRankingSearch(query)
+    : await getCachedRanking();
 
   const currentUser = viewerId
-    ? await prisma.user.findUnique({
-        where: { id: viewerId },
-        include: {
-          matchPlayers: {
-            where: { match: { status: "CONFIRMED" } },
-            orderBy: { match: { date: "desc" } },
-            take: 5,
-            include: { match: true },
-          },
-        },
-      })
+    ? await getCurrentUserRankingData(viewerId)
     : null;
 
   const topThree = !query ? players.slice(0, 3) : [];
@@ -123,6 +86,13 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
               query
                 ? `No hay resultados para "${query}".`
                 : "Aún no hay jugadores registrados."
+            }
+            action={
+              query ? (
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/ranking">Limpiar búsqueda</Link>
+                </Button>
+              ) : null
             }
           />
         )}

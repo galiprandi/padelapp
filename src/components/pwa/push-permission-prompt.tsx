@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, BellOff, Loader2, Check } from "lucide-react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 
 export function PushPermissionPrompt() {
   const { permission, requestPermission, loading } = usePushNotifications();
   const [dismissed, setDismissed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (dismissed || permission === "granted" || permission === "denied" || permission === "unsupported") {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render during SSR — permission state is only known on the client.
+  if (
+    !mounted ||
+    dismissed ||
+    permission === "granted" ||
+    permission === "denied" ||
+    permission === "unsupported"
+  ) {
     return null;
   }
 
@@ -23,7 +35,8 @@ export function PushPermissionPrompt() {
             Activar notificaciones
           </h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Recibí avisos cuando abran un cupo en tu red o necesiten confirmar un resultado.
+            Recibí avisos cuando abran un cupo en tu red o necesiten confirmar
+            un resultado.
           </p>
           <div className="mt-3 flex items-center gap-2">
             <button

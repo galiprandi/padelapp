@@ -13,6 +13,7 @@ import { Badge, type badgeVariants } from "@/components/ui/badge";
 import { VariantProps } from "class-variance-authority";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
+import { useMounted } from "@/lib/hooks/use-mounted";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -106,6 +107,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   showDetailLink = true,
 }: MatchResultCompactProps) {
   const { data: session } = useSession();
+  const mounted = useMounted();
   const router = useRouter();
   const [isConfirming, startTransition] = useTransition();
   const viewerId = propViewerId ?? session?.user?.id;
@@ -161,11 +163,16 @@ export const MatchResultCompact = memo(function MatchResultCompact({
       ? effectiveDate
       : new Date(effectiveDate)
     : null;
-  const isTodayDate = parsedDate ? isToday(parsedDate) : false;
-  const isTomorrowDate = parsedDate ? isTomorrow(parsedDate) : false;
+  // Only compute date-relative labels after mount to avoid hydration
+  // mismatch (server uses UTC, client uses local timezone).
+  const isTodayDate = mounted && parsedDate ? isToday(parsedDate) : false;
+  const isTomorrowDate = mounted && parsedDate ? isTomorrow(parsedDate) : false;
 
+  // Gate the entire formattedDate behind mounted — Intl.DateTimeFormat
+  // without explicit timeZone uses the runtime's local timezone, which
+  // differs between server (UTC) and client (local).
   const formattedDate =
-    parsedDate && !Number.isNaN(parsedDate.getTime())
+    mounted && parsedDate && !Number.isNaN(parsedDate.getTime())
       ? isTodayDate
         ? parsedDate.toLocaleTimeString("es-AR", {
             hour: "2-digit",

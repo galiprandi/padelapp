@@ -5,6 +5,10 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,11 +29,8 @@ export const metadata: Metadata = {
   applicationName: appSettings.applicationName,
   manifest: appSettings.manifestPath,
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [
-      { url: "/apple-icon.svg", sizes: "180x180", type: "image/svg+xml" },
-    ],
-    shortcut: ["/icon.svg"],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: ["/favicon.svg"],
   },
   appleWebApp: {
     capable: true,
