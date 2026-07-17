@@ -10,12 +10,13 @@ const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
 export type UpdateProfileResponse =
-  | { status: "ok"; alias: string | null; level: number }
+  | { status: "ok"; alias: string | null; level: number; image: string | null }
   | { status: "error"; message: string };
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
   levelInput: number,
+  imageInput?: string | null,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -34,10 +35,11 @@ export async function updateUserProfileAction(
   }
 
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
+  const imageToSave = imageInput?.trim() || null;
 
   await db
     .update(users)
-    .set({ alias: aliasToSave, level: levelInput })
+    .set({ alias: aliasToSave, level: levelInput, image: imageToSave })
     .where(eq(users.id, session.user.id));
 
   revalidatePath("/me");
@@ -45,5 +47,5 @@ export async function updateUserProfileAction(
   revalidatePath("/ranking");
   revalidateTag("ranking", "default");
 
-  return { status: "ok", alias: aliasToSave, level: levelInput };
+  return { status: "ok", alias: aliasToSave, level: levelInput, image: imageToSave };
 }

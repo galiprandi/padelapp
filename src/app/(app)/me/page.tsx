@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Activity,
   AlertTriangle,
+  UserCheck,
 } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import {
@@ -122,6 +123,24 @@ export default async function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Onboarding Profile Completion Prompt */}
+      {!user?.alias && (
+        <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-50 p-4">
+          <div className="flex items-center gap-3">
+            <UserCheck className="h-5 w-5 text-amber-600" />
+            <h2 className="text-sm font-bold text-amber-800">
+              ¡Completá tu perfil de jugador!
+            </h2>
+          </div>
+          <p className="text-xs text-amber-700 leading-normal">
+            Elegí tu alias en la cancha y nivel de juego (1–8) para que otros jugadores te reconozcan en los partidos y ranking.
+          </p>
+          <Button className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold" asChild>
+            <Link href="/me/profile">Configurar mi perfil</Link>
+          </Button>
+        </div>
+      )}
 
       {/* Stats row */}
       {user && (
@@ -383,9 +402,14 @@ export default async function DashboardPage() {
               title="Tu agenda está vacía"
               description="Sumate a un turno abierto o creá un partido con amigos."
               action={
-                <Button className="w-full" asChild>
-                  <Link href="/turnos">Explorar turnos</Link>
-                </Button>
+                <div className="flex flex-col gap-2 w-full">
+                  <Button className="w-full h-12" asChild>
+                    <Link href="/turnos">Explorar turnos</Link>
+                  </Button>
+                  <Button variant="outline" className="w-full h-10" asChild>
+                    <Link href="/turnos/nuevo">Crear un turno</Link>
+                  </Button>
+                </div>
               }
             />
           ) : (
