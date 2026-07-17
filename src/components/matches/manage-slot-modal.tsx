@@ -36,12 +36,15 @@ export function ManageSlotModal({
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const manualInputRef = useRef<HTMLInputElement>(null);
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery("");
     setSearchResults([]);
     inputRef.current?.focus();
   }, []);
+
+  const isUserSlot = slot?.kind === "user";
 
   useEffect(() => {
     if (open) {
@@ -58,6 +61,34 @@ export function ManageSlotModal({
       setError(null);
     }
   }, [open, slot, placeholderName]);
+
+  // Global Escape key closure
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, onClose]);
+
+  // Programmatic auto-focus on open
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        if (!isUserSlot && inputRef.current) {
+          inputRef.current.focus();
+        } else if (manualInputRef.current && !isUserSlot) {
+          manualInputRef.current.focus();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [open, isUserSlot]);
 
   // Debounced search & Initial contacts fetch
   useEffect(() => {
@@ -128,10 +159,15 @@ export function ManageSlotModal({
     onShare(trimmed);
   }
 
-  const isUserSlot = slot?.kind === "user";
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5"
+    >
       <div
         role="dialog"
         aria-modal="true"
@@ -199,7 +235,10 @@ export function ManageSlotModal({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Escape") {
-                      handleClearSearch();
+                      if (searchQuery) {
+                        e.stopPropagation();
+                        handleClearSearch();
+                      }
                     }
                   }}
                   placeholder="Nombre o email..."
@@ -268,6 +307,7 @@ export function ManageSlotModal({
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <Input
+                  ref={manualInputRef}
                   id="slot-name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}

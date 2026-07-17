@@ -17,3 +17,7 @@
 ## 2025-06-03 - [EmptyState Standardization and Keyboard Accessibility]
 **Learning:** Shared components like `EmptyState` should strictly follow `DESIGN.md` even when they were initially implemented with non-compliant patterns (like translucent backgrounds or larger fonts). Keyboard accessibility on custom interactive elements (buttons acting as radios) requires explicit `focus-visible:ring-2` to be usable for non-mouse users.
 **Action:** When refactoring for MDS, prioritize `DESIGN.md` maxims for shared components and always audit custom interactive elements for `focus-visible` states.
+
+## 2026-07-10 - [Custom Modal UX and Escape Key Coordination]
+**Learning:** In custom React modals (like `ManageSlotModal`), standard keyboard accessibility must be handled programmatically. Specifically, the Escape key should be coordinated: if an internal search input is focused and contains text, Escape should clear the query and prevent the modal from closing. If the input is empty or other elements are focused, Escape should dismiss the modal. Implementing this along with backdrop click-outside detection and programmatic input auto-focus makes modals exceptionally fluid and accessible.
+**Action:** Always coordinate Escape key propagation on inputs within custom modals, add backdrop click-to-close with `e.target === e.currentTarget`, and use a small timeout to focus the primary input programmatically upon mount/open.
