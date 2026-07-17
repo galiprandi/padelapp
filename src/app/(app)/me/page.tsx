@@ -22,7 +22,9 @@ export default async function DashboardPage() {
 
   if (!viewerId) return null;
 
-  const [user, allPendingMatches, recentMatches] = await Promise.all([
+  const now = new Date();
+
+  const [user, allPendingMatches, recentMatches, pendingAttendance, myTurns, recommendedTurns] = await Promise.all([
     prisma.user.findUnique({
       where: { id: viewerId },
       select: {
@@ -42,12 +44,30 @@ export default async function DashboardPage() {
     }),
     getEnhancedUserMatches(viewerId, "PENDING"),
     getEnhancedUserMatches(viewerId, "CONFIRMED"),
+    getPendingAttendanceActions(viewerId),
+    prisma.turn.findMany({
+      where: {
+        players: { some: { userId: viewerId } },
+        date: { gte: now },
+        status: { in: ["OPEN", "FULL"] },
+      },
+      include: { players: true },
+      orderBy: { date: "asc" },
+      take: 3,
+    }),
+    prisma.turn.findMany({
+      where: {
+        players: { none: { userId: viewerId } },
+        date: { gte: now },
+        status: "OPEN",
+      },
+      include: { players: true },
+      orderBy: { date: "asc" },
+      take: 3,
+    }),
   ]);
 
-  const now = new Date();
-
-  const pendingActionMatches = await getPendingActions(viewerId);
-  const pendingAttendance = await getPendingAttendanceActions(viewerId);
+  const pendingActionMatches = await getPendingActions(viewerId, allPendingMatches);
 
   const upcomingMatches = allPendingMatches
     .filter((m) => new Date(m.date || m.createdAt) >= now)
@@ -59,28 +79,6 @@ export default async function DashboardPage() {
 
   const displayName =
     user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
-
-  const myTurns = await prisma.turn.findMany({
-    where: {
-      players: { some: { userId: viewerId } },
-      date: { gte: now },
-      status: { in: ["OPEN", "FULL"] },
-    },
-    include: { players: true },
-    orderBy: { date: "asc" },
-    take: 3,
-  });
-
-  const recommendedTurns = await prisma.turn.findMany({
-    where: {
-      players: { none: { userId: viewerId } },
-      date: { gte: now },
-      status: "OPEN",
-    },
-    include: { players: true },
-    orderBy: { date: "asc" },
-    take: 3,
-  });
 
   const agendaItems = [
     ...myTurns.map((turn) => ({

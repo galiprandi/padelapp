@@ -837,7 +837,8 @@ export async function confirmMatchResultAction(
     });
 
     if (updatedMatch.status === MATCH_STATUS.CONFIRMED) {
-      await recalculateRankingAction();
+      const affectedIds = updatedMatch.players.map((p) => p.userId).filter((id): id is string => id !== null);
+      await recalculateRankingAction(affectedIds);
     }
 
     revalidatePath(`/match/${matchId}`);
@@ -932,7 +933,8 @@ export async function finalizeMatchAction(
     });
 
     // Trigger ranking recalculation
-    await recalculateRankingAction();
+    const affectedIds = match.players.map((p) => p.userId).filter((id): id is string => id !== null);
+    await recalculateRankingAction(affectedIds);
 
     revalidatePath(`/match/${matchId}`);
 
@@ -1526,7 +1528,8 @@ export async function markAttendanceAction(
 
     // If match is already CONFIRMED, recalculate ranking with new attendance data
     if (match.status === MATCH_STATUS.CONFIRMED) {
-      await recalculateRankingAction();
+      const affectedIds = match.players.map((p) => p.userId).filter((id): id is string => id !== null);
+      await recalculateRankingAction(affectedIds);
     }
 
     revalidatePath(`/match/${matchId}`);

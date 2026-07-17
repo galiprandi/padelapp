@@ -96,6 +96,8 @@ export async function getPadelContacts(
  * Get the combined padel network for all enrolled players in a turn.
  * Used for "Open to my network" — notifies contacts of ALL enrollees,
  * not just the organizer. Excludes already-enrolled users.
+ *
+ * Uses a single bulk query instead of N per-enrolled-player queries.
  */
 export async function getTurnNetworkContacts(turnId: string): Promise<
   Array<{
@@ -118,9 +120,38 @@ export async function getTurnNetworkContacts(turnId: string): Promise<
   if (!turn) return [];
 
   const enrolledUserIds = new Set(turn.players.map((p) => p.userId));
+  const enrolledArray = Array.from(enrolledUserIds);
+  const monthsBack = 12;
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - monthsBack);
 
-  // Get contacts for each enrolled user
-  const allContactsMap = new Map<
+  // Single bulk query: all confirmed matches where ANY enrolled player participated
+  const matches = await prisma.match.findMany({
+    where: {
+      status: "CONFIRMED",
+      date: { gte: cutoff },
+      players: { some: { userId: { in: enrolledArray } } },
+    },
+    include: {
+      players: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+              level: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: { date: "desc" },
+  });
+
+  // Build contact map from all matches
+  const contactsMap = new Map<
     string,
     {
       id: string;
@@ -133,30 +164,31 @@ export async function getTurnNetworkContacts(turnId: string): Promise<
     }
   >();
 
-  for (const enrolled of turn.players) {
-    const contacts = await getPadelContacts(enrolled.userId);
+  for (const match of matches) {
+    for (const player of match.players) {
+      if (!player.user || enrolledUserIds.has(player.user.id)) continue;
 
-    for (const contact of contacts) {
-      // Skip already-enrolled users
-      if (enrolledUserIds.has(contact.id)) continue;
-
-      const existing = allContactsMap.get(contact.id);
+      const existing = contactsMap.get(player.user.id);
       if (existing) {
-        existing.matchesTogether += contact.matchesTogether;
-        if (contact.lastMatchAt > existing.lastMatchAt) {
-          existing.lastMatchAt = contact.lastMatchAt;
-          existing.displayName = contact.displayName;
-          existing.alias = contact.alias;
-          existing.image = contact.image;
-          existing.level = contact.level;
+        existing.matchesTogether++;
+        if (match.date > existing.lastMatchAt) {
+          existing.lastMatchAt = match.date;
         }
       } else {
-        allContactsMap.set(contact.id, { ...contact });
+        contactsMap.set(player.user.id, {
+          id: player.user.id,
+          displayName: player.user.displayName,
+          alias: player.user.alias,
+          image: player.user.image,
+          level: player.user.level,
+          lastMatchAt: match.date,
+          matchesTogether: 1,
+        });
       }
     }
   }
 
-  return Array.from(allContactsMap.values()).sort(
+  return Array.from(contactsMap.values()).sort(
     (a, b) => b.lastMatchAt.getTime() - a.lastMatchAt.getTime()
   );
 }

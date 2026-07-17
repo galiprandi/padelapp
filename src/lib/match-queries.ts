@@ -54,8 +54,12 @@ export async function getEnhancedUserMatches(
   }));
 }
 
-export async function getPendingActions(userId: string) {
-  const allPendingMatches = await getEnhancedUserMatches(userId, "PENDING");
+export async function getPendingActions(
+  userId: string,
+  preloadedPendingMatches?: MatchResultCompactMatch[]
+) {
+  const allPendingMatches =
+    preloadedPendingMatches ?? (await getEnhancedUserMatches(userId, "PENDING"));
   const now = new Date();
 
   // Filter for matches that have already happened
@@ -68,6 +72,17 @@ export async function getPendingActions(userId: string) {
       // Secondary: most recent first
       return new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime();
     });
+}
+
+export async function getPendingActionsCount(userId: string): Promise<number> {
+  const now = new Date();
+  return prisma.match.count({
+    where: {
+      status: "PENDING",
+      date: { lt: now },
+      players: { some: { userId } },
+    },
+  });
 }
 
 export async function getPendingAttendanceActions(userId: string) {

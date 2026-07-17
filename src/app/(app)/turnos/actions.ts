@@ -185,6 +185,53 @@ export async function joinTurnAction(turnId: string) {
   }
 }
 
+async function notifyNetworkForTurn(
+  turnId: string,
+  turn: {
+    club: string;
+    date: Date;
+    maxPlayers: number;
+    players: { userId: string }[];
+    lastNetworkNotificationAt: Date | null;
+  }
+) {
+  const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+  const now = new Date();
+
+  if (
+    turn.lastNetworkNotificationAt &&
+    now.getTime() - turn.lastNetworkNotificationAt.getTime() < COOLDOWN_MS
+  ) {
+    return;
+  }
+
+  const { getTurnNetworkContacts } = await import("@/lib/padel-contacts");
+  const { sendPushToUser } = await import("@/lib/firebase-admin");
+
+  const contacts = await getTurnNetworkContacts(turnId);
+  if (contacts.length === 0) return;
+
+  const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+  const openSlots = turn.maxPlayers - turn.players.length;
+
+  let sent = 0;
+  for (const contact of contacts) {
+    const success = await sendPushToUser(contact.id, {
+      title: `¡Cupo abierto en ${turn.club}!`,
+      body: `${turn.club} — ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"} disponible${openSlots === 1 ? "" : "s"}. ${new Date(turn.date).toLocaleDateString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`,
+      url: turnUrl,
+    });
+    if (success > 0) sent++;
+  }
+
+  if (sent > 0) {
+    await prisma.turn.update({
+      where: { id: turnId },
+      data: { lastNetworkNotificationAt: now },
+    });
+  }
+}
+
 export async function leaveTurnAction(turnId: string) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -201,6 +248,8 @@ export async function leaveTurnAction(turnId: string) {
       return { status: "error", message: "Turno no encontrado" };
     }
 
+    const wasFull = turn.status === "FULL";
+
     await prisma.turnPlayer.delete({
       where: {
         turnId_userId: {
@@ -211,7 +260,7 @@ export async function leaveTurnAction(turnId: string) {
     });
 
     // Re-open turn ONLY if it was full
-    if (turn.status === "FULL") {
+    if (wasFull) {
       await prisma.turn.update({
         where: { id: turnId },
         data: { status: "OPEN" },
@@ -222,7 +271,7 @@ export async function leaveTurnAction(turnId: string) {
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
 
-    // #2: Player left — notify remaining players + creator (excluding leaver)
+    // Notify remaining players + creator (excluding leaver)
     const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
     const leaverName = await getUserDisplayName(session.user.id);
     const recipientIds = [
@@ -238,6 +287,11 @@ export async function leaveTurnAction(turnId: string) {
       body: `Faltan ${remainingSlots} ${remainingSlots === 1 ? "cupo" : "cupos"} en ${turn.club}.`,
       url: turnUrl,
     });
+
+    // Auto-fire: notify network when turn drops from FULL to OPEN
+    if (wasFull) {
+      void notifyNetworkForTurn(turnId, turn);
+    }
 
     return { status: "ok" };
   } catch (error) {
@@ -521,7 +575,6 @@ export async function openToNetworkAction(turnId: string) {
       return { status: "error", message: "Turno no encontrado" };
     }
 
-    // Only enrolled players can open to their network
     const isEnrolled = turn.players.some((p) => p.userId === session.user.id);
     if (!isEnrolled) {
       return {
@@ -566,6 +619,12 @@ export async function openToNetworkAction(turnId: string) {
       });
       if (success > 0) sent++;
     }
+
+    // Update cooldown timestamp
+    await prisma.turn.update({
+      where: { id: turnId },
+      data: { lastNetworkNotificationAt: new Date() },
+    });
 
     return {
       status: "ok",

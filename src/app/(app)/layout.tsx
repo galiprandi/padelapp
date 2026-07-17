@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { BottomNav } from "@/components/navigation/bottom-nav";
-import { getPendingActions } from "@/lib/match-queries";
+import { getPendingActionsCount } from "@/lib/match-queries";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await auth();
@@ -12,12 +12,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
-  const pendingActions = await getPendingActions(userId);
+  const pendingCount = await getPendingActionsCount(userId);
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
       <main className="flex-1 px-5 pt-4 pb-20">{children}</main>
-      <BottomNav notificationsCount={pendingActions.length} />
+      <BottomNav notificationsCount={pendingCount} />
     </div>
   );
 }

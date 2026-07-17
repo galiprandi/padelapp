@@ -50,7 +50,11 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
         },
         take: 5,
         include: {
-          match: true,
+          match: {
+            select: {
+              score: true,
+            },
+          },
         },
       },
     },
@@ -64,7 +68,7 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
             where: { match: { status: "CONFIRMED" } },
             orderBy: { match: { date: "desc" } },
             take: 5,
-            include: { match: true },
+            include: { match: { select: { score: true } } },
           },
         },
       })
