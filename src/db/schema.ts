@@ -64,7 +64,7 @@ export const users = pgTable("User", {
   createdAt: timestamptz3("createdAt").notNull().defaultNow(),
   updatedAt: timestamptz3("updatedAt")
     .notNull()
-    .defaultNow()
+    .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
   attendanceScore: doublePrecision("attendanceScore").notNull().default(1.0),
   lastMatchAt: timestamptz3("lastMatchAt"),
@@ -140,7 +140,7 @@ export const matches = pgTable("Match", {
   createdAt: timestamptz3("createdAt").notNull().defaultNow(),
   updatedAt: timestamptz3("updatedAt")
     .notNull()
-    .defaultNow()
+    .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
   turnId: text("turnId"),
 });
@@ -161,7 +161,7 @@ export const turns = pgTable("Turn", {
   createdAt: timestamptz3("createdAt").notNull().defaultNow(),
   updatedAt: timestamptz3("updatedAt")
     .notNull()
-    .defaultNow()
+    .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
@@ -191,7 +191,7 @@ export const teams = pgTable("Team", {
   createdAt: timestamptz3("createdAt").notNull().defaultNow(),
   updatedAt: timestamptz3("updatedAt")
     .notNull()
-    .defaultNow()
+    .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
