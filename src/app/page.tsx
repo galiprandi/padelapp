@@ -3,8 +3,6 @@ import { auth, signIn } from "@/auth";
 import { InstallLinkButton } from "@/components/pwa-install-link";
 import { SignInButton } from "@/components/auth/sign-in-button";
 
-export const dynamic = "force-dynamic";
-
 export default function MarketingLanding() {
   async function handleContinue() {
     "use server";
