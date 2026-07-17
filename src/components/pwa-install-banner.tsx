@@ -18,6 +18,11 @@ export function PwaInstallBanner() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalling, setIsInstalling] = useState(false);
   const isInstalled = usePwaInstalled();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isInstalled) {
@@ -64,7 +69,7 @@ export function PwaInstallBanner() {
     localStorage.setItem(DISMISS_KEY, "true");
   };
 
-  if (!isVisible) return null;
+  if (!mounted || !isVisible) return null;
 
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">

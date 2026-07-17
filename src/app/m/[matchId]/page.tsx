@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import appSettings from "@/config/app-settings.json";
+import { LocalDate } from "@/components/ui/local-date";
 
 interface InvitationPageProps {
   params: Promise<{ matchId: string }>;
@@ -111,11 +112,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
     ? match.players.some((slot) => slot.userId === viewerId)
     : false;
 
-  const dateStr = new Date(match.date).toLocaleDateString("es-ES", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
+  // dateStr is computed client-side via LocalDate to avoid hydration mismatch
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
@@ -128,7 +125,9 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">
-            {match.matchType === "FRIENDLY" ? "Partido Amistoso" : "Torneo Local"}
+            {match.matchType === "FRIENDLY"
+              ? "Partido Amistoso"
+              : "Torneo Local"}
           </h1>
           <p className="text-sm text-muted-foreground">Invitación de Partido</p>
         </div>
@@ -168,7 +167,10 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                 {match.club || "Club por definir"}
               </p>
               <p className="text-xs text-muted-foreground">
-                {dateStr}
+                <LocalDate
+                  date={match.date}
+                  options={{ weekday: "long", day: "numeric", month: "long" }}
+                />
                 {match.courtNumber ? ` • Cancha ${match.courtNumber}` : ""}
               </p>
             </div>
@@ -291,7 +293,10 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
 
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
         <div className="max-w-md mx-auto flex flex-col gap-3">
-          <Button asChild className="w-full h-12 rounded-lg text-base font-bold shadow-sm">
+          <Button
+            asChild
+            className="w-full h-12 rounded-lg text-base font-bold shadow-sm"
+          >
             <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
           </Button>
 

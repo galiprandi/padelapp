@@ -28,8 +28,10 @@ const TOKEN_ALPHABET =
   "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 function resolveBaseUrl(override?: string): string {
-  const candidate =
-    override ?? process.env.NEXT_PUBLIC_APP_URL ?? process.env.VERCEL_URL;
+  // Only use NEXT_PUBLIC_* env vars so the value is identical on server and
+  // client. VERCEL_URL is server-only and must NOT be used here — it causes
+  // hydration mismatches because the client falls back to localhost.
+  const candidate = override ?? process.env.NEXT_PUBLIC_APP_URL;
 
   if (candidate && candidate.length > 0) {
     if (candidate.startsWith("http://") || candidate.startsWith("https://")) {
@@ -52,7 +54,9 @@ export function generateMagicToken(length = DEFAULT_TOKEN_LENGTH): string {
 
   const cryptoApi = globalThis.crypto;
   if (!cryptoApi || typeof cryptoApi.getRandomValues !== "function") {
-    throw new Error("crypto.getRandomValues is not available in this environment");
+    throw new Error(
+      "crypto.getRandomValues is not available in this environment",
+    );
   }
 
   const bytes = cryptoApi.getRandomValues(new Uint8Array(length));

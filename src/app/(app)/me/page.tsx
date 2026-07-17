@@ -11,11 +11,22 @@ import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { PushPermissionPrompt } from "@/components/pwa/push-permission-prompt";
 import { prisma } from "@/lib/prisma";
-import { CalendarDays, Trophy, ChevronRight, Activity, AlertTriangle } from "lucide-react";
+import {
+  CalendarDays,
+  Trophy,
+  ChevronRight,
+  Activity,
+  AlertTriangle,
+} from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { getEnhancedUserMatches, getPendingActions, getPendingAttendanceActions } from "@/lib/match-queries";
+import {
+  getEnhancedUserMatches,
+  getPendingActions,
+  getPendingAttendanceActions,
+} from "@/lib/match-queries";
 import { cn, getMatchWinner } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
+import { LocalDate } from "@/components/ui/local-date";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -25,7 +36,14 @@ export default async function DashboardPage() {
 
   const now = new Date();
 
-  const [user, allPendingMatches, recentMatches, pendingAttendance, myTurns, recommendedTurns] = await Promise.all([
+  const [
+    user,
+    allPendingMatches,
+    recentMatches,
+    pendingAttendance,
+    myTurns,
+    recommendedTurns,
+  ] = await Promise.all([
     prisma.user.findUnique({
       where: { id: viewerId },
       select: {
@@ -68,7 +86,10 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  const pendingActionMatches = await getPendingActions(viewerId, allPendingMatches);
+  const pendingActionMatches = await getPendingActions(
+    viewerId,
+    allPendingMatches,
+  );
 
   const upcomingMatches = allPendingMatches
     .filter((m) => new Date(m.date || m.createdAt) >= now)
@@ -139,7 +160,9 @@ export default async function DashboardPage() {
             href="/ranking"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Ranking</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+              Ranking
+            </span>
             <span className="text-xl font-bold text-foreground">
               #{user.rankingPosition ?? "-"}
             </span>
@@ -148,7 +171,9 @@ export default async function DashboardPage() {
             href="/me/profile"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Nivel</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+              Nivel
+            </span>
             <span className="text-xl font-bold text-foreground">
               {user.level}
             </span>
@@ -157,7 +182,9 @@ export default async function DashboardPage() {
             href="/match"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Partidos</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+              Partidos
+            </span>
             <span className="text-xl font-bold text-foreground">
               {user.matchesPlayed}
             </span>
@@ -166,14 +193,18 @@ export default async function DashboardPage() {
             href="/ranking"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Victorias</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+              Victorias
+            </span>
             <span className="text-xl font-bold text-primary">{user.wins}</span>
           </Link>
           <Link
             href="/ranking"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">Reputación</span>
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+              Reputación
+            </span>
             <span className="text-xl font-bold text-foreground">
               {Math.round((user.attendanceScore ?? 1) * 100)}%
             </span>
@@ -199,7 +230,8 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {heroActivity.type === "turn" &&
-              heroActivity.data.players.length < heroActivity.data.maxPlayers ? (
+              heroActivity.data.players.length <
+                heroActivity.data.maxPlayers ? (
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
               ) : (
                 <Activity className="h-4 w-4 text-primary" />
@@ -212,9 +244,13 @@ export default async function DashboardPage() {
               </h2>
             </div>
             {heroActivity.type === "turn" &&
-              heroActivity.data.players.length < heroActivity.data.maxPlayers && (
+              heroActivity.data.players.length <
+                heroActivity.data.maxPlayers && (
                 <span className="text-xs font-bold text-amber-600">
-                  ¡Faltan {heroActivity.data.maxPlayers - heroActivity.data.players.length}!
+                  ¡Faltan{" "}
+                  {heroActivity.data.maxPlayers -
+                    heroActivity.data.players.length}
+                  !
                 </span>
               )}
           </div>
@@ -226,7 +262,8 @@ export default async function DashboardPage() {
                 isJoined={true}
                 isCreator={heroActivity.data.creatorId === viewerId}
               />
-              {heroActivity.data.players.length < heroActivity.data.maxPlayers && (
+              {heroActivity.data.players.length <
+                heroActivity.data.maxPlayers && (
                 <OpenToNetworkButton
                   turnId={heroActivity.id}
                   club={heroActivity.data.club}
@@ -314,10 +351,11 @@ export default async function DashboardPage() {
                     {match.club || "Partido"}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(match.date).toLocaleDateString("es-AR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })}{" "}
+                    <LocalDate
+                      date={match.date}
+                      options={{ day: "2-digit", month: "2-digit" }}
+                      locale="es-AR"
+                    />{" "}
                     · {match.playersWithoutAttendance} sin marcar
                   </span>
                 </div>
@@ -343,7 +381,10 @@ export default async function DashboardPage() {
           {remainingAgendaItems.length > 0 ? (
             remainingAgendaItems.map((item) => {
               return item.type === "turn" ? (
-                <div key={item.id} className="border-l-4 border-l-blue-500/40 rounded-r-xl overflow-hidden">
+                <div
+                  key={item.id}
+                  className="border-l-4 border-l-blue-500/40 rounded-r-xl overflow-hidden"
+                >
                   <TurnCard
                     turn={item.data}
                     isJoined={item.data.players.some(
@@ -353,7 +394,10 @@ export default async function DashboardPage() {
                   />
                 </div>
               ) : (
-                <div key={item.id} className="border-l-4 border-l-primary/40 rounded-r-xl overflow-hidden">
+                <div
+                  key={item.id}
+                  className="border-l-4 border-l-primary/40 rounded-r-xl overflow-hidden"
+                >
                   <MatchResultCompact
                     match={item.data as MatchResultCompactMatch}
                     detailUrl={`/match/${item.id}`}
@@ -376,7 +420,9 @@ export default async function DashboardPage() {
             />
           ) : (
             <div className="rounded-xl border border-dashed border-border p-8 flex flex-col items-center justify-center text-center">
-              <p className="text-xs text-muted-foreground">No hay más actividades programadas.</p>
+              <p className="text-xs text-muted-foreground">
+                No hay más actividades programadas.
+              </p>
             </div>
           )}
         </div>

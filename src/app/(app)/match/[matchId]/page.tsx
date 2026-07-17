@@ -15,6 +15,7 @@ import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { LocalDate } from "@/components/ui/local-date";
 
 interface MatchPageProps {
   params: Promise<{
@@ -175,11 +176,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 : "En disputa"}
           </span>
           <span className="text-xs text-muted-foreground">
-            {new Date(match.date).toLocaleDateString("es-AR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            })}
+            <LocalDate
+              date={match.date}
+              options={{ day: "2-digit", month: "2-digit", year: "2-digit" }}
+              locale="es-AR"
+            />
           </span>
         </div>
       </div>
@@ -349,9 +350,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                           <PlayerAvatar
                             name={displayName}
                             image={player.user?.image ?? undefined}
-                            className={cn(
-                              "h-10 w-10 border-2 border-card",
-                            )}
+                            className={cn("h-10 w-10 border-2 border-card")}
                           />
                           {isConfirmed && (
                             <div className="absolute -right-1 -bottom-1 rounded-full bg-primary p-0.5 border-2 border-card shadow-sm">
@@ -441,7 +440,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
                         </span>
                         <AttendanceBadge
                           status={
-                            (player.attendance as "ATTENDED" | "LATE" | "NO_SHOW" | null) ?? null
+                            (player.attendance as
+                              | "ATTENDED"
+                              | "LATE"
+                              | "NO_SHOW"
+                              | null) ?? null
                           }
                         />
                       </div>
