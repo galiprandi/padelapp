@@ -40,47 +40,43 @@ export function usePushNotifications() {
       return;
     }
 
-    setPermission(Notification.permission as PermissionState);
+    const currentPerm = Notification.permission as PermissionState;
+    setPermission(currentPerm);
+
+    // If permission was already granted, auto-initialize to recover the token.
+    // Without this, a page reload after granting permission would never obtain
+    // a token (the prompt is hidden when permission === "granted").
+    if (currentPerm === "granted") {
+      void initFirebaseMessaging();
+    }
   }, []);
 
-  const requestPermission = useCallback(async () => {
-    if (typeof window === "undefined") return null;
-    if (!("Notification" in window)) {
-      setPermission("unsupported");
+  /**
+   * Initialize Firebase Messaging and obtain an FCM token.
+   * Called both from requestPermission (user click) and from the
+   * useEffect above (auto-recovery on reload when permission already granted).
+   */
+  const initFirebaseMessaging = useCallback(async (): Promise<string | null> => {
+    const config = getFirebaseConfig();
+    if (!config) {
+      console.warn("Firebase config not set — push permission granted but no token");
       return null;
     }
 
-    setLoading(true);
+    const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+    if (!vapidKey) {
+      console.warn("VAPID key not set — cannot get FCM token");
+      return null;
+    }
+
     try {
-      const result = await Notification.requestPermission();
-      setPermission(result as PermissionState);
-
-      if (result !== "granted") return null;
-
-      const config = getFirebaseConfig();
-      if (!config) {
-        console.warn("Firebase config not set — push permission granted but no token");
-        return null;
-      }
-
-      const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
-      if (!vapidKey) {
-        console.warn("VAPID key not set — cannot get FCM token");
-        return null;
-      }
-
-      // 1. Register the service worker (required for background push)
-      if (!("serviceWorker" in navigator)) {
-        console.warn("Service Worker not supported — push limited to foreground");
-      }
-
+      // Register the service worker (required for background push)
       let swRegistration: ServiceWorkerRegistration | undefined;
       if ("serviceWorker" in navigator) {
         swRegistration = await navigator.serviceWorker.register(
           "/firebase-messaging-sw.js",
         );
         const registration = swRegistration;
-        // Wait for the SW to be active
         if (registration.active) {
           registration.active.postMessage({
             type: "INIT_FIREBASE",
@@ -104,14 +100,14 @@ export function usePushNotifications() {
         }
       }
 
-      // 2. Initialize Firebase Messaging with the SW registration
+      // Initialize Firebase Messaging
       const { initializeApp } = await import("firebase/app");
       const { getMessaging, getToken, onMessage } = await import("firebase/messaging");
 
       const app = initializeApp(config);
       const messaging = getMessaging(app);
 
-      // 3. Handle foreground messages
+      // Handle foreground messages
       onMessage(messaging, (payload) => {
         const { title, body } = payload.notification ?? {};
         if (title && body && Notification.permission === "granted") {
@@ -124,19 +120,40 @@ export function usePushNotifications() {
         }
       });
 
-      // 4. Get the FCM token
+      // Get the FCM token
       const fcmToken = await getToken(messaging, { vapidKey });
       setToken(fcmToken);
 
       await registerTokenOnServer(fcmToken);
       return fcmToken;
     } catch (error) {
+      console.error("Error initializing Firebase Messaging:", error);
+      return null;
+    }
+  }, []);
+
+  const requestPermission = useCallback(async () => {
+    if (typeof window === "undefined") return null;
+    if (!("Notification" in window)) {
+      setPermission("unsupported");
+      return null;
+    }
+
+    setLoading(true);
+    try {
+      const result = await Notification.requestPermission();
+      setPermission(result as PermissionState);
+
+      if (result !== "granted") return null;
+
+      return await initFirebaseMessaging();
+    } catch (error) {
       console.error("Error requesting push permission:", error);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [initFirebaseMessaging]);
 
   return { permission, token, loading, requestPermission };
 }
