@@ -5,6 +5,7 @@ import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
+import { getCachedRanking, getCachedRankingSearch } from "@/lib/cached-queries";
 import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
@@ -19,46 +20,9 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
   const viewerId = session?.user?.id;
   const { q: query } = await searchParams;
 
-  const players = await prisma.user.findMany({
-    where: query
-      ? {
-          OR: [
-            { displayName: { contains: query, mode: "insensitive" } },
-            { alias: { contains: query, mode: "insensitive" } },
-          ],
-        }
-      : undefined,
-    orderBy: [
-      { rankingScore: "desc" },
-      { attendanceScore: "desc" },
-      { wins: "desc" },
-      { lastMatchAt: "desc" },
-      { displayName: "asc" },
-    ],
-    take: query ? 20 : 50,
-    include: {
-      matchPlayers: {
-        where: {
-          match: {
-            status: "CONFIRMED",
-          },
-        },
-        orderBy: {
-          match: {
-            date: "desc",
-          },
-        },
-        take: 5,
-        include: {
-          match: {
-            select: {
-              score: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const players = query
+    ? await getCachedRankingSearch(query)
+    : await getCachedRanking();
 
   const currentUser = viewerId
     ? await prisma.user.findUnique({

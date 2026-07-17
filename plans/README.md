@@ -12,7 +12,8 @@ honor its STOP conditions, and update your row when done.
 | 002  | Non-blocking layout (stream notifications badge) | P1 | S | — | DONE |
 | 003  | Remove unnecessary ignoreBuildErrors flag | P2 | S | — | DONE |
 | 004  | Error.tsx boundaries for graceful error recovery | P2 | S | — | DONE |
-| 005  | Data caching with unstable_cache + revalidateTag | P1 | M | — | TODO |
+| 005  | Data caching with unstable_cache + revalidateTag | P1 | M | — | DONE |
+| 006  | Upgrade to Next.js 16.3+ and adopt Cache Components | P1 | L | 001, 002, 005 | TODO |
 
 ## Dependency notes
 

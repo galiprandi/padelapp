@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { TurnCard } from "@/components/turns/turn-card";
-import { prisma } from "@/lib/prisma";
+import { getCachedOpenTurns } from "@/lib/cached-queries";
 import Link from "next/link";
 import { CalendarOff, Plus } from "lucide-react";
 import { auth } from "@/auth";
@@ -9,24 +9,7 @@ import { auth } from "@/auth";
 export default async function TurnsPage() {
   const session = await auth();
 
-  const turns = await prisma.turn.findMany({
-    where: {
-      date: {
-        gte: new Date(),
-      },
-      status: {
-        in: ["OPEN", "FULL"],
-      },
-    },
-    include: {
-      players: true,
-      creator: true,
-    },
-    orderBy: {
-      date: "asc",
-    },
-    take: 20,
-  });
+  const turns = await getCachedOpenTurns();
 
   return (
     <div className="flex flex-col gap-6">
