@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { levelOptions } from "@/lib/mock-data";
 import { getTurnByIdAction, updateTurnAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
@@ -111,13 +110,13 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
 
   return (
     <div className="flex flex-col gap-6 pb-20">
-      <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-4">
         <Link
           href={`/t/${id}`}
-          className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-fit"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+          aria-label="Volver"
         >
-          <ChevronLeft className="h-4 w-4" />
-          Volver
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">Editar turno</h1>
@@ -126,14 +125,14 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <Card className="rounded-xl border border-border bg-card">
-          <CardHeader className="pb-4">
+        <div className="rounded-xl border border-border bg-card">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-primary" />
-              <CardTitle className="text-base font-bold">Detalles del partido</CardTitle>
+              <h2 className="text-sm font-bold text-foreground">Detalles del partido</h2>
             </div>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-6">
+          </div>
+          <div className="p-6 flex flex-col gap-6">
             <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="club"
@@ -314,8 +313,8 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
                 className="min-h-[100px] rounded-lg resize-none"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <Button
           type="submit"

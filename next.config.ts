@@ -1,4 +1,5 @@
 const nextConfig = {
+  cacheComponents: true,
   turbopack: {},
   experimental: {
     optimizePackageImports: ["lucide-react"],
