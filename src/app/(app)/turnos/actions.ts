@@ -611,6 +611,22 @@ export async function openToNetworkAction(turnId: string) {
       return { status: "error", message: "El turno ya está completo" };
     }
 
+    const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+    const now = new Date();
+
+    if (
+      turn.lastNetworkNotificationAt &&
+      now.getTime() - turn.lastNetworkNotificationAt.getTime() < COOLDOWN_MS
+    ) {
+      const minutesLeft = Math.ceil(
+        (COOLDOWN_MS - (now.getTime() - turn.lastNetworkNotificationAt.getTime())) / (60 * 1000)
+      );
+      return {
+        status: "error",
+        message: `Ya se notificó a la red recientemente. Esperá ${minutesLeft} ${minutesLeft === 1 ? "minuto" : "minutos"} para volver a enviar.`,
+      };
+    }
+
     const { getTurnNetworkContacts } = await import("@/lib/queries");
     const { sendPushToUser } = await import("@/lib/firebase-admin");
 

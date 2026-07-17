@@ -51,7 +51,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      <ProfileForm initialAlias={user.alias ?? ""} initialLevel={user.level} />
+      <ProfileForm initialAlias={user.alias ?? ""} initialLevel={user.level} initialImage={user.image} />
     </div>
   );
 }

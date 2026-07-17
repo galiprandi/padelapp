@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { updateUserProfileAction } from "@/app/(app)/me/actions";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, X, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,15 +14,38 @@ import { cn } from "@/lib/utils";
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
+const AVATAR_PRESETS = [
+  { name: "Pala", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Pala" },
+  { name: "Smash", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Smash" },
+  { name: "Volea", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Volea" },
+  { name: "Globo", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Globo" },
+  { name: "Efecto", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Efecto" },
+];
+
+function sanitizeImageUrl(url: string | null): string {
+  if (!url) return "";
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("data:image/")
+  ) {
+    return trimmed;
+  }
+  return "";
+}
+
 interface ProfileFormProps {
   initialAlias: string;
   initialLevel: number;
+  initialImage: string | null;
 }
 
-export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
+export function ProfileForm({ initialAlias, initialLevel, initialImage }: ProfileFormProps) {
   const { showToast } = useToast();
   const [alias, setAlias] = useState(initialAlias);
   const [level, setLevel] = useState(initialLevel);
+  const [image, setImage] = useState<string | null>(initialImage);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, startSaving] = useTransition();
 
@@ -48,7 +71,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
     setError(null);
 
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, level);
+      const response = await updateUserProfileAction(alias, level, image);
       if (response.status === "ok") {
         showToast("Perfil actualizado");
       } else {
@@ -59,8 +82,84 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
 
   const aliasError = error ?? undefined;
 
+  const safeImage = sanitizeImageUrl(image);
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
+      {/* Avatar Selector */}
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-foreground">
+          Foto de perfil
+        </Label>
+
+        <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
+          <div className="relative shrink-0">
+            {safeImage ? (
+              <img
+                src={safeImage}
+                alt="Vista previa"
+                className="w-16 h-16 rounded-xl object-cover border border-border"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center border border-border">
+                <UserCircle className="w-10 h-10 text-muted-foreground" />
+              </div>
+            )}
+            {image && (
+              <button
+                type="button"
+                onClick={() => setImage(null)}
+                className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground rounded-full p-1 border border-border shadow-sm hover:bg-destructive/90"
+                title="Quitar imagen"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex-1 space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Elegí uno de nuestros avatares deportivos o usá las iniciales de tu nombre.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {AVATAR_PRESETS.map((preset) => {
+                const isSelected = image === preset.url;
+                return (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => setImage(preset.url)}
+                    className={cn(
+                      "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98]",
+                      isSelected
+                        ? "border-primary ring-2 ring-primary/20"
+                        : "border-border hover:border-muted-foreground",
+                    )}
+                  >
+                    <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" aria-hidden="true" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="image-url" className="text-xs text-muted-foreground font-semibold">
+            O pegá un link de imagen personalizado
+          </Label>
+          <Input
+            id="image-url"
+            name="imageUrl"
+            placeholder="https://ejemplo.com/mi-foto.jpg"
+            value={image && !AVATAR_PRESETS.some(p => p.url === image) ? image : ""}
+            onChange={(event) => setImage(event.target.value || null)}
+            disabled={isSaving}
+            className="h-10 text-xs"
+          />
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label
           htmlFor="alias"
@@ -97,7 +196,7 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
         <div
           role="radiogroup"
           aria-labelledby="level-label"
-          className="grid grid-cols-1 gap-1.5"
+          className="grid grid-cols-1 gap-2"
         >
           {levelOptions.map((option) => {
             const isSelected = level === parseInt(option.value);
@@ -110,14 +209,23 @@ export function ProfileForm({ initialAlias, initialLevel }: ProfileFormProps) {
                 onClick={() => setLevel(parseInt(option.value))}
                 disabled={isSaving}
                 className={cn(
-                  "flex items-center justify-between px-3 py-2.5 rounded-lg border text-sm font-medium text-left transition-colors",
+                  "flex flex-col gap-1 p-3 rounded-lg border text-left transition-colors",
                   isSelected
                     ? "bg-primary border-primary text-primary-foreground"
                     : "bg-card border-border text-muted-foreground hover:bg-muted",
                 )}
               >
-                <span>{option.label}</span>
-                {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                <div className="flex items-center justify-between w-full">
+                  <span className={cn("text-sm font-semibold", isSelected ? "text-primary-foreground" : "text-foreground")}>
+                    {option.label}
+                  </span>
+                  {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                </div>
+                {option.description && (
+                  <p className={cn("text-xs leading-normal", isSelected ? "text-primary-foreground/90" : "text-muted-foreground")}>
+                    {option.description}
+                  </p>
+                )}
               </button>
             );
           })}

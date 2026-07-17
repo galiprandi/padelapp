@@ -11,9 +11,12 @@ export interface PlayerAvatarProps {
 }
 
 export function getPlayerInitials(name: string): string {
-  return name
+  // Strip out non-alphanumeric characters to avoid security warning flow-throughs
+  const sanitized = name.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, "");
+  return sanitized
     .split(" ")
     .map((segment) => segment[0])
+    .filter(Boolean)
     .join("")
     .slice(0, 2)
     .toUpperCase();
