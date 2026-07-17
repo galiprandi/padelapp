@@ -23,6 +23,19 @@ const AVATAR_PRESETS = [
   { name: "Efecto", url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Efecto" },
 ];
 
+function sanitizeImageUrl(url: string | null): string {
+  if (!url) return "";
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("data:image/")
+  ) {
+    return trimmed;
+  }
+  return "";
+}
+
 interface ProfileFormProps {
   initialAlias: string;
   initialLevel: number;
@@ -70,6 +83,8 @@ export function ProfileForm({ initialAlias, initialLevel, initialImage }: Profil
 
   const aliasError = error ?? undefined;
 
+  const safeImage = sanitizeImageUrl(image);
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
       {/* Avatar Selector */}
@@ -80,9 +95,9 @@ export function ProfileForm({ initialAlias, initialLevel, initialImage }: Profil
 
         <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
           <div className="relative shrink-0">
-            {image ? (
+            {safeImage ? (
               <img
-                src={image}
+                src={safeImage}
                 alt="Vista previa"
                 className="w-16 h-16 rounded-xl object-cover border border-border"
               />
