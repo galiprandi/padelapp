@@ -1,5 +1,5 @@
 ## 📋 BACKLOG
-- [ ] (vacío — agregar ideas en la fase OBSERVE del primer run)
+- [ ] Upgrade to Next.js 16.3+ and adopt Cache Components (Plan 006)
 
 ## ✅ DONE
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
