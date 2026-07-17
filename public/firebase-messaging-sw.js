@@ -1,4 +1,8 @@
 // Firebase Messaging Service Worker (self-contained — no external imports)
+// All event handlers MUST be registered synchronously at the top level
+// to satisfy the browser's requirement that they are added on the initial
+// evaluation of the worker script.
+
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
@@ -7,38 +11,45 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "INIT_FIREBASE") {
-    const { config, vapidKey } = event.data;
-    if (config && vapidKey) {
-      initFirebaseMessaging(config, vapidKey);
+// --- push handler (top-level, synchronous) ---
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  var payload = {};
+  try {
+    payload = event.data.json();
+  } catch {
+    try {
+      payload = { notification: { title: "PadelApp", body: event.data.text() } };
+    } catch {
+      payload = { notification: { title: "PadelApp", body: "Nueva notificación" } };
     }
   }
+
+  var notification = payload.notification || {};
+  var data = payload.data || {};
+  var title = notification.title || "PadelApp";
+  var body = notification.body || "";
+  var url = data.url || "/";
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: body,
+      icon: "/icon.svg",
+      badge: "/icon.svg",
+      data: { url: url },
+    })
+  );
 });
 
-async function initFirebaseMessaging(config, vapidKey) {
-  try {
-    const app = self.firebase.initializeApp(config);
-    const messaging = self.firebase.messaging(app);
+// --- pushsubscriptionchange handler (top-level, synchronous) ---
+self.addEventListener("pushsubscriptionchange", (event) => {
+  event.waitUntil(
+    Promise.resolve()
+  );
+});
 
-    messaging.onBackgroundMessage(function (payload) {
-      var notification = payload.notification || {};
-      var title = notification.title;
-      var body = notification.body || "";
-      var url = (payload.data && payload.data.url) || "/";
-
-      self.registration.showNotification(title || "PadelApp", {
-        body: body,
-        icon: "/icon.svg",
-        badge: "/icon.svg",
-        data: { url: url },
-      });
-    });
-  } catch (error) {
-    console.error("Error initializing Firebase Messaging in SW:", error);
-  }
-}
-
+// --- notificationclick handler (top-level, synchronous) ---
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
@@ -60,6 +71,35 @@ self.addEventListener("notificationclick", (event) => {
       }
     })
   );
+});
+
+// --- message handler for Firebase init (optional, for onBackgroundMessage) ---
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "INIT_FIREBASE") {
+    const { config, vapidKey } = event.data;
+    if (config && vapidKey) {
+      try {
+        const app = self.firebase.initializeApp(config);
+        const messaging = self.firebase.messaging(app);
+
+        messaging.onBackgroundMessage(function (payload) {
+          var notification = payload.notification || {};
+          var title = notification.title;
+          var body = notification.body || "";
+          var url = (payload.data && payload.data.url) || "/";
+
+          self.registration.showNotification(title || "PadelApp", {
+            body: body,
+            icon: "/icon.svg",
+            badge: "/icon.svg",
+            data: { url: url },
+          });
+        });
+      } catch (error) {
+        console.error("Error initializing Firebase Messaging in SW:", error);
+      }
+    }
+  }
 });
 
 // === Firebase compat scripts inlined (v10.14.1) ===
