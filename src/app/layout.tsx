@@ -24,11 +24,14 @@ export const metadata: Metadata = {
   applicationName: appSettings.applicationName,
   manifest: appSettings.manifestPath,
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+    ],
     apple: [
       { url: "/apple-icon.svg", sizes: "180x180", type: "image/svg+xml" },
     ],
-    shortcut: ["/icon.svg"],
+    shortcut: ["/favicon.svg"],
   },
   appleWebApp: {
     capable: true,

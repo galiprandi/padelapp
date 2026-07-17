@@ -39,7 +39,7 @@ interface TurnPageProps {
   params: Promise<{ id: string }>;
 }
 
-const brandWithEmoji = `🎾 ${appSettings.shortName}`;
+const brandName = appSettings.shortName;
 
 export async function generateMetadata({
   params,
@@ -52,7 +52,7 @@ export async function generateMetadata({
   }
 
   const turn = result.turn;
-  const title = `Turno en ${turn.club} - ${brandWithEmoji}`;
+  const title = `Turno en ${turn.club} - ${brandName}`;
   const description = `Unite al turno en ${turn.club} el ${new Date(turn.date).toLocaleDateString("es-ES", { timeZone: "America/Argentina/Buenos_Aires" })}.`;
 
   return {

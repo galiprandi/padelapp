@@ -1,38 +1,41 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { InstallContent } from "@/components/share/install-content";
 
 export default function InstallPage() {
   return (
     <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
-      <Card className="w-full max-w-sm border-border bg-card shadow-sm rounded-xl">
-        <CardHeader className="space-y-4 pb-6 pt-10 text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-xl bg-primary/10 text-4xl border border-primary/20">
-            📲
-          </div>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold">PadelApp</CardTitle>
-            <CardDescription className="text-balance px-4 text-sm text-muted-foreground">
-              Disfrutá de la mejor experiencia agregando la app a tu pantalla de inicio.
-            </CardDescription>
-          </div>
-        </CardHeader>
+      <div className="flex w-full max-w-sm flex-col items-center gap-8">
+        {/* Logo */}
+        <img
+          src="/icon.svg"
+          alt="PadelApp"
+          className="h-20 w-20"
+          width={80}
+          height={80}
+        />
 
-        <CardContent className="space-y-6 pb-8">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Instalar PadelApp
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-[260px]">
+            Agregá la app a tu pantalla de inicio para acceder más rápido.
+          </p>
+        </div>
+
+        <div className="w-full">
           <InstallContent />
-        </CardContent>
+        </div>
 
-        <CardFooter className="pb-10 px-8">
-          <Button
-            variant="outline"
-            className="w-full h-12 rounded-lg font-semibold text-sm"
-            asChild
-          >
-            <Link href="/">Volver al inicio</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+        <Button
+          variant="ghost"
+          className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground"
+          asChild
+        >
+          <Link href="/">Volver al inicio</Link>
+        </Button>
+      </div>
     </main>
   );
 }

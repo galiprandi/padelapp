@@ -24,7 +24,7 @@ interface InvitationPageProps {
   params: Promise<{ matchId: string }>;
 }
 
-const brandWithEmoji = `🎾 ${appSettings.shortName}`;
+const brandName = appSettings.shortName;
 
 export async function generateMetadata({
   params,
@@ -41,7 +41,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Invitación a Partido - ${brandWithEmoji}`,
+    title: `Invitación a Partido - ${brandName}`,
     description: `Sumate al partido en ${match.club || "el club"} el ${new Date(match.date).toLocaleDateString("es-AR")}.`,
   };
 }
