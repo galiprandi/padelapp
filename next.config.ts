@@ -1,8 +1,5 @@
 const nextConfig = {
   turbopack: {},
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
