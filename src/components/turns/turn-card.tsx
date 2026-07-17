@@ -12,6 +12,7 @@ import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { createMagicLink } from "@/lib/magic-link";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
+import { useMounted } from "@/lib/hooks/use-mounted";
 
 interface TurnCardProps {
   turn: {
@@ -35,6 +36,7 @@ export function TurnCard({
 }: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const mounted = useMounted();
   const dateObj = new Date(turn.date);
 
   const isRecommended = variant === "recommended";
@@ -42,8 +44,10 @@ export function TurnCard({
     levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
       ?.label ?? turn.suggestedLevel.toString();
 
-  const isTodayDate = isToday(dateObj);
-  const isTomorrowDate = isTomorrow(dateObj);
+  // Only compute date-relative labels after mount to avoid hydration
+  // mismatch (server uses UTC, client uses local timezone).
+  const isTodayDate = mounted && isToday(dateObj);
+  const isTomorrowDate = mounted && isTomorrow(dateObj);
 
   const canJoin = !isJoined && turn.status === "OPEN";
 
