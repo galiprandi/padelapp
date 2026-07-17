@@ -214,7 +214,7 @@ export const matchPlayers = pgTable(
     createdAt: timestamptz3("createdAt").notNull().defaultNow(),
     updatedAt: timestamptz3("updatedAt")
       .notNull()
-      .defaultNow()
+      .$defaultFn(() => new Date())
       .$onUpdateFn(() => new Date()),
   },
   (table) => ({
