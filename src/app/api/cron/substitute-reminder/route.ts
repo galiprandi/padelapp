@@ -5,8 +5,8 @@ import { and, gte, lte, inArray, asc } from "drizzle-orm";
 import { notifyUsers } from "@/lib/notifications";
 import { getTurnLabel } from "@/lib/utils";
 
-// Runs every hour via Vercel Cron.
-// Sends a reminder to substitutes of turns happening in the next 24h.
+// Runs daily at 9am via Vercel Cron (Hobby plan limit).
+// Sends a reminder to substitutes of turns happening in the next 48h.
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -14,13 +14,13 @@ export async function GET(request: Request) {
   }
 
   const now = new Date();
-  const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const in48h = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
   try {
     const upcomingTurns = await db.query.turns.findMany({
       where: and(
         gte(turns.date, now),
-        lte(turns.date, in24h),
+        lte(turns.date, in48h),
         inArray(turns.status, ["OPEN", "FULL"]),
       ),
       with: {

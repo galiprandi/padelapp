@@ -1,4 +1,4 @@
-# PadelApp
+# Padel Red
 
 **La app para organizar turnos fijos de pádel, salvarlos cuando faltan jugadores, y mantener un ranking como gancho competitivo.**
 
@@ -6,7 +6,7 @@
 
 ## Visión General
 
-PadelApp es una **Progressive Web App (PWA)** diseñada para jugadores de pádel que organizan turnos fijos y recurrentes. El problema real que resuelve:
+Padel Red es una **Progressive Web App (PWA)** diseñada para jugadores de pádel que organizan turnos fijos y recurrentes. El problema real que resuelve:
 
 > _"Tengo un turno fijo los martes 20h. Faltan 2 horas y tengo 2 jugadores. Necesito llenar los cupos con gente que ya jugó conmigo, sin armar 10 grupos de WhatsApp."_
 
@@ -18,7 +18,7 @@ Facilitar la organización de turnos fijos y recurrentes, y **salvarlos en caso 
 
 1. **El organizador crea el turno** y lo comparte con un link.
 2. **Los jugadores se unen** con un toque (login con Google).
-3. **Si faltan jugadores y el turno corre riesgo**, PadelApp notifica automáticamente a la **red de contactos de pádel** del organizador — jugadores con quienes compartió cancha alguna vez.
+3. **Si faltan jugadores y el turno corre riesgo**, Padel Red notifica automáticamente a la **red de contactos de pádel** del organizador — jugadores con quienes compartió cancha alguna vez.
 4. **Los contactos reciben una push** y pueden sumarse con un toque.
 
 ### El ranking como gancho
@@ -42,7 +42,7 @@ Cada partido confirmado construye automáticamente tu red de contactos de pádel
 
 #### 2. Creación de turnos abiertos
 - Club, fecha/hora, duración, máximo de jugadores, nivel sugerido.
-- Link público compartible: `padelapp.app/t/abc123`.
+- Link público compartible: `padelred.app/t/abc123`.
 
 #### 3. Inscripción abierta
 - Cualquiera con el link puede anotarse hasta el inicio del turno.
@@ -134,7 +134,7 @@ Cada partido confirmado construye automáticamente tu red de contactos de pádel
 
 ---
 
-## Lo que NO es PadelApp
+## Lo que NO es Padel Red
 
 - No es un sistema de reservas de canchas.
 - No es un sistema de matchmaking automático (requiere escala).
@@ -145,4 +145,4 @@ Cada partido confirmado construye automáticamente tu red de contactos de pádel
 
 ## Pitch de 30 segundos
 
-> _"¿Organizás turnos fijos de pádel y se te cancelan por falta de jugadores? PadelApp los salva. Creás el turno, compartís el link, y si faltan jugadores la app avisa automáticamente a tu red de contactos de pádel. Además, un ranking simple te da excusa para registrar resultados y competir con tu grupo. Sin fricción. Solo pádel."_
+> _"¿Organizás turnos fijos de pádel y se te cancelan por falta de jugadores? Padel Red los salva. Creás el turno, compartís el link, y si faltan jugadores la app avisa automáticamente a tu red de contactos de pádel. Además, un ranking simple te da excusa para registrar resultados y competir con tu grupo. Sin fricción. Solo pádel."_

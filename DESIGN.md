@@ -1,6 +1,6 @@
-# DESIGN.md – PadelApp
+# DESIGN.md – Padel Red
 
-Design policy for **PadelApp**. This document is the single source of truth for UI decisions. All new components and pages must adhere to these maxims.
+Design policy for **Padel Red**. This document is the single source of truth for UI decisions. All new components and pages must adhere to these maxims.
 
 ---
 

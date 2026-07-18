@@ -1,4 +1,4 @@
-# PadelApp
+# Padel Red
 
 PWA mobile-first para **organizar turnos fijos de pádel y salvarlos cuando faltan jugadores**. El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Si el turno corre riesgo de cancelación, la app notifica automáticamente a la red de contactos de pádel del organizador. Incluye un ranking simple como gancho de engagement competitivo.
 
@@ -61,7 +61,8 @@ npm run db:studio       # abrir Prisma Studio
 ## Documentación
 
 - `PRODUCT.md` — Visión del producto, misión y principios de UX.
-- `padelapp-product-brief.md` — Brief completo del producto y roadmap.
+- `MANUAL.md` — Manual de usuario y fuente de verdad de todos los flujos de la app. Listo para inyectar en chatbot.
+- `padelred-product-brief.md` — Brief completo del producto y roadmap.
 - `DESIGN.md` — Política de diseño con máximas y ejemplos.
 - `AGENTS.md` — Contexto y reglas para agentes/contribuyentes.
 - `specs/` — Especificaciones de vistas y secciones.
