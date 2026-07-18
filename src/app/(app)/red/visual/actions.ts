@@ -14,6 +14,7 @@ export interface GraphNode {
   community: number | null;
   networkSize: number;
   matchesPlayed: number;
+  preferredSide: "RIGHT" | "LEFT" | null;
 }
 
 export interface GraphLink {
@@ -78,6 +79,7 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
       community: s?.community ?? null,
       networkSize: s?.networkSize ?? 0,
       matchesPlayed: p?.matchesPlayed ?? 0,
+      preferredSide: (s?.preferredSide as "RIGHT" | "LEFT" | null) ?? null,
     };
   });
 
