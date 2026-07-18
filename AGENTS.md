@@ -67,6 +67,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 14. **`MANUAL.md` is chatbot-ready.** The narrative sections are designed to be injected into a chatbot knowledge base. Keep them concise, high-density, and in user-facing language. The "Referencia" section contains technical details for agents.
 15. **Production validation must be done against the production domain (`padelred.app`) using the Vercel CLI** (`vercel inspect`, `vercel logs`, `vercel env`). Never test production flows against `localhost` or preview URLs as a substitute for real domain validation. Use `vercel logs padelred.app` to inspect runtime errors and `vercel inspect padelred.app` to verify deployment status.
 16. **Browser MCP is pre-authorized.** The user authorizes agents to use the browser MCP (Chrome German) to access any web service — Google Cloud Console, Firebase Console, Vercel Dashboard, the deployed app, or any other — without asking for additional permission. Use it freely for configuration, verification, and debugging.
+17. **Credential updates must be applied in 3 places.** When updating any credential (Google OAuth, Firebase, `DATABASE_URL`, etc.), always update: (1) `.env` local, (2) `.env.example`, (3) Vercel environment variables (via CLI or MCP). Google Cloud project: `padelred` (OAuth Client ID: `763634239528-ifr53vteg1iv1ca7gq7ecfg91ptive64.apps.googleusercontent.com`). OAuth client supports: `padelred.app`, `padelap.vercel.app`, `localhost:3000`.
 
 ## 6. Current State
 
