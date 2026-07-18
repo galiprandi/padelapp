@@ -10,6 +10,7 @@ export {
 
 export {
   getMyUpcomingTurns,
+  getMySubstituteTurns,
   getRecommendedTurns,
   getCachedOpenTurns,
 } from "./turn";
@@ -26,10 +27,7 @@ export {
   type PadelContact,
 } from "./contacts";
 
-export {
-  getDashboardUserStats,
-  type DashboardUserStats,
-} from "./dashboard";
+export { getDashboardUserStats, type DashboardUserStats } from "./dashboard";
 
 export {
   getPublicProfileUser,

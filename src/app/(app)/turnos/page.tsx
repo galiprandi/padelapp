@@ -45,6 +45,9 @@ export default async function TurnsPage() {
                 isJoined={turn.players.some(
                   (p) => p.userId === session?.user?.id,
                 )}
+                isSubstitute={turn.substitutes?.some(
+                  (s) => s.userId === session?.user?.id,
+                )}
                 isCreator={turn.creatorId === session?.user?.id}
               />
             ))

@@ -22,7 +22,10 @@ export const userInTurn = (userId: string) =>
  * Used for bulk "network" queries (e.g. all enrolled players in a turn).
  */
 export const userInMatchFromList = (userIds: string[]) =>
-  sql`exists (select 1 from "MatchPlayer" where "matchId" = "matches"."id" and "userId" in (${sql.join(userIds.map(id => sql`${id}`), sql`, `)}))`;
+  sql`exists (select 1 from "MatchPlayer" where "matchId" = "matches"."id" and "userId" in (${sql.join(
+    userIds.map((id) => sql`${id}`),
+    sql`, `,
+  )}))`;
 
 /**
  * SQL exists clause for matches that have at least one player with
@@ -43,3 +46,6 @@ export const userInMatchByRef = (userId: string) =>
  */
 export const userNotInTurn = (userId: string) =>
   sql`not exists (select 1 from "TurnPlayer" where "turnId" = "turns"."id" and "userId" = ${userId})`;
+
+export const userIsSubstitute = (userId: string) =>
+  sql`exists (select 1 from "TurnSubstitute" where "turnId" = "turns"."id" and "userId" = ${userId})`;

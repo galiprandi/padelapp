@@ -183,6 +183,23 @@ export const turnPlayers = pgTable(
   }),
 );
 
+export const turnSubstitutes = pgTable(
+  "TurnSubstitute",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    turnId: text("turnId").notNull(),
+    userId: text("userId").notNull(),
+    joinedAt: timestamptz3("joinedAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    turnSubstituteTurnIdUserIdUnique: unique(
+      "TurnSubstitute_turnId_userId_key",
+    ).on(table.turnId, table.userId),
+  }),
+);
+
 export const teams = pgTable("Team", {
   id: text("id")
     .primaryKey()
@@ -221,9 +238,10 @@ export const matchPlayers = pgTable(
     matchPlayerMatchIdPositionUnique: unique(
       "MatchPlayer_matchId_position_key",
     ).on(table.matchId, table.position),
-    matchPlayerMatchIdUserIdUnique: unique(
-      "MatchPlayer_matchId_userId_key",
-    ).on(table.matchId, table.userId),
+    matchPlayerMatchIdUserIdUnique: unique("MatchPlayer_matchId_userId_key").on(
+      table.matchId,
+      table.userId,
+    ),
   }),
 );
 
@@ -257,6 +275,7 @@ export const userRelations = relations(users, ({ many, one }) => ({
   sessions: many(sessions),
   turnsCreated: many(turns, { relationName: "TurnCreator" }),
   turnPlayers: many(turnPlayers),
+  turnSubstitutes: many(turnSubstitutes),
 }));
 
 export const accountRelations = relations(accounts, ({ one }) => ({
@@ -294,6 +313,7 @@ export const turnRelations = relations(turns, ({ one, many }) => ({
   }),
   matches: many(matches),
   players: many(turnPlayers),
+  substitutes: many(turnSubstitutes),
 }));
 
 export const turnPlayerRelations = relations(turnPlayers, ({ one }) => ({
@@ -306,6 +326,20 @@ export const turnPlayerRelations = relations(turnPlayers, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const turnSubstituteRelations = relations(
+  turnSubstitutes,
+  ({ one }) => ({
+    turn: one(turns, {
+      fields: [turnSubstitutes.turnId],
+      references: [turns.id],
+    }),
+    user: one(users, {
+      fields: [turnSubstitutes.userId],
+      references: [users.id],
+    }),
+  }),
+);
 
 export const matchPlayerRelations = relations(matchPlayers, ({ one }) => ({
   match: one(matches, {
@@ -352,6 +386,8 @@ export type Turn = typeof turns.$inferSelect;
 export type NewTurn = typeof turns.$inferInsert;
 export type TurnPlayer = typeof turnPlayers.$inferSelect;
 export type NewTurnPlayer = typeof turnPlayers.$inferInsert;
+export type TurnSubstitute = typeof turnSubstitutes.$inferSelect;
+export type NewTurnSubstitute = typeof turnSubstitutes.$inferInsert;
 export type Team = typeof teams.$inferSelect;
 export type NewTeam = typeof teams.$inferInsert;
 export type MatchPlayer = typeof matchPlayers.$inferSelect;

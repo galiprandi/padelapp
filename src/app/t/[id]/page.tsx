@@ -2,7 +2,9 @@ import { auth } from "@/auth";
 import {
   getTurnByIdAction,
   joinTurnAction,
-  leaveTurnAction,
+  joinSubstituteAction,
+  leaveSubstituteAction,
+  takeOpenSlotAction,
   convertTurnToMatchAction,
   cancelTurnAction,
   scheduleNextTurnAction,
@@ -13,6 +15,11 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { levelOptions } from "@/lib/mock-data";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
 import { ShareButton } from "@/components/share/share-button";
+import { LeaveTurnButton } from "@/components/turns/leave-turn-button";
+import {
+  RemovePlayerButton,
+  AssignSubstituteButton,
+} from "@/components/turns/organizer-actions";
 import { createMagicLink } from "@/lib/magic-link";
 import {
   Calendar,
@@ -77,6 +84,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   const turn = result.turn;
   const viewerId = session?.user?.id;
   const isJoined = turn.players.some((p) => p.userId === viewerId);
+  const isCreator = turn.creatorId === viewerId;
   const isCancelled = turn.status === "CANCELLED";
 
   if (isCancelled) {
@@ -90,8 +98,12 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Turno cancelado</h1>
-            <p className="text-sm text-muted-foreground">Este turno ha sido cancelado por el organizador.</p>
+            <h1 className="text-xl font-bold text-foreground">
+              Turno cancelado
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Este turno ha sido cancelado por el organizador.
+            </p>
           </div>
         </div>
         <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
@@ -101,6 +113,8 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
     );
   }
   const isFull = turn.players.length >= turn.maxPlayers;
+  const isSubstitute = turn.substitutes.some((s) => s.userId === viewerId);
+  const hasOpenSlot = turn.players.length < turn.maxPlayers;
   const suggestedLevelLabel =
     levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
       ?.label ?? turn.suggestedLevel;
@@ -115,9 +129,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Detalle del Turno</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            Detalle del Turno
+          </h1>
           <p className="text-sm text-muted-foreground">
-            {isFull ? "Turno completo" : "¡Sumate a este partido!"}
+            {isFull
+              ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
+              : "¡Sumate a este partido!"}
           </p>
         </div>
       </div>
@@ -209,6 +227,15 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                     Organizador
                   </span>
                 )}
+                {isCreator &&
+                  p.userId !== turn.creatorId &&
+                  turn.status !== "COMPLETED" && (
+                    <RemovePlayerButton
+                      turnId={id}
+                      playerUserId={p.userId}
+                      playerName={p.user.alias ?? p.user.displayName}
+                    />
+                  )}
                 <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
               </div>
             </Link>
@@ -237,6 +264,61 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         )}
       </section>
 
+      {turn.substitutes.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              Lista de suplentes
+            </h2>
+            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground border border-border">
+              {turn.substitutes.length}/{turn.maxPlayers}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            {turn.substitutes.map((s, index) => (
+              <Link
+                key={s.id}
+                href={`/p/${s.userId}`}
+                className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+                  {index + 1}
+                </span>
+                <PlayerAvatar
+                  name={s.user.alias ?? s.user.displayName}
+                  image={s.user.image ?? undefined}
+                  size={40}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
+                    {s.user.alias ?? s.user.displayName}
+                  </p>
+                  <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                    Nivel {s.user.level}
+                  </p>
+                </div>
+                {s.userId === viewerId && (
+                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                    Vos
+                  </span>
+                )}
+                {isCreator &&
+                  hasOpenSlot &&
+                  turn.status !== "COMPLETED" &&
+                  s.userId !== viewerId && (
+                    <AssignSubstituteButton
+                      turnId={id}
+                      substituteUserId={s.userId}
+                      substituteName={s.user.alias ?? s.user.displayName}
+                    />
+                  )}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
         <div className="max-w-md mx-auto">
           {!viewerId ? (
@@ -256,6 +338,28 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 variant="outline"
                 className="w-full h-12 rounded-lg text-base font-bold"
               />
+            </div>
+          ) : isSubstitute ? (
+            <div className="flex flex-col gap-3">
+              {hasOpenSlot ? (
+                <TakeOpenSlotForm turnId={id} />
+              ) : (
+                <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border">
+                  No hay cupos libres todavía
+                </div>
+              )}
+              {turn.status !== "COMPLETED" && (
+                <ShareButton
+                  title="Sumate al Turno"
+                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  url={
+                    createMagicLink({ resource: "turn", identifier: id }).url
+                  }
+                  variant="outline"
+                  className="w-full h-12 rounded-lg text-base font-bold"
+                />
+              )}
+              <LeaveSubstituteForm turnId={id} hasOpenSlot={hasOpenSlot} />
             </div>
           ) : isFull ? (
             <div className="flex flex-col gap-3">
@@ -278,25 +382,43 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   </div>
                 </>
               )}
-              <Button
-                disabled
-                className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
-              >
-                {turn.status === "COMPLETED"
-                  ? "Turno finalizado"
-                  : "Turno completo"}
-              </Button>
+              {turn.status === "COMPLETED" ? (
+                <Button
+                  disabled
+                  className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
+                >
+                  Turno finalizado
+                </Button>
+              ) : isJoined ? (
+                <Button
+                  disabled
+                  className="w-full h-12 rounded-lg font-bold bg-primary/10 text-primary border border-primary/20"
+                >
+                  ¡Ya estás anotado!
+                </Button>
+              ) : turn.substitutes.length < turn.maxPlayers ? (
+                <JoinSubstituteForm turnId={id} />
+              ) : (
+                <Button
+                  disabled
+                  className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
+                >
+                  Lista de suplentes completa
+                </Button>
+              )}
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
                   text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
-                  url={createMagicLink({ resource: "turn", identifier: id }).url}
+                  url={
+                    createMagicLink({ resource: "turn", identifier: id }).url
+                  }
                   variant="outline"
                   className="w-full h-12 rounded-lg text-base font-bold"
                 />
               )}
               {isJoined && turn.status !== "COMPLETED" && (
-                <LeaveTurnForm turnId={id} />
+                <LeaveTurnButton turnId={id} club={turn.club} wasFull />
               )}
             </div>
           ) : isJoined ? (
@@ -308,7 +430,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 <ShareButton
                   title="Sumate al Turno"
                   text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
-                  url={createMagicLink({ resource: "turn", identifier: id }).url}
+                  url={
+                    createMagicLink({ resource: "turn", identifier: id }).url
+                  }
                   className="w-full h-12 rounded-lg text-base font-bold"
                 />
               )}
@@ -330,7 +454,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   </div>
                 </>
               )}
-              <LeaveTurnForm turnId={id} />
+              <LeaveTurnButton turnId={id} club={turn.club} />
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -360,7 +484,9 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                   <ShareButton
                     title="Sumate al Turno"
                     text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
-                    url={createMagicLink({ resource: "turn", identifier: id }).url}
+                    url={
+                      createMagicLink({ resource: "turn", identifier: id }).url
+                    }
                     variant="outline"
                     iconOnly
                     className="h-12 w-12 rounded-lg shrink-0"
@@ -420,26 +546,6 @@ function StartMatchForm({ turnId }: { turnId: string }) {
   );
 }
 
-function LeaveTurnForm({ turnId }: { turnId: string }) {
-  async function handleLeave() {
-    "use server";
-    await leaveTurnAction(turnId);
-  }
-
-  return (
-    <form action={handleLeave}>
-      <Button
-        type="submit"
-        variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
-      >
-        <LogOut className="mr-2 h-4 w-4" />
-        Bajarme del turno
-      </Button>
-    </form>
-  );
-}
-
 function JoinTurnForm({ turnId }: { turnId: string }) {
   async function handleJoin() {
     "use server";
@@ -454,6 +560,71 @@ function JoinTurnForm({ turnId }: { turnId: string }) {
       >
         <UserPlus className="mr-2 h-5 w-5" />
         Anotarme ahora
+      </Button>
+    </form>
+  );
+}
+
+function JoinSubstituteForm({ turnId }: { turnId: string }) {
+  async function handleJoinSubstitute() {
+    "use server";
+    await joinSubstituteAction(turnId);
+  }
+
+  return (
+    <form action={handleJoinSubstitute} className="w-full">
+      <Button
+        type="submit"
+        variant="outline"
+        className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10"
+      >
+        <UserPlus className="mr-2 h-5 w-5" />
+        Anotarme como suplente
+      </Button>
+    </form>
+  );
+}
+
+function LeaveSubstituteForm({
+  turnId,
+  hasOpenSlot,
+}: {
+  turnId: string;
+  hasOpenSlot?: boolean;
+}) {
+  async function handleLeaveSubstitute() {
+    "use server";
+    await leaveSubstituteAction(turnId);
+  }
+
+  return (
+    <form action={handleLeaveSubstitute}>
+      <Button
+        type="submit"
+        variant="ghost"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        {hasOpenSlot ? "No puedo — salir de suplentes" : "Salir de suplentes"}
+      </Button>
+    </form>
+  );
+}
+
+function TakeOpenSlotForm({ turnId }: { turnId: string }) {
+  async function handleTakeSlot() {
+    "use server";
+    await takeOpenSlotAction(turnId);
+  }
+
+  return (
+    <form action={handleTakeSlot} className="w-full">
+      <Button
+        type="submit"
+        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
+      >
+        <Play className="mr-2 h-5 w-5 fill-current" />
+        Ocupar cupo
       </Button>
     </form>
   );

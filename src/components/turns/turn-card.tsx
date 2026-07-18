@@ -6,7 +6,10 @@ import { Clock, Users, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
-import { joinTurnAction } from "@/app/(app)/turnos/actions";
+import {
+  joinTurnAction,
+  joinSubstituteAction,
+} from "@/app/(app)/turnos/actions";
 import { ShareButton } from "@/components/share/share-button";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { createMagicLink } from "@/lib/magic-link";
@@ -20,12 +23,14 @@ interface TurnCardProps {
     club: string;
     date: Date | string;
     players: any[];
+    substitutes?: any[];
     maxPlayers: number;
     suggestedLevel: number | string;
     status?: string;
   };
   variant?: "default" | "recommended";
   isJoined?: boolean;
+  isSubstitute?: boolean;
   isCreator?: boolean;
 }
 
@@ -33,6 +38,7 @@ export function TurnCard({
   turn,
   variant = "default",
   isJoined,
+  isSubstitute,
 }: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -49,14 +55,32 @@ export function TurnCard({
   const isTodayDate = mounted && isToday(dateObj);
   const isTomorrowDate = mounted && isTomorrow(dateObj);
 
-  const canJoin = !isJoined && turn.status === "OPEN";
+  const isFull = turn.players.length >= turn.maxPlayers;
+  const canJoinAsSubstitute =
+    isFull &&
+    !isJoined &&
+    !isSubstitute &&
+    (turn.substitutes?.length ?? 0) < turn.maxPlayers;
+  const canJoin =
+    !isJoined &&
+    !isSubstitute &&
+    (turn.status === "OPEN" || canJoinAsSubstitute);
+
+  // Urgency: turn in < 3h with open slots
+  const hoursUntilTurn = mounted
+    ? (dateObj.getTime() - Date.now()) / (1000 * 60 * 60)
+    : 999;
+  const isUrgent =
+    mounted && hoursUntilTurn < 3 && hoursUntilTurn >= 0 && !isFull;
 
   const handleQuickJoin = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     startTransition(async () => {
-      const res = await joinTurnAction(turn.id);
+      const res = canJoinAsSubstitute
+        ? await joinSubstituteAction(turn.id)
+        : await joinTurnAction(turn.id);
       if (res.status === "ok") {
         router.refresh();
       }
@@ -88,11 +112,17 @@ export function TurnCard({
             <p className="truncate text-sm font-semibold text-foreground">
               {turn.club}
             </p>
-            {isTodayDate && (
-              <Badge variant="success">Hoy</Badge>
-            )}
-            {isTomorrowDate && (
-              <Badge variant="default">Mañana</Badge>
+            {isTodayDate && <Badge variant="success">Hoy</Badge>}
+            {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
+            {isUrgent && (
+              <Badge
+                variant="default"
+                className="bg-amber-500/20 text-amber-600 border-amber-500/30"
+              >
+                {hoursUntilTurn < 1
+                  ? "¡Urgente!"
+                  : `En ${Math.round(hoursUntilTurn)}h`}
+              </Badge>
             )}
           </div>
 
@@ -104,6 +134,12 @@ export function TurnCard({
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
               {turn.players.length}/{turn.maxPlayers}
+              {turn.substitutes && turn.substitutes.length > 0 && (
+                <span className="text-muted-foreground/70">
+                  (+{turn.substitutes.length} supl
+                  {turn.substitutes.length === 1 ? "" : "es"})
+                </span>
+              )}
             </span>
             <span className="text-primary font-semibold">{levelLabel}</span>
           </div>
@@ -146,10 +182,14 @@ export function TurnCard({
             >
               {isPending ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : canJoinAsSubstitute ? (
+                "Suplente"
               ) : (
                 "Unirse"
               )}
             </button>
+          ) : isSubstitute ? (
+            <Badge variant="default">Suplente</Badge>
           ) : isJoined ? (
             <Badge variant="primary">Inscripto</Badge>
           ) : turn.status === "FULL" ? (

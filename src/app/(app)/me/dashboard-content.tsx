@@ -25,6 +25,7 @@ import {
   getPendingAttendanceActions,
   getDashboardUserStats,
   getMyUpcomingTurns,
+  getMySubstituteTurns,
   getRecommendedTurns,
 } from "@/lib/queries";
 import { cn, getMatchWinner } from "@/lib/utils";
@@ -45,6 +46,7 @@ export default async function DashboardContent() {
     recentMatches,
     pendingAttendance,
     myTurns,
+    mySubstituteTurns,
     recommendedTurns,
   ] = await Promise.all([
     getDashboardUserStats(viewerId),
@@ -52,6 +54,7 @@ export default async function DashboardContent() {
     getEnhancedUserMatches(viewerId, "CONFIRMED"),
     getPendingAttendanceActions(viewerId),
     getMyUpcomingTurns(viewerId, 3),
+    getMySubstituteTurns(viewerId, 3),
     getRecommendedTurns(viewerId, 3),
   ]);
 
@@ -135,9 +138,13 @@ export default async function DashboardContent() {
             </h2>
           </div>
           <p className="text-xs text-amber-700 leading-normal">
-            Elegí tu alias en la cancha y nivel de juego (1–8) para que otros jugadores te reconozcan en los partidos y ranking.
+            Elegí tu alias en la cancha y nivel de juego (1–8) para que otros
+            jugadores te reconozcan en los partidos y ranking.
           </p>
-          <Button className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold" asChild>
+          <Button
+            className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold"
+            asChild
+          >
             <Link href="/me/profile">Configurar mi perfil</Link>
           </Button>
         </div>
@@ -422,6 +429,57 @@ export default async function DashboardContent() {
           )}
         </div>
       </section>
+
+      {/* My substitute turns */}
+      {mySubstituteTurns.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-foreground">Soy suplente</h2>
+            <span className="rounded-md bg-amber-500/20 px-1.5 py-0.5 text-xs font-bold text-amber-600">
+              {mySubstituteTurns.length}
+            </span>
+          </div>
+          <div className="space-y-2">
+            {mySubstituteTurns.map((turn) => {
+              const hasOpenSlot = turn.players.length < turn.maxPlayers;
+              return (
+                <Link
+                  key={turn.id}
+                  href={`/t/${turn.id}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 transition-colors hover:bg-amber-500/10"
+                >
+                  <div className="flex flex-col gap-0.5 min-w-0">
+                    <span className="text-sm font-semibold text-foreground truncate">
+                      {turn.club}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      <LocalDate
+                        date={turn.date}
+                        options={{
+                          day: "2-digit",
+                          month: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }}
+                        locale="es-AR"
+                      />
+                      {" · "}
+                      {turn.players.length}/{turn.maxPlayers} jugadores
+                    </span>
+                  </div>
+                  {hasOpenSlot ? (
+                    <span className="rounded-md bg-emerald-500/20 px-2 py-1 text-xs font-bold text-emerald-600 shrink-0">
+                      ¡Cupo libre!
+                    </span>
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Recommended turns */}
       {recommendedTurns.length > 0 && (

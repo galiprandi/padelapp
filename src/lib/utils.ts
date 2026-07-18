@@ -58,3 +58,16 @@ export function getMatchWinner(score: string | null): "A" | "B" | null {
   if (winsB > winsA) return "B";
   return null;
 }
+
+export function getTurnLabel(club: string, date: Date | string): string {
+  const d = new Date(date);
+  const day = d.toLocaleDateString("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+  });
+  const time = d.toLocaleTimeString("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${club} · ${day} ${time}hs`;
+}

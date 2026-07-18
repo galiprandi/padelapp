@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { turns as turnsTable } from "@/db/schema";
 import { eq, and, gte, inArray, asc } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
-import { userInTurn, userNotInTurn } from "./helpers";
+import { userInTurn, userNotInTurn, userIsSubstitute } from "./helpers";
 
 /**
  * Get turns where the user is enrolled, upcoming (date >= now),
@@ -54,6 +54,7 @@ export const getCachedOpenTurns = unstable_cache(
       ),
       with: {
         players: true,
+        substitutes: true,
         creator: true,
       },
       orderBy: asc(turnsTable.date),
@@ -61,5 +62,23 @@ export const getCachedOpenTurns = unstable_cache(
     });
   },
   ["open-turns"],
-  { tags: ["turns"], revalidate: 30 }
+  { tags: ["turns"], revalidate: 30 },
 );
+
+/**
+ * Get turns where the user is a substitute, upcoming (date >= now),
+ * status OPEN or FULL. Used by dashboard to show substitute commitments.
+ */
+export async function getMySubstituteTurns(userId: string, limit = 3) {
+  const now = new Date();
+  return db.query.turns.findMany({
+    where: and(
+      gte(turnsTable.date, now),
+      inArray(turnsTable.status, ["OPEN", "FULL"]),
+      userIsSubstitute(userId),
+    ),
+    with: { players: true, substitutes: true },
+    orderBy: asc(turnsTable.date),
+    limit,
+  });
+}
