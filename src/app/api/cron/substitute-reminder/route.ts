@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { turns, turnSubstitutes } from "@/db/schema";
+import { turns } from "@/db/schema";
 import { and, gte, lte, inArray, asc } from "drizzle-orm";
 import { notifyUsers } from "@/lib/notifications";
 import { getTurnLabel } from "@/lib/utils";
