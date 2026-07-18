@@ -59,6 +59,30 @@ export function ManageSlotModal({
     }
   }, [open, slot, placeholderName]);
 
+  // Global Escape key listener for closing modal
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, onClose]);
+
+  // Autofocus the primary input field upon opening
+  useEffect(() => {
+    if (open && slot?.kind !== "user") {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [open, slot?.kind]);
+
   // Debounced search & Initial contacts fetch
   useEffect(() => {
     let active = true;
@@ -130,8 +154,17 @@ export function ManageSlotModal({
 
   const isUserSlot = slot?.kind === "user";
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-5"
+    >
       <div
         role="dialog"
         aria-modal="true"
