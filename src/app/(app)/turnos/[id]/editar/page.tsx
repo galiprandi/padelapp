@@ -12,6 +12,7 @@ import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Zap, Info, Clock, Check, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
@@ -36,6 +37,7 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
 
   const [formData, setFormData] = useState({
     club: "",
@@ -298,6 +300,21 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
                   );
                 })}
               </div>
+
+              {session?.user?.level !== undefined &&
+                Math.abs(session.user.level - parseInt(formData.suggestedLevel, 10)) > 1 && (
+                  <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-xs">
+                    <span className="text-sm shrink-0">⚠️</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-bold">Recomendación de nivel</span>
+                      <span>
+                        {session.user.level > parseInt(formData.suggestedLevel, 10)
+                          ? `Tu nivel (Nivel ${session.user.level}) es menor que el nivel sugerido para este turno (Nivel ${formData.suggestedLevel}). El partido podría resultar muy exigente.`
+                          : `Tu nivel (Nivel ${session.user.level}) es mayor que el nivel sugerido para este turno (Nivel ${formData.suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
+                      </span>
+                    </div>
+                  </div>
+                )}
             </div>
 
             <div className="flex flex-col gap-1.5">

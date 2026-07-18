@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { turns, turnSubstitutes } from "@/db/schema";
+import { turns } from "@/db/schema";
 import { and, gte, lte, inArray, asc } from "drizzle-orm";
 import { notifyUsers } from "@/lib/notifications";
 import { getTurnLabel } from "@/lib/utils";
-
-export const dynamic = "force-dynamic";
 
 // Runs every hour via Vercel Cron.
 // Sends a reminder to substitutes of turns happening in the next 24h.
