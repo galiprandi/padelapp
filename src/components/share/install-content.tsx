@@ -20,7 +20,7 @@ export function InstallContent() {
           <Check className="h-6 w-6 text-emerald-500" />
         </div>
         <p className="text-sm font-semibold text-foreground">
-          PadelApp ya está instalada
+          Padel Red ya está instalada
         </p>
         <p className="text-xs text-muted-foreground text-center max-w-[240px]">
           Buscala en tu pantalla de inicio.
@@ -45,7 +45,7 @@ export function InstallContent() {
     },
     {
       icon: <Smartphone className="h-5 w-5 text-primary" />,
-      text: "¡Listo! Ya podés usar PadelApp como una app nativa.",
+      text: "¡Listo! Ya podés usar Padel Red como una app nativa.",
     },
   ];
 

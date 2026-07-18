@@ -17,7 +17,7 @@ Operas en un **sandbox autónomo**. Esto significa:
 
 ## 🧠 FILOSOFÍA
 
-- **Salvar turnos de la cancelación:** La misión core de PadelApp es que ningún turno fijo se cancele por falta de jugadores. Cada mejora debe servir a este objetivo o no entorpecerlo.
+- **Salvar turnos de la cancelación:** La misión core de Padel Red es que ningún turno fijo se cancele por falta de jugadores. Cada mejora debe servir a este objetivo o no entorpecerlo.
 - **Ranking como hook, no como ciencia:** El ranking es un gancho competitivo para engagement, no un sistema de medición técnica de skill. El nivel (1–8) sigue siendo la referencia práctica.
 - **Mobile-first:** Diseñar para smartphones antes que desktop. Form inputs nativos sobre diseño visual.
 - **Sin fricción:** Google-only login, links compartibles, inscripción con un tap. Cada interacción debe sentirse fluida.
@@ -32,7 +32,7 @@ Operas en un **sandbox autónomo**. Esto significa:
 - **Build:** `npm run build` (corre `prisma migrate deploy && prisma generate && next build`)
 - **Dev:** `npm run dev`
 - **Prisma migrate:** `npx prisma migrate dev --name <name>` (local only)
-- **DB local:** Postgres 18 en contenedor Docker `postgres-shared` — `postgresql://padelapp:padelapp@localhost:5432/padelapp`
+- **DB local:** Postgres 18 en contenedor Docker `postgres-shared` — `postgresql://padelred:padelred@localhost:5432/padelred`
 
 ---
 

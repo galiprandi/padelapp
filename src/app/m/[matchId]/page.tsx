@@ -306,7 +306,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             asChild
             className="w-full h-12 rounded-lg text-base font-bold shadow-sm"
           >
-            <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
+            <Link href={`/match/${match.id}`}>Ver partido en Padel Red</Link>
           </Button>
 
           {!session?.user ? (

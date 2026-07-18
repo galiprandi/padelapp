@@ -20,15 +20,15 @@ self.addEventListener("push", (event) => {
     payload = event.data.json();
   } catch {
     try {
-      payload = { notification: { title: "PadelApp", body: event.data.text() } };
+      payload = { notification: { title: "PadelRed", body: event.data.text() } };
     } catch {
-      payload = { notification: { title: "PadelApp", body: "Nueva notificación" } };
+      payload = { notification: { title: "PadelRed", body: "Nueva notificación" } };
     }
   }
 
   var notification = payload.notification || {};
   var data = payload.data || {};
-  var title = notification.title || "PadelApp";
+  var title = notification.title || "PadelRed";
   var body = notification.body || "";
   var url = data.url || "/";
 
@@ -88,7 +88,7 @@ self.addEventListener("message", (event) => {
           var body = notification.body || "";
           var url = (payload.data && payload.data.url) || "/";
 
-          self.registration.showNotification(title || "PadelApp", {
+          self.registration.showNotification(title || "PadelRed", {
             body: body,
             icon: "/icon.svg",
             badge: "/icon.svg",

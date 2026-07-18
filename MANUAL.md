@@ -1,6 +1,6 @@
-# Manual de PadelApp
+# Manual de Padel Red
 
-PadelApp existe para facilitar la organización de turnos fijos y recurrentes de pádel, y para evitar que se cancelen cuando no hay suficientes jugadores.
+Padel Red existe para facilitar la organización de turnos fijos y recurrentes de pádel, y para evitar que se cancelen cuando no hay suficientes jugadores.
 
 El organizador crea un turno, comparte el link, y los jugadores se suman con un toque. Si faltan jugadores, la app busca automáticamente en la red de contactos de todos los anotados — personas con las que compartieron cancha en el último año — para completar los cupos.
 

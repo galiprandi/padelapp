@@ -1,16 +1,16 @@
-# PRODUCT.md – PadelApp
+# PRODUCT.md – Padel Red
 
-Visión de producto, estrategia y principios de UX que guían el desarrollo de **PadelApp**.
+Visión de producto, estrategia y principios de UX que guían el desarrollo de **Padel Red**.
 
 ## 1. Misión
 
-PadelApp existe para **facilitar la organización de turnos fijos y recurrentes de pádel**, y **salvarlos cuando están en peligro de cancelación** por falta de jugadores.
+Padel Red existe para **facilitar la organización de turnos fijos y recurrentes de pádel**, y **salvarlos cuando están en peligro de cancelación** por falta de jugadores.
 
-El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Cuando faltan jugadores y el turno corre riesgo, PadelApp notifica automáticamente a la **red de contactos de pádel** de todos los anotados — jugadores con quienes compartieron cancha en el último año — para llenar los cupos antes de que sea tarde.
+El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Cuando faltan jugadores y el turno corre riesgo, Padel Red notifica automáticamente a la **red de contactos de pádel** de todos los anotados — jugadores con quienes compartieron cancha en el último año — para llenar los cupos antes de que sea tarde.
 
 ## 2. Visión de Evolución: Red Social de Pádel
 
-PadelApp nace como una herramienta de organización de turnos, pero su diseño y dominio (`padelred.app`) reflejan una visión de evolución gradual hacia una **red social de pádel**.
+Padel Red nace como una herramienta de organización de turnos, pero su diseño y dominio (`padelred.app`) reflejan una visión de evolución gradual hacia una **red social de pádel**.
 
 La red de contactos implícita —que hoy sirve para salvar turnos— es la base sobre la que se construirá la capa social. La transición es intencionalmente incremental:
 
@@ -52,9 +52,15 @@ El ranking es intencionalmente simple y no pretende ser un sistema técnico prec
 - **Red social implícita**: la red de contactos se construye automáticamente a partir de los partidos jugados. No hay que agregar amigos ni enviar solicitudes.
 - **Salvataje de turnos**: notificación proactiva a tu red cuando un turno está por cancelarse por falta de jugadores. La red se construye a partir de **todos los inscriptos** en el turno (no solo el organizador), considerando contactos de partidos confirmados en los **últimos 12 meses**.
 
-## 7. Lo que NO es PadelApp (hoy)
+## 7. Lo que NO es Padel Red (hoy)
 
 - No es un sistema de reservas de canchas (eso lo hace el club).
 - No es un sistema de matchmaking automático (eso requiere escala).
 - No es una red social general con feed y seguidores — pero evolucionará hacia una red social de pádel basada en la red de contactos implícita.
 - No es un sistema técnico de medición de nivel (el ranking es un gancho, no un ELO serio).
+
+## 8. Nice to Have (post-MVP)
+
+Features planificadas para después del MVP, con specs en `specs/`:
+
+- **Chat de Turnos** (`specs/turn-chat.md`): chat en tiempo real por turno con historial efímero (90 días TTL) y bot del sistema que envía mensajes contextuales (bajas, cupos, recordatorios, resultados). Usa Socket.io + Upstash Redis. El bot del sistema es el diferenciador vs WhatsApp.

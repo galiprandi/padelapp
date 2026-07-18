@@ -1,12 +1,12 @@
-# AGENTS – PadelApp
+# AGENTS – Padel Red
 
-Context and responsibilities for automated agents or contributors working on **PadelApp**.
+Context and responsibilities for automated agents or contributors working on **Padel Red**.
 
 ## 1. Purpose
 
-PadelApp exists to **facilitate the organization of fixed and recurring padel turns**, and to **save them from cancellation** when there aren't enough players.
+Padel Red exists to **facilitate the organization of fixed and recurring padel turns**, and to **save them from cancellation** when there aren't enough players.
 
-The core value is not the ranking — it's ensuring every fixed turn gets played. The organizer creates the turn, shares the link, and players join with one tap. When a turn is at risk, PadelApp automatically notifies the **padel contact network** of all enrolled players — players they've shared a court with before — to fill the spots.
+The core value is not the ranking — it's ensuring every fixed turn gets played. The organizer creates the turn, shares the link, and players join with one tap. When a turn is at risk, Padel Red automatically notifies the **padel contact network** of all enrolled players — players they've shared a court with before — to fill the spots.
 
 The ranking is a **competitive hook** for engagement, not a technical skill measurement system.
 
@@ -37,6 +37,9 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **"Open to my network"** — notify contacts when a turn has open slots. Audience: contacts of **all enrolled players** (not just organizer), from confirmed matches in the **last 12 months**, no duplicates, excluding already-enrolled players.
 - **Onboarding** for first-time users (empty state with direct CTA).
 
+### Nice to Have (post-MVP)
+- **Chat de Turnos** (`specs/turn-chat.md`): real-time chat per turn with ephemeral history (90-day TTL via Redis) and a system bot that sends contextual messages (player dropouts, open slots, reminders, results). Stack: Socket.io + Upstash Redis (free tier). The system bot is the key differentiator vs WhatsApp.
+
 ## 4. Tech Stack
 
 - **Frontend**: Next.js 15 (App Router, TypeScript, Server Components/Actions).
@@ -63,6 +66,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 13. **Flow changes require explicit user consent.** Before modifying any flow documented in `MANUAL.md`, the agent must explain the proposed change and obtain approval. This prevents regressions and ensures the manual stays accurate. Never silently change a flow's behavior without updating the manual.
 14. **`MANUAL.md` is chatbot-ready.** The narrative sections are designed to be injected into a chatbot knowledge base. Keep them concise, high-density, and in user-facing language. The "Referencia" section contains technical details for agents.
 15. **Production validation must be done against the production domain (`padelred.app`) using the Vercel CLI** (`vercel inspect`, `vercel logs`, `vercel env`). Never test production flows against `localhost` or preview URLs as a substitute for real domain validation. Use `vercel logs padelred.app` to inspect runtime errors and `vercel inspect padelred.app` to verify deployment status.
+16. **Browser MCP is pre-authorized.** The user authorizes agents to use the browser MCP (Chrome German) to access any web service — Google Cloud Console, Firebase Console, Vercel Dashboard, the deployed app, or any other — without asking for additional permission. Use it freely for configuration, verification, and debugging.
 
 ## 6. Current State
 
