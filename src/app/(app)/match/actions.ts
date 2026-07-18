@@ -8,6 +8,11 @@ import { matches, matchPlayers, teams, users } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
+import {
+  updateEdgesForMatch,
+  recomputeStatsForPlayer,
+  type ConfirmedMatchInfo,
+} from "@/lib/graph";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
@@ -125,7 +130,11 @@ async function getMatchWithPlayers(
   tx: Pick<typeof db, "select">,
   matchId: string,
 ) {
-  const [match] = await tx.select().from(matches).where(eq(matches.id, matchId)).limit(1);
+  const [match] = await tx
+    .select()
+    .from(matches)
+    .where(eq(matches.id, matchId))
+    .limit(1);
   if (!match) return null;
   const players = await tx
     .select()
@@ -269,8 +278,14 @@ export async function createMatchAction(
 
   try {
     const creationResult = await db.transaction(async (tx) => {
-      const [teamA] = await tx.insert(teams).values({ label: teamLabelA }).returning();
-      const [teamB] = await tx.insert(teams).values({ label: teamLabelB }).returning();
+      const [teamA] = await tx
+        .insert(teams)
+        .values({ label: teamLabelA })
+        .returning();
+      const [teamB] = await tx
+        .insert(teams)
+        .values({ label: teamLabelB })
+        .returning();
 
       const teamIdByKey: Record<TeamKey, string> = {
         A: teamA.id,
@@ -838,8 +853,27 @@ export async function confirmMatchResultAction(
     });
 
     if (updatedMatch && updatedMatch.status === MATCH_STATUS.CONFIRMED) {
-      const affectedIds = updatedMatch.players.map((p) => p.userId).filter((id): id is string => id !== null);
+      const affectedIds = updatedMatch.players
+        .map((p) => p.userId)
+        .filter((id): id is string => id !== null);
       await recalculateRankingAction(affectedIds);
+
+      const matchInfo: ConfirmedMatchInfo = {
+        id: updatedMatch.id,
+        score: updatedMatch.score,
+        date: updatedMatch.date,
+        players: updatedMatch.players.map((p) => ({
+          userId: p.userId,
+          position: p.position,
+          teamId: p.teamId,
+          side: p.side,
+        })),
+      };
+      void updateEdgesForMatch(matchInfo).then(() => {
+        for (const id of affectedIds) {
+          void recomputeStatsForPlayer(id);
+        }
+      });
     }
 
     revalidatePath(`/match/${matchId}`);
@@ -929,8 +963,28 @@ export async function finalizeMatchAction(
     });
 
     // Trigger ranking recalculation
-    const affectedIds = match.players.map((p) => p.userId).filter((id): id is string => id !== null);
+    const affectedIds = match.players
+      .map((p) => p.userId)
+      .filter((id): id is string => id !== null);
     await recalculateRankingAction(affectedIds);
+
+    // Update graph edges and recompute stats for affected players
+    const matchInfo: ConfirmedMatchInfo = {
+      id: match.id,
+      score: match.score,
+      date: match.date,
+      players: match.players.map((p) => ({
+        userId: p.userId,
+        position: p.position,
+        teamId: p.teamId,
+        side: p.side,
+      })),
+    };
+    void updateEdgesForMatch(matchInfo).then(() => {
+      for (const id of affectedIds) {
+        void recomputeStatsForPlayer(id);
+      }
+    });
 
     revalidatePath(`/match/${matchId}`);
 
@@ -1156,6 +1210,7 @@ export interface SaveMatchResultInput {
   matchId: string;
   score: string;
   status?: string;
+  sides?: Array<{ playerId: string; side: "RIGHT" | "LEFT" }>;
 }
 
 export async function saveMatchResultAction(
@@ -1214,6 +1269,16 @@ export async function saveMatchResultAction(
         .set({ resultConfirmed: true })
         .where(eq(matchPlayers.id, player.id));
 
+      // Save player sides (derecha/revés) if provided
+      if (input.sides && input.sides.length > 0) {
+        for (const sideInput of input.sides) {
+          await tx
+            .update(matchPlayers)
+            .set({ side: sideInput.side })
+            .where(eq(matchPlayers.id, sideInput.playerId));
+        }
+      }
+
       const baseMatch = await getMatchWithPlayers(tx, input.matchId);
       if (!baseMatch) throw new Error("match-update-failed");
 
@@ -1248,6 +1313,29 @@ export async function saveMatchResultAction(
 
     if (!updatedMatch) {
       throw new Error("match-update-failed");
+    }
+
+    if (updatedMatch.status === MATCH_STATUS.CONFIRMED) {
+      const affectedIds = updatedMatch.players
+        .map((p) => p.userId)
+        .filter((id): id is string => id !== null);
+      const matchInfo: ConfirmedMatchInfo = {
+        id: updatedMatch.id,
+        score: updatedMatch.score,
+        date: updatedMatch.date,
+        players: updatedMatch.players.map((p) => ({
+          userId: p.userId,
+          position: p.position,
+          teamId: p.teamId,
+          side: p.side,
+        })),
+      };
+      void updateEdgesForMatch(matchInfo).then(() => {
+        for (const id of affectedIds) {
+          void recomputeStatsForPlayer(id);
+        }
+      });
+      await recalculateRankingAction(affectedIds);
     }
 
     revalidatePath(`/match/${input.matchId}`);
@@ -1503,7 +1591,8 @@ export async function markAttendanceAction(
     if (new Date() < oneHourAfterMatch) {
       return {
         status: "error",
-        message: "Podés marcar la asistencia 1 hora después de la hora del partido.",
+        message:
+          "Podés marcar la asistencia 1 hora después de la hora del partido.",
       };
     }
 
@@ -1511,7 +1600,10 @@ export async function markAttendanceAction(
     const validPlayerIds = new Set(match.players.map((p) => p.id));
     for (const entry of entries) {
       if (!validPlayerIds.has(entry.matchPlayerId)) {
-        return { status: "error", message: "Jugador no pertenece a este partido." };
+        return {
+          status: "error",
+          message: "Jugador no pertenece a este partido.",
+        };
       }
     }
 
@@ -1532,7 +1624,9 @@ export async function markAttendanceAction(
 
     // If match is already CONFIRMED, recalculate ranking with new attendance data
     if (match.status === MATCH_STATUS.CONFIRMED) {
-      const affectedIds = match.players.map((p) => p.userId).filter((id): id is string => id !== null);
+      const affectedIds = match.players
+        .map((p) => p.userId)
+        .filter((id): id is string => id !== null);
       await recalculateRankingAction(affectedIds);
     }
 

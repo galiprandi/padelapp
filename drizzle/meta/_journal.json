@@ -15,6 +15,13 @@
       "when": 1784409933299,
       "tag": "0001_unusual_gravity",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784415315202,
+      "tag": "0002_player_graph",
+      "breakpoints": true
     }
   ]
 }

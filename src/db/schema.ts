@@ -47,6 +47,10 @@ export const attendanceStatusEnum = pgEnum("AttendanceStatus", [
   "NO_SHOW",
 ]);
 
+export const sideEnum = pgEnum("PlayerSide", ["RIGHT", "LEFT"]);
+
+export const feedbackEnum = pgEnum("FeedbackType", ["STRONGER", "WEAKER"]);
+
 // ---------------------------------------------------------------------------
 // Tables
 // ---------------------------------------------------------------------------
@@ -228,6 +232,7 @@ export const matchPlayers = pgTable(
     attendance: attendanceStatusEnum("attendance"),
     attendanceBy: text("attendanceBy"),
     attendanceAt: timestamptz3("attendanceAt"),
+    side: sideEnum("side"),
     createdAt: timestamptz3("createdAt").notNull().defaultNow(),
     updatedAt: timestamptz3("updatedAt")
       .notNull()
@@ -242,6 +247,72 @@ export const matchPlayers = pgTable(
       table.matchId,
       table.userId,
     ),
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// Player Graph — edges, stats, and feedback
+// ---------------------------------------------------------------------------
+
+export const playerEdges = pgTable(
+  "PlayerEdge",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    playerAId: text("playerAId").notNull(),
+    playerBId: text("playerBId").notNull(),
+    matchesAsRivals: integer("matchesAsRivals").notNull().default(0),
+    matchesAsPartners: integer("matchesAsPartners").notNull().default(0),
+    winsA: integer("winsA").notNull().default(0),
+    winsB: integer("winsB").notNull().default(0),
+    winsTogether: integer("winsTogether").notNull().default(0),
+    lossesTogether: integer("lossesTogether").notNull().default(0),
+    lastMatchAt: timestamptz3("lastMatchAt"),
+    createdAt: timestamptz3("createdAt").notNull().defaultNow(),
+    updatedAt: timestamptz3("updatedAt")
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => ({
+    playerEdgeUnique: unique("PlayerEdge_playerA_playerB_key").on(
+      table.playerAId,
+      table.playerBId,
+    ),
+  }),
+);
+
+export const playerGraphStats = pgTable("PlayerGraphStats", {
+  userId: text("userId").primaryKey(),
+  skillScore: doublePrecision("skillScore").notNull().default(1000),
+  community: integer("community"),
+  networkSize: integer("networkSize").notNull().default(0),
+  preferredSide: sideEnum("preferredSide"),
+  winRateRight: doublePrecision("winRateRight"),
+  winRateLeft: doublePrecision("winRateLeft"),
+  updatedAt: timestamptz3("updatedAt")
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+export const matchPlayerFeedback = pgTable(
+  "MatchPlayerFeedback",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    matchId: text("matchId").notNull(),
+    playerId: text("playerId").notNull(),
+    feedbackBy: text("feedbackBy").notNull(),
+    feedback: feedbackEnum("feedback").notNull(),
+    createdAt: timestamptz3("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    matchPlayerFeedbackUnique: unique(
+      "MatchPlayerFeedback_match_player_by_key",
+    ).on(table.matchId, table.playerId, table.feedbackBy),
   }),
 );
 
@@ -370,6 +441,49 @@ export const pushSubscriptionRelations = relations(
   }),
 );
 
+export const playerEdgeRelations = relations(playerEdges, ({ one }) => ({
+  playerA: one(users, {
+    fields: [playerEdges.playerAId],
+    references: [users.id],
+    relationName: "PlayerEdgeA",
+  }),
+  playerB: one(users, {
+    fields: [playerEdges.playerBId],
+    references: [users.id],
+    relationName: "PlayerEdgeB",
+  }),
+}));
+
+export const playerGraphStatsRelations = relations(
+  playerGraphStats,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [playerGraphStats.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
+export const matchPlayerFeedbackRelations = relations(
+  matchPlayerFeedback,
+  ({ one }) => ({
+    match: one(matches, {
+      fields: [matchPlayerFeedback.matchId],
+      references: [matches.id],
+    }),
+    player: one(users, {
+      fields: [matchPlayerFeedback.playerId],
+      references: [users.id],
+      relationName: "FeedbackPlayer",
+    }),
+    feedbackByUser: one(users, {
+      fields: [matchPlayerFeedback.feedbackBy],
+      references: [users.id],
+      relationName: "FeedbackBy",
+    }),
+  }),
+);
+
 // ---------------------------------------------------------------------------
 // Type exports
 // ---------------------------------------------------------------------------
@@ -394,3 +508,9 @@ export type MatchPlayer = typeof matchPlayers.$inferSelect;
 export type NewMatchPlayer = typeof matchPlayers.$inferInsert;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+export type PlayerEdge = typeof playerEdges.$inferSelect;
+export type NewPlayerEdge = typeof playerEdges.$inferInsert;
+export type PlayerGraphStats = typeof playerGraphStats.$inferSelect;
+export type NewPlayerGraphStats = typeof playerGraphStats.$inferInsert;
+export type MatchPlayerFeedback = typeof matchPlayerFeedback.$inferSelect;
+export type NewMatchPlayerFeedback = typeof matchPlayerFeedback.$inferInsert;
