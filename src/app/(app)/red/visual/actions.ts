@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { playerEdges, playerGraphStats, users } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
-import { sql } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 export interface GraphNode {
   id: string;
@@ -62,7 +62,7 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
       matchesPlayed: users.matchesPlayed,
     })
     .from(users)
-    .where(sql`${users.id} = ANY(${playerIdsArray})`);
+    .where(inArray(users.id, playerIdsArray));
 
   const playerMap = new Map(players.map((p) => [p.id, p]));
 
