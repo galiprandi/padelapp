@@ -21,6 +21,8 @@ import {
   AssignSubstituteButton,
 } from "@/components/turns/organizer-actions";
 import { createMagicLink } from "@/lib/magic-link";
+import { SignInForm } from "@/components/auth/sign-in-form";
+import { getTurnLabel } from "@/lib/utils";
 import {
   Calendar,
   Clock,
@@ -133,9 +135,11 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             Detalle del Turno
           </h1>
           <p className="text-sm text-muted-foreground">
-            {isFull
-              ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
-              : "¡Sumate a este partido!"}
+            {!viewerId
+              ? `Te invita ${turn.creator.alias ?? turn.creator.displayName}`
+              : isFull
+                ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
+                : "¡Sumate a este partido!"}
           </p>
         </div>
       </div>
@@ -323,17 +327,14 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         <div className="max-w-md mx-auto">
           {!viewerId ? (
             <div className="flex flex-col gap-3">
-              <Button
-                asChild
+              <SignInForm
+                callbackUrl={`/t/${id}`}
+                label={`Iniciá sesión para unirte a ${turn.club}`}
                 className="w-full h-12 rounded-lg text-base font-bold"
-              >
-                <Link href={`/login?callbackUrl=/t/${id}`}>
-                  Iniciá sesión para anotarte
-                </Link>
-              </Button>
+              />
               <ShareButton
                 title="Sumate al Turno"
-                text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
                 url={createMagicLink({ resource: "turn", identifier: id }).url}
                 variant="outline"
                 className="w-full h-12 rounded-lg text-base font-bold"
@@ -351,7 +352,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
                   url={
                     createMagicLink({ resource: "turn", identifier: id }).url
                   }
@@ -409,7 +410,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
                   url={
                     createMagicLink({ resource: "turn", identifier: id }).url
                   }
@@ -429,7 +430,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
                   url={
                     createMagicLink({ resource: "turn", identifier: id }).url
                   }
@@ -483,7 +484,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                 {turn.status !== "COMPLETED" && (
                   <ShareButton
                     title="Sumate al Turno"
-                    text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+                    text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
                     url={
                       createMagicLink({ resource: "turn", identifier: id }).url
                     }

@@ -8,14 +8,9 @@ import { matchPlayers } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { JoinSlotButton } from "./join-slot-button";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertCircle,
-  UserCheck,
-  Trophy,
-  MapPin,
-  Users,
-} from "lucide-react";
+import { AlertCircle, UserCheck, Trophy, MapPin, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SignInForm } from "@/components/auth/sign-in-form";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -127,15 +122,17 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
           Volver
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Invitación a jugar</h1>
-          <p className="text-sm text-muted-foreground">Invitación directa de {match.creator.displayName}</p>
+          <h1 className="text-xl font-bold text-foreground">
+            Invitación a jugar
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Invitación directa de {match.creator.displayName}
+          </p>
         </div>
         <div className="rounded-lg bg-muted p-4 border border-border">
           <p className="text-sm font-medium text-muted-foreground">
             Te invitaron a sumarte como{" "}
-            <span className="font-bold text-foreground">
-              {teamLabel}
-            </span>.
+            <span className="font-bold text-foreground">{teamLabel}</span>.
           </p>
         </div>
       </div>
@@ -297,24 +294,17 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
             {helperMessage && (
               <div className="flex items-center gap-3 rounded-lg bg-destructive/5 p-3 text-destructive border border-destructive/20">
                 <AlertCircle className="h-4 w-4 shrink-0" />
-                <p className="text-xs font-bold">
-                  {helperMessage}
-                </p>
+                <p className="text-xs font-bold">{helperMessage}</p>
               </div>
             )}
 
             <div className="space-y-3">
               {!session?.user ? (
-                <Button
-                  asChild
+                <SignInForm
+                  callbackUrl={`/j/${playerId}`}
+                  label={`Iniciá sesión para unirte a ${match.club ?? "el partido"}`}
                   className="w-full h-12 rounded-lg text-base font-bold"
-                >
-                  <Link
-                    href={`/login?callbackUrl=${encodeURIComponent(`/j/${playerId}`)}`}
-                  >
-                    Continuar con Google
-                  </Link>
-                </Button>
+                />
               ) : slotTakenByViewer ? (
                 <Button
                   asChild

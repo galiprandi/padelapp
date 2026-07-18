@@ -6,7 +6,7 @@ Visión de producto, estrategia y principios de UX que guían el desarrollo de *
 
 PadelApp existe para **facilitar la organización de turnos fijos y recurrentes de pádel**, y **salvarlos cuando están en peligro de cancelación** por falta de jugadores.
 
-El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Cuando faltan jugadores y el turno corre riesgo, PadelApp notifica automáticamente a la **red de contactos de pádel** del organizador — jugadores con quienes compartió cancha alguna vez — para llenar los cupos antes de que sea tarde.
+El organizador crea el turno, lo comparte, y los jugadores se unen con un toque. Cuando faltan jugadores y el turno corre riesgo, PadelApp notifica automáticamente a la **red de contactos de pádel** de todos los anotados — jugadores con quienes compartieron cancha en el último año — para llenar los cupos antes de que sea tarde.
 
 ## 2. Pilares de Producto
 

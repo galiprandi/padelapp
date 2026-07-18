@@ -6,7 +6,7 @@ Context and responsibilities for automated agents or contributors working on **P
 
 PadelApp exists to **facilitate the organization of fixed and recurring padel turns**, and to **save them from cancellation** when there aren't enough players.
 
-The core value is not the ranking — it's ensuring every fixed turn gets played. The organizer creates the turn, shares the link, and players join with one tap. When a turn is at risk, PadelApp automatically notifies the organizer's **padel contact network** — players they've shared a court with before — to fill the spots.
+The core value is not the ranking — it's ensuring every fixed turn gets played. The organizer creates the turn, shares the link, and players join with one tap. When a turn is at risk, PadelApp automatically notifies the **padel contact network** of all enrolled players — players they've shared a court with before — to fill the spots.
 
 The ranking is a **competitive hook** for engagement, not a technical skill measurement system.
 
@@ -59,6 +59,9 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 9. Update component catalog (`/app/catalog`) when designing or refactoring reusable components.
 10. Prefer Server Components and Server Actions; use Client Components only when browser interactivity requires it.
 11. When adding features, ask: does this help save turns from cancellation? If not, it's likely out of scope for the MVP.
+12. **`MANUAL.md` is the single source of truth for all user-facing flows.** It must be updated after any change that alters a flow's behavior, states, penalties, or notifications. The narrative sections must remain free of technical jargon.
+13. **Flow changes require explicit user consent.** Before modifying any flow documented in `MANUAL.md`, the agent must explain the proposed change and obtain approval. This prevents regressions and ensures the manual stays accurate. Never silently change a flow's behavior without updating the manual.
+14. **`MANUAL.md` is chatbot-ready.** The narrative sections are designed to be injected into a chatbot knowledge base. Keep them concise, high-density, and in user-facing language. The "Referencia" section contains technical details for agents.
 
 ## 6. Current State
 
