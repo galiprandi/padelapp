@@ -43,7 +43,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **UI**: Tailwind CSS + shadcn/ui (yellow theme). See `DESIGN.md` for design policy.
 - **Data**: Drizzle ORM + PostgreSQL (local dev via Docker, production via Neon serverless).
 - **Auth**: NextAuth with Google OAuth.
-- **Hosting**: Vercel, domain `padelapp.app`.
+- **Hosting**: Vercel, domain `padelred.app`.
 - **Notifications**: Firebase Cloud Messaging (pending — blocking for launch).
 
 ## 5. Agent Rules
@@ -62,6 +62,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 12. **`MANUAL.md` is the single source of truth for all user-facing flows.** It must be updated after any change that alters a flow's behavior, states, penalties, or notifications. The narrative sections must remain free of technical jargon.
 13. **Flow changes require explicit user consent.** Before modifying any flow documented in `MANUAL.md`, the agent must explain the proposed change and obtain approval. This prevents regressions and ensures the manual stays accurate. Never silently change a flow's behavior without updating the manual.
 14. **`MANUAL.md` is chatbot-ready.** The narrative sections are designed to be injected into a chatbot knowledge base. Keep them concise, high-density, and in user-facing language. The "Referencia" section contains technical details for agents.
+15. **Production validation must be done against the production domain (`padelred.app`) using the Vercel CLI** (`vercel inspect`, `vercel logs`, `vercel env`). Never test production flows against `localhost` or preview URLs as a substitute for real domain validation. Use `vercel logs padelred.app` to inspect runtime errors and `vercel inspect padelred.app` to verify deployment status.
 
 ## 6. Current State
 
