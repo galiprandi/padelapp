@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import appSettings from "@/config/app-settings.json";
 import { LocalDate } from "@/components/ui/local-date";
+import { SignInForm } from "@/components/auth/sign-in-form";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -305,21 +306,15 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
             asChild
             className="w-full h-12 rounded-lg text-base font-bold shadow-sm"
           >
-            <Link href={`/match/${match.id}`}>Ver partido en PadelApp</Link>
+            <Link href={`/match/${match.id}`}>Ver partido en Padel Red</Link>
           </Button>
 
           {!session?.user ? (
-            <Button
-              asChild
-              variant="ghost"
+            <SignInForm
+              callbackUrl={`/m/${match.id}`}
+              label={`Iniciá sesión para unirte a ${match.club ?? "el partido"}`}
               className="w-full h-10 rounded-lg text-sm font-semibold text-muted-foreground"
-            >
-              <Link
-                href={`/login?callbackUrl=${encodeURIComponent(`/match/${match.id}`)}`}
-              >
-                Iniciar sesión con Google
-              </Link>
-            </Button>
+            />
           ) : !isParticipant ? (
             <div className="rounded-xl p-3 bg-muted border border-border text-center">
               <p className="text-xs font-medium text-muted-foreground">

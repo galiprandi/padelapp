@@ -9,7 +9,7 @@
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
-**Learning:** El sistema .ants fue creado con 4 agentes especializados para PadelApp. Cada agente tiene scope boundaries estrictas para evitar conflictos.
+**Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
 **Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.
 
 ## 2026-07-17 - Salvage Cooldown

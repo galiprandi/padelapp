@@ -39,9 +39,15 @@ interface ProfileFormProps {
   initialAlias: string;
   initialLevel: number;
   initialImage: string | null;
+  googleAvatarUrl?: string | null;
 }
 
-export function ProfileForm({ initialAlias, initialLevel, initialImage }: ProfileFormProps) {
+export function ProfileForm({
+  initialAlias,
+  initialLevel,
+  initialImage,
+  googleAvatarUrl,
+}: ProfileFormProps) {
   const { showToast } = useToast();
   const [alias, setAlias] = useState(initialAlias);
   const [level, setLevel] = useState(initialLevel);
@@ -119,9 +125,34 @@ export function ProfileForm({ initialAlias, initialLevel, initialImage }: Profil
 
           <div className="flex-1 space-y-2">
             <p className="text-xs text-muted-foreground">
-              Elegí uno de nuestros avatares deportivos o usá las iniciales de tu nombre.
+              Elegí uno de nuestros avatares deportivos, tu foto original de Google, o usá las iniciales de tu nombre.
             </p>
             <div className="flex flex-wrap gap-2">
+              {googleAvatarUrl && (
+                <button
+                  type="button"
+                  onClick={() => setImage(googleAvatarUrl)}
+                  className={cn(
+                    "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98] flex items-center justify-center relative",
+                    image === googleAvatarUrl
+                      ? "border-primary ring-2 ring-primary/20"
+                      : "border-border hover:border-muted-foreground",
+                  )}
+                  title="Usar foto de Google"
+                  aria-label="Usar foto de Google"
+                >
+                  <img
+                    src={googleAvatarUrl}
+                    alt="Google avatar"
+                    className="w-full h-full object-cover"
+                    aria-hidden="true"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute bottom-0 right-0 bg-background/90 text-[8px] px-0.5 font-bold leading-none rounded-tl border-t border-l border-border select-none">
+                    G
+                  </div>
+                </button>
+              )}
               {AVATAR_PRESETS.map((preset) => {
                 const isSelected = image === preset.url;
                 return (

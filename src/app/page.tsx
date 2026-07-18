@@ -21,14 +21,14 @@ export default function MarketingLanding() {
         <div className="flex flex-col items-center gap-6">
           <img
             src="/icon.svg"
-            alt="PadelApp"
+            alt="Padel Red"
             className="h-24 w-24"
             width={96}
             height={96}
           />
           <div className="space-y-3 text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              PadelApp
+              Padel Red
             </h1>
             <p className="text-sm text-muted-foreground max-w-[240px]">
               Turnos que no se cancelan.
