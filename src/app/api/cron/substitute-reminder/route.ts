@@ -5,8 +5,6 @@ import { and, gte, lte, inArray, asc } from "drizzle-orm";
 import { notifyUsers } from "@/lib/notifications";
 import { getTurnLabel } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
-
 // Runs every hour via Vercel Cron.
 // Sends a reminder to substitutes of turns happening in the next 24h.
 export async function GET(request: Request) {
