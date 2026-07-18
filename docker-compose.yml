@@ -4,15 +4,15 @@ services:
     container_name: padelred-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: padelred
-      POSTGRES_PASSWORD: padelred
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: padelred
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U padelred"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
