@@ -32,6 +32,7 @@ export { getDashboardUserStats, type DashboardUserStats } from "./dashboard";
 export {
   getPublicProfileUser,
   getEditableProfile,
+  getGoogleAvatarUrl,
   type PublicProfileUser,
   type EditableProfileData,
 } from "./profile";

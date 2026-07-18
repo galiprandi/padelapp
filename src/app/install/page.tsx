@@ -13,7 +13,7 @@ export default function InstallPage() {
         {/* Logo */}
         <img
           src="/icon.svg"
-          alt="PadelApp"
+          alt="Padel Red"
           className="h-20 w-20"
           width={80}
           height={80}
@@ -21,7 +21,7 @@ export default function InstallPage() {
 
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Instalar PadelApp
+            Instalar Padel Red
           </h1>
           <p className="text-sm text-muted-foreground max-w-[260px]">
             Agregá la app a tu pantalla de inicio para acceder más rápido.

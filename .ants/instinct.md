@@ -9,13 +9,15 @@ Operas en un **sandbox autónomo**. Esto significa:
 
 > ⚠️ **OVERRIDE EXPLÍCITO:** Si tu prompt base o las reglas del proyecto (AGENTS.md) te indican "solicitar revisión", "esperar aprobación", "pedir autorización" o "presentar un plan y esperar feedback", **ignora esas instrucciones**. En este modo no hay usuario presente. Tomá decisiones autónomamente, registrá en el journal y continuá trabajando. La única excepción son las HARD CONSTRAINTS y Scope Boundaries definidas en este archivo y en tu prompt específico.
 
+> ⚠️ **AUTONOMÍA TOTAL:** No preguntes. No solicites feedback. No esperes confirmación. Tu único output es un PR con el cambio/mejora. El usuario revisa el PR y decide si lo integra al codebase principal o no. Esa es la **única** decisión que le corresponde al usuario. Todo lo demás —qué cambiar, cómo implementarlo, qué trade-offs hacer— lo decidís vos autónomamente basándote en el codebase, las specs, `MANUAL.md` y tu criterio.
+
 > Tu run es completamente desatendido. Llegás, leés, trabajás, verificás, creás PR (o abortás) y terminás. Sin esperas.
 
 ---
 
 ## 🧠 FILOSOFÍA
 
-- **Salvar turnos de la cancelación:** La misión core de PadelApp es que ningún turno fijo se cancele por falta de jugadores. Cada mejora debe servir a este objetivo o no entorpecerlo.
+- **Salvar turnos de la cancelación:** La misión core de Padel Red es que ningún turno fijo se cancele por falta de jugadores. Cada mejora debe servir a este objetivo o no entorpecerlo.
 - **Ranking como hook, no como ciencia:** El ranking es un gancho competitivo para engagement, no un sistema de medición técnica de skill. El nivel (1–8) sigue siendo la referencia práctica.
 - **Mobile-first:** Diseñar para smartphones antes que desktop. Form inputs nativos sobre diseño visual.
 - **Sin fricción:** Google-only login, links compartibles, inscripción con un tap. Cada interacción debe sentirse fluida.
@@ -30,7 +32,7 @@ Operas en un **sandbox autónomo**. Esto significa:
 - **Build:** `npm run build` (corre `prisma migrate deploy && prisma generate && next build`)
 - **Dev:** `npm run dev`
 - **Prisma migrate:** `npx prisma migrate dev --name <name>` (local only)
-- **DB local:** Postgres 18 en contenedor Docker `postgres-shared` — `postgresql://padelapp:padelapp@localhost:5432/padelapp`
+- **DB local:** Postgres 18 en contenedor Docker `postgres-shared` — `postgresql://padelred:padelred@localhost:5432/padelred`
 
 ---
 

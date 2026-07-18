@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { ProfileForm } from "./profile-form";
-import { getEditableProfile } from "@/lib/queries";
+import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
 import { UserCircle } from "lucide-react";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
@@ -14,7 +14,10 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const user = await getEditableProfile(session.user.id);
+  const [user, googleAvatarUrl] = await Promise.all([
+    getEditableProfile(session.user.id),
+    getGoogleAvatarUrl(session.user.id),
+  ]);
 
   if (!user) {
     redirect("/login");
@@ -51,7 +54,12 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      <ProfileForm initialAlias={user.alias ?? ""} initialLevel={user.level} initialImage={user.image} />
+      <ProfileForm
+        initialAlias={user.alias ?? ""}
+        initialLevel={user.level}
+        initialImage={user.image}
+        googleAvatarUrl={googleAvatarUrl}
+      />
     </div>
   );
 }

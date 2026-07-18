@@ -9,12 +9,8 @@ import {
   PlayerPreviewProps,
   PlayerWithRanking,
 } from "@/components/players/player-cards";
-import {
-  TurnCard,
-} from "@/components/turns/turn-card";
-import {
-  OpenToNetworkButton,
-} from "@/components/turns/open-to-network-button";
+import { TurnCard } from "@/components/turns/turn-card";
+import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import {
   MatchResultCompact,
   type MatchResultCompactMatch,
@@ -72,7 +68,7 @@ const SAMPLE_RANKING_PLAYER = {
     { position: 0, match: { score: "6-4, 6-4" } },
     { position: 0, match: { score: "6-2, 6-3" } },
     { position: 2, match: { score: "4-6, 3-6" } },
-  ]
+  ],
 };
 
 const SAMPLE_MATCH: MatchResultCompactMatch = {
@@ -104,7 +100,7 @@ const SAMPLE_TURN = {
 export default function ComponentCatalogPage() {
   const [activeCategory, setActiveCategory] = useState("headers");
   const [viewportMode, setViewportMode] = useState<"mobile" | "desktop">(
-    "mobile"
+    "mobile",
   );
   const [showModal, setShowModal] = useState(false);
 
@@ -133,25 +129,25 @@ export default function ComponentCatalogPage() {
         <aside className="w-64 shrink-0 hidden lg:block">
           <div className="sticky top-6 space-y-6">
             <div className="space-y-3">
-              <h3 className="text-xs font-bold text-muted-foreground">
-                Vista
-              </h3>
+              <h3 className="text-xs font-bold text-muted-foreground">Vista</h3>
               <div className="flex bg-muted rounded-xl p-1 border border-border">
                 <button
                   onClick={() => setViewportMode("mobile")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "mobile"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                    }`}
+                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${
+                    viewportMode === "mobile"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   📱 Mobile
                 </button>
                 <button
                   onClick={() => setViewportMode("desktop")}
-                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${viewportMode === "desktop"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                    }`}
+                  className={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${
+                    viewportMode === "desktop"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   🖥️ Desktop
                 </button>
@@ -171,7 +167,7 @@ export default function ComponentCatalogPage() {
                       "w-full flex items-center gap-3 px-4 py-2 text-left rounded-lg transition-colors",
                       activeCategory === section.id
                         ? "bg-primary/10 text-primary font-semibold"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
                     )}
                   >
                     <span className="text-lg">{section.icon}</span>
@@ -185,33 +181,56 @@ export default function ComponentCatalogPage() {
 
         <div className="flex-1 min-w-0">
           <header className="mb-12">
-            <h1 className="text-xl font-bold text-foreground">Catálogo de componentes</h1>
-            <p className="text-sm text-muted-foreground">Componentes estandarizados bajo el Minimal Design System.</p>
+            <h1 className="text-xl font-bold text-foreground">
+              Catálogo de componentes
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Componentes estandarizados bajo el Minimal Design System.
+            </p>
           </header>
 
           <div
-            className={`space-y-16 ${viewportMode === "mobile"
-              ? "max-w-sm mx-auto"
-              : "w-full"
-              }`}
+            className={`space-y-16 ${
+              viewportMode === "mobile" ? "max-w-sm mx-auto" : "w-full"
+            }`}
           >
             <section id="headers" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📝 Encabezados</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                📝 Encabezados
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card">
-                <h1 className="text-xl font-bold text-foreground">Título de la Página</h1>
-                <p className="text-sm text-muted-foreground">Descripción clara y directa del contenido.</p>
+                <h1 className="text-xl font-bold text-foreground">
+                  Título de la Página
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Descripción clara y directa del contenido.
+                </p>
               </div>
             </section>
 
             <section id="ui" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🎨 UI Básica</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                🎨 UI Básica
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-8">
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold">Botones</h3>
                   <div className="flex flex-col gap-3">
-                    <Button className="h-12 w-full rounded-lg">Acción Primaria (h-12)</Button>
-                    <Button variant="secondary" className="h-10 w-full rounded-lg">Acción Secundaria (h-10)</Button>
-                    <Button variant="ghost" className="h-10 w-full rounded-lg text-muted-foreground">Botón Ghost (h-10)</Button>
+                    <Button className="h-12 w-full rounded-lg">
+                      Acción Primaria (h-12)
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      className="h-10 w-full rounded-lg"
+                    >
+                      Acción Secundaria (h-10)
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-10 w-full rounded-lg text-muted-foreground"
+                    >
+                      Botón Ghost (h-10)
+                    </Button>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -228,20 +247,31 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="forms" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Formularios</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                📋 Formularios
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold">Nombre Completo</Label>
-                  <Input placeholder="Ej: Carolina Ferrante" className="h-10 rounded-lg" />
-                  <p className="text-xs text-muted-foreground">Ingresá tu nombre tal como aparece en tu DNI.</p>
+                  <Label className="text-sm font-semibold">
+                    Nombre Completo
+                  </Label>
+                  <Input
+                    placeholder="Ej: Carolina Ferrante"
+                    className="h-10 rounded-lg"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ingresá tu nombre tal como aparece en tu DNI.
+                  </p>
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Selección de Nivel</Label>
+                  <Label className="text-sm font-semibold">
+                    Selección de Nivel
+                  </Label>
                   <div className="flex flex-col gap-2">
                     {[
                       { label: "Nivel 5 - Avanzado", selected: true },
-                      { label: "Nivel 4 - Intermedio", selected: false }
+                      { label: "Nivel 4 - Intermedio", selected: false },
                     ].map((opt) => (
                       <button
                         key={opt.label}
@@ -249,11 +279,13 @@ export default function ComponentCatalogPage() {
                           "flex items-center justify-between px-4 py-3 rounded-xl border transition-colors text-sm font-medium text-left",
                           opt.selected
                             ? "bg-primary/5 border-primary text-foreground"
-                            : "bg-card border-border text-muted-foreground hover:bg-muted"
+                            : "bg-card border-border text-muted-foreground hover:bg-muted",
                         )}
                       >
                         <span>{opt.label}</span>
-                        {opt.selected && <Check className="h-4 w-4 text-primary" />}
+                        {opt.selected && (
+                          <Check className="h-4 w-4 text-primary" />
+                        )}
                       </button>
                     ))}
                   </div>
@@ -262,7 +294,9 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="players" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">👥 Jugadores</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                👥 Jugadores
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-8">
                 <div className="grid gap-3">
                   <PlayerPreview {...SAMPLE_PLAYERS[0]} />
@@ -277,7 +311,9 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="ranking" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🏆 Ranking</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                🏆 Ranking
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-8">
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold">Stats del Usuario</h3>
@@ -306,35 +342,54 @@ export default function ComponentCatalogPage() {
 
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold">Búsqueda y Lista</h3>
-                  <Suspense fallback={<div className="h-10 w-full bg-muted animate-pulse rounded-lg" />}>
+                  <Suspense
+                    fallback={
+                      <div className="h-10 w-full bg-muted animate-pulse rounded-lg" />
+                    }
+                  >
                     <RankingSearch />
                   </Suspense>
                   <div className="space-y-2">
-                    <RankingListItem player={SAMPLE_RANKING_PLAYER} index={0} viewerId="other" />
-                    <RankingListItem player={{ ...SAMPLE_RANKING_PLAYER, id: "viewer" }} index={1} viewerId="viewer" />
+                    <RankingListItem
+                      player={SAMPLE_RANKING_PLAYER}
+                      index={0}
+                      viewerId="other"
+                    />
+                    <RankingListItem
+                      player={{ ...SAMPLE_RANKING_PLAYER, id: "viewer" }}
+                      index={1}
+                      viewerId="viewer"
+                    />
                   </div>
                 </div>
               </div>
             </section>
 
             <section id="matches" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🎾 Partidos y Turnos</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                🎾 Partidos y Turnos
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-foreground">Turnos</h3>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Turnos
+                  </h3>
                   <div className="space-y-2">
                     <TurnCard turn={SAMPLE_TURN} />
-                    <TurnCard
-                      turn={SAMPLE_TURN}
-                      isJoined={true}
-                    />
+                    <TurnCard turn={SAMPLE_TURN} isJoined={true} />
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-foreground">Botón "Abrir a mi red"</h3>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Botón "Abrir a mi red"
+                  </h3>
                   <div className="space-y-3">
-                    <OpenToNetworkButton turnId="sample" club="Padel Center" variant="default" />
+                    <OpenToNetworkButton
+                      turnId="sample"
+                      club="Padel Center"
+                      variant="default"
+                    />
                     <OpenToNetworkButton
                       turnId="sample"
                       club="Padel Center"
@@ -343,7 +398,9 @@ export default function ComponentCatalogPage() {
                       className="bg-amber-500 hover:bg-amber-600"
                     />
                     <div className="flex gap-2 items-center">
-                      <p className="text-xs text-muted-foreground mr-2">Icono solo:</p>
+                      <p className="text-xs text-muted-foreground mr-2">
+                        Icono solo:
+                      </p>
                       <OpenToNetworkButton
                         turnId="sample"
                         club="Padel Center"
@@ -356,7 +413,9 @@ export default function ComponentCatalogPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-foreground">Resultado de Partido</h3>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Resultado de Partido
+                  </h3>
                   <MatchResultCompact
                     label="Último partido"
                     match={SAMPLE_MATCH}
@@ -366,9 +425,9 @@ export default function ComponentCatalogPage() {
 
                 <div className="flex gap-2">
                   <ShareButton
-                    url="https://padelap.vercel.app"
-                    title="PadelApp"
-                    text="¡Sumate a PadelApp!"
+                    url="https://padelred.app"
+                    title="PadelRed"
+                    text="¡Sumate a Padel Red!"
                     className="flex-1 h-10"
                     variant="outline"
                   />
@@ -377,21 +436,32 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="states" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Estados y Diálogos</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                📋 Estados y Diálogos
+              </h2>
               <div className="p-6 border border-border rounded-xl bg-card space-y-4">
                 <EmptyState
                   title="No hay partidos programados"
                   description="Cuando crees o te sumes a un partido, aparecerá aquí."
-                  action={<Button className="h-10 rounded-lg">Crear primer partido</Button>}
+                  action={
+                    <Button className="h-10 rounded-lg">
+                      Crear primer partido
+                    </Button>
+                  }
                 />
-                <Button onClick={() => setShowModal(true)} className="w-full h-12">
+                <Button
+                  onClick={() => setShowModal(true)}
+                  className="w-full h-12"
+                >
                   Probar ManageSlotModal (Custom Modal)
                 </Button>
               </div>
             </section>
 
             <section id="navigation" className="space-y-6 pb-20">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">🧭 Navegación</h2>
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
+                🧭 Navegación
+              </h2>
               <div className="border border-border rounded-xl bg-card overflow-hidden">
                 <BottomNav position="static" notificationsCount={3} />
               </div>
