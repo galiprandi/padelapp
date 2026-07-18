@@ -1,5 +1,6 @@
 "use client";
 import { useState, Suspense, Fragment } from "react";
+import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import {
   PairInline,
   PairPreview,
@@ -105,6 +106,7 @@ export default function ComponentCatalogPage() {
   const [viewportMode, setViewportMode] = useState<"mobile" | "desktop">(
     "mobile"
   );
+  const [showModal, setShowModal] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     setActiveCategory(sectionId);
@@ -375,13 +377,16 @@ export default function ComponentCatalogPage() {
             </section>
 
             <section id="states" className="space-y-6">
-              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Estados</h2>
-              <div className="p-6 border border-border rounded-xl bg-card">
+              <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">📋 Estados y Diálogos</h2>
+              <div className="p-6 border border-border rounded-xl bg-card space-y-4">
                 <EmptyState
                   title="No hay partidos programados"
                   description="Cuando crees o te sumes a un partido, aparecerá aquí."
                   action={<Button className="h-10 rounded-lg">Crear primer partido</Button>}
                 />
+                <Button onClick={() => setShowModal(true)} className="w-full h-12">
+                  Probar ManageSlotModal (Custom Modal)
+                </Button>
               </div>
             </section>
 
@@ -394,6 +399,20 @@ export default function ComponentCatalogPage() {
           </div>
         </div>
       </div>
+
+      <ManageSlotModal
+        open={showModal}
+        slot={null}
+        placeholderName="Diego Morales"
+        onSave={(val) => {
+          console.log(val);
+          setShowModal(false);
+        }}
+        onClose={() => setShowModal(false)}
+        onShare={(name) => console.log("Share", name)}
+        onRelease={() => console.log("Release")}
+        onSwap={() => console.log("Swap")}
+      />
     </div>
   );
 }

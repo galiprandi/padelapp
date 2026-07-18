@@ -17,3 +17,7 @@
 ## 2025-06-03 - [EmptyState Standardization and Keyboard Accessibility]
 **Learning:** Shared components like `EmptyState` should strictly follow `DESIGN.md` even when they were initially implemented with non-compliant patterns (like translucent backgrounds or larger fonts). Keyboard accessibility on custom interactive elements (buttons acting as radios) requires explicit `focus-visible:ring-2` to be usable for non-mouse users.
 **Action:** When refactoring for MDS, prioritize `DESIGN.md` maxims for shared components and always audit custom interactive elements for `focus-visible` states.
+
+## 2026-07-18 - [Custom Dialog Accessibility and Focus Trap Standards]
+**Learning:** Custom overlay dialogs implemented with standard HTML elements (rather than semantic dialog tags or headless libraries) lack default keyboard and pointer handlers. Explicitly managing keydown events (Escape to close), backdrop click target verification (`e.target === e.currentTarget`), and programmatic focus redirection (using dynamic refs and small setTimeout buffers) are essential to prevent trapping non-mouse users.
+**Action:** When introducing or auditing custom dialog overlays, verify that pointer backdrops, keyboard escape controls, and target element autofocusing are natively handled and verified.
