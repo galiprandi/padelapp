@@ -9,6 +9,7 @@ import {
   cancelTurnAction,
   scheduleNextTurnAction,
 } from "@/app/(app)/turnos/actions";
+import { getPadelContacts } from "@/lib/queries";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
@@ -88,6 +89,13 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   const isJoined = turn.players.some((p) => p.userId === viewerId);
   const isCreator = turn.creatorId === viewerId;
   const isCancelled = turn.status === "CANCELLED";
+
+  // Fetch viewer's contacts
+  let viewerContacts: any[] = [];
+  if (viewerId) {
+    viewerContacts = await getPadelContacts(viewerId);
+  }
+  const contactIds = new Set(viewerContacts.map((c) => c.id));
 
   if (isCancelled) {
     return (
@@ -206,44 +214,54 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         </div>
 
         <div className="grid gap-2">
-          {turn.players.map((p) => (
-            <Link
-              key={p.id}
-              href={`/p/${p.userId}`}
-              className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
-            >
-              <PlayerAvatar
-                name={p.user.alias ?? p.user.displayName}
-                image={p.user.image ?? undefined}
-                size={40}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
-                  {p.user.alias ?? p.user.displayName}
-                </p>
-                <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                  Nivel {p.user.level}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                {p.userId === turn.creatorId && (
-                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
-                    Organizador
-                  </span>
-                )}
-                {isCreator &&
-                  p.userId !== turn.creatorId &&
-                  turn.status !== "COMPLETED" && (
-                    <RemovePlayerButton
-                      turnId={id}
-                      playerUserId={p.userId}
-                      playerName={p.user.alias ?? p.user.displayName}
-                    />
+          {turn.players.map((p) => {
+            const isContact = contactIds.has(p.userId);
+            return (
+              <Link
+                key={p.id}
+                href={`/p/${p.userId}`}
+                className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
+              >
+                <PlayerAvatar
+                  name={p.user.alias ?? p.user.displayName}
+                  image={p.user.image ?? undefined}
+                  size={40}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5">
+                    {p.user.alias ?? p.user.displayName}
+                    {isContact && (
+                      <span
+                        className="h-2 w-2 rounded-full bg-primary"
+                        title="Contacto"
+                        aria-label="Contacto frecuente"
+                      />
+                    )}
+                  </p>
+                  <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                    Nivel {p.user.level}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {p.userId === turn.creatorId && (
+                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                      Organizador
+                    </span>
                   )}
-                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
-              </div>
-            </Link>
-          ))}
+                  {isCreator &&
+                    p.userId !== turn.creatorId &&
+                    turn.status !== "COMPLETED" && (
+                      <RemovePlayerButton
+                        turnId={id}
+                        playerUserId={p.userId}
+                        playerName={p.user.alias ?? p.user.displayName}
+                      />
+                    )}
+                  <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
+                </div>
+              </Link>
+            );
+          })}
           {Array.from({ length: turn.maxPlayers - turn.players.length }).map(
             (_, i) => (
               <div
@@ -280,45 +298,55 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </span>
           </div>
           <div className="grid gap-2">
-            {turn.substitutes.map((s, index) => (
-              <Link
-                key={s.id}
-                href={`/p/${s.userId}`}
-                className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
-              >
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
-                  {index + 1}
-                </span>
-                <PlayerAvatar
-                  name={s.user.alias ?? s.user.displayName}
-                  image={s.user.image ?? undefined}
-                  size={40}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors">
-                    {s.user.alias ?? s.user.displayName}
-                  </p>
-                  <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                    Nivel {s.user.level}
-                  </p>
-                </div>
-                {s.userId === viewerId && (
-                  <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
-                    Vos
+            {turn.substitutes.map((s, index) => {
+              const isContact = contactIds.has(s.userId);
+              return (
+                <Link
+                  key={s.id}
+                  href={`/p/${s.userId}`}
+                  className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
+                >
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+                    {index + 1}
                   </span>
-                )}
-                {isCreator &&
-                  hasOpenSlot &&
-                  turn.status !== "COMPLETED" &&
-                  s.userId !== viewerId && (
-                    <AssignSubstituteButton
-                      turnId={id}
-                      substituteUserId={s.userId}
-                      substituteName={s.user.alias ?? s.user.displayName}
-                    />
+                  <PlayerAvatar
+                    name={s.user.alias ?? s.user.displayName}
+                    image={s.user.image ?? undefined}
+                    size={40}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5">
+                      {s.user.alias ?? s.user.displayName}
+                      {isContact && (
+                        <span
+                          className="h-2 w-2 rounded-full bg-primary"
+                          title="Contacto"
+                          aria-label="Contacto frecuente"
+                        />
+                      )}
+                    </p>
+                    <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                      Nivel {s.user.level}
+                    </p>
+                  </div>
+                  {s.userId === viewerId && (
+                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                      Vos
+                    </span>
                   )}
-              </Link>
-            ))}
+                  {isCreator &&
+                    hasOpenSlot &&
+                    turn.status !== "COMPLETED" &&
+                    s.userId !== viewerId && (
+                      <AssignSubstituteButton
+                        turnId={id}
+                        substituteUserId={s.userId}
+                        substituteName={s.user.alias ?? s.user.displayName}
+                      />
+                    )}
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
