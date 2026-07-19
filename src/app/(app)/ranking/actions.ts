@@ -169,6 +169,7 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
       id: users.id,
       rankingPosition: users.rankingPosition,
       rankingScore: users.rankingScore,
+      rankingDelta: users.rankingDelta,
       wins: users.wins,
       losses: users.losses,
       matchesPlayed: users.matchesPlayed,
@@ -185,6 +186,7 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
         attendanceScore: computed?.attendanceScore ?? user.attendanceScore ?? 1.0,
         wins: computed?.stats.wins ?? user.wins,
         oldPosition: user.rankingPosition,
+        oldDelta: user.rankingDelta,
         lastMatchAt: computed?.stats.lastMatchAt ?? user.lastMatchAt,
         stats: computed?.stats,
       };
@@ -208,8 +210,15 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
         const delta = item.oldPosition ? item.oldPosition - newPosition : 0;
         const computed = userScores.get(item.userId);
 
-        // Skip users whose score didn't change (incremental mode only)
-        if (isIncremental && !computed) return null;
+        // For incremental mode: only update if the user's stats were recomputed,
+        // OR if their relative position or delta changed.
+        if (isIncremental && !computed) {
+          const positionChanged = item.oldPosition !== newPosition;
+          const deltaChanged = item.oldDelta !== delta;
+          if (!positionChanged && !deltaChanged) {
+            return null;
+          }
+        }
 
         return {
           userId: item.userId,
