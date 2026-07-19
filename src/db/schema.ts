@@ -335,6 +335,29 @@ export const pushSubscriptions = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Passkey Credentials (WebAuthn)
+// ---------------------------------------------------------------------------
+
+export const passkeyCredentials = pgTable("PasskeyCredential", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId").notNull(),
+  credentialId: text("credentialId").notNull().unique(),
+  publicKey: json("publicKey").notNull(),
+  counter: integer("counter").notNull().default(0),
+  transports: json("transports"),
+  deviceType: text("deviceType"),
+  backedUp: boolean("backedUp").notNull().default(false),
+  nickname: text("nickname"),
+  createdAt: timestamptz3("createdAt").notNull().defaultNow(),
+  updatedAt: timestamptz3("updatedAt")
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+// ---------------------------------------------------------------------------
 // Relations (for Drizzle's query API — db.query.X.findMany with `with`)
 // ---------------------------------------------------------------------------
 
@@ -342,6 +365,7 @@ export const userRelations = relations(users, ({ many, one }) => ({
   accounts: many(accounts),
   matches: many(matches, { relationName: "MatchCreator" }),
   matchPlayers: many(matchPlayers),
+  passkeyCredentials: many(passkeyCredentials),
   pushSubscriptions: many(pushSubscriptions),
   sessions: many(sessions),
   turnsCreated: many(turns, { relationName: "TurnCreator" }),
@@ -441,6 +465,16 @@ export const pushSubscriptionRelations = relations(
   }),
 );
 
+export const passkeyCredentialRelations = relations(
+  passkeyCredentials,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [passkeyCredentials.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
 export const playerEdgeRelations = relations(playerEdges, ({ one }) => ({
   playerA: one(users, {
     fields: [playerEdges.playerAId],
@@ -514,3 +548,5 @@ export type PlayerGraphStats = typeof playerGraphStats.$inferSelect;
 export type NewPlayerGraphStats = typeof playerGraphStats.$inferInsert;
 export type MatchPlayerFeedback = typeof matchPlayerFeedback.$inferSelect;
 export type NewMatchPlayerFeedback = typeof matchPlayerFeedback.$inferInsert;
+export type PasskeyCredential = typeof passkeyCredentials.$inferSelect;
+export type NewPasskeyCredential = typeof passkeyCredentials.$inferInsert;

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth, signIn } from "@/auth";
 import { CalendarCheck, Users, Trophy } from "lucide-react";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
 
 export default function MarketingLanding() {
   async function handleContinue() {
@@ -90,6 +91,7 @@ export default function MarketingLanding() {
           <form action={handleContinue}>
             <SignInButton label="Comenzar ahora" />
           </form>
+          <PasskeyLoginButton />
           <p className="text-center text-xs text-muted-foreground">
             Entrá con Google y jugá tu primer turno hoy.
           </p>

@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { ProfileForm } from "./profile-form";
+import { PasskeyManager } from "@/components/webauthn/passkey-manager";
 import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
+import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { UserCircle } from "lucide-react";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
@@ -14,9 +16,10 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const [user, googleAvatarUrl] = await Promise.all([
+  const [user, googleAvatarUrl, passkeys] = await Promise.all([
     getEditableProfile(session.user.id),
     getGoogleAvatarUrl(session.user.id),
+    getUserPasskeys(),
   ]);
 
   if (!user) {
@@ -60,6 +63,8 @@ export default async function ProfilePage() {
         initialImage={user.image}
         googleAvatarUrl={googleAvatarUrl}
       />
+
+      <PasskeyManager initialPasskeys={passkeys} />
     </div>
   );
 }

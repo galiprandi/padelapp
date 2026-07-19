@@ -10,6 +10,7 @@ import { TurnCard } from "@/components/turns/turn-card";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { PushPermissionPrompt } from "@/components/pwa/push-permission-prompt";
+import { PasskeyOnboarding } from "@/components/webauthn/passkey-onboarding";
 import {
   CalendarDays,
   Trophy,
@@ -28,6 +29,7 @@ import {
   getMySubstituteTurns,
   getRecommendedTurns,
 } from "@/lib/queries";
+import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { cn, getMatchWinner } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
@@ -48,6 +50,7 @@ export default async function DashboardContent() {
     myTurns,
     mySubstituteTurns,
     recommendedTurns,
+    passkeys,
   ] = await Promise.all([
     getDashboardUserStats(viewerId),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -56,6 +59,7 @@ export default async function DashboardContent() {
     getMyUpcomingTurns(viewerId, 3),
     getMySubstituteTurns(viewerId, 3),
     getRecommendedTurns(viewerId, 3),
+    getUserPasskeys(),
   ]);
 
   const user = userStats;
@@ -149,6 +153,9 @@ export default async function DashboardContent() {
           </Button>
         </div>
       )}
+
+      {/* Passkey Onboarding */}
+      <PasskeyOnboarding hasPasskeys={passkeys.length > 0} />
 
       {/* Stats row */}
       {user && (
