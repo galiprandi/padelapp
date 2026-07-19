@@ -96,7 +96,15 @@ const {
 });
 
 export async function auth(): Promise<Session | null> {
-  return _auth() as Promise<Session | null>;
+  try {
+    return await (_auth() as Promise<Session | null>);
+  } catch (error) {
+    console.warn(
+      "[auth] Session validation failed, treating as unauthenticated:",
+      error,
+    );
+    return null;
+  }
 }
 
 export { handlers, signIn, signOut };
