@@ -6,7 +6,7 @@ import {
   getGraphData,
   type GraphData,
   type GraphNode,
-} from "@/app/(app)/red/visual/actions";
+} from "@/app/(app)/network/actions";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
