@@ -19,18 +19,44 @@ function resolveDisplayName(profile: GoogleProfile): string {
   return emailUser && emailUser.length > 0 ? emailUser : "Jugador";
 }
 
+const rawAdapter = DrizzleAdapter(db, {
+  usersTable: users,
+  accountsTable: accounts,
+  sessionsTable: sessions,
+  verificationTokensTable: verificationTokens,
+} as any);
+
+const loggedAdapter = new Proxy(rawAdapter, {
+  get(target, prop) {
+    const original = (target as any)[prop];
+    if (typeof original !== "function") return original;
+    return async (...args: any[]) => {
+      try {
+        return await original.apply(target, args);
+      } catch (error) {
+        console.error(`[auth][adapter] ${String(prop)} failed:`, {
+          error: error instanceof Error ? error.message : String(error),
+          cause: error instanceof Error ? error.cause : undefined,
+          stack: error instanceof Error ? error.stack : undefined,
+          args: JSON.stringify(args, (_k, v) =>
+            typeof v === "string" && v.length > 100
+              ? v.slice(0, 100) + "..."
+              : v,
+          ),
+        });
+        throw error;
+      }
+    };
+  },
+});
+
 const {
   handlers,
   auth: _auth,
   signIn,
   signOut,
 } = NextAuth({
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  } as any),
+  adapter: loggedAdapter,
   session: { strategy: "database" },
   trustHost: true,
   providers: [
