@@ -124,7 +124,7 @@ export function AttendanceMarker({
                         aria-label={`${config.label} - ${player.name}`}
                         aria-pressed={isActive}
                         className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors",
+                          "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                           isActive
                             ? config.activeColor
                             : "border-border bg-background text-muted-foreground hover:bg-muted",
