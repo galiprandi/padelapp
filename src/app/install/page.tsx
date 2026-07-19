@@ -2,10 +2,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { InstallContent } from "@/components/share/install-content";
 
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
-
 export default function InstallPage() {
   return (
     <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">

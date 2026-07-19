@@ -1,28 +1,14 @@
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 interface LoginPageProps {
   searchParams: Promise<{ callbackUrl?: string }>;
 }
 
-export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const session = await auth();
-  const { callbackUrl } = await searchParams;
-
-  if (session?.user) {
-    redirect(callbackUrl || "/me");
-  }
-
-  async function handleSignIn() {
-    "use server";
-    await signIn("google", { redirectTo: callbackUrl || "/me" });
-  }
-
+export default function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
       <div className="flex w-full max-w-sm flex-col items-center gap-12">
@@ -47,15 +33,50 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         </div>
 
-        {/* CTA */}
-        <form action={handleSignIn} className="w-full">
-          <SignInButton />
-        </form>
+        {/* CTA wrapped in Suspense */}
+        <Suspense
+          fallback={
+            <div className="flex h-12 w-full items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm font-semibold">
+              <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" />
+              Cargando…
+            </div>
+          }
+        >
+          <LoginForm searchParams={searchParams} />
+        </Suspense>
 
         <p className="text-center text-xs text-muted-foreground">
           Al continuar, aceptás nuestros términos de servicio.
         </p>
       </div>
     </main>
+  );
+}
+
+async function LoginForm({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const [session, resolvedParams] = await Promise.all([
+    auth(),
+    searchParams,
+  ]);
+  const callbackUrl = resolvedParams.callbackUrl;
+
+  if (session?.user) {
+    redirect(callbackUrl || "/me");
+  }
+
+  async function handleSignIn() {
+    "use server";
+    const resolved = await searchParams;
+    await signIn("google", { redirectTo: resolved.callbackUrl || "/me" });
+  }
+
+  return (
+    <form action={handleSignIn} className="w-full">
+      <SignInButton />
+    </form>
   );
 }

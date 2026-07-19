@@ -23,18 +23,43 @@ import {
   getPublicProfileUser,
   getConfirmedMatchesForProfile,
 } from "@/lib/queries";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
 }
 
-export default async function PublicProfilePage({
+export default function PublicProfilePage({
   params,
 }: PublicProfilePageProps) {
+  return (
+    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
+      <div className="flex items-center gap-4">
+        <Link
+          href="/me"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
+          <p className="text-sm text-muted-foreground">Estadísticas de jugador</p>
+        </div>
+      </div>
+
+      <Suspense fallback={<PublicProfileSkeleton />}>
+        <PublicProfileContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function PublicProfileContent({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = await params;
   const session = await auth();
   const viewerId = session?.user?.id;
@@ -106,20 +131,7 @@ export default async function PublicProfilePage({
       : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
-      <div className="flex items-center gap-4">
-        <Link
-          href={viewerId ? "/me" : "/"}
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
-          <p className="text-sm text-muted-foreground">Estadísticas de {displayName}</p>
-        </div>
-      </div>
-
+    <>
       <section className="space-y-6">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="relative">
@@ -306,6 +318,45 @@ export default async function PublicProfilePage({
           )}
         </div>
       </section>
+    </>
+  );
+}
+
+function PublicProfileSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Profile summary skeleton */}
+      <div className="flex flex-col items-center gap-4 text-center">
+        <Skeleton className="h-24 w-24 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-6 w-32 mx-auto" />
+          <Skeleton className="h-4 w-20 mx-auto" />
+        </div>
+      </div>
+
+      {/* Ranking banner skeleton */}
+      <div className="h-24 rounded-xl bg-card border border-border p-4">
+        <div className="grid grid-cols-3 gap-4 h-full items-center">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      </div>
+
+      {/* Grid skeleton */}
+      <div className="grid grid-cols-2 gap-3">
+        <Skeleton className="h-20 w-full rounded-xl" />
+        <Skeleton className="h-20 w-full rounded-xl" />
+      </div>
+
+      {/* History section skeleton */}
+      <div className="space-y-3">
+        <Skeleton className="h-5 w-32" />
+        <div className="space-y-2">
+          <Skeleton className="h-16 w-full rounded-xl" />
+          <Skeleton className="h-16 w-full rounded-xl" />
+        </div>
+      </div>
     </div>
   );
 }
