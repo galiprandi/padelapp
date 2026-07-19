@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { getGraphData, type GraphData, type GraphNode } from "@/app/network/actions";
+import {
+  getGraphData,
+  type GraphData,
+  type GraphNode,
+} from "@/app/network/actions";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -14,9 +18,18 @@ const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
 });
 
 const COMMUNITY_COLORS = [
-  "#3b82f6", "#10b981", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#06b6d4", "#f97316",
-  "#84cc16", "#6366f1", "#14b8a6", "#e11d48",
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#f97316",
+  "#84cc16",
+  "#6366f1",
+  "#14b8a6",
+  "#e11d48",
 ];
 
 function preloadImages(nodes: GraphNode[]): Map<string, HTMLImageElement> {
@@ -46,7 +59,10 @@ export default function GraphVisualizer() {
   const fgRef = useRef<any>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions, setDimensions] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 800,
+    height: typeof window !== "undefined" ? window.innerHeight : 600,
+  });
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const imageMapRef = useRef<Map<string, HTMLImageElement>>(new Map());
@@ -61,12 +77,10 @@ export default function GraphVisualizer() {
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.clientWidth,
-          height: window.innerHeight,
-        });
-      }
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     };
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
@@ -88,24 +102,38 @@ export default function GraphVisualizer() {
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const linkWidth = useCallback((link: any) => {
-    const isSelected = selectedNode && (link.source?.id === selectedNode || link.target?.id === selectedNode);
-    const base = 0.8 + Math.min(Math.log(link.strength + 1) * 1.2, 4);
-    return isSelected ? base * 2 : base;
-  }, [selectedNode]);
+  const linkWidth = useCallback(
+    (link: any) => {
+      const isSelected =
+        selectedNode &&
+        (link.source?.id === selectedNode || link.target?.id === selectedNode);
+      const base = 0.8 + Math.min(Math.log(link.strength + 1) * 1.2, 4);
+      return isSelected ? base * 2 : base;
+    },
+    [selectedNode],
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const linkColor = useCallback((link: any) => {
-    const isSelected = selectedNode && (link.source?.id === selectedNode || link.target?.id === selectedNode);
-    const isHovered = hoveredNode && (link.source?.id === hoveredNode || link.target?.id === hoveredNode);
-    if (isSelected) {
-      if (link.partnerMatches > 0 && link.rivalMatches === 0) return "rgba(16, 185, 129, 0.8)";
-      if (link.rivalMatches > 0 && link.partnerMatches === 0) return "rgba(239, 68, 68, 0.8)";
-      return "rgba(245, 158, 11, 0.8)";
-    }
-    if (isHovered) return "rgba(100, 116, 139, 0.5)";
-    return "rgba(148, 163, 184, 0.25)";
-  }, [selectedNode, hoveredNode]);
+  const linkColor = useCallback(
+    (link: any) => {
+      const isSelected =
+        selectedNode &&
+        (link.source?.id === selectedNode || link.target?.id === selectedNode);
+      const isHovered =
+        hoveredNode &&
+        (link.source?.id === hoveredNode || link.target?.id === hoveredNode);
+      if (isSelected) {
+        if (link.partnerMatches > 0 && link.rivalMatches === 0)
+          return "rgba(16, 185, 129, 0.8)";
+        if (link.rivalMatches > 0 && link.partnerMatches === 0)
+          return "rgba(239, 68, 68, 0.8)";
+        return "rgba(245, 158, 11, 0.8)";
+      }
+      if (isHovered) return "rgba(100, 116, 139, 0.5)";
+      return "rgba(148, 163, 184, 0.25)";
+    },
+    [selectedNode, hoveredNode],
+  );
 
   const nodeCanvasObject = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -141,7 +169,13 @@ export default function GraphVisualizer() {
         ctx.closePath();
         ctx.clip();
         const imgSize = (radius - 2) * 2;
-        ctx.drawImage(img, node.x - radius + 2, node.y - radius + 2, imgSize, imgSize);
+        ctx.drawImage(
+          img,
+          node.x - radius + 2,
+          node.y - radius + 2,
+          imgSize,
+          imgSize,
+        );
         ctx.restore();
       } else {
         ctx.font = `bold ${radius * 0.8}px sans-serif`;
@@ -154,7 +188,11 @@ export default function GraphVisualizer() {
       // Ring border
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = isSelected ? color : isHovered ? "rgba(255,255,255,0.6)" : "rgba(255, 255, 255, 0.5)";
+      ctx.strokeStyle = isSelected
+        ? color
+        : isHovered
+          ? "rgba(255,255,255,0.6)"
+          : "rgba(255, 255, 255, 0.5)";
       ctx.lineWidth = (isSelected ? 3 : isHovered ? 2 : 1.5) / globalScale;
       ctx.stroke();
 
@@ -176,7 +214,11 @@ export default function GraphVisualizer() {
 
         // Subtle text shadow for readability on light bg
         ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-        ctx.fillText(label, node.x + 0.5 / globalScale, labelY + 0.5 / globalScale);
+        ctx.fillText(
+          label,
+          node.x + 0.5 / globalScale,
+          labelY + 0.5 / globalScale,
+        );
 
         ctx.fillStyle = isSelected ? color : "rgba(51, 65, 85, 0.85)";
         ctx.fillText(label, node.x, labelY);
@@ -207,9 +249,12 @@ export default function GraphVisualizer() {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleNodeClick = useCallback((node: any) => {
-    setSelectedNode(selectedNode === node.id ? null : node.id);
-  }, [selectedNode]);
+  const handleNodeClick = useCallback(
+    (node: any) => {
+      setSelectedNode(selectedNode === node.id ? null : node.id);
+    },
+    [selectedNode],
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleNodeHover = useCallback((node: any) => {
@@ -233,8 +278,8 @@ export default function GraphVisualizer() {
       <div className="flex flex-col items-center justify-center h-[100vh] gap-3 text-center bg-neutral-50">
         <p className="text-xl font-semibold text-neutral-700">Sin datos aún</p>
         <p className="text-sm text-neutral-400 max-w-xs">
-          La red se construye automáticamente cuando se confirman partidos.
-          Aún no hay partidos confirmados.
+          La red se construye automáticamente cuando se confirman partidos. Aún
+          no hay partidos confirmados.
         </p>
       </div>
     );
@@ -251,17 +296,23 @@ export default function GraphVisualizer() {
     : [];
 
   return (
-    <div ref={containerRef} className="relative w-full bg-neutral-50 overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative w-full bg-neutral-50 overflow-hidden"
+    >
       {/* Top bar */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         <div className="flex items-center gap-3 rounded-xl bg-white px-4 py-2.5 shadow-sm border border-neutral-200">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-blue-500" />
-            <span className="text-sm font-semibold text-neutral-700">Red de Padel Red</span>
+            <span className="text-sm font-semibold text-neutral-700">
+              Red de Padel Red
+            </span>
           </div>
           <div className="h-4 w-px bg-neutral-200" />
           <span className="text-xs text-neutral-400">
-            {graphData.nodes.length} jugadores · {graphData.links.length} conexiones
+            {graphData.nodes.length} jugadores · {graphData.links.length}{" "}
+            conexiones
           </span>
         </div>
         <button
@@ -323,7 +374,8 @@ export default function GraphVisualizer() {
                 {selectedNodeData.alias || selectedNodeData.name}
               </p>
               <p className="text-xs text-neutral-400">
-                {selectedNodeData.matchesPlayed} partidos · {selectedNodeData.networkSize} contactos
+                {selectedNodeData.matchesPlayed} partidos ·{" "}
+                {selectedNodeData.networkSize} contactos
               </p>
             </div>
             <button
@@ -336,18 +388,33 @@ export default function GraphVisualizer() {
 
           <div className="grid grid-cols-3 gap-2 mb-3">
             <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Score</p>
-              <p className="text-sm font-mono font-bold text-neutral-700">{selectedNodeData.skillScore}</p>
-            </div>
-            <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Lado</p>
-              <p className="text-sm font-bold text-neutral-700">
-                {selectedNodeData.preferredSide === "RIGHT" ? "Der." : selectedNodeData.preferredSide === "LEFT" ? "Rev." : "—"}
+              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+                Score
+              </p>
+              <p className="text-sm font-mono font-bold text-neutral-700">
+                {selectedNodeData.skillScore}
               </p>
             </div>
             <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Grupo</p>
-              <p className="text-sm font-bold" style={{ color: nodeColor(selectedNodeData) }}>
+              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+                Lado
+              </p>
+              <p className="text-sm font-bold text-neutral-700">
+                {selectedNodeData.preferredSide === "RIGHT"
+                  ? "Der."
+                  : selectedNodeData.preferredSide === "LEFT"
+                    ? "Rev."
+                    : "—"}
+              </p>
+            </div>
+            <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
+              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+                Grupo
+              </p>
+              <p
+                className="text-sm font-bold"
+                style={{ color: nodeColor(selectedNodeData) }}
+              >
                 {selectedNodeData.community ?? "—"}
               </p>
             </div>
@@ -359,10 +426,13 @@ export default function GraphVisualizer() {
             </p>
             <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
               {selectedLinks.map((link, i) => {
-                const otherId = link.source === selectedNode ? link.target : link.source;
+                const otherId =
+                  link.source === selectedNode ? link.target : link.source;
                 const other = graphData.nodes.find((n) => n.id === otherId);
-                const isPartner = link.partnerMatches > 0 && link.rivalMatches === 0;
-                const isRival = link.rivalMatches > 0 && link.partnerMatches === 0;
+                const isPartner =
+                  link.partnerMatches > 0 && link.rivalMatches === 0;
+                const isRival =
+                  link.rivalMatches > 0 && link.partnerMatches === 0;
                 return (
                   <div key={i} className="flex items-center gap-2.5 text-xs">
                     <span
@@ -373,7 +443,11 @@ export default function GraphVisualizer() {
                           : isRival
                             ? "rgba(239,68,68,0.1)"
                             : "rgba(245,158,11,0.1)",
-                        color: isPartner ? "#10b981" : isRival ? "#ef4444" : "#f59e0b",
+                        color: isPartner
+                          ? "#10b981"
+                          : isRival
+                            ? "#ef4444"
+                            : "#f59e0b",
                       }}
                     >
                       {isPartner ? "P" : isRival ? "R" : "M"}
@@ -381,7 +455,9 @@ export default function GraphVisualizer() {
                     <span className="text-neutral-600 flex-1 truncate">
                       {other?.alias || other?.name || "—"}
                     </span>
-                    <span className="text-neutral-300 text-[10px]">{link.strength}×</span>
+                    <span className="text-neutral-300 text-[10px]">
+                      {link.strength}×
+                    </span>
                   </div>
                 );
               })}
@@ -392,7 +468,9 @@ export default function GraphVisualizer() {
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 z-10 rounded-xl bg-white px-4 py-3 border border-neutral-200 shadow-sm">
-        <p className="text-[10px] text-neutral-400 uppercase tracking-wide mb-2 font-medium">Leyenda</p>
+        <p className="text-[10px] text-neutral-400 uppercase tracking-wide mb-2 font-medium">
+          Leyenda
+        </p>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-emerald-500" />
