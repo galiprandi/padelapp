@@ -11,7 +11,7 @@ export default async function VisualPage() {
   }
 
   return (
-    <div className="w-full h-screen overflow-hidden">
+    <div className="w-full h-[100dvh] overflow-hidden">
       <GraphView />
     </div>
   );
