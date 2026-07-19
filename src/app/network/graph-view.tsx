@@ -89,9 +89,20 @@ export default function GraphVisualizer() {
 
   useEffect(() => {
     if (fgRef.current && graphData && graphData.nodes.length > 0) {
+      // Tune d3-force for proper node spacing
+      const fg = fgRef.current;
+      // Strong repulsion between nodes
+      fg.d3Force("charge").strength(-120);
+      fg.d3Force("charge").distanceMax(400);
+      // Longer links for visual clarity
+      fg.d3Force("link").distance(80);
+      fg.d3Force("link").strength(0.3);
+      // Collision handled by strong charge + distanceMax
+      // Gentle centering
+      fg.d3Force("center").strength(0.05);
       setTimeout(() => {
-        fgRef.current.zoomToFit(300, 50);
-      }, 1000);
+        fg.zoomToFit(300, 60);
+      }, 1200);
     }
   }, [graphData]);
 
@@ -140,7 +151,7 @@ export default function GraphVisualizer() {
     (node: any, ctx: any, globalScale: number) => {
       if (!isFinite(node.x) || !isFinite(node.y)) return;
       const matches = node.matchesPlayed || 0;
-      const baseSize = 10 + Math.min(Math.sqrt(matches) * 2.5, 20);
+      const baseSize = 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
       const isHovered = hoveredNode === node.id;
       const isSelected = selectedNode === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
@@ -337,7 +348,6 @@ export default function GraphVisualizer() {
         linkColor={linkColor}
         linkCurvature={0.15}
         linkDirectionalParticles={0}
-        cooldownTicks={300}
         onNodeClick={handleNodeClick}
         onNodeHover={handleNodeHover}
         enableNodeDrag={true}
@@ -346,8 +356,9 @@ export default function GraphVisualizer() {
         minZoom={0.15}
         maxZoom={15}
         backgroundColor="#fafafa"
-        d3AlphaDecay={0.01}
-        d3VelocityDecay={0.3}
+        d3AlphaDecay={0.02}
+        d3VelocityDecay={0.4}
+        cooldownTicks={500}
       />
 
       {/* Detail panel */}
