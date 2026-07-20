@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
-import { auth, signIn } from "@/auth";
-import { SignInButton } from "@/components/auth/sign-in-button";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { auth, signIn } from "@/auth";
+import { SignInButton } from "@/components/auth/sign-in-button";
+import { safeCallbackUrl } from "@/lib/auth-utils";
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 interface LoginPageProps {
   searchParams: Promise<{ callbackUrl?: string }>;
@@ -63,15 +68,18 @@ async function LoginForm({
     searchParams,
   ]);
   const callbackUrl = resolvedParams.callbackUrl;
+  const safeCallback = safeCallbackUrl(callbackUrl);
 
   if (session?.user) {
-    redirect(callbackUrl || "/me");
+    redirect(safeCallback);
   }
 
   async function handleSignIn() {
     "use server";
     const resolved = await searchParams;
-    await signIn("google", { redirectTo: resolved.callbackUrl || "/me" });
+    await signIn("google", {
+      redirectTo: safeCallbackUrl(resolved.callbackUrl),
+    });
   }
 
   return (

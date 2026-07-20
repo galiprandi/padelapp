@@ -9,6 +9,39 @@ import { accounts, sessions, users, verificationTokens } from "@/db/schema";
 
 type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
 
+// Keys whose values must never leak into log output. They tend to appear in
+// adapter args (e.g. sessionToken, verificationTokens.token, passwords, OAuth
+// access/refresh tokens). Matched case-insensitive and against the last path
+// segment so we cover both top-level and nested keys.
+const SENSITIVE_KEYS = new Set([
+  "sessiontoken",
+  "token",
+  "verificationtoken",
+  "password",
+  "secret",
+  "accesstoken",
+  "refreshtoken",
+  "idtoken",
+]);
+
+function maskSensitive(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(maskSensitive);
+  }
+  if (value && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (SENSITIVE_KEYS.has(k.toLowerCase())) {
+        result[k] = "[REDACTED]";
+      } else {
+        result[k] = maskSensitive(v);
+      }
+    }
+    return result;
+  }
+  return value;
+}
+
 function resolveDisplayName(profile: GoogleProfile): string {
   const trimmedName = profile.name?.trim() || profile.given_name?.trim();
   if (trimmedName && trimmedName.length > 0) {
@@ -34,11 +67,12 @@ const loggedAdapter = new Proxy(rawAdapter, {
       try {
         return await original.apply(target, args);
       } catch (error) {
+        const safeArgs = maskSensitive(args);
         console.error(`[auth][adapter] ${String(prop)} failed:`, {
           error: error instanceof Error ? error.message : String(error),
           cause: error instanceof Error ? error.cause : undefined,
           stack: error instanceof Error ? error.stack : undefined,
-          args: JSON.stringify(args, (_k, v) =>
+          args: JSON.stringify(safeArgs, (_k, v) =>
             typeof v === "string" && v.length > 100
               ? v.slice(0, 100) + "..."
               : v,

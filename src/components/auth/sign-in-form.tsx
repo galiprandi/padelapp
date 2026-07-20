@@ -1,5 +1,6 @@
 import { signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { safeCallbackUrl } from "@/lib/auth-utils";
 
 interface SignInFormProps {
   callbackUrl: string;
@@ -12,9 +13,11 @@ export function SignInForm({
   label = "Continuar con Google",
   className,
 }: SignInFormProps) {
+  const safeCallback = safeCallbackUrl(callbackUrl);
+
   async function handleSignIn() {
     "use server";
-    await signIn("google", { redirectTo: callbackUrl });
+    await signIn("google", { redirectTo: safeCallback });
   }
 
   return (
