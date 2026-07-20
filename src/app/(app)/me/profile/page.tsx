@@ -7,6 +7,7 @@ import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { UserCircle } from "lucide-react";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShareButton } from "@/components/share/share-button";
 
 export default function ProfilePage() {
   return (
@@ -43,7 +44,18 @@ async function ProfileFormSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4">
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 relative">
+        <div className="absolute top-3 right-3">
+          <ShareButton
+            url={`/p/${session.user.id}`}
+            title="Mi perfil de pádel"
+            text={`Mirá mis estadísticas en Padel Red.`}
+            variant="ghost"
+            size="sm"
+            iconOnly
+            className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+          />
+        </div>
         {user.image ? (
           <img
             src={user.image}
