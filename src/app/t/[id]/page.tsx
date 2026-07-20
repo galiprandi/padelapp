@@ -447,7 +447,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                         url={
                           createMagicLink({ resource: "turn", identifier: id }).url
                         }
-                        variant="outline"
                         iconOnly
                         className="h-10 w-10 rounded-lg shrink-0"
                       />
@@ -481,7 +480,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                       url={
                         createMagicLink({ resource: "turn", identifier: id }).url
                       }
-                      variant="outline"
                       iconOnly
                       className="h-10 w-10 rounded-lg shrink-0"
                     />
