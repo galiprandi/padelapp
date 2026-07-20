@@ -168,10 +168,15 @@ export async function getUserPasskeys() {
 // ---------------------------------------------------------------------------
 
 export async function getAuthOptions() {
+  // `hints` is supported in the underlying WebAuthn spec (v13.3+) but the
+  // wrapper's TS types don't expose it yet. Cast keeps us version-current
+  // without forking the lib's typedefs.
   const options = await generateAuthenticationOptions({
     rpID,
     userVerification: "preferred",
-  });
+    timeout: 30_000,
+    hints: ["client-device"],
+  } as any);
 
   (await cookies()).set(CHALLENGE_COOKIE, options.challenge, {
     httpOnly: true,

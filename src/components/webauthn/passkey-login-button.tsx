@@ -55,9 +55,13 @@ export function PasskeyLoginButton() {
         if (err.name === "NotAllowedError") {
           return;
         }
-        showToast(
-          "No se encontró huella registrada. Entrá con Google y activá la huella desde tu perfil.",
-        );
+        if (err.name === "InvalidStateError") {
+          showToast(
+            "No se encontró huella registrada. Entrá con Google y activá la huella desde tu perfil.",
+          );
+          return;
+        }
+        console.error("[passkey-login] unexpected error:", err);
       }
     });
   }
