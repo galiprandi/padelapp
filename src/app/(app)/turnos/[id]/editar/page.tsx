@@ -301,20 +301,31 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
                 })}
               </div>
 
-              {session?.user?.level !== undefined &&
-                Math.abs(session.user.level - parseInt(formData.suggestedLevel, 10)) > 1 && (
+              {session?.user?.level !== undefined && (() => {
+                const userLevel = session.user.level;
+                const suggestedLevel = parseInt(formData.suggestedLevel, 10);
+                const levelDiff = Math.abs(userLevel - suggestedLevel);
+
+                if (levelDiff <= 1) return null;
+
+                // In padel, level 1 is highest and level 8 is beginner.
+                // So a higher level number means a lower skill level.
+                const isUserWeakerThanSuggested = userLevel > suggestedLevel;
+
+                return (
                   <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-xs">
                     <span className="text-sm shrink-0">⚠️</span>
                     <div className="flex flex-col gap-0.5">
                       <span className="font-bold">Recomendación de nivel</span>
                       <span>
-                        {session.user.level > parseInt(formData.suggestedLevel, 10)
-                          ? `Tu nivel (Nivel ${session.user.level}) es menor que el nivel sugerido para este turno (Nivel ${formData.suggestedLevel}). El partido podría resultar muy exigente.`
-                          : `Tu nivel (Nivel ${session.user.level}) es mayor que el nivel sugerido para este turno (Nivel ${formData.suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
+                        {isUserWeakerThanSuggested
+                          ? `Tu nivel (Nivel ${userLevel}) es menor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El partido podría resultar muy exigente.`
+                          : `Tu nivel (Nivel ${userLevel}) es mayor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
                       </span>
                     </div>
                   </div>
-                )}
+                );
+              })()}
             </div>
 
             <div className="flex flex-col gap-1.5">
