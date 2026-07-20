@@ -103,3 +103,26 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **Decay**: x0.5 after 60 days inactive, x0.25 after 120 days.
 - **Confirmation**: at least one player per team must confirm result.
 - **Attendance**: creator marks attendance post-match; no-shows and late arrivals penalized.
+
+### Auth — Pitfalls & Learnings
+
+Hard-won knowledge from the security audit (commit history: `508d006`, `916c2c8`, `8ea86a5`, `491bb95`).
+
+1. **NextAuth v5 + `session.strategy = "database"` is incompatible with edge middleware.**
+   The Drizzle adapter requires a Node.js DB driver and cannot be loaded in edge runtime. Even though Next.js 16's (`middleware.ts` / `proxy.ts`) defaults to Node.js, Auth.js will still throw `MissingAdapter: Database session requires an adapter` if you declare a separate `NextAuth({ strategy: "database", providers: [] })` inside middleware to "validate" the session there.
+   - **Do not build a separate `NextAuth` instance inside `middleware.ts`.**
+   - Do not use `getToken` (`next-auth/jwt`) on database-strategy cookies: the session cookie holds an **opaque sessionToken UUID in plaintext**, not a signed JWT. `getToken` always returns `null` and you'd bounce every authenticated user back to `/login` in a loop.
+   - **Correct defense pattern**: keep auth checks in `(app)/layout.tsx` and at the top of every Server Action / API route via `await auth()`. Treat middleware as a no-op support slot — leave the matchers in place purely as future hooks (with a comment explaining why they pass-through).
+
+2. **`/login` and `/login?callbackUrl=...` must sanitize the callback.**
+   `safeCallbackUrl` in `src/lib/auth-utils.ts` rejects any `callbackUrl` that is not a same-origin absolute path (i.e. does not start with `/` or starts with `//`). Failure to do this opens an open-redirect vector from any legitimate auth-handshake URL.
+
+3. **Security headers live in `next.config.ts`.** Reference: see `SecurityHeaders` block. Update CSP, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` in one place. Reapply after every structural change to `next.config.ts` because a malformed `headers()` callback silently drops the rule.
+
+4. **Adapter error logs must mask sensitive fields.** `src/auth.ts` uses a `Proxy` over the Drizzle adapter to log failures. Any `args` payload from the adapter may carry `sessionToken`, `token`, `accessToken`, `refreshToken`. The `maskSensitive` helper walks the value tree and replaces those with `[REDACTED]` before logging.
+
+5. **WebAuthn `hints: ['client-device']` requires a type cast.** `@simplewebauthn/server@13.3.2` accepts `hints` on `generateAuthenticationOptions` internally but its `GenerateAuthenticationOptionsOpts` type omits it. Cast through `as any` at the call site; don't fork the lib's `.d.ts`.
+
+6. **Google Password Manager (Android, e.g. Samsung S23+) shows a "use a saved passkey" sheet by design** when a passkey is synced to the user's Google Account. This is a platform behavior, not a WebAuthn optionality. **It cannot be bypassed from the RP side.** If you want to eliminate it for testing: register a single-device (`platform`) passkey instead of a synced one.
+
+7. **`AUTH_SECRET` in Vercel production was verified safe** (no `change-me` placeholder) on `2026-07-20`. Re-check with `vercel env ls production | grep AUTH_SECRET` after every secret rotation.
