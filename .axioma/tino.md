@@ -4,6 +4,7 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 - [x] 2026-07-17 — Resolver incompatibilidad de cron route segment config con cacheComponents (PR #tino/perf/cache-components-fix)
 - [x] 2026-07-19 — Completar Plan 006: Upgrade a Next.js 16.3+ y adopción de Cache Components para rutas estáticas y dinámicas (PR #tino/perf/cache-components-adoption)
+- [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
 
 ## 🧠 LEARNINGS
 ### 2026-07-17 - Setup inicial
@@ -17,3 +18,7 @@
 ### 2026-07-19 - Adopción de Cache Components en la página de Notificaciones
 **Learning:** Para habilitar la renderización parcial y streaming en páginas que dependen de cookies o sesiones dinámicas (como `/notifications` que usa `auth()`), se debe separar el contenido dinámico en un componente asíncrono secundario envuelto en `<Suspense>` con un esqueleto (skeleton) adecuado. De esta manera, el shell estático de la página se pre-renderiza instantáneamente en tiempo de compilación y se sirve de inmediato desde el CDN, mientras que la lista de acciones dinámicas se transmite (stream) conforme se resuelve la sesión.
 **Action:** Continuar utilizando este patrón para otras rutas dinámicas dentro del scope del agente, removiendo los opt-outs `export const instant = false` de forma progresiva.
+
+### 2026-07-20 - Adopción completa y remoción de todos los opt-outs 'instant = false'
+**Learning:** Todas las páginas restantes del App Router de Padel Red que tenían la exclusión de Cache Components (`export const instant = false;`) han sido exitosamente adoptadas. Al aislar las consultas y verificaciones de sesión asíncronas (`auth()`, Drizzle database queries, etc.) dentro de componentes secundarios envueltos en `<Suspense>`, logramos que la estructura superior/shell de la página se compile estáticamente y se cargue de forma instantánea desde el CDN.
+**Action:** Para garantizar que no haya un desfase o parpadeo visual (Layout Shift / CLS) al resolver el componente dinámico, los esqueletos de carga (`Skeleton` components) deben replicar con total fidelidad la maquetación y jerarquía visual del contenido real, y el contenedor principal o clase estructural de estilo (por ejemplo, `<main className="...">`) debe definirse en el componente síncrono padre en lugar del hijo.
