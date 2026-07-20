@@ -249,7 +249,7 @@ export function ManageSlotModal({
                     type="button"
                     onClick={handleClearSearch}
                     aria-label="Limpiar búsqueda"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -271,7 +271,7 @@ export function ManageSlotModal({
                       key={player.id}
                       onClick={() => handleSelectPlayer(player)}
                       aria-label={`Seleccionar a ${player.displayName}`}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-colors text-left"
+                      className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     >
                       <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
                       <div className="flex-1 min-w-0">

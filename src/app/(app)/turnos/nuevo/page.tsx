@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +30,7 @@ export default function NewTurnPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
 
   const [formData, setFormData] = useState({
     club: "",
@@ -243,6 +245,32 @@ export default function NewTurnPage() {
               );
             })}
           </div>
+
+          {session?.user?.level !== undefined && (() => {
+            const userLevel = session.user.level;
+            const suggestedLevel = parseInt(formData.suggestedLevel, 10);
+            const levelDiff = Math.abs(userLevel - suggestedLevel);
+
+            if (levelDiff <= 1) return null;
+
+            // In padel, level 1 is highest and level 8 is beginner.
+            // So a higher level number means a lower skill level.
+            const isUserWeakerThanSuggested = userLevel > suggestedLevel;
+
+            return (
+              <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-xs">
+                <span className="text-sm shrink-0">⚠️</span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-bold">Recomendación de nivel</span>
+                  <span>
+                    {isUserWeakerThanSuggested
+                      ? `Tu nivel (Nivel ${userLevel}) es menor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El partido podría resultar muy exigente.`
+                      : `Tu nivel (Nivel ${userLevel}) es mayor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         <div className="space-y-2">
