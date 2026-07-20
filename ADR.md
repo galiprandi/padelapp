@@ -59,8 +59,8 @@ This had caused Vercel build failures before. The combination of an unsupported 
 - [x] `pnpm build` exits 0 with all 28 routes generated
 - [x] `pnpm-lock.yaml` header reads `lockfileVersion: '9.0'` (Vercel-compatible)
 - [x] `package.json` contains `"packageManager": "pnpm@10.34.5"`
-- [ ] After commit + push: Vercel production build succeeds on `padelred.app`
-- [ ] After commit + push: Dependabot alert #2 (`effect`) auto-closes
+- [x] After commit + push: Vercel production build succeeds on `padelred.app` (deploy `dpl_FrpzrzPwVYJCr8KFLPzyBC7gDSed`, build 58s, used `pnpm v10.34.5` via `packageManager` field, zero `prisma`/`effect`/`ERR_PNPM` mentions in logs)
+- [ ] After commit + push: Dependabot alert #2 (`effect`) auto-closes (GitHub re-scans within ~24h)
 
 ## Alternatives Considered
 
