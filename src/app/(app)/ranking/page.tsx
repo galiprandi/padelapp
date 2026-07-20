@@ -13,6 +13,7 @@ import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
 import { RankingPodium } from "@/components/ranking/ranking-podium";
+import { RankingInfo } from "@/components/ranking/ranking-info";
 
 interface RankingPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -46,6 +47,8 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
       <Suspense fallback={null}>
         <RankingSearch />
       </Suspense>
+
+      {!query && <RankingInfo />}
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <UserRankingBanner
