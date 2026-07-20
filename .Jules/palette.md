@@ -21,3 +21,7 @@
 ## 2026-07-18 - [Custom Dialog Accessibility and Focus Trap Standards]
 **Learning:** Custom overlay dialogs implemented with standard HTML elements (rather than semantic dialog tags or headless libraries) lack default keyboard and pointer handlers. Explicitly managing keydown events (Escape to close), backdrop click target verification (`e.target === e.currentTarget`), and programmatic focus redirection (using dynamic refs and small setTimeout buffers) are essential to prevent trapping non-mouse users.
 **Action:** When introducing or auditing custom dialog overlays, verify that pointer backdrops, keyboard escape controls, and target element autofocusing are natively handled and verified.
+
+## 2026-07-19 - [Custom Button Keyboard Focus Indicators]
+**Learning:** Custom selection or list buttons (such as those for marking player attendance or selection options inside modals) often lack focus rings because they aren't standard `<input>` or default styled buttons. Applying Tailwind's `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background` ensures keyboard-only users can navigate through custom forms and options without visual blindness.
+**Action:** Always include high-visibility `focus-visible` ring styles on any custom `<button>` elements representing form fields, option controls, or item selections.
