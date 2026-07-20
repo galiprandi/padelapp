@@ -89,7 +89,7 @@ export function PwaInstallBanner() {
       <button
         onClick={handleDismiss}
         aria-label="Cerrar"
-        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -98,7 +98,8 @@ export function PwaInstallBanner() {
         <button
           onClick={handleInstall}
           disabled={isInstalling}
-          className="flex items-center gap-1.5 text-xs font-semibold text-primary whitespace-nowrap disabled:opacity-50"
+          aria-label="Instalar aplicación"
+          className="flex items-center gap-1.5 text-xs font-semibold text-primary whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
         >
           {isInstalling ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

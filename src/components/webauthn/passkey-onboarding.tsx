@@ -79,11 +79,11 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
   }
 
   return (
-    <div className="relative flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/[0.03] p-4">
+    <div className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
       <button
         onClick={handleDismiss}
         aria-label="Cerrar"
-        className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </button>

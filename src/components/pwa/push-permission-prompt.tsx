@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Bell, BellOff, Loader2, Check } from "lucide-react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
+import { Button } from "@/components/ui/button";
 
 export function PushPermissionPrompt() {
   const { permission, requestPermission, loading } = usePushNotifications();
@@ -25,9 +26,9 @@ export function PushPermissionPrompt() {
   }
 
   return (
-    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+    <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
           <Bell className="h-5 w-5" />
         </div>
         <div className="flex-1 min-w-0">
@@ -39,10 +40,12 @@ export function PushPermissionPrompt() {
             un resultado.
           </p>
           <div className="mt-3 flex items-center gap-2">
-            <button
+            <Button
               onClick={() => requestPermission()}
               disabled={loading}
-              className="h-9 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1.5"
+              size="sm"
+              aria-label="Activar notificaciones de la aplicación"
+              className="h-9 font-bold"
             >
               {loading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -50,13 +53,16 @@ export function PushPermissionPrompt() {
                 <Bell className="h-3.5 w-3.5" />
               )}
               Activar
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setDismissed(true)}
-              className="h-9 rounded-lg px-3 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted"
+              size="sm"
+              aria-label="Descartar solicitud de notificaciones"
+              className="h-9 font-semibold text-muted-foreground hover:bg-muted"
             >
               Ahora no
-            </button>
+            </Button>
           </div>
         </div>
       </div>

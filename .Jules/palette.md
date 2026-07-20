@@ -25,3 +25,7 @@
 ## 2026-07-19 - [Custom Button Keyboard Focus Indicators]
 **Learning:** Custom selection or list buttons (such as those for marking player attendance or selection options inside modals) often lack focus rings because they aren't standard `<input>` or default styled buttons. Applying Tailwind's `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background` ensures keyboard-only users can navigate through custom forms and options without visual blindness.
 **Action:** Always include high-visibility `focus-visible` ring styles on any custom `<button>` elements representing form fields, option controls, or item selections.
+
+## 2026-07-20 - [Standardizing Interactive Banners and Custom Dismiss Actions]
+**Learning:** Highly prominent user-onboarding banners (like PWA installation, push notification prompts, and biometric/passkey enrollment cards) should maintain visual homogeneity and strict solid-background compliance under the Minimal Design System (MDS). Furthermore, raw custom `<button>` tags and close buttons inside these alerts are frequently omitted from keyboard focus paths, making them inaccessible.
+**Action:** Replace raw button controls inside banners with standard theme buttons (e.g., standard `Button` with variant `ghost` or custom components with high-visibility `focus-visible` outline rings) and assign solid card layout classes (`bg-card border-border`) to ensure full compliance and complete screen reader coverage with localized Spanish ARIA labels.
