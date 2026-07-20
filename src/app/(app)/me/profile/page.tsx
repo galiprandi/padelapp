@@ -5,12 +5,27 @@ import { PasskeyManager } from "@/components/webauthn/passkey-manager";
 import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
 import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { UserCircle } from "lucide-react";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+export default function ProfilePage() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
+        <p className="text-sm text-muted-foreground">
+          Personalizá tu identidad y nivel.
+        </p>
+      </div>
 
-export default async function ProfilePage() {
+      <Suspense fallback={<ProfileFormSkeleton />}>
+        <ProfileFormSection />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ProfileFormSection() {
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");
@@ -27,14 +42,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
-        <p className="text-sm text-muted-foreground">
-          Personalizá tu identidad y nivel.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4">
         {user.image ? (
           <img
@@ -65,6 +73,53 @@ export default async function ProfilePage() {
       />
 
       <PasskeyManager initialPasskeys={passkeys} />
+    </div>
+  );
+}
+
+function ProfileFormSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* User avatar and info card skeleton */}
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4">
+        <Skeleton className="h-20 w-20 rounded-xl" />
+        <div className="flex flex-col items-center gap-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-3 w-36" />
+        </div>
+      </div>
+
+      {/* Profile Form skeleton */}
+      <div className="space-y-6 rounded-xl border border-border bg-card p-4">
+        {/* Avatar selector skeleton */}
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-24" />
+          <div className="flex items-center gap-4 rounded-xl border border-border p-4">
+            <Skeleton className="h-16 w-16 rounded-xl" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3 w-full" />
+              <div className="flex gap-2">
+                <Skeleton className="h-10 w-10 rounded-lg" />
+                <Skeleton className="h-10 w-10 rounded-lg" />
+                <Skeleton className="h-10 w-10 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Alias field skeleton */}
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-12 w-full rounded-lg" />
+        </div>
+
+        {/* Level selector skeleton */}
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+        </div>
+      </div>
     </div>
   );
 }

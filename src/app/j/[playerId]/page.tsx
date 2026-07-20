@@ -11,10 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, UserCheck, Trophy, MapPin, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SignInForm } from "@/components/auth/sign-in-form";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MATCH_STATUS = {
   PENDING: "PENDING",
@@ -57,7 +55,38 @@ function defaultTeamLabel(teamKey: "A" | "B", totalPlayers: number): string {
   return teamKey === "A" ? "Pareja A" : "Pareja B";
 }
 
-export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
+export default function JoinSlotPage({ params }: JoinSlotPageProps) {
+  return (
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
+      <div className="flex flex-col gap-4">
+        <Link
+          href="/me"
+          className="text-sm font-semibold text-primary hover:underline"
+        >
+          Volver
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">
+            Invitación a jugar
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Invitación directa para partido de pádel
+          </p>
+        </div>
+      </div>
+
+      <Suspense fallback={<JoinSlotSkeleton />}>
+        <JoinSlotContent params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function JoinSlotContent({
+  params,
+}: {
+  params: Promise<{ playerId: string }>;
+}) {
   const { playerId } = await params;
   const session = await auth();
 
@@ -113,28 +142,12 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
-      <div className="flex flex-col gap-4">
-        <Link
-          href={session?.user ? "/me" : "/"}
-          className="text-sm font-semibold text-primary hover:underline"
-        >
-          Volver
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold text-foreground">
-            Invitación a jugar
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Invitación directa de {match.creator.displayName}
-          </p>
-        </div>
-        <div className="rounded-lg bg-muted p-4 border border-border">
-          <p className="text-sm font-medium text-muted-foreground">
-            Te invitaron a sumarte como{" "}
-            <span className="font-bold text-foreground">{teamLabel}</span>.
-          </p>
-        </div>
+    <>
+      <div className="rounded-lg bg-muted p-4 border border-border">
+        <p className="text-sm font-medium text-muted-foreground">
+          Te invitaron a sumarte como{" "}
+          <span className="font-bold text-foreground">{teamLabel}</span>.
+        </p>
       </div>
 
       <Card className="rounded-xl border-border bg-card overflow-hidden">
@@ -334,6 +347,48 @@ export default async function JoinSlotPage({ params }: JoinSlotPageProps) {
           </div>
         </div>
       </div>
-    </main>
+    </>
+  );
+}
+
+function JoinSlotSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Detail card skeleton */}
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="h-10 bg-muted border-b border-border flex items-center px-4">
+          <Skeleton className="h-4 w-28" />
+        </div>
+        <div className="grid grid-cols-2 gap-px bg-border">
+          <div className="bg-card p-4 space-y-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+          <div className="bg-card p-4 space-y-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+        </div>
+      </div>
+
+      {/* Formation skeleton */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-4" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-3 w-16" />
+              <div className="grid gap-2">
+                <Skeleton className="h-16 w-full rounded-xl" />
+                <Skeleton className="h-16 w-full rounded-xl" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
