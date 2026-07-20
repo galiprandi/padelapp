@@ -434,22 +434,25 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </div>
           ) : isJoined ? (
             <div className="flex flex-col gap-3">
-              <div className="w-full h-12 rounded-lg flex items-center justify-center bg-primary/10 text-primary border border-primary/20 font-bold shadow-sm">
-                ¡Ya estás anotado!
-              </div>
-              {turn.status !== "COMPLETED" && (
-                <ShareButton
-                  title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
-                  url={
-                    createMagicLink({ resource: "turn", identifier: id }).url
-                  }
-                  className="w-full h-12 rounded-lg text-base font-bold"
-                />
-              )}
               {viewerId === turn.creatorId && (
                 <>
-                  <ScheduleNextTurnForm turnId={id} />
+                  <div className="flex gap-2 w-full">
+                    <div className="flex-1">
+                      <ScheduleNextTurnForm turnId={id} />
+                    </div>
+                    {turn.status !== "COMPLETED" && (
+                      <ShareButton
+                        title="Sumate al Turno"
+                        text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                        url={
+                          createMagicLink({ resource: "turn", identifier: id }).url
+                        }
+                        variant="outline"
+                        iconOnly
+                        className="h-10 w-10 rounded-lg shrink-0"
+                      />
+                    )}
+                  </div>
                   <div className="flex gap-2">
                     <Button
                       asChild
@@ -463,9 +466,28 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                     </Button>
                     <CancelTurnForm turnId={id} />
                   </div>
+                  <LeaveTurnButton turnId={id} club={turn.club} />
                 </>
               )}
-              <LeaveTurnButton turnId={id} club={turn.club} />
+              {viewerId !== turn.creatorId && (
+                <div className="flex gap-2 w-full">
+                  <div className="flex-1">
+                    <LeaveTurnButton turnId={id} club={turn.club} />
+                  </div>
+                  {turn.status !== "COMPLETED" && (
+                    <ShareButton
+                      title="Sumate al Turno"
+                      text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                      url={
+                        createMagicLink({ resource: "turn", identifier: id }).url
+                      }
+                      variant="outline"
+                      iconOnly
+                      className="h-10 w-10 rounded-lg shrink-0"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-3">
