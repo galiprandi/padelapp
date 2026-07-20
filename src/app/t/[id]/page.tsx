@@ -13,7 +13,6 @@ import { getPadelContacts } from "@/lib/queries";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { levelOptions } from "@/lib/mock-data";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
 import { ShareButton } from "@/components/share/share-button";
 import { LeaveTurnButton } from "@/components/turns/leave-turn-button";
@@ -125,9 +124,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   const isFull = turn.players.length >= turn.maxPlayers;
   const isSubstitute = turn.substitutes.some((s) => s.userId === viewerId);
   const hasOpenSlot = turn.players.length < turn.maxPlayers;
-  const suggestedLevelLabel =
-    levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
-      ?.label ?? turn.suggestedLevel;
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
@@ -160,7 +156,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-px bg-border">
+        <div className="grid grid-cols-1 gap-px bg-border">
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
@@ -171,15 +167,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
             </p>
           </div>
 
-          <div className="bg-card p-4 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Trophy className="h-3.5 w-3.5" />
-              <span className="text-xs font-semibold">Nivel sugerido</span>
-            </div>
-            <p className="text-lg font-bold">{suggestedLevelLabel}</p>
-          </div>
-
-          <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
+          <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
               <MapPin className="h-5 w-5" />
             </div>
@@ -237,9 +225,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                         aria-label="Contacto frecuente"
                       />
                     )}
-                  </p>
-                  <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                    Nivel {p.user.level}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -324,9 +309,6 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
                           aria-label="Contacto frecuente"
                         />
                       )}
-                    </p>
-                    <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                      Nivel {s.user.level}
                     </p>
                   </div>
                   {s.userId === viewerId && (

@@ -14,7 +14,7 @@ export default function ProfilePage() {
       <div>
         <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
         <p className="text-sm text-muted-foreground">
-          Personalizá tu identidad y nivel.
+          Personalizá tu identidad en la red.
         </p>
       </div>
 
@@ -67,7 +67,6 @@ async function ProfileFormSection() {
 
       <ProfileForm
         initialAlias={user.alias ?? ""}
-        initialLevel={user.level}
         initialImage={user.image}
         googleAvatarUrl={googleAvatarUrl}
       />
@@ -111,13 +110,6 @@ function ProfileFormSkeleton() {
         <div className="space-y-2">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-12 w-full rounded-lg" />
-        </div>
-
-        {/* Level selector skeleton */}
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-16 w-full rounded-lg" />
-          <Skeleton className="h-16 w-full rounded-lg" />
         </div>
       </div>
     </div>

@@ -1387,6 +1387,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
       resultConfirmed: boolean;
       joinedAt: Date | null;
       attendance: string | null;
+      side: "RIGHT" | "LEFT" | null;
       user?: {
         id: string;
         displayName: string | null;

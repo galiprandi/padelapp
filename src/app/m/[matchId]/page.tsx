@@ -278,11 +278,6 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
                             >
                               {isConfirmed ? "Confirmado" : "Pendiente"}
                             </p>
-                            {player.user?.level && (
-                              <span className="rounded-md bg-primary/10 px-1.5 py-0.5 text-xs font-bold text-primary border border-primary/20">
-                                Nivel {player.user.level}
-                              </span>
-                            )}
                           </div>
                         </div>
                         {isCreator && (

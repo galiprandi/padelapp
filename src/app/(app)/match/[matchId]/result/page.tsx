@@ -25,6 +25,7 @@ interface MatchPlayer {
   resultConfirmed: boolean;
   joinedAt: Date | null;
   attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
   user?: {
     id: string;
     displayName: string | null;
@@ -78,6 +79,7 @@ export default function MatchResultPage({
   const [match, setMatch] = useState<MatchData | null>(null);
   const [loading, setLoading] = useState(true);
   const [scores, setScores] = useState<number[][]>([]);
+  const [playerSides, setPlayerSides] = useState<Record<string, "RIGHT" | "LEFT" | null>>({});
   const [pending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
@@ -89,6 +91,14 @@ export default function MatchResultPage({
         if (result.status === "ok" && result.match) {
           const setsCount = Math.max(1, result.match.sets || 1);
           setMatch(result.match as unknown as MatchData);
+
+          // Initialize player sides
+          const sidesInit: Record<string, "RIGHT" | "LEFT" | null> = {};
+          result.match.players.forEach((p) => {
+            sidesInit[p.id] = (p.side as "RIGHT" | "LEFT" | null) ?? null;
+          });
+          setPlayerSides(sidesInit);
+
           if (result.match.score) {
             const parsedScores = result.match.score
               .split(",")
@@ -153,16 +163,29 @@ export default function MatchResultPage({
   });
   const teams = Array.from(teamsMap.values());
 
+  const handleSideChange = (playerId: string, side: "RIGHT" | "LEFT") => {
+    setPlayerSides((prev) => ({
+      ...prev,
+      [playerId]: prev[playerId] === side ? null : side,
+    }));
+  };
+
   const save = () => {
     const setsCount = Math.max(1, match.sets || 1);
     const scoreStr = scores
       .slice(0, setsCount)
       .map((set) => `${set[0]}-${set[1]}`)
       .join(", ");
+
+    const sidesPayload = Object.entries(playerSides)
+      .filter(([_, side]) => side !== null)
+      .map(([playerId, side]) => ({ playerId, side: side! }));
+
     startTransition(async () => {
       const res = await saveMatchResultAction({
         matchId: match.id,
         score: scoreStr,
+        sides: sidesPayload,
       });
       if (res.status === "ok") {
         showToast("Resultado guardado");
@@ -307,6 +330,62 @@ export default function MatchResultPage({
                 ),
               )}
             </div>
+
+            {/* Side selection section */}
+            <section className="space-y-3">
+              <h2 className="text-sm font-bold text-foreground">
+                Posición en cancha (Derecha / Revés)
+              </h2>
+              <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+                {teams.map((team) => (
+                  <div key={team.id} className="space-y-2">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                      {team.label}
+                    </span>
+                    <div className="divide-y divide-border">
+                      {team.players.map((p) => (
+                        <div key={p.id} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <PlayerAvatar name={p.name} image={p.image} className="h-8 w-8" />
+                            <span className="text-sm font-semibold text-foreground truncate">{p.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1 bg-muted p-1 rounded-lg" role="radiogroup" aria-label={`Lado para ${p.name}`}>
+                            <button
+                              type="button"
+                              role="radio"
+                              aria-checked={playerSides[p.id] === "RIGHT"}
+                              onClick={() => handleSideChange(p.id, "RIGHT")}
+                              className={cn(
+                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98]",
+                                playerSides[p.id] === "RIGHT"
+                                  ? "bg-background text-foreground shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              Derecha
+                            </button>
+                            <button
+                              type="button"
+                              role="radio"
+                              aria-checked={playerSides[p.id] === "LEFT"}
+                              onClick={() => handleSideChange(p.id, "LEFT")}
+                              className={cn(
+                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98]",
+                                playerSides[p.id] === "LEFT"
+                                  ? "bg-background text-foreground shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              Revés
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             <MatchNavigation
               primaryButtonText={

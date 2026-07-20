@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { levelOptions } from "@/lib/mock-data";
 import { getTurnByIdAction, updateTurnAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Zap, Info, Clock, Check, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
@@ -37,7 +35,6 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
-  const { data: session } = useSession();
 
   const [formData, setFormData] = useState({
     club: "",
@@ -45,7 +42,6 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
     time: "",
     duration: "90",
     maxPlayers: "4",
-    suggestedLevel: "6",
     notes: "",
   });
 
@@ -61,7 +57,6 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
           time: turnDate.toTimeString().slice(0, 5),
           duration: turn.duration.toString(),
           maxPlayers: turn.maxPlayers.toString(),
-          suggestedLevel: turn.suggestedLevel.toString(),
           notes: turn.notes || "",
         });
       } else {
@@ -89,7 +84,6 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
         date: combinedDate.toISOString(),
         duration: parseInt(formData.duration),
         maxPlayers: parseInt(formData.maxPlayers),
-        suggestedLevel: parseInt(formData.suggestedLevel),
         notes: formData.notes,
       });
 
@@ -264,68 +258,6 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
                   );
                 })}
               </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label
-                id="level-label"
-                className="text-sm font-semibold"
-              >
-                Nivel sugerido
-              </Label>
-              <div
-                role="radiogroup"
-                aria-labelledby="level-label"
-                className="grid grid-cols-2 gap-2"
-              >
-                {levelOptions.map((option) => {
-                  const isSelected = formData.suggestedLevel === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      onClick={() => setFormData({ ...formData, suggestedLevel: option.value })}
-                      className={cn(
-                        "flex items-center justify-between px-4 h-10 rounded-lg border text-sm font-medium transition-colors",
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground"
-                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
-                      )}
-                    >
-                      <span className="truncate">{option.label}</span>
-                      {isSelected && <Check className="h-4 w-4 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {session?.user?.level !== undefined && (() => {
-                const userLevel = session.user.level;
-                const suggestedLevel = parseInt(formData.suggestedLevel, 10);
-                const levelDiff = Math.abs(userLevel - suggestedLevel);
-
-                if (levelDiff <= 1) return null;
-
-                // In padel, level 1 is highest and level 8 is beginner.
-                // So a higher level number means a lower skill level.
-                const isUserWeakerThanSuggested = userLevel > suggestedLevel;
-
-                return (
-                  <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-xs">
-                    <span className="text-sm shrink-0">⚠️</span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-bold">Recomendación de nivel</span>
-                      <span>
-                        {isUserWeakerThanSuggested
-                          ? `Tu nivel (Nivel ${userLevel}) es menor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El partido podría resultar muy exigente.`
-                          : `Tu nivel (Nivel ${userLevel}) es mayor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })()}
             </div>
 
             <div className="flex flex-col gap-1.5">

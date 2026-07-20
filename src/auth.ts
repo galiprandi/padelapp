@@ -106,7 +106,6 @@ const {
           emailVerified: profile.email_verified ? new Date() : null,
           image: profile.picture,
           displayName,
-          level: 6,
         };
       },
     }),
@@ -118,7 +117,6 @@ const {
         session.user.id = adapterUser.id;
         session.user.displayName = (adapterUser as any).displayName;
         session.user.alias = (adapterUser as any).alias;
-        session.user.level = (adapterUser as any).level;
         session.user.email = adapterUser.email;
         session.user.image = adapterUser.image;
       }

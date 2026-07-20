@@ -141,9 +141,6 @@ async function PublicProfileContent({
               size={96}
               className="border-2 border-border"
             />
-            <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm border-2 border-background">
-              {user.level}
-            </div>
           </div>
 
           <div className="space-y-1">
@@ -151,9 +148,6 @@ async function PublicProfileContent({
               {displayName}
             </h2>
             <div className="flex flex-col items-center gap-2">
-              <p className="text-sm font-semibold text-muted-foreground">
-                Nivel {user.level}
-              </p>
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Clock, Users, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn, isToday, isTomorrow } from "@/lib/utils";
-import { levelOptions } from "@/lib/mock-data";
 import {
   joinTurnAction,
   joinSubstituteAction,
@@ -46,9 +45,6 @@ export function TurnCard({
   const dateObj = new Date(turn.date);
 
   const isRecommended = variant === "recommended";
-  const levelLabel =
-    levelOptions.find((l) => l.value === turn.suggestedLevel.toString())
-      ?.label ?? turn.suggestedLevel.toString();
 
   // Only compute date-relative labels after mount to avoid hydration
   // mismatch (server uses UTC, client uses local timezone).
@@ -141,7 +137,6 @@ export function TurnCard({
                 </span>
               )}
             </span>
-            <span className="text-primary font-semibold">{levelLabel}</span>
           </div>
         </div>
 
