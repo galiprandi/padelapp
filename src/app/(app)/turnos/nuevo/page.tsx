@@ -3,11 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { levelOptions } from "@/lib/mock-data";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check } from "lucide-react";
@@ -30,7 +28,6 @@ export default function NewTurnPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
-  const { data: session } = useSession();
 
   const [formData, setFormData] = useState({
     club: "",
@@ -38,7 +35,6 @@ export default function NewTurnPage() {
     time: "",
     duration: "90",
     maxPlayers: "4",
-    suggestedLevel: "6",
     notes: "",
   });
 
@@ -58,7 +54,6 @@ export default function NewTurnPage() {
         date: combinedDate.toISOString(),
         duration: parseInt(formData.duration),
         maxPlayers: parseInt(formData.maxPlayers),
-        suggestedLevel: parseInt(formData.suggestedLevel),
         notes: formData.notes,
       });
 
@@ -76,7 +71,7 @@ export default function NewTurnPage() {
       <div>
         <h1 className="text-xl font-bold text-foreground">Nuevo turno</h1>
         <p className="text-sm text-muted-foreground">
-          Configurá cancha, nivel y cupos.
+          Configurá cancha y cupos.
         </p>
       </div>
 
@@ -210,67 +205,6 @@ export default function NewTurnPage() {
               );
             })}
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label id="level-label" className="text-sm font-semibold text-foreground">
-            Nivel sugerido
-          </Label>
-          <div
-            role="radiogroup"
-            aria-labelledby="level-label"
-            className="grid grid-cols-2 gap-2"
-          >
-            {levelOptions.map((option) => {
-              const isSelected = formData.suggestedLevel === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={isSelected}
-                  onClick={() =>
-                    setFormData({ ...formData, suggestedLevel: option.value })
-                  }
-                  className={cn(
-                    "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98]",
-                    isSelected
-                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                      : "bg-card border-border text-muted-foreground hover:bg-muted",
-                  )}
-                >
-                  <span className="truncate">{option.label}</span>
-                  {isSelected && <Check className="h-4 w-4 shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
-
-          {session?.user?.level !== undefined && (() => {
-            const userLevel = session.user.level;
-            const suggestedLevel = parseInt(formData.suggestedLevel, 10);
-            const levelDiff = Math.abs(userLevel - suggestedLevel);
-
-            if (levelDiff <= 1) return null;
-
-            // In padel, level 1 is highest and level 8 is beginner.
-            // So a higher level number means a lower skill level.
-            const isUserWeakerThanSuggested = userLevel > suggestedLevel;
-
-            return (
-              <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-xs">
-                <span className="text-sm shrink-0">⚠️</span>
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-bold">Recomendación de nivel</span>
-                  <span>
-                    {isUserWeakerThanSuggested
-                      ? `Tu nivel (Nivel ${userLevel}) es menor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El partido podría resultar muy exigente.`
-                      : `Tu nivel (Nivel ${userLevel}) es mayor que el nivel sugerido para este turno (Nivel ${suggestedLevel}). El ritmo de juego podría ser menor al tuyo.`}
-                  </span>
-                </div>
-              </div>
-            );
-          })()}
         </div>
 
         <div className="space-y-2">

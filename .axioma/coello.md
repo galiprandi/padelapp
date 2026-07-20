@@ -5,27 +5,19 @@
 ## Estado actual
 
 ### Completado
-- Spec creadada: `specs/player-graph.md`
+- Spec creada: `specs/player-graph.md`
 - Agente creado: `.ants/gallery/coello.md`
 - Phase 1 (DB schema): tablas `playerEdges`, `playerGraphStats`, `matchPlayerFeedback` + campo `side` en `matchPlayers`. Migration `drizzle/0002_player_graph.sql` generada.
 - Phase 2 (Graph engine): `src/lib/graph/` con `engine.ts` (skill scores iterativos, comunidades BFS, side stats, feedback), `update.ts` (upsert de aristas al confirmar match), `rebuild.ts` (rebuild completo + recompute individual), `index.ts` (barrel).
-- Phase 3 (parcial): integración de graph update en `confirmMatchResultAction`, `finalizeMatchAction`, y `saveMatchResultAction`. Campo `sides` agregado a `SaveMatchResultInput`.
+- Phase 3: Integración de graph update en `confirmMatchResultAction`, `finalizeMatchAction`, y `saveMatchResultAction`. Campo `sides` agregado a `SaveMatchResultInput`.
+- Phase 3 (UI): Carga de posición en cancha ("Derecha" / "Revés") agregada a la UI de `src/app/(app)/match/[matchId]/result/page.tsx` y enviada correctamente en la acción.
+- Phase 4: Eliminar categoría auto-percibida de toda la UI y backend de la aplicación:
+  - Selector de nivel quitado de `/me/profile` (`profile-form.tsx` y `page.tsx`).
+  - Campo `level` removido de NextAuth session callbacks y types.
+  - `suggestedLevel` y alertas de nivel quitados de creación y edición de turnos.
+  - Badges y labels de nivel quitados de tarjetas de turno, detalles del turno, detalles de partido, perfiles de jugador, ranking e items de lista.
 
 ### Pendiente — Backlog
-
-#### Phase 3 (incompleta)
-- [ ] Agregar toggle de derecha/revés en la UI de `src/app/(app)/match/[matchId]/result/page.tsx`
-- [ ] Enviar `sides` en el `saveMatchResultAction` call desde la UI
-
-#### Phase 4: Eliminar categoría auto-percibida
-- [ ] Quitar selector de nivel de `src/app/(app)/me/profile/profile-form.tsx`
-- [ ] Quitar `level` de sesión en `src/auth.ts`
-- [ ] Quitar `suggestedLevel` de `src/app/(app)/turnos/nuevo/page.tsx`
-- [ ] Quitar `suggestedLevel` de `src/app/(app)/turnos/[id]/editar/page.tsx`
-- [ ] Quitar `levelOptions` de `src/lib/mock-data.ts`
-- [ ] Quitar badges "Nivel X" de: `turn-card.tsx`, `/t/[id]/page.tsx`, `/m/[matchId]/page.tsx`, `/ranking/page.tsx`, `/p/[userId]/page.tsx`, dashboard
-- [ ] Quitar `level` de `src/lib/queries/contacts.ts` (PadelContact interface)
-- [ ] Quitar `level` de `src/app/(app)/me/actions.ts` (updateUserProfileAction)
 
 #### Phase 5: Feedback del organizador post-partido
 - [ ] Crear server action `savePlayerFeedbackAction` en match actions
@@ -43,8 +35,6 @@
 - [ ] Sugerencia de parejas al armar match
 
 ## Learnings
-- El grafo usa una sola tabla de aristas (`playerEdges`) con rivalidad + pareja combinadas.
-- El algoritmo de skill score es un promedio ponderado iterativo (10 iteraciones), no PageRank.
-- Las comunidades se detectan con BFS conectado (simplificación de Louvain, mejorable).
-- El feedback del organizador ajusta el score con un factor que se diluye (max 5 feedbacks).
-- `users.level` queda como legacy en DB, no se borra.
+- **Match Player Side Selection**: Integrar sutilmente la posición en cancha ("Derecha" / "Revés") en el momento de cargar los resultados del partido enriquece el grafo de conexiones de forma natural y sin fricciones de onboarding.
+- **Eliminación de Categoría Auto-percibida**: Quitar los selectores subjetivos de nivel (1-8) de los perfiles y turnos simplifica enormemente la UX móvil de la aplicación, dejando que la red y el grafo de jugadores decidan la compatibilidad de forma orgánica e interna.
+- **Seguridad en DB**: Al remover un campo requerido por la base de datos (como `suggestedLevel` en turnos), lo más seguro para evitar romper integraciones o fallar queries SQL es hacerlo opcional en los inputs de los server actions y asignar un default seguro (como 6) en el backend.

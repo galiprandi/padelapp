@@ -22,7 +22,7 @@ export type CreateTurnInput = {
   date: string; // ISO string
   duration: number;
   maxPlayers: number;
-  suggestedLevel: number;
+  suggestedLevel?: number;
   notes?: string;
 };
 
@@ -41,7 +41,7 @@ export async function createTurnAction(input: CreateTurnInput) {
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
-        suggestedLevel: input.suggestedLevel,
+        suggestedLevel: input.suggestedLevel ?? 6,
         notes: input.notes,
       })
       .returning();
@@ -98,7 +98,7 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
-        suggestedLevel: input.suggestedLevel,
+        suggestedLevel: input.suggestedLevel ?? 6,
         notes: input.notes,
       })
       .where(eq(turns.id, turnId));

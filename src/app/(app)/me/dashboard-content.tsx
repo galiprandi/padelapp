@@ -142,7 +142,7 @@ export default async function DashboardContent() {
             </h2>
           </div>
           <p className="text-xs text-amber-700 leading-normal">
-            Elegí tu alias en la cancha y nivel de juego (1–8) para que otros
+            Elegí tu alias en la cancha para que otros
             jugadores te reconozcan en los partidos y ranking.
           </p>
           <Button
@@ -159,7 +159,7 @@ export default async function DashboardContent() {
 
       {/* Stats row */}
       {user && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Link
             href="/ranking"
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
@@ -169,17 +169,6 @@ export default async function DashboardContent() {
             </span>
             <span className="text-xl font-bold text-foreground">
               #{user.rankingPosition ?? "-"}
-            </span>
-          </Link>
-          <Link
-            href="/me/profile"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
-          >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
-              Nivel
-            </span>
-            <span className="text-xl font-bold text-foreground">
-              {user.level}
             </span>
           </Link>
           <Link

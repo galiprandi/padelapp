@@ -4,7 +4,6 @@ declare module "next-auth" {
   interface User {
     displayName: string;
     alias?: string | null;
-    level: number;
   }
 
   interface Session {
@@ -12,7 +11,6 @@ declare module "next-auth" {
       id: string;
       displayName: string;
       alias?: string | null;
-      level: number;
     };
   }
 }

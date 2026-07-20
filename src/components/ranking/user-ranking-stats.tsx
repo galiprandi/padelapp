@@ -7,7 +7,7 @@ interface UserRankingStatsProps {
   delta: number;
   wins: number;
   losses: number;
-  level: number;
+  level?: number;
   attendanceScore?: number;
   className?: string;
   matchesPlayed?: number;
@@ -49,9 +49,6 @@ export function UserRankingBanner({
 
         <div className="flex flex-col items-end gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
-              Nivel {level}
-            </span>
             {matchesPlayed > 0 && (
               <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">
                 {winRate}% WR
