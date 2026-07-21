@@ -1022,7 +1022,14 @@ export async function releaseMatchSlotAction(
   try {
     const player = await db.query.matchPlayers.findFirst({
       where: eq(matchPlayers.id, input.playerId),
-      with: { match: true, user: true },
+      with: {
+        match: true,
+        user: {
+          columns: {
+            displayName: true,
+          },
+        },
+      },
     });
 
     if (!player) {
@@ -1377,6 +1384,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
       id: string;
       displayName: string | null;
       image: string | null;
+      alias: string | null;
     } | null;
     players: Array<{
       id: string;
@@ -1392,6 +1400,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
         id: string;
         displayName: string | null;
         image: string | null;
+        alias: string | null;
       } | null;
       team?: {
         id: string;
@@ -1414,6 +1423,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
             id: true,
             displayName: true,
             image: true,
+            alias: true,
           },
         },
         players: {
@@ -1423,6 +1433,7 @@ export async function getMatchByIdAction(matchId: string): Promise<{
                 id: true,
                 displayName: true,
                 image: true,
+                alias: true,
               },
             },
             team: {

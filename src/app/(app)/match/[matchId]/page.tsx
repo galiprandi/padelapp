@@ -16,10 +16,8 @@ import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { LocalDate } from "@/components/ui/local-date";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MatchPageProps {
   params: Promise<{
@@ -69,7 +67,47 @@ async function CancelMatchForm({ matchId }: { matchId: string }) {
   );
 }
 
-export default async function MatchPage({ params }: MatchPageProps) {
+export default function MatchPage({ params }: MatchPageProps) {
+  return (
+    <Suspense fallback={<MatchSkeleton />}>
+      <MatchContent params={params} />
+    </Suspense>
+  );
+}
+
+function MatchSkeleton() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex gap-2">
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Skeleton className="h-11 w-full rounded-xl" />
+        <Skeleton className="h-11 w-full rounded-xl" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-12 w-full rounded-lg" />
+        <div className="flex gap-2">
+          <Skeleton className="h-10 flex-1 rounded-lg" />
+          <Skeleton className="h-10 flex-1 rounded-lg" />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-40 w-full rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+async function MatchContent({ params }: MatchPageProps) {
   const { matchId } = await params;
   const session = await auth();
   const viewerId = session?.user?.id;

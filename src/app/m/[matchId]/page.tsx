@@ -20,10 +20,8 @@ import type { Metadata } from "next";
 import appSettings from "@/config/app-settings.json";
 import { LocalDate } from "@/components/ui/local-date";
 import { SignInForm } from "@/components/auth/sign-in-form";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface InvitationPageProps {
   params: Promise<{ matchId: string }>;
@@ -89,17 +87,129 @@ function defaultTeamLabel(teamKey: "A" | "B", totalPlayers: number): string {
   return teamKey === "A" ? "Pareja A" : "Pareja B";
 }
 
-export default async function InvitationPage({ params }: InvitationPageProps) {
+export default function InvitationPage({ params }: InvitationPageProps) {
+  return (
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+      <Suspense fallback={<InvitationSkeleton />}>
+        <InvitationContent params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+function InvitationSkeleton() {
+  return (
+    <>
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <ChevronLeft className="h-5 w-5" />
+        </div>
+        <div className="space-y-1.5 flex-1">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="bg-muted border-b border-border px-4 py-3">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Información del encuentro
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 gap-px bg-border">
+          <div className="bg-card p-4 flex flex-col gap-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+          <div className="bg-card p-4 flex flex-col gap-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+          <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
+            <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            Jugadores convocados
+          </h2>
+        </div>
+        <div className="grid gap-6">
+          {Array.from({ length: 2 }).map((_, teamIdx) => (
+            <div key={teamIdx} className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-24" />
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid gap-2">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+                  >
+                    <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-28" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+        <div className="max-w-md mx-auto">
+          <Skeleton className="w-full h-12 rounded-lg" />
+        </div>
+      </div>
+    </>
+  );
+}
+
+async function InvitationContent({ params }: InvitationPageProps) {
   const { matchId } = await params;
   const session = await auth();
 
   const match = await db.query.matches.findFirst({
     where: eq(matches.id, matchId),
     with: {
-      creator: true,
+      creator: {
+        columns: {
+          id: true,
+          displayName: true,
+          image: true,
+          alias: true,
+        },
+      },
       players: {
         orderBy: asc(matchPlayers.position),
-        with: { user: true, team: true },
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+          team: {
+            columns: {
+              id: true,
+              label: true,
+            },
+          },
+        },
       },
     },
   });
@@ -124,7 +234,7 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
   // dateStr is computed client-side via LocalDate to avoid hydration mismatch
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+    <>
       <div className="flex items-center gap-4">
         <Link
           href={session?.user ? "/me" : "/"}
@@ -325,6 +435,6 @@ export default async function InvitationPage({ params }: InvitationPageProps) {
           )}
         </div>
       </div>
-    </main>
+    </>
   );
 }

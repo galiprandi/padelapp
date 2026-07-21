@@ -25,23 +25,30 @@ import {
 } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { safeCallbackUrl } from "@/lib/auth-utils";
+import { ShareButton } from "@/components/share/share-button";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
+  searchParams: Promise<{ backUrl?: string }>;
 }
 
 export default function PublicProfilePage({
   params,
+  searchParams,
 }: PublicProfilePageProps) {
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
       <div className="flex items-center gap-4">
-        <Link
-          href="/me"
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+        <Suspense
+          fallback={
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <ChevronLeft className="h-5 w-5" />
+            </div>
+          }
         >
-          <ChevronLeft className="h-5 w-5" />
-        </Link>
+          <DynamicBackButton searchParams={searchParams} />
+        </Suspense>
         <div>
           <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
           <p className="text-sm text-muted-foreground">Estadísticas de jugador</p>
@@ -52,6 +59,23 @@ export default function PublicProfilePage({
         <PublicProfileContent params={params} />
       </Suspense>
     </div>
+  );
+}
+
+async function DynamicBackButton({
+  searchParams,
+}: {
+  searchParams: Promise<{ backUrl?: string }>;
+}) {
+  const resolved = await searchParams;
+  const backUrl = safeCallbackUrl(resolved.backUrl, "/me");
+  return (
+    <Link
+      href={backUrl}
+      className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+    >
+      <ChevronLeft className="h-5 w-5" />
+    </Link>
   );
 }
 
@@ -144,9 +168,20 @@ async function PublicProfileContent({
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-foreground">
-              {displayName}
-            </h2>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-2xl font-bold text-foreground pl-8">
+                {displayName}
+              </h2>
+              <ShareButton
+                url={`/p/${userId}`}
+                title={`Perfil de ${displayName}`}
+                text={`Mirá las estadísticas de ${displayName} en Padel Red.`}
+                variant="ghost"
+                size="sm"
+                iconOnly
+                className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+              />
+            </div>
             <div className="flex flex-col items-center gap-2">
               {currentStreak >= 2 && (
                 <Badge
