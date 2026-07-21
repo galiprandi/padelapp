@@ -24,7 +24,14 @@ export async function getEnhancedUserMatches(
     with: {
       players: {
         with: {
-          user: true,
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
         },
       },
     },
@@ -143,11 +150,7 @@ export async function getHeadToHeadStats(viewerId: string, profileId: string) {
       userInMatch(profileId),
     ),
     with: {
-      players: {
-        with: {
-          user: true,
-        },
-      },
+      players: true,
     },
     orderBy: desc(matchesTable.date),
   });
@@ -202,7 +205,14 @@ export const getCachedConfirmedMatches = unstable_cache(
       with: {
         players: {
           with: {
-            user: true,
+            user: {
+              columns: {
+                id: true,
+                displayName: true,
+                image: true,
+                alias: true,
+              },
+            },
           },
         },
       },
@@ -224,7 +234,20 @@ export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
       eq(matchesTable.status, "CONFIRMED"),
       userInMatch(userId),
     ),
-    with: { players: { with: { user: true } } },
+    with: {
+      players: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: desc(matchesTable.date),
     limit,
   });
