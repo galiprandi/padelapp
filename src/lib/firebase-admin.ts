@@ -123,6 +123,8 @@ export async function sendPushNotification(
         notification: {
           title: payload.title,
           body: payload.body,
+          icon: "/icons/notification-icon.png",
+          badge: "/icons/notification-badge.png",
         },
         fcmOptions: payload.url
           ? { link: payload.url }

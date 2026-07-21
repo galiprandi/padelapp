@@ -346,8 +346,8 @@ async function InvitationContent({ params }: InvitationPageProps) {
                           key={player.id}
                           className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
                         >
-                          <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center text-lg">
-                            🎾
+                          <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
+                            <Users className="h-5 w-5 text-muted-foreground/50" />
                           </div>
                           <p className="text-xs font-semibold italic">
                             Cupo disponible

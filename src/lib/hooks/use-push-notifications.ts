@@ -125,8 +125,8 @@ export function usePushNotifications() {
         if (title && body && Notification.permission === "granted") {
           new Notification(title, {
             body,
-            icon: "/icon.svg",
-            badge: "/icon.svg",
+            icon: "/icons/notification-icon.png",
+            badge: "/icons/notification-badge.png",
             data: payload.data,
           });
         }

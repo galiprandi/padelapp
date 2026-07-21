@@ -35,8 +35,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(title, {
       body: body,
-      icon: "/icon.svg",
-      badge: "/icon.svg",
+      icon: "/icons/notification-icon.png",
+      badge: "/icons/notification-badge.png",
       data: { url: url },
     })
   );
@@ -90,8 +90,8 @@ self.addEventListener("message", (event) => {
 
           self.registration.showNotification(title || "PadelRed", {
             body: body,
-            icon: "/icon.svg",
-            badge: "/icon.svg",
+            icon: "/icons/notification-icon.png",
+            badge: "/icons/notification-badge.png",
             data: { url: url },
           });
         });
