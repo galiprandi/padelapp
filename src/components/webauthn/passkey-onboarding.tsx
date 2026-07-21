@@ -80,13 +80,15 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
 
   return (
     <div className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={handleDismiss}
-        aria-label="Cerrar"
-        className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        aria-label="Cerrar sugerencia de acceso biométrico"
+        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
-      </button>
+      </Button>
 
       <div className="flex items-start gap-3 pr-6">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">

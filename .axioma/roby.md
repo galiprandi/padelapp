@@ -1,4 +1,5 @@
 ## 📋 BACKLOG
+- [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
@@ -6,6 +7,7 @@
 - [x] 2026-07-19 — Foto original de Google: Ofrecer selector para restablecer a la foto original de Google decodificando el `id_token` de la cuenta vinculada del usuario.
 - [x] 2026-07-20 — Adopción completa de Cache Components (PPR) en el módulo de Perfil, Login y Onboarding. (PR #roby/profile/cache-components-onboarding)
 - [x] 2026-07-21 — Compartición nativa de perfil y navegación contextualizada del perfil público. (PR #roby/profile/share-and-back-navigation)
+- [x] 2026-07-22 — Estandarización de banners de onboarding y guía interactiva de instalación PWA: Rediseño accesible y adaptativo para iOS y Android siguiendo las Semantic Maxims 1.3, 2.1 y 4.3 de MDS. (PR #roby/pwa/install-onboarding-ux)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -28,3 +30,8 @@
 **Learning:** El acceso directo a parámetros dinámicos como `searchParams` en componentes de página de nivel superior de Next.js rompe el prerenderizado de páginas estáticas e interrumpe la Partial Prerendering (PPR). Para aislar estos efectos, los elementos dinámicos (como un botón de retroceso que lee `backUrl`) deben encapsularse en su propio componente dinámico y envolverse en un bloque `<Suspense>` con un esqueleto fallback equivalente en tamaño para evitar saltos de diseño (layout shifts).
 Además, la integración de la acción de compartir (`ShareButton`) nativa tanto en el perfil propio como en los perfiles de otros jugadores eleva significativamente el engagement y la viralidad orgánica de la plataforma.
 **Action:** Encapsular siempre los lectores de query parameters en subcomponentes de Suspense, y priorizar puntos de acción sociales (compartir perfiles) de baja fricción en la UI.
+
+## 2026-07-22 - Estandarización de banners de onboarding y guía interactiva de instalación PWA
+**Learning:** Para lograr la máxima tasa de instalación de la PWA, la guía de instalación `/install` no debe ser un manual genérico estático, sino un flujo interactivo. Al separar los pasos de instalación de iOS (que requiere interacción manual con Safari) de los de Android (que soporta instalación directa o el menú de Chrome) y auto-detectar el sistema operativo del usuario en el primer montaje, se minimiza la fricción y se maximiza el entendimiento de la acción.
+Asimismo, todos los banners e indicaciones de onboarding de primer nivel (como la instalación de la PWA, los permisos de notificaciones push y el acceso con huella digital) deben adherirse a fondos sólidos (`bg-card`, `bg-amber-50`), utilizar componentes estándar (`Button`), incluir estados de enfoque altamente visibles (`focus-visible:ring-primary`), y etiquetas descriptivas en español para lectores de pantalla, cumpliendo plenamente con la estética y accesibilidad del Minimal Design System (MDS).
+**Action:** En cualquier elemento de banner o diálogo promocional, evitar transparencias en contenedores de contenido y estandarizar todas las acciones a través de botones nativos con descripciones semánticas accesibles en el idioma del usuario final.

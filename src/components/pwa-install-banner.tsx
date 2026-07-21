@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Smartphone, X, Download, Loader2 } from "lucide-react";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
+import { Button } from "@/components/ui/button";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -86,32 +87,36 @@ export function PwaInstallBanner() {
         </p>
       </div>
 
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={handleDismiss}
-        aria-label="Cerrar"
-        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        aria-label="Cerrar aviso de instalación"
+        className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
-      </button>
+      </Button>
 
       {deferredPrompt ? (
-        <button
+        <Button
           onClick={handleInstall}
           disabled={isInstalling}
-          aria-label="Instalar aplicación"
-          className="flex items-center gap-1.5 text-xs font-semibold text-primary whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+          variant="ghost"
+          size="sm"
+          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+          aria-label="Instalar aplicación de pádel"
         >
           {isInstalling ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
           ) : (
-            <Download className="h-3.5 w-3.5" />
+            <Download className="h-3.5 w-3.5 mr-1" />
           )}
           Instalar
-        </button>
+        </Button>
       ) : (
         <Link
           href="/install"
-          className="text-xs font-semibold text-primary whitespace-nowrap"
+          className="text-xs font-semibold text-primary hover:underline whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background rounded px-1.5 py-1"
         >
           Ver cómo
         </Link>
