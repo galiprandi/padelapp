@@ -90,7 +90,7 @@ function ScoreSelector({
               aria-checked={isSelected}
               onClick={() => onValueChange(num)}
               className={cn(
-                "h-12 rounded-lg border text-lg font-bold transition-colors flex items-center justify-center",
+                "h-12 rounded-lg border text-lg font-bold transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 isSelected
                   ? "bg-primary border-primary text-primary-foreground"
                   : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -257,7 +257,7 @@ export function StepContent({
                       aria-checked={isSelected}
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
-                        "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-colors",
+                        "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
                           : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -290,7 +290,7 @@ export function StepContent({
                       aria-checked={isSelected}
                       onClick={() => onSetsChange(option)}
                       className={cn(
-                        "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-colors",
+                        "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
                           : "bg-card border-border text-muted-foreground hover:bg-muted",

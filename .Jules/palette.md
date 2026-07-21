@@ -29,3 +29,7 @@
 ## 2026-07-20 - [Standardizing Interactive Banners and Custom Dismiss Actions]
 **Learning:** Highly prominent user-onboarding banners (like PWA installation, push notification prompts, and biometric/passkey enrollment cards) should maintain visual homogeneity and strict solid-background compliance under the Minimal Design System (MDS). Furthermore, raw custom `<button>` tags and close buttons inside these alerts are frequently omitted from keyboard focus paths, making them inaccessible.
 **Action:** Replace raw button controls inside banners with standard theme buttons (e.g., standard `Button` with variant `ghost` or custom components with high-visibility `focus-visible` outline rings) and assign solid card layout classes (`bg-card border-border`) to ensure full compliance and complete screen reader coverage with localized Spanish ARIA labels.
+
+## 2026-07-21 - [Semantic Form Control Keyboard Focus & ARIA Indicators]
+**Learning:** Custom interactive button groups acting as radio selectors (e.g. score, duration, player count buttons) must have high-visibility focus states (`focus-visible:ring-2`) and proper interactive state indicators (`aria-pressed` or `aria-checked` and Spanish labels where appropriate) so keyboard and screen reader users can navigate and understand them effortlessly.
+**Action:** Always include high-visibility focus indicator rings on any interactive buttons representing selection options, and supply explicit `aria-pressed` or `aria-checked` states for clear programmatical announcement.

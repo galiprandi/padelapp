@@ -67,7 +67,7 @@ export default async function RankingPage({ searchParams }: RankingPageProps) {
         {players.length > 0 ? (
           <>
             {!query && topThree.length > 0 && (
-              <RankingPodium topThree={topThree} />
+              <RankingPodium topThree={topThree} viewerId={viewerId} />
             )}
 
             <div className="space-y-2">
