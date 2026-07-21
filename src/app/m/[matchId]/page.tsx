@@ -184,10 +184,32 @@ async function InvitationContent({ params }: InvitationPageProps) {
   const match = await db.query.matches.findFirst({
     where: eq(matches.id, matchId),
     with: {
-      creator: true,
+      creator: {
+        columns: {
+          id: true,
+          displayName: true,
+          image: true,
+          alias: true,
+        },
+      },
       players: {
         orderBy: asc(matchPlayers.position),
-        with: { user: true, team: true },
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+          team: {
+            columns: {
+              id: true,
+              label: true,
+            },
+          },
+        },
       },
     },
   });

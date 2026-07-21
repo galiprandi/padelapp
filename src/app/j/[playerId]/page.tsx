@@ -93,14 +93,48 @@ async function JoinSlotContent({
   const player = await db.query.matchPlayers.findFirst({
     where: eq(matchPlayers.id, playerId),
     with: {
-      user: true,
-      team: true,
+      user: {
+        columns: {
+          id: true,
+          displayName: true,
+          image: true,
+          alias: true,
+        },
+      },
+      team: {
+        columns: {
+          id: true,
+          label: true,
+        },
+      },
       match: {
         with: {
-          creator: true,
+          creator: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
           players: {
             orderBy: asc(matchPlayers.position),
-            with: { user: true, team: true },
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  displayName: true,
+                  image: true,
+                  alias: true,
+                },
+              },
+              team: {
+                columns: {
+                  id: true,
+                  label: true,
+                },
+              },
+            },
           },
         },
       },
