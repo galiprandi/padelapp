@@ -129,13 +129,14 @@ export function ProfileForm({
                   type="button"
                   onClick={() => setImage(googleAvatarUrl)}
                   className={cn(
-                    "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98] flex items-center justify-center relative",
+                    "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98] flex items-center justify-center relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                     image === googleAvatarUrl
                       ? "border-primary ring-2 ring-primary/20"
                       : "border-border hover:border-muted-foreground",
                   )}
                   title="Usar foto de Google"
                   aria-label="Usar foto de Google"
+                  aria-pressed={image === googleAvatarUrl}
                 >
                   <img
                     src={googleAvatarUrl}
@@ -157,11 +158,13 @@ export function ProfileForm({
                     type="button"
                     onClick={() => setImage(preset.url)}
                     className={cn(
-                      "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98]",
+                      "w-10 h-10 rounded-lg overflow-hidden border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                       isSelected
                         ? "border-primary ring-2 ring-primary/20"
                         : "border-border hover:border-muted-foreground",
                     )}
+                    aria-label={`Seleccionar avatar preset ${preset.name}`}
+                    aria-pressed={isSelected}
                   >
                     <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" aria-hidden="true" />
                   </button>
