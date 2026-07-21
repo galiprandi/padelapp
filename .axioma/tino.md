@@ -5,6 +5,7 @@
 - [x] 2026-07-17 — Resolver incompatibilidad de cron route segment config con cacheComponents (PR #tino/perf/cache-components-fix)
 - [x] 2026-07-19 — Completar Plan 006: Upgrade a Next.js 16.3+ y adopción de Cache Components para rutas estáticas y dinámicas (PR #tino/perf/cache-components-adoption)
 - [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
+- [x] 2026-07-21 — Adopción final y completa de Cache Components para la página pública de turnos /t/[id] (PR #tino/perf/t-id-cache-components-adoption)
 
 ## 🧠 LEARNINGS
 ### 2026-07-17 - Setup inicial
@@ -22,3 +23,7 @@
 ### 2026-07-20 - Adopción completa y remoción de todos los opt-outs 'instant = false'
 **Learning:** Todas las páginas restantes del App Router de Padel Red que tenían la exclusión de Cache Components (`export const instant = false;`) han sido exitosamente adoptadas. Al aislar las consultas y verificaciones de sesión asíncronas (`auth()`, Drizzle database queries, etc.) dentro de componentes secundarios envueltos en `<Suspense>`, logramos que la estructura superior/shell de la página se compile estáticamente y se cargue de forma instantánea desde el CDN.
 **Action:** Para garantizar que no haya un desfase o parpadeo visual (Layout Shift / CLS) al resolver el componente dinámico, los esqueletos de carga (`Skeleton` components) deben replicar con total fidelidad la maquetación y jerarquía visual del contenido real, y el contenedor principal o clase estructural de estilo (por ejemplo, `<main className="...">`) debe definirse en el componente síncrono padre en lugar del hijo.
+
+### 2026-07-21 - Adopción de Cache Components en la página pública de turnos /t/[id]
+**Learning:** Al remover la última directiva `export const instant = false` del proyecto (en `/t/[id]`), la aplicación de Padel Red ahora está 100% optimizada para PPR. Para lograrlo, delegamos la renderización de la información del turno y la sesión dinámica a un componente asíncrono secundario (`TurnPublicDetails`), manteniéndolo suspendido con un esqueleto (`TurnSkeleton`) como fallback de carga.
+**Action:** Mantener la disciplina de diseño PPR. Cualquier nueva ruta o sub-ruta dinámica debe diseñarse de forma asíncrona, aislando el acceso a la sesión, cabeceras, o base de datos dentro de límites de `<Suspense>`.
