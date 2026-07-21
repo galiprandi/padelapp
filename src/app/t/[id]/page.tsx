@@ -43,10 +43,8 @@ import { notFound } from "next/navigation";
 import appSettings from "@/config/app-settings.json";
 import type { Metadata } from "next";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
-
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TurnPageProps {
   params: Promise<{ id: string }>;
@@ -74,7 +72,85 @@ export async function generateMetadata({
   };
 }
 
-export default async function TurnPublicPage({ params }: TurnPageProps) {
+export default function TurnPublicPage({ params }: TurnPageProps) {
+  return (
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+      <Suspense fallback={<TurnPublicSkeleton />}>
+        <TurnPublicContent params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+function TurnPublicSkeleton() {
+  return (
+    <>
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <ChevronLeft className="h-5 w-5" />
+        </div>
+        <div className="space-y-1.5 flex-1">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="bg-muted border-b border-border px-4 py-3">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Información del turno
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 gap-px bg-border">
+          <div className="bg-card p-4 flex flex-col gap-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+          <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
+            <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            Lista de jugadores
+          </h2>
+          <Skeleton className="h-5 w-24 rounded" />
+        </div>
+        <div className="grid gap-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+            >
+              <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-28" />
+              </div>
+              <Skeleton className="h-4 w-4 rounded" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+        <div className="max-w-md mx-auto">
+          <Skeleton className="w-full h-12 rounded-lg" />
+        </div>
+      </div>
+    </>
+  );
+}
+
+async function TurnPublicContent({ params }: TurnPageProps) {
   const { id } = await params;
   const session = await auth();
   const result = await getTurnByIdAction(id);
@@ -98,7 +174,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
 
   if (isCancelled) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10">
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <Link
             href={viewerId ? "/me" : "/"}
@@ -118,7 +194,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
         <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
           <Link href="/turnos">Ver otros turnos</Link>
         </Button>
-      </main>
+      </div>
     );
   }
   const isFull = turn.players.length >= turn.maxPlayers;
@@ -126,7 +202,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
   const hasOpenSlot = turn.players.length < turn.maxPlayers;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+    <>
       <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
@@ -528,7 +604,7 @@ export default async function TurnPublicPage({ params }: TurnPageProps) {
           )}
         </div>
       </div>
-    </main>
+    </>
   );
 }
 
