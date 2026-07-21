@@ -3,7 +3,7 @@ import { ChevronLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 
 export function TurnSkeleton() {
   return (
-    <div className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+    <div className="flex flex-col gap-6">
       {/* Header Skeleton */}
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
