@@ -48,6 +48,7 @@ export interface MatchResultCompactPlayer {
   position: number;
   displayName?: string | null;
   resultConfirmed?: boolean;
+  side?: "RIGHT" | "LEFT" | null;
   user?: {
     id: string;
     displayName: string | null;
@@ -151,6 +152,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
         player.user?.displayName ??
         `Jugador ${player.position + 1}`,
       image: player.user?.image ?? undefined,
+      side: player.side,
     })),
     isWinner: winnerIndex === index,
     hasViewer: teamPlayers.some((p) => p.user?.id === viewerId),
@@ -325,7 +327,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                     return (
                       <div
                         key={`team-${team.id}-name-${player.id}`}
-                        className="flex items-center gap-1 truncate"
+                        className="flex items-center gap-1.5 truncate"
                       >
                         {player.userId ? (
                           <Link
@@ -339,6 +341,11 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                           </Link>
                         ) : (
                           <span className="truncate">{player.name}</span>
+                        )}
+                        {player.side && (
+                          <span className="inline-flex items-center shrink-0 text-[10px] font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none">
+                            {player.side === "RIGHT" ? "Der" : "Rev"}
+                          </span>
                         )}
                         {team.isWinner && (
                           <Trophy className="h-3 w-3 shrink-0 text-primary" />
