@@ -33,6 +33,7 @@ import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { cn, getMatchWinner } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
+import { OnboardingChecklist } from "@/components/onboarding-checklist";
 
 export default async function DashboardContent() {
   const session = await auth();
@@ -79,6 +80,8 @@ export default async function DashboardContent() {
 
   const displayName =
     user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
+
+  const isNewUser = user ? user.matchesPlayed === 0 : false;
 
   const agendaItems = [
     ...myTurns.map((turn) => ({
@@ -132,26 +135,32 @@ export default async function DashboardContent() {
         </div>
       </div>
 
-      {/* Onboarding Profile Completion Prompt */}
-      {!user?.alias && (
-        <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-50 p-4">
-          <div className="flex items-center gap-3">
-            <UserCheck className="h-5 w-5 text-amber-600" />
-            <h2 className="text-sm font-bold text-amber-800">
-              ¡Completá tu perfil de jugador!
-            </h2>
+      {isNewUser ? (
+        <OnboardingChecklist
+          initialAlias={user?.alias ?? null}
+          hasActivity={agendaItems.length > 0}
+        />
+      ) : (
+        !user?.alias && (
+          <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-50 p-4">
+            <div className="flex items-center gap-3">
+              <UserCheck className="h-5 w-5 text-amber-600" />
+              <h2 className="text-sm font-bold text-amber-800">
+                ¡Completá tu perfil de jugador!
+              </h2>
+            </div>
+            <p className="text-xs text-amber-700 leading-normal">
+              Elegí tu alias en la cancha para que otros
+              jugadores te reconozcan en los partidos y ranking.
+            </p>
+            <Button
+              className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold"
+              asChild
+            >
+              <Link href="/me/profile">Configurar mi perfil</Link>
+            </Button>
           </div>
-          <p className="text-xs text-amber-700 leading-normal">
-            Elegí tu alias en la cancha para que otros
-            jugadores te reconozcan en los partidos y ranking.
-          </p>
-          <Button
-            className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold"
-            asChild
-          >
-            <Link href="/me/profile">Configurar mi perfil</Link>
-          </Button>
-        </div>
+        )
       )}
 
       {/* Passkey Onboarding */}
@@ -205,9 +214,12 @@ export default async function DashboardContent() {
         </div>
       )}
 
-      <PwaInstallBanner />
-
-      <PushPermissionPrompt />
+      {!isNewUser && (
+        <>
+          <PwaInstallBanner />
+          <PushPermissionPrompt />
+        </>
+      )}
 
       {/* Hero Activity */}
       {heroActivity && (
