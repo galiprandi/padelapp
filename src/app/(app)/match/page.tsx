@@ -33,6 +33,7 @@ export default async function MatchListPage() {
         position: player.position,
         displayName: player.displayName,
         resultConfirmed: player.resultConfirmed,
+        side: player.side,
         user: player.user
           ? {
             id: player.user.id,

@@ -164,10 +164,26 @@ export default function MatchResultPage({
   const teams = Array.from(teamsMap.values());
 
   const handleSideChange = (playerId: string, side: "RIGHT" | "LEFT") => {
-    setPlayerSides((prev) => ({
-      ...prev,
-      [playerId]: prev[playerId] === side ? null : side,
-    }));
+    setPlayerSides((prev) => {
+      const next = { ...prev };
+      const currentSide = next[playerId];
+      const newSide = currentSide === side ? null : side;
+      next[playerId] = newSide;
+
+      // Find the teammate in the current team
+      const team = teams.find((t) => t.players.some((p) => p.id === playerId));
+      if (team && team.players.length === 2) {
+        const teammate = team.players.find((p) => p.id !== playerId);
+        if (teammate) {
+          if (newSide !== null) {
+            next[teammate.id] = newSide === "RIGHT" ? "LEFT" : "RIGHT";
+          } else {
+            next[teammate.id] = null;
+          }
+        }
+      }
+      return next;
+    });
   };
 
   const save = () => {

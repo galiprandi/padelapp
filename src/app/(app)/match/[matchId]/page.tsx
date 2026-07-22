@@ -181,6 +181,7 @@ async function MatchContent({ params }: MatchPageProps) {
     players: match.players.map((player) => ({
       id: player.id,
       position: player.position,
+      side: player.side,
       user: player.user
         ? {
             id: player.user.id,

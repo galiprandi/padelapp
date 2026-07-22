@@ -111,6 +111,7 @@ async function PublicProfileContent({
         id: player.id,
         position: player.position,
         displayName: player.displayName,
+        side: player.side,
         user: player.user
           ? {
               id: player.user.id,
