@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition, useState } from "react";
-import { Bell, Loader2, Check } from "lucide-react";
+import { useTransition, useState, useEffect } from "react";
+import { Bell, Loader2, Check, BellOff } from "lucide-react";
 import { openToNetworkAction } from "@/app/(app)/turnos/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 interface OpenToNetworkButtonProps {
   turnId: string;
   club: string;
+  lastNetworkNotificationAt?: Date | null;
   variant?: "default" | "outline" | "secondary" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
@@ -20,6 +21,7 @@ interface OpenToNetworkButtonProps {
 export function OpenToNetworkButton({
   turnId,
   club,
+  lastNetworkNotificationAt,
   variant = "default",
   size = "default",
   className,
@@ -33,6 +35,31 @@ export function OpenToNetworkButton({
     total: number;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [minutesRemaining, setMinutesRemaining] = useState<number>(0);
+
+  useEffect(() => {
+    if (!lastNetworkNotificationAt) {
+      setMinutesRemaining(0);
+      return;
+    }
+
+    const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+    const updateCountdown = () => {
+      const notifiedTime = new Date(lastNetworkNotificationAt).getTime();
+      const diff = Date.now() - notifiedTime;
+      if (diff < COOLDOWN_MS) {
+        setMinutesRemaining(Math.ceil((COOLDOWN_MS - diff) / (60 * 1000)));
+      } else {
+        setMinutesRemaining(0);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 10000); // Check every 10 seconds
+    return () => clearInterval(interval);
+  }, [lastNetworkNotificationAt]);
+
+  const isOnCooldown = minutesRemaining > 0;
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -87,21 +114,24 @@ export function OpenToNetworkButton({
     <div className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}>
       <Button
         onClick={handleClick}
-        disabled={isPending}
-        variant={variant}
+        disabled={isPending || isOnCooldown}
+        variant={isOnCooldown ? "outline" : variant}
         size={size}
         className={cn(
-          variant === "default" && "font-bold",
+          variant === "default" && !isOnCooldown && "font-bold",
+          isOnCooldown && "text-muted-foreground border-border bg-muted/20 cursor-not-allowed",
           className
         )}
-        aria-label={label}
+        aria-label={isOnCooldown ? `Notificado, en cooldown por ${minutesRemaining} minutos` : label}
       >
         {isPending ? (
           <Loader2 className="h-4 w-4 animate-spin" />
+        ) : isOnCooldown ? (
+          <BellOff className={cn("h-4 w-4", !isIconOnly && "mr-2 text-muted-foreground/80")} />
         ) : (
           <Bell className={cn("h-4 w-4", !isIconOnly && "mr-2")} />
         )}
-        {!isIconOnly && (isPending ? "Enviando..." : label)}
+        {!isIconOnly && (isPending ? "Enviando..." : isOnCooldown ? `Red notificada (esperá ${minutesRemaining} min)` : label)}
       </Button>
 
       {error && !isIconOnly && (
@@ -109,8 +139,11 @@ export function OpenToNetworkButton({
       )}
 
       {showText && !isIconOnly && (
-        <p className="text-xs text-muted-foreground text-center">
-          Notifica a contactos de los últimos 12 meses
+        <p className="text-xs text-muted-foreground text-center font-medium">
+          {isOnCooldown
+            ? `Ya se notificó a la red. Podés volver a enviar en ${minutesRemaining} min.`
+            : "Notifica a contactos de los últimos 12 meses"
+          }
         </p>
       )}
     </div>

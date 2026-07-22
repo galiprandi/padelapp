@@ -260,6 +260,7 @@ export default async function DashboardContent() {
                 <OpenToNetworkButton
                   turnId={heroActivity.id}
                   club={heroActivity.data.club}
+                  lastNetworkNotificationAt={heroActivity.data.lastNetworkNotificationAt}
                   variant="default"
                   label="Salvar turno: Notificar a mi red"
                   className="h-10 bg-amber-500 hover:bg-amber-600"

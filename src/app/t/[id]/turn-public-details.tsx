@@ -41,6 +41,9 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
+import { db } from "@/db";
+import { playerEdges } from "@/db/schema";
+import { and, inArray } from "drizzle-orm";
 
 interface TurnPublicDetailsProps {
   params: Promise<{ id: string }>;
@@ -67,6 +70,59 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
     viewerContacts = await getPadelContacts(viewerId);
   }
   const contactIds = new Set(viewerContacts.map((c) => c.id));
+
+  // Find mutual contact connections among players and substitutes
+  const allTurnUserIds = [
+    ...turn.players.map((p) => p.userId),
+    ...turn.substitutes.map((s) => s.userId),
+  ];
+
+  const connectionMap: Record<string, string> = {};
+  if (allTurnUserIds.length >= 2) {
+    const edges = await db
+      .select()
+      .from(playerEdges)
+      .where(
+        and(
+          inArray(playerEdges.playerAId, allTurnUserIds),
+          inArray(playerEdges.playerBId, allTurnUserIds)
+        )
+      );
+
+    // Build map of userId -> userName
+    const userNamesMap = new Map<string, string>();
+    for (const p of turn.players) {
+      userNamesMap.set(p.userId, p.user.alias ?? p.user.displayName);
+    }
+    for (const s of turn.substitutes) {
+      userNamesMap.set(s.userId, s.user.alias ?? s.user.displayName);
+    }
+
+    // Sort all participants by joinedAt to establish connection direction (who joined first)
+    const sortedParticipants = [
+      ...turn.players.map((p) => ({ userId: p.userId, joinedAt: p.joinedAt })),
+      ...turn.substitutes.map((s) => ({ userId: s.userId, joinedAt: s.joinedAt })),
+    ].sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime());
+
+    for (let i = 0; i < sortedParticipants.length; i++) {
+      const current = sortedParticipants[i];
+      // Check if current has an edge with any participant who joined BEFORE them
+      const connectedTo = sortedParticipants.slice(0, i).find((other) => {
+        return edges.some(
+          (edge) =>
+            (edge.playerAId === current.userId && edge.playerBId === other.userId) ||
+            (edge.playerAId === other.userId && edge.playerBId === current.userId)
+        );
+      });
+
+      if (connectedTo) {
+        const name = userNamesMap.get(connectedTo.userId);
+        if (name) {
+          connectionMap[current.userId] = name;
+        }
+      }
+    }
+  }
 
   if (isCancelled) {
     return (
@@ -199,6 +255,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       />
                     )}
                   </p>
+                  {connectionMap[p.userId] && (
+                    <p className="text-xs text-muted-foreground truncate mt-0.5" aria-label={`Contacto de ${connectionMap[p.userId]}`}>
+                      Contacto de {connectionMap[p.userId]}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   {p.userId === turn.creatorId && (
@@ -240,7 +301,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </div>
 
         {isJoined && !isFull && turn.status === "OPEN" && (
-          <OpenToNetworkButton turnId={id} club={turn.club} />
+          <OpenToNetworkButton
+            turnId={id}
+            club={turn.club}
+            lastNetworkNotificationAt={turn.lastNetworkNotificationAt}
+          />
         )}
       </section>
 
@@ -284,6 +349,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                         />
                       )}
                     </p>
+                    {connectionMap[s.userId] && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5" aria-label={`Contacto de ${connectionMap[s.userId]}`}>
+                        Contacto de {connectionMap[s.userId]}
+                      </p>
+                    )}
                   </div>
                   {s.userId === viewerId && (
                     <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
