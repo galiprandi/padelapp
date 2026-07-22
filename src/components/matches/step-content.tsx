@@ -14,6 +14,7 @@ interface StepContentProps {
   teamState: TeamState;
   activeSlot: { team: TeamKey; index: 0 | 1 };
   userDisplayName: string;
+  currentUserId?: string;
   matchType: MatchTypeValue;
   sets: string;
   setsValid: boolean;
@@ -115,6 +116,7 @@ export function StepContent({
   teamState,
   activeSlot,
   userDisplayName,
+  currentUserId,
   matchType,
   sets,
   setsValid,
@@ -163,6 +165,7 @@ export function StepContent({
                     index={index}
                     slot={teamState.A[index]}
                     userDisplayName={userDisplayName}
+                    currentUserId={currentUserId}
                     isActive={
                       activeSlot.team === "A" && activeSlot.index === index
                     }
@@ -182,6 +185,7 @@ export function StepContent({
                     index={index}
                     slot={teamState.B[index]}
                     userDisplayName={userDisplayName}
+                    currentUserId={currentUserId}
                     isActive={
                       activeSlot.team === "B" && activeSlot.index === index
                     }

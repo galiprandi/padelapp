@@ -13,6 +13,12 @@ interface ManageSlotModalProps {
   open: boolean;
   slot: SlotValue | null;
   placeholderName: string;
+  /**
+   * Allow replacing an occupied user slot directly (search another player or
+   * type a name) without first releasing it. Used by the match creation flow
+   * so the organizer can swap themselves out for someone else.
+   */
+  allowReplaceUser?: boolean;
   onSave: (value: SlotValue) => void;
   onShare?: (name: string) => void;
   onRelease?: () => void;
@@ -24,6 +30,7 @@ export function ManageSlotModal({
   open,
   slot,
   placeholderName,
+  allowReplaceUser = false,
   onSave,
   onShare,
   onRelease,
@@ -153,6 +160,7 @@ export function ManageSlotModal({
   }
 
   const isUserSlot = slot?.kind === "user";
+  const canEdit = !isUserSlot || allowReplaceUser;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -205,7 +213,7 @@ export function ManageSlotModal({
 
         <div className="space-y-8">
           {/* Buscar Jugador */}
-          {!isUserSlot && (
+          {canEdit && (
             <div className="space-y-4">
               <div className="sr-only" aria-live="polite">
                 {isSearching
@@ -296,7 +304,7 @@ export function ManageSlotModal({
           {/* Nombre Manual / Placeholder */}
           <div className="space-y-4">
             <Label htmlFor="slot-name" className="text-sm font-semibold text-muted-foreground px-1">
-              {isUserSlot ? "Jugador Confirmado" : "O asignar nombre manual"}
+              {isUserSlot && !canEdit ? "Jugador Confirmado" : "O asignar nombre manual"}
             </Label>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -306,15 +314,15 @@ export function ManageSlotModal({
                   onChange={(event) => setName(event.target.value)}
                   placeholder="Ej: Diego Morales"
                   autoSelect
-                  disabled={isUserSlot}
+                  disabled={isUserSlot && !canEdit}
                   className={cn(
                     "h-12 px-5 rounded-lg bg-background border-border text-sm font-medium",
-                    isUserSlot && "border-primary/20 bg-primary/5 text-primary font-bold"
+                    isUserSlot && !canEdit && "border-primary/20 bg-primary/5 text-primary font-bold"
                   )}
                 />
-                {isUserSlot && <Check className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />}
+                {isUserSlot && !canEdit && <Check className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />}
               </div>
-              {!isUserSlot && onShare && (
+              {canEdit && onShare && (
                 <Button
                   type="button"
                   size="icon"
@@ -327,7 +335,7 @@ export function ManageSlotModal({
                 </Button>
               )}
             </div>
-            {isUserSlot && (
+            {isUserSlot && !canEdit && (
               <p className="text-xs font-medium text-muted-foreground/60 leading-relaxed px-1">
                 Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.
               </p>
@@ -337,7 +345,7 @@ export function ManageSlotModal({
         </div>
 
         <div className="flex flex-col gap-4 pt-4">
-          {!isUserSlot && (
+          {canEdit && (
             <Button
               type="button"
               className="w-full h-12 rounded-lg font-bold text-base"
@@ -352,7 +360,7 @@ export function ManageSlotModal({
             className="w-full h-10 rounded-lg font-medium text-muted-foreground text-sm"
             onClick={onClose}
           >
-            {isUserSlot ? "Cerrar" : "Cancelar"}
+            {isUserSlot && !canEdit ? "Cerrar" : "Cancelar"}
           </Button>
         </div>
       </div>

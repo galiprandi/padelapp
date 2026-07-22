@@ -203,8 +203,6 @@ export async function createMatchAction(
     joinedAt: Date | null;
   }> = [];
 
-  let ownerOccupiesFirstSlot = false;
-
   for (const slot of input.slots) {
     if (!allowedPositions.has(slot.position)) {
       return {
@@ -236,10 +234,6 @@ export async function createMatchAction(
         };
       }
 
-      if (slot.position === 0 && trimmedUserId === session.user.id) {
-        ownerOccupiesFirstSlot = true;
-      }
-
       normalizedSlots.push({
         position: slot.position,
         team: slot.team,
@@ -264,13 +258,6 @@ export async function createMatchAction(
         joinedAt: null,
       });
     }
-  }
-
-  if (!ownerOccupiesFirstSlot) {
-    return {
-      status: "error",
-      message: "You must occupy the first slot of Team A.",
-    };
   }
 
   const teamLabelA = sanitizeTeamLabel(input.teamLabels?.A, "A", input.format);

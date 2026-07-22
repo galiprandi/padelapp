@@ -40,6 +40,14 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   images: {
+    // DiceBear preset avatars are served as SVG. next/image refuses to
+    // optimize SVGs unless this is enabled, which left every avatar rendered
+    // through next/image (dashboard, public profile, match cards) broken.
+    // Remote fetching stays restricted to the whitelisted remotePatterns
+    // below, and the optimizer sandboxes the response.
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: "https",
