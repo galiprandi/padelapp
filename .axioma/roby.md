@@ -8,6 +8,7 @@
 - [x] 2026-07-20 — Adopción completa de Cache Components (PPR) en el módulo de Perfil, Login y Onboarding. (PR #roby/profile/cache-components-onboarding)
 - [x] 2026-07-21 — Compartición nativa de perfil y navegación contextualizada del perfil público. (PR #roby/profile/share-and-back-navigation)
 - [x] 2026-07-22 — Estandarización de banners de onboarding y guía interactiva de instalación PWA: Rediseño accesible y adaptativo para iOS y Android siguiendo las Semantic Maxims 1.3, 2.1 y 4.3 de MDS. (PR #roby/pwa/install-onboarding-ux)
+- [x] 2026-07-23 — Consolidación de onboarding en lista de preparación: Implementación del componente OnboardingChecklist en la página de inicio para nuevos usuarios. (PR #roby/profile/unified-onboarding-checklist)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -27,7 +28,7 @@
 **Action:** Estructurar las páginas de Next.js aislando siempre las APIs dinámicas o asíncronas en sub-componentes envueltos en Suspense, garantizando una carga progresiva y un primer renderizado instantáneo.
 
 ## 2026-07-21 - Compartición de Perfil y Navegación Contextual (PPR)
-**Learning:** El acceso directo a parámetros dinámicos como `searchParams` en componentes de página de nivel superior de Next.js rompe el prerenderizado de páginas estáticas e interrumpe la Partial Prerendering (PPR). Para aislar estos efectos, los elementos dinámicos (como un botón de retroceso que lee `backUrl`) deben encapsularse en su propio componente dinámico y envolverse en un bloque `<Suspense>` con un esqueleto fallback equivalente en tamaño para evitar saltos de diseño (layout shifts).
+**Learning:** El acceso directo a parámetros dinámicos como `searchParams` en componentes de página de nivel superior de Next.js rompe el prerenderizado de páginas estáticas e interrumpe la Partial Prerendering (PPR). Para aislar estos efectos, los elements dinámicos (como un botón de retroceso que lee `backUrl`) deben encapsularse en su propio componente dinámico y envolverse en un bloque `<Suspense>` con un esqueleto fallback equivalente en tamaño para evitar saltos de diseño (layout shifts).
 Además, la integración de la acción de compartir (`ShareButton`) nativa tanto en el perfil propio como en los perfiles de otros jugadores eleva significativamente el engagement y la viralidad orgánica de la plataforma.
 **Action:** Encapsular siempre los lectores de query parameters en subcomponentes de Suspense, y priorizar puntos de acción sociales (compartir perfiles) de baja fricción en la UI.
 
@@ -35,3 +36,7 @@ Además, la integración de la acción de compartir (`ShareButton`) nativa tanto
 **Learning:** Para lograr la máxima tasa de instalación de la PWA, la guía de instalación `/install` no debe ser un manual genérico estático, sino un flujo interactivo. Al separar los pasos de instalación de iOS (que requiere interacción manual con Safari) de los de Android (que soporta instalación directa o el menú de Chrome) y auto-detectar el sistema operativo del usuario en el primer montaje, se minimiza la fricción y se maximiza el entendimiento de la acción.
 Asimismo, todos los banners e indicaciones de onboarding de primer nivel (como la instalación de la PWA, los permisos de notificaciones push y el acceso con huella digital) deben adherirse a fondos sólidos (`bg-card`, `bg-amber-50`), utilizar componentes estándar (`Button`), incluir estados de enfoque altamente visibles (`focus-visible:ring-primary`), y etiquetas descriptivas en español para lectores de pantalla, cumpliendo plenamente con la estética y accesibilidad del Minimal Design System (MDS).
 **Action:** En cualquier elemento de banner o diálogo promocional, evitar transparencias en contenedores de contenido y estandarizar todas las acciones a través de botones nativos con descripciones semánticas accesibles en el idioma del usuario final.
+
+## 2026-07-23 - Consolidación de onboarding en lista de preparación
+**Learning:** Presentar múltiples avisos y banners de preparación desconectados (alias de perfil, instalación PWA, permisos push) satura la vista inicial de un usuario nuevo. Al consolidarlos en un único widget tipo lista de preparación de 4 pasos con barra de progreso, se reduce drásticamente el ruido visual y se incrementa el compromiso por completar la configuración inicial. Los usuarios existentes no se ven afectados por este cambio visual.
+**Action:** Para flujos de configuración del sistema o cuentas nuevas, priorizar siempre componentes interactivos tipo checklist unificado por sobre banners flotantes individuales.
