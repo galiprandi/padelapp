@@ -35,7 +35,7 @@ export function RemovePlayerButton({
           e.stopPropagation();
           setConfirming(true);
         }}
-        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-label={`Remover a ${playerName}`}
       >
         <UserMinus className="h-4 w-4" />
@@ -52,7 +52,7 @@ export function RemovePlayerButton({
           handleRemove();
         }}
         disabled={loading}
-        className="rounded-md px-2 py-1 text-xs font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors disabled:opacity-50"
+        className="rounded-md px-2 py-1 text-xs font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         {loading ? "..." : "Sacar"}
       </button>
@@ -63,7 +63,8 @@ export function RemovePlayerButton({
           setConfirming(false);
         }}
         disabled={loading}
-        className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        aria-label="Cancelar remover jugador"
       >
         <X className="h-3.5 w-3.5" />
       </button>
@@ -97,7 +98,7 @@ export function AssignSubstituteButton({
         handleAssign();
       }}
       disabled={loading}
-      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1"
+      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       aria-label={`Asignar a ${substituteName}`}
     >
       <UserCheck className="h-3.5 w-3.5" />
