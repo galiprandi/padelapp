@@ -3,12 +3,103 @@
 // to satisfy the browser's requirement that they are added on the initial
 // evaluation of the worker script.
 
+const CACHE_NAME = "padelred-static-assets-v1";
+const STATIC_ASSET_REGEX = /\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|woff2?|json)$/i;
+
+function isCacheableStaticAsset(request) {
+  if (request.method !== "GET") {
+    return false;
+  }
+
+  const url = new URL(request.url);
+
+  // Skip chrome-extension:// and other non-http protocols
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return false;
+  }
+
+  // Never cache API routes, auth endpoints, or dynamic data metadata requests
+  if (
+    url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/_next/data/") ||
+    url.pathname.includes("__next_navigator_metadata")
+  ) {
+    return false;
+  }
+
+  // Cache Next.js built-in static assets (JavaScript, CSS, chunks, custom media)
+  if (url.pathname.startsWith("/_next/static/")) {
+    return true;
+  }
+
+  // Cache trusted sporty Dicebear SVG presets & Google portrait images to improve perceived profile navigation performance
+  if (
+    url.hostname === "api.dicebear.com" ||
+    url.hostname === "lh3.googleusercontent.com"
+  ) {
+    return true;
+  }
+
+  // Cache PWA manifest, custom icons, and standard static public files
+  if (
+    url.pathname.startsWith("/icons/") ||
+    url.pathname === "/manifest.webmanifest" ||
+    url.pathname === "/manifest.json" ||
+    url.pathname === "/apple-icon.svg" ||
+    STATIC_ASSET_REGEX.test(url.pathname)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  const cacheAllowlist = [CACHE_NAME];
+  event.waitUntil(
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (!cacheAllowlist.includes(cacheName)) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+    ])
+  );
+});
+
+// --- Stale-While-Revalidate Static Caching Fetch Handler ---
+self.addEventListener("fetch", (event) => {
+  if (!isCacheableStaticAsset(event.request)) {
+    return;
+  }
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          })
+          .catch((error) => {
+            console.warn("Service Worker background fetch failed for static asset:", event.request.url, error);
+          });
+
+        return cachedResponse || fetchPromise;
+      });
+    })
+  );
 });
 
 // --- push handler (top-level, synchronous) ---
