@@ -12,13 +12,15 @@ Tu misión es analizar las features existentes de turnos, identificar puntos de 
 - UI/UX de `/turnos` (listado), `/turnos/nuevo` (creación), `/turnos/[id]/editar` (edición)
 - Vista pública de turno: `/t/[id]` (invitación, inscripción, share)
 - Server actions: `src/app/(app)/turnos/actions.ts` (join, leave, create, cancel, convert, openToNetwork, scheduleNext)
-- Red de contactos de pádel: `src/lib/padel-contacts.ts` (getPadelContacts, getTurnNetworkContacts)
-- Notificaciones push a la red: flujo `notifyNetworkForTurn`, cooldown, `lastNetworkNotificationAt`
+- Red de contactos de pádel: `src/lib/queries/contacts.ts` (consume vía exports — owner: Coello)
+- Notificaciones push a la red: trigger desde el flujo de salvage llamando a la API de Roby (FCM). Bela dispara, Roby envía.
+- Cooldown de notificaciones: `lastNetworkNotificationAt` en el schema de Turn
 - Componentes: `src/components/turns/` (TurnCard, OpenToNetworkButton, etc.)
 - Flujo de salvage: "Salvar Turno" → notificar a red → inscripción automática
 - Estados de turno: OPEN, FULL, CANCELLED
 - Inscripción y desinscripción de jugadores
 - Conversión de turno a match
+- **Chat de Turnos** (`specs/turn-chat.md`): chat real-time por turno con historial efímero (90-day TTL via Redis) y system bot que envía mensajes contextuales (dropouts, open slots, reminders, results). Stack: Socket.io + Upstash Redis. Tino asesora en performance real-time.
 
 **Fuera de scope (no tocar bajo ninguna circunstancia):**
 - Ranking y su lógica (`ranking/actions.ts`) — scope de Agus
@@ -26,7 +28,8 @@ Tu misión es analizar las features existentes de turnos, identificar puntos de 
 - Layout global, `next.config.ts`, caching config — scope de Tino
 - Perfil de usuario, onboarding, PWA install — scope de Roby
 - Shared components del admin (`Button`, `Card`, `BottomNav` estructura) — solo Tino puede modificar su estructura
-- Schema de Prisma (usar el existente, no migrar sin autorización)
+- Schema de DB (usar el existente, no migrar sin autorización)
+- FCM infraestructura (server-side send, service worker push handler, suscripciones) — scope de Roby. Bela solo dispara el envío.
 
 ---
 
@@ -70,8 +73,9 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 ## 🧠 LEARNINGS CLAVE DEL CODEBASE
 
 - `lastNetworkNotificationAt` en el schema de Turn controla el cooldown de 1h para notificaciones a la red.
-- `getTurnNetworkContacts` hace una query bulk (optimizada) de todos los contactos de los jugadores inscriptos.
+- `getTurnNetworkContacts` (en `src/lib/queries/contacts.ts`, owner Coello) hace una query bulk (optimizada) de todos los contactos de los jugadores inscriptos. Bela consume vía export.
 - `leaveTurnAction` dispara notificación automática a la red cuando un turno baja de FULL → OPEN.
 - `openToNetworkAction` permite a cualquier jugador inscripto notificar a su red, no solo al organizador.
 - Los turnos se convierten a matches con `convertTurnToMatchAction`.
 - El componente `OpenToNetworkButton` usa `useTransition` para feedback durante el envío.
+- El envío efectivo de push notifications lo hace Roby vía FCM. Bela llama a la API de Roby desde el flujo de salvage.

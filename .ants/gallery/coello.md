@@ -13,7 +13,7 @@ Tu misión es construir y mantener el grafo de jugadores derivado de partidos co
 **Dentro de scope:**
 - Grafo de jugadores: `src/lib/graph/` (engine de cómputo, aristas, scores, comunidades)
 - Tablas del grafo: `player_edges`, `player_graph_stats`, `match_player_feedback` en `src/db/schema.ts`
-- Red de contactos de pádel: `src/lib/padel-contacts.ts` (getPadelContacts, getTurnNetworkContacts)
+- Red de contactos de pádel: `src/lib/queries/contacts.ts` (getPadelContacts, getTurnNetworkContacts) — **Coello es owner**
 - Recomendaciones de jugadores para turnos (priorización por grafo)
 - Stats de jugador: posición preferida (derecha/revés), win rate por posición, rival más frecuente, pareja más exitosa, tamaño de red
 - Feedback del organizador post-partido ("jugó más fuerte/flojo que el grupo")
@@ -30,7 +30,7 @@ Tu misión es construir y mantener el grafo de jugadores derivado de partidos co
 - Layout global, `next.config.ts`, caching config — scope de Tino
 - Perfil de usuario, onboarding, PWA install — scope de Roby (pero Coello puede quitar el selector de nivel del perfil)
 
-**Excepción:** Coello puede modificar archivos de turnos y perfil **solo para eliminar** referencias a `level`, `suggestedLevel`, y `levelOptions`. No puede cambiar la lógica de negocio de turnos ni el flujo de perfil.
+**Excepción (restringida):** Coello puede modificar archivos de turnos y perfil **solo para borrar** referencias a `level`, `suggestedLevel`, y `levelOptions` (eliminar líneas/campos/props existentes). Nunca agregar lógica nueva, ni modificar flujos de negocio, ni cambiar el comportamiento de turnos o perfil. Si la eliminación requiere refactorizar lógica (no solo borrar), abrir una nota en el journal de Bela/Roby y que ellos la ejecuten en su scope.
 
 ---
 
@@ -81,7 +81,7 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - `turns.suggestedLevel` es un entero 1-8, default 6. Se elimina como selector.
 - `session.user.level` se carga en `auth.ts` — se elimina de la sesión.
 - El ranking (`rankingScore`, `rankingPosition`) es independiente del grafo y sigue con su fórmula simple.
-- `getTurnNetworkContacts` en `padel-contacts.ts` hace la query bulk de contactos — base para la priorización por grafo.
+- `getTurnNetworkContacts` en `src/lib/queries/contacts.ts` hace la query bulk de contactos — base para la priorización por grafo. Coello es owner de este archivo.
 - `matchPlayers` tiene `teamId` para distinguir parejas y `position` para orden dentro del match.
 - La confirmación de match requiere que al menos un jugador por equipo confirme.
 - `recalculateRankingAction` soporta modo incremental — patrón a seguir para el update del grafo.

@@ -27,12 +27,13 @@ Operas en un **sandbox autónomo**. Esto significa:
 
 ## 🛠️ COMANDOS DEL REPO
 
-- **Tests:** `npm test` (si hay suite configurada)
-- **Typecheck:** `npx tsc --noEmit`
-- **Build:** `npm run build` (corre `prisma migrate deploy && prisma generate && next build`)
-- **Dev:** `npm run dev`
-- **Prisma migrate:** `npx prisma migrate dev --name <name>` (local only)
-- **DB local:** Postgres 18 en contenedor Docker `postgres-shared` — `postgresql://padelred:padelred@localhost:5432/padelred`
+Los comandos técnicos (scripts, stack, DB local, migraciones) están documentados en `README.md` en la raíz del repo. Consultalo antes de trabajar. No duplicar ese conocimiento acá.
+
+Lo mínimo que necesitás saber:
+- **Typecheck:** `pnpm tsc --noEmit` (o `npx tsc --noEmit`)
+- **Build:** `pnpm build`
+- **Dev:** `pnpm dev`
+- **DB local:** Postgres en contenedor Docker — ver `DATABASE_URL` en `.env`
 
 ---
 
@@ -121,8 +122,8 @@ Si una mejora valiosa fue identificada e implementada, crea un Pull Request con 
 
 ## 🛑 HARD CONSTRAINTS
 
-- `npm run build` debe pasar sin errores.
-- `npx tsc --noEmit` debe pasar sin errores.
+- `pnpm build` debe pasar sin errores.
+- `pnpm tsc --noEmit` debe pasar sin errores.
 - Si algo falla y no se puede fixear en este run, **NO crear PR**. Dejar nota en el journal y abortar.
 
 ---

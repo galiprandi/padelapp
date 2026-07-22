@@ -5,26 +5,28 @@ PWA mobile-first para **organizar turnos fijos de pádel y salvarlos cuando falt
 ## Scripts
 
 ```bash
-npm run dev             # servidor de desarrollo (http://localhost:3000)
-npm run build           # build de producción
-npm run start           # ejecutar build de producción
-npm run lint            # lint
-npm run db:up           # levantar Postgres local (docker compose)
-npm run db:down         # detener Postgres
-npm run db:drop         # eliminar todas las tablas
-npm run prisma:migrate  # aplicar migraciones
-npm run prisma:generate # regenerar cliente Prisma
-npm run db:studio       # abrir Prisma Studio
+pnpm dev             # servidor de desarrollo (http://localhost:3000)
+pnpm build           # build de producción
+pnpm start           # ejecutar build de producción
+pnpm lint            # lint
+pnpm db:up           # levantar Postgres local (docker compose)
+pnpm db:down         # detener Postgres
+pnpm db:drop         # eliminar todas las tablas
+pnpm db:generate     # generar migración Drizzle
+pnpm db:migrate      # aplicar migraciones Drizzle
+pnpm db:push         # push schema a DB (dev rápido)
+pnpm db:studio       # abrir Drizzle Studio
 ```
 
 ## Stack
 
-- **Next.js 15** (App Router, TypeScript, Server Components/Actions).
+- **Next.js 16** (App Router, TypeScript, Server Components/Actions, Cache Components).
 - **Tailwind CSS** + shadcn/ui con paleta amarilla.
-- **Prisma + PostgreSQL** (local via Docker, producción via Supabase).
-- **NextAuth.js** con Google OAuth y Prisma Adapter.
+- **Drizzle ORM + PostgreSQL** (local via Docker, producción via Neon serverless).
+- **NextAuth.js** con Google OAuth y `@auth/drizzle-adapter`.
 - **PWA** instalable con service worker y manifest.
 - **Firebase Cloud Messaging** (pendiente — bloqueante para lanzamiento).
+- **Socket.io + Upstash Redis** (pendiente — Chat de Turnos, post-MVP).
 
 ## Rutas
 
@@ -34,7 +36,7 @@ npm run db:studio       # abrir Prisma Studio
 | `/login` | Login con Google |
 | `/install` | Guía de instalación PWA |
 | `/me` | Dashboard con agenda y acciones |
-| `/me/profile` | Perfil y nivel de juego |
+| `/me/profile` | Perfil y alias de juego |
 | `/turnos` | Lista de turnos abiertos |
 | `/turnos/nuevo` | Crear turno |
 | `/turnos/[id]/editar` | Editar turno |
@@ -54,9 +56,9 @@ npm run db:studio       # abrir Prisma Studio
 ## Base de datos local
 
 1. Copia `.env.example` a `.env` y ajusta la `DATABASE_URL`.
-2. Levanta la base con `npm run db:up`.
-3. Ejecuta `npm run prisma:migrate` para crear las tablas.
-4. Abre `npm run db:studio` para explorar datos.
+2. Levanta la base con `pnpm db:up`.
+3. Ejecuta `pnpm db:migrate` para crear las tablas.
+4. Abre `pnpm db:studio` para explorar datos.
 
 ## Documentación
 

@@ -27,10 +27,11 @@ Tu misión es identificar y resolver problemas de performance percibida, feedbac
 - PWA performance (service worker, cache strategies)
 
 **Fuera de scope (no tocar bajo ninguna circunstancia):**
-- Lógica de negocio de turnos (`turnos/actions.ts`, `padel-contacts.ts`) — scope de Bela
+- Lógica de negocio de turnos (`turnos/actions.ts`) — scope de Bela
+- Red de contactos y grafo (`src/lib/queries/contacts.ts`, `src/lib/graph/`) — scope de Coello
 - Lógica de negocio de ranking/matches (`ranking/actions.ts`, `match/actions.ts`, `match-queries.ts`) — scope de Agus
 - Perfil de usuario, onboarding flow, PWA install UI — scope de Roby
-- Schema de Prisma
+- Schema de DB (usar el existente, no migrar sin autorización)
 - Contenido de páginas individuales (page.tsx) — solo tocar para optimizar data fetching/caching, no para cambiar lógica de negocio
 
 **Excepción:** Podés modificar `page.tsx` files para:
@@ -91,10 +92,10 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - El layout streams el badge de notificaciones con `<Suspense fallback={null}>` (Plan 002).
 - `ignoreBuildErrors` fue removido (Plan 003) — el build ahora valida tipos.
 - Hay `error.tsx` en app-level y match-detail (Plan 004).
-- `cached-queries.ts` tiene 4 wrappers de `unstable_cache` con tags `"ranking"`, `"turns"`, `"matches"` (Plan 005).
-- Next.js 16.2.6 — Cache Components requiere 16.3+ (Plan 006 pendiente).
+- `cached-queries.ts` tiene 4 wrappers de `unstable_cache` con tags `"ranking"`, `"turns"`, `"matches"` (Plan 005 — DONE).
+- Next.js 16.3+ — Cache Components adoptado (Plan 006 — DONE). Ver `plans/README.md` para estado de todos los planes.
 - `force-dynamic` fue removido de `/match` (Plan 005).
 - `new Date()` en `me/page.tsx` y `utils.ts` (getGreeting) bloquearían Cache Components.
 - Los `revalidateTag` calls existen en 15+ sitios pero antes del Plan 005 no estaban conectados a nada.
-- `npm run lint` (`next lint`) está roto en Next.js 16.2.6 — issue preexistente, no bloqueante.
+- `pnpm lint` (`next lint`) está roto en Next.js 16 — issue preexistente, no bloqueante.
 - El contenedor Postgres 18 compartido corre en `localhost:5432` — accesible desde LAN en `192.168.68.59:5432`.

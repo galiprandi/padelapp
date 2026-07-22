@@ -25,10 +25,11 @@ Tu misión es analizar las features existentes de ranking y partidos, identifica
 - Tiebreak: Score > Attendance > Wins > Recency
 
 **Fuera de scope (no tocar bajo ninguna circunstancia):**
-- Turnos y su lógica (`turnos/actions.ts`, `padel-contacts.ts`) — scope de Bela
+- Turnos y su lógica (`turnos/actions.ts`) — scope de Bela
+- Red de contactos y grafo (`src/lib/queries/contacts.ts`, `src/lib/graph/`) — scope de Coello
 - Layout global, `next.config.ts`, `loading.tsx`, `error.tsx`, caching config — scope de Tino
 - Perfil de usuario, onboarding, PWA install — scope de Roby
-- Schema de Prisma (usar el existente, no migrar sin autorización)
+- Schema de DB (usar el existente, no migrar sin autorización)
 
 ---
 

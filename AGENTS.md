@@ -16,33 +16,35 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **Implicit padel network**: every confirmed match builds your contact network automatically. No manual friend requests.
 - **Mobile-first**: design for smartphones before desktop.
 - **Low friction**: Google-only login, shareable links, one-tap enrollment.
-- **Ranking as a hook**: simple, motivational, not a serious ELO. Level (1–8) remains the practical reference for assembling matches.
+- **Ranking as a hook**: simple, motivational, not a serious ELO.
+- **Skill derived from the graph**: player skill is computed internally from confirmed matches (rivals, partners, positions, organizer feedback). The auto-perceived `level` field (1–8) is legacy and being phased out of the UI. The computed score is internal and never shown to the user — the ranking is the only visible competitive signal.
 
 ## 3. MVP Scope
 
 ### Implemented
 - Google-only login (NextAuth).
-- Open turn creation with slots and suggested level.
+- Open turn creation with slots.
 - Open enrollment until turn start.
 - Match registration linked to turns, with team confirmation.
 - Attendance tracking (ATTENDED / LATE / NO_SHOW) by match creator.
 - Individual ranking with simple formula and temporal decay.
-- Profile management with alias and level.
+- Profile management with alias.
 - PWA installable with `<install>` element and fallback.
 - Public player profiles, match invitations, direct join links.
 
 ### Pending (critical for launch)
-- **Firebase Cloud Messaging** (push notifications) — blocking.
-- **Padel contact network** — derived automatically from confirmed matches.
-- **"Open to my network"** — notify contacts when a turn has open slots. Audience: contacts of **all enrolled players** (not just organizer), from confirmed matches in the **last 12 months**, no duplicates, excluding already-enrolled players.
-- **Onboarding** for first-time users (empty state with direct CTA).
+- **Firebase Cloud Messaging** (push notifications) — blocking. **Owner: Roby** (full pipeline: permissions, subscription, server-side send, service worker push handler). Bela triggers sends from the salvage flow via Roby's API.
+- **Padel contact network** — derived automatically from confirmed matches. **Owner: Coello** (graph + `src/lib/queries/contacts.ts`). Bela consumes via exports.
+- **Player graph** — internal skill score from confirmed matches, replacing the auto-perceived `level` field. **Owner: Coello**.
+- **"Open to my network"** — notify contacts when a turn has open slots. Audience: contacts of **all enrolled players** (not just organizer), from confirmed matches in the **last 12 months**, no duplicates, excluding already-enrolled players. **Trigger: Bela** (salvage flow), **infrastructure: Roby** (FCM send).
+- **Onboarding** for first-time users (empty state with direct CTA). **Owner: Roby**.
 
 ### Nice to Have (post-MVP)
-- **Chat de Turnos** (`specs/turn-chat.md`): real-time chat per turn with ephemeral history (90-day TTL via Redis) and a system bot that sends contextual messages (player dropouts, open slots, reminders, results). Stack: Socket.io + Upstash Redis (free tier). The system bot is the key differentiator vs WhatsApp.
+- **Chat de Turnos** (`specs/turn-chat.md`): real-time chat per turn with ephemeral history (90-day TTL via Redis) and a system bot that sends contextual messages (player dropouts, open slots, reminders, results). Stack: Socket.io + Upstash Redis (free tier). The system bot is the key differentiator vs WhatsApp. **Owner: Bela** (per-turn, system bot reacts to turn lifecycle events). Tino advises on real-time performance.
 
 ## 4. Tech Stack
 
-- **Frontend**: Next.js 15 (App Router, TypeScript, Server Components/Actions).
+- **Frontend**: Next.js 16 (App Router, TypeScript, Server Components/Actions, Cache Components).
 - **UI**: Tailwind CSS + shadcn/ui (yellow theme). See `DESIGN.md` for design policy.
 - **Data**: Drizzle ORM + PostgreSQL (local dev via Docker, production via Neon serverless).
 - **Auth**: NextAuth with Google OAuth.
@@ -64,6 +66,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 11. When adding features, ask: does this help save turns from cancellation? If not, it's likely out of scope for the MVP.
 12. **`MANUAL.md` is the single source of truth for all user-facing flows.** It must be updated after any change that alters a flow's behavior, states, penalties, or notifications. The narrative sections must remain free of technical jargon.
 13. **Flow changes require explicit user consent.** Before modifying any flow documented in `MANUAL.md`, the agent must explain the proposed change and obtain approval. This prevents regressions and ensures the manual stays accurate. Never silently change a flow's behavior without updating the manual.
+    - **Sandbox override:** when an agent runs under `.ants/instinct.md` (autonomous sandbox mode), rule 13 is explicitly overridden. The agent cannot ask for approval, so it takes the best decision based on context, registers it in its journal, and ships a PR. The user reviews the PR — that is the only approval gate. This override is documented here so the contradiction between `instinct.md` and this rule is explicit and intentional, not accidental.
 14. **`MANUAL.md` is chatbot-ready.** The narrative sections are designed to be injected into a chatbot knowledge base. Keep them concise, high-density, and in user-facing language. The "Referencia" section contains technical details for agents.
 15. **Production validation must be done against the production domain (`padelred.app`) using the Vercel CLI** (`vercel inspect`, `vercel logs`, `vercel env`). Never test production flows against `localhost` or preview URLs as a substitute for real domain validation. Use `vercel logs padelred.app` to inspect runtime errors and `vercel inspect padelred.app` to verify deployment status.
 16. **Browser MCP is pre-authorized.** The user authorizes agents to use the browser MCP (Chrome German) to access any web service — Google Cloud Console, Firebase Console, Vercel Dashboard, the deployed app, or any other — without asking for additional permission. Use it freely for configuration, verification, and debugging.
@@ -80,7 +83,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - Public match invitation (`/m/[matchId]`), direct join (`/j/[playerId]`), public player profile (`/p/[userId]`).
 - Ranking system (`/ranking`) with score formula, attendance reputation, and temporal decay — positioned as a competitive hook, not a technical skill measurement.
 - Attendance tracking system: creators mark players as ATTENDED / LATE / NO_SHOW post-match. Penalties applied to ranking and attendance score.
-- Profile management (`/me/profile`) with alias and level selection.
+- Profile management (`/me/profile`) with alias selection.
 - Notifications center (`/notifications`) for pending match actions.
 - PWA installable with `<install>` element, install guide (`/install`), and install CTA management (banner + link).
 - Component catalog (`/catalog`) fully migrated to Minimal Design System.
@@ -90,7 +93,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - All redesigned pages use plain `<h1>`/`<p>` headers, standard Tailwind sizes, no decorative effects.
 - `PageHeader` component removed; all views use semantic HTML for headers.
 - Dashboard and main list views (`/me`, `/turnos`, `/match`) refined for UX consistency and accessibility (aria-labels, color standards for W/L).
-- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) with context-aware backgrounds and expanded stats summary (Level, Reputation) to maximize user "Time to Value". Standardized stats grid with interactive links.
+- **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) with context-aware backgrounds and expanded stats summary (Reputation) to maximize user "Time to Value". Standardized stats grid with interactive links.
 - **Turn Salvage Optimization**: Enhanced the Dashboard "Hero Activity" and Turn Cards with a proactive "Salvar Turno" (Save Turn) action for incomplete matches, integrating the "Open to my network" push notification flow directly into the main views to ensure turn fulfillment.
 - **Semantic Invitations Refactor**: Migrated `/t/[id]` and `/m/[matchId]` to semantic HTML structures, removing complex UI wrappers to improve mobile rendering and focus on clear conversion actions.
 
