@@ -6,8 +6,13 @@
 - [x] 2026-07-21 — Optimización de consultas de partidos para evitar el over-fetching de datos de usuario (PR #2).
 - [x] 2026-07-22 — Resaltado del usuario actual ("Tú") en el podio del ranking para una identificación inmediata (PR #3).
 - [x] 2026-07-23 — Implementación de Selección Automática y Visualización de Lado en Resultados de Partido (PR #4).
+- [x] 2026-07-24 — Exposición de acción de finalización forzada para organizador en partidos pendientes de confirmación (PR #5).
 
 ## 🧠 LEARNINGS
+### 2026-07-24 - Acción de Finalización Forzada de Partido para Organizadores (UX)
+**Learning:** En partidos de liga o torneos casuales de pádel, a menudo algunos jugadores no están registrados (son placeholders con nombre libre) o simplemente olvidan iniciar sesión para confirmar el resultado. Al no tener la aprobación obligatoria de ambos equipos, el partido queda en un limbo (status PENDING) indefinido y sus puntos nunca impactan en el ranking global. Al exponer la acción `finalizeMatchAction` como un botón de "Finalizar como Organizador" para el creador del partido, se empodera al organizador para que resuelva bloqueos inmediatamente y procese el partido sin fricciones.
+**Action:** Identificar acciones del backend preexistentes y potentes que no estén expuestas en la interfaz para simplificar la gestión y flujos de usuarios administradores u organizadores.
+
 ### 2026-07-23 - Selección Inteligente de Lado de Cancha (Doubles Court-Side Auto-Toggle)
 **Learning:** En el pádel, la posición en cancha es mutuamente excluyente por pareja (un jugador juega en el lado de la Derecha y el otro en el de Revés). Al cargar un resultado en la aplicación, si el sistema requiere que los usuarios marquen manualmente cada lado, se genera fricción. Al implementar un auto-toggle inteligente, si el usuario selecciona Derecha para sí mismo, el sistema marca automáticamente Revés para su compañero, ahorrando clics y previniendo configuraciones inválidas.
 **Action:** Utilizar patrones de sincronización lógica en elementos mutuamente excluyentes dentro de la misma entidad (ej. parejas, roles) para optimizar la interacción móvil (MDS Maxim 1.8).
