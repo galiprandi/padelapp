@@ -40,7 +40,7 @@ export function RankingInfo() {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Todos los jugadores inician con <strong>1000 puntos base</strong>. Tu puntaje se actualiza con cada partido confirmado bajo la siguiente fórmula:
             </p>
-            <div className="rounded-lg bg-muted p-2.5 text-xs font-mono text-foreground space-y-1">
+            <div className="rounded-lg bg-muted p-2.5 text-xs font-sans text-foreground space-y-1">
               <div>Puntos = 1000 + (Victorias × 15) + (Racha × 5) + (Bonus de Sets) - Penalizaciones</div>
             </div>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">

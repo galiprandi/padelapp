@@ -402,7 +402,7 @@ export default function GraphVisualizer() {
               <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
                 Score
               </p>
-              <p className="text-sm font-mono font-bold text-neutral-700">
+              <p className="text-sm font-sans tabular-nums font-bold text-neutral-700">
                 {selectedNodeData.skillScore}
               </p>
             </div>
