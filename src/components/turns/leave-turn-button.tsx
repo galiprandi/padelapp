@@ -12,12 +12,16 @@ interface LeaveTurnButtonProps {
   turnId: string;
   club: string;
   wasFull?: boolean;
+  isCreator?: boolean;
+  date: Date | string;
 }
 
 export function LeaveTurnButton({
   turnId,
   club,
   wasFull,
+  isCreator = false,
+  date,
 }: LeaveTurnButtonProps) {
   const [confirming, setConfirming] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -28,6 +32,10 @@ export function LeaveTurnButton({
     await leaveTurnAction(turnId);
     router.refresh();
   };
+
+  const turnDate = new Date(date);
+  const hoursUntilTurn = (turnDate.getTime() - Date.now()) / (1000 * 60 * 60);
+  const isLateLeave = hoursUntilTurn < 2 && hoursUntilTurn >= 0 && !isCreator;
 
   if (!confirming) {
     return (
@@ -44,6 +52,17 @@ export function LeaveTurnButton({
 
   return (
     <div className="flex flex-col gap-2">
+      {isLateLeave && (
+        <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left">
+          <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-full bg-destructive" />
+            Baja tardía detectada
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Falta menos de 2 horas para el turno. Si te bajás ahora, tu <strong className="text-foreground">reputación de asistencia bajará un 5%</strong>.
+          </p>
+        </div>
+      )}
       {wasFull && (
         <div className="rounded-lg border border-border bg-muted p-3 flex flex-col gap-2">
           <p className="text-xs text-muted-foreground text-center">
