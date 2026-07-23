@@ -9,6 +9,7 @@
 - [x] 2026-07-21 — Compartición nativa de perfil y navegación contextualizada del perfil público. (PR #roby/profile/share-and-back-navigation)
 - [x] 2026-07-22 — Estandarización de banners de onboarding y guía interactiva de instalación PWA: Rediseño accesible y adaptativo para iOS y Android siguiendo las Semantic Maxims 1.3, 2.1 y 4.3 de MDS. (PR #roby/pwa/install-onboarding-ux)
 - [x] 2026-07-23 — Consolidación de onboarding en lista de preparación: Implementación del componente OnboardingChecklist en la página de inicio para nuevos usuarios. (PR #roby/profile/unified-onboarding-checklist)
+- [x] 2026-07-24 — Sólidos visuales en Onboarding y Dashboard: Refactorización de fondos y bordes en checklist de onboarding, instrucciones PWA, y tarjetas de acción del Dashboard para eliminar toda semi-transparencia y cumplir plenamente las directivas de MDS. (PR #roby/profile/dashboard-solid-onboarding-polish)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -40,3 +41,7 @@ Asimismo, todos los banners e indicaciones de onboarding de primer nivel (como l
 ## 2026-07-23 - Consolidación de onboarding en lista de preparación
 **Learning:** Presentar múltiples avisos y banners de preparación desconectados (alias de perfil, instalación PWA, permisos push) satura la vista inicial de un usuario nuevo. Al consolidarlos en un único widget tipo lista de preparación de 4 pasos con barra de progreso, se reduce drásticamente el ruido visual y se incrementa el compromiso por completar la configuración inicial. Los usuarios existentes no se ven afectados por este cambio visual.
 **Action:** Para flujos de configuración del sistema o cuentas nuevas, priorizar siempre componentes interactivos tipo checklist unificado por sobre banners flotantes individuales.
+
+## 2026-07-24 - Sólidos visuales en Onboarding y Dashboard (MDS)
+**Learning:** El Minimal Design System (MDS) prohíbe explícitamente el uso de fondos semi-transparentes o difuminados en banners, listas y cards primarias de interacción para garantizar el máximo contraste y accesibilidad. Al refactorizar los separadores de la guía onboarding, los íconos de instalación PWA, y las tarjetas de acción del Dashboard (marcar asistencia y suplencias) hacia fondos sólidos (bg-card, bg-muted) y bordes nítidos, logramos una interfaz limpia, legible y sumamente profesional.
+**Action:** Evitar siempre el uso de modificadores de opacidad (como /10 o /20) en fondos de elementos contenedores y recurrir a combinaciones de colores sólidos definidos en el tema semántico del sistema de diseño.

@@ -160,7 +160,7 @@ export function OnboardingChecklist({
                 "1"
               )}
             </div>
-            <div className="w-px flex-1 bg-border/40 my-1 min-h-[16px]" />
+            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
           </div>
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
@@ -177,7 +177,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold active:scale-[0.98] border-primary/20 hover:bg-primary/[0.02]"
+                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                   aria-label="Ir a configurar alias"
                 >
                   <Link href="/me/profile">Configurar alias</Link>
@@ -203,7 +203,7 @@ export function OnboardingChecklist({
                 "2"
               )}
             </div>
-            <div className="w-px flex-1 bg-border/40 my-1 min-h-[16px]" />
+            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
           </div>
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
@@ -222,7 +222,7 @@ export function OnboardingChecklist({
                     size="sm"
                     onClick={handleInstallPwa}
                     disabled={isInstalling}
-                    className="h-9 text-xs font-bold active:scale-[0.98] border-primary/20 hover:bg-primary/[0.02]"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                     aria-label="Instalar aplicación de pádel directamente"
                   >
                     {isInstalling ? (
@@ -237,7 +237,7 @@ export function OnboardingChecklist({
                     variant="outline"
                     size="sm"
                     asChild
-                    className="h-9 text-xs font-bold active:scale-[0.98] border-primary/20 hover:bg-primary/[0.02]"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                     aria-label="Ver cómo instalar la aplicación"
                   >
                     <Link href="/install">Ver cómo instalar</Link>
@@ -264,7 +264,7 @@ export function OnboardingChecklist({
                 "3"
               )}
             </div>
-            <div className="w-px flex-1 bg-border/40 my-1 min-h-[16px]" />
+            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
           </div>
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
@@ -287,7 +287,7 @@ export function OnboardingChecklist({
                     size="sm"
                     onClick={() => requestPermission()}
                     disabled={notificationLoading}
-                    className="h-9 text-xs font-bold active:scale-[0.98] border-primary/20 hover:bg-primary/[0.02]"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                     aria-label="Solicitar permisos para notificaciones"
                   >
                     {notificationLoading ? (
@@ -335,7 +335,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold active:scale-[0.98] border-primary/20 hover:bg-primary/[0.02]"
+                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                   aria-label="Ver turnos de pádel disponibles"
                 >
                   <Link href="/turnos">Explorar turnos</Link>
@@ -348,7 +348,7 @@ export function OnboardingChecklist({
 
       {/* Congratulatory / All Done Message */}
       {completedCount === 4 && (
-        <div className="rounded-lg bg-primary/10 border border-primary/20 p-3 text-center">
+        <div className="rounded-lg bg-muted border border-primary/40 p-3 text-center">
           <p className="text-xs font-bold text-primary">
             ¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red. 🏆
           </p>
