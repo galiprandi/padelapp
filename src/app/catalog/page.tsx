@@ -462,7 +462,7 @@ export default function ComponentCatalogPage() {
               <h2 className="text-sm font-bold text-foreground border-b border-border pb-2">
                 🧭 Navegación
               </h2>
-              <div className="border border-border rounded-xl bg-card overflow-hidden">
+              <div className="border border-border rounded-xl bg-card overflow-visible">
                 <BottomNav position="static" notificationsCount={3} />
               </div>
             </section>

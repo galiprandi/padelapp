@@ -10,6 +10,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <Suspense fallback={<main className="flex-1 px-5 pt-4 pb-20" />}>
         <AppLayoutContent>{children}</AppLayoutContent>
       </Suspense>
+      <Suspense fallback={null}>
+        <BottomNav />
+      </Suspense>
     </div>
   );
 }
@@ -25,7 +28,6 @@ async function AppLayoutContent({ children }: { children: ReactNode }) {
   return (
     <>
       <main className="flex-1 px-5 pt-4 pb-20">{children}</main>
-      <BottomNav notificationsCount={0} />
       <NotificationsBadge userId={userId} />
     </>
   );

@@ -1,0 +1,135 @@
+
+> padelred@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.3.0-preview.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 591ms
+✓ Running next.config.ts took 55ms
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
+
+  To migrate automatically, run:
+  npx @next/codemod@canary middleware-to-proxy .
+
+  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+- Cache Components enabled
+- Experiments (use with caution):
+  · optimizePackageImports
+
+ GET /catalog 200 in 1377ms (next.js: 473ms, application-code: 903ms)
+ GET /api/players 401 in 318ms (next.js: 102ms, application-code: 216ms)
+ GET /api/players 401 in 385ms (next.js: 90ms, application-code: 295ms)
+(node:149823) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /api/auth/session 200 in 1384ms (next.js: 1330ms, application-code: 54ms)
+ GET /api/auth/session 200 in 153ms (next.js: 85ms, application-code: 68ms)
+ GET /login 200 in 990ms (next.js: 63ms, application-code: 927ms)
+ GET /api/auth/session 200 in 61ms (next.js: 46ms, application-code: 15ms)
+ GET /login 200 in 836ms (next.js: 35ms, application-code: 801ms)
+ GET /api/auth/session 200 in 11ms (next.js: 4ms, application-code: 7ms)
+⨯ Error: Failed query: select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3
+params: 50,1,50
+    at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at async RankingPage (src/app/(app)/ranking/page.tsx:29:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore), {
+  query: `select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3`,
+  params: [ 50, 1, 50 ],
+  digest: '2944069468',
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+      at async RankingPage (src/app/(app)/ranking/page.tsx:29:7)
+    12 | export const getCachedRanking = unstable_cache(
+    13 |   async () => {
+  > 14 |     const result = await db.query.users.findMany({
+       |                    ^
+    15 |       orderBy: [
+    16 |         desc(users.rankingScore),
+    17 |         desc(users.attendanceScore), {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /ranking 200 in 2.7s (next.js: 103ms, proxy.ts: 133ms, application-code: 2.5s)
+ HEAD /catalog 200 in 134ms (next.js: 6ms, application-code: 129ms)
+ GET /catalog 200 in 297ms (next.js: 4ms, application-code: 293ms)
+ GET /api/auth/session 200 in 37ms (next.js: 25ms, application-code: 12ms)
+ GET /api/auth/session 200 in 17ms (next.js: 4ms, application-code: 12ms)
+ GET /api/players 401 in 26ms (next.js: 10ms, application-code: 16ms)
+ GET /api/auth/session 200 in 28ms (next.js: 8ms, application-code: 20ms)
+ GET /api/players 401 in 33ms (next.js: 13ms, application-code: 19ms)
+ GET /api/auth/session 200 in 12ms (next.js: 3ms, application-code: 10ms)
+ GET /login 200 in 513ms (next.js: 9ms, application-code: 504ms)
+ GET /login 200 in 452ms (next.js: 10ms, application-code: 442ms)
+⨯ Error: Failed query: select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3
+params: 50,1,50
+    at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at async RankingPage (src/app/(app)/ranking/page.tsx:29:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore), {
+  query: `select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3`,
+  params: [ 50, 1, 50 ],
+  digest: '2944069468',
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+      at async RankingPage (src/app/(app)/ranking/page.tsx:29:7)
+    12 | export const getCachedRanking = unstable_cache(
+    13 |   async () => {
+  > 14 |     const result = await db.query.users.findMany({
+       |                    ^
+    15 |       orderBy: [
+    16 |         desc(users.rankingScore),
+    17 |         desc(users.attendanceScore), {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /ranking 200 in 1181ms (next.js: 13ms, proxy.ts: 8ms, application-code: 1160ms)
