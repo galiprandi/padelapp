@@ -3,7 +3,8 @@
 // to satisfy the browser's requirement that they are added on the initial
 // evaluation of the worker script.
 
-const CACHE_NAME = "padelred-static-assets-v2";
+const CACHE_NAME = "padelred-static-assets-v3";
+const OFFLINE_URL = "/offline.html";
 const STATIC_ASSET_REGEX = /\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|woff2?|json)$/i;
 
 function isCacheableStaticAsset(request) {
@@ -52,7 +53,10 @@ function isCacheableStaticAsset(request) {
   return false;
 }
 
-self.addEventListener("install", () => {
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.add(OFFLINE_URL))
+  );
   self.skipWaiting();
 });
 
@@ -97,6 +101,32 @@ self.addEventListener("fetch", (event) => {
         return cachedResponse || fetchPromise;
       });
     })
+  );
+});
+
+// --- Navigation Offline Fallback ---
+// For document navigations (HTML pages), try network first; if it fails
+// (offline or server unreachable), serve the cached offline page.
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+  if (event.request.mode !== "navigate") return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful navigations so they're available offline
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => {
+        // Network failed — try cached version of this page first
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match(OFFLINE_URL);
+        });
+      })
   );
 });
 
