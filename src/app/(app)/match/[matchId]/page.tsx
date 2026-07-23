@@ -3,6 +3,7 @@ import {
   getMatchByIdAction,
   confirmMatchResultAction,
   cancelMatchAction,
+  finalizeMatchAction,
 } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
@@ -37,6 +38,28 @@ async function ConfirmResultForm({ matchId }: { matchId: string }) {
       <Button type="submit" className="w-full h-12">
         <CheckCircle2 className="mr-2 h-4 w-4" />
         Confirmar Resultado
+      </Button>
+    </form>
+  );
+}
+
+async function FinalizeMatchForm({ matchId }: { matchId: string }) {
+  async function handleFinalize() {
+    "use server";
+    await finalizeMatchAction(matchId);
+    redirect(`/match/${matchId}`);
+  }
+
+  return (
+    <form action={handleFinalize} className="w-full">
+      <Button
+        type="submit"
+        variant="outline"
+        className="w-full h-10 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+        aria-label="Finalizar el partido como organizador"
+      >
+        <CheckCircle2 className="mr-2 h-4 w-4" />
+        Finalizar como Organizador
       </Button>
     </form>
   );
@@ -428,6 +451,15 @@ async function MatchContent({ params }: MatchPageProps) {
                     );
                   })}
               </div>
+
+              {viewerId === match.creatorId && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                    ¿Algunos jugadores no confirman o son invitados? Como organizador podés cerrar el partido inmediatamente.
+                  </p>
+                  <FinalizeMatchForm matchId={match.id} />
+                </div>
+              )}
             </section>
           )}
 
