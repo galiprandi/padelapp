@@ -188,7 +188,7 @@ export function ManageSlotModal({
   const query = inputValue.trim();
   const showResults = query.length >= 2 && searchResults.length > 0;
   const showNoResults = query.length >= 2 && !isSearching && searchResults.length === 0;
-  const showRecentAvatars = recentPlayers.length > 0 && query.length < 2;
+  const showRecentAvatars = recentPlayers.length > 0;
   const showContactsList = query.length < 2 && searchResults.length > 0;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
