@@ -29,7 +29,7 @@ export function InstallContent() {
   if (isInstalled) {
     return (
       <div className="flex flex-col items-center gap-3 py-6">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/10">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30">
           <Check className="h-6 w-6 text-emerald-500" />
         </div>
         <p className="text-sm font-semibold text-foreground">
@@ -166,7 +166,7 @@ export function InstallContent() {
             key={index}
             className="flex items-center gap-4 rounded-xl bg-card p-4 border border-border"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/10">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted border border-border">
               {step.icon}
             </div>
             <p className="text-sm font-semibold leading-snug text-foreground">
