@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { eq, desc, ne, and, isNotNull, sql } from "drizzle-orm";
+import { eq, desc, ne, and, isNotNull, isNull, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { matches, matchPlayers, users } from "@/db/schema";
@@ -13,34 +13,63 @@ export async function GET() {
 
   const userId = session.user.id;
 
-  // Recent players: users who played in matches created by this user,
-  // excluding the user themselves, ordered by most recent match.
-  const recentPlayersRows = await db
-    .select({
-      id: users.id,
-      displayName: users.displayName,
-      image: users.image,
-      lastUsed: matchPlayers.createdAt,
-    })
-    .from(matchPlayers)
-    .innerJoin(matches, eq(matchPlayers.matchId, matches.id))
-    .innerJoin(users, eq(matchPlayers.userId, users.id))
-    .where(
-      and(
-        eq(matches.creatorId, userId),
-        ne(users.id, userId),
-        isNotNull(matchPlayers.userId),
-      ),
-    )
-    .orderBy(desc(matchPlayers.createdAt))
-    .limit(20);
+  // Recent players — two sources merged by recency:
+  // 1. Google users (matchPlayers.userId IS NOT NULL)
+  // 2. Placeholder names (matchPlayers.userId IS NULL, displayName IS NOT NULL)
+  const [userRows, placeholderRows] = await Promise.all([
+    db
+      .select({
+        id: users.id,
+        displayName: users.displayName,
+        image: users.image,
+        lastUsed: matchPlayers.createdAt,
+        isUser: sql`true`.as("isUser"),
+      })
+      .from(matchPlayers)
+      .innerJoin(matches, eq(matchPlayers.matchId, matches.id))
+      .innerJoin(users, eq(matchPlayers.userId, users.id))
+      .where(
+        and(
+          eq(matches.creatorId, userId),
+          ne(users.id, userId),
+          isNotNull(matchPlayers.userId),
+        ),
+      )
+      .orderBy(desc(matchPlayers.createdAt))
+      .limit(20),
+    db
+      .select({
+        id: matchPlayers.id,
+        displayName: matchPlayers.displayName,
+        image: sql<string | null>`null`.as("image"),
+        lastUsed: matchPlayers.createdAt,
+        isUser: sql`false`.as("isUser"),
+      })
+      .from(matchPlayers)
+      .innerJoin(matches, eq(matchPlayers.matchId, matches.id))
+      .where(
+        and(
+          eq(matches.creatorId, userId),
+          isNull(matchPlayers.userId),
+          isNotNull(matchPlayers.displayName),
+          sql`${matchPlayers.displayName} != ''`,
+        ),
+      )
+      .orderBy(desc(matchPlayers.createdAt))
+      .limit(20),
+  ]);
 
-  // Deduplicate by user id, keep most recent
+  // Merge both sources, deduplicate by name, keep most recent
+  const merged = [...userRows, ...placeholderRows].sort(
+    (a, b) => (b.lastUsed?.getTime() ?? 0) - (a.lastUsed?.getTime() ?? 0),
+  );
+
   const seen = new Set<string>();
-  const recentPlayers = recentPlayersRows
+  const recentPlayers = merged
     .filter((row) => {
-      if (seen.has(row.id)) return false;
-      seen.add(row.id);
+      const key = (row.displayName ?? "").toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     })
     .slice(0, 8)
@@ -48,6 +77,7 @@ export async function GET() {
       id: row.id,
       displayName: row.displayName,
       image: row.image,
+      isUser: row.isUser,
     }));
 
   // Recent clubs: distinct club+court combinations from matches created by

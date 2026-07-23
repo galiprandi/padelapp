@@ -12,6 +12,7 @@ interface RecentPlayer {
   id: string;
   displayName: string;
   image: string | null;
+  isUser?: boolean;
 }
 
 interface ManageSlotModalProps {
@@ -162,15 +163,19 @@ export function ManageSlotModal({
   }
 
   function handleSelectRecentPlayer(player: RecentPlayer) {
-    onSave({
-      kind: "user",
-      player: {
-        id: player.id,
-        displayName: player.displayName,
-        email: "",
-        image: player.image,
-      },
-    });
+    if (player.isUser) {
+      onSave({
+        kind: "user",
+        player: {
+          id: player.id,
+          displayName: player.displayName,
+          email: "",
+          image: player.image,
+        },
+      });
+    } else {
+      onSave({ kind: "placeholder", displayName: player.displayName });
+    }
   }
 
   async function handleShare() {
