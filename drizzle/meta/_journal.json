@@ -29,6 +29,13 @@
       "when": 1784470274136,
       "tag": "0003_cynical_tarot",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784850431455,
+      "tag": "0004_absent_leper_queen",
+      "breakpoints": true
     }
   ]
 }

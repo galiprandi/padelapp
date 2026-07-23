@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   unique,
+  index,
 } from "drizzle-orm/pg-core";
 
 // ---------------------------------------------------------------------------
@@ -128,26 +129,32 @@ export const verificationTokens = pgTable(
   }),
 );
 
-export const matches = pgTable("Match", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  creatorId: text("creatorId").notNull(),
-  status: matchStatusEnum("status").notNull().default("PENDING"),
-  date: timestamptz3("date").notNull().defaultNow(),
-  sets: integer("sets").notNull().default(2),
-  matchType: matchTypeEnum("matchType").notNull().default("FRIENDLY"),
-  club: text("club"),
-  courtNumber: text("courtNumber"),
-  score: text("score"),
-  notes: text("notes"),
-  createdAt: timestamptz3("createdAt").notNull().defaultNow(),
-  updatedAt: timestamptz3("updatedAt")
-    .notNull()
-    .$defaultFn(() => new Date())
-    .$onUpdateFn(() => new Date()),
-  turnId: text("turnId"),
-});
+export const matches = pgTable(
+  "Match",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    creatorId: text("creatorId").notNull(),
+    status: matchStatusEnum("status").notNull().default("PENDING"),
+    date: timestamptz3("date").notNull().defaultNow(),
+    sets: integer("sets").notNull().default(2),
+    matchType: matchTypeEnum("matchType").notNull().default("FRIENDLY"),
+    club: text("club"),
+    courtNumber: text("courtNumber"),
+    score: text("score"),
+    notes: text("notes"),
+    createdAt: timestamptz3("createdAt").notNull().defaultNow(),
+    updatedAt: timestamptz3("updatedAt")
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+    turnId: text("turnId"),
+  },
+  (table) => ({
+    matchCreatorIdIdx: index("Match_creatorId_idx").on(table.creatorId),
+  }),
+);
 
 export const turns = pgTable("Turn", {
   id: text("id")
@@ -247,6 +254,7 @@ export const matchPlayers = pgTable(
       table.matchId,
       table.userId,
     ),
+    matchPlayerUserIdIdx: index("MatchPlayer_userId_idx").on(table.userId),
   }),
 );
 
