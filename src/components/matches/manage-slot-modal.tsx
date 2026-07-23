@@ -294,8 +294,8 @@ export function ManageSlotModal({
                           size={48}
                           className="rounded-full ring-2 ring-border group-hover:ring-primary group-active:ring-primary transition-all"
                         />
-                        <span className="text-[10px] font-medium text-muted-foreground max-w-[56px] truncate">
-                          {player.displayName.split(" ")[0]}
+                        <span className="text-[10px] font-medium text-muted-foreground max-w-[64px] truncate">
+                          {player.displayName}
                         </span>
                       </button>
                     ))}

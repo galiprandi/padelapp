@@ -7,7 +7,7 @@ import { eq, and, ne, lt, inArray, desc, asc, count } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { type MatchResultCompactMatch } from "@/components/matches/match-result-card";
 import { getMatchWinner } from "@/lib/utils";
-import { userInMatch, userInMatchByRef, hasPlayerWithoutAttendance } from "./helpers";
+import { userInMatch, userInMatchByRef, userHasNotConfirmed, hasPlayerWithoutAttendance } from "./helpers";
 
 export async function getEnhancedUserMatches(
   userId: string,
@@ -75,9 +75,16 @@ export async function getPendingActions(
     preloadedPendingMatches ?? (await getEnhancedUserMatches(userId, "PENDING"));
   const now = new Date();
 
-  // Filter for matches that have already happened
+  // Filter for matches that have already happened AND the user hasn't confirmed yet
   return allPendingMatches
-    .filter(m => new Date(m.date || m.createdAt) < now)
+    .filter(m => {
+      const hasPassed = new Date(m.date || m.createdAt) < now;
+      const userPlayer = m.players.find(
+        (p) => p.user?.id === userId
+      );
+      const hasConfirmed = userPlayer?.resultConfirmed === true;
+      return hasPassed && !hasConfirmed;
+    })
     .sort((a, b) => {
       // Prioritize those that HAVE a score (need confirmation) over those that DON'T have a score (need score upload)
       if (a.score && !b.score) return -1;
@@ -97,6 +104,7 @@ export async function getPendingActionsCount(userId: string): Promise<number> {
         eq(matchesTable.status, "PENDING"),
         lt(matchesTable.date, now),
         userInMatchByRef(userId),
+        userHasNotConfirmed(userId),
       ),
     );
   return total;

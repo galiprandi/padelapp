@@ -21,9 +21,9 @@ const SecurityHeaders = (isDev: boolean) => [
     value: [
       "default-src 'self'",
       "img-src 'self' data: blob: https://lh3.googleusercontent.com https://api.dicebear.com",
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://va.vercel-scripts.com`,
       "style-src 'self' 'unsafe-inline'",
-      "connect-src 'self' https://www.googleapis.com https://identity.googleapis.com https://firebaseinstallations.googleapis.com https://fcm.googleapis.com https://fcmregistrations.googleapis.com",
+      "connect-src 'self' https://www.googleapis.com https://identity.googleapis.com https://firebaseinstallations.googleapis.com https://fcm.googleapis.com https://fcmregistrations.googleapis.com https://va.vercel-scripts.com",
       "frame-src 'self' https://accounts.google.com",
       "font-src 'self' data:",
       "object-src 'none'",

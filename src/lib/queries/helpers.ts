@@ -42,6 +42,14 @@ export const userInMatchByRef = (userId: string) =>
   sql`exists (select 1 from "MatchPlayer" where "matchId" = ${matchesTable.id} and "userId" = ${userId})`;
 
 /**
+ * SQL not-exists clause: the user has NOT yet confirmed the result.
+ * Used to exclude matches where the user already confirmed from
+ * pending actions count.
+ */
+export const userHasNotConfirmed = (userId: string) =>
+  sql`exists (select 1 from "MatchPlayer" where "matchId" = ${matchesTable.id} and "userId" = ${userId} and "resultConfirmed" = false)`;
+
+/**
  * SQL not-exists clause for checking if a user is NOT enrolled in a turn.
  */
 export const userNotInTurn = (userId: string) =>
