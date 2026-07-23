@@ -473,13 +473,22 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 />
               )}
               {isJoined && turn.status !== "COMPLETED" && (
-                <LeaveTurnButton turnId={id} club={turn.club} wasFull />
+                <LeaveTurnButton
+                  turnId={id}
+                  club={turn.club}
+                  wasFull
+                  isCreator={isCreator}
+                  date={turn.date}
+                />
               )}
             </div>
           ) : isJoined ? (
             <div className="flex flex-col gap-3">
               {viewerId === turn.creatorId && (
                 <>
+                  {turn.players.length >= 4 && turn.status !== "COMPLETED" && (
+                    <StartMatchForm turnId={id} />
+                  )}
                   <div className="flex gap-2 w-full">
                     <div className="flex-1">
                       <ScheduleNextTurnForm turnId={id} />
@@ -509,13 +518,23 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     </Button>
                     <CancelTurnForm turnId={id} />
                   </div>
-                  <LeaveTurnButton turnId={id} club={turn.club} />
+                  <LeaveTurnButton
+                    turnId={id}
+                    club={turn.club}
+                    isCreator={isCreator}
+                    date={turn.date}
+                  />
                 </>
               )}
               {viewerId !== turn.creatorId && (
                 <div className="flex gap-2 w-full">
                   <div className="flex-1">
-                    <LeaveTurnButton turnId={id} club={turn.club} />
+                    <LeaveTurnButton
+                      turnId={id}
+                      club={turn.club}
+                      isCreator={isCreator}
+                      date={turn.date}
+                    />
                   </div>
                   {turn.status !== "COMPLETED" && (
                     <ShareButton
