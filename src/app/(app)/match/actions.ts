@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { matches, matchPlayers, teams, users } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
+import { capitalizeName } from "@/lib/utils";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 import {
   updateEdgesForMatch,
@@ -242,7 +243,7 @@ export async function createMatchAction(
         joinedAt: trimmedUserId === session.user.id ? new Date() : null,
       });
     } else {
-      const trimmedName = slot.displayName.trim();
+      const trimmedName = capitalizeName(slot.displayName);
       if (trimmedName.length === 0) {
         return {
           status: "error",
@@ -287,7 +288,7 @@ export async function createMatchAction(
           date: input.date ? new Date(input.date) : new Date(),
           sets: input.sets,
           matchType: input.matchType,
-          club: input.club?.trim() || null,
+          club: capitalizeName(input.club ?? "") || null,
           courtNumber: input.courtNumber?.trim() || null,
           notes: input.notes?.trim() || null,
           score: input.score?.trim() || null,
@@ -732,7 +733,7 @@ export async function updateMatchDetailsAction(
     if (input.date !== undefined) updateData.date = new Date(input.date);
     if (input.sets !== undefined) updateData.sets = input.sets;
     if (input.matchType !== undefined) updateData.matchType = input.matchType;
-    if (input.club !== undefined) updateData.club = input.club?.trim() || null;
+    if (input.club !== undefined) updateData.club = capitalizeName(input.club ?? "") || null;
     if (input.courtNumber !== undefined)
       updateData.courtNumber = input.courtNumber?.trim() || null;
     if (input.notes !== undefined)
@@ -1030,7 +1031,7 @@ export async function releaseMatchSlotAction(
       };
     }
 
-    const trimmedName = input.displayName?.trim();
+    const trimmedName = input.displayName ? capitalizeName(input.displayName) : "";
     const nextDisplayName =
       trimmedName && trimmedName.length > 0
         ? trimmedName
@@ -1075,7 +1076,7 @@ export async function renamePlaceholderAction(
     };
   }
 
-  const trimmedName = input.displayName?.trim();
+  const trimmedName = capitalizeName(input.displayName ?? "");
   if (!trimmedName || trimmedName.length === 0) {
     return { status: "error", message: "Ingresá un nombre válido." };
   }

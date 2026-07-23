@@ -88,6 +88,13 @@ function RegisterMatchInner() {
     handleCloseManageModal();
   }
 
+  function handleSwapSides(team: TeamKey) {
+    const a = teamState[team][0];
+    const b = teamState[team][1];
+    updateSlot(team, 0, b);
+    updateSlot(team, 1, a);
+  }
+
   const modalSlot = manageModal.open
     ? teamState[manageModal.team][manageModal.index]
     : null;
@@ -109,10 +116,13 @@ function RegisterMatchInner() {
         recordScore={recordScore}
         scores={scores}
         isSubmitting={isSubmitting}
-        onSlotClick={(team, index) => setActiveSlot({ team, index })}
+        onSlotClick={(team, index) =>
+          setManageModal({ open: true, team, index })
+        }
         onManageClick={(team, index) =>
           setManageModal({ open: true, team, index })
         }
+        onSwapSides={handleSwapSides}
         onMatchTypeChange={setMatchType}
         onSetsChange={setSets}
         onCountsForRankingChange={setCountsForRanking}

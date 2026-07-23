@@ -15,7 +15,7 @@ import {
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { getTurnLabel } from "@/lib/utils";
+import { getTurnLabel, capitalizeName } from "@/lib/utils";
 
 export type CreateTurnInput = {
   club: string;
@@ -37,7 +37,7 @@ export async function createTurnAction(input: CreateTurnInput) {
       .insert(turns)
       .values({
         creatorId: session.user.id,
-        club: input.club,
+        club: capitalizeName(input.club),
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
@@ -94,7 +94,7 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
     await db
       .update(turns)
       .set({
-        club: input.club,
+        club: capitalizeName(input.club),
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,

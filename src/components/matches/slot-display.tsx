@@ -30,6 +30,7 @@ export function SlotDisplay({
 }: SlotDisplayProps) {
   const position = positionFromTeam(team, index);
   const placeholderName = `Jugador ${position + 1}`;
+  const sideLabel = index === 0 ? "Derecha" : "Revés";
 
   const displayName =
     slot?.kind === "user"
@@ -101,11 +102,9 @@ export function SlotDisplay({
         >
           {displayName}
         </p>
-        {!isUser && (
-          <span className="text-xs text-muted-foreground mt-0.5">
-            Cupo pendiente
-          </span>
-        )}
+        <span className="text-xs text-muted-foreground mt-0.5">
+          {isUser ? sideLabel : `${sideLabel} · Cupo pendiente`}
+        </span>
       </div>
 
       <div className="flex items-center gap-1">

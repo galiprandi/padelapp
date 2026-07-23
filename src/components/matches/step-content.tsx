@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -7,7 +8,7 @@ import { SlotDisplay } from "./slot-display";
 import { MatchNavigation } from "./match-navigation";
 import type { TeamState, MatchTypeValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
 interface StepContentProps {
   currentStep: 0 | 1 | 2 | 3;
@@ -26,6 +27,7 @@ interface StepContentProps {
   isSubmitting: boolean;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
+  onSwapSides: (team: TeamKey) => void;
   onMatchTypeChange: (value: MatchTypeValue) => void;
   onSetsChange: (value: string) => void;
   onCountsForRankingChange: (checked: boolean) => void;
@@ -111,6 +113,73 @@ const MATCH_TYPE_OPTIONS = [
   { value: "LOCAL_TOURNAMENT", label: "Torneo local" },
 ] as const;
 
+function RecentClubs({
+  currentClub,
+  currentCourt,
+  onClubChange,
+  onCourtChange,
+}: {
+  currentClub: string;
+  currentCourt: string;
+  onClubChange: (value: string) => void;
+  onCourtChange: (value: string) => void;
+}) {
+  const [recentClubs, setRecentClubs] = useState<{ club: string; courtNumber: string | null }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/recent")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.recentClubs) setRecentClubs(data.recentClubs);
+      })
+      .catch(() => {});
+  }, []);
+
+  if (recentClubs.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+        <MapPin className="h-3 w-3" />
+        Clubes recientes
+      </Label>
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {recentClubs.map((item) => {
+          const label = item.courtNumber
+            ? `${item.club} · ${item.courtNumber}`
+            : item.club;
+          const isSelected =
+            currentClub === item.club &&
+            (!item.courtNumber || currentCourt === item.courtNumber);
+          return (
+            <button
+              key={label}
+              type="button"
+              onClick={() => {
+                if (isSelected) {
+                  onClubChange("");
+                  onCourtChange("");
+                } else {
+                  onClubChange(item.club);
+                  onCourtChange(item.courtNumber ?? "");
+                }
+              }}
+              className={cn(
+                "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors",
+                isSelected
+                  ? "bg-primary border-primary text-primary-foreground"
+                  : "bg-card border-border text-muted-foreground hover:bg-muted",
+              )}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function StepContent({
   currentStep,
   teamState,
@@ -126,6 +195,7 @@ export function StepContent({
   isSubmitting,
   onSlotClick,
   onManageClick,
+  onSwapSides,
   onMatchTypeChange,
   onSetsChange,
   onCountsForRankingChange,
@@ -149,52 +219,45 @@ export function StepContent({
           <div>
             <h1 className="text-xl font-bold text-foreground">Nuevo Partido</h1>
             <p className="text-sm text-muted-foreground">
-              Armá tu partido seleccionando las parejas. Tocá el botón de cada
-              jugador para gestionar nombres y enlaces de invitación.
+              Armá tu partido seleccionando las parejas. Tocá un jugador para
+              gestionarlo. Usá el botón de intercambio para cambiar derecha/revés.
             </p>
           </div>
 
           <div className="space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-sm font-bold text-foreground">Pareja A</h2>
-              <div className="grid gap-2">
-                {([0, 1] as const).map((index) => (
-                  <SlotDisplay
-                    key={`A-${index}`}
-                    team="A"
-                    index={index}
-                    slot={teamState.A[index]}
-                    userDisplayName={userDisplayName}
-                    currentUserId={currentUserId}
-                    isActive={
-                      activeSlot.team === "A" && activeSlot.index === index
-                    }
-                    onSlotClick={onSlotClick}
-                    onManageClick={onManageClick}
-                  />
-                ))}
+            {(["A", "B"] as const).map((team) => (
+              <div key={team} className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-bold text-foreground">Pareja {team}</h2>
+                  <button
+                    type="button"
+                    onClick={() => onSwapSides(team)}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors rounded-lg px-2 py-1 hover:bg-primary/5"
+                    aria-label={`Intercambiar derecha y revés de Pareja ${team}`}
+                  >
+                    <ArrowUpDown className="h-3.5 w-3.5" />
+                    Cambiar lados
+                  </button>
+                </div>
+                <div className="grid gap-2">
+                  {([0, 1] as const).map((index) => (
+                    <SlotDisplay
+                      key={`${team}-${index}`}
+                      team={team}
+                      index={index}
+                      slot={teamState[team][index]}
+                      userDisplayName={userDisplayName}
+                      currentUserId={currentUserId}
+                      isActive={
+                        activeSlot.team === team && activeSlot.index === index
+                      }
+                      onSlotClick={onSlotClick}
+                      onManageClick={onManageClick}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              <h2 className="text-sm font-bold text-foreground">Pareja B</h2>
-              <div className="grid gap-2">
-                {([0, 1] as const).map((index) => (
-                  <SlotDisplay
-                    key={`B-${index}`}
-                    team="B"
-                    index={index}
-                    slot={teamState.B[index]}
-                    userDisplayName={userDisplayName}
-                    currentUserId={currentUserId}
-                    isActive={
-                      activeSlot.team === "B" && activeSlot.index === index
-                    }
-                    onSlotClick={onSlotClick}
-                    onManageClick={onManageClick}
-                  />
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -355,6 +418,12 @@ export function StepContent({
           </div>
 
           <div className="space-y-4">
+            <RecentClubs
+              currentClub={club}
+              currentCourt={courtNumber}
+              onClubChange={onClubChange}
+              onCourtChange={onCourtNumberChange}
+            />
             <div className="space-y-2">
               <Label htmlFor="club" className="text-sm font-semibold">
                 Club (opcional)

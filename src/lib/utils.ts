@@ -5,6 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Capitalize each word of a name: "diego morales" → "Diego Morales".
+ *  Trims leading/trailing whitespace and collapses multiple spaces. */
+export function capitalizeName(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
 export function isToday(date: Date): boolean {
   const today = new Date();
   return (

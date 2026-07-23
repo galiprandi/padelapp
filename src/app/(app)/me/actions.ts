@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { users } from "@/db/schema";
+import { capitalizeName } from "@/lib/utils";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -22,7 +23,7 @@ export async function updateUserProfileAction(
     return { status: "error", message: "You must be signed in." };
   }
 
-  const trimmed = aliasInput?.trim() ?? "";
+  const trimmed = capitalizeName(aliasInput ?? "");
   if (
     trimmed.length > 0 &&
     (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)
