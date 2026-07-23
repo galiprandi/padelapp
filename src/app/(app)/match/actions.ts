@@ -319,6 +319,8 @@ export async function createMatchAction(
     });
 
     revalidatePath("/match");
+    revalidatePath("/notifications");
+    revalidatePath("/", "layout");
     revalidateTag("matches", "default");
     revalidateTag("turns", "default");
 
@@ -417,6 +419,8 @@ export async function cancelMatchAction(
     revalidatePath("/match");
     revalidatePath(`/match/${matchId}`);
     revalidatePath("/me");
+    revalidatePath("/notifications");
+    revalidatePath("/", "layout");
     revalidateTag("matches", "default");
 
     return { status: "ok" };
@@ -630,6 +634,9 @@ export async function submitMatchResultAction(
     }
 
     revalidatePath(`/match/${input.matchId}`);
+    revalidatePath("/notifications");
+    revalidatePath("/me");
+    revalidatePath("/", "layout");
 
     // #7: Result submitted — notify opposing team players to confirm
     const submitter = updatedMatch.players.find(
@@ -865,6 +872,9 @@ export async function confirmMatchResultAction(
     }
 
     revalidatePath(`/match/${matchId}`);
+    revalidatePath("/notifications");
+    revalidatePath("/me");
+    revalidatePath("/", "layout");
     revalidateTag("matches", "default");
 
     return { status: "ok" };
@@ -1335,6 +1345,9 @@ export async function saveMatchResultAction(
 
     revalidatePath(`/match/${input.matchId}`);
     revalidatePath(`/match/${input.matchId}/result`);
+    revalidatePath("/notifications");
+    revalidatePath("/me");
+    revalidatePath("/", "layout");
     revalidateTag("matches", "default");
 
     return { status: "ok" };
