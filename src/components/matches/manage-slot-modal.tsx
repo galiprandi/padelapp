@@ -310,8 +310,8 @@ export function ManageSlotModal({
                         : ""}
                 </div>
 
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
+                <div className="relative h-12">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 pointer-events-none" />
                   <Input
                     ref={inputRef}
                     id="player-input"
@@ -332,7 +332,7 @@ export function ManageSlotModal({
                     className="h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium"
                   />
                   {isSearching && (
-                    <Loader2 className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin right-4" />
+                    <Loader2 className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin right-4 pointer-events-none" />
                   )}
                   {inputValue && !isSearching && (
                     <button
