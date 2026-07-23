@@ -76,3 +76,62 @@ This had caused Vercel build failures before. The combination of an unsupported 
 - pnpm 11 release notes: https://github.com/pnpm/pnpm/releases/tag/v11.0.0 (Node 22+, `allowBuilds` replaces `onlyBuiltDependencies`).
 - Related AGENTS.md section: "Auth — Pitfalls & Learnings" documents prior Vercel/build fragility.
 - **Revisit when**: Vercel announces official pnpm 11 or 12 support, OR `drizzle-orm` drops `@prisma/client` from its optional peer deps.
+
+---
+
+---
+status: accepted
+date: 2026-07-23
+decision-makers: cenco
+---
+
+# Service Worker must not intercept cross-origin images (CSP connect-src conflict)
+
+## Context and Problem Statement
+
+The PWA service worker (`public/firebase-messaging-sw.js`) ran a stale-while-revalidate cache that intercepted cross-origin image requests to `api.dicebear.com` (avatar presets) and `lh3.googleusercontent.com` (Google profile photos). On `/me/profile`, every avatar failed with `net::ERR_FAILED`.
+
+**Root cause**: a SW's `fetch()` is governed by the page's CSP **`connect-src`**, not `img-src`. The two hostnames are whitelisted in `img-src` (so `<img>` tags load them fine) but NOT in `connect-src`. When the SW intercepted the image request and called `fetch(event.request)` to re-fetch it for caching, the CSP blocked the connection. The `.catch()` returned `undefined`, `event.respondWith(undefined)` produced `net::ERR_FAILED`, and the image never rendered. Both URLs return HTTP 200 via `curl`, confirming the failure was browser/SW/CSP-side.
+
+## Decision
+
+1. **Remove cross-origin image interception from the SW** — delete the `isCacheableStaticAsset` branch for `api.dicebear.com` and `lh3.googleusercontent.com`.
+2. **Bump `CACHE_NAME`** from `v1` to `v2` so existing clients pick up the new SW on next navigation.
+3. **Leave `img-src` and `connect-src` in `next.config.ts` unchanged** — the CSP is correct for direct `<img>` loads; the bug was in the SW interception layer.
+4. **Rely on the browser's HTTP cache** — both CDNs return strong cache headers (`max-age=86400` / `max-age=31919000`).
+
+### Non-goals
+
+- Caching cross-origin images in the SW at all — opaque `no-cors` responses can't be inspected, and the CSP conflict makes it harmful.
+- Adding image CDNs to `connect-src` — they're not API endpoints.
+- Self-hosting DiceBear presets — future optimization, out of scope for this fix.
+
+## Consequences
+
+- Good, because avatars load correctly on `/me/profile` and everywhere else (dashboard, match cards, ranking, public profiles).
+- Good, because the SW only intercepts same-origin static assets — cleaner responsibility boundary.
+- Good, because `connect-src` stays tight.
+- Bad, because cross-origin images aren't SW-cached for offline use. Acceptable: the app isn't designed for offline image browsing.
+
+## Implementation Plan
+
+- **Affected paths**: `public/firebase-messaging-sw.js` — delete cross-origin hostname check in `isCacheableStaticAsset`; bump `CACHE_NAME` to `v2`.
+- **Patterns to avoid**: do NOT re-add cross-origin hostnames to `isCacheableStaticAsset` without also adding them to `connect-src`. If cross-origin image caching is needed, prefer self-hosting (same-origin) over widening `connect-src`.
+
+### Verification
+
+- [x] `firebase-messaging-sw.js` no longer references `api.dicebear.com` or `lh3.googleusercontent.com` in `isCacheableStaticAsset`.
+- [x] `CACHE_NAME` reads `padelred-static-assets-v2`.
+- [x] Commit `b7ec606` pushed to `main`.
+- [ ] After deploy: `/me/profile` shows no `net::ERR_FAILED` for image CDNs; avatars render visibly.
+
+## Alternatives Considered
+
+- **Add image CDNs to `connect-src`**: rejected — widens CSP surface for hosts that aren't API endpoints.
+- **Self-host DiceBear SVGs**: rejected for this fix — larger change, future optimization.
+- **SW fall-through for cross-origin images**: rejected — removing the hostname check achieves the same more cleanly.
+
+## More Information
+
+- Fix commit: `b7ec606`.
+- **Revisit when**: offline image support becomes a requirement, OR we self-host DiceBear presets (would drop `api.dicebear.com` from `img-src` and the SW entirely).
