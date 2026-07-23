@@ -12,6 +12,7 @@ interface SlotDisplayProps {
   index: 0 | 1;
   slot: SlotValue | null;
   userDisplayName: string;
+  currentUserId?: string;
   isActive: boolean;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
@@ -22,6 +23,7 @@ export function SlotDisplay({
   index,
   slot,
   userDisplayName,
+  currentUserId,
   isActive,
   onSlotClick,
   onManageClick,
@@ -37,8 +39,11 @@ export function SlotDisplay({
         : team === "A" && index === 0
           ? userDisplayName
           : placeholderName;
-  const isOwnerSlot = team === "A" && index === 0;
   const isUser = slot?.kind === "user";
+  const isSelf =
+    slot?.kind === "user" &&
+    Boolean(currentUserId) &&
+    slot.player.id === currentUserId;
 
   return (
     <div
@@ -103,38 +108,37 @@ export function SlotDisplay({
         )}
       </div>
 
-      {isOwnerSlot ? (
-        <div className="flex h-8 items-center px-2.5 rounded-lg bg-primary/10 border border-primary/20">
-          <span className="text-xs font-semibold text-primary">Tú</span>
-        </div>
-      ) : (
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "h-9 w-9 rounded-lg transition-colors",
-              isActive
-                ? "bg-primary/10 text-primary hover:bg-primary/20"
-                : "text-muted-foreground hover:bg-muted",
-            )}
-            aria-label={
-              slot?.kind === "placeholder"
-                ? "Gestionar nombre del cupo"
-                : slot?.kind === "user"
-                  ? "Cambiar jugador"
-                  : "Asignar jugador"
-            }
-            onClick={(event) => {
-              event.stopPropagation();
-              onManageClick(team, index);
-            }}
-          >
-            <UsersRound className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <div className="flex items-center gap-1">
+        {isSelf ? (
+          <div className="flex h-8 items-center px-2.5 rounded-lg bg-primary/10 border border-primary/20">
+            <span className="text-xs font-semibold text-primary">Tú</span>
+          </div>
+        ) : null}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-9 w-9 rounded-lg transition-colors",
+            isActive
+              ? "bg-primary/10 text-primary hover:bg-primary/20"
+              : "text-muted-foreground hover:bg-muted",
+          )}
+          aria-label={
+            slot?.kind === "placeholder"
+              ? "Gestionar nombre del cupo"
+              : slot?.kind === "user"
+                ? "Cambiar jugador"
+                : "Asignar jugador"
+          }
+          onClick={(event) => {
+            event.stopPropagation();
+            onManageClick(team, index);
+          }}
+        >
+          <UsersRound className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 }

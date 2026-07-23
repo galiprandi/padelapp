@@ -14,6 +14,10 @@ export function useTeamManagement() {
   const userEmail = session?.user?.email ?? "";
   const userImage = session?.user?.image ?? null;
 
+  const currentUser: PlayerOption | null = userId
+    ? { id: userId, displayName: userDisplayName, email: userEmail, image: userImage }
+    : null;
+
   useEffect(() => {
     if (!userId) {
       return;
@@ -81,5 +85,7 @@ export function useTeamManagement() {
     teamState,
     updateSlot,
     setWholeState,
+    currentUser,
+    userDisplayName,
   };
 }

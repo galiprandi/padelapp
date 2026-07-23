@@ -81,7 +81,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 ### Crear
 - Cualquier usuario logueado crea un partido (formato: dobles o singles, sets, tipo: amistoso o torneo, club, cancha, notas)
-- El creador queda automáticamente en el primer puesto del equipo A
+- El creador queda automáticamente en el primer puesto del equipo A, pero puede reemplazarse por otro jugador (o un placeholder) para cargar partidos en los que no juega. El botón "Quitar" lo vuelve a poner a él en ese puesto
 - Los demás puestos pueden estar ocupados por usuarios o ser "placeholders" (nombre sin cuenta)
 - Al crear → se genera un link compartible para invitar a los demás jugadores
 - Los partidos creados desde un turno heredan club y fecha del turno

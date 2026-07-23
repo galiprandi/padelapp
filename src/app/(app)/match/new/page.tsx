@@ -27,7 +27,8 @@ function RegisterMatchInner() {
     index: 1,
   });
 
-  const { teamState, updateSlot, setWholeState } = useTeamManagement();
+  const { teamState, updateSlot, setWholeState, currentUser, userDisplayName } =
+    useTeamManagement();
   const {
     currentStep,
     matchType,
@@ -64,16 +65,20 @@ function RegisterMatchInner() {
   }
 
   function handleSaveSlot(value: SlotValue) {
-    if (manageModal.team === "A" && manageModal.index === 0) {
-      handleCloseManageModal();
-      return;
-    }
-
     updateSlot(manageModal.team, manageModal.index, value);
     handleCloseManageModal();
   }
 
   function handleReleaseSlot() {
+    // The first slot of Team A defaults to the organizer. Releasing it
+    // restores the organizer rather than leaving an anonymous placeholder,
+    // so they can undo replacing themselves.
+    if (manageModal.team === "A" && manageModal.index === 0 && currentUser) {
+      updateSlot("A", 0, { kind: "user", player: currentUser });
+      handleCloseManageModal();
+      return;
+    }
+
     const placeholderName = `Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`;
     updateSlot(
       manageModal.team,
@@ -93,7 +98,8 @@ function RegisterMatchInner() {
         currentStep={currentStep}
         teamState={teamState}
         activeSlot={activeSlot}
-        userDisplayName="Usuario" // This should come from session
+        userDisplayName={userDisplayName}
+        currentUserId={currentUser?.id}
         matchType={matchType}
         sets={sets}
         setsValid={setsValid}
@@ -133,6 +139,7 @@ function RegisterMatchInner() {
         open={manageModal.open}
         slot={modalSlot}
         placeholderName={`Jugador ${positionFromTeam(manageModal.team, manageModal.index) + 1}`}
+        allowReplaceUser
         onSave={handleSaveSlot}
         onRelease={handleReleaseSlot}
         onClose={handleCloseManageModal}
