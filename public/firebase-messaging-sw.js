@@ -3,7 +3,7 @@
 // to satisfy the browser's requirement that they are added on the initial
 // evaluation of the worker script.
 
-const CACHE_NAME = "padelred-static-assets-v1";
+const CACHE_NAME = "padelred-static-assets-v2";
 const STATIC_ASSET_REGEX = /\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|woff2?|json)$/i;
 
 function isCacheableStaticAsset(request) {
@@ -32,13 +32,11 @@ function isCacheableStaticAsset(request) {
     return true;
   }
 
-  // Cache trusted sporty Dicebear SVG presets & Google portrait images to improve perceived profile navigation performance
-  if (
-    url.hostname === "api.dicebear.com" ||
-    url.hostname === "lh3.googleusercontent.com"
-  ) {
-    return true;
-  }
+  // NOTE: Cross-origin images (api.dicebear.com, lh3.googleusercontent.com)
+  // are intentionally NOT intercepted by the SW. The SW's fetch() is governed
+  // by the page's CSP `connect-src` directive, not `img-src`, so re-fetching
+  // those URLs from the SW gets blocked by CSP and produces net::ERR_FAILED.
+  // The browser's HTTP cache handles them naturally.
 
   // Cache PWA manifest, custom icons, and standard static public files
   if (
