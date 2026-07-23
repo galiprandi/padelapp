@@ -328,9 +328,9 @@ export default function MatchResultPage({
                                     });
                                   }}
                                   className={cn(
-                                    "h-12 rounded-lg border text-lg font-bold transition-colors flex items-center justify-center",
+                                      "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                     isSelected
-                                      ? "bg-primary border-primary text-primary-foreground"
+                                        ? "bg-primary border-primary text-primary-foreground shadow-sm"
                                       : "bg-card border-border text-muted-foreground hover:bg-muted",
                                   )}
                                 >
@@ -372,7 +372,7 @@ export default function MatchResultPage({
                               aria-checked={playerSides[p.id] === "RIGHT"}
                               onClick={() => handleSideChange(p.id, "RIGHT")}
                               className={cn(
-                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98]",
+                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                 playerSides[p.id] === "RIGHT"
                                   ? "bg-background text-foreground shadow-sm"
                                   : "text-muted-foreground hover:text-foreground"
@@ -386,7 +386,7 @@ export default function MatchResultPage({
                               aria-checked={playerSides[p.id] === "LEFT"}
                               onClick={() => handleSideChange(p.id, "LEFT")}
                               className={cn(
-                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98]",
+                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                 playerSides[p.id] === "LEFT"
                                   ? "bg-background text-foreground shadow-sm"
                                   : "text-muted-foreground hover:text-foreground"
