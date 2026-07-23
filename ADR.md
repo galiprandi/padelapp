@@ -123,7 +123,7 @@ The PWA service worker (`public/firebase-messaging-sw.js`) ran a stale-while-rev
 - [x] `firebase-messaging-sw.js` no longer references `api.dicebear.com` or `lh3.googleusercontent.com` in `isCacheableStaticAsset`.
 - [x] `CACHE_NAME` reads `padelred-static-assets-v2`.
 - [x] Commit `b7ec606` pushed to `main`.
-- [ ] After deploy: `/me/profile` shows no `net::ERR_FAILED` for image CDNs; avatars render visibly.
+- [x] After deploy: `/me/profile` shows no `net::ERR_FAILED` for image CDNs; all 8 images render with `naturalWidth > 0` (Google photo 96px, DiceBear presets 150px). SW `v2` activated, `v1` cache deleted.
 
 ## Alternatives Considered
 
