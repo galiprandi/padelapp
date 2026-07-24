@@ -69,10 +69,7 @@ export function TurnCard({
   const isUrgent =
     mounted && hoursUntilTurn < 3 && hoursUntilTurn >= 0 && !isFull;
 
-  const handleQuickJoin = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  const handleQuickJoin = () => {
     startTransition(async () => {
       const res = canJoinAsSubstitute
         ? await joinSubstituteAction(turn.id)
@@ -84,14 +81,18 @@ export function TurnCard({
   };
 
   return (
-    <Link href={`/t/${turn.id}`}>
-      <div
-        className={cn(
-          "flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
-          isRecommended && "border-primary bg-primary/5",
-          isPending && "opacity-70 pointer-events-none",
-        )}
-      >
+    <div
+      className={cn(
+        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
+        isRecommended && "border-primary bg-primary/5",
+        isPending && "opacity-70 pointer-events-none",
+      )}
+    >
+      <Link
+        href={`/t/${turn.id}`}
+        className="absolute inset-0 rounded-xl"
+        aria-label={`Ver turno en ${turn.club}`}
+      />
         <div className="flex items-center gap-3">
           {/* Date */}
           <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14">
@@ -155,7 +156,7 @@ export function TurnCard({
 
         {/* Actions row */}
         {(isJoined || canJoin) && (
-          <div className="flex items-stretch gap-2">
+          <div className="relative z-10 flex items-stretch gap-2">
             {isJoined && turn.players.length < turn.maxPlayers && (
               <div className="flex-1">
                 <OpenToNetworkButton
@@ -178,9 +179,6 @@ export function TurnCard({
               size="sm"
               iconOnly={false}
               className="flex-1"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
             />
 
             {canJoin && (
@@ -201,7 +199,6 @@ export function TurnCard({
             )}
           </div>
         )}
-      </div>
-    </Link>
+    </div>
   );
 }

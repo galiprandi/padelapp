@@ -278,7 +278,7 @@ export function OnboardingChecklist({
             {!stepNotificationsCompleted && (
               <div className="pt-1.5">
                 {permission === "unsupported" ? (
-                  <span className="text-[11px] text-muted-foreground font-medium">
+                  <span className="text-xs text-muted-foreground font-medium">
                     No soportado en este navegador
                   </span>
                 ) : (

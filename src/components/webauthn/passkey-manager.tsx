@@ -139,7 +139,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
                 <p className="text-xs font-semibold text-foreground truncate">
                   {passkey.nickname || "Huella registrada"}
                 </p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {new Date(passkey.createdAt).toLocaleDateString("es-AR", {
                     day: "numeric",
                     month: "short",

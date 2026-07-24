@@ -399,7 +399,7 @@ export default function GraphVisualizer() {
 
           <div className="grid grid-cols-3 gap-2 mb-3">
             <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+              <p className="text-xs text-neutral-400 ">
                 Score
               </p>
               <p className="text-sm font-sans tabular-nums font-bold text-neutral-700">
@@ -407,7 +407,7 @@ export default function GraphVisualizer() {
               </p>
             </div>
             <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+              <p className="text-xs text-neutral-400 ">
                 Lado
               </p>
               <p className="text-sm font-bold text-neutral-700">
@@ -419,7 +419,7 @@ export default function GraphVisualizer() {
               </p>
             </div>
             <div className="rounded-lg bg-neutral-50 px-2 py-1.5 text-center border border-neutral-100">
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wide">
+              <p className="text-xs text-neutral-400 ">
                 Grupo
               </p>
               <p
@@ -447,7 +447,7 @@ export default function GraphVisualizer() {
                 return (
                   <div key={i} className="flex items-center gap-2.5 text-xs">
                     <span
-                      className="inline-flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold shrink-0"
+                      className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
                       style={{
                         backgroundColor: isPartner
                           ? "rgba(16,185,129,0.1)"
@@ -466,7 +466,7 @@ export default function GraphVisualizer() {
                     <span className="text-neutral-600 flex-1 truncate">
                       {other?.alias || other?.name || "—"}
                     </span>
-                    <span className="text-neutral-300 text-[10px]">
+                    <span className="text-neutral-300 text-xs">
                       {link.strength}×
                     </span>
                   </div>
@@ -479,7 +479,7 @@ export default function GraphVisualizer() {
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 z-10 rounded-xl bg-white px-4 py-3 border border-neutral-200 shadow-sm">
-        <p className="text-[10px] text-neutral-400 uppercase tracking-wide mb-2 font-medium">
+        <p className="text-xs text-neutral-400  mb-2 font-medium">
           Leyenda
         </p>
         <div className="flex flex-col gap-2">

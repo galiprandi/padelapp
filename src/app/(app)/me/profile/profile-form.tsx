@@ -6,6 +6,7 @@ import { useToast } from "@/components/toast/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserCircle } from "lucide-react";
+import Image from "next/image";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -125,11 +126,14 @@ export function ProfileForm({
       {/* Avatar — static display, Google photo or initials */}
       <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={displayName ?? "Avatar"}
+            width={64}
+            height={64}
             className="w-16 h-16 rounded-xl object-cover border border-border shrink-0"
             referrerPolicy="no-referrer"
+            unoptimized
           />
         ) : initials ? (
           <div className="w-16 h-16 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-border shrink-0 text-xl font-bold">

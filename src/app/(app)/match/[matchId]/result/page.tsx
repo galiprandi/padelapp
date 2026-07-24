@@ -355,7 +355,7 @@ export default function MatchResultPage({
               <div className="rounded-xl border border-border bg-card p-4 space-y-4">
                 {teams.map((team) => (
                   <div key={team.id} className="space-y-2">
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                    <span className="text-xs font-semibold text-muted-foreground  block">
                       {team.label}
                     </span>
                     <div className="divide-y divide-border">
