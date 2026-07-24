@@ -118,9 +118,10 @@ export function OpenToNetworkButton({
         variant={isOnCooldown ? "outline" : variant}
         size={size}
         className={cn(
+          !isIconOnly && "w-full",
           variant === "default" && !isOnCooldown && "font-bold",
           isOnCooldown && "text-muted-foreground border-border bg-muted/20 cursor-not-allowed",
-          className
+          className,
         )}
         aria-label={isOnCooldown ? `Notificado, en cooldown por ${minutesRemaining} minutos` : label}
       >

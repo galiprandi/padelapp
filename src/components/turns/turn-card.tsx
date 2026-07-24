@@ -87,110 +87,118 @@ export function TurnCard({
     <Link href={`/t/${turn.id}`}>
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
+          "flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
           isRecommended && "border-primary bg-primary/5",
           isPending && "opacity-70 pointer-events-none",
         )}
       >
-        {/* Date */}
-        <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14">
-          <span className="text-xs font-bold text-muted-foreground leading-none">
-            <LocalMonth date={turn.date} />
-          </span>
-          <span className="text-xl font-bold text-foreground leading-none mt-1 tabular-nums">
-            <LocalDay date={turn.date} />
-          </span>
+        <div className="flex items-center gap-3">
+          {/* Date */}
+          <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14">
+            <span className="text-xs font-bold text-muted-foreground leading-none">
+              <LocalMonth date={turn.date} />
+            </span>
+            <span className="text-xl font-bold text-foreground leading-none mt-1 tabular-nums">
+              <LocalDay date={turn.date} />
+            </span>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-hidden">
+            <div className="flex items-center gap-2">
+              <p className="truncate text-sm font-semibold text-foreground">
+                {turn.club}
+              </p>
+              {isTodayDate && <Badge variant="success">Hoy</Badge>}
+              {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
+              {isUrgent && (
+                <Badge
+                  variant="default"
+                  className="bg-amber-500/20 text-amber-600 border-amber-500/30"
+                >
+                  {hoursUntilTurn < 1
+                    ? "¡Urgente!"
+                    : `En ${Math.round(hoursUntilTurn)}h`}
+                </Badge>
+              )}
+            </div>
+
+            <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <LocalTime date={turn.date} />
+              </span>
+              <span className="flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {turn.players.length}/{turn.maxPlayers}
+                {turn.substitutes && turn.substitutes.length > 0 && (
+                  <span className="text-muted-foreground/70">
+                    (+{turn.substitutes.length} supl
+                    {turn.substitutes.length === 1 ? "" : "es"})
+                  </span>
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* Status badge */}
+          <div className="shrink-0">
+            {canJoin ? null : isSubstitute ? (
+              <Badge variant="default">Suplente</Badge>
+            ) : isJoined ? (
+              <Badge variant="primary">Inscripto</Badge>
+            ) : turn.status === "FULL" ? (
+              <Badge variant="default">Completo</Badge>
+            ) : null}
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-hidden">
-          <div className="flex items-center gap-2">
-            <p className="truncate text-sm font-semibold text-foreground">
-              {turn.club}
-            </p>
-            {isTodayDate && <Badge variant="success">Hoy</Badge>}
-            {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
-            {isUrgent && (
-              <Badge
-                variant="default"
-                className="bg-amber-500/20 text-amber-600 border-amber-500/30"
+        {/* Actions row */}
+        {(isJoined || canJoin) && (
+          <div className="flex items-center gap-2 pl-[68px]">
+            {isJoined && turn.players.length < turn.maxPlayers && (
+              <OpenToNetworkButton
+                turnId={turn.id}
+                club={turn.club}
+                variant="outline"
+                size="sm"
+                showText={false}
+                label="Salvar turno"
+                iconOnly={false}
+              />
+            )}
+
+            <ShareButton
+              url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
+              title="Sumate al Turno"
+              text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+              variant="ghost"
+              size="sm"
+              iconOnly
+              className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-muted"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            />
+
+            {canJoin && (
+              <button
+                onClick={handleQuickJoin}
+                disabled={isPending}
+                aria-label={`Unirse al turno en ${turn.club}`}
+                className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
               >
-                {hoursUntilTurn < 1
-                  ? "¡Urgente!"
-                  : `En ${Math.round(hoursUntilTurn)}h`}
-              </Badge>
+                {isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : canJoinAsSubstitute ? (
+                  "Suplente"
+                ) : (
+                  "Unirse"
+                )}
+              </button>
             )}
           </div>
-
-          <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              <LocalTime date={turn.date} />
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              {turn.players.length}/{turn.maxPlayers}
-              {turn.substitutes && turn.substitutes.length > 0 && (
-                <span className="text-muted-foreground/70">
-                  (+{turn.substitutes.length} supl
-                  {turn.substitutes.length === 1 ? "" : "es"})
-                </span>
-              )}
-            </span>
-          </div>
-        </div>
-
-        {/* Status / Action */}
-        <div className="flex items-center gap-2 shrink-0">
-          {isJoined && turn.players.length < turn.maxPlayers && (
-            <OpenToNetworkButton
-              turnId={turn.id}
-              club={turn.club}
-              variant="outline"
-              size="icon"
-              iconOnly
-              showText={false}
-              label="Notificar red"
-              className="h-10 w-10"
-            />
-          )}
-
-          <ShareButton
-            url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
-            title="Sumate al Turno"
-            text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
-            variant="ghost"
-            size="icon"
-            iconOnly
-            className="h-10 w-10 rounded-lg text-muted-foreground hover:bg-muted"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
-
-          {canJoin ? (
-            <button
-              onClick={handleQuickJoin}
-              disabled={isPending}
-              aria-label={`Unirse al turno en ${turn.club}`}
-              className="h-10 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center"
-            >
-              {isPending ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : canJoinAsSubstitute ? (
-                "Suplente"
-              ) : (
-                "Unirse"
-              )}
-            </button>
-          ) : isSubstitute ? (
-            <Badge variant="default">Suplente</Badge>
-          ) : isJoined ? (
-            <Badge variant="primary">Inscripto</Badge>
-          ) : turn.status === "FULL" ? (
-            <Badge variant="default">Completo</Badge>
-          ) : null}
-        </div>
+        )}
       </div>
     </Link>
   );
