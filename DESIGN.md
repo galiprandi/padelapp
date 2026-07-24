@@ -27,6 +27,8 @@ Every element must serve a functional purpose. If a visual effect doesn't help t
 ### 1.2 Standard Tailwind sizes only
 Use Tailwind's built-in spacing, radius, and typography scales. No arbitrary values like `rounded-[2.5rem]`, `h-16`, `blur-[120px]`, or `tracking-[0.2em]`.
 
+**Exception:** Z-index layering uses arbitrary values for modals (`z-[60]`) to ensure they sit above all fixed elements. Standard: `z-40` for BottomNav, `z-50` for fixed bottom bars, `z-[60]` for modals/toasts.
+
 **Do:**
 ```tsx
 className="rounded-xl border border-border bg-card p-4"
@@ -66,8 +68,10 @@ className="transition-colors hover:bg-muted"
 className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both"
 ```
 
-### 1.5 No tactile scale effects
-No `active:scale-[0.98]`, `active:scale-90`, or `scale-110` on interactive elements. Use color and border changes for state feedback.
+### 1.5 No decorative scale effects
+No `scale-110`, `scale-[1.02]`, or other decorative scale transforms on elements. Use color and border changes for state feedback.
+
+**Exception:** Buttons may use `active:scale-[0.98]` for tactile feedback (see §7.1).
 
 **Do:**
 ```tsx
@@ -76,7 +80,7 @@ className="bg-primary border-primary text-primary-foreground"
 
 **Don't:**
 ```tsx
-className="bg-primary border-primary text-primary-foreground shadow-2xl shadow-primary/30 scale-[1.02] active:scale-[0.98]"
+className="bg-primary border-primary text-primary-foreground shadow-2xl shadow-primary/30 scale-[1.02]"
 ```
 
 ### 1.6 No PageHeader component
@@ -109,7 +113,9 @@ className="border border-border bg-card shadow-2xl shadow-primary/10"
 ```
 
 ### 1.8 No micro-typography
-No `font-black`, no `uppercase`, no `tracking-wider` or `tracking-tight` labels/headings. Use `text-sm font-semibold` for labels, `text-xs text-muted-foreground` for secondary text. Use standard tracking for all text.
+No `font-black`, no `uppercase`, no `tracking-wider` or `tracking-tight` on labels/headings. Use `text-sm font-semibold` for labels, `text-xs text-muted-foreground` for secondary text. Use standard tracking for all text.
+
+**Exception:** Page titles (`text-xl` and above) may use `tracking-tight` for better typography at larger sizes.
 
 **Do:**
 ```tsx
@@ -156,6 +162,9 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 </div>
 ```
 
+### 1.11 Respect motion preferences
+All animations and transitions must respect `@media (prefers-reduced-motion: reduce)`. The global CSS in `globals.css` automatically disables animations and transitions for users who prefer reduced motion.
+
 ---
 
 ## 2. Component Standards
@@ -164,6 +173,10 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 - Use `rounded-xl border border-border bg-card` for all card-like containers.
 - Padding: `p-4` for compact cards, `p-6` for section containers.
 - No `backdrop-blur`, no `bg-card/40`, `bg-card/60` or `bg-muted/20` — use solid `bg-card` or `bg-muted`.
+- **Cards with actions**: Use stretched-link pattern for card navigation:
+  - Card container: `relative`
+  - Navigation link: `absolute inset-0` covering entire card
+  - Action buttons: `relative z-10` to sit above the link
 
 ### 2.2 Lists and items
 - List items: `rounded-xl border border-border bg-card px-4 py-3`.
@@ -174,6 +187,7 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 - Standard size: `h-10 w-10 rounded-lg`.
 - No ring effects, no scale on active state.
 - Use `bg-muted` for placeholder avatars.
+- Avatars come from Google only — no avatar selector, no dicebear presets, no custom URL input.
 
 ### 2.4 Badges and status pills
 - Use `rounded-md px-2 py-0.5 text-xs font-semibold`.
@@ -181,6 +195,7 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 
 ### 2.5 Form inputs
 - Use shadcn/ui defaults: `h-10 rounded-lg border border-input bg-background`.
+- **Exception:** Primary/alias inputs may use `h-12` for emphasis.
 - Labels: `text-sm font-semibold`.
 - Helper text: `text-xs text-muted-foreground`.
 
@@ -205,6 +220,24 @@ No watermark icons with `opacity-5` or `group-hover:opacity-10`. Icons must be f
 ### 2.9 Recent Form
 - Use `bg-emerald-500` for wins (W) and `bg-rose-500` for losses (L).
 - Must include Spanish `aria-label` for accessibility (e.g., 'Forma reciente: G, P, G').
+
+### 2.10 Auto-save pattern
+For low-friction form updates, use debounced auto-save with an undo toast. This eliminates explicit save/cancel buttons.
+
+**Pattern:**
+- Debounce input changes with 800ms delay
+- Show "Guardando…" while saving
+- Show success toast with "Deshacer" action (4s duration)
+- On undo, revert to previous value and re-save
+- Show validation errors inline before save attempt
+
+**Example:** See `src/app/(app)/me/profile/profile-form.tsx`.
+
+### 2.11 Images
+- Use `next/image` for all images (avatars, photos, icons).
+- Configure remote patterns in `next.config.ts` for external domains.
+- Use `unoptimized` for SVGs that next/image cannot optimize.
+- Never use `<img>` tags directly.
 
 ---
 
@@ -268,7 +301,7 @@ The following patterns were explicitly removed from the codebase and must not be
 | `backdrop-blur-2xl` / `backdrop-blur-md` | Glassmorphism hurt readability and performance |
 | `animate-in fade-in slide-in-from-bottom-*` | Complex animations distracted from content |
 | `duration-1000` with `delay-*` staggered | Artificial delays worsened perceived performance |
-| `active:scale-[0.98]` / `scale-110` | Tactile scaling felt inconsistent on mobile |
+| `active:scale-[0.98]` / `scale-110` | Decorative scale transforms felt inconsistent on mobile. `active:scale-[0.98]` on buttons is now allowed (§7.1) |
 | `font-black` (weight 900) | Too heavy for mobile-first UI |
 | `uppercase tracking-[0.2em]` | Reduced legibility, added visual noise |
 | `text-[11px]` micro-labels | Too small for accessibility |
@@ -282,10 +315,10 @@ The following patterns were explicitly removed from the codebase and must not be
 
 ## 6. Architecture Notes
 
-### 6.1 Data layer (unchanged)
-- **Prisma + PostgreSQL**: Single source of truth.
+### 6.1 Data layer
+- **Drizzle ORM + PostgreSQL**: Single source of truth.
 - **Server Actions**: All mutations go through server actions.
-- **Centralized queries**: `src/lib/match-queries.ts` for consistent reads.
+- **Centralized queries**: `src/lib/queries/` for consistent reads.
 
 ### 6.2 Ranking system (unchanged)
 - **Formula**: `score = 1000 + (wins * 15) + (streak * 5) + (setsWonBonus)`.

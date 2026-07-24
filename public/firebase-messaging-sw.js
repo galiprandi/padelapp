@@ -33,10 +33,10 @@ function isCacheableStaticAsset(request) {
     return true;
   }
 
-  // NOTE: Cross-origin images (api.dicebear.com, lh3.googleusercontent.com)
-  // are intentionally NOT intercepted by the SW. The SW's fetch() is governed
-  // by the page's CSP `connect-src` directive, not `img-src`, so re-fetching
-  // those URLs from the SW gets blocked by CSP and produces net::ERR_FAILED.
+  // NOTE: Cross-origin images (lh3.googleusercontent.com) are intentionally
+  // NOT intercepted by the SW. The SW's fetch() is governed by the page's
+  // CSP `connect-src` directive, not `img-src`, so re-fetching those URLs
+  // from the SW gets blocked by CSP and produces net::ERR_FAILED.
   // The browser's HTTP cache handles them naturally.
 
   // Cache PWA manifest, custom icons, and standard static public files
