@@ -58,7 +58,14 @@ export default function NewTurnPage() {
       });
 
       if (response.status === "ok") {
-        showToast("Turno creado con éxito");
+        const turnUrl = `${window.location.origin}/t/${response.turnId}`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`¡Anotate en mi turno de pádel! ${turnUrl}`)}`;
+        showToast("Turno creado. ¡Compartilo!", {
+          action: {
+            label: "WhatsApp",
+            onClick: () => window.open(whatsappUrl, "_blank"),
+          },
+        });
         router.push(`/t/${response.turnId}`);
       } else {
         showToast(response.message || "Error al crear el turno");

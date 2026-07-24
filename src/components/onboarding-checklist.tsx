@@ -187,7 +187,50 @@ export function OnboardingChecklist({
           </div>
         </div>
 
-        {/* Step 2: Install App (PWA) */}
+        {/* Step 2: First Turn (aha moment) */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
+                stepActivityCompleted
+                  ? "bg-primary border-primary text-primary-foreground"
+                  : "bg-muted border-border text-muted-foreground"
+              }`}
+            >
+              {stepActivityCompleted ? (
+                <Check className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                "2"
+              )}
+            </div>
+            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
+          </div>
+          <div className="flex-1 space-y-1 pb-2">
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className="text-xs font-bold text-foreground">
+                Creá tu primer turno
+              </h3>
+            </div>
+            <p className="text-xs text-muted-foreground leading-normal">
+              Armá un turno, compartilo por WhatsApp y dejá que la red llene los cupos.
+            </p>
+            {!stepActivityCompleted && (
+              <div className="pt-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                  aria-label="Crear tu primer turno de pádel"
+                >
+                  <Link href="/turnos/nuevo">Crear turno</Link>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Step 3: Install App (PWA) */}
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
@@ -200,7 +243,7 @@ export function OnboardingChecklist({
               {stepPwaCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
               ) : (
-                "2"
+                "3"
               )}
             </div>
             <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
@@ -248,7 +291,7 @@ export function OnboardingChecklist({
           </div>
         </div>
 
-        {/* Step 3: Enable Push Notifications */}
+        {/* Step 4: Enable Push Notifications */}
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
@@ -261,12 +304,11 @@ export function OnboardingChecklist({
               {stepNotificationsCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
               ) : (
-                "3"
+                "4"
               )}
             </div>
-            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
           </div>
-          <div className="flex-1 space-y-1 pb-2">
+          <div className="flex-1 space-y-1">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="text-xs font-bold text-foreground">
                 Activá las notificaciones
@@ -298,48 +340,6 @@ export function OnboardingChecklist({
                     Activar notificaciones
                   </Button>
                 )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Step 4: First Game/Turn */}
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
-            <div
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
-                stepActivityCompleted
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-muted border-border text-muted-foreground"
-              }`}
-            >
-              {stepActivityCompleted ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                "4"
-              )}
-            </div>
-          </div>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-xs font-bold text-foreground">
-                Sumate a tu primer partido
-              </h3>
-            </div>
-            <p className="text-xs text-muted-foreground leading-normal">
-              Buscá un turno con cupos libres en la red o creá uno para jugar con amigos.
-            </p>
-            {!stepActivityCompleted && (
-              <div className="pt-1.5">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
-                  aria-label="Ver turnos de pádel disponibles"
-                >
-                  <Link href="/turnos">Explorar turnos</Link>
-                </Button>
               </div>
             )}
           </div>
