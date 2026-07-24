@@ -155,14 +155,14 @@ export function TurnCard({
 
         {/* Actions row */}
         {(isJoined || canJoin) && (
-          <div className="flex items-stretch gap-2 pl-[68px]">
+          <div className="flex items-stretch gap-2">
             {isJoined && turn.players.length < turn.maxPlayers && (
               <div className="flex-1">
                 <OpenToNetworkButton
                   turnId={turn.id}
                   club={turn.club}
                   variant="outline"
-                  size="default"
+                  size="sm"
                   showText={false}
                   label="Salvar turno"
                   iconOnly={false}
@@ -175,7 +175,7 @@ export function TurnCard({
               title="Sumate al Turno"
               text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
               variant="default"
-              size="default"
+              size="sm"
               iconOnly={false}
               className="flex-1"
               onClick={(e) => {
