@@ -33,3 +33,7 @@
 ## 2026-07-21 - [Semantic Form Control Keyboard Focus & ARIA Indicators]
 **Learning:** Custom interactive button groups acting as radio selectors (e.g. score, duration, player count buttons) must have high-visibility focus states (`focus-visible:ring-2`) and proper interactive state indicators (`aria-pressed` or `aria-checked` and Spanish labels where appropriate) so keyboard and screen reader users can navigate and understand them effortlessly.
 **Action:** Always include high-visibility focus indicator rings on any interactive buttons representing selection options, and supply explicit `aria-pressed` or `aria-checked` states for clear programmatical announcement.
+
+## 2026-07-24 - [Accessible Notification Badge Label Pluralization]
+**Learning:** Generic labels like "Notificaciones" on badge counters do not convey critical contextual numerical details to screen reader users. Dynamic, localized, pluralization-aware ARIA labels (e.g. "1 notificación pendiente" vs. "3 notificaciones pendientes") significantly enhance the programmatic accessibility of count elements.
+**Action:** When implementing any counter badges (messages, notifications, unread items), always ensure the `aria-label` dynamically reflects both the count and pluralization rules in the user's preferred locale.
