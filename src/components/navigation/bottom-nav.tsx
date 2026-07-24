@@ -45,7 +45,9 @@ export function BottomNav({
               key={item.href}
               href={item.href}
               className={cn(
-                "group relative flex flex-1 flex-col items-center justify-center transition-colors min-h-[48px]",
+                "group relative flex flex-1 flex-col items-center justify-center transition-all duration-100 min-h-[48px]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg",
+                "active:scale-[0.95]",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
@@ -64,7 +66,7 @@ export function BottomNav({
         {/* FAB Central */}
         <Link
           href="/match/new"
-          className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm"
+          className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-100 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           aria-label="Crear partido"
         >
           <Plus className="h-6 w-6" aria-hidden="true" />
@@ -79,7 +81,9 @@ export function BottomNav({
               key={item.href}
               href={item.href}
               className={cn(
-                "group relative flex flex-1 flex-col items-center justify-center transition-colors min-h-[48px]",
+                "group relative flex flex-1 flex-col items-center justify-center transition-all duration-100 min-h-[48px]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg",
+                "active:scale-[0.95]",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
