@@ -10,6 +10,7 @@
 - [x] 2026-07-22 — Estandarización de banners de onboarding y guía interactiva de instalación PWA: Rediseño accesible y adaptativo para iOS y Android siguiendo las Semantic Maxims 1.3, 2.1 y 4.3 de MDS. (PR #roby/pwa/install-onboarding-ux)
 - [x] 2026-07-23 — Consolidación de onboarding en lista de preparación: Implementación del componente OnboardingChecklist en la página de inicio para nuevos usuarios. (PR #roby/profile/unified-onboarding-checklist)
 - [x] 2026-07-24 — Sólidos visuales en Onboarding y Dashboard: Refactorización de fondos y bordes en checklist de onboarding, instrucciones PWA, y tarjetas de acción del Dashboard para eliminar toda semi-transparencia y cumplir plenamente las directivas de MDS. (PR #roby/profile/dashboard-solid-onboarding-polish)
+- [x] 2026-07-25 — Limpieza y validación de tokens de sesión FCM en suscripción: Prevención de filtración de datos cruzados entre múltiples usuarios registrando la misma clave de dispositivo FCM en entornos compartidos. (PR #roby/profile/fcm-token-cleanup-and-validation)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -45,3 +46,7 @@ Asimismo, todos los banners e indicaciones de onboarding de primer nivel (como l
 ## 2026-07-24 - Sólidos visuales en Onboarding y Dashboard (MDS)
 **Learning:** El Minimal Design System (MDS) prohíbe explícitamente el uso de fondos semi-transparentes o difuminados en banners, listas y cards primarias de interacción para garantizar el máximo contraste y accesibilidad. Al refactorizar los separadores de la guía onboarding, los íconos de instalación PWA, y las tarjetas de acción del Dashboard (marcar asistencia y suplencias) hacia fondos sólidos (bg-card, bg-muted) y bordes nítidos, logramos una interfaz limpia, legible y sumamente profesional.
 **Action:** Evitar siempre el uso de modificadores de opacidad (como /10 o /20) en fondos de elementos contenedores y recurrir a combinaciones de colores sólidos definidos en el tema semántico del sistema de diseño.
+
+## 2026-07-25 - Limpieza y validación de tokens de sesión FCM en suscripción
+**Learning:** En entornos multiusuario o dispositivos móviles compartidos, diferentes usuarios que inicien sesión de manera consecutiva en el mismo navegador heredarán el mismo token FCM de la PWA. Si el servidor no limpia las asociaciones previas del token con otros identificadores de usuario (`userId`), persistirán suscripciones cruzadas en la base de datos, provocando que un usuario reciba notificaciones push privadas dirigidas al usuario de la sesión anterior. Al limpiar proactivamente de la base de datos cualquier registro de `pushSubscriptions` que contenga el mismo `endpoint` pero diferente `userId` durante el registro de la suscripción, se garantiza un mapeo unívoco y se previene de raíz la filtración de datos y notificaciones.
+**Action:** En cualquier proceso de registro de tokens de notificaciones o de sesión de dispositivos (FCM, WebPush, APNS), realizar siempre una eliminación previa de mapeos cruzados obsoletos del mismo token con otros identificadores de usuario antes de guardar el nuevo estado.
