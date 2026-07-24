@@ -155,17 +155,19 @@ export function TurnCard({
 
         {/* Actions row */}
         {(isJoined || canJoin) && (
-          <div className="flex items-center gap-2 pl-[68px]">
+          <div className="flex items-stretch gap-2 pl-[68px]">
             {isJoined && turn.players.length < turn.maxPlayers && (
-              <OpenToNetworkButton
-                turnId={turn.id}
-                club={turn.club}
-                variant="outline"
-                size="sm"
-                showText={false}
-                label="Salvar turno"
-                iconOnly={false}
-              />
+              <div className="flex-1">
+                <OpenToNetworkButton
+                  turnId={turn.id}
+                  club={turn.club}
+                  variant="outline"
+                  size="default"
+                  showText={false}
+                  label="Salvar turno"
+                  iconOnly={false}
+                />
+              </div>
             )}
 
             <ShareButton
