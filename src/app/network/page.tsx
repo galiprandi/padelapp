@@ -1,10 +1,11 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import GraphView from "./graph-view";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { NetworkPageClient } from "./network-page-client";
+import { getAdoptionMetrics, getGraphData } from "./actions";
 
-export default function VisualPage() {
+export default function NetworkPage() {
   return (
     <Suspense
       fallback={
@@ -13,20 +14,21 @@ export default function VisualPage() {
         </div>
       }
     >
-      <GraphContent />
+      <NetworkContent />
     </Suspense>
   );
 }
 
-async function GraphContent() {
+async function NetworkContent() {
   const session = await auth();
   if (!session?.user) {
     redirect("/api/auth/signin");
   }
 
-  return (
-    <div className="w-full h-[100dvh] overflow-hidden">
-      <GraphView />
-    </div>
-  );
+  const [metrics, graphData] = await Promise.all([
+    getAdoptionMetrics(),
+    getGraphData(),
+  ]);
+
+  return <NetworkPageClient metrics={metrics} graphData={graphData} />;
 }
