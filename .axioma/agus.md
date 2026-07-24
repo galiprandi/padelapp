@@ -7,8 +7,13 @@
 - [x] 2026-07-22 — Resaltado del usuario actual ("Tú") en el podio del ranking para una identificación inmediata (PR #3).
 - [x] 2026-07-23 — Implementación de Selección Automática y Visualización de Lado en Resultados de Partido (PR #4).
 - [x] 2026-07-24 — Exposición de acción de finalización forzada para organizador en partidos pendientes de confirmación (PR #5).
+- [x] 2026-07-25 — Implementación de reseteo de estadísticas para usuarios afectados con 0 partidos y corrección de asimetría en ordenación de ranking (PR #6).
 
 ## 🧠 LEARNINGS
+### 2026-07-25 - Reseteo de Estadísticas del Ranking y Simetría del Comparador
+**Learning:** Al recalcular el ranking de forma incremental, si un jugador se ve afectado y termina con 0 partidos válidos (debido a la cancelación de su único partido, desvinculación o baja de cupo), el código anterior retenía por error los datos anteriores (`wins`, `losses`, `score`, etc.) debido a un fallback mal condicionado. Al detectar correctamente si un usuario se ve afectado por la recalculación (`isUserAffected`) y no tiene registros computados, debemos resetear sus estadísticas a los valores por defecto (1000 score, 1.0 reputación, 0 partidos, null fecha de último partido). Adicionalmente, el comparador de ordenación del ranking tenía una asimetría cuando ambos jugadores a comparar tenían fecha nula de último partido, lo que comprometía la estabilidad del ordenamiento.
+**Action:** Al resetear o recalcular conjuntos de datos complejos, siempre asegúrese de limpiar o establecer valores predeterminados explícitamente en lugar de confiar en fallbacks que puedan perpetuar datos antiguos y huérfanos.
+
 ### 2026-07-24 - Acción de Finalización Forzada de Partido para Organizadores (UX)
 **Learning:** En partidos de liga o torneos casuales de pádel, a menudo algunos jugadores no están registrados (son placeholders con nombre libre) o simplemente olvidan iniciar sesión para confirmar el resultado. Al no tener la aprobación obligatoria de ambos equipos, el partido queda en un limbo (status PENDING) indefinido y sus puntos nunca impactan en el ranking global. Al exponer la acción `finalizeMatchAction` como un botón de "Finalizar como Organizador" para el creador del partido, se empodera al organizador para que resuelva bloqueos inmediatamente y procese el partido sin fricciones.
 **Action:** Identificar acciones del backend preexistentes y potentes que no estén expuestas en la interfaz para simplificar la gestión y flujos de usuarios administradores u organizadores.
