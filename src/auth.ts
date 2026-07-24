@@ -59,6 +59,7 @@ const rawAdapter = DrizzleAdapter(db, {
   verificationTokensTable: verificationTokens,
 } as any);
 
+// Wrap the adapter with error logging (masks sensitive fields).
 const loggedAdapter = new Proxy(rawAdapter, {
   get(target, prop) {
     const original = (target as any)[prop];
@@ -111,6 +112,50 @@ const {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Auto-link: if a User exists in the DB (by email) but has no
+      // Account row, create it before NextAuth throws OAuthAccountNotLinked.
+      // The signIn callback runs BEFORE the adapter's getUserByEmail check,
+      // so creating the Account here prevents the error.
+      if (account?.provider !== "google" || !user.email) {
+        return true;
+      }
+
+      // Look up the DB user by email — user.id from OAuth is Google's sub,
+      // not our DB UUID, so we can't use it directly.
+      const [dbUser] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.email, user.email))
+        .limit(1);
+
+      if (!dbUser) {
+        return true; // New user, let NextAuth create them normally
+      }
+
+      const [existingAccount] = await db
+        .select()
+        .from(accounts)
+        .where(eq(accounts.userId, dbUser.id))
+        .limit(1);
+
+      if (!existingAccount) {
+        await db.insert(accounts).values({
+          userId: dbUser.id,
+          type: "oauth",
+          provider: account.provider,
+          providerAccountId: account.providerAccountId,
+          access_token: account.access_token,
+          refresh_token: account.refresh_token,
+          expires_at: account.expires_at,
+          token_type: account.token_type,
+          scope: account.scope,
+          id_token: account.id_token,
+        });
+      }
+
+      return true;
+    },
     session({ session, user }) {
       if (session.user) {
         const adapterUser = user as AdapterUserWithAlias;
@@ -129,13 +174,26 @@ const {
         return;
       }
 
-      const emailVerifiedField = (profile as GoogleProfile).email_verified;
+      const googleProfile = profile as GoogleProfile;
+      const adapterUser = user as AdapterUser;
+
+      // Sync Google photo on every login so user.image stays current.
+      // This also cleans up legacy avatar URLs (e.g. dicebear) from the
+      // old avatar selector that was removed.
+      if (googleProfile.picture && user.id) {
+        await db
+          .update(users)
+          .set({ image: googleProfile.picture })
+          .where(eq(users.id, user.id));
+        adapterUser.image = googleProfile.picture;
+      }
+
+      // Sync email verification timestamp if not already set.
+      const emailVerifiedField = googleProfile.email_verified;
       const isEmailVerified =
         typeof emailVerifiedField === "string"
           ? emailVerifiedField === "true"
           : Boolean(emailVerifiedField);
-
-      const adapterUser = user as AdapterUser;
 
       if (!isEmailVerified || adapterUser.emailVerified) {
         return;
