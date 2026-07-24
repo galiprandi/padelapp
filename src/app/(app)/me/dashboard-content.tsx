@@ -423,7 +423,7 @@ export default async function DashboardContent() {
                   <Button className="w-full h-12" asChild>
                     <Link href="/turnos">Explorar turnos</Link>
                   </Button>
-                  <Button variant="outline" className="w-full h-10" asChild>
+                  <Button variant="outline" className="w-full h-12" asChild>
                     <Link href="/turnos/nuevo">Crear un turno</Link>
                   </Button>
                 </div>
