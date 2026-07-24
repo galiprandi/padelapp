@@ -5,7 +5,7 @@ import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { Shield, ChevronRight } from "lucide-react";
 
 export default function ProfilePage() {
   return (
@@ -36,6 +36,7 @@ export default function ProfilePage() {
             Huella y Face ID para entrar más rápido
           </p>
         </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" aria-hidden="true" />
       </Link>
     </div>
   );
@@ -69,19 +70,12 @@ async function ProfileFormSection() {
 function ProfileFormSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Avatar selector skeleton */}
-      <div className="space-y-3">
-        <Skeleton className="h-4 w-24" />
-        <div className="flex items-center gap-4 rounded-xl border border-border p-4">
-          <Skeleton className="h-16 w-16 rounded-xl" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-3 w-full" />
-            <div className="flex gap-2">
-              <Skeleton className="h-10 w-10 rounded-lg" />
-              <Skeleton className="h-10 w-10 rounded-lg" />
-              <Skeleton className="h-10 w-10 rounded-lg" />
-            </div>
-          </div>
+      {/* Avatar card skeleton */}
+      <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
+        <Skeleton className="h-16 w-16 rounded-xl shrink-0" />
+        <div className="flex-1 space-y-1">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-40" />
         </div>
       </div>
 

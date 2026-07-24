@@ -5,6 +5,7 @@ import { updateUserProfileAction } from "@/app/(app)/me/actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserCircle } from "lucide-react";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -18,7 +19,7 @@ interface ProfileFormProps {
 }
 
 function getInitials(name: string | null | undefined): string {
-  if (!name) return "?";
+  if (!name) return "";
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -39,10 +40,13 @@ export function ProfileForm({
   const previousAliasRef = useRef(initialAlias);
 
   const isAliasDirty = alias !== lastSavedAlias.current;
+  const isPendingSave = isAliasDirty && !isSaving;
 
   // Show "Usar foto de Google" only if Google photo exists and isn't the current image
   const canRestoreGooglePhoto =
     googleAvatarUrl && image !== googleAvatarUrl;
+
+  const initials = getInitials(displayName);
 
   // Debounced auto-save for alias
   useEffect(() => {
@@ -127,9 +131,13 @@ export function ProfileForm({
             className="w-16 h-16 rounded-xl object-cover border border-border shrink-0"
             referrerPolicy="no-referrer"
           />
-        ) : (
+        ) : initials ? (
           <div className="w-16 h-16 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-border shrink-0 text-xl font-bold">
-            {getInitials(displayName)}
+            {initials}
+          </div>
+        ) : (
+          <div className="w-16 h-16 rounded-xl bg-muted text-muted-foreground flex items-center justify-center border border-border shrink-0">
+            <UserCircle className="w-10 h-10" aria-hidden="true" />
           </div>
         )}
         <div className="flex-1 space-y-1">
@@ -141,7 +149,7 @@ export function ProfileForm({
               type="button"
               onClick={handleRestoreGooglePhoto}
               disabled={isSaving}
-              className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50"
+              className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.75rem] py-1"
             >
               Usar mi foto de Google
             </button>
@@ -155,9 +163,23 @@ export function ProfileForm({
 
       {/* Alias */}
       <div className="space-y-2">
-        <Label htmlFor="alias" className="text-sm font-semibold text-foreground">
-          Alias en la cancha
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="alias" className="text-sm font-semibold text-foreground">
+            Alias en la cancha
+          </Label>
+          {(isPendingSave || isSaving) && (
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              {isPendingSave ? (
+                <>
+                  <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+                  Sin guardar
+                </>
+              ) : (
+                "Guardando…"
+              )}
+            </span>
+          )}
+        </div>
         <Input
           id="alias"
           name="alias"
@@ -179,10 +201,6 @@ export function ProfileForm({
           </p>
         )}
       </div>
-
-      {isSaving && (
-        <p className="text-xs text-muted-foreground">Guardando…</p>
-      )}
     </div>
   );
 }
