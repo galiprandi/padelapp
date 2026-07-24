@@ -1,13 +1,11 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { ProfileForm } from "./profile-form";
-import { PasskeyManager } from "@/components/webauthn/passkey-manager";
 import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
-import { getUserPasskeys } from "@/lib/webauthn/actions";
-import { UserCircle } from "lucide-react";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShareButton } from "@/components/share/share-button";
+import Link from "next/link";
+import { Shield } from "lucide-react";
 
 export default function ProfilePage() {
   return (
@@ -15,13 +13,30 @@ export default function ProfilePage() {
       <div>
         <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
         <p className="text-sm text-muted-foreground">
-          Personalizá tu identidad en la red.
+          Cómo te ven los demás jugadores en el ranking y los partidos.
         </p>
       </div>
 
       <Suspense fallback={<ProfileFormSkeleton />}>
         <ProfileFormSection />
       </Suspense>
+
+      <Link
+        href="/me/security"
+        className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-muted"
+      >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <Shield className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <div className="flex-1 space-y-0.5">
+          <p className="text-sm font-semibold text-foreground">
+            Seguridad
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Huella y Face ID para entrar más rápido
+          </p>
+        </div>
+      </Link>
     </div>
   );
 }
@@ -32,10 +47,9 @@ async function ProfileFormSection() {
     redirect("/login");
   }
 
-  const [user, googleAvatarUrl, passkeys] = await Promise.all([
+  const [user, googleAvatarUrl] = await Promise.all([
     getEditableProfile(session.user.id),
     getGoogleAvatarUrl(session.user.id),
-    getUserPasskeys(),
   ]);
 
   if (!user) {
@@ -43,86 +57,38 @@ async function ProfileFormSection() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 relative">
-        <div className="absolute top-3 right-3">
-          <ShareButton
-            url={`/p/${session.user.id}`}
-            title="Mi perfil de pádel"
-            text={`Mirá mis estadísticas en Padel Red.`}
-            variant="ghost"
-            size="sm"
-            iconOnly
-            className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
-          />
-        </div>
-        {user.image ? (
-          <img
-            src={user.image}
-            alt={user.displayName ?? ""}
-            className="w-20 h-20 rounded-xl object-cover border-2 border-border"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-xl bg-muted flex items-center justify-center border-2 border-border">
-            <UserCircle className="w-10 h-10 text-muted-foreground" />
-          </div>
-        )}
-        <div className="text-center">
-          <p className="text-sm font-semibold text-foreground">
-            {user.displayName}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {user.alias || user.email}
-          </p>
-        </div>
-      </div>
-
-      <ProfileForm
-        initialAlias={user.alias ?? ""}
-        initialImage={user.image}
-        googleAvatarUrl={googleAvatarUrl}
-      />
-
-      <PasskeyManager initialPasskeys={passkeys} />
-    </div>
+    <ProfileForm
+      initialAlias={user.alias ?? ""}
+      initialImage={user.image}
+      googleAvatarUrl={googleAvatarUrl}
+      displayName={user.displayName}
+    />
   );
 }
 
 function ProfileFormSkeleton() {
   return (
     <div className="space-y-6">
-      {/* User avatar and info card skeleton */}
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4">
-        <Skeleton className="h-20 w-20 rounded-xl" />
-        <div className="flex flex-col items-center gap-2">
-          <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-3 w-36" />
-        </div>
-      </div>
-
-      {/* Profile Form skeleton */}
-      <div className="space-y-6 rounded-xl border border-border bg-card p-4">
-        {/* Avatar selector skeleton */}
-        <div className="space-y-3">
-          <Skeleton className="h-4 w-24" />
-          <div className="flex items-center gap-4 rounded-xl border border-border p-4">
-            <Skeleton className="h-16 w-16 rounded-xl" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-3 w-full" />
-              <div className="flex gap-2">
-                <Skeleton className="h-10 w-10 rounded-lg" />
-                <Skeleton className="h-10 w-10 rounded-lg" />
-                <Skeleton className="h-10 w-10 rounded-lg" />
-              </div>
+      {/* Avatar selector skeleton */}
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-24" />
+        <div className="flex items-center gap-4 rounded-xl border border-border p-4">
+          <Skeleton className="h-16 w-16 rounded-xl" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-3 w-full" />
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="h-10 w-10 rounded-lg" />
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Alias field skeleton */}
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-12 w-full rounded-lg" />
-        </div>
+      {/* Alias field skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-12 w-full rounded-lg" />
       </div>
     </div>
   );

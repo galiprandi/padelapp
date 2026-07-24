@@ -200,7 +200,22 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 ### Datos editables
 - **Alias**: nombre que ven los demás en partidos, turnos y ranking. Entre 2 y 30 caracteres. Si no se setea, se usa el nombre de Google.
 - **Nivel (1-8)**: referencia práctica para armar partidos. 1 = profesional, 8 = principiante. No afecta el ranking.
-- **Foto**: se puede elegir un avatar predefinido o pegar un link de imagen personalizada. Si no se setea, se muestran las iniciales.
+
+### Foto de perfil
+- La foto viene automáticamente de la cuenta de Google.
+- Si no hay foto de Google, se muestran las iniciales del nombre.
+- No hay selección de avatar ni carga de imágenes personalizada.
+- Si el usuario tenía una foto custom de una versión anterior, puede restaurar su foto de Google desde el perfil.
+
+### Guardado automático
+- Los cambios de alias y foto se guardan automáticamente al dejar de escribir (800ms sin actividad).
+- No hay botón "Guardar" ni "Cancelar". El perfil se actualiza solo.
+- Al guardar, aparece un toast "Perfil actualizado" con botón "Deshacer" que revierte el último cambio.
+- Si el alias no valida (menos de 2 o más de 30 caracteres), el guardado se pausa hasta corregir.
+
+### Seguridad (ruta separada)
+- Las claves de acceso (huella / Face ID) se gestionan en `/me/security`, separado del perfil.
+- Desde el perfil, un link "Seguridad" lleva a esa ruta.
 
 ### Datos no editables
 - Nombre y email vienen de Google al loguear
@@ -219,7 +234,13 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 ### Referencia
 
-**Datos editables:** Alias (2-30 chars), Nivel (1-8), Foto (URL o avatar predefinido)
+**Datos editables:** Alias (2-30 chars), Nivel (1-8)
+
+**Foto de perfil:** Automática desde Google. Sin foto → iniciales. No editable desde la app.
+
+**Guardado:** Auto-save con debounce 800ms + toast con "Deshacer". Sin botones Guardar/Cancelar.
+
+**Seguridad:** Ruta separada `/me/security` para passkeys (huella/Face ID).
 
 **Datos automáticos:** Reputación, Victorias, Derrotas, Partidos jugados, Posición ranking, Puntaje ranking
 
