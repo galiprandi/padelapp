@@ -172,10 +172,10 @@ export function TurnCard({
               url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
               title="Sumate al Turno"
               text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
-              variant="ghost"
-              size="sm"
-              iconOnly
-              className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-muted"
+              variant="default"
+              size="default"
+              iconOnly={false}
+              className="flex-1"
               onClick={(e) => {
                 e.stopPropagation();
               }}
