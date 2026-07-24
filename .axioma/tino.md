@@ -7,6 +7,7 @@
 - [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
 - [x] 2026-07-21 — Adopción final y completa de Cache Components para la página pública de turnos /t/[id] (PR #tino/perf/t-id-cache-components-adoption)
 - [x] 2026-07-22 — Caching de assets estáticos y CDNs en el Service Worker para mejorar la carga instantánea y soporte offline del PWA (PR #tino/perf/optimize-fcm-sw-caching)
+- [x] 2026-07-23 — Optimización de PPR en las tres pestañas principales /ranking, /match y /turnos (PR #tino/perf/complete-ppr-adoption)
 
 ## 🧠 LEARNINGS
 ### 2026-07-17 - Setup inicial
@@ -30,5 +31,9 @@
 **Action:** Mantener la disciplina de diseño PPR. Cualquier nueva ruta o sub-ruta dinámica debe diseñarse de forma asíncrona, aislando el acceso a la sesión, cabeceras, o base de datos dentro de límites de `<Suspense>`.
 
 ### 2026-07-22 - Caching de Assets Estáticos en el Service Worker (PWA)
-**Learning:** Agregar una estrategia Stale-While-Revalidate en el Service Worker existente (`firebase-messaging-sw.js`) para capturar assets estáticos (`_next/static/`, `/icons/`, `/manifest.webmanifest`, etc.) y CDNs clave de avatares de usuario (`api.dicebear.com`, `lh3.googleusercontent.com`) elimina casi en su totalidad el parpadeo blanco y las demoras de red en las navegaciones subsiguientes o arranques offline. Es crítico saltarse explícitamente peticiones dinámicas como rutas `/api/` y llamadas de datos de Next (`_next/data/`) para no congelar el estado de la aplicación o el proceso de inicio de sesión.
+**Learning:** Agregar una estrategia Stale-While-Revalidate en el Service Worker existente (`firebase-messaging-sw.js`) para capturar assets estáticos (`_next/static/`, `/icons/`, `/manifest.webmanifest`, etc.) and CDNs clave de avatares de usuario (`api.dicebear.com`, `lh3.googleusercontent.com`) elimina casi en su totalidad el parpadeo blanco y las demoras de red en las navegaciones subsiguientes o arranques offline. Es crítico saltarse explícitamente peticiones dinámicas como rutas `/api/` y llamadas de datos de Next (`_next/data/`) para no congelar el estado de la aplicación o el proceso de inicio de sesión.
 **Action:** Vigilar que nuevas extensiones de recursos o endpoints de APIs externas que devuelvan recursos estáticos sean mapeados en la whitelist del Service Worker.
+
+### 2026-07-23 - Optimización de PPR en las tres pestañas principales /ranking, /match y /turnos
+**Learning:** Al aislar el acceso a `auth()` y la resolución de la promesa de `searchParams` en componentes hijos (`RankingContent`, `MatchList`, `TurnsList`), conseguimos que las 3 páginas de pestañas principales de la aplicación se pre-rendericen estáticamente como un "statically pre-rendered shell". Este shell se sirve de forma inmediata, mientras que el contenido real asíncrono se transmite (stream) mediante Next.js Cache Components de forma no bloqueante, eliminando por completo las pantallas en blanco iniciales en la navegación de pestañas.
+**Action:** Continuar utilizando este patrón de desacoplamiento de "Páginas Shell síncronas + Contenedores de Datos asíncronas" para mantener la experiencia de usuario instantánea y fluida.
