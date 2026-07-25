@@ -49,6 +49,29 @@ export function ProfileForm({
 
   const initials = getInitials(displayName);
 
+  function handleRemovePhoto() {
+    const previousImage = image;
+    setImage(null);
+    startSaving(async () => {
+      const response = await updateUserProfileAction(alias, null);
+      if (response.status === "ok") {
+        showToast("Foto eliminada", {
+          duration: 4000,
+          action: {
+            label: "Deshacer",
+            onClick: () => {
+              setImage(previousImage);
+              updateUserProfileAction(alias, previousImage);
+            },
+          },
+        });
+      } else {
+        showToast("No pudimos eliminar la foto.", { type: "error" });
+        setImage(previousImage);
+      }
+    });
+  }
+
   // Debounced auto-save for alias
   useEffect(() => {
     if (!isAliasDirty) return;
@@ -148,20 +171,37 @@ export function ProfileForm({
           <p className="text-sm font-semibold text-foreground">
             {displayName}
           </p>
-          {canRestoreGooglePhoto ? (
-            <button
-              type="button"
-              onClick={handleRestoreGooglePhoto}
-              disabled={isSaving}
-              className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.75rem] py-1"
-            >
-              Usar mi foto de Google
-            </button>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Tu foto viene de tu cuenta de Google.
-            </p>
-          )}
+          <div className="flex flex-col items-start gap-1">
+            {canRestoreGooglePhoto && (
+              <button
+                type="button"
+                onClick={handleRestoreGooglePhoto}
+                disabled={isSaving}
+                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem]"
+              >
+                Usar mi foto de Google
+              </button>
+            )}
+            {image !== null ? (
+              <button
+                type="button"
+                onClick={handleRemovePhoto}
+                disabled={isSaving}
+                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem]"
+              >
+                Quitar foto
+              </button>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Se mostrarán las iniciales de tu nombre.
+              </p>
+            )}
+            {!canRestoreGooglePhoto && image !== null && (
+              <p className="text-xs text-muted-foreground">
+                Tu foto viene de tu cuenta de Google.
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
