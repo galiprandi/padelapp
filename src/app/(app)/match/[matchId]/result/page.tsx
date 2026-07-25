@@ -230,6 +230,7 @@ export default function MatchResultPage({
     .filter((p) => p.userId !== null)
     .map((p) => ({
       id: p.id,
+      userId: p.userId!,
       name:
         p.displayName ||
         p.user?.displayName ||
@@ -421,6 +422,7 @@ export default function MatchResultPage({
         <AttendanceMarker
           matchId={match.id}
           players={attendancePlayers}
+          viewerId={session?.user?.id}
           onSaved={() => router.refresh()}
         />
       )}
