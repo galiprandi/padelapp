@@ -12,6 +12,7 @@
 - [x] 2026-07-21 — Adopción completa de Cache Components / PPR en la página pública de detalle de turno /t/[id] mediante unificación de Suspense y remoción de "instant = false" (PR actual)
 - [x] 2026-07-22 — Mejoras de Recuperación y Salvage de Turnos (UX de Cooldown interactivo y Conexiones Mutuas en Detalle de Turno)
 - [x] 2026-07-23 — Alerta de Baja Tardía (late leave penalty) y habilitación del botón "Iniciar partido" para partidos con 4+ jugadores en turnos no llenos.
+- [x] 2026-07-24 — Refactorización estética de Creación de Turnos a Estándares MDS y botón Volver (PR actual)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -43,5 +44,9 @@
 **Action:** Evitar que el usuario realice acciones destinadas a fallar por lógica de negocio (como el cooldown) ocultando o deshabilitando elementos con explicaciones proactivas. Aprovechar el Player Graph local en memoria para enriquecer la interfaz con lazos sociales inmediatos que incrementen la confianza en la plataforma.
 
 ## 2026-07-23 - Alerta de Baja Tardía y Flexibilidad de Inicio para Creadores
-**Learning:** El sistema reducía silenciosamente la reputación de asistencia de un jugador en un 5% si éste se bajaba de un turno con menos de 2 horas de anticipación, lo cual causaba frustración e incomprensión de las mecánicas de gamificación. Incorporar una advertencia proactiva en el modal de confirmación previene esto. Al mismo tiempo, restringir el inicio de un partido únicamente a cuando un turno estuviera lleno impedía a los organizadores avanzar el partido si tenían 4+ inscritos pero el turno era originalmente de 6 u 8. Habilitar dinámicamente este control si se alcanzan los 4 participantes recomendados elimina este cuello de botella y acelera el paso al juego.
+**Learning:** El sistema reducía silenciosamente la reputación de asistencia de un jugador en un 5% si éste se bajaba de un turno con menos de 2 hours de anticipación, lo cual causaba frustración e incomprensión de las mecánicas de gamificación. Incorporar una advertencia proactiva en el modal de confirmación previene esto. Al mismo tiempo, restringir el inicio de un partido únicamente a cuando un turno estuviera lleno impedía a los organizadores avanzar el partido si tenían 4+ inscritos pero el turno era originalmente de 6 u 8. Habilitar dinámicamente este control si se alcanzan los 4 participantes recomendados elimina este cuello de botella y acelera el paso al juego.
 **Action:** Informar siempre de forma transparente y proactiva de los impactos de reputación/gamificación en los flujos interactivos críticos antes de que el usuario los ejecute. Asegurar que las reglas de negocio de elegibilidad (como el inicio del partido) coincidan de forma fluida con las posibilidades de juego real.
+
+## 2026-07-24 - Unificación de Vistas y Refactorización Estética a Estándares MDS
+**Learning:** Alinear las páginas del mismo flujo lógico (como la creación y la edición de turnos) no solo mejora la armonía del producto sino que simplifica la carga mental del usuario. En la página de creación (`NewTurnPage`), agrupar los controles dentro de una tarjeta con un encabezado semántico y estético (`Zap` icon + "Detalles del partido") y añadir un botón de volver idéntico al de edición elimina asimetrías de diseño. Asimismo, usar `bg-muted/50` y `border-transparent` para los botones no seleccionados (en vez de `bg-card`) provee un contraste óptimo bajo el sistema minimalista.
+**Action:** Unificar siempre el layout estructural y los componentes de navegación en flujos hermanos y evitar translucidez o layouts planos inconsistentes.
