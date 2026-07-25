@@ -13,6 +13,7 @@
 - [x] 2026-07-22 — Mejoras de Recuperación y Salvage de Turnos (UX de Cooldown interactivo y Conexiones Mutuas en Detalle de Turno)
 - [x] 2026-07-23 — Alerta de Baja Tardía (late leave penalty) y habilitación del botón "Iniciar partido" para partidos con 4+ jugadores en turnos no llenos.
 - [x] 2026-07-24 — Refactorización estética de Creación de Turnos a Estándares MDS y botón Volver (PR actual)
+- [x] 2026-07-25 — Integración del botón de "Agregar al Calendario" para reducir olvidos y cancelaciones de turnos.
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -48,5 +49,9 @@
 **Action:** Informar siempre de forma transparente y proactiva de los impactos de reputación/gamificación en los flujos interactivos críticos antes de que el usuario los ejecute. Asegurar que las reglas de negocio de elegibilidad (como el inicio del partido) coincidan de forma fluida con las posibilidades de juego real.
 
 ## 2026-07-24 - Unificación de Vistas y Refactorización Estética a Estándares MDS
-**Learning:** Alinear las páginas del mismo flujo lógico (como la creación y la edición de turnos) no solo mejora la armonía del producto sino que simplifica la carga mental del usuario. En la página de creación (`NewTurnPage`), agrupar los controles dentro de una tarjeta con un encabezado semántico y estético (`Zap` icon + "Detalles del partido") y añadir un botón de volver idéntico al de edición elimina asimetrías de diseño. Asimismo, usar `bg-muted/50` y `border-transparent` para los botones no seleccionados (en vez de `bg-card`) provee un contraste óptimo bajo el sistema minimalista.
+**Learning:** Alinear las páginas del mismo flujo lógico (como la creación y la edición de turnos) no solo mejora la armonía del producto sino que simplifica la carga mental del usuario. En la página de creación (`NewTurnPage`), agrupar los controles dentro de una tarjeta con un encabezado semántico y estético (`Zap` icon + "Detalles del partido") y añadir un botón de volver idéntico al de edición elimina asimetrías de diseño. Asimismo, usar `bg-muted/50` and `border-transparent` para los botones no seleccionados (en vez de `bg-card`) provee un contraste óptimo bajo el sistema minimalista.
 **Action:** Unificar siempre el layout estructural y los componentes de navegación en flujos hermanos y evitar translucidez o layouts planos inconsistentes.
+
+## 2026-07-25 - Botón de Calendario y Reducción de Ausencias
+**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansión sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
+**Action:** Buscar siempre integrar herramientas de utilidad inmediata en el contexto donde el usuario toma decisiones críticas (ej: debajo de la información del turno, no aislado).
