@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
@@ -75,164 +76,183 @@ export default function NewTurnPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-bold text-foreground">Nuevo turno</h1>
-        <p className="text-sm text-muted-foreground">
-          Configurá cancha y cupos.
-        </p>
+      <div className="flex items-center gap-4">
+        <Link
+          href="/turnos"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+          aria-label="Volver"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Nuevo turno</h1>
+          <p className="text-sm text-muted-foreground">
+            Configurá cancha y cupos.
+          </p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label
-            htmlFor="club"
-            requiredIndicator="*"
-            className="text-sm font-semibold text-foreground"
-          >
-            Club y cancha
-          </Label>
-          <Input
-            id="club"
-            placeholder="Ej: Padel City · Cancha 3"
-            value={formData.club}
-            onChange={(e) => setFormData({ ...formData, club: e.target.value })}
-            required
-            aria-required="true"
-            className="h-12"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label
-              htmlFor="date"
-              requiredIndicator="*"
-              className="text-sm font-semibold text-foreground"
-            >
-              Fecha
-            </Label>
-            <Input
-              id="date"
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-              required
-              aria-required="true"
-              className="h-12"
-            />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="rounded-xl border border-border bg-card">
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-bold text-foreground">Detalles del partido</h2>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label
-              htmlFor="time"
-              requiredIndicator="*"
-              className="text-sm font-semibold text-foreground"
-            >
-              Hora
-            </Label>
-            <Input
-              id="time"
-              type="time"
-              value={formData.time}
-              onChange={(e) =>
-                setFormData({ ...formData, time: e.target.value })
-              }
-              required
-              aria-required="true"
-              className="h-12"
-            />
-          </div>
-        </div>
+          <div className="p-6 flex flex-col gap-6">
+            <div className="flex flex-col gap-1.5">
+              <Label
+                htmlFor="club"
+                requiredIndicator="*"
+                className="text-sm font-semibold text-foreground"
+              >
+                Club y cancha
+              </Label>
+              <Input
+                id="club"
+                placeholder="Ej: Padel City · Cancha 3"
+                value={formData.club}
+                onChange={(e) => setFormData({ ...formData, club: e.target.value })}
+                required
+                aria-required="true"
+                className="h-12 rounded-lg"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label id="duration-label" className="text-sm font-semibold text-foreground">
-            Duración
-          </Label>
-          <div
-            role="radiogroup"
-            aria-labelledby="duration-label"
-            className="grid grid-cols-3 gap-2"
-          >
-            {DURATION_OPTIONS.map((option) => {
-              const isSelected = formData.duration === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={isSelected}
-                  onClick={() =>
-                    setFormData({ ...formData, duration: option.value })
-                  }
-                  className={cn(
-                    "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                    isSelected
-                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                      : "bg-card border-border text-muted-foreground hover:bg-muted",
-                  )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label
+                  htmlFor="date"
+                  requiredIndicator="*"
+                  className="text-sm font-semibold text-foreground"
                 >
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label id="players-label" className="text-sm font-semibold text-foreground">
-            Cupos totales
-          </Label>
-          <div
-            role="radiogroup"
-            aria-labelledby="players-label"
-            className="grid grid-cols-2 gap-2"
-          >
-            {PLAYER_OPTIONS.map((option) => {
-              const isSelected = formData.maxPlayers === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={isSelected}
-                  onClick={() =>
-                    setFormData({ ...formData, maxPlayers: option.value })
+                  Fecha
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
                   }
-                  className={cn(
-                    "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                    isSelected
-                      ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                      : "bg-card border-border text-muted-foreground hover:bg-muted",
-                  )}
+                  required
+                  aria-required="true"
+                  className="h-12 rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label
+                  htmlFor="time"
+                  requiredIndicator="*"
+                  className="text-sm font-semibold text-foreground"
                 >
-                  <span>{option.label}</span>
-                  {isSelected && <Check className="h-4 w-4 shrink-0" />}
-                </button>
-              );
-            })}
+                  Hora
+                </Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={formData.time}
+                  onChange={(e) =>
+                    setFormData({ ...formData, time: e.target.value })
+                  }
+                  required
+                  aria-required="true"
+                  className="h-12 rounded-lg"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label id="duration-label" className="text-sm font-semibold text-foreground">
+                Duración
+              </Label>
+              <div
+                role="radiogroup"
+                aria-labelledby="duration-label"
+                className="grid grid-cols-3 gap-2"
+              >
+                {DURATION_OPTIONS.map((option) => {
+                  const isSelected = formData.duration === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      onClick={() =>
+                        setFormData({ ...formData, duration: option.value })
+                      }
+                      className={cn(
+                        "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label id="players-label" className="text-sm font-semibold text-foreground">
+                Cupos totales
+              </Label>
+              <div
+                role="radiogroup"
+                aria-labelledby="players-label"
+                className="grid grid-cols-2 gap-2"
+              >
+                {PLAYER_OPTIONS.map((option) => {
+                  const isSelected = formData.maxPlayers === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      onClick={() =>
+                        setFormData({ ...formData, maxPlayers: option.value })
+                      }
+                      className={cn(
+                        "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        isSelected
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      <span>{option.label}</span>
+                      {isSelected && <Check className="h-4 w-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label
+                htmlFor="notes"
+                className="text-sm font-semibold text-foreground"
+              >
+                Notas adicionales
+              </Label>
+              <Textarea
+                id="notes"
+                placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
+                value={formData.notes}
+                onChange={(e) =>
+                  setFormData({ ...formData, notes: e.target.value })
+                }
+                className="min-h-[100px] rounded-lg resize-none"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label
-            htmlFor="notes"
-            className="text-sm font-semibold text-foreground"
-          >
-            Notas adicionales
-          </Label>
-          <Textarea
-            id="notes"
-            placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
-            value={formData.notes}
-            onChange={(e) =>
-              setFormData({ ...formData, notes: e.target.value })
-            }
-            className="min-h-[100px] resize-none"
-          />
-        </div>
-
-        <Button type="submit" className="w-full h-12" disabled={isPending}>
+        <Button type="submit" className="w-full h-12 rounded-lg font-bold text-base" disabled={isPending}>
           {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
