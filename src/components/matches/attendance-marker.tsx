@@ -1,17 +1,22 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Check, X, Clock, Loader2 } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
-import { markAttendanceAction } from "@/app/(app)/match/actions";
+import {
+  markAttendanceAction,
+  getMatchFeedbacksAction,
+  savePlayerFeedbackAction,
+} from "@/app/(app)/match/actions";
 import { cn } from "@/lib/utils";
 
 type AttendanceStatus = "ATTENDED" | "LATE" | "NO_SHOW";
 
 interface AttendancePlayer {
   id: string;
+  userId: string;
   name: string;
   image?: string;
   currentStatus: AttendanceStatus | null;
@@ -20,6 +25,7 @@ interface AttendancePlayer {
 interface AttendanceMarkerProps {
   matchId: string;
   players: AttendancePlayer[];
+  viewerId?: string;
   onSaved?: () => void;
 }
 
@@ -50,6 +56,7 @@ const STATUS_CONFIG: Record<
 export function AttendanceMarker({
   matchId,
   players,
+  viewerId,
   onSaved,
 }: AttendanceMarkerProps) {
   const { showToast } = useToast();
@@ -63,6 +70,20 @@ export function AttendanceMarker({
     ),
   );
 
+  const [feedbacks, setFeedbacks] = useState<Record<string, "STRONGER" | "WEAKER" | null>>({});
+
+  useEffect(() => {
+    getMatchFeedbacksAction(matchId).then((res) => {
+      if (res.status === "ok" && res.feedbacks) {
+        setFeedbacks(
+          Object.fromEntries(
+            res.feedbacks.map((f) => [f.playerId, f.feedback]),
+          ),
+        );
+      }
+    });
+  }, [matchId]);
+
   const handleStatusChange = (playerId: string, status: AttendanceStatus) => {
     setStatuses((prev) => ({ ...prev, [playerId]: status }));
   };
@@ -73,9 +94,28 @@ export function AttendanceMarker({
         matchPlayerId,
         status,
       }));
+      // 1. Save attendance
       const res = await markAttendanceAction(matchId, entries);
       if (res.status === "ok") {
-        showToast("Asistencia guardada");
+        // 2. Save feedback
+        const feedbackEntries = Object.entries(feedbacks).map(([playerId, feedback]) => ({
+          playerId,
+          feedback,
+        }));
+        if (feedbackEntries.length > 0) {
+          const fbRes = await savePlayerFeedbackAction({
+            matchId,
+            feedbacks: feedbackEntries,
+          });
+          if (fbRes.status !== "ok") {
+            showToast("Asistencia guardada, pero falló el feedback", {
+              duration: 4000,
+            });
+            onSaved?.();
+            return;
+          }
+        }
+        showToast("Asistencia y feedback guardados");
         onSaved?.();
       } else {
         showToast(res.message || "No se pudo guardar la asistencia", {
@@ -88,9 +128,9 @@ export function AttendanceMarker({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-bold text-foreground">Asistencia</h2>
+        <h2 className="text-sm font-bold text-foreground">Asistencia y Feedback de Nivel</h2>
         <p className="text-xs text-muted-foreground">
-          Marcá quién estuvo, llegó tarde o no asistió.
+          Confirmá la asistencia y calificá sutilmente si algún invitado jugó a un nivel diferente.
         </p>
       </div>
 
@@ -100,42 +140,98 @@ export function AttendanceMarker({
           return (
             <div
               key={player.id}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+              className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-3"
             >
-              <PlayerAvatar
-                name={player.name}
-                image={player.image}
-                className="h-9 w-9 shrink-0"
-              />
-              <span className="flex-1 text-sm font-semibold text-foreground truncate">
-                {player.name}
-              </span>
-              <div className="flex gap-1.5 shrink-0">
-                {(Object.keys(STATUS_CONFIG) as AttendanceStatus[]).map(
-                  (status) => {
-                    const config = STATUS_CONFIG[status];
-                    const Icon = config.icon;
-                    const isActive = current === status;
-                    return (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() => handleStatusChange(player.id, status)}
-                        aria-label={`${config.label} - ${player.name}`}
-                        aria-pressed={isActive}
-                        className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                          isActive
-                            ? config.activeColor
-                            : "border-border bg-background text-muted-foreground hover:bg-muted",
-                        )}
-                      >
-                        <Icon className="h-4 w-4" />
-                      </button>
-                    );
-                  },
-                )}
+              {/* Row 1: Player Info & Attendance status */}
+              <div className="flex items-center gap-3">
+                <PlayerAvatar
+                  name={player.name}
+                  image={player.image}
+                  className="h-9 w-9 shrink-0"
+                />
+                <span className="flex-1 text-sm font-semibold text-foreground truncate">
+                  {player.name}
+                </span>
+                <div className="flex gap-1.5 shrink-0">
+                  {(Object.keys(STATUS_CONFIG) as AttendanceStatus[]).map(
+                    (status) => {
+                      const config = STATUS_CONFIG[status];
+                      const Icon = config.icon;
+                      const isActive = current === status;
+                      return (
+                        <button
+                          key={status}
+                          type="button"
+                          onClick={() => handleStatusChange(player.id, status)}
+                          aria-label={`${config.label} - ${player.name}`}
+                          aria-pressed={isActive}
+                          className={cn(
+                            "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                            isActive
+                              ? config.activeColor
+                              : "border-border bg-background text-muted-foreground hover:bg-muted",
+                          )}
+                        >
+                          <Icon className="h-4 w-4" />
+                        </button>
+                      );
+                    },
+                  )}
+                </div>
               </div>
+
+              {/* Row 2: Sutil level feedback (only for other players) */}
+              {viewerId && player.userId !== viewerId && (
+                <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                  <span className="text-xs text-muted-foreground font-medium">
+                    Nivel vs. el grupo (opcional):
+                  </span>
+                  <div className="flex gap-1.5 shrink-0" role="radiogroup" aria-label={`Nivel de ${player.name} comparado con el grupo`}>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={feedbacks[player.userId] === "STRONGER"}
+                      onClick={() => {
+                        setFeedbacks((prev) => ({
+                          ...prev,
+                          [player.userId]:
+                            prev[player.userId] === "STRONGER"
+                              ? null
+                              : "STRONGER",
+                        }));
+                      }}
+                      className={cn(
+                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        feedbacks[player.userId] === "STRONGER"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      Más fuerte 💪
+                    </button>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={feedbacks[player.userId] === "WEAKER"}
+                      onClick={() => {
+                        setFeedbacks((prev) => ({
+                          ...prev,
+                          [player.userId]:
+                            prev[player.userId] === "WEAKER" ? null : "WEAKER",
+                        }));
+                      }}
+                      className={cn(
+                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        feedbacks[player.userId] === "WEAKER"
+                          ? "bg-amber-500/10 text-amber-600 border-amber-500/30"
+                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                      )}
+                    >
+                      Más flojo 📉
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -149,7 +245,7 @@ export function AttendanceMarker({
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          "Guardar asistencia"
+          "Guardar asistencia y feedback"
         )}
       </Button>
     </section>

@@ -4,7 +4,7 @@ import { and, eq, asc, count, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { matches, matchPlayers, teams, users } from "@/db/schema";
+import { matches, matchPlayers, teams, users, matchPlayerFeedback } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { capitalizeName } from "@/lib/utils";
@@ -370,6 +370,144 @@ export async function createMatchAction(
     return {
       status: "error",
       message: "We could not create the match. Please try again.",
+    };
+  }
+}
+
+export async function getMatchFeedbacksAction(
+  matchId: string,
+): Promise<{
+  status: "ok" | "error";
+  feedbacks?: Array<{ playerId: string; feedback: "STRONGER" | "WEAKER" }>;
+  message?: string;
+}> {
+  const session = await auth();
+  if (!session?.user) {
+    return { status: "error", message: "No autorizado." };
+  }
+
+  try {
+    const records = await db
+      .select({
+        playerId: matchPlayerFeedback.playerId,
+        feedback: matchPlayerFeedback.feedback,
+      })
+      .from(matchPlayerFeedback)
+      .where(
+        and(
+          eq(matchPlayerFeedback.matchId, matchId),
+          eq(matchPlayerFeedback.feedbackBy, session.user.id),
+        ),
+      );
+
+    return {
+      status: "ok",
+      feedbacks: records,
+    };
+  } catch (error) {
+    console.error("getMatchFeedbacksAction failed", error);
+    return {
+      status: "error",
+      message: "Error al obtener feedback.",
+    };
+  }
+}
+
+export interface SavePlayerFeedbackInput {
+  matchId: string;
+  feedbacks: Array<{
+    playerId: string;
+    feedback: "STRONGER" | "WEAKER" | null;
+  }>;
+}
+
+export async function savePlayerFeedbackAction(
+  input: SavePlayerFeedbackInput,
+): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para guardar el feedback.",
+    };
+  }
+
+  if (!input.matchId || input.matchId.trim().length === 0) {
+    return { status: "error", message: "Identificador de partido inválido." };
+  }
+
+  try {
+    // 1. Verify the match exists and the user is the creator (organizer)
+    const [match] = await db
+      .select({ creatorId: matches.creatorId })
+      .from(matches)
+      .where(eq(matches.id, input.matchId))
+      .limit(1);
+
+    if (!match) {
+      return { status: "error", message: "Partido no encontrado." };
+    }
+
+    if (match.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede guardar feedback de nivel.",
+      };
+    }
+
+    // 2. Process feedback in a transaction
+    await db.transaction(async (tx) => {
+      for (const entry of input.feedbacks) {
+        // Only allow feedback for other players, not the creator themselves
+        if (entry.playerId === session.user.id) continue;
+
+        if (entry.feedback === null) {
+          // Delete feedback
+          await tx
+            .delete(matchPlayerFeedback)
+            .where(
+              and(
+                eq(matchPlayerFeedback.matchId, input.matchId),
+                eq(matchPlayerFeedback.playerId, entry.playerId),
+                eq(matchPlayerFeedback.feedbackBy, session.user.id),
+              ),
+            );
+        } else {
+          // Upsert feedback
+          await tx
+            .insert(matchPlayerFeedback)
+            .values({
+              matchId: input.matchId,
+              playerId: entry.playerId,
+              feedbackBy: session.user.id,
+              feedback: entry.feedback,
+            })
+            .onConflictDoUpdate({
+              target: [
+                matchPlayerFeedback.matchId,
+                matchPlayerFeedback.playerId,
+                matchPlayerFeedback.feedbackBy,
+              ],
+              set: { feedback: entry.feedback },
+            });
+        }
+      }
+    });
+
+    // 3. Recompute stats for the affected players
+    for (const entry of input.feedbacks) {
+      if (entry.playerId !== session.user.id) {
+        await recomputeStatsForPlayer(entry.playerId);
+      }
+    }
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("savePlayerFeedbackAction failed", error);
+    return {
+      status: "error",
+      message: "No se pudo guardar el feedback. Intentá nuevamente.",
     };
   }
 }
