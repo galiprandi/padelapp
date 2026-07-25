@@ -166,7 +166,7 @@ export function AttendanceMarker({
                           aria-label={`${config.label} - ${player.name}`}
                           aria-pressed={isActive}
                           className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                            "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                             isActive
                               ? config.activeColor
                               : "border-border bg-background text-muted-foreground hover:bg-muted",
@@ -201,7 +201,7 @@ export function AttendanceMarker({
                         }));
                       }}
                       className={cn(
-                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         feedbacks[player.userId] === "STRONGER"
                           ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
                           : "border-border bg-background text-muted-foreground hover:bg-muted",
@@ -221,7 +221,7 @@ export function AttendanceMarker({
                         }));
                       }}
                       className={cn(
-                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         feedbacks[player.userId] === "WEAKER"
                           ? "bg-amber-500/10 text-amber-600 border-amber-500/30"
                           : "border-border bg-background text-muted-foreground hover:bg-muted",
