@@ -130,16 +130,42 @@ export default async function DashboardContent() {
         <div className="space-y-0.5">
           <Greeting name={displayName} />
           <p className="text-sm text-muted-foreground">
-            Tu actividad de pádel en un solo lugar.
+            {isNewUser
+              ? "¡Bienvenido! Empezá creando tu primer turno."
+              : "Tu actividad de pádel en un solo lugar."}
           </p>
         </div>
       </div>
 
       {isNewUser ? (
-        <OnboardingChecklist
-          initialAlias={user?.alias ?? null}
-          hasActivity={agendaItems.length > 0}
-        />
+        <>
+          {/* Hero CTA for first-time users */}
+          {agendaItems.length === 0 && (
+            <Link
+              href="/turnos/nuevo"
+              className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10 active:scale-[0.98]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <CalendarDays className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="space-y-0.5">
+                  <p className="text-sm font-bold text-foreground">
+                    Creá tu primer turno
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Armá un turno, compartilo por WhatsApp y jugá.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            </Link>
+          )}
+          <OnboardingChecklist
+            initialAlias={user?.alias ?? null}
+            hasActivity={agendaItems.length > 0}
+          />
+        </>
       ) : (
         !user?.alias && (
           <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-50 p-4">

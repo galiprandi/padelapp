@@ -343,7 +343,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                           <span className="truncate">{player.name}</span>
                         )}
                         {player.side && (
-                          <span className="inline-flex items-center shrink-0 text-[10px] font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none">
+                          <span className="inline-flex items-center shrink-0 text-xs font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none">
                             {player.side === "RIGHT" ? "Der" : "Rev"}
                           </span>
                         )}

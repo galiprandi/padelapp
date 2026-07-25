@@ -32,6 +32,11 @@ export function PlayerAvatar({
   const initials = getPlayerInitials(name);
   const dimension = `${size}px`;
 
+  // Filter out images from hosts not configured in next.config.ts remotePatterns
+  const ALLOWED_HOSTS = ["lh3.googleusercontent.com"];
+  const safeImage =
+    image && ALLOWED_HOSTS.some((h) => image.includes(h)) ? image : null;
+
   return (
     <div
       className={cn(
@@ -41,8 +46,8 @@ export function PlayerAvatar({
       style={{ width: dimension, height: dimension }}
       aria-hidden={ariaHidden}
     >
-      {image ? (
-        <Image src={image} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />
+      {safeImage ? (
+        <Image src={safeImage} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />
       ) : (
         initials
       )}

@@ -1,13 +1,40 @@
+import { Suspense } from "react";
 import { auth } from "@/auth";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getPendingActions, getCachedConfirmedMatches } from "@/lib/queries";
 import Link from "next/link";
 import { CalendarOff, Plus, ChevronRight } from "lucide-react";
 import { calculateWinRate, getMatchWinner } from "@/lib/utils";
 
-export default async function MatchListPage() {
+export default function MatchListPage() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Partidos</h1>
+          <p className="text-sm text-muted-foreground">
+            Tus partidos y resultados pendientes.
+          </p>
+        </div>
+        <Button asChild size="sm">
+          <Link href="/match/new">
+            <Plus className="mr-1 h-4 w-4" />
+            Crear
+          </Link>
+        </Button>
+      </div>
+
+      <Suspense fallback={<MatchListSkeleton />}>
+        <MatchList />
+      </Suspense>
+    </div>
+  );
+}
+
+async function MatchList() {
   const session = await auth();
   const viewerId = session?.user?.id;
 
@@ -17,7 +44,6 @@ export default async function MatchListPage() {
   ]);
 
   // Map to the same shape that getEnhancedUserMatches returns
-  // (the rest of the page expects MatchResultCompactMatch[])
   const confirmedMatches = confirmedMatchesRaw.map((match) => ({
     id: match.id,
     createdAt: match.date,
@@ -103,21 +129,6 @@ export default async function MatchListPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-foreground">Partidos</h1>
-          <p className="text-sm text-muted-foreground">
-            Tus partidos y resultados pendientes.
-          </p>
-        </div>
-        <Button asChild size="sm">
-          <Link href="/match/new">
-            <Plus className="mr-1 h-4 w-4" />
-            Crear
-          </Link>
-        </Button>
-      </div>
-
       {viewerId && totalMatches > 0 && (
         <div className="rounded-xl border border-border bg-card p-4">
           <h2 className="text-sm font-bold text-foreground mb-3">Resumen</h2>
@@ -242,6 +253,41 @@ export default async function MatchListPage() {
           </div>
         )}
       </section>
+    </div>
+  );
+}
+
+function MatchListSkeleton() {
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Resumen skeleton */}
+      <div className="rounded-xl border border-border bg-card p-4">
+        <Skeleton className="h-4 w-20 mb-3" />
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <Skeleton className="h-3 w-12 mb-1" />
+            <Skeleton className="h-6 w-8" />
+          </div>
+          <div>
+            <Skeleton className="h-3 w-16 mb-1" />
+            <Skeleton className="h-6 w-12" />
+          </div>
+          <div>
+            <Skeleton className="h-3 w-10 mb-1" />
+            <Skeleton className="h-6 w-8" />
+          </div>
+        </div>
+      </div>
+
+      {/* Historial/Pendientes list skeleton */}
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-24" />
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

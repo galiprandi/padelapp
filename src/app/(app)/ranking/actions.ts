@@ -179,16 +179,58 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
 
     // 3. Merge computed scores with existing user data
     const ranking = usersData.map((user) => {
+      const isUserAffected = !isIncremental || affectedUserIds.includes(user.id);
       const computed = userScores.get(user.id);
+
+      // If the user is affected, but there are no computed stats, they have 0 active matches.
+      // Reset their statistics to default values to prevent stale/ghost rankings.
+      const score = computed
+        ? computed.score
+        : isUserAffected
+          ? 1000
+          : (user.rankingScore ?? 1000);
+
+      const attendanceScore = computed
+        ? computed.attendanceScore
+        : isUserAffected
+          ? 1.0
+          : (user.attendanceScore ?? 1.0);
+
+      const wins = computed
+        ? computed.stats.wins
+        : isUserAffected
+          ? 0
+          : user.wins;
+
+      const losses = computed
+        ? computed.stats.losses
+        : isUserAffected
+          ? 0
+          : user.losses;
+
+      const matchesPlayed = computed
+        ? computed.stats.matchesPlayed
+        : isUserAffected
+          ? 0
+          : user.matchesPlayed;
+
+      const lastMatchAt = computed
+        ? computed.stats.lastMatchAt
+        : isUserAffected
+          ? null
+          : user.lastMatchAt;
+
       return {
         userId: user.id,
-        score: computed?.score ?? user.rankingScore ?? 1000,
-        attendanceScore: computed?.attendanceScore ?? user.attendanceScore ?? 1.0,
-        wins: computed?.stats.wins ?? user.wins,
+        score,
+        attendanceScore,
+        wins,
+        losses,
+        matchesPlayed,
+        lastMatchAt,
         oldPosition: user.rankingPosition,
         oldDelta: user.rankingDelta,
-        lastMatchAt: computed?.stats.lastMatchAt ?? user.lastMatchAt,
-        stats: computed?.stats,
+        isUserAffected,
       };
     });
 
@@ -198,6 +240,7 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
       if (b.attendanceScore !== a.attendanceScore)
         return b.attendanceScore - a.attendanceScore;
       if (b.wins !== a.wins) return b.wins - a.wins;
+      if (!a.lastMatchAt && !b.lastMatchAt) return 0;
       if (!a.lastMatchAt) return 1;
       if (!b.lastMatchAt) return -1;
       return b.lastMatchAt.getTime() - a.lastMatchAt.getTime();
@@ -208,11 +251,10 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
       .map((item, index) => {
         const newPosition = index + 1;
         const delta = item.oldPosition ? item.oldPosition - newPosition : 0;
-        const computed = userScores.get(item.userId);
 
         // For incremental mode: only update if the user's stats were recomputed,
         // OR if their relative position or delta changed.
-        if (isIncremental && !computed) {
+        if (isIncremental && !item.isUserAffected) {
           const positionChanged = item.oldPosition !== newPosition;
           const deltaChanged = item.oldDelta !== delta;
           if (!positionChanged && !deltaChanged) {
@@ -226,11 +268,11 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
             rankingScore: item.score,
             rankingPosition: newPosition,
             rankingDelta: delta,
-            ...(computed ? {
-              wins: computed.stats.wins,
-              losses: computed.stats.losses,
-              matchesPlayed: computed.stats.matchesPlayed,
-              lastMatchAt: computed.stats.lastMatchAt,
+            ...(item.isUserAffected ? {
+              wins: item.wins,
+              losses: item.losses,
+              matchesPlayed: item.matchesPlayed,
+              lastMatchAt: item.lastMatchAt,
               attendanceScore: item.attendanceScore,
             } : {}),
           },

@@ -6,9 +6,15 @@ import { createPortal } from "react-dom";
 import { Check, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface ToastOptions {
   duration?: number;
   type?: "success" | "error";
+  action?: ToastAction;
 }
 
 interface ToastItem {
@@ -84,6 +90,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     <span className="text-xs font-semibold leading-none">
                       {toast.message}
                     </span>
+                    {toast.options.action && (
+                      <button
+                        onClick={() => {
+                          toast.options.action!.onClick();
+                          removeToast(toast.id);
+                        }}
+                        className="text-xs font-bold underline underline-offset-2 hover:no-underline"
+                      >
+                        {toast.options.action.label}
+                      </button>
+                    )}
                   </div>
                 );
               })}

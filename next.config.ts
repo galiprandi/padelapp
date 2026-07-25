@@ -11,7 +11,7 @@ const SecurityHeaders = (isDev: boolean) => [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   },
-  // Baseline CSP. Allow Google OAuth endpoints, Google avatars, DiceBear and
+  // Baseline CSP. Allow Google OAuth endpoints, Google avatars and
   // self resources. `unsafe-inline` is required by Next.js inline styles in
   // dev; tighten once shadcn/ui is audited for nonce-based styles in prod.
   // `unsafe-eval` is required by React in dev mode for stack reconstruction;
@@ -20,7 +20,7 @@ const SecurityHeaders = (isDev: boolean) => [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "img-src 'self' data: blob: https://lh3.googleusercontent.com https://api.dicebear.com",
+      "img-src 'self' data: blob: https://lh3.googleusercontent.com",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://va.vercel-scripts.com`,
       "style-src 'self' 'unsafe-inline'",
       "connect-src 'self' https://www.googleapis.com https://identity.googleapis.com https://firebaseinstallations.googleapis.com https://fcm.googleapis.com https://fcmregistrations.googleapis.com https://va.vercel-scripts.com",
@@ -40,11 +40,9 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   images: {
-    // DiceBear preset avatars are served as SVG. next/image refuses to
-    // optimize SVGs unless this is enabled, which left every avatar rendered
-    // through next/image (dashboard, public profile, match cards) broken.
-    // Remote fetching stays restricted to the whitelisted remotePatterns
-    // below, and the optimizer sandboxes the response.
+    // Avatars come from Google only (lh3.googleusercontent.com).
+    // dangerouslyAllowSVG is kept for safety but no SVG sources are
+    // currently whitelisted.
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -52,10 +50,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "api.dicebear.com",
       },
     ],
   },
