@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
@@ -17,6 +17,16 @@ export async function POST(request: NextRequest) {
     if (!token || typeof token !== "string") {
       return NextResponse.json({ error: "Token required" }, { status: 400 });
     }
+
+    // Clean up any stale mappings where this token is assigned to other users
+    await db
+      .delete(pushSubscriptions)
+      .where(
+        and(
+          eq(pushSubscriptions.endpoint, token),
+          ne(pushSubscriptions.userId, session.user.id)
+        )
+      );
 
     await db
       .insert(pushSubscriptions)
