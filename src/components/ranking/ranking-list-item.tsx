@@ -124,7 +124,7 @@ export function RankingListItem({
           {player.rankingDelta > 0 ? (
             <div
               className="flex items-center gap-0.5 text-xs text-primary"
-              aria-label={`Subió ${player.rankingDelta} puntos`}
+              aria-label={`Subió ${player.rankingDelta} posiciones`}
             >
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
               <span>+{player.rankingDelta}</span>
@@ -132,14 +132,17 @@ export function RankingListItem({
           ) : player.rankingDelta < 0 ? (
             <div
               className="flex items-center gap-0.5 text-xs text-muted-foreground"
-              aria-label={`Bajó ${Math.abs(player.rankingDelta)} puntos`}
+              aria-label={`Bajó ${Math.abs(player.rankingDelta)} posiciones`}
             >
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
               <span>{player.rankingDelta}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-0.5 text-xs text-muted-foreground/50">
-              <Minus className="h-3 w-3" />
+            <div
+              className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
+              aria-label="Posición sin cambios"
+            >
+              <Minus className="h-3 w-3" aria-hidden="true" />
               <span>0</span>
             </div>
           )}
