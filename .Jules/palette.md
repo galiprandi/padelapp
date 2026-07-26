@@ -41,3 +41,11 @@
 ## 2026-07-25 - [MDS Selector Button Tactile Scaling and Touch Target Sizing]
 **Learning:** In highly customized choice forms (such as duration, format, sets, and score selectors), standard button elements often feel sterile without tactile scaling animations. Ensuring custom buttons have a minimum height of `h-12` (48px) for optimal touch target sizing and adding `transition-all active:scale-[0.98]` animations drastically improves form delight and usability on mobile devices.
 **Action:** When building or modifying custom selection controls (e.g., radiogroups or button-based choices), enforce `h-12` heights and incorporate `transition-all active:scale-[0.98]` tactile states.
+
+## 2026-07-26 - [Profile Form Micro-UX & Keyboard Access]
+**Learning:** Adding a real-time character counter (`{alias.length}/30`) with screen reader `aria-live="polite"` feedback on inputs provides clear user orientation on mobile-first applications. Additionally, raw button controls (like Google photo restore and remove photo actions) are often omitted from the keyboard focus path unless explicitly given high-visibility focus indicator rings (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1`).
+**Action:** Always provide screen-reader-friendly character counters for constrained inputs and ensure raw button tags are styled with standard design system focus outlines.
+
+## 2026-07-26 - [Custom Selector Keyboard Accessibility]
+**Learning:** Custom interactive selectors, such as recent clubs selector buttons inside wizards or step forms, require standard high-visibility keyboard focus rings so non-mouse/keyboard-only navigators can immediately perceive their location and selection state.
+**Action:** Always include high-visibility focus indicator rings (`focus-visible:ring-2`) on custom buttons acting as selection list options.

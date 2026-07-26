@@ -165,7 +165,7 @@ function RecentClubs({
                 }
               }}
               className={cn(
-                "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98]",
+                "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 isSelected
                   ? "bg-primary border-primary text-primary-foreground"
                   : "bg-card border-border text-muted-foreground hover:bg-muted",
