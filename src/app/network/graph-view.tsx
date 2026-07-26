@@ -221,7 +221,7 @@ export function GraphView({ graphData }: GraphViewProps) {
       const isSelected = selectedNode === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
       const color = nodeColor(node);
-      const label = node.alias || node.name || "?";
+      const label = node.name || node.alias || "?";
       const fontSize = Math.max(11 / globalScale, 3.5);
 
       ctx.beginPath();
@@ -478,12 +478,12 @@ export function GraphView({ graphData }: GraphViewProps) {
                 className="h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
                 style={{ backgroundColor: nodeColor(selectedNodeData) }}
               >
-                {getInitials(selectedNodeData.alias || selectedNodeData.name)}
+                {getInitials(selectedNodeData.name || selectedNodeData.alias || "?")}
               </div>
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">
-                {selectedNodeData.alias || selectedNodeData.name}
+                {selectedNodeData.name || selectedNodeData.alias}
               </p>
               <p className="text-xs text-muted-foreground">
                 {selectedNodeData.matchesPlayed} partidos ·{" "}
@@ -569,7 +569,7 @@ export function GraphView({ graphData }: GraphViewProps) {
                       {isPartner ? "P" : isRival ? "R" : "M"}
                     </span>
                     <span className="text-muted-foreground flex-1 truncate">
-                      {other?.alias || other?.name || "—"}
+                      {other?.name || other?.alias || "—"}
                     </span>
                     <span className="text-muted-foreground/50 text-xs tabular-nums">
                       {link.strength}×
