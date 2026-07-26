@@ -122,6 +122,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   const candidateScores = new Map<string, number>();
   const candidateDirectMatches = new Map<string, { lastMatchAt: Date; matchesTogether: number }>();
   const validConnectionsForCandidate = new Map<string, Set<string>>(); // candidateId -> enrolledPlayerIds where connection is valid
+  const excludedUserIds = new Set<string>(); // candidateIds that have an extreme outcome against ANY enrolled player
 
   // Process direct contacts (edges)
   for (const edge of edges) {
@@ -146,6 +147,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     }
 
     if (isExtreme) {
+      excludedUserIds.add(candidateId);
       continue;
     }
 
@@ -189,6 +191,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   for (const stats of communityPlayersStats) {
     const candidateId = stats.userId;
     if (enrolledUserIds.has(candidateId)) continue;
+    if (excludedUserIds.has(candidateId)) continue;
 
     // Community bonus
     const currentScore = candidateScores.get(candidateId) ?? 0;
@@ -198,7 +201,10 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   // We keep candidates that have either:
   // - A valid connection with at least one enrolled player (not excluded due to extreme outcome)
   // - Or are in the same community (even if no direct edge exists yet)
-  const finalCandidateIds = Array.from(candidateScores.keys());
+  // Filter out any candidates that have an extreme outcome against ANY enrolled player
+  const finalCandidateIds = Array.from(candidateScores.keys()).filter(
+    (id) => !excludedUserIds.has(id)
+  );
 
   if (finalCandidateIds.length === 0) return [];
 
