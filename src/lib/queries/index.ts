@@ -33,8 +33,10 @@ export {
   getPublicProfileUser,
   getEditableProfile,
   getGoogleAvatarUrl,
+  getPlayerNetworkStats,
   type PublicProfileUser,
   type EditableProfileData,
+  type PlayerNetworkStats,
 } from "./profile";
 
 export {
