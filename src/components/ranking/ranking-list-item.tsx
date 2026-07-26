@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
 
 interface RankingListItemProps {
   player: {
@@ -40,7 +40,7 @@ export function RankingListItem({
     return winner === playerTeam ? "W" : "L";
   });
 
-  const displayName = player.alias ?? player.displayName ?? "Jugador";
+  const displayName = capitalizeName(player.displayName ?? player.alias ?? "Jugador");
 
   return (
     <Link

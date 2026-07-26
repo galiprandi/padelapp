@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, isToday, isTomorrow } from "@/lib/utils";
+import { cn, isToday, isTomorrow, capitalizeName } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Trophy, ChevronRight, Share2, Check, Loader2 } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
@@ -52,6 +52,7 @@ export interface MatchResultCompactPlayer {
   user?: {
     id: string;
     displayName: string | null;
+    alias?: string | null;
     image?: string | null;
   } | null;
 }
@@ -147,10 +148,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     players: teamPlayers.map((player) => ({
       id: player.id,
       userId: player.user?.id,
-      name:
-        player.displayName ??
+      name: capitalizeName(
         player.user?.displayName ??
+        player.displayName ??
+        player.user?.alias ??
         `Jugador ${player.position + 1}`,
+      ),
       image: player.user?.image ?? undefined,
       side: player.side,
     })),

@@ -30,7 +30,7 @@ import {
   getRecommendedTurns,
 } from "@/lib/queries";
 import { getUserPasskeys } from "@/lib/webauthn/actions";
-import { cn, getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
@@ -78,8 +78,9 @@ export default async function DashboardContent() {
         new Date(b.date || b.createdAt).getTime(),
     );
 
-  const displayName =
-    user?.alias ?? user?.displayName ?? session?.user?.name ?? "Jugador";
+  const displayName = capitalizeName(
+    user?.displayName ?? user?.alias ?? session?.user?.name ?? "Jugador",
+  );
 
   const isNewUser = user ? user.matchesPlayed === 0 : false;
 

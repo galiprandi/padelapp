@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn } from "@/lib/utils";
+import { cn, capitalizeName } from "@/lib/utils";
 
 interface PodiumPlayer {
   id: string;
@@ -34,7 +34,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {second && (
           <Link
             href={`/p/${second.id}?backUrl=/ranking`}
-            aria-label={`2da posición: ${isSecondViewer ? "Tú" : (second.alias ?? second.displayName)}, ${Math.round(second.rankingScore)} puntos`}
+            aria-label={`2da posición: ${isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isSecondViewer
@@ -44,7 +44,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={second.alias ?? second.displayName ?? "Player"}
+                name={capitalizeName(second.displayName ?? second.alias ?? "?")}
                 image={second.image ?? undefined}
                 size={48}
                 className={cn("border-2", isSecondViewer ? "border-primary" : "border-muted")}
@@ -56,7 +56,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
               <span className={cn("text-xs truncate w-full text-center", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                {isSecondViewer ? "Tú" : (second.alias ?? second.displayName)}
+                {isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}
               </span>
               <span className="text-xs text-muted-foreground">
                 {Math.round(second.rankingScore)} pts
@@ -69,12 +69,12 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {first && (
           <Link
             href={`/p/${first.id}?backUrl=/ranking`}
-            aria-label={`1ra posición: ${isFirstViewer ? "Tú" : (first.alias ?? first.displayName)}, ${Math.round(first.rankingScore)} puntos`}
+            aria-label={`1ra posición: ${isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos`}
             className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={first.alias ?? first.displayName ?? "Player"}
+                name={capitalizeName(first.displayName ?? first.alias ?? "?")}
                 image={first.image ?? undefined}
                 size={56}
                 className="border-2 border-primary"
@@ -86,7 +86,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
               <span className={cn("text-xs font-bold truncate w-full text-center", isFirstViewer ? "text-primary" : "text-foreground")}>
-                {isFirstViewer ? "Tú" : (first.alias ?? first.displayName)}
+                {isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}
               </span>
               <span className="text-xs font-bold text-primary">
                 {Math.round(first.rankingScore)} pts
@@ -99,7 +99,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {third && (
           <Link
             href={`/p/${third.id}?backUrl=/ranking`}
-            aria-label={`3ra posición: ${isThirdViewer ? "Tú" : (third.alias ?? third.displayName)}, ${Math.round(third.rankingScore)} puntos`}
+            aria-label={`3ra posición: ${isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isThirdViewer
@@ -109,7 +109,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={third.alias ?? third.displayName ?? "Player"}
+                name={capitalizeName(third.displayName ?? third.alias ?? "?")}
                 image={third.image ?? undefined}
                 size={44}
                 className={cn("border-2", isThirdViewer ? "border-primary" : "border-muted")}
@@ -121,7 +121,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
               <span className={cn("text-xs truncate w-full text-center", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                {isThirdViewer ? "Tú" : (third.alias ?? third.displayName)}
+                {isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}
               </span>
               <span className="text-xs text-muted-foreground">
                 {Math.round(third.rankingScore)} pts

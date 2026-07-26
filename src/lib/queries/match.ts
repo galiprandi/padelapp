@@ -46,9 +46,6 @@ export async function getEnhancedUserMatches(
     status: match.status,
     date: match.date,
     players: match.players.map((player) => {
-      const preferredName = player.user && "alias" in player.user && player.user.alias
-        ? player.user.alias
-        : player.user?.displayName;
       return {
         id: player.id,
         position: player.position,
@@ -58,7 +55,8 @@ export async function getEnhancedUserMatches(
         user: player.user
           ? {
             id: player.user.id,
-            displayName: preferredName ?? null,
+            displayName: player.user.displayName ?? null,
+            alias: player.user.alias ?? null,
             image: player.user.image ?? undefined,
           }
           : null,
