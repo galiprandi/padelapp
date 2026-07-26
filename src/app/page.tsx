@@ -3,6 +3,7 @@ import { auth, signIn } from "@/auth";
 import { CalendarCheck, Users, Trophy } from "lucide-react";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
+import Image from "next/image";
 
 export default function MarketingLanding() {
   async function handleContinue() {
@@ -20,12 +21,13 @@ export default function MarketingLanding() {
       <div className="flex w-full max-w-sm mx-auto flex-col gap-10">
         {/* Hero */}
         <div className="flex flex-col items-center gap-4 pt-6">
-          <img
+          <Image
             src="/icon.svg"
             alt="Padel Red"
             className="h-20 w-20"
             width={80}
             height={80}
+            unoptimized
           />
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold text-foreground">Padel Red</h1>
