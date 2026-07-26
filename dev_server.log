@@ -5,7 +5,7 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 594ms
+✓ Ready in 635ms
 ✓ Running next.config.ts took 49ms
 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
 
@@ -18,13 +18,9 @@
   · optimizePackageImports
 
 ○ Compiling /catalog ...
- HEAD /catalog 200 in 6.2s (next.js: 5.7s, application-code: 495ms)
- GET /catalog 200 in 342ms (next.js: 13ms, application-code: 330ms)
+ GET /catalog 200 in 14.7s (next.js: 13.1s, application-code: 1601ms)
 ○ Compiling /api/auth/[...nextauth] ...
- GET /api/players 401 in 3.0s (next.js: 2.6s, application-code: 425ms)
- GET /api/players 401 in 17ms (next.js: 7ms, application-code: 10ms)
- GET /api/auth/session 200 in 3.3s
-(node:49014) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+(node:174052) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
 In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
 
 To prepare for this change:
@@ -46,7 +42,7 @@ params: 50,1,50
   17 |         desc(users.attendanceScore), {
   query: `select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3`,
   params: [ 50, 1, 50 ],
-  digest: '2519620753',
+  digest: '1156949246',
   [cause]: error: password authentication failed for user 'neondb_owner'
       at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
       at async RankingContent (src/app/(app)/ranking/page.tsx:51:7)
