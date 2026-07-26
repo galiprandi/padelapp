@@ -8,8 +8,13 @@
 - [x] 2026-07-21 — Adopción final y completa de Cache Components para la página pública de turnos /t/[id] (PR #tino/perf/t-id-cache-components-adoption)
 - [x] 2026-07-22 — Caching de assets estáticos y CDNs en el Service Worker para mejorar la carga instantánea y soporte offline del PWA (PR #tino/perf/optimize-fcm-sw-caching)
 - [x] 2026-07-23 — Optimización de PPR en las tres pestañas principales /ranking, /match y /turnos (PR #tino/perf/complete-ppr-adoption)
+- [x] 2026-07-25 — Implementación de esqueleto de alta fidelidad para la pestaña de red /network (PR #tino/perf/optimize-routing-performance)
 
 ## 🧠 LEARNINGS
+### 2026-07-25 - Esqueleto de alta fidelidad para la página de Red
+**Learning:** En páginas de métricas o paneles densos como `/network`, el uso de un cargador spinner genérico perjudica la experiencia de navegación del usuario al parpadear la interfaz completa. Diseñar un esqueleto de alta fidelidad (`NetworkSkeleton`) que pre-estructure de forma exacta la cuadrícula, los encabezados y las listas de datos elimina por completo el Layout Shift (CLS) visual y da una sensación de carga instantánea del lado del cliente mientras el PPR resuelve el componente del servidor.
+**Action:** Replicar siempre la maquetación exacta en los fallbacks de `<Suspense>` para mantener estabilidad estructural en la carga.
+
 ### 2026-07-17 - Setup inicial
 **Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
 **Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.
