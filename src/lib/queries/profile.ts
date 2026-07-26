@@ -14,6 +14,7 @@ export interface PublicProfileUser {
   wins: number;
   losses: number;
   matchesPlayed: number;
+  lastMatchAt: Date | null;
 }
 
 /**
@@ -33,6 +34,7 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
       wins: users.wins,
       losses: users.losses,
       matchesPlayed: users.matchesPlayed,
+      lastMatchAt: users.lastMatchAt,
     })
     .from(users)
     .where(eq(users.id, userId))

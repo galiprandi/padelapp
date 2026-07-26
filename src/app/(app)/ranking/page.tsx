@@ -71,6 +71,7 @@ async function RankingContent({ searchParams }: RankingPageProps) {
           level={currentUser.level}
           attendanceScore={currentUser.attendanceScore}
           matchesPlayed={currentUser.matchesPlayed}
+          lastMatchAt={currentUser.lastMatchAt}
         />
       )}
 

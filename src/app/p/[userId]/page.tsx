@@ -204,6 +204,7 @@ async function PublicProfileContent({
           losses={user.losses}
           level={user.level}
           matchesPlayed={user.matchesPlayed}
+          lastMatchAt={user.lastMatchAt}
         />
 
         <div className="grid grid-cols-2 gap-3">
