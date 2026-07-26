@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Search, X, CalendarDays } from "lucide-react";
 import type { GraphData, GraphNode } from "./actions";
+import { capitalizeName } from "@/lib/utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -221,7 +222,7 @@ export function GraphView({ graphData }: GraphViewProps) {
       const isSelected = selectedNode === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
       const color = nodeColor(node);
-      const label = node.name || node.alias || "?";
+      const label = capitalizeName(node.name || node.alias || "?");
       const fontSize = Math.max(11 / globalScale, 3.5);
 
       ctx.beginPath();
@@ -478,12 +479,12 @@ export function GraphView({ graphData }: GraphViewProps) {
                 className="h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
                 style={{ backgroundColor: nodeColor(selectedNodeData) }}
               >
-                {getInitials(selectedNodeData.name || selectedNodeData.alias || "?")}
+                {getInitials(capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
               </div>
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">
-                {selectedNodeData.name || selectedNodeData.alias}
+                {capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
               </p>
               <p className="text-xs text-muted-foreground">
                 {selectedNodeData.matchesPlayed} partidos ·{" "}
@@ -569,7 +570,7 @@ export function GraphView({ graphData }: GraphViewProps) {
                       {isPartner ? "P" : isRival ? "R" : "M"}
                     </span>
                     <span className="text-muted-foreground flex-1 truncate">
-                      {other?.name || other?.alias || "—"}
+                      {capitalizeName(other?.name || other?.alias || "—")}
                     </span>
                     <span className="text-muted-foreground/50 text-xs tabular-nums">
                       {link.strength}×

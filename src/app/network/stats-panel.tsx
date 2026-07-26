@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bell, Network, Activity } from "lucide-react";
 import type { AdoptionMetrics } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
+import { capitalizeName } from "@/lib/utils";
 
 interface StatsPanelProps {
   metrics: AdoptionMetrics;
@@ -207,13 +208,13 @@ export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps)
                   {i + 1}
                 </span>
                 <PlayerAvatar
-                  name={p.name ?? p.alias ?? "?"}
+                  name={capitalizeName(p.name ?? p.alias ?? "?")}
                   image={p.image ?? undefined}
                   size={32}
                 />
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <p className="text-sm font-semibold text-foreground truncate">
-                    {p.name ?? p.alias}
+                    {capitalizeName(p.name ?? p.alias ?? "?")}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {p.matchesPlayed} partidos
