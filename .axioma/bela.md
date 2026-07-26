@@ -11,9 +11,10 @@
 - [x] 2026-07-20 — Adopción de Cache Components / PPR en la página pública de detalle de turno `/t/[id]` y esqueleto de carga de alta fidelidad (PR #125)
 - [x] 2026-07-21 — Adopción completa de Cache Components / PPR en la página pública de detalle de turno /t/[id] mediante unificación de Suspense y remoción de "instant = false" (PR actual)
 - [x] 2026-07-22 — Mejoras de Recuperación y Salvage de Turnos (UX de Cooldown interactivo y Conexiones Mutuas en Detalle de Turno)
-- [x] 2026-07-23 — Alerta de Baja Tardía (late leave penalty) y habilitación del botón "Iniciar partido" para partidos con 4+ jugadores en turnos no llenos.
+- [x] 2026-07-23 — Alerta de Baja Tardía (late leave penalty) and habilitación del botón "Iniciar partido" para partidos con 4+ jugadores en turnos no llenos.
 - [x] 2026-07-24 — Refactorización estética de Creación de Turnos a Estándares MDS y botón Volver (PR actual)
 - [x] 2026-07-25 — Integración del botón de "Agregar al Calendario" para reducir olvidos y cancelaciones de turnos.
+- [x] 2026-07-26 — Filtro interactivo de Turnos "Todos" vs "Mis Turnos" bajo estándares MDS (PPR compatible)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -33,7 +34,7 @@
 **Action:** Mantener la claridad semántica al realizar comparaciones numéricas inversas y buscar siempre oportunidades no intrusivas para mostrar relaciones de contacto frecuentes en vistas públicas.
 
 ## 2026-07-20 - Adopción de PPR con Parámetros Asíncronos de Ruta
-**Learning:** En Next.js 15+, los parámetros de ruta (`params`) se manejan como promesas de forma asíncrona. Bajo el esquema de Partial Prerendering (PPR), cualquier intento de resolver/esperar (`await`) estas promesas en el componente de página de nivel superior antes de entrar en un límite de `<Suspense>` desencadena errores de compilación por bailing de renderizado dinámico. El patrón óptimo es usar un componente contenedor síncrono que reciba `params` como promesa y lo delegue sin resolver al componente interno asíncrono envuelto en `<Suspense>`, donde finalmente es resuelto a nivel de streaming en tiempo de ejecución.
+**Learning:** En Next.js 15+, los parámetros de ruta (`params`) se manejan como promesas de forma asíncrona. Bajo el esquema de Partial Prerendering (PPR), cualquier intento de resolver/esperar (`await`) estas promesas en el componente de página de nivel superior antes de entrar en un límite de `<Suspense>` desencadena errores de compilación por bailing de renderizado dinámico. El patrón óptimo is usar un componente contenedor síncrono que reciba `params` como promesa y lo delegue sin resolver al componente interno asíncrono envuelto en `<Suspense>`, donde finalmente es resuelto a nivel de streaming en tiempo de ejecución.
 **Action:** Utilizar siempre envoltorios síncronos y delegación de promesas de `params` en componentes bajo límites de Suspense para adoptar PPR y acelerar los tiempos de respuesta estática iniciales.
 
 ## 2026-07-21 - Unificación de Suspense y Estructura Esqueleto para PPR en Turnos Públicos
@@ -55,3 +56,7 @@
 ## 2026-07-25 - Botón de Calendario y Reducción de Ausencias
 **Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansión sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
 **Action:** Buscar siempre integrar herramientas de utilidad inmediata en el contexto donde el usuario toma decisiones críticas (ej: debajo de la información del turno, no aislado).
+
+## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"
+**Learning:** Permitir que los usuarios tengan acceso inmediato a los turnos en los que están anotados (ya sea como organizador, jugador o suplente) a través de una pestaña dedicada evita que tengan que buscar en un tablero lleno. Al mantener el componente principal de la página como un componente estático de Next.js App Router, logramos retener las ventajas del Partial Prerendering (PPR) de Next.js 15, delegando la interactividad y filtrado del lado del cliente de forma fluida e instantánea, usando botones accesibles con roles semánticos y sin necesidad de realizar viajes redondos al servidor.
+**Action:** Emplear filtros interactivos del lado del cliente cuando el conjunto de datos sea acotado para brindar una experiencia libre de latencia, respetando siempre el marcado ARIA para tecnologías de asistencia.
