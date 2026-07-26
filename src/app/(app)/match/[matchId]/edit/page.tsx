@@ -110,7 +110,7 @@ export default function EditMatchPage({ params }: EditMatchPageProps) {
       <div className="flex flex-col gap-4">
         <Link
           href={`/match/${matchId}`}
-          className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-fit"
+          className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-all w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] rounded px-1"
         >
           <ChevronLeft className="h-4 w-4" />
           Volver

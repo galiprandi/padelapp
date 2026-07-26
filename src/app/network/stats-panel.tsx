@@ -63,7 +63,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps)
       <div className="flex items-center gap-3">
         <Link
           href="/me"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-muted active:scale-[0.98]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           aria-label="Volver al inicio"
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
