@@ -37,3 +37,7 @@
 ## 2026-07-24 - [Accessible Notification Badge Label Pluralization]
 **Learning:** Generic labels like "Notificaciones" on badge counters do not convey critical contextual numerical details to screen reader users. Dynamic, localized, pluralization-aware ARIA labels (e.g. "1 notificación pendiente" vs. "3 notificaciones pendientes") significantly enhance the programmatic accessibility of count elements.
 **Action:** When implementing any counter badges (messages, notifications, unread items), always ensure the `aria-label` dynamically reflects both the count and pluralization rules in the user's preferred locale.
+
+## 2026-07-25 - [MDS Selector Button Tactile Scaling and Touch Target Sizing]
+**Learning:** In highly customized choice forms (such as duration, format, sets, and score selectors), standard button elements often feel sterile without tactile scaling animations. Ensuring custom buttons have a minimum height of `h-12` (48px) for optimal touch target sizing and adding `transition-all active:scale-[0.98]` animations drastically improves form delight and usability on mobile devices.
+**Action:** When building or modifying custom selection controls (e.g., radiogroups or button-based choices), enforce `h-12` heights and incorporate `transition-all active:scale-[0.98]` tactile states.
