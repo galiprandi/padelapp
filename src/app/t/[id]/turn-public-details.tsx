@@ -41,6 +41,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
+import { AddToCalendarButton } from "@/components/turns/add-to-calendar";
 import { db } from "@/db";
 import { playerEdges } from "@/db/schema";
 import { and, inArray } from "drizzle-orm";
@@ -214,6 +215,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               Notas del organizador
             </span>
             &ldquo;{turn.notes}&rdquo;
+          </div>
+        )}
+
+        {(isJoined || isCreator) && (
+          <div className="p-4 border-t border-border bg-card">
+            <AddToCalendarButton
+              turnId={id}
+              club={turn.club}
+              date={turn.date}
+              duration={turn.duration}
+              notes={turn.notes}
+            />
           </div>
         )}
       </div>
