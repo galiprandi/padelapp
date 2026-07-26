@@ -13,6 +13,8 @@ import {
   Users,
   Swords,
   ChevronLeft,
+  Network,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,7 @@ import {
   getHeadToHeadStats,
   getPublicProfileUser,
   getConfirmedMatchesForProfile,
+  getPlayerNetworkStats,
 } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -94,7 +97,10 @@ async function PublicProfileContent({
     notFound();
   }
 
-  const matches_result = await getConfirmedMatchesForProfile(userId, 5);
+  const [matches_result, networkStats] = await Promise.all([
+    getConfirmedMatchesForProfile(userId, 5),
+    getPlayerNetworkStats(userId),
+  ]);
 
   const formattedMatches = matches_result.map<MatchResultCompactMatch>((match) => ({
     id: match.id,
@@ -245,6 +251,103 @@ async function PublicProfileContent({
               )}
             </div>
           </div>
+        </div>
+
+        {/* Network & Position Stats Card */}
+        <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            Red y Posición
+          </h3>
+
+          <div className="grid grid-cols-2 gap-4 pt-1">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                <Network className="h-3.5 w-3.5 text-primary" />
+                Contactos
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl font-bold">
+                  {networkStats.networkSize}
+                </span>
+                <span className="text-xs text-muted-foreground">jugadores</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                <Activity className="h-3.5 w-3.5 text-primary" />
+                Lado preferido
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base font-bold text-foreground leading-tight">
+                  {networkStats.preferredSide === "RIGHT"
+                    ? "Derecha"
+                    : networkStats.preferredSide === "LEFT"
+                      ? "Revés"
+                      : "Alterno"}
+                </span>
+                <span className="text-[10px] text-muted-foreground leading-normal mt-0.5">
+                  {networkStats.winRateRight !== null && `Der: ${Math.round(networkStats.winRateRight * 100)}% WR `}
+                  {networkStats.winRateLeft !== null && `Rev: ${Math.round(networkStats.winRateLeft * 100)}% WR`}
+                  {networkStats.winRateRight === null && networkStats.winRateLeft === null && "Sin partidos"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {(networkStats.successfulPartner || networkStats.frequentRival) && (
+            <div className="pt-3 border-t border-border space-y-3">
+              {networkStats.successfulPartner && networkStats.successfulPartner.user && (
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-muted-foreground">Pareja más exitosa</span>
+                    <Link
+                      href={`/p/${networkStats.successfulPartner.user.id}?backUrl=/p/${userId}`}
+                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
+                    >
+                      <PlayerAvatar
+                        name={networkStats.successfulPartner.user.alias ?? networkStats.successfulPartner.user.displayName}
+                        image={networkStats.successfulPartner.user.image ?? undefined}
+                        size={20}
+                        className="group-hover:scale-105 transition-transform"
+                      />
+                      <span className="font-bold text-primary">
+                        {networkStats.successfulPartner.user.alias ?? networkStats.successfulPartner.user.displayName}
+                      </span>
+                    </Link>
+                  </div>
+                  <span className="font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full whitespace-nowrap">
+                    {networkStats.successfulPartner.wins} {networkStats.successfulPartner.wins === 1 ? 'victoria' : 'victorias'} 🔥
+                  </span>
+                </div>
+              )}
+
+              {networkStats.frequentRival && networkStats.frequentRival.user && (
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-muted-foreground">Rival más frecuente</span>
+                    <Link
+                      href={`/p/${networkStats.frequentRival.user.id}?backUrl=/p/${userId}`}
+                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
+                    >
+                      <PlayerAvatar
+                        name={networkStats.frequentRival.user.alias ?? networkStats.frequentRival.user.displayName}
+                        image={networkStats.frequentRival.user.image ?? undefined}
+                        size={20}
+                        className="group-hover:scale-105 transition-transform"
+                      />
+                      <span className="font-bold text-primary">
+                        {networkStats.frequentRival.user.alias ?? networkStats.frequentRival.user.displayName}
+                      </span>
+                    </Link>
+                  </div>
+                  <span className="font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full whitespace-nowrap">
+                    {networkStats.frequentRival.matches} {networkStats.frequentRival.matches === 1 ? 'partido' : 'partidos'} ⚔️
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
