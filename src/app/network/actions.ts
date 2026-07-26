@@ -34,6 +34,7 @@ export interface GraphLink {
   winsB: number;
   winsTogether: number;
   lossesTogether: number;
+  turnsTogether: number;
   strength: number;
 }
 
@@ -92,7 +93,7 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
   });
 
   const links: GraphLink[] = edges
-    .filter((e) => e.matchesAsRivals + e.matchesAsPartners > 0)
+    .filter((e) => e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether > 0)
     .map((e) => {
       const totalMatches = e.matchesAsRivals + e.matchesAsPartners;
       return {
@@ -104,7 +105,8 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
         winsB: e.winsB,
         winsTogether: e.winsTogether,
         lossesTogether: e.lossesTogether,
-        strength: totalMatches,
+        turnsTogether: e.turnsTogether,
+        strength: totalMatches + e.turnsTogether,
       };
     });
 
