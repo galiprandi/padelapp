@@ -11,8 +11,13 @@
 - [x] 2026-07-23 — Consolidación de onboarding en lista de preparación: Implementación del componente OnboardingChecklist en la página de inicio para nuevos usuarios. (PR #roby/profile/unified-onboarding-checklist)
 - [x] 2026-07-24 — Sólidos visuales en Onboarding y Dashboard: Refactorización de fondos y bordes en checklist de onboarding, instrucciones PWA, y tarjetas de acción del Dashboard para eliminar toda semi-transparencia y cumplir plenamente las directivas de MDS. (PR #roby/profile/dashboard-solid-onboarding-polish)
 - [x] 2026-07-25 — Limpieza y validación de tokens de sesión FCM en suscripción: Prevención de filtración de datos cruzados entre múltiples usuarios registrando la misma clave de dispositivo FCM en entornos compartidos. (PR #roby/profile/fcm-token-cleanup-and-validation)
+- [x] 2026-07-26 — Customización y eliminación de avatar: Implementación de la opción 'Quitar foto' para limpiar la foto de perfil y volver a las iniciales del nombre de usuario, con soporte para deshacer la acción (Undo) mediante toast. (PR #roby/profile/remove-avatar-initials)
 
 ## 🧠 LEARNINGS
+## 2026-07-26 - Customización y eliminación de avatar
+**Learning:** Ofrecer opciones sencillas de restauración o eliminación de avatares directamente en el formulario de perfil optimiza de gran manera la experiencia de personalización. Al permitir tanto revertir al avatar inicial (con deshecho dinámico de estado local y de servidor usando `useToast` con una acción "Deshacer") como restaurar la foto original de Google, los usuarios tienen un control total sin fricciones sobre su imagen en la plataforma.
+**Action:** En flujos de personalización de perfiles o configuraciones, asegurar que cada opción de modificación tenga un camino simple e intuitivo de reversión o eliminación completa con feedback inmediato.
+
 ## 2026-07-17 - Setup inicial
 **Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
 **Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.
