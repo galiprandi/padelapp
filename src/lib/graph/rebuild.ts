@@ -10,6 +10,7 @@ import {
   type ConfirmedMatchInfo,
 } from "./engine";
 import { updateEdgesForMatch } from "./update";
+import { rebuildTurnEdges } from "./turn-edges";
 
 // ---------------------------------------------------------------------------
 // Rebuild entire graph from scratch
@@ -49,7 +50,12 @@ export async function rebuildEntireGraph(): Promise<void> {
     await updateEdgesForMatch(matchInfo);
   }
 
-  // 3. Recompute all stats
+  // 3. Rebuild turn-based co-inscription edges (turnsTogether / lastTurnAt)
+  //    from historical TurnPlayer + TurnSubstitute records. This signal does
+  //    NOT feed the skill score (no outcome) — only salvage scoring.
+  await rebuildTurnEdges();
+
+  // 4. Recompute all stats
   await recomputeAllStats();
 }
 

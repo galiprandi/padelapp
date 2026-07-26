@@ -16,6 +16,7 @@ import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getTurnLabel, capitalizeName } from "@/lib/utils";
+import { updateEdgesForTurnEnrollment } from "@/lib/graph/turn-edges";
 
 export type CreateTurnInput = {
   club: string;
@@ -143,6 +144,12 @@ export async function joinTurnAction(turnId: string) {
       turnId,
       userId: session.user.id,
     });
+
+    // Capture co-inscription edges for the player graph (social proximity signal,
+    // feeds salvage scoring). Non-blocking, best-effort.
+    void updateEdgesForTurnEnrollment(turnId, session.user.id).catch((err) =>
+      console.error("updateEdgesForTurnEnrollment (joinTurn):", err),
+    );
 
     const willBeFull = turn.players.length + 1 >= turn.maxPlayers;
 
@@ -849,6 +856,12 @@ export async function joinSubstituteAction(turnId: string) {
       turnId,
       userId: session.user.id,
     });
+
+    // Capture co-inscription edges for the player graph (social proximity signal,
+    // feeds salvage scoring). Non-blocking, best-effort.
+    void updateEdgesForTurnEnrollment(turnId, session.user.id).catch((err) =>
+      console.error("updateEdgesForTurnEnrollment (joinSubstitute):", err),
+    );
 
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");

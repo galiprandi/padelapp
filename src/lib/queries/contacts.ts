@@ -157,12 +157,22 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     }
     validConnectionsForCandidate.get(candidateId)!.add(enrolledId);
 
-    // Calculate score
-    const strength = edge.matchesAsRivals + edge.matchesAsPartners;
-    let edgeScore = strength * 10;
+    // Calculate score from match-based signal (rivalry + partnership)
+    const matchStrength = edge.matchesAsRivals + edge.matchesAsPartners;
+    let edgeScore = matchStrength * 10;
 
-    if (edge.lastMatchAt) {
-      const daysSince = (Date.now() - edge.lastMatchAt.getTime()) / (1000 * 60 * 60 * 24);
+    // Add co-inscription signal (turnsTogether). Lower weight than match-based
+    // signal (no outcome, no confirmed play) but still a strong proximity hint:
+    // someone shared the turn link with someone else. Weight 5 vs 10.
+    edgeScore += edge.turnsTogether * 5;
+
+    // Recency bonus: use the most recent of lastMatchAt / lastTurnAt so that
+    // a recent co-inscription also boosts the score even without a match.
+    const lastInteraction = edge.lastTurnAt && edge.lastMatchAt
+      ? (edge.lastTurnAt > edge.lastMatchAt ? edge.lastTurnAt : edge.lastMatchAt)
+      : (edge.lastTurnAt ?? edge.lastMatchAt);
+    if (lastInteraction) {
+      const daysSince = (Date.now() - lastInteraction.getTime()) / (1000 * 60 * 60 * 24);
       if (daysSince < 30) edgeScore += 50;
       else if (daysSince < 60) edgeScore += 30;
       else if (daysSince < 120) edgeScore += 15;
@@ -171,18 +181,19 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     const currentScore = candidateScores.get(candidateId) ?? 0;
     candidateScores.set(candidateId, currentScore + edgeScore);
 
-    // Keep track of matches together and last match date
+    // Keep track of total connections (matches + turns) and last interaction date
+    const totalStrength = matchStrength + edge.turnsTogether;
     const existingDirect = candidateDirectMatches.get(candidateId);
-    const edgeLastMatchDate = edge.lastMatchAt ? new Date(edge.lastMatchAt) : new Date(0);
+    const edgeLastDate = lastInteraction ? new Date(lastInteraction) : new Date(0);
     if (existingDirect) {
-      existingDirect.matchesTogether += strength;
-      if (edgeLastMatchDate > existingDirect.lastMatchAt) {
-        existingDirect.lastMatchAt = edgeLastMatchDate;
+      existingDirect.matchesTogether += totalStrength;
+      if (edgeLastDate > existingDirect.lastMatchAt) {
+        existingDirect.lastMatchAt = edgeLastDate;
       }
     } else {
       candidateDirectMatches.set(candidateId, {
-        lastMatchAt: edgeLastMatchDate,
-        matchesTogether: strength,
+        lastMatchAt: edgeLastDate,
+        matchesTogether: totalStrength,
       });
     }
   }

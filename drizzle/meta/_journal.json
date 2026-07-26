@@ -36,6 +36,13 @@
       "when": 1784850431455,
       "tag": "0004_absent_leper_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785086737272,
+      "tag": "0005_powerful_tattoo",
+      "breakpoints": true
     }
   ]
 }

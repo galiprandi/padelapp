@@ -26,13 +26,14 @@ La categoría auto-percibida (1-8) genera sesgo: los jugadores se auto-clasifica
 - `users.level` queda en DB como legacy (no se borra, no se edita, no se muestra).
 
 ### 2. Construir el grafo de jugadores
-- **Nodos**: cada jugador que jugó al menos un partido confirmado.
+- **Nodos**: cada jugador que jugó al menos un partido confirmado o se inscribió a al menos un turno.
 - **Grafo único** con aristas que capturan rivalidad y pareja en una sola relación:
   - Partidos como rivales, partidos como pareja, wins A vs B, wins juntos, última fecha, posición de juego (derecha/revés).
-- **Pesos de arista**: frecuencia, cercanía temporal, outcome direccional (rivalidad), synergy (pareja).
-- **Score auto-computado**: algoritmo interno (no visible para el usuario). Se calcula en base a resultados reales. **El usuario nunca ve ni escucha sobre este cálculo** — es solo fuente de datos para recomendaciones.
+  - **Co-inscripción en turnos** (`turnsTogether` + `lastTurnAt`): señal de proximidad social derivada de jugadores y suplentes que comparten un turno. Alguien compartió el link del turno, ergo existe una relación de cercanía. Esta señal **no tiene outcome** (no hay resultado de partido) y **no alimenta el skill score** — solo alimenta el scoring de candidatos en el salvage flow. Se captura al inscribirse (jugador o suplente), no se decrementa al bajarse (el acto de inscribirse valida la relación).
+- **Pesos de arista**: frecuencia, cercanía temporal, outcome direccional (rivalidad), synergy (pareja), co-inscripción en turnos (peso menor, sin outcome).
+- **Score auto-computado**: algoritmo interno (no visible para el usuario). Se calcula en base a resultados reales de partidos confirmados. **El usuario nunca ve ni escucha sobre este cálculo** — es solo fuente de datos para recomendaciones. La co-inscripción en turnos no entra en este cálculo.
 - **Comunidades**: clusters naturales de jugadores que comparten cancha frecuentemente (Louvain). Usado internamente para priorizar recomendaciones.
-- **Sin cold start especial**: un jugador nuevo empieza con score neutral. A medida que lo invitan y juega, su red y su score se ajustan automáticamente.
+- **Sin cold start especial**: un jugador nuevo empieza con score neutral. A medida que lo invitan y juega, su red y su score se ajustan automáticamente. La co-inscripción en turnos conecta a los jugadores antes de que confirmen su primer partido.
 
 ### 3. Feedback del organizador (post-partido)
 - **Escenario real**: el organizador invita a alguien que no conoce desesperado por llenar el turno, y resulta que juega mucho más fuerte o mucho más flojo que el grupo.
@@ -49,6 +50,7 @@ La categoría auto-percibida (1-8) genera sesgo: los jugadores se auto-clasifica
   2. Mismo cluster de comunidad (cercanía de nivel).
   3. Peso de arista más alto (frecuencia + cercanía temporal).
   4. Excluir rivales con outcome extremo (>85% o <15%).
+  5. **Co-inscripción en turnos** (`turnsTogether`): jugadores que compartieron turnos previos con los inscriptos, incluso si nunca confirmaron un partido juntos. Peso menor que el signal de matches (×5 vs ×10), pero captura cercanía social que el grafo de matches no ve. La recencia usa el más reciente entre `lastMatchAt` y `lastTurnAt`.
 
 #### Sugerencia de parejas y cruces
 - Sugerir la combinación de parejas con menor diferencia de synergy.
@@ -80,7 +82,8 @@ La categoría auto-percibida (1-8) genera sesgo: los jugadores se auto-clasifica
 
 - Postgres (Neon). Sin infra nueva.
 - Tablas: `player_edges`, `player_graph_stats`, `match_player_feedback`.
-- Las aristas son derivadas — la source of truth son los partidos confirmados.
+- Las aristas son derivadas — la source of truth son los partidos confirmados y las inscripciones a turnos (TurnPlayer + TurnSubstitute).
 - Al confirmar un match: actualizar aristas (6 upserts, instantáneo).
+- Al inscribirse a un turno (jugador o suplente): actualizar aristas de co-inscripción (hasta n-1 upserts, instantáneo).
 - Batch periódico (Vercel Cron): recalcular scores + comunidades.
 - Diseñado para 100k jugadores.

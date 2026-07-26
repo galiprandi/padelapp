@@ -2,9 +2,9 @@
 
 Padel Red existe para facilitar la organización de turnos fijos y recurrentes de pádel, y para evitar que se cancelen cuando no hay suficientes jugadores.
 
-El organizador crea un turno, comparte el link, y los jugadores se suman con un toque. Si faltan jugadores, la app busca automáticamente en la red de contactos de todos los anotados — personas con las que compartieron cancha en el último año — para completar los cupos.
+El organizador crea un turno, comparte el link, y los jugadores se suman con un toque. Si faltan jugadores, la app busca automáticamente en la red de contactos de todos los anotados — personas con las que compartieron cancha o un turno en el último año — para completar los cupos.
 
-El objetivo principal es salvar los turnos de la cancelación: si faltan jugadores, la app los busca automáticamente. Cada partido confirmado construye tu red de contactos de pádel — no hay que agregar amigos a mano, se arma sola jugando.
+El objetivo principal es salvar los turnos de la cancelación: si faltan jugadores, la app los busca automáticamente. Cada partido confirmado y cada inscripción a un turno construye tu red de contactos de pádel — no hay que agregar amigos a mano, se arma sola jugando y compartiendo turnos.
 
 Además de los turnos, la app permite registrar partidos, cargar resultados, llevar un ranking competitivo simple como gancho de engagement, y marcar asistencia para construir reputación. Todo pensado para mobile, con login de Google y links compartibles.
 
@@ -72,6 +72,11 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 **Penalizaciones:** Bajarse a <2h sin ser organizador → -5% reputación
 
 **Cooldowns:** Notificación a red → 1h entre envíos
+
+**Red de contactos (salvage):** Combina dos señales derivadas automáticamente, sin friend requests manuales:
+- **Partidos confirmados** (rivalidad + pareja): signal fuerte con outcome, alimenta también el skill score interno.
+- **Co-inscripción en turnos** (jugadores + suplentes del mismo turno): signal de proximidad social — alguien compartió el link del turno. No tiene outcome y no alimenta el skill score, pero prioriza candidatos para salvar turnos. Se captura al inscribirse y no se decrementa al bajarse (el acto de inscribirse valida la relación).
+- Audiencia: contactos de TODOS los anotados (no solo el organizador), últimos 12 meses, sin duplicados, excluyendo ya-anotados. Excluye rivales con outcome extremo (>85% o <15%).
 
 **Push notifications:** Turno completo, Nuevo jugador, Jugador se bajó, Cupo libre (suplentes), Nuevo organizador, Baja tardía, Partido iniciado, Turno cancelado, Cupo abierto (red)
 

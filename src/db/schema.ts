@@ -277,6 +277,11 @@ export const playerEdges = pgTable(
     winsTogether: integer("winsTogether").notNull().default(0),
     lossesTogether: integer("lossesTogether").notNull().default(0),
     lastMatchAt: timestamptz3("lastMatchAt"),
+    // Co-inscription signal: players who enrolled in the same turn (player or
+    // substitute). Captures social proximity (someone shared the turn link),
+    // NOT match outcome. Does NOT feed the skill score — only salvage scoring.
+    turnsTogether: integer("turnsTogether").notNull().default(0),
+    lastTurnAt: timestamptz3("lastTurnAt"),
     createdAt: timestamptz3("createdAt").notNull().defaultNow(),
     updatedAt: timestamptz3("updatedAt")
       .notNull()

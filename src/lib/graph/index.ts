@@ -9,6 +9,10 @@ export {
 } from "./engine";
 
 export { updateEdgesForMatch } from "./update";
+export {
+  updateEdgesForTurnEnrollment,
+  rebuildTurnEdges,
+} from "./turn-edges";
 
 export {
   rebuildEntireGraph,
