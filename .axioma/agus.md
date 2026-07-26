@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-07-27 — Ranking Podium Position Deltas & Terminology Accessibility (PR #agus/ranking/podium-deltas-accessibility).
 - [x] 2026-07-17 — Corrección del bug de consistencia de posiciones relativas y deltas en `recalculateRankingAction` (PR #1).
 - [x] 2026-07-17 — Creación de la sección interactiva `RankingInfo` con explicación de fórmulas, decay, penalizaciones y tiebreak en la página de ranking (PR #1).
 - [x] 2026-07-21 — Optimización de consultas de partidos para evitar el over-fetching de datos de usuario (PR #2).
@@ -11,6 +12,10 @@
 - [x] 2026-07-26 — Visualización transparente de decay temporal por inactividad en banner de ranking y perfiles públicos (PR #7).
 
 ## 🧠 LEARNINGS
+### 2026-07-27 - Semántica y Accesibilidad en Deltas de Posición de Clasificación
+**Learning:** El valor del delta en una clasificación o ranking representa el desplazamiento relativo de posiciones (subió o bajó N puestos), no los puntos obtenidos en los partidos. El uso descuidado de términos (ej. "puntos" en lugar de "posiciones" en los atributos ARIA) confunde a usuarios de lectores de pantalla y deteriora la accesibilidad. Al unificar la visualización de deltas tanto en listas de clasificación, podios de honor (`RankingPodium`), como en banners personales (`UserRankingBanner`), y dotar a cada uno de un etiquetado ARIA exacto y descriptivo en español, se crea una experiencia altamente accesible y libre de ambigüedades.
+**Action:** En cualquier visualización de estadísticas relativas, verifique que la terminología en pantalla y en las etiquetas ARIA coincida exactamente con la naturaleza del dato medido para evitar desorientar a los usuarios de tecnologías asistivas.
+
 ### 2026-07-26 - Gating de Funciones Dinámicas (New Date()) en Pre-renderizado
 **Learning:** En Next.js con Partial Prerendering (PPR), durante la fase de compilación estática (`next build`), el compilador intentará evaluar las páginas estáticas (como `/catalog`) que importen o incorporen componentes del lado del cliente. Si estos componentes evalúan de forma directa y fuera de hooks funciones dinámicas inestables como `new Date()` para calcular deltas de tiempo, Next.js abortará la compilación debido a la evaluación de valores dinámicos inestables durante la compilación estática. Gating del constructor `new Date()` utilizando una comprobación de montaje (`useMounted()`) en un bloque de renderizado condicional asegura que la función dinámica no se ejecute en el servidor durante la compilación, garantizando una hidratación perfecta y 100% de compatibilidad con PPR.
 **Action:** Al interactuar con fechas del sistema actual o APIS de navegador en componentes compartidos, asegure que se utilicen comprobaciones de montaje (`mounted`) y constructores diferidos dentro de los bloques de renderizado para evitar fallos de pre-renderizado.
