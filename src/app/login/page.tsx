@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { auth, signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { safeCallbackUrl } from "@/lib/auth-utils";
+import Image from "next/image";
 
 interface LoginPageProps {
   searchParams: Promise<{ callbackUrl?: string }>;
@@ -15,12 +16,13 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
       <div className="flex w-full max-w-sm flex-col items-center gap-12">
         {/* Logo + tagline */}
         <div className="flex flex-col items-center gap-6">
-          <img
+          <Image
             src="/icon.svg"
             alt="Padel Red"
             className="h-24 w-24"
             width={96}
             height={96}
+            unoptimized
           />
           <div className="space-y-3 text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">

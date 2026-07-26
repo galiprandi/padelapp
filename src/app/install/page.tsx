@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { InstallContent } from "@/components/share/install-content";
+import Image from "next/image";
 
 export default function InstallPage() {
   return (
     <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
       <div className="flex w-full max-w-sm flex-col items-center gap-8">
         {/* Logo */}
-        <img
+        <Image
           src="/icon.svg"
           alt="Padel Red"
           className="h-20 w-20"
           width={80}
           height={80}
+          unoptimized
         />
 
         <div className="space-y-2 text-center">

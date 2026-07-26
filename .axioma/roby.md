@@ -12,8 +12,13 @@
 - [x] 2026-07-24 — Sólidos visuales en Onboarding y Dashboard: Refactorización de fondos y bordes en checklist de onboarding, instrucciones PWA, y tarjetas de acción del Dashboard para eliminar toda semi-transparencia y cumplir plenamente las directivas de MDS. (PR #roby/profile/dashboard-solid-onboarding-polish)
 - [x] 2026-07-25 — Limpieza y validación de tokens de sesión FCM en suscripción: Prevención de filtración de datos cruzados entre múltiples usuarios registrando la misma clave de dispositivo FCM en entornos compartidos. (PR #roby/profile/fcm-token-cleanup-and-validation)
 - [x] 2026-07-26 — Customización y eliminación de avatar: Implementación de la opción 'Quitar foto' para limpiar la foto de perfil y volver a las iniciales del nombre de usuario, con soporte para deshacer la acción (Undo) mediante toast. (PR #roby/profile/remove-avatar-initials)
+- [x] 2026-07-27 — Cumplimiento de imágenes del sistema de diseño (MDS): Reemplazo de etiquetas nativas <img> por componentes <Image> de Next.js en las páginas de landing, login e instalación. (PR #roby/pwa/standardize-image-components)
 
 ## 🧠 LEARNINGS
+## 2026-07-27 - Cumplimiento de imágenes del sistema de diseño (MDS)
+**Learning:** Las especificaciones del Minimal Design System (§2.11 de `DESIGN.md`) exigen explícitamente el uso del componente `next/image` en lugar de las etiquetas nativas `<img>` para garantizar un rendimiento óptimo de carga y estabilidad acumulativa de diseño (CLS). Los gráficos vectoriales (SVG) deben utilizar la propiedad `unoptimized` para evitar fallos de optimización y conservar la nitidez del renderizado original.
+**Action:** Evitar por completo etiquetas HTML `<img>` en cualquier componente de vista y estandarizar todos los recursos estáticos y dinámicos bajo el componente `<Image>` de Next.js.
+
 ## 2026-07-26 - Customización y eliminación de avatar
 **Learning:** Ofrecer opciones sencillas de restauración o eliminación de avatares directamente en el formulario de perfil optimiza de gran manera la experiencia de personalización. Al permitir tanto revertir al avatar inicial (con deshecho dinámico de estado local y de servidor usando `useToast` con una acción "Deshacer") como restaurar la foto original de Google, los usuarios tienen un control total sin fricciones sobre su imagen en la plataforma.
 **Action:** En flujos de personalización de perfiles o configuraciones, asegurar que cada opción de modificación tenga un camino simple e intuitivo de reversión o eliminación completa con feedback inmediato.
