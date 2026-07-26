@@ -177,7 +177,7 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRestoreGooglePhoto}
                 disabled={isSaving}
-                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem]"
+                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1"
               >
                 Usar mi foto de Google
               </button>
@@ -187,7 +187,7 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRemovePhoto}
                 disabled={isSaving}
-                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem]"
+                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1"
               >
                 Quitar foto
               </button>
@@ -211,18 +211,23 @@ export function ProfileForm({
           <Label htmlFor="alias" className="text-sm font-semibold text-foreground">
             Alias en la cancha
           </Label>
-          {(isPendingSave || isSaving) && (
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              {isPendingSave ? (
-                <>
-                  <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-                  Sin guardar
-                </>
-              ) : (
-                "Guardando…"
-              )}
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground" aria-live="polite">
+              {alias.length}/{MAX_ALIAS_LENGTH}
             </span>
-          )}
+            {(isPendingSave || isSaving) && (
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                {isPendingSave ? (
+                  <>
+                    <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+                    Sin guardar
+                  </>
+                ) : (
+                  "Guardando…"
+                )}
+              </span>
+            )}
+          </div>
         </div>
         <Input
           id="alias"
