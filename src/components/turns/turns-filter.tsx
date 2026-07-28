@@ -60,7 +60,7 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "todos"
                   ? "bg-card border border-border text-foreground shadow-sm"
-                  : "border-transparent text-muted-foreground hover:bg-card/40 hover:text-foreground",
+                  : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
               aria-label="Mostrar todos los turnos disponibles"
             >
@@ -75,7 +75,7 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "mis-turnos"
                   ? "bg-card border border-border text-foreground shadow-sm"
-                  : "border-transparent text-muted-foreground hover:bg-card/40 hover:text-foreground",
+                  : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
               aria-label="Mostrar mis turnos únicamente"
             >
