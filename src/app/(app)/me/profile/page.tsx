@@ -5,16 +5,25 @@ import { getEditableProfile, getGoogleAvatarUrl } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { Shield, ChevronRight } from "lucide-react";
+import { Shield, ChevronRight, ChevronLeft } from "lucide-react";
 
 export default function ProfilePage() {
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
-        <p className="text-sm text-muted-foreground">
-          Cómo te ven los demás jugadores en el ranking y los partidos.
-        </p>
+      <div className="flex items-center gap-4">
+        <Link
+          href="/me"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          aria-label="Volver"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
+          <p className="text-sm text-muted-foreground">
+            Cómo te ven los demás jugadores en el ranking y los partidos.
+          </p>
+        </div>
       </div>
 
       <Suspense fallback={<ProfileFormSkeleton />}>
@@ -23,7 +32,7 @@ export default function ProfilePage() {
 
       <Link
         href="/me/security"
-        className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-muted"
+        className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
       >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
           <Shield className="h-5 w-5" aria-hidden="true" />
