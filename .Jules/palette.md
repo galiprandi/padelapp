@@ -49,3 +49,7 @@
 ## 2026-07-26 - [Custom Selector Keyboard Accessibility]
 **Learning:** Custom interactive selectors, such as recent clubs selector buttons inside wizards or step forms, require standard high-visibility keyboard focus rings so non-mouse/keyboard-only navigators can immediately perceive their location and selection state.
 **Action:** Always include high-visibility focus indicator rings (`focus-visible:ring-2`) on custom buttons acting as selection list options.
+
+## 2026-07-27 - [Brand Identity Cognitive Micro-UX Pattern]
+**Learning:** In minimal design environments, branding elements on critical entry points (like identity provider/OAuth sign-in buttons) can feel sterile without immediate cognitive visual cues. Incorporating highly-recognizable brand-compliant vector graphics inline (e.g., Google's multi-colored G logo) next to the action label, while keeping it visually separate from screen-reader flows with `aria-hidden="true"`, maximizes accessibility and user confidence.
+**Action:** Always provide standard vector brand indicators next to label texts on external sign-in portals, and ensure they are cleanly hidden from the accessibility tree to avoid unnecessary screen-reader clutter.
