@@ -10,8 +10,13 @@
 - [x] 2026-07-23 — Optimización de PPR en las tres pestañas principales /ranking, /match y /turnos (PR #tino/perf/complete-ppr-adoption)
 - [x] 2026-07-25 — Implementación de esqueleto de alta fidelidad para la pestaña de red /network (PR #tino/perf/optimize-routing-performance)
 - [x] 2026-07-26 — Estandarización de accesibilidad por teclado y feedback táctil en todos los botones y enlaces de retroceso (PR #tino/ux/back-button-accessibility)
+- [x] 2026-07-27 — Refactorización y optimización de formularios dinámicos a Server Components para PPR (PR #tino/perf/optimize-routing-performance)
 
 ## 🧠 LEARNINGS
+### 2026-07-27 - Refactorización de Formularios Dinámicos para PPR y Cascarón Estático
+**Learning:** Las páginas de edición o carga de datos dinámicos (`/edit`, `/result`) suelen implementarse erróneamente como componentes puramente de cliente (`"use client"`) monolíticos con carga en `useEffect`, perdiendo todos los beneficios de la compilación estática parcial. Al dividirlas en un contenedor Server Component padre y un formulario secundario Client Component hijo, podemos renderizar la estructura y las cabeceras del cascarón de forma 100% estática para servirla instantáneamente desde el CDN, delegando las llamadas asíncronas de base de datos a un `<Suspense>` boundary con esqueletos estructurados exactamente con el diseño final.
+**Action:** Continuar reemplazando componentes monolíticos `"use client"` con este patrón asíncrono para mantener transiciones instantáneas y evitar CLS o pantallas en blanco molestas.
+
 ### 2026-07-26 - Accesibilidad de teclado y feedback táctil en botones de retroceso (MDS)
 **Learning:** Los botones y enlaces de retroceso (`ChevronLeft` / `Volver`) distribuidos en vistas clave carecían de estilos de foco por teclado, impidiendo que usuarios de navegación accesible identifiquen visualmente el foco. Standardizar el uso de transiciones globales suaves (`transition-all`), el anillo de foco del MDS (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) y feedback táctil de escala activa (`active:scale-[0.98]`) mejora drásticamente la calidad y consistencia del diseño.
 **Action:** Asegurar que cualquier enlace o botón personalizado de retroceso implementado a futuro cumpla rigurosamente con esta especificación visual del MDS.
@@ -41,7 +46,7 @@
 **Action:** Mantener la disciplina de diseño PPR. Cualquier nueva ruta o sub-ruta dinámica debe diseñarse de forma asíncrona, aislando el acceso a la sesión, cabeceras, o base de datos dentro de límites de `<Suspense>`.
 
 ### 2026-07-22 - Caching de Assets Estáticos en el Service Worker (PWA)
-**Learning:** Agregar una estrategia Stale-While-Revalidate en el Service Worker existente (`firebase-messaging-sw.js`) para capturar assets estáticos (`_next/static/`, `/icons/`, `/manifest.webmanifest`, etc.) y CDNs clave de avatares de usuario (`api.dicebear.com`, `lh3.googleusercontent.com`) elimina casi en su totalidad el parpadeo blanco y las demoras de red en las navegaciones subsiguientes o arranques offline. Es crítico saltarse explícitamente peticiones dinámicas como rutas `/api/` y llamadas de datos de Next (`_next/data/`) para no congelar el estado de la aplicación o el proceso de inicio de sesión.
+**Learning:** Agregar una estrategia Stale-While-Revalidate en el Service Worker existente (`firebase-messaging-sw.js`) para capturar assets estáticos (`_next/static/`, `/icons/`, `/manifest.webmanifest`, etc.) and CDNs clave de avatares de usuario (`api.dicebear.com`, `lh3.googleusercontent.com`) elimina casi en su totalidad el parpadeo blanco y las demoras de red en las navegaciones subsiguientes o arranques offline. Es crítico saltarse explícitamente peticiones dinámicas como rutas `/api/` y llamadas de datos de Next (`_next/data/`) para no congelar el estado de la aplicación o el proceso de inicio de sesión.
 **Action:** Vigilar que nuevas extensiones de recursos o endpoints de APIs externas que devuelvan recursos estáticos sean mapeados en la whitelist del Service Worker.
 
 ### 2026-07-23 - Optimización de PPR en las tres pestañas principales /ranking, /match y /turnos

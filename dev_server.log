@@ -5,8 +5,8 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 635ms
-✓ Running next.config.ts took 49ms
+✓ Ready in 586ms
+✓ Running next.config.ts took 55ms
 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
 
   To migrate automatically, run:
@@ -18,17 +18,23 @@
   · optimizePackageImports
 
 ○ Compiling /catalog ...
- GET /catalog 200 in 14.7s (next.js: 13.1s, application-code: 1601ms)
+ GET /catalog 200 in 7.2s (next.js: 6.4s, application-code: 851ms)
 ○ Compiling /api/auth/[...nextauth] ...
-(node:174052) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
-In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
-
-To prepare for this change:
-- If you want the current behavior, explicitly use 'sslmode=verify-full'
-- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
-
-See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
-(Use `node --trace-warnings ...` to show where the warning was created)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/0n_8_@auth_core_0aa21jj._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/0n_8_@auth_core_0aa21jj._.js:310:355)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:310:353)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at process.processTimers (node:internal/timers:521:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:310:353)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at process.processTimers (node:internal/timers:521:7)
 ⨯ Error: Failed query: select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3
 params: 50,1,50
     at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
@@ -43,7 +49,7 @@ params: 50,1,50
   query: `select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3`,
   params: [ 50, 1, 50 ],
   digest: '1156949246',
-  [cause]: error: password authentication failed for user 'neondb_owner'
+  [cause]: AggregateError:
       at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
       at async RankingContent (src/app/(app)/ranking/page.tsx:51:7)
     12 | export const getCachedRanking = unstable_cache(
@@ -53,22 +59,169 @@ params: 50,1,50
     15 |       orderBy: [
     16 |         desc(users.rankingScore),
     17 |         desc(users.attendanceScore), {
-    length: 75,
-    severity: 'ERROR',
-    code: '28P01',
-    detail: undefined,
-    hint: undefined,
-    position: undefined,
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: undefined,
-    line: undefined,
-    routine: undefined
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
   }
 }
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:310:353)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at process.processTimers (node:internal/timers:521:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/ssr/0n_8_@auth_core_15-bz9x._.js:310:353)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at process.processTimers (node:internal/timers:521:7)
+⨯ Error: Failed query: select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3
+params: 50,1,50
+    at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at async RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore), {
+  query: `select "users"."id", "users"."displayName", "users"."alias", "users"."email", "users"."image", "users"."level", "users"."emailVerified", "users"."createdAt", "users"."updatedAt", "users"."attendanceScore", "users"."lastMatchAt", "users"."losses", "users"."matchesPlayed", "users"."rankingDelta", "users"."rankingPosition", "users"."rankingScore", "users"."wins", "users_matchPlayers"."data" as "matchPlayers" from "User" "users" left join lateral (select coalesce(json_agg(json_build_array("users_matchPlayers"."id", "users_matchPlayers"."matchId", "users_matchPlayers"."userId", "users_matchPlayers"."position", "users_matchPlayers"."resultConfirmed", "users_matchPlayers"."displayName", "users_matchPlayers"."teamId", "users_matchPlayers"."joinedAt", "users_matchPlayers"."attendance", "users_matchPlayers"."attendanceBy", "users_matchPlayers"."attendanceAt", "users_matchPlayers"."side", "users_matchPlayers"."createdAt", "users_matchPlayers"."updatedAt", "users_matchPlayers_match"."data")), '[]'::json) as "data" from (select * from "MatchPlayer" "users_matchPlayers" where "users_matchPlayers"."userId" = "users"."id" limit $1) "users_matchPlayers" left join lateral (select json_build_array("users_matchPlayers_match"."score", "users_matchPlayers_match"."date", "users_matchPlayers_match"."status") as "data" from (select * from "Match" "users_matchPlayers_match" where "users_matchPlayers_match"."id" = "users_matchPlayers"."matchId" limit $2) "users_matchPlayers_match") "users_matchPlayers_match" on true) "users_matchPlayers" on true order by "users"."rankingScore" desc, "users"."attendanceScore" desc, "users"."wins" desc, "users"."lastMatchAt" desc, "users"."displayName" asc limit $3`,
+  params: [ 50, 1, 50 ],
+  digest: '1156949246',
+  [cause]: AggregateError:
+      at async getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+      at async RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+    12 | export const getCachedRanking = unstable_cache(
+    13 |   async () => {
+  > 14 |     const result = await db.query.users.findMany({
+       |                    ^
+    15 |       orderBy: [
+    16 |         desc(users.rankingScore),
+    17 |         desc(users.attendanceScore), {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/0n_8_@auth_core_0aa21jj._.js:3862:16)
+    at Auth (/app/.next/dev/server/chunks/0n_8_@auth_core_0aa21jj._.js:310:355)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.3.0-preview.6_@opentelemetry+api@1.9.1_@playwright+test@1.61.1_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:41747)
+TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException: TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException:  TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException: TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException:  TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException: TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException:  TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException: TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException:  TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException: TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+⨯ uncaughtException:  TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))
+    at AggregateError (<anonymous>)
+    at getCachedRanking.tags (src/lib/queries/ranking.ts:14:20)
+    at RankingContent (src/app/(app)/ranking/page.tsx:51:7)
+  12 | export const getCachedRanking = unstable_cache(
+  13 |   async () => {
+> 14 |     const result = await db.query.users.findMany({
+     |                    ^
+  15 |       orderBy: [
+  16 |         desc(users.rankingScore),
+  17 |         desc(users.attendanceScore),
+TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException: TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
+⨯ uncaughtException:  TypeError: chunk.reason.enqueueModel is not a function
+    at ignore-listed frames
