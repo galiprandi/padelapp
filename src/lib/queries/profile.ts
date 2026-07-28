@@ -89,6 +89,7 @@ export interface EditableProfileData {
   level: number;
   image: string | null;
   email: string;
+  matchesPlayed: number;
 }
 
 /**
@@ -102,6 +103,7 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
       level: users.level,
       image: users.image,
       email: users.email,
+      matchesPlayed: users.matchesPlayed,
     })
     .from(users)
     .where(eq(users.id, userId))

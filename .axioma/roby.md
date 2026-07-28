@@ -14,8 +14,13 @@
 - [x] 2026-07-26 — Customización y eliminación de avatar: Implementación de la opción 'Quitar foto' para limpiar la foto de perfil y volver a las iniciales del nombre de usuario, con soporte para deshacer la acción (Undo) mediante toast. (PR #roby/profile/remove-avatar-initials)
 - [x] 2026-07-27 — Cumplimiento de imágenes del sistema de diseño (MDS): Reemplazo de etiquetas nativas <img> por componentes <Image> de Next.js en las páginas de landing, login e instalación. (PR #roby/pwa/standardize-image-components)
 - [x] 2026-07-28 — Google Logo reinstating & Back Button Standardization: Added standard back-navigation header links to Profile and Security pages, and reinstated the Google brand logo inside OAuth SignInButton for visual micro-UX clarity. (PR #roby/profile/logo-and-back-navigation)
+- [x] 2026-07-29 — Google Account Details display & Welcome Guide Restoration Setting: Enhanced the profile settings form with read-only synced account info (Name, Email) and added a dedicated control to restore the dismissed Onboarding Checklist (Welcome Guide) for new users. (PR #roby/profile/onboarding-restoration-settings)
 
 ## 🧠 LEARNINGS
+## 2026-07-29 - Google Account Details display & Welcome Guide Restoration Setting
+**Learning:** During the onboarding phase of new users, providing highly accessible options to reset/restore dismissed checklists (Welcome Guide) prevents information loss and significantly enhances the user's initial setup flow. Placing a dedicated reset button inside settings or profile forms solves the friction of accidental dismissals. Furthermore, displaying synced read-only properties (like Google Name/Email) under clear account cards manages users' editing expectations elegantly.
+**Action:** Always provide options to restore critical discarded onboarding items in user settings pages, and present clear, read-only system-of-record markers for fields populated from OAuth providers.
+
 ## 2026-07-28 - Google Logo reinstating & Back Button Standardization
 **Learning:** Reinstating highly recognizable brand elements (like Google's colorful logo icon) next to sign-in triggers enhances user trust and clarity. Additionally, adding standardized back buttons on pages deeply nested under user settings (such as /me/profile and /me/security) helps users seamlessly return to their home context and complies perfectly with Minimal Design System (MDS) navigation standards.
 **Action:** Always maintain consistent back-navigation cues on settings pages to guarantee a fluid and accessible user flow.
