@@ -215,6 +215,22 @@ export async function auth(): Promise<Session | null> {
   try {
     return await (_auth() as Promise<Session | null>);
   } catch (error) {
+    // Check if the error is a Next.js prerender or dynamic bailout signal.
+    // If so, we MUST rethrow it so Next.js's PPR engine can handle it correctly.
+    if (error instanceof Error) {
+      const message = error.message;
+      const digest = (error as any).digest;
+      if (
+        digest === "HANGING_PROMISE_REJECTION" ||
+        digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||
+        message.includes("During prerendering, `headers()` rejects") ||
+        message.includes("During prerendering, `cookies()` rejects") ||
+        message.includes("DynamicServerError") ||
+        digest?.startsWith("NEXT_")
+      ) {
+        throw error;
+      }
+    }
     console.warn(
       "[auth] Session validation failed, treating as unauthenticated:",
       error,
