@@ -13,50 +13,13 @@
 - [x] 2026-07-25 — Limpieza y validación de tokens de sesión FCM en suscripción: Prevención de filtración de datos cruzados entre múltiples usuarios registrando la misma clave de dispositivo FCM en entornos compartidos. (PR #roby/profile/fcm-token-cleanup-and-validation)
 - [x] 2026-07-26 — Customización y eliminación de avatar: Implementación de la opción 'Quitar foto' para limpiar la foto de perfil y volver a las iniciales del nombre de usuario, con soporte para deshacer la acción (Undo) mediante toast. (PR #roby/profile/remove-avatar-initials)
 - [x] 2026-07-27 — Cumplimiento de imágenes del sistema de diseño (MDS): Reemplazo de etiquetas nativas <img> por componentes <Image> de Next.js en las páginas de landing, login e instalación. (PR #roby/pwa/standardize-image-components)
+- [x] 2026-07-28 — Google Logo reinstating & Back Button Standardization: Added standard back-navigation header links to Profile and Security pages, and reinstated the Google brand logo inside OAuth SignInButton for visual micro-UX clarity. (PR #roby/profile/logo-and-back-navigation)
 
 ## 🧠 LEARNINGS
+## 2026-07-28 - Google Logo reinstating & Back Button Standardization
+**Learning:** Reinstating highly recognizable brand elements (like Google's colorful logo icon) next to sign-in triggers enhances user trust and clarity. Additionally, adding standardized back buttons on pages deeply nested under user settings (such as /me/profile and /me/security) helps users seamlessly return to their home context and complies perfectly with Minimal Design System (MDS) navigation standards.
+**Action:** Always maintain consistent back-navigation cues on settings pages to guarantee a fluid and accessible user flow.
+
 ## 2026-07-27 - Cumplimiento de imágenes del sistema de diseño (MDS)
 **Learning:** Las especificaciones del Minimal Design System (§2.11 de `DESIGN.md`) exigen explícitamente el uso del componente `next/image` en lugar de las etiquetas nativas `<img>` para garantizar un rendimiento óptimo de carga y estabilidad acumulativa de diseño (CLS). Los gráficos vectoriales (SVG) deben utilizar la propiedad `unoptimized` para evitar fallos de optimización y conservar la nitidez del renderizado original.
 **Action:** Evitar por completo etiquetas HTML `<img>` en cualquier componente de vista y estandarizar todos los recursos estáticos y dinámicos bajo el componente `<Image>` de Next.js.
-
-## 2026-07-26 - Customización y eliminación de avatar
-**Learning:** Ofrecer opciones sencillas de restauración o eliminación de avatares directamente en el formulario de perfil optimiza de gran manera la experiencia de personalización. Al permitir tanto revertir al avatar inicial (con deshecho dinámico de estado local y de servidor usando `useToast` con una acción "Deshacer") como restaurar la foto original de Google, los usuarios tienen un control total sin fricciones sobre su imagen en la plataforma.
-**Action:** En flujos de personalización de perfiles o configuraciones, asegurar que cada opción de modificación tenga un camino simple e intuitivo de reversión o eliminación completa con feedback inmediato.
-
-## 2026-07-17 - Setup inicial
-**Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
-**Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.
-
-## 2026-07-18 - Mejoras en Onboarding y Perfil
-**Learning:** Los usuarios de primer ingreso necesitan indicaciones explícitas para completar su información (como alias y nivel) antes de participar en ranking y partidos. Un aviso prominente y contextual en el Dashboard (`/me`) reduce significativamente la fricción de inicio. Asimismo, brindar descripciones claras sobre los niveles de juego les permite auto-evaluarse de forma precisa.
-**Action:** Mantener prompts de configuración de perfil prominentes y de alto contraste (siguiendo MDS) cuando existan datos críticos vacíos.
-
-## 2026-07-19 - Restaurar Avatar de Google
-**Learning:** Se puede recuperar la URL original de la foto de Google de un usuario decodificando el `id_token` de la tabla `Account` almacenado por NextAuth. Esto evita tener que almacenar de forma redundante o añadir un nuevo campo a la base de datos (lo cual alteraría el schema, que está fuera de scope).
-**Action:** Siempre buscar soluciones de datos creativas utilizando la información JWT existente o relaciones cruzadas antes de sugerir cambios en el esquema de base de datos.
-
-## 2026-07-20 - Adopción de Cache Components y PPR en Onboarding
-**Learning:** Para lograr una experiencia de usuario instantánea y fluida, las páginas y flujos clave como el Perfil (`/me/profile`), el inicio de sesión (`/login`), el perfil público de jugadores (`/p/[userId]`), y las invitaciones directas (`/j/[playerId]`) deben ser totalmente compatibles con Next.js Cache Components (Partial Prerendering). Al separar la estructura estática y de encabezados (la "cáscara" o shell) de las llamadas a bases de datos y validaciones de sesión (`auth()`), y envolver estas últimas en `<Suspense>` con un esqueleto visual de alta fidelidad, el usuario percibe una carga instantánea y sin saltos visuales incómodos.
-**Action:** Estructurar las páginas de Next.js aislando siempre las APIs dinámicas o asíncronas en sub-componentes envueltos en Suspense, garantizando una carga progresiva y un primer renderizado instantáneo.
-
-## 2026-07-21 - Compartición de Perfil y Navegación Contextual (PPR)
-**Learning:** El acceso directo a parámetros dinámicos como `searchParams` en componentes de página de nivel superior de Next.js rompe el prerenderizado de páginas estáticas e interrumpe la Partial Prerendering (PPR). Para aislar estos efectos, los elements dinámicos (como un botón de retroceso que lee `backUrl`) deben encapsularse en su propio componente dinámico y envolverse en un bloque `<Suspense>` con un esqueleto fallback equivalente en tamaño para evitar saltos de diseño (layout shifts).
-Además, la integración de la acción de compartir (`ShareButton`) nativa tanto en el perfil propio como en los perfiles de otros jugadores eleva significativamente el engagement y la viralidad orgánica de la plataforma.
-**Action:** Encapsular siempre los lectores de query parameters en subcomponentes de Suspense, y priorizar puntos de acción sociales (compartir perfiles) de baja fricción en la UI.
-
-## 2026-07-22 - Estandarización de banners de onboarding y guía interactiva de instalación PWA
-**Learning:** Para lograr la máxima tasa de instalación de la PWA, la guía de instalación `/install` no debe ser un manual genérico estático, sino un flujo interactivo. Al separar los pasos de instalación de iOS (que requiere interacción manual con Safari) de los de Android (que soporta instalación directa o el menú de Chrome) y auto-detectar el sistema operativo del usuario en el primer montaje, se minimiza la fricción y se maximiza el entendimiento de la acción.
-Asimismo, todos los banners e indicaciones de onboarding de primer nivel (como la instalación de la PWA, los permisos de notificaciones push y el acceso con huella digital) deben adherirse a fondos sólidos (`bg-card`, `bg-amber-50`), utilizar componentes estándar (`Button`), incluir estados de enfoque altamente visibles (`focus-visible:ring-primary`), y etiquetas descriptivas en español para lectores de pantalla, cumpliendo plenamente con la estética y accesibilidad del Minimal Design System (MDS).
-**Action:** En cualquier elemento de banner o diálogo promocional, evitar transparencias en contenedores de contenido y estandarizar todas las acciones a través de botones nativos con descripciones semánticas accesibles en el idioma del usuario final.
-
-## 2026-07-23 - Consolidación de onboarding en lista de preparación
-**Learning:** Presentar múltiples avisos y banners de preparación desconectados (alias de perfil, instalación PWA, permisos push) satura la vista inicial de un usuario nuevo. Al consolidarlos en un único widget tipo lista de preparación de 4 pasos con barra de progreso, se reduce drásticamente el ruido visual y se incrementa el compromiso por completar la configuración inicial. Los usuarios existentes no se ven afectados por este cambio visual.
-**Action:** Para flujos de configuración del sistema o cuentas nuevas, priorizar siempre componentes interactivos tipo checklist unificado por sobre banners flotantes individuales.
-
-## 2026-07-24 - Sólidos visuales en Onboarding y Dashboard (MDS)
-**Learning:** El Minimal Design System (MDS) prohíbe explícitamente el uso de fondos semi-transparentes o difuminados en banners, listas y cards primarias de interacción para garantizar el máximo contraste y accesibilidad. Al refactorizar los separadores de la guía onboarding, los íconos de instalación PWA, y las tarjetas de acción del Dashboard (marcar asistencia y suplencias) hacia fondos sólidos (bg-card, bg-muted) y bordes nítidos, logramos una interfaz limpia, legible y sumamente profesional.
-**Action:** Evitar siempre el uso de modificadores de opacidad (como /10 o /20) en fondos de elementos contenedores y recurrir a combinaciones de colores sólidos definidos en el tema semántico del sistema de diseño.
-
-## 2026-07-25 - Limpieza y validación de tokens de sesión FCM en suscripción
-**Learning:** En entornos multiusuario o dispositivos móviles compartidos, diferentes usuarios que inicien sesión de manera consecutiva en el mismo navegador heredarán el mismo token FCM de la PWA. Si el servidor no limpia las asociaciones previas del token con otros identificadores de usuario (`userId`), persistirán suscripciones cruzadas en la base de datos, provocando que un usuario reciba notificaciones push privadas dirigidas al usuario de la sesión anterior. Al limpiar proactivamente de la base de datos cualquier registro de `pushSubscriptions` que contenga el mismo `endpoint` pero diferente `userId` durante el registro de la suscripción, se garantiza un mapeo unívoco y se previene de raíz la filtración de datos y notificaciones.
-**Action:** En cualquier proceso de registro de tokens de notificaciones o de sesión de dispositivos (FCM, WebPush, APNS), realizar siempre una eliminación previa de mapeos cruzados obsoletos del mismo token con otros identificadores de usuario antes de guardar el nuevo estado.
