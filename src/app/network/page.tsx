@@ -24,5 +24,5 @@ async function NetworkContent() {
     getGraphData(),
   ]);
 
-  return <NetworkPageClient metrics={metrics} graphData={graphData} />;
+  return <NetworkPageClient metrics={metrics} graphData={graphData} viewerId={session.user.id} />;
 }

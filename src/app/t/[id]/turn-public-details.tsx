@@ -1,16 +1,6 @@
 import { auth } from "@/auth";
-import {
-  getTurnByIdAction,
-  joinTurnAction,
-  joinSubstituteAction,
-  leaveSubstituteAction,
-  takeOpenSlotAction,
-  convertTurnToMatchAction,
-  cancelTurnAction,
-  scheduleNextTurnAction,
-} from "@/app/(app)/turnos/actions";
+import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
 import { getPadelContacts } from "@/lib/queries";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
@@ -38,6 +28,15 @@ import {
   MapPin,
   CalendarPlus,
 } from "lucide-react";
+import {
+  CancelTurnForm,
+  StartMatchForm,
+  JoinTurnForm,
+  JoinSubstituteForm,
+  LeaveSubstituteForm,
+  TakeOpenSlotForm,
+  ScheduleNextTurnForm,
+} from "@/components/turns/turn-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
@@ -608,154 +607,3 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   );
 }
 
-function CancelTurnForm({ turnId }: { turnId: string }) {
-  async function handleCancel() {
-    "use server";
-    const result = await cancelTurnAction(turnId);
-    if (result.status === "ok") {
-      redirect("/turnos");
-    }
-  }
-
-  return (
-    <form action={handleCancel} className="flex-1">
-      <Button
-        type="submit"
-        variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
-      >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Eliminar
-      </Button>
-    </form>
-  );
-}
-
-function StartMatchForm({ turnId }: { turnId: string }) {
-  async function handleStart() {
-    "use server";
-    const result = await convertTurnToMatchAction(turnId);
-    if (result.status === "ok" && result.matchId) {
-      return redirect(`/match/${result.matchId}`);
-    }
-  }
-
-  return (
-    <form action={handleStart}>
-      <Button
-        type="submit"
-        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
-      >
-        <Play className="mr-2 h-5 w-5 fill-current" />
-        Iniciar partido
-      </Button>
-    </form>
-  );
-}
-
-function JoinTurnForm({ turnId }: { turnId: string }) {
-  async function handleJoin() {
-    "use server";
-    await joinTurnAction(turnId);
-  }
-
-  return (
-    <form action={handleJoin} className="w-full">
-      <Button
-        type="submit"
-        className="w-full h-12 rounded-lg text-base font-bold"
-      >
-        <UserPlus className="mr-2 h-5 w-5" />
-        Anotarme ahora
-      </Button>
-    </form>
-  );
-}
-
-function JoinSubstituteForm({ turnId }: { turnId: string }) {
-  async function handleJoinSubstitute() {
-    "use server";
-    await joinSubstituteAction(turnId);
-  }
-
-  return (
-    <form action={handleJoinSubstitute} className="w-full">
-      <Button
-        type="submit"
-        variant="outline"
-        className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10"
-      >
-        <UserPlus className="mr-2 h-5 w-5" />
-        Anotarme como suplente
-      </Button>
-    </form>
-  );
-}
-
-function LeaveSubstituteForm({
-  turnId,
-  hasOpenSlot,
-}: {
-  turnId: string;
-  hasOpenSlot?: boolean;
-}) {
-  async function handleLeaveSubstitute() {
-    "use server";
-    await leaveSubstituteAction(turnId);
-  }
-
-  return (
-    <form action={handleLeaveSubstitute}>
-      <Button
-        type="submit"
-        variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
-      >
-        <LogOut className="mr-2 h-4 w-4" />
-        {hasOpenSlot ? "No puedo — salir de suplentes" : "Salir de suplentes"}
-      </Button>
-    </form>
-  );
-}
-
-function TakeOpenSlotForm({ turnId }: { turnId: string }) {
-  async function handleTakeSlot() {
-    "use server";
-    await takeOpenSlotAction(turnId);
-  }
-
-  return (
-    <form action={handleTakeSlot} className="w-full">
-      <Button
-        type="submit"
-        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
-      >
-        <Play className="mr-2 h-5 w-5 fill-current" />
-        Ocupar cupo
-      </Button>
-    </form>
-  );
-}
-
-function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
-  async function handleScheduleNext() {
-    "use server";
-    const result = await scheduleNextTurnAction(turnId);
-    if (result.status === "ok" && result.turnId) {
-      redirect(`/t/${result.turnId}`);
-    }
-  }
-
-  return (
-    <form action={handleScheduleNext}>
-      <Button
-        type="submit"
-        variant="outline"
-        className="w-full h-10 rounded-lg text-xs font-bold"
-      >
-        <CalendarPlus className="mr-2 h-4 w-4" />
-        Programar próximo turno
-      </Button>
-    </form>
-  );
-}

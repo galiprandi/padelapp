@@ -15,6 +15,7 @@
 - [x] 2026-07-24 — Refactorización estética de Creación de Turnos a Estándares MDS y botón Volver (PR actual)
 - [x] 2026-07-25 — Integración del botón de "Agregar al Calendario" para reducir olvidos y cancelaciones de turnos.
 - [x] 2026-07-26 — Filtro interactivo de Turnos "Todos" vs "Mis Turnos" bajo estándares MDS (PPR compatible)
+- [x] 2026-07-27 — Botones de Acción Interactivos en Detalle de Turno con Estados de Carga (PR actual)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -43,7 +44,7 @@
 
 ## 2026-07-22 - Visualización del Cooldown y Propagación Social en Salvage
 **Learning:** El botón "Salvar Turno" (`OpenToNetworkButton`) no mostraba retroalimentación sobre si estaba en cooldown hasta que el usuario hacía clic y recibía un error. Al pasando la fecha de última notificación (`lastNetworkNotificationAt`) y calcular un countdown en cliente de forma reactiva, mejoramos enormemente la UX del organizador. Adicionalmente, mapear las conexiones mutuas entre los jugadores según su orden cronológico de ingreso permite mostrar de manera clara cómo la red de contactos está ayudando a completar el turno, indicando etiquetas transparentes como "Contacto de [Nombre]".
-**Action:** Evitar que el usuario realice acciones destinadas a fallar por lógica de negocio (como el cooldown) ocultando o deshabilitando elementos con explicaciones proactivas. Aprovechar el Player Graph local en memoria para enriquecer la interfaz con lazos sociales inmediatos que incrementen la confianza en la plataforma.
+**Action:** Evitar que el usuario realice acciones destinadas a fallar por lógica de negocio (como el cooldown) ocultando o deshabilitando elements con explicaciones proactivas. Aprovechar el Player Graph local en memoria para enriquecer la interfaz con lazos sociales inmediatos que incrementen la confianza en la plataforma.
 
 ## 2026-07-23 - Alerta de Baja Tardía y Flexibilidad de Inicio para Creadores
 **Learning:** El sistema reducía silenciosamente la reputación de asistencia de un jugador en un 5% si éste se bajaba de un turno con menos de 2 hours de anticipación, lo cual causaba frustración e incomprensión de las mecánicas de gamificación. Incorporar una advertencia proactiva en el modal de confirmación previene esto. Al mismo tiempo, restringir el inicio de un partido únicamente a cuando un turno estuviera lleno impedía a los organizadores avanzar el partido si tenían 4+ inscritos pero el turno era originalmente de 6 u 8. Habilitar dinámicamente este control si se alcanzan los 4 participantes recomendados elimina este cuello de botella y acelera el paso al juego.
@@ -60,3 +61,7 @@
 ## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"
 **Learning:** Permitir que los usuarios tengan acceso inmediato a los turnos en los que están anotados (ya sea como organizador, jugador o suplente) a través de una pestaña dedicada evita que tengan que buscar en un tablero lleno. Al mantener el componente principal de la página como un componente estático de Next.js App Router, logramos retener las ventajas del Partial Prerendering (PPR) de Next.js 15, delegando la interactividad y filtrado del lado del cliente de forma fluida e instantánea, usando botones accesibles con roles semánticos y sin necesidad de realizar viajes redondos al servidor.
 **Action:** Emplear filtros interactivos del lado del cliente cuando el conjunto de datos sea acotado para brindar una experiencia libre de latencia, respetando siempre el marcado ARIA para tecnologías de asistencia.
+
+## 2026-07-27 - Botones de Acción Interactivos en Detalle de Turno con Estados de Carga
+**Learning:** Los formularios de Server Actions del lado del servidor puros no brindan retroalimentación visual al usuario durante su procesamiento, lo que resulta en una experiencia lenta en conexiones lentas y el riesgo de dobles envíos accidentales. El uso de componentes cliente interactivos impulsados por `useTransition` y un botón estilizado MDS estándar proporciona una transición perfecta a estados de carga dinámicos y deshabilitados, mejorando drásticamente el flujo interactivo de alta fidelidad sin afectar la renderización estática (PPR).
+**Action:** Convertir los botones y formularios críticos de interacción directa (bajas, altas, inicios de partido) en componentes del lado del cliente rápidos con estados de transición pendientes.

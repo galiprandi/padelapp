@@ -10,11 +10,12 @@ import type { AdoptionMetrics, GraphData } from "./actions";
 interface NetworkPageClientProps {
   metrics: AdoptionMetrics;
   graphData: GraphData;
+  viewerId?: string;
 }
 
 type Tab = "stats" | "graph";
 
-export function NetworkPageClient({ metrics, graphData }: NetworkPageClientProps) {
+export function NetworkPageClient({ metrics, graphData, viewerId }: NetworkPageClientProps) {
   const [tab, setTab] = useState<Tab>("stats");
 
   return (
@@ -46,7 +47,7 @@ export function NetworkPageClient({ metrics, graphData }: NetworkPageClientProps
             />
           </div>
         ) : (
-          <GraphView graphData={graphData} />
+          <GraphView graphData={graphData} viewerId={viewerId} />
         )}
       </div>
     </div>
