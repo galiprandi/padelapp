@@ -16,6 +16,7 @@
 - [x] 2026-07-25 — Integración del botón de "Agregar al Calendario" para reducir olvidos y cancelaciones de turnos.
 - [x] 2026-07-26 — Filtro interactivo de Turnos "Todos" vs "Mis Turnos" bajo estándares MDS (PPR compatible)
 - [x] 2026-07-27 — Botones de Acción Interactivos en Detalle de Turno con Estados de Carga (PR actual)
+- [x] 2026-07-28 — Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno (PR bela/turnos/solid-filters-and-cooldown)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -65,3 +66,7 @@
 ## 2026-07-27 - Botones de Acción Interactivos en Detalle de Turno con Estados de Carga
 **Learning:** Los formularios de Server Actions del lado del servidor puros no brindan retroalimentación visual al usuario durante su procesamiento, lo que resulta en una experiencia lenta en conexiones lentas y el riesgo de dobles envíos accidentales. El uso de componentes cliente interactivos impulsados por `useTransition` y un botón estilizado MDS estándar proporciona una transición perfecta a estados de carga dinámicos y deshabilitados, mejorando drásticamente el flujo interactivo de alta fidelidad sin afectar la renderización estática (PPR).
 **Action:** Convertir los botones y formularios críticos de interacción directa (bajas, altas, inicios de partido) en componentes del lado del cliente rápidos con estados de transición pendientes.
+
+## 2026-07-28 - Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno
+**Learning:** Pasar `lastNetworkNotificationAt` al componente `TurnCard` permite que los botones internos de salvage calculen y reflejen de manera proactiva el cooldown de 1 hora del lado del cliente, mejorando enormemente la experiencia del usuario sin forzarlo a ingresar a cada turno individual para verificar su estado. Reemplazar estilos translúcidos (`hover:bg-card/40`) por sólidos (`hover:bg-card`) garantiza el cumplimiento absoluto del Minimal Design System (MDS).
+**Action:** En cualquier listado interactivo, priorizar el traspaso de timestamps de cooldown a los componentes hijos y emplear siempre hover sólido bajo el MDS.
