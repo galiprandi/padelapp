@@ -1,6 +1,6 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-07-26
+## Última actualización: 2026-07-27
 
 ## Estado actual
 
@@ -20,11 +20,14 @@
   - Asegurado que los jugadores excluidos debido a su desequilibrio de nivel no puedan recibir bonificaciones de comunidad ni ser añadidos a la lista final de recomendaciones de rescate del turno.
 - Phase 7 (Stats y red social - PR coello/graph/profile-network-stats):
   - [x] 2026-07-26 — Estadísticas de Red en perfil público: se agregó la tarjeta "Red y Posición" en `/p/[userId]` mostrando el tamaño de red, posición de preferencia con WRs, pareja más exitosa y rival más frecuente.
+- Phase 7 (Ego Network Filtering & Visual Highlights - PR coello/graph/ego-network-filtering):
+  - [x] 2026-07-27 — Se implementó el filtrado por "Mi red" y "Red completa" en el visualizador del grafo de jugadores.
+  - [x] 2026-07-27 — Se añadió un banner de onboarding y onboarding card de Red Vacía en caso de que el usuario aún no tenga contactos directos en el grafo.
+  - [x] 2026-07-27 — Se destacó visualmente el nodo del usuario actual como "Tú" en el grafo, con un anillo amarillo doble y resalte dorado en los paneles de detalle.
 
 ### Pendiente — Backlog
 
 #### Phase 7: Stats y red social
-- [ ] Vista "Tu red": conexiones del jugador en la vista de red global
 - [ ] Sugerencia de parejas al armar match
 
 ## Learnings
@@ -33,3 +36,4 @@
 - **Asistencia y Feedback Unificados**: Unificar la marcación de asistencia post-partido y el feedback sutil de nivel en un solo formulario y acción de guardado ("Guardar asistencia y feedback") reduce enormemente la fricción de uso para el organizador de partidos, logrando datos limpios del grafo de manera orgánica y sin requerir flujos de onboarding adicionales.
 - **MDS Form Controls**: Al diseñar grupos de botones interactivos personalizados (como los botones de feedback de nivel), usar `role="radiogroup"` and `role="radio"` con estados `aria-checked` e indicadores de focus visibles (`focus-visible:ring-2`) asegura el cumplimiento de accesibilidad para lectores de pantalla sin sacrificar el diseño pulido.
 - **Exclusión Global en Grafos de Recomendación**: Al priorizar candidatos utilizando múltiples fuentes de datos (ej. aristas directas de contacto y pertenencia a comunidades del grafo), es crítico mantener un registro unificado de exclusiones (`excludedUserIds`). De lo contrario, un candidato que deba ser estrictamente excluido por una regla de negocio (ej. disparidades extremas de habilidad) podría ser reintroducido incorrectamente a través de un canal secundario (ej. la bonificación de pertenecer a la misma comunidad).
+- **Redes Personales (Ego Networks) en Grafos**: El filtrado por "Mi red" permite al jugador concentrarse en su grupo inmediato, mejorando significativamente el rendimiento de carga visual en grafos densos. Al incluir enlaces internos de contactos directos, se puede observar inmediatamente el nivel de interacción del ecosistema propio, creando una experiencia sumamente adictiva e interactiva.

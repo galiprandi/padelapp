@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Search, X, CalendarDays } from "lucide-react";
+import { Search, X, CalendarDays, Users2, Globe2 } from "lucide-react";
 import type { GraphData, GraphNode } from "./actions";
-import { capitalizeName } from "@/lib/utils";
+import { capitalizeName, cn } from "@/lib/utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -59,9 +59,10 @@ function linkNodeId(val: string | { id: string }): string {
 
 interface GraphViewProps {
   graphData: GraphData;
+  viewerId?: string;
 }
 
-export function GraphView({ graphData }: GraphViewProps) {
+export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const fgRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({
@@ -72,6 +73,7 @@ export function GraphView({ graphData }: GraphViewProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [linkFilter, setLinkFilter] = useState<"all" | "partner" | "rival" | "mixed">("all");
+  const [scope, setScope] = useState<"personal" | "global">(viewerId ? "personal" : "global");
   const imageMapRef = useRef<Map<string, HTMLImageElement>>(new Map());
 
   useEffect(() => {
@@ -107,13 +109,51 @@ export function GraphView({ graphData }: GraphViewProps) {
     }
   }, [graphData]);
 
-  // Filtered data based on search and link filter
+  // Calculate viewer neighbors
+  const viewerNeighbors = useMemo(() => {
+    if (!viewerId) return new Set<string>();
+    const neighbors = new Set<string>();
+    for (const link of graphData.links) {
+      const sourceId = linkNodeId(link.source);
+      const targetId = linkNodeId(link.target);
+      if (sourceId === viewerId) neighbors.add(targetId);
+      if (targetId === viewerId) neighbors.add(sourceId);
+    }
+    return neighbors;
+  }, [graphData.links, viewerId]);
+
+  // Filter base graph based on scope (personal vs global)
+  const baseGraphData = useMemo(() => {
+    if (scope === "global" || !viewerId) {
+      return graphData;
+    }
+
+    const personalNodesSet = new Set<string>([viewerId]);
+    for (const neighborId of viewerNeighbors) {
+      personalNodesSet.add(neighborId);
+    }
+
+    const personalNodes = graphData.nodes.filter((node) => personalNodesSet.has(node.id));
+    const personalLinks = graphData.links.filter((link) => {
+      const sourceId = linkNodeId(link.source);
+      const targetId = linkNodeId(link.target);
+      return personalNodesSet.has(sourceId) && personalNodesSet.has(targetId);
+    });
+
+    return {
+      nodes: personalNodes,
+      links: personalLinks,
+      generatedAt: graphData.generatedAt,
+    };
+  }, [graphData, scope, viewerId, viewerNeighbors]);
+
+  // Filter data based on search and link filter on top of base graph
   const filteredData = useMemo(() => {
-    if (!searchQuery && linkFilter === "all") return graphData;
+    if (!searchQuery && linkFilter === "all") return baseGraphData;
 
     const query = searchQuery.toLowerCase();
     const matchingNodes = new Set(
-      graphData.nodes
+      baseGraphData.nodes
         .filter((n) => {
           if (!query) return true;
           return (
@@ -126,7 +166,7 @@ export function GraphView({ graphData }: GraphViewProps) {
 
     // If searching, also include connected nodes
     if (query && matchingNodes.size > 0) {
-      for (const link of graphData.links) {
+      for (const link of baseGraphData.links) {
         const sourceId = linkNodeId(link.source);
         const targetId = linkNodeId(link.target);
         if (matchingNodes.has(sourceId)) matchingNodes.add(targetId);
@@ -134,7 +174,7 @@ export function GraphView({ graphData }: GraphViewProps) {
       }
     }
 
-    const filteredLinks = graphData.links.filter((link) => {
+    const filteredLinks = baseGraphData.links.filter((link) => {
       const sourceId = linkNodeId(link.source);
       const targetId = linkNodeId(link.target);
 
@@ -163,14 +203,14 @@ export function GraphView({ graphData }: GraphViewProps) {
       ]),
     );
 
-    const filteredNodes = graphData.nodes.filter((n) => {
+    const filteredNodes = baseGraphData.nodes.filter((n) => {
       if (linkFilter !== "all" && !nodesInLinks.has(n.id)) return false;
       if (matchingNodes.size > 0 && !matchingNodes.has(n.id)) return false;
       return true;
     });
 
-    return { ...graphData, nodes: filteredNodes, links: filteredLinks };
-  }, [graphData, searchQuery, linkFilter]);
+    return { ...baseGraphData, nodes: filteredNodes, links: filteredLinks };
+  }, [baseGraphData, searchQuery, linkFilter]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeColor = useCallback((node: any) => {
@@ -220,9 +260,10 @@ export function GraphView({ graphData }: GraphViewProps) {
       const baseSize = 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
       const isHovered = hoveredNode === node.id;
       const isSelected = selectedNode === node.id;
+      const isViewer = viewerId === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
       const color = nodeColor(node);
-      const label = capitalizeName(node.name || node.alias || "?");
+      const label = isViewer ? "Tú" : capitalizeName(node.name || node.alias || "?");
       const fontSize = Math.max(11 / globalScale, 3.5);
 
       ctx.beginPath();
@@ -265,8 +306,10 @@ export function GraphView({ graphData }: GraphViewProps) {
         ? color
         : isHovered
           ? "rgba(255,255,255,0.6)"
-          : "rgba(255, 255, 255, 0.5)";
-      ctx.lineWidth = (isSelected ? 3 : isHovered ? 2 : 1.5) / globalScale;
+          : isViewer
+            ? "#eab308"
+            : "rgba(255, 255, 255, 0.5)";
+      ctx.lineWidth = (isSelected ? 3 : isHovered ? 2 : isViewer ? 2.5 : 1.5) / globalScale;
       ctx.stroke();
 
       if (isSelected) {
@@ -274,6 +317,12 @@ export function GraphView({ graphData }: GraphViewProps) {
         ctx.arc(node.x, node.y, radius + 4 / globalScale, 0, 2 * Math.PI);
         ctx.strokeStyle = color + "60";
         ctx.lineWidth = 2 / globalScale;
+        ctx.stroke();
+      } else if (isViewer) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, radius + 3 / globalScale, 0, 2 * Math.PI);
+        ctx.strokeStyle = "rgba(234, 179, 8, 0.4)";
+        ctx.lineWidth = 1.5 / globalScale;
         ctx.stroke();
       }
 
@@ -314,7 +363,7 @@ export function GraphView({ graphData }: GraphViewProps) {
         ctx.fillText(String(matches), badgeX, badgeY);
       }
     },
-    [nodeColor, hoveredNode, selectedNode],
+    [nodeColor, hoveredNode, selectedNode, viewerId],
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -374,6 +423,52 @@ export function GraphView({ graphData }: GraphViewProps) {
     >
       {/* Top bar with search and filters */}
       <div className="absolute top-3 left-3 right-3 z-10 flex flex-col gap-2">
+        {viewerId && (
+          <div className="flex flex-col gap-1.5">
+            <span id="network-scope-label" className="sr-only">
+              Ámbito de la red
+            </span>
+            <div
+              role="radiogroup"
+              aria-labelledby="network-scope-label"
+              className="grid grid-cols-2 gap-1.5 bg-card/95 p-1 rounded-xl border border-border shadow-sm"
+            >
+              <button
+                type="button"
+                role="radio"
+                aria-checked={scope === "personal"}
+                onClick={() => setScope("personal")}
+                className={cn(
+                  "flex h-8 items-center justify-center gap-1.5 rounded-lg text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                  scope === "personal"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+                aria-label="Ver mi red de contactos únicamente"
+              >
+                <Users2 className="h-3.5 w-3.5" aria-hidden="true" />
+                Mi red
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={scope === "global"}
+                onClick={() => setScope("global")}
+                className={cn(
+                  "flex h-8 items-center justify-center gap-1.5 rounded-lg text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                  scope === "global"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+                aria-label="Ver la red global de jugadores"
+              >
+                <Globe2 className="h-3.5 w-3.5" aria-hidden="true" />
+                Red completa
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center gap-2">
           {/* Search */}
           <div className="flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm">
@@ -438,6 +533,35 @@ export function GraphView({ graphData }: GraphViewProps) {
         </div>
       </div>
 
+      {/* Empty personal network notice */}
+      {scope === "personal" && viewerNeighbors.size === 0 && (
+        <div className="absolute inset-x-4 bottom-4 z-20 rounded-xl border border-border bg-card p-4 shadow-lg text-center space-y-3">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+            <Users2 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">Tu red de contactos está vacía</p>
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              Los contactos se agregan automáticamente al sumarte a turnos o confirmar partidos con otros jugadores.
+            </p>
+          </div>
+          <div className="flex gap-2 justify-center">
+            <Link
+              href="/turnos"
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            >
+              Buscar turnos
+            </Link>
+            <button
+              onClick={() => setScope("global")}
+              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-bold text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            >
+              Ver red completa
+            </button>
+          </div>
+        </div>
+      )}
+
       <ForceGraph2D
         ref={fgRef}
         graphData={filteredData}
@@ -479,12 +603,12 @@ export function GraphView({ graphData }: GraphViewProps) {
                 className="h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
                 style={{ backgroundColor: nodeColor(selectedNodeData) }}
               >
-                {getInitials(capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
+                {getInitials(selectedNodeData.id === viewerId ? "Tú" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
               </div>
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">
-                {capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
+                {selectedNodeData.id === viewerId ? "Tú" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
               </p>
               <p className="text-xs text-muted-foreground">
                 {selectedNodeData.matchesPlayed} partidos ·{" "}
