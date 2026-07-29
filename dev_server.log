@@ -5,15 +5,18 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 675ms
-✓ Running next.config.ts took 60ms
-⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
-
-  To migrate automatically, run:
-  npx @next/codemod@canary middleware-to-proxy .
-
-  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 580ms
+✓ Running next.config.ts took 54ms
 - Cache Components enabled
 - Experiments (use with caution):
   · optimizePackageImports
 
+○ Compiling /login ...
+ HEAD /login 200 in 7.1s (next.js: 6.3s, application-code: 820ms)
+ GET /login 200 in 418ms (next.js: 19ms, application-code: 399ms)
+ GET /api/auth/session 200 in 3.1s
+ GET /login 200 in 484ms (next.js: 16ms, application-code: 467ms)
+ GET /api/auth/session 200 in 91ms (next.js: 51ms, application-code: 40ms)
+ GET /api/auth/session 200 in 26ms (next.js: 5ms, application-code: 21ms)
+ GET /api/auth/session 200 in 27ms (next.js: 9ms, application-code: 17ms)
+ GET /api/auth/session 200 in 19ms (next.js: 10ms, application-code: 9ms)

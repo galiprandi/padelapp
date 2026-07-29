@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { auth, signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
 import { safeCallbackUrl } from "@/lib/auth-utils";
 import Image from "next/image";
 
@@ -81,8 +82,11 @@ async function LoginForm({
   }
 
   return (
-    <form action={handleSignIn} className="w-full">
-      <SignInButton />
-    </form>
+    <div className="flex w-full flex-col gap-3">
+      <form action={handleSignIn} className="w-full">
+        <SignInButton />
+      </form>
+      <PasskeyLoginButton />
+    </div>
   );
 }
