@@ -70,7 +70,7 @@ export function LeaveTurnButton({
           </p>
           <ShareButton
             title="Sumate al Turno"
-            text={`¡Se liberó un cupo en ${club}!`}
+            text={`Se liberó un cupo en ${club}`}
             url={createMagicLink({ resource: "turn", identifier: turnId }).url}
             variant="outline"
             className="w-full h-10 rounded-lg text-xs font-bold"

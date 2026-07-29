@@ -113,7 +113,7 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
         ) : activeTab === "todos" ? (
           <EmptyState
             title="Sin turnos abiertos"
-            description="No hay turnos disponibles. ¡Sé el primero en crear uno!"
+            description="No hay turnos disponibles. Sé el primero en crear uno."
             icon={CalendarOff}
             action={
               <Button asChild className="w-full h-12 rounded-lg font-bold">

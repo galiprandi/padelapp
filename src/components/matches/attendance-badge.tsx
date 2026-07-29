@@ -23,7 +23,7 @@ const CONFIG: Record<
     className: "bg-amber-500/10 text-amber-600",
   },
   NO_SHOW: {
-    label: "Ausente",
+    label: "No asistió",
     icon: X,
     className: "bg-red-500/10 text-red-600",
   },

@@ -132,7 +132,7 @@ export default async function DashboardContent() {
           <Greeting name={displayName} />
           <p className="text-sm text-muted-foreground">
             {isNewUser
-              ? "¡Bienvenido! Empezá creando tu primer turno."
+              ? "Bienvenido. Empezá creando tu primer turno."
               : "Tu actividad de pádel en un solo lugar."}
           </p>
         </div>
@@ -173,7 +173,7 @@ export default async function DashboardContent() {
             <div className="flex items-center gap-3">
               <UserCheck className="h-5 w-5 text-amber-600" />
               <h2 className="text-sm font-bold text-amber-800">
-                ¡Completá tu perfil de jugador!
+                Completá tu perfil de jugador
               </h2>
             </div>
             <p className="text-xs text-amber-700 leading-normal">
@@ -279,10 +279,9 @@ export default async function DashboardContent() {
               heroActivity.data.players.length <
                 heroActivity.data.maxPlayers && (
                 <span className="text-xs font-bold text-amber-600">
-                  ¡Faltan{" "}
+                  Faltan{" "}
                   {heroActivity.data.maxPlayers -
                     heroActivity.data.players.length}
-                  !
                 </span>
               )}
           </div>
@@ -505,7 +504,7 @@ export default async function DashboardContent() {
                   </div>
                   {hasOpenSlot ? (
                     <span className="rounded-md bg-emerald-500/20 px-2 py-1 text-xs font-bold text-emerald-600 shrink-0">
-                      ¡Cupo libre!
+                      Cupo libre
                     </span>
                   ) : (
                     <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />

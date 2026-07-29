@@ -430,7 +430,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
           ) : (
             <div className="rounded-xl p-3 bg-primary/5 border border-primary/20 text-center">
               <p className="text-xs font-bold text-primary">
-                ¡Ya formás parte de este partido!
+                Ya formás parte de este partido
               </p>
             </div>
           )}

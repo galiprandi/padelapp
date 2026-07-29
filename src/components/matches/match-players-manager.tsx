@@ -126,7 +126,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       try {
         await navigator.clipboard.writeText(`${appSettings.share.inviteTitle}\n${shareText}\n${shareUrl}`);
-        showToast("¡Enlace copiado!");
+        showToast("Enlace copiado");
       } catch (error) {
         console.error("navigator.clipboard.writeText failed", error);
         showToast("No se pudo copiar el enlace");

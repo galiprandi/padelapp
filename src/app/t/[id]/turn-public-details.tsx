@@ -171,7 +171,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               ? `Te invita ${turn.creator.alias ?? turn.creator.displayName}`
               : isFull
                 ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
-                : "¡Sumate a este partido!"}
+                : "Sumate a este turno"}
           </p>
         </div>
       </div>
@@ -469,7 +469,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   disabled
                   className="w-full h-12 rounded-lg font-bold bg-primary/10 text-primary border border-primary/20"
                 >
-                  ¡Ya estás anotado!
+                  Ya te sumaste
                 </Button>
               ) : turn.substitutes.length < turn.maxPlayers ? (
                 <JoinSubstituteForm turnId={id} />

@@ -46,7 +46,7 @@ const STATUS_CONFIG: Record<
     activeColor: "bg-amber-500/10 text-amber-600 border-amber-500/30",
   },
   NO_SHOW: {
-    label: "Ausente",
+    label: "No asistió",
     icon: X,
     color: "text-muted-foreground",
     activeColor: "bg-red-500/10 text-red-600 border-red-500/30",

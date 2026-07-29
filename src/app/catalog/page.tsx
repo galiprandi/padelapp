@@ -427,7 +427,7 @@ export default function ComponentCatalogPage() {
                   <ShareButton
                     url="https://padelred.app"
                     title="PadelRed"
-                    text="¡Sumate a Padel Red!"
+                    text="Sumate a Padel Red"
                     className="flex-1 h-10"
                     variant="outline"
                   />

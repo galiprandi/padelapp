@@ -350,7 +350,7 @@ export function OnboardingChecklist({
       {completedCount === 4 && (
         <div className="rounded-lg bg-muted border border-primary/40 p-3 text-center">
           <p className="text-xs font-bold text-primary">
-            ¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red. 🏆
+            Felicitaciones. Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.
           </p>
         </div>
       )}

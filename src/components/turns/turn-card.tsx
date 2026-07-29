@@ -118,7 +118,7 @@ export function TurnCard({
                   className="bg-amber-500/20 text-amber-600 border-amber-500/30"
                 >
                   {hoursUntilTurn < 1
-                    ? "¡Urgente!"
+                    ? "Urgente"
                     : `En ${Math.round(hoursUntilTurn)}h`}
                 </Badge>
               )}
@@ -189,7 +189,7 @@ export function TurnCard({
               <button
                 onClick={handleQuickJoin}
                 disabled={isPending}
-                aria-label={`Unirse al turno en ${turn.club}`}
+                aria-label={`Sumarse al turno en ${turn.club}`}
                 className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 {isPending ? (
@@ -197,7 +197,7 @@ export function TurnCard({
                 ) : canJoinAsSubstitute ? (
                   "Suplente"
                 ) : (
-                  "Unirse"
+                  "Sumarme"
                 )}
               </button>
             )}

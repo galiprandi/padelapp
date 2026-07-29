@@ -113,7 +113,7 @@ export function InstallButton({
     return (
       <div className="flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500">
         <Check className="h-4 w-4" />
-        ¡Instalada!
+        Instalada
       </div>
     );
   }

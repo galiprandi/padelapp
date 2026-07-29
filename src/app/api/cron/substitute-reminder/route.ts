@@ -42,8 +42,8 @@ export async function GET(request: Request) {
       const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turn.id}`;
 
       await notifyUsers(substituteIds, {
-        title: `Recordatorio: sos suplente en ${getTurnLabel(turn.club, turn.date)}`,
-        body: `¿Seguís disponible?`,
+        title: `Sos suplente en ${getTurnLabel(turn.club, turn.date)}`,
+        body: `El turno es en menos de 48h. ¿Seguís disponible?`,
         url: turnUrl,
       });
 

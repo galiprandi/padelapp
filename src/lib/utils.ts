@@ -36,10 +36,10 @@ export function isTomorrow(date: Date): boolean {
 
 export function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 6) return "¡Buenas noches!";
-  if (hour < 12) return "¡Buen día!";
-  if (hour < 19) return "¡Buenas tardes!";
-  return "¡Buenas noches!";
+  if (hour < 6) return "Buenas noches";
+  if (hour < 12) return "Buen día";
+  if (hour < 19) return "Buenas tardes";
+  return "Buenas noches";
 }
 
 export function calculateWinRate(wins: number, matchesPlayed: number): number {
@@ -71,15 +71,15 @@ export function getMatchWinner(score: string | null): "A" | "B" | null {
 
 export function getTurnLabel(club: string, date: Date | string): string {
   const d = new Date(date);
-  const day = d.toLocaleDateString("es-AR", {
-    day: "2-digit",
-    month: "2-digit",
-  });
-  const time = d.toLocaleTimeString("es-AR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  return `${club} · ${day} ${time}hs`;
+  const hour = d.getHours();
+  const minutes = d.getMinutes();
+  const timeStr = minutes === 0 ? `${hour}hs` : `${hour}:${minutes.toString().padStart(2, "0")}hs`;
+  return `${club} · ${timeStr}`;
+}
+
+/** Calendar event title: "Pádel · Club · hora" (matches getTurnLabel format). */
+export function getCalendarTitle(club: string, date: Date | string): string {
+  return `Pádel · ${getTurnLabel(club, date)}`;
 }
 
 export interface ShareDataPayload {
@@ -116,16 +116,16 @@ export function getNaturalShareText({
   const timeStr = minutes === 0 ? `${hour}hs` : `${hour}:${minutes.toString().padStart(2, "0")}hs`;
 
   if (type === "turn") {
-    return `Turno de pádel disponible en ${club} ${dayStr} ${timeStr}`;
+    return `Turno de pádel en ${club} ${dayStr} ${timeStr}`;
   }
 
   if (type === "match-invite") {
-    return `Partido de pádel disponible en ${club} ${dayStr} ${timeStr}`;
+    return `Partido de pádel en ${club} ${dayStr} ${timeStr}`;
   }
 
   if (type === "match-result") {
-    const scoreStr = score ? ` Marcador: ${score}` : "";
-    return `¡Mirá el resultado de nuestro partido de pádel!${scoreStr}`;
+    const scoreStr = score ? `: ${score}` : "";
+    return `Mirá el marcador de nuestro partido de pádel${scoreStr}`;
   }
 
   return "";

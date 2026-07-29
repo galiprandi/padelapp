@@ -36,7 +36,7 @@ export function RemovePlayerButton({
           setConfirming(true);
         }}
         className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-        aria-label={`Remover a ${playerName}`}
+        aria-label={`Sacar a ${playerName}`}
       >
         <UserMinus className="h-4 w-4" />
       </button>
@@ -64,7 +64,7 @@ export function RemovePlayerButton({
         }}
         disabled={loading}
         className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-        aria-label="Cancelar remover jugador"
+        aria-label="Cancelar sacar jugador"
       >
         <X className="h-3.5 w-3.5" />
       </button>

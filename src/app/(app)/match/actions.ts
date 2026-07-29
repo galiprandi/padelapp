@@ -809,13 +809,13 @@ export async function submitMatchResultAction(
     if (error instanceof Error && error.message === "not-authorized") {
       return {
         status: "error",
-        message: "You cannot update a match you are not part of.",
+        message: "No podés editar un partido en el que no estás.",
       };
     }
     console.error("submitMatchResultAction failed", error);
     return {
       status: "error",
-      message: "We could not save the result. Please try again.",
+      message: "No se pudo guardar el resultado. Intentá nuevamente.",
     };
   }
 }
@@ -1794,8 +1794,8 @@ export async function markAttendanceAction(
         const player = match.players.find((p) => p.id === entry.matchPlayerId);
         if (player?.userId) {
           void notifyUsers([player.userId], {
-            title: `Te marcaron ausente en ${clubName}`,
-            body: "Si es incorrecto, contactá al organizador.",
+            title: `El organizador marcó que no asististe`,
+            body: `En ${clubName}. Si es incorrecto, contactá al organizador.`,
             url: matchUrl,
           });
         }

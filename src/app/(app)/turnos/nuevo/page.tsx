@@ -60,8 +60,8 @@ export default function NewTurnPage() {
 
       if (response.status === "ok") {
         const turnUrl = `${window.location.origin}/t/${response.turnId}`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`¡Anotate en mi turno de pádel! ${turnUrl}`)}`;
-        showToast("Turno creado. ¡Compartilo!", {
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Sumate a mi turno de pádel: ${turnUrl}`)}`;
+        showToast("Turno creado. Compartilo por WhatsApp.", {
           action: {
             label: "WhatsApp",
             onClick: () => window.open(whatsappUrl, "_blank"),

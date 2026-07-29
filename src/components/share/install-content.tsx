@@ -88,7 +88,7 @@ export function InstallContent() {
     },
     {
       icon: <Check className="h-5 w-5 text-primary" />,
-      text: "¡Y listo! Ya podés disfrutar de Padel Red como una aplicación nativa.",
+      text: "Y listo. Ya podés disfrutar de Padel Red como una aplicación nativa.",
     },
   ];
 

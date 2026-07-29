@@ -178,8 +178,8 @@ export async function joinTurnAction(turnId: string) {
       ];
       const turnLabel = getTurnLabel(turn.club, turn.date);
       void notifyUsers(allUserIds, {
-        title: `¡Turno completo! ${turnLabel}`,
-        body: `Nos vemos.`,
+        title: `Turno completo: ${turnLabel}`,
+        body: `Los ${turn.maxPlayers} cupos están cubiertos. Nos vemos en la cancha.`,
         url: turnUrl,
       });
     } else {
@@ -189,7 +189,7 @@ export async function joinTurnAction(turnId: string) {
       ].filter((id) => id !== session.user.id);
       void notifyUsers(recipientIds, {
         title: `${joinerName} se sumó a ${getTurnLabel(turn.club, turn.date)}`,
-        body: `${newPlayerCount}/${turn.maxPlayers} jugadores.`,
+        body: `${newPlayerCount}/${turn.maxPlayers} jugadores.${newPlayerCount < turn.maxPlayers ? " Falta uno." : ""}`,
         url: turnUrl,
       });
     }
@@ -197,7 +197,7 @@ export async function joinTurnAction(turnId: string) {
     return { status: "ok" };
   } catch (error) {
     console.error("Error joining turn:", error);
-    return { status: "error", message: "Error al unirse al turno" };
+    return { status: "error", message: "Error al sumarse al turno" };
   }
 }
 
@@ -383,7 +383,7 @@ export async function leaveTurnAction(turnId: string) {
 
         void notifyUsers([session.user.id], {
           title: `Baja tardía en ${turnLabel}`,
-          body: `Te bajaste a menos de 2h del turno. Tu reputación bajó a ${Math.round(newScore * 100)}%.`,
+          body: `Te bajaste a menos de 2h. Perdiste 5% de reputación.`,
           url: turnUrl,
         });
       }
@@ -400,7 +400,7 @@ export async function leaveTurnAction(turnId: string) {
     };
   } catch (error) {
     console.error("Error leaving turn:", error);
-    return { status: "error", message: "Error al salir del turno" };
+    return { status: "error", message: "Error al bajarse del turno" };
   }
 }
 
@@ -565,7 +565,7 @@ export async function convertTurnToMatchAction(turnId: string) {
         turn.substitutes.map((s) => s.userId),
         {
           title: `El partido empezó: ${getTurnLabel(turn.club, turn.date)}`,
-          body: `No se liberaron más cupos. ¡Gracias por anotarte como suplente!`,
+          body: `No se liberaron más cupos. Gracias por anotarte como suplente.`,
           url: turnUrl,
         },
       );
@@ -870,7 +870,7 @@ export async function joinSubstituteAction(turnId: string) {
     return { status: "ok" };
   } catch (error) {
     console.error("Error joining as substitute:", error);
-    return { status: "error", message: "Error al anotarse como suplente" };
+    return { status: "error", message: "Error al sumarse como suplente" };
   }
 }
 
@@ -1009,7 +1009,7 @@ export async function takeOpenSlotAction(turnId: string) {
         title: `${takerName} ocupó un cupo en ${turnLabel}`,
         body: isNowFull
           ? `Turno completo. Seguís en la lista de suplentes.`
-          : `Todavía hay ${turn.maxPlayers - newPlayerCount} ${turn.maxPlayers - newPlayerCount === 1 ? "cupo libre" : "cupos libres"}. ¡Tocá para ocuparlo!`,
+          : `Todavía hay ${turn.maxPlayers - newPlayerCount} ${turn.maxPlayers - newPlayerCount === 1 ? "cupo libre" : "cupos libres"}. Ocupá el cupo si podés.`,
         url: turnUrl,
       });
     }
@@ -1046,7 +1046,7 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     if (turn.creatorId !== session.user.id) {
       return {
         status: "error",
-        message: "Solo el organizador puede remover jugadores",
+        message: "Solo el organizador puede sacar jugadores",
       };
     }
 
@@ -1089,7 +1089,7 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
 
     // Notify the removed player
     void notifyUsers([playerUserId], {
-      title: `Fuiste removido de ${turnLabel}`,
+      title: `El organizador te sacó de ${turnLabel}`,
       body: `${removerName} te sacó del turno.`,
       url: turnUrl,
     });
@@ -1100,8 +1100,8 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     ].filter((id) => id !== playerUserId && id !== session.user.id);
 
     void notifyUsers(recipientIds, {
-      title: `${removerName} removió a un jugador de ${turnLabel}`,
-      body: `Faltan ${remainingSlots} ${remainingSlots === 1 ? "cupo" : "cupos"}.`,
+      title: `${removerName} sacó a un jugador de ${turnLabel}`,
+      body: `Quedan ${remainingSlots} ${remainingSlots === 1 ? "cupo libre" : "cupos libres"}.`,
       url: turnUrl,
     });
 
@@ -1136,7 +1136,7 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     return { status: "ok" };
   } catch (error) {
     console.error("Error removing player:", error);
-    return { status: "error", message: "Error al remover jugador" };
+    return { status: "error", message: "Error al sacar al jugador" };
   }
 }
 
@@ -1234,7 +1234,7 @@ export async function assignSubstituteAction(
 
     // Notify the assigned substitute
     void notifyUsers([substituteUserId], {
-      title: `¡Te asignaron un cupo en ${turnLabel}!`,
+      title: `Tenés un cupo en ${turnLabel}`,
       body: `El organizador te asignó al turno.`,
       url: turnUrl,
     });
@@ -1261,7 +1261,7 @@ export async function assignSubstituteAction(
         title: `${assigneeName} ocupó un cupo en ${turnLabel}`,
         body: isNowFull
           ? `Turno completo. Seguís en la lista de suplentes.`
-          : `Todavía hay ${turn.maxPlayers - newPlayerCount} ${turn.maxPlayers - newPlayerCount === 1 ? "cupo libre" : "cupos libres"}. ¡Tocá para ocuparlo!`,
+          : `Todavía hay ${turn.maxPlayers - newPlayerCount} ${turn.maxPlayers - newPlayerCount === 1 ? "cupo libre" : "cupos libres"}. Ocupá el cupo si podés.`,
         url: turnUrl,
       });
     }

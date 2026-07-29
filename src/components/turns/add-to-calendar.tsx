@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CalendarPlus, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getCalendarTitle } from "@/lib/utils";
 
 interface AddToCalendarButtonProps {
   turnId: string;
@@ -37,13 +37,14 @@ export function AddToCalendarButton({
   const startUTC = formatUTC(startDate);
   const endUTC = formatUTC(endDate);
 
-  const title = `Partido de Pádel - ${club}`;
+  const title = getCalendarTitle(club, startDate);
   const location = club;
+  const turnUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/t/${turnId}`;
 
   const handleGoogleCalendar = () => {
     if (!startUTC || !endUTC) return;
 
-    const details = `¡No te olvides de tu partido de pádel!\n\nClub: ${club}\n\nVer detalles y confirmar asistencia: ${window.location.origin}/t/${turnId}${notes ? `\n\nNotas: ${notes}` : ""}`;
+    const details = `Turno de pádel en ${club}. Confirmá asistencia: ${turnUrl}${notes ? `\n\nNotas: ${notes}` : ""}`;
 
     const googleUrl = new URL("https://calendar.google.com/calendar/render");
     googleUrl.searchParams.set("action", "TEMPLATE");
@@ -59,7 +60,7 @@ export function AddToCalendarButton({
     if (!startUTC || !endUTC) return;
 
     const nowUTC = formatUTC(new Date());
-    const details = `Partido de pádel en ${club}. Ver más en: ${window.location.origin}/t/${turnId}`;
+    const details = `Turno de pádel en ${club}. Ver más: ${turnUrl}`;
 
     const icsLines = [
       "BEGIN:VCALENDAR",
