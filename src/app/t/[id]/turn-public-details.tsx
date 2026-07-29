@@ -43,6 +43,36 @@ interface TurnPublicDetailsProps {
   params: Promise<{ id: string }>;
 }
 
+/** Shared share button for the turn detail page — avoids 6× repetition. */
+function TurnShareButton({
+  shareUrl,
+  club,
+  date,
+  variant = "full",
+  className,
+}: {
+  shareUrl: string;
+  club: string;
+  date: Date;
+  variant?: "full" | "icon";
+  className?: string;
+}) {
+  return (
+    <ShareButton
+      title="Sumate al Turno"
+      shareData={{ type: "turn", club, date }}
+      url={shareUrl}
+      variant="outline"
+      iconOnly={variant === "icon"}
+      className={
+        variant === "full"
+          ? "w-full h-12 rounded-lg text-base font-bold"
+          : className
+      }
+    />
+  );
+}
+
 export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const { id } = await params;
   const session = await auth();
@@ -57,6 +87,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const isJoined = turn.players.some((p) => p.userId === viewerId);
   const isCreator = turn.creatorId === viewerId;
   const isCancelled = turn.status === "CANCELLED";
+
+  // Compute share URL once instead of 6 times
+  const shareUrl = createMagicLink({ resource: "turn", identifier: id }).url;
 
   // Fetch viewer's contacts
   let viewerContacts: PadelContact[] = [];
@@ -124,6 +157,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <div className="flex flex-col gap-4">
           <Link
             href={viewerId ? "/me" : "/"}
+            aria-label="Volver"
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -146,12 +180,27 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const isFull = turn.players.length >= turn.maxPlayers;
   const isSubstitute = turn.substitutes.some((s) => s.userId === viewerId);
   const hasOpenSlot = turn.players.length < turn.maxPlayers;
+  const isCompleted = turn.status === "COMPLETED";
+
+  // Expanded subtitle logic — covers all viewer states
+  const subtitle = !viewerId
+    ? `Te invita ${turn.creator.alias ?? turn.creator.displayName}`
+    : isSubstitute
+      ? `Suplente #${turn.substitutes.findIndex((s) => s.userId === viewerId) + 1} de ${turn.substitutes.length}`
+      : isJoined
+        ? isCompleted
+          ? "Turno finalizado"
+          : "Ya te sumaste"
+        : isFull
+          ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
+          : "Sumate a este turno";
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
+          aria-label="Volver"
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -160,22 +209,27 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <h1 className="text-xl font-bold text-foreground">
             Detalle del Turno
           </h1>
-          <p className="text-sm text-muted-foreground">
-            {!viewerId
-              ? `Te invita ${turn.creator.alias ?? turn.creator.displayName}`
-              : isFull
-                ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
-                : "Sumate a este turno"}
-          </p>
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
         </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="bg-muted border-b border-border px-4 py-3">
+        <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />
             Información del turno
           </h2>
+          <span
+            className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
+              isCompleted
+                ? "bg-muted text-muted-foreground"
+                : isFull
+                  ? "bg-amber-500/10 text-amber-500"
+                  : "bg-emerald-500/10 text-emerald-500"
+            }`}
+          >
+            {isCompleted ? "Finalizado" : isFull ? "Completo" : "Abierto"}
+          </span>
         </div>
 
         <div className="grid grid-cols-1 gap-px bg-border">
@@ -230,7 +284,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             <Users className="h-4 w-4 text-muted-foreground" />
             Lista de jugadores
           </h2>
-          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
             {turn.maxPlayers - turn.players.length} cupos libres
           </span>
         </div>
@@ -242,7 +296,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <Link
                 key={p.id}
                 href={`/p/${p.userId}`}
-                className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
+                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-colors hover:bg-muted/50 group"
               >
                 <PlayerAvatar
                   name={p.user.alias ?? p.user.displayName}
@@ -269,7 +323,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   {p.userId === turn.creatorId && (
-                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
                       Organizador
                     </span>
                   )}
@@ -291,7 +345,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             (_, i) => (
               <div
                 key={`empty-${i}`}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
+                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted px-4 py-3 text-muted-foreground"
               >
                 <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
                   <Users className="h-5 w-5 text-muted-foreground/50" />
@@ -322,7 +376,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <Users className="h-4 w-4 text-muted-foreground" />
               Lista de suplentes
             </h2>
-            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground border border-border">
+            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
               {turn.substitutes.length}/{turn.maxPlayers}
             </span>
           </div>
@@ -333,7 +387,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 <Link
                   key={s.id}
                   href={`/p/${s.userId}`}
-                  className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border transition-colors hover:bg-muted/50 group"
+                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-colors hover:bg-muted/50 group"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                     {index + 1}
@@ -362,7 +416,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     )}
                   </div>
                   {s.userId === viewerId && (
-                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
                       Vos
                     </span>
                   )}
@@ -383,247 +437,273 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </section>
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+      <div
+        className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50"
+        role="region"
+        aria-label="Acciones del turno"
+      >
         <div className="max-w-md mx-auto">
-          {!viewerId ? (
-            <div className="flex flex-col gap-3">
-              <SignInForm
-                callbackUrl={`/t/${id}`}
-                label={`Iniciá sesión para unirte a ${turn.club}`}
-                className="w-full h-12 rounded-lg text-base font-bold"
-              />
-              <ShareButton
-                title="Sumate al Turno"
-                shareData={{
-                  type: "turn",
-                  club: turn.club,
-                  date: turn.date,
-                }}
-                url={createMagicLink({ resource: "turn", identifier: id }).url}
-                variant="outline"
-                className="w-full h-12 rounded-lg text-base font-bold"
-              />
-            </div>
-          ) : isSubstitute ? (
-            <div className="flex flex-col gap-3">
-              {hasOpenSlot ? (
-                <TakeOpenSlotForm turnId={id} />
-              ) : (
-                <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border">
-                  No hay cupos libres todavía
-                </div>
-              )}
-              {turn.status !== "COMPLETED" && (
-                <ShareButton
-                  title="Sumate al Turno"
-                  shareData={{
-                    type: "turn",
-                    club: turn.club,
-                    date: turn.date,
-                  }}
-                  url={
-                    createMagicLink({ resource: "turn", identifier: id }).url
-                  }
-                  variant="outline"
-                  className="w-full h-12 rounded-lg text-base font-bold"
-                />
-              )}
-              <LeaveSubstituteForm turnId={id} hasOpenSlot={hasOpenSlot} />
-            </div>
-          ) : isFull ? (
-            <div className="flex flex-col gap-3">
-              {viewerId === turn.creatorId && turn.status !== "COMPLETED" && (
-                <>
-                  <StartMatchForm turnId={id} />
-                  <ScheduleNextTurnForm turnId={id} />
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="flex-1 h-10 rounded-lg font-bold text-xs"
-                    >
-                      <Link href={`/turnos/${id}/editar`}>
-                        <Edit3 className="mr-2 h-4 w-4" />
-                        Editar
-                      </Link>
-                    </Button>
-                    <CancelTurnForm turnId={id} />
-                  </div>
-                </>
-              )}
-              {turn.status === "COMPLETED" ? (
-                <Button
-                  disabled
-                  className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
-                >
-                  Turno finalizado
-                </Button>
-              ) : isJoined ? (
-                <Button
-                  disabled
-                  className="w-full h-12 rounded-lg font-bold bg-primary/10 text-primary border border-primary/20"
-                >
-                  Ya te sumaste
-                </Button>
-              ) : turn.substitutes.length < turn.maxPlayers ? (
-                <JoinSubstituteForm turnId={id} />
-              ) : (
-                <Button
-                  disabled
-                  className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
-                >
-                  Lista de suplentes completa
-                </Button>
-              )}
-              {turn.status !== "COMPLETED" && (
-                <ShareButton
-                  title="Sumate al Turno"
-                  shareData={{
-                    type: "turn",
-                    club: turn.club,
-                    date: turn.date,
-                  }}
-                  url={
-                    createMagicLink({ resource: "turn", identifier: id }).url
-                  }
-                  variant="outline"
-                  className="w-full h-12 rounded-lg text-base font-bold"
-                />
-              )}
-              {isJoined && turn.status !== "COMPLETED" && (
-                <LeaveTurnButton
-                  turnId={id}
-                  club={turn.club}
-                  wasFull
-                  isCreator={isCreator}
-                  date={turn.date}
-                />
-              )}
-            </div>
-          ) : isJoined ? (
-            <div className="flex flex-col gap-3">
-              {viewerId === turn.creatorId && (
-                <>
-                  {turn.players.length >= 4 && turn.status !== "COMPLETED" && (
-                    <StartMatchForm turnId={id} />
-                  )}
-                  <div className="flex gap-2 w-full">
-                    <div className="flex-1">
-                      <ScheduleNextTurnForm turnId={id} />
-                    </div>
-                    {turn.status !== "COMPLETED" && (
-                      <ShareButton
-                        title="Sumate al Turno"
-                        shareData={{
-                          type: "turn",
-                          club: turn.club,
-                          date: turn.date,
-                        }}
-                        url={
-                          createMagicLink({ resource: "turn", identifier: id }).url
-                        }
-                        iconOnly
-                        className="h-10 w-10 rounded-lg shrink-0"
-                      />
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="flex-1 h-10 rounded-lg font-bold text-xs"
-                    >
-                      <Link href={`/turnos/${id}/editar`}>
-                        <Edit3 className="mr-2 h-4 w-4" />
-                        Editar
-                      </Link>
-                    </Button>
-                    <CancelTurnForm turnId={id} />
-                  </div>
-                  <LeaveTurnButton
-                    turnId={id}
-                    club={turn.club}
-                    isCreator={isCreator}
-                    date={turn.date}
-                  />
-                </>
-              )}
-              {viewerId !== turn.creatorId && (
-                <div className="flex gap-2 w-full">
-                  <div className="flex-1">
-                    <LeaveTurnButton
-                      turnId={id}
-                      club={turn.club}
-                      isCreator={isCreator}
-                      date={turn.date}
-                    />
-                  </div>
-                  {turn.status !== "COMPLETED" && (
-                    <ShareButton
-                      title="Sumate al Turno"
-                      shareData={{
-                        type: "turn",
-                        club: turn.club,
-                        date: turn.date,
-                      }}
-                      url={
-                        createMagicLink({ resource: "turn", identifier: id }).url
-                      }
-                      iconOnly
-                      className="h-10 w-10 rounded-lg shrink-0"
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {viewerId === turn.creatorId && (
-                <>
-                  <ScheduleNextTurnForm turnId={id} />
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="flex-1 h-10 rounded-lg font-bold text-xs"
-                    >
-                      <Link href={`/turnos/${id}/editar`}>
-                        <Edit3 className="mr-2 h-4 w-4" />
-                        Editar
-                      </Link>
-                    </Button>
-                    <CancelTurnForm turnId={id} />
-                  </div>
-                </>
-              )}
-              <div className="flex gap-2 w-full">
-                <div className="flex-1">
-                  <Suspense fallback={null}>
-                    <JoinTurnForm turnId={id} />
-                  </Suspense>
-                </div>
-                {turn.status !== "COMPLETED" && (
-                  <ShareButton
-                    title="Sumate al Turno"
-                    shareData={{
-                      type: "turn",
-                      club: turn.club,
-                      date: turn.date,
-                    }}
-                    url={
-                      createMagicLink({ resource: "turn", identifier: id }).url
-                    }
-                    variant="outline"
-                    iconOnly
-                    className="h-12 w-12 rounded-lg shrink-0"
-                  />
-                )}
-              </div>
-            </div>
-          )}
+          <TurnActions
+            viewerId={viewerId}
+            isSubstitute={isSubstitute}
+            isFull={isFull}
+            isJoined={isJoined}
+            isCreator={isCreator}
+            isCompleted={isCompleted}
+            hasOpenSlot={hasOpenSlot}
+            turnId={id}
+            club={turn.club}
+            date={turn.date}
+            shareUrl={shareUrl}
+            maxPlayers={turn.maxPlayers}
+            substitutesCount={turn.substitutes.length}
+            playersCount={turn.players.length}
+          />
         </div>
       </div>
     </div>
   );
 }
 
+/** Bottom action bar — extracted from 235-line ternary into a clear component. */
+function TurnActions({
+  viewerId,
+  isSubstitute,
+  isFull,
+  isJoined,
+  isCreator,
+  isCompleted,
+  hasOpenSlot,
+  turnId,
+  club,
+  date,
+  shareUrl,
+  maxPlayers,
+  substitutesCount,
+  playersCount,
+}: {
+  viewerId: string | undefined;
+  isSubstitute: boolean;
+  isFull: boolean;
+  isJoined: boolean;
+  isCreator: boolean;
+  isCompleted: boolean;
+  hasOpenSlot: boolean;
+  turnId: string;
+  club: string;
+  date: Date;
+  shareUrl: string;
+  maxPlayers: number;
+  substitutesCount: number;
+  playersCount: number;
+}) {
+  // State 1: Not logged in
+  if (!viewerId) {
+    return (
+      <div className="flex flex-col gap-3">
+        <SignInForm
+          callbackUrl={`/t/${turnId}`}
+          label={`Iniciá sesión para unirte a ${club}`}
+          className="w-full h-12 rounded-lg text-base font-bold"
+        />
+        <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
+      </div>
+    );
+  }
+
+  // State 2: Substitute
+  if (isSubstitute) {
+    return (
+      <div className="flex flex-col gap-3">
+        {hasOpenSlot ? (
+          <TakeOpenSlotForm turnId={turnId} />
+        ) : (
+          <>
+            <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border">
+              No hay cupos libres todavía
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Estás en la lista de espera. Te avisaremos cuando se libere un cupo.
+            </p>
+          </>
+        )}
+        {!isCompleted && (
+          <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
+        )}
+        <LeaveSubstituteForm turnId={turnId} hasOpenSlot={hasOpenSlot} />
+      </div>
+    );
+  }
+
+  // State 3: Full turn
+  if (isFull) {
+    return (
+      <div className="flex flex-col gap-3">
+        {isCreator && !isCompleted && (
+          <>
+            <StartMatchForm turnId={turnId} />
+            <ScheduleNextTurnForm turnId={turnId} />
+            <div className="flex gap-2">
+              <Button
+                asChild
+                variant="outline"
+                className="flex-1 h-10 rounded-lg font-bold text-xs"
+              >
+                <Link href={`/turnos/${turnId}/editar`}>
+                  <Edit3 className="mr-2 h-4 w-4" />
+                  Editar
+                </Link>
+              </Button>
+              <CancelTurnForm turnId={turnId} />
+            </div>
+          </>
+        )}
+        {isCompleted ? (
+          <Button
+            disabled
+            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
+          >
+            Turno finalizado
+          </Button>
+        ) : isJoined ? (
+          <Button
+            disabled
+            className="w-full h-12 rounded-lg font-bold bg-primary/10 text-primary border border-primary/20"
+          >
+            Ya te sumaste
+          </Button>
+        ) : substitutesCount < maxPlayers ? (
+          <JoinSubstituteForm turnId={turnId} />
+        ) : (
+          <Button
+            disabled
+            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
+          >
+            Lista de suplentes completa
+          </Button>
+        )}
+        {!isCompleted && (
+          <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
+        )}
+        {isJoined && !isCompleted && (
+          <LeaveTurnButton
+            turnId={turnId}
+            club={club}
+            wasFull
+            isCreator={isCreator}
+            date={date}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // State 4: Joined (not full)
+  if (isJoined) {
+    return (
+      <div className="flex flex-col gap-3">
+        {isCreator && (
+          <>
+            {playersCount >= 4 && !isCompleted && (
+              <StartMatchForm turnId={turnId} />
+            )}
+            <div className="flex gap-2 w-full">
+              <div className="flex-1">
+                <ScheduleNextTurnForm turnId={turnId} />
+              </div>
+              {!isCompleted && (
+                <TurnShareButton
+                  shareUrl={shareUrl}
+                  club={club}
+                  date={date}
+                  variant="icon"
+                  className="h-10 w-10 rounded-lg shrink-0"
+                />
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                asChild
+                variant="outline"
+                className="flex-1 h-10 rounded-lg font-bold text-xs"
+              >
+                <Link href={`/turnos/${turnId}/editar`}>
+                  <Edit3 className="mr-2 h-4 w-4" />
+                  Editar
+                </Link>
+              </Button>
+              <CancelTurnForm turnId={turnId} />
+            </div>
+            <LeaveTurnButton
+              turnId={turnId}
+              club={club}
+              isCreator={isCreator}
+              date={date}
+            />
+          </>
+        )}
+        {!isCreator && (
+          <div className="flex gap-2 w-full">
+            <div className="flex-1">
+              <LeaveTurnButton
+                turnId={turnId}
+                club={club}
+                isCreator={isCreator}
+                date={date}
+              />
+            </div>
+            {!isCompleted && (
+              <TurnShareButton
+                shareUrl={shareUrl}
+                club={club}
+                date={date}
+                variant="icon"
+                className="h-10 w-10 rounded-lg shrink-0"
+              />
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // State 5: Not joined (open turn)
+  return (
+    <div className="flex flex-col gap-3">
+      {isCreator && (
+        <>
+          <ScheduleNextTurnForm turnId={turnId} />
+          <div className="flex gap-2">
+            <Button
+              asChild
+              variant="outline"
+              className="flex-1 h-10 rounded-lg font-bold text-xs"
+            >
+              <Link href={`/turnos/${turnId}/editar`}>
+                <Edit3 className="mr-2 h-4 w-4" />
+                Editar
+              </Link>
+            </Button>
+            <CancelTurnForm turnId={turnId} />
+          </div>
+        </>
+      )}
+      <div className="flex gap-2 w-full">
+        <div className="flex-1">
+          <Suspense fallback={null}>
+            <JoinTurnForm turnId={turnId} />
+          </Suspense>
+        </div>
+        {!isCompleted && (
+          <TurnShareButton
+            shareUrl={shareUrl}
+            club={club}
+            date={date}
+            variant="icon"
+            className="h-12 w-12 rounded-lg shrink-0"
+          />
+        )}
+      </div>
+    </div>
+  );
+}

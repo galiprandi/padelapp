@@ -30,7 +30,7 @@ export async function generateMetadata({
 
 export default function TurnPublicPage({ params }: TurnPageProps) {
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-32">
+    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-40">
       <Suspense fallback={<TurnSkeleton />}>
         <TurnPublicDetails params={params} />
       </Suspense>

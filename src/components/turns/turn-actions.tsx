@@ -3,6 +3,7 @@
 import { useTransition, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/toast/use-toast";
 import {
   Trash2,
   Play,
@@ -92,6 +93,7 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
 
 export function JoinTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const autoJoinAttempted = useRef(false);
@@ -101,6 +103,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinTurnAction(turnId);
       if (result.status === "ok") {
+        showToast("¡Te sumaste al turno! Ya estás confirmado para jugar.");
         router.refresh();
       }
     });
@@ -137,6 +140,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
 
 export function JoinSubstituteForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleJoinSubstitute = (e: React.FormEvent) => {
@@ -144,6 +148,7 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinSubstituteAction(turnId);
       if (result.status === "ok") {
+        showToast("Te sumaste como suplente. Te avisaremos cuando se libere un cupo.");
         router.refresh();
       }
     });
@@ -215,6 +220,7 @@ export function LeaveSubstituteForm({
 
 export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleTakeSlot = (e: React.FormEvent) => {
@@ -222,6 +228,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await takeOpenSlotAction(turnId);
       if (result.status === "ok") {
+        showToast("¡Ocupaste el cupo! Ya estás confirmado para jugar.");
         router.refresh();
       }
     });
