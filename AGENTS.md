@@ -78,7 +78,7 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **Minimal Design Cleanup**: Core shared components (`Button`, `Card`, `BottomNav`, `TopBar`, `RankingSearch`, `ManageSlotModal`, `TurnCard`, `PlayerPreview`, `PairPreview`, `RankingSearch`, `ToastProvider`, `PlayerAvatar`, `Badge`, `ShareButton`, `Switch`) refactored to Minimal Design standards. Standardized typography by removing `uppercase` and non-standard `tracking-*` classes across all views. Standardized button heights and radius for inline actions.
 - Google OAuth login with NextAuth + Drizzle adapter.
 - Dashboard (`/me`) with agenda, pending actions, recent results, and attendance marking.
-- Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`).
+- Turn management: list (`/turnos`), create (`/turnos/nuevo`), edit (`/turnos/[id]/editar`), public view (`/t/[id]`). Includes organizer player management (add/remove players), "Jugar igual" for casual play (2-3 players), unlimited substitute queue, and WhatsApp-contextualized landing page (`?from=whatsapp`).
 - Match management: list (`/match`), create (`/match/new`), detail (`/match/[matchId]`), edit (`/match/[matchId]/edit`), result entry with attendance (`/match/[matchId]/result`).
 - Public match invitation (`/m/[matchId]`), direct join (`/j/[playerId]`), public player profile (`/p/[userId]`).
 - Ranking system (`/ranking`) with score formula, attendance reputation, and temporal decay — positioned as a competitive hook, not a technical skill measurement.
@@ -96,6 +96,8 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **Dashboard Refactor**: Implemented "Hero Activity" for imminent events (<24h) with context-aware backgrounds and expanded stats summary (Reputation) to maximize user "Time to Value". Standardized stats grid with interactive links.
 - **Turn Salvage Optimization**: Enhanced the Dashboard "Hero Activity" and Turn Cards with a proactive "Salvar Turno" (Save Turn) action for incomplete matches, integrating the "Open to my network" push notification flow directly into the main views to ensure turn fulfillment.
 - **Semantic Invitations Refactor**: Migrated `/t/[id]` and `/m/[matchId]` to semantic HTML structures, removing complex UI wrappers to improve mobile rendering and focus on clear conversion actions.
+- **Turn Detail UX**: Fixed bottom bar with safe-area insets (`pb-safe` utility + `viewportFit: "cover"`), success toasts on join/substitute/take-slot, status badge (Abierto/Completo/Finalizado), expanded header subtitle with compact date, info icon on contact network labels, extracted bottom bar from 235-line ternary into `TurnActions` component with 5 clear states.
+- **Landing Page**: WhatsApp context detection (`?from=whatsapp`, `?invite=1`), concrete padel-specific feature cards, privacy reassurance under CTA, `aria-label` on sign-in form, `instant = false` for dynamic prerender.
 
 ### Architecture
 - **Drizzle ORM + PostgreSQL**: single source of truth. Local dev uses `pg` driver over TCP; production uses `@neondatabase/serverless` (HTTP/WebSockets) for optimal serverless cold starts on Vercel.

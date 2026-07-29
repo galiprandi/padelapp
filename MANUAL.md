@@ -42,22 +42,24 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Si el turno estaba lleno y no hay suplentes → se notifica automáticamente a la red de contactos (máximo 1 vez por hora)
 
 ### Suplentes
-- Se anotan cuando el turno está lleno (hasta el mismo número de cupos del turno)
+- Se anotan cuando el turno está lleno (sin límite de cantidad)
 - Lista por orden de anotación, sin prioridad de nivel
 - Ocupan cupo con "Ocupar cupo" — el primero que toma, se queda
 - Al ocupar → push a jugadores y suplentes restantes con el estado del turno
 - Pueden salir de la lista con un botón (sin confirmación)
-- Al iniciar el partido o cancelar el turno → se limpia la lista + push a suplentes
+- Al iniciar el partido, marcar como jugado o cancelar el turno → se limpia la lista + push a suplentes
 
 ### Organizador (acciones extra)
 - Editar turno (club, fecha, duración, cupos, nivel, notas) — no disponible si el turno ya finalizó
 - Iniciar partido (requiere 4 jugadores mínimos) → crea el partido con 2 equipos, toma los 4 primeros por orden de inscripción (si hay más, los restantes quedan fuera), el turno se finaliza
+- Jugar igual (2-3 jugadores) → marca el turno como jugado sin crear partido ni registrar resultado. Para cuando se juega informalmente y no hay 4 jugadores. El turno se finaliza.
+- Agregar jugador → busca y agrega un jugador directamente al turno (para confirmaciones fuera de la app, ej. WhatsApp). Si el jugador era suplente, pasa a ser titular. Push al jugador agregado.
+- Sacar jugador → saca a un jugador del turno (con confirmación). Push al jugador sacado. Si el turno estaba lleno, se libera el cupo y se notifica a suplentes.
 - Cancelar turno → avisa a todos los jugadores y suplentes + limpia suplentes
 - Programar próximo turno (duplica el turno a la misma hora la semana siguiente)
 - Abrir a la red (puede hacerlo cualquier jugador anotado, no solo el organizador) → push a contactos de los últimos 12 meses de todos los anotados, máximo 1 vez por hora
 
 ### No implementado
-- Remover jugador (organizador)
 - Asignar suplente a cupo libre (organizador)
 - Recordatorio push 24h antes a suplentes
 
@@ -85,7 +87,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - **Co-inscripción en turnos** (jugadores + suplentes del mismo turno): signal de proximidad social — alguien compartió el link del turno. No tiene outcome y no alimenta el skill score, pero prioriza candidatos para salvar turnos. Se captura al inscribirse y no se decrementa al bajarse (el acto de inscribirse valida la relación).
 - Audiencia: contactos de TODOS los anotados (no solo el organizador), últimos 12 meses, sin duplicados, excluyendo ya-anotados. Excluye rivales con outcome extremo (>85% o <15%).
 
-**Push notifications:** Turno completo, Nuevo jugador, Jugador se bajó, Cupo libre (suplentes), Nuevo organizador, Baja tardía, Partido iniciado, Turno cancelado, Cupo abierto (red)
+**Push notifications:** Turno completo, Nuevo jugador, Jugador se bajó, Cupo libre (suplentes), Nuevo organizador, Baja tardía, Partido iniciado, Turno cancelado, Cupo abierto (red), Te agregaron a un turno, Te sacaron de un turno
 
 ---
 
@@ -285,7 +287,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Un contador en la navegación muestra cuántas acciones pendientes hay
 
 ### Tipos de push que envía la app
-- **Turnos:** Turno completo, nuevo jugador, jugador se bajó, cupo libre (suplentes), nuevo organizador, baja tardía, partido iniciado, turno cancelado, cupo abierto (red)
+- **Turnos:** Turno completo, nuevo jugador, jugador se bajó, cupo libre (suplentes), nuevo organizador, baja tardía, partido iniciado, turno cancelado, cupo abierto (red), te agregaron a un turno, te sacaron de un turno
 - **Partidos:** Resultado cargado (al equipo rival), marcado ausente
 - **Red:** Cupo abierto a contactos (cuando un turno queda con cupos libres)
 
@@ -314,6 +316,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 ### Primer ingreso
 - El usuario llega a la landing page: logo, tagline ("Turnos que no se cancelan. Tu comunidad de pádel en un solo lugar.") y botón "Comenzar ahora"
+- Si llega con `?from=whatsapp` (link compartido por WhatsApp) → el hero cambia a "Te invitaron a un turno" con CTA contextual
 - Solo se puede entrar con Google — no hay registro con email/contraseña
 - Al loguear por primera vez, el usuario queda con nivel 6 (intermedio) por defecto, sin alias, sin foto personalizada
 
