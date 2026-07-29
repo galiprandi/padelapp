@@ -11,7 +11,7 @@ interface SignInButtonProps {
 
 export function SignInButton({
   label = "Continuar con Google",
-  className = "h-12 w-full rounded-xl text-base font-semibold",
+  className = "h-12 w-full rounded-lg text-base font-semibold",
 }: SignInButtonProps) {
   const { pending } = useFormStatus();
 

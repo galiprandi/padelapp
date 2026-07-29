@@ -72,7 +72,7 @@ export function PasskeyLoginButton() {
     <Button
       type="button"
       variant="outline"
-      className="h-12 w-full rounded-xl text-base font-semibold"
+      className="h-12 w-full rounded-lg text-base font-semibold"
       disabled={isAuthenticating}
       onClick={handlePasskeyLogin}
     >
