@@ -1,4 +1,7 @@
 ## 📋 BACKLOG
+- [ ] Visualización Detallada de la Fórmula: Desglose visual interactivo de cómo se calcula el puntaje exacto del jugador (racha actual, bonus de sets ganados, etc.).
+- [ ] Recordatorio de Confirmación Pendiente: Acción rápida o recordatorio para confirmar resultados directamente desde la vista del ranking o del historial de partidos.
+- [ ] Filtro de Actividad en Ranking: Tópico para filtrar jugadores inactivos (sin partidos en los últimos 30 días) para mantener la tabla global competitiva y dinámica.
 
 ## ✅ DONE
 - [x] 2026-07-27 — Ranking Podium Position Deltas & Terminology Accessibility (PR #agus/ranking/podium-deltas-accessibility).
@@ -10,8 +13,13 @@
 - [x] 2026-07-24 — Exposición de acción de finalización forzada para organizador en partidos pendientes de confirmación (PR #5).
 - [x] 2026-07-25 — Implementación de reseteo de estadísticas para usuarios afectados con 0 partidos y corrección de asimetría en ordenación de ranking (PR #6).
 - [x] 2026-07-26 — Visualización transparente de decay temporal por inactividad en banner de ranking y perfiles públicos (PR #7).
+- [x] 2026-07-28 — Verificación y validación de la compilación y de la arquitectura de Partial Prerendering (PPR) de Next.js. El codebase se encuentra en estado verde y completamente optimizado.
 
 ## 🧠 LEARNINGS
+### 2026-07-28 - Integridad de la Arquitectura de PPR y Compilación de Producción
+**Learning:** Al utilizar Next.js con pre-renderizado parcial (PPR) habilitado de forma global, asegurar que las consultas y operaciones dinámicas (como leer cookies, cabeceras o la sesión actual mediante `auth()`) estén debidamente aisladas en subcomponentes asíncronos y envueltas en límites de `<Suspense>` garantiza que las páginas puedan generar su esqueleto estático de forma inmediata y transmitir el contenido dinámico de manera incremental. La compilación estática (`next build`) confirma que no hay fugas de llamadas dinámicas no controladas en las páginas pre-renderizadas, manteniendo la velocidad de carga óptima y previniendo Cumulative Layout Shift (CLS).
+**Action:** Mantenga siempre las llamadas dinámicas o promesas que dependan de searchParams o sesiones alejadas del componente del shell exterior para asegurar la compatibilidad con PPR.
+
 ### 2026-07-27 - Semántica y Accesibilidad en Deltas de Posición de Clasificación
 **Learning:** El valor del delta en una clasificación o ranking representa el desplazamiento relativo de posiciones (subió o bajó N puestos), no los puntos obtenidos en los partidos. El uso descuidado de términos (ej. "puntos" en lugar de "posiciones" en los atributos ARIA) confunde a usuarios de lectores de pantalla y deteriora la accesibilidad. Al unificar la visualización de deltas tanto en listas de clasificación, podios de honor (`RankingPodium`), como en banners personales (`UserRankingBanner`), y dotar a cada uno de un etiquetado ARIA exacto y descriptivo en español, se crea una experiencia altamente accesible y libre de ambigüedades.
 **Action:** En cualquier visualización de estadísticas relativas, verifique que la terminología en pantalla y en las etiquetas ARIA coincida exactamente con la naturaleza del dato medido para evitar desorientar a los usuarios de tecnologías asistivas.
