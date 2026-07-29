@@ -798,8 +798,9 @@ export async function submitMatchResultAction(
         const clubName = updatedMatch.club ?? "el partido";
         void notifyUsers(opposingUserIds, {
           title: `Resultado cargado por ${submitterName}`,
-          body: `Confirmá el resultado en ${clubName}.`,
+          body: `Confirmá el marcador en ${clubName}.`,
           url: matchUrl,
+          actions: [{ action: "confirm", title: "Confirmar", url: `${matchUrl}?action=confirm` }],
         });
       }
     }

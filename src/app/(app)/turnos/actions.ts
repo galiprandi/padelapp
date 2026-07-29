@@ -233,9 +233,10 @@ async function notifyNetworkForTurn(
   let sent = 0;
   for (const contact of contacts) {
     const success = await sendPushToUser(contact.id, {
-      title: `¡Cupo abierto! ${getTurnLabel(turn.club, turn.date)}`,
-      body: `${openSlots} ${openSlots === 1 ? "cupo" : "cupos"} disponible${openSlots === 1 ? "" : "s"}.`,
+      title: `Cupo abierto en tu red: ${getTurnLabel(turn.club, turn.date)}`,
+      body: `${openSlots} ${openSlots === 1 ? "cupo libre" : "cupos libres"}. Si podés, sumate.`,
       url: turnUrl,
+      actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
     });
     if (success > 0) sent++;
   }
@@ -323,16 +324,17 @@ export async function leaveTurnAction(turnId: string) {
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
     const turnLabel = getTurnLabel(turn.club, turn.date);
     void notifyUsers(recipientIds, {
-      title: `${leaverName} salió de ${turnLabel}`,
-      body: `Faltan ${remainingSlots} ${remainingSlots === 1 ? "cupo" : "cupos"}.`,
+      title: `${leaverName} se bajó de ${turnLabel}`,
+      body: `Quedó un cupo libre. Sumate o abrí a la red.`,
       url: turnUrl,
+      actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
     });
 
     // Notify new organizer if ownership was transferred
     if (isOrganizerLeaving && newCreatorId) {
       void notifyUsers([newCreatorId], {
-        title: `Sos el nuevo organizador de ${turnLabel}`,
-        body: `${leaverName} te transfirió la organización.`,
+        title: `Sos el organizador de ${turnLabel}`,
+        body: `${leaverName} se bajó. Podés editar o cancelar el turno.`,
         url: turnUrl,
       });
     }
@@ -347,18 +349,19 @@ export async function leaveTurnAction(turnId: string) {
       );
       const timeContext =
         hoursUntil <= 0
-          ? "¡Ahora!"
+          ? "Ahora"
           : hoursUntil <= 3
             ? `En ${hoursUntil}h`
             : "";
 
       const substituteIds = turn.substitutes.map((s) => s.userId);
       void notifyUsers(substituteIds, {
-        title: `¡Cupo libre! ${turnLabel}`,
+        title: `Cupo libre en ${turnLabel}`,
         body: timeContext
-          ? `${timeContext} Tocá rápido para ocuparlo.`
-          : "Tocá rápido para ocuparlo.",
+          ? `${timeContext}. Ocupá el cupo si podés.`
+          : "Ocupá el cupo si podés.",
         url: subTurnUrl,
+        actions: [{ action: "join", title: "Ocupar cupo", url: `${subTurnUrl}?join=1` }],
       });
     }
 
@@ -785,9 +788,10 @@ export async function openToNetworkAction(turnId: string) {
     let sent = 0;
     for (const contact of contacts) {
       const success = await sendPushToUser(contact.id, {
-        title: `¡Cupo abierto en ${turn.club}!`,
-        body: `${organizerName} busca jugadores para ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"}. ${turn.club} — ${new Date(turn.date).toLocaleDateString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}`,
+        title: `Cupo abierto en tu red: ${getTurnLabel(turn.club, turn.date)}`,
+        body: `${organizerName} busca jugadores para ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"}. Si podés, sumate.`,
         url: turnUrl,
+        actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
       });
       if (success > 0) sent++;
     }
@@ -1115,16 +1119,17 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
       );
       const timeContext =
         hoursUntil <= 0
-          ? "¡Ahora!"
+          ? "Ahora"
           : hoursUntil <= 3
             ? `En ${hoursUntil}h`
             : "";
       void notifyUsers(substituteIds, {
-        title: `¡Cupo libre! ${turnLabel}`,
+        title: `Cupo libre en ${turnLabel}`,
         body: timeContext
-          ? `${timeContext} Tocá rápido para ocuparlo.`
-          : "Tocá rápido para ocuparlo.",
+          ? `${timeContext}. Ocupá el cupo si podés.`
+          : "Ocupá el cupo si podés.",
         url: turnUrl,
+        actions: [{ action: "join", title: "Ocupar cupo", url: `${turnUrl}?join=1` }],
       });
     }
 

@@ -39,6 +39,7 @@ import {
 } from "@/components/turns/turn-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { AddToCalendarButton } from "@/components/turns/add-to-calendar";
 import { db } from "@/db";
@@ -604,7 +605,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               )}
               <div className="flex gap-2 w-full">
                 <div className="flex-1">
-                  <JoinTurnForm turnId={id} />
+                  <Suspense fallback={null}>
+                    <JoinTurnForm turnId={id} />
+                  </Suspense>
                 </div>
                 {turn.status !== "COMPLETED" && (
                   <ShareButton

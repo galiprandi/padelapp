@@ -10,7 +10,12 @@ import { sendPushToUser } from "@/lib/firebase-admin";
  */
 export async function notifyUsers(
   userIds: string[],
-  payload: { title: string; body: string; url?: string },
+  payload: {
+    title: string;
+    body: string;
+    url?: string;
+    actions?: Array<{ action: string; title: string; url?: string }>;
+  },
 ): Promise<number> {
   let sent = 0;
   for (const userId of userIds) {

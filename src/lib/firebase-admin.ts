@@ -102,6 +102,7 @@ export async function sendPushNotification(
     title: string;
     body: string;
     url?: string;
+    actions?: Array<{ action: string; title: string; url?: string }>;
   }
 ): Promise<{ success: boolean; invalidToken?: boolean }> {
   const firebaseApp = getFirebaseAdmin();
@@ -112,13 +113,28 @@ export async function sendPushNotification(
   }
 
   try {
+    // Web Push actions: pass through data so the SW can read them.
+    // FCM's notification payload doesn't support actions directly, so we
+    // serialize them into the data field and let the SW build showNotification.
+    const data: Record<string, string> = {};
+    if (payload.url) data.url = payload.url;
+    if (payload.actions && payload.actions.length > 0) {
+      data.actions = JSON.stringify(
+        payload.actions.map((a) => ({
+          action: a.action,
+          title: a.title,
+          url: a.url ?? payload.url ?? "/",
+        }))
+      );
+    }
+
     const message: Message = {
       token,
       notification: {
         title: payload.title,
         body: payload.body,
       },
-      data: payload.url ? { url: payload.url } : {},
+      data,
       webpush: {
         notification: {
           title: payload.title,
@@ -156,7 +172,12 @@ export async function sendPushNotification(
 
 export async function sendPushToUser(
   userId: string,
-  payload: { title: string; body: string; url?: string }
+  payload: {
+    title: string;
+    body: string;
+    url?: string;
+    actions?: Array<{ action: string; title: string; url?: string }>;
+  }
 ): Promise<number> {
   const subscriptions = await db
     .select()

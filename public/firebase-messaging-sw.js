@@ -3,7 +3,7 @@
 // to satisfy the browser's requirement that they are added on the initial
 // evaluation of the worker script.
 
-const CACHE_NAME = "padelred-static-assets-v3";
+const CACHE_NAME = "padelred-static-assets-v4";
 const OFFLINE_URL = "/offline.html";
 const STATIC_ASSET_REGEX = /\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|woff2?|json)$/i;
 
@@ -151,13 +151,32 @@ self.addEventListener("push", (event) => {
   var body = notification.body || "";
   var url = data.url || "/";
 
+  // Parse actions from data (serialized by the server)
+  var actions = [];
+  if (data.actions) {
+    try {
+      actions = JSON.parse(data.actions);
+    } catch (e) {
+      actions = [];
+    }
+  }
+
+  var notifOptions = {
+    body: body,
+    icon: "/icons/notification-icon.png",
+    badge: "/icons/notification-badge.png",
+    data: { url: url, actions: actions },
+  };
+
+  // Actions supported on Chrome Android (max 2), not on iOS Safari
+  if (actions.length > 0) {
+    notifOptions.actions = actions.slice(0, 2).map(function (a) {
+      return { action: a.action, title: a.title };
+    });
+  }
+
   event.waitUntil(
-    self.registration.showNotification(title, {
-      body: body,
-      icon: "/icons/notification-icon.png",
-      badge: "/icons/notification-badge.png",
-      data: { url: url },
-    })
+    self.registration.showNotification(title, notifOptions)
   );
 });
 
@@ -172,7 +191,19 @@ self.addEventListener("pushsubscriptionchange", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  var url = (event.notification.data && event.notification.data.url) || "/";
+  // If the user clicked an action button, use that action's URL
+  var notifData = event.notification.data || {};
+  var actions = notifData.actions || [];
+  var targetUrl = notifData.url || "/";
+
+  if (event.action && actions.length > 0) {
+    for (var i = 0; i < actions.length; i++) {
+      if (actions[i].action === event.action) {
+        targetUrl = actions[i].url || targetUrl;
+        break;
+      }
+    }
+  }
 
   event.waitUntil(
     self.clients.matchAll({
@@ -181,12 +212,12 @@ self.addEventListener("notificationclick", (event) => {
     }).then(function (clientList) {
       for (var i = 0; i < clientList.length; i++) {
         var client = clientList[i];
-        if (client.url.includes(url) && "focus" in client) {
+        if (client.url.includes(targetUrl) && "focus" in client) {
           return client.focus();
         }
       }
       if (self.clients.openWindow) {
-        return self.clients.openWindow(url);
+        return self.clients.openWindow(targetUrl);
       }
     })
   );
@@ -205,14 +236,28 @@ self.addEventListener("message", (event) => {
           var notification = payload.notification || {};
           var title = notification.title;
           var body = notification.body || "";
-          var url = (payload.data && payload.data.url) || "/";
+          var data = payload.data || {};
+          var url = (data && data.url) || "/";
 
-          self.registration.showNotification(title || "PadelRed", {
+          var actions = [];
+          if (data && data.actions) {
+            try { actions = JSON.parse(data.actions); } catch (e) { actions = []; }
+          }
+
+          var notifOptions = {
             body: body,
             icon: "/icons/notification-icon.png",
             badge: "/icons/notification-badge.png",
-            data: { url: url },
-          });
+            data: { url: url, actions: actions },
+          };
+
+          if (actions.length > 0) {
+            notifOptions.actions = actions.slice(0, 2).map(function (a) {
+              return { action: a.action, title: a.title };
+            });
+          }
+
+          self.registration.showNotification(title || "PadelRed", notifOptions);
         });
       } catch (error) {
         console.error("Error initializing Firebase Messaging in SW:", error);

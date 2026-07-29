@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useTransition, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Trash2,
@@ -92,10 +92,12 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
 
 export function JoinTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const autoJoinAttempted = useRef(false);
 
-  const handleJoin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleJoin = (e?: React.FormEvent) => {
+    e?.preventDefault();
     startTransition(async () => {
       const result = await joinTurnAction(turnId);
       if (result.status === "ok") {
@@ -104,20 +106,30 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
     });
   };
 
+  // Auto-join when arriving from a push notification CTA (?join=1)
+  useEffect(() => {
+    if (autoJoinAttempted.current) return;
+    if (searchParams.get("join") === "1") {
+      autoJoinAttempted.current = true;
+      handleJoin();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   return (
     <form onSubmit={handleJoin} className="w-full">
       <Button
         type="submit"
         disabled={isPending}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Anotarme en el turno"
+        aria-label="Sumarme al turno"
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
         ) : (
           <UserPlus className="mr-2 h-5 w-5" />
         )}
-        {isPending ? "Anotando..." : "Anotarme ahora"}
+        {isPending ? "Sumando..." : "Sumarme ahora"}
       </Button>
     </form>
   );
@@ -144,14 +156,14 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         variant="outline"
         disabled={isPending}
         className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Anotarse como jugador suplente"
+        aria-label="Sumarse como suplente"
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
         ) : (
           <UserPlus className="mr-2 h-5 w-5" />
         )}
-        {isPending ? "Anotando..." : "Anotarme como suplente"}
+        {isPending ? "Sumando..." : "Sumarme como suplente"}
       </Button>
     </form>
   );
