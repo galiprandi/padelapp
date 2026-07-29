@@ -20,6 +20,7 @@ import {
   leaveSubstituteAction,
   takeOpenSlotAction,
   scheduleNextTurnAction,
+  markTurnAsPlayedAction,
 } from "@/app/(app)/turnos/actions";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -282,6 +283,48 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
           <CalendarPlus className="mr-2 h-4 w-4" />
         )}
         {isPending ? "Programando..." : "Programar próximo turno"}
+      </Button>
+    </form>
+  );
+}
+
+export function PlayCasualForm({ turnId }: { turnId: string }) {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
+  const handlePlayCasual = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      confirm(
+        "¿Marcar el turno como jugado? No se registrará partido ni resultado.",
+      )
+    ) {
+      startTransition(async () => {
+        const result = await markTurnAsPlayedAction(turnId);
+        if (result.status === "ok") {
+          showToast("Turno marcado como jugado.");
+          router.push("/turnos");
+        }
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={handlePlayCasual}>
+      <Button
+        type="submit"
+        variant="outline"
+        disabled={isPending}
+        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        aria-label="Marcar turno como jugado sin registrar partido"
+      >
+        {isPending ? (
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+        ) : (
+          <Play className="mr-2 h-5 w-5" />
+        )}
+        {isPending ? "Marcando..." : "Jugar igual"}
       </Button>
     </form>
   );

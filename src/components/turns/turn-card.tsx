@@ -55,8 +55,7 @@ export function TurnCard({
   const canJoinAsSubstitute =
     isFull &&
     !isJoined &&
-    !isSubstitute &&
-    (turn.substitutes?.length ?? 0) < turn.maxPlayers;
+    !isSubstitute;
   const canJoin =
     !isJoined &&
     !isSubstitute &&

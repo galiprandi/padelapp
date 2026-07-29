@@ -850,10 +850,6 @@ export async function joinSubstituteAction(turnId: string) {
       return { status: "error", message: "Aún hay cupos disponibles" };
     }
 
-    if (turn.substitutes.length >= turn.maxPlayers) {
-      return { status: "error", message: "Lista de suplentes completa" };
-    }
-
     await db.insert(turnSubstitutes).values({
       turnId,
       userId: session.user.id,
@@ -1276,5 +1272,71 @@ export async function assignSubstituteAction(
     }
     console.error("Error assigning substitute:", error);
     return { status: "error", message: "Error al asignar suplente" };
+  }
+}
+
+/**
+ * Mark a turn as played without creating a match record.
+ * Used when 2-3 players show up and play informally (no teams, no result).
+ * Only the organizer can trigger this. Sets turn status to COMPLETED
+ * and cleans up substitutes.
+ */
+export async function markTurnAsPlayedAction(turnId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: {
+        players: true,
+        substitutes: { columns: { userId: true } },
+      },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede marcar el turno como jugado",
+      };
+    }
+
+    if (turn.status === "COMPLETED") {
+      return { status: "error", message: "El turno ya fue finalizado" };
+    }
+
+    if (turn.players.length < 2) {
+      return {
+        status: "error",
+        message: "Se necesitan al menos 2 jugadores",
+      };
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(turns)
+        .set({ status: "COMPLETED" })
+        .where(eq(turns.id, turnId));
+
+      await tx
+        .delete(turnSubstitutes)
+        .where(eq(turnSubstitutes.turnId, turnId));
+    });
+
+    revalidatePath("/turnos");
+    revalidatePath(`/t/${turnId}`);
+    revalidatePath("/me");
+    revalidateTag("turns", "default");
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("Error marking turn as played:", error);
+    return { status: "error", message: "Error al marcar el turno como jugado" };
   }
 }

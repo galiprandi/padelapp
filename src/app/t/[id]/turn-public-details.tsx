@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   Edit3,
   MapPin,
+  Info,
 } from "lucide-react";
 import {
   CancelTurnForm,
@@ -29,6 +30,7 @@ import {
   LeaveSubstituteForm,
   TakeOpenSlotForm,
   ScheduleNextTurnForm,
+  PlayCasualForm,
 } from "@/components/turns/turn-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -182,18 +184,32 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const hasOpenSlot = turn.players.length < turn.maxPlayers;
   const isCompleted = turn.status === "COMPLETED";
 
+  // Compact date for subtitle (server-side, Argentina timezone)
+  const turnDateStr = turn.date.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+  const turnTimeStr = turn.date.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+  const compactDate = `${turnDateStr} · ${turnTimeStr}`;
+
   // Expanded subtitle logic — covers all viewer states
   const subtitle = !viewerId
-    ? `Te invita ${turn.creator.alias ?? turn.creator.displayName}`
+    ? `Te invita ${turn.creator.alias ?? turn.creator.displayName} · ${compactDate}`
     : isSubstitute
       ? `Suplente #${turn.substitutes.findIndex((s) => s.userId === viewerId) + 1} de ${turn.substitutes.length}`
       : isJoined
         ? isCompleted
           ? "Turno finalizado"
-          : "Ya te sumaste"
+          : `Ya te sumaste · ${compactDate}`
         : isFull
           ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
-          : "Sumate a este turno";
+          : `Sumate a este turno · ${compactDate}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -316,8 +332,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     )}
                   </p>
                   {connectionMap[p.userId] && (
-                    <p className="text-xs text-muted-foreground truncate mt-0.5" aria-label={`Contacto de ${connectionMap[p.userId]}`}>
-                      Contacto de {connectionMap[p.userId]}
+                    <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={`Contacto de ${connectionMap[p.userId]}`}>
+                      <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+                      <span>Contacto de {connectionMap[p.userId]}</span>
                     </p>
                   )}
                 </div>
@@ -377,7 +394,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               Lista de suplentes
             </h2>
             <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
-              {turn.substitutes.length}/{turn.maxPlayers}
+              {turn.substitutes.length} {turn.substitutes.length === 1 ? "suplente" : "suplentes"}
             </span>
           </div>
           <div className="grid gap-2">
@@ -410,8 +427,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       )}
                     </p>
                     {connectionMap[s.userId] && (
-                      <p className="text-xs text-muted-foreground truncate mt-0.5" aria-label={`Contacto de ${connectionMap[s.userId]}`}>
-                        Contacto de {connectionMap[s.userId]}
+                      <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={`Contacto de ${connectionMap[s.userId]}`}>
+                        <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+                        <span>Contacto de {connectionMap[s.userId]}</span>
                       </p>
                     )}
                   </div>
@@ -455,8 +473,6 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             club={turn.club}
             date={turn.date}
             shareUrl={shareUrl}
-            maxPlayers={turn.maxPlayers}
-            substitutesCount={turn.substitutes.length}
             playersCount={turn.players.length}
           />
         </div>
@@ -478,8 +494,6 @@ function TurnActions({
   club,
   date,
   shareUrl,
-  maxPlayers,
-  substitutesCount,
   playersCount,
 }: {
   viewerId: string | undefined;
@@ -493,8 +507,6 @@ function TurnActions({
   club: string;
   date: Date;
   shareUrl: string;
-  maxPlayers: number;
-  substitutesCount: number;
   playersCount: number;
 }) {
   // State 1: Not logged in
@@ -572,15 +584,8 @@ function TurnActions({
           >
             Ya te sumaste
           </Button>
-        ) : substitutesCount < maxPlayers ? (
-          <JoinSubstituteForm turnId={turnId} />
         ) : (
-          <Button
-            disabled
-            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
-          >
-            Lista de suplentes completa
-          </Button>
+          <JoinSubstituteForm turnId={turnId} />
         )}
         {!isCompleted && (
           <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
@@ -606,6 +611,9 @@ function TurnActions({
           <>
             {playersCount >= 4 && !isCompleted && (
               <StartMatchForm turnId={turnId} />
+            )}
+            {playersCount >= 2 && playersCount < 4 && !isCompleted && (
+              <PlayCasualForm turnId={turnId} />
             )}
             <div className="flex gap-2 w-full">
               <div className="flex-1">
@@ -672,6 +680,9 @@ function TurnActions({
     <div className="flex flex-col gap-3">
       {isCreator && (
         <>
+          {playersCount >= 2 && playersCount < 4 && !isCompleted && (
+            <PlayCasualForm turnId={turnId} />
+          )}
           <ScheduleNextTurnForm turnId={turnId} />
           <div className="flex gap-2">
             <Button
