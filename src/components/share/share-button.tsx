@@ -4,11 +4,13 @@ import { useCallback, useState, useEffect } from "react";
 import { Share2, Check } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
+import { getNaturalShareText, type ShareDataPayload } from "@/lib/utils";
 
 interface ShareButtonProps extends ButtonProps {
   url: string;
   title?: string;
   text?: string;
+  shareData?: ShareDataPayload;
   successMessage?: string;
   copyMessage?: string;
   errorMessage?: string;
@@ -22,7 +24,8 @@ const DEFAULT_ERROR = "No pudimos compartir el link";
 export function ShareButton({
   url: urlProp,
   title,
-  text,
+  text: textProp,
+  shareData,
   successMessage,
   copyMessage,
   errorMessage,
@@ -35,6 +38,17 @@ export function ShareButton({
   const [isSharing, setIsSharing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [url, setUrl] = useState(urlProp);
+  const [text, setText] = useState<string | undefined>(textProp);
+
+  // If shareData payload is provided, dynamically format the sharing text
+  // so that it formats dates/times using the client browser timezone on mount.
+  useEffect(() => {
+    if (shareData) {
+      setText(getNaturalShareText(shareData));
+    } else {
+      setText(textProp);
+    }
+  }, [shareData, textProp]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

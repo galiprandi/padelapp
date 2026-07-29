@@ -43,9 +43,10 @@ export async function generateMetadata({
     return { title: "Partido no encontrado" };
   }
 
+  const clubName = match.club || "el club";
   return {
-    title: `Invitación a Partido - ${brandName}`,
-    description: `Sumate al partido en ${match.club || "el club"} el ${new Date(match.date).toLocaleDateString("es-AR")}.`,
+    title: `Invitación a Partido en ${clubName}`,
+    description: `Sumate al partido en ${clubName} el ${new Date(match.date).toLocaleDateString("es-AR")}.`,
   };
 }
 

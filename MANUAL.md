@@ -69,6 +69,13 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 **Estados:** ABIERTO → LLENO → FINALIZADO | CANCELADO
 
+**Compartir Turnos (WhatsApp/Social):**
+- Lenguaje natural dinámico adaptado a la hora local del usuario.
+- Si el turno es **hoy**: `"Turno de pádel disponible en [Club] hoy [Hora]hs"` (ej: `"Turno de pádel disponible en Italia hoy 19hs"` o `"19:30hs"`).
+- Si el turno es **mañana**: `"Turno de pádel disponible en [Club] mañana [Hora]hs"`.
+- Días futuros: `"Turno de pádel disponible en [Club] el [Día de la semana] [Día]/[Mes] [Hora]hs"`.
+- Los minutos `:00` se ocultan para simplificar la lectura (`19hs`), pero se muestran si no son cero (`19:30hs`).
+
 **Penalizaciones:** Bajarse a <2h sin ser organizador → -5% reputación
 
 **Cooldowns:** Notificación a red → 1h entre envíos
@@ -126,6 +133,11 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 **Actores:** Organizador (creador), Jugador (con cuenta), Placeholder (sin cuenta)
 
 **Estados:** PENDIENTE → CONFIRMADO | CANCELADO
+
+**Compartir Partidos (WhatsApp/Social):**
+- Lenguaje natural dinámico adaptado a la hora local del usuario.
+- Invitaciones: `"Partido de pádel disponible en [Club] [Día_Dinámico] [Hora]hs"`.
+- Resultados: `"¡Mirá el resultado de nuestro partido de pádel! Marcador: [Score]"`.
 
 **Formatos:** Dobles (4 jugadores, 2 equipos), Singles (2 jugadores, 1 vs 1)
 
