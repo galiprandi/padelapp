@@ -5,6 +5,7 @@ import { updateUserProfileAction } from "@/app/(app)/me/actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
 
@@ -17,6 +18,8 @@ interface ProfileFormProps {
   initialImage: string | null;
   googleAvatarUrl?: string | null;
   displayName?: string | null;
+  email?: string | null;
+  matchesPlayed?: number;
 }
 
 function getInitials(name: string | null | undefined): string {
@@ -31,11 +34,14 @@ export function ProfileForm({
   initialImage,
   googleAvatarUrl,
   displayName,
+  email,
+  matchesPlayed = 0,
 }: ProfileFormProps) {
   const { showToast } = useToast();
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
   const [isSaving, startSaving] = useTransition();
+  const [checklistDismissed, setChecklistDismissed] = useState(false);
 
   const lastSavedAlias = useRef(initialAlias);
   const previousAliasRef = useRef(initialAlias);
@@ -140,6 +146,22 @@ export function ProfileForm({
       return `Usá entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`;
     }
     return null;
+  }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setChecklistDismissed(localStorage.getItem("onboarding-checklist-dismissed") === "true");
+    }
+  }, []);
+
+  function handleRestoreChecklist() {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("onboarding-checklist-dismissed");
+      setChecklistDismissed(false);
+      showToast("Guía de bienvenida restablecida", {
+        duration: 4000,
+      });
+    }
   }
 
   const aliasError = validateAlias(alias) ?? undefined;
@@ -250,6 +272,43 @@ export function ProfileForm({
           </p>
         )}
       </div>
+
+      {/* Datos de la cuenta (solo lectura) */}
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <h3 className="text-sm font-bold text-foreground">
+          Cuenta de Google
+        </h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between border-b border-border/50 pb-2">
+            <span className="text-muted-foreground">Nombre</span>
+            <span className="font-semibold text-foreground">{displayName}</span>
+          </div>
+          <div className="flex justify-between pt-1">
+            <span className="text-muted-foreground">Email</span>
+            <span className="font-semibold text-foreground">{email}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Guía de bienvenida / Onboarding restoration */}
+      {matchesPlayed === 0 && checklistDismissed && (
+        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <h3 className="text-sm font-bold text-foreground">
+            Guía de bienvenida
+          </h3>
+          <p className="text-xs text-muted-foreground leading-normal">
+            Descartaste la guía de bienvenida en tu panel de inicio. Restablecela para seguir tu progreso de preparación (alias, instalación, notificaciones, primer turno).
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleRestoreChecklist}
+            className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+          >
+            Restablecer guía de bienvenida
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

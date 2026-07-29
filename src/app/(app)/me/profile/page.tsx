@@ -72,6 +72,8 @@ async function ProfileFormSection() {
       initialImage={googleAvatarUrl ?? user.image}
       googleAvatarUrl={googleAvatarUrl}
       displayName={user.displayName}
+      email={user.email}
+      matchesPlayed={user.matchesPlayed}
     />
   );
 }
