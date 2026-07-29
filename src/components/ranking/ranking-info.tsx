@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Info, ChevronDown, ChevronUp, Trophy, Calendar, AlertTriangle, Scale } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export function RankingInfo() {
   const [isOpen, setIsOpen] = useState(false);

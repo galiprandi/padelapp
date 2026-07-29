@@ -37,7 +37,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
   const router = useRouter();
   const { data: session } = useSession();
   const { showToast } = useToast();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [manageModal, setManageModal] = useState<{
     open: boolean;
     playerId: string | null;

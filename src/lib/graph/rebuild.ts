@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { playerEdges, playerGraphStats, matches, matchPlayers } from "@/db/schema";
-import { eq, and, asc, sql } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 import {
   computeSkillScores,
   computeCommunities,

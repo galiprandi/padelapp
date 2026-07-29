@@ -64,7 +64,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
         matchId,
         date: combinedDate.toISOString(),
         sets: parseInt(formData.sets),
-        matchType: formData.matchType as any,
+        matchType: formData.matchType as "FRIENDLY" | "LOCAL_TOURNAMENT",
         club: formData.club,
         courtNumber: formData.courtNumber,
         notes: formData.notes,

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, isToday, isTomorrow, capitalizeName } from "@/lib/utils";
+import { cn, isToday, capitalizeName } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { Trophy, ChevronRight, Share2, Check, Loader2 } from "lucide-react";
+import { Trophy, ChevronRight, Check, Loader2 } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
 import { Badge, type badgeVariants } from "@/components/ui/badge";
 import { VariantProps } from "class-variance-authority";
@@ -171,7 +171,6 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   // Only compute date-relative labels after mount to avoid hydration
   // mismatch (server uses UTC, client uses local timezone).
   const isTodayDate = mounted && parsedDate ? isToday(parsedDate) : false;
-  const isTomorrowDate = mounted && parsedDate ? isTomorrow(parsedDate) : false;
 
   // Gate the entire formattedDate behind mounted — Intl.DateTimeFormat
   // without explicit timeZone uses the runtime's local timezone, which

@@ -34,6 +34,7 @@ export function LeaveTurnButton({
   };
 
   const turnDate = new Date(date);
+  // eslint-disable-next-line react-hooks/purity -- Date.now() is intentional: computes time-until-turn for UI display
   const hoursUntilTurn = (turnDate.getTime() - Date.now()) / (1000 * 60 * 60);
   const isLateLeave = hoursUntilTurn < 2 && hoursUntilTurn >= 0 && !isCreator;
 

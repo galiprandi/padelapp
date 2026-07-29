@@ -3,7 +3,6 @@ import { redirect, notFound } from "next/navigation";
 import { getMatchByIdAction } from "@/app/(app)/match/actions";
 import { MatchResultForm } from "./result-form";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface MatchResultPageProps {
   params: Promise<{ matchId: string }>;
@@ -89,6 +88,7 @@ async function MatchResultContent({ params }: MatchResultPageProps) {
         <p className="text-sm text-muted-foreground">{subtitle}</p>
       </div>
 
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- MatchData type not exported from result-form */}
       <MatchResultForm match={match as any} viewerId={session.user.id} />
     </>
   );

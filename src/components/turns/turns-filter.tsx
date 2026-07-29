@@ -9,7 +9,17 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface TurnsFilterProps {
-  turns: any[];
+  turns: {
+    id: string;
+    club: string;
+    date: Date | string;
+    creatorId: string;
+    players: { userId: string }[];
+    substitutes: { userId: string }[];
+    maxPlayers: number;
+    suggestedLevel: number | string;
+    status?: string;
+  }[];
   userId: string | null;
 }
 
@@ -23,8 +33,8 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
     // For "mis-turnos", the viewer must be creator, player, or substitute
     if (!userId) return false;
     const isCreator = turn.creatorId === userId;
-    const isJoined = turn.players?.some((p: any) => p.userId === userId);
-    const isSubstitute = turn.substitutes?.some((s: any) => s.userId === userId);
+    const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
+    const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
 
     return isCreator || isJoined || isSubstitute;
   });
@@ -33,8 +43,8 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
   const totalMyCount = userId
     ? turns.filter((turn) => {
         const isCreator = turn.creatorId === userId;
-        const isJoined = turn.players?.some((p: any) => p.userId === userId);
-        const isSubstitute = turn.substitutes?.some((s: any) => s.userId === userId);
+        const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
+        const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
         return isCreator || isJoined || isSubstitute;
       }).length
     : 0;
@@ -97,8 +107,8 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
       <div className="flex flex-col gap-2">
         {filteredTurns.length > 0 ? (
           filteredTurns.map((turn) => {
-            const isJoined = turn.players?.some((p: any) => p.userId === userId);
-            const isSubstitute = turn.substitutes?.some((s: any) => s.userId === userId);
+            const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
+            const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
             const isCreator = turn.creatorId === userId;
             return (
               <TurnCard

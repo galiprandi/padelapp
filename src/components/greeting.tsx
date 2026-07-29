@@ -13,6 +13,7 @@ export function Greeting({ name }: { name: string }) {
   const [greeting, setGreeting] = useState<string | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setGreeting(getGreeting());
   }, []);
 

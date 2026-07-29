@@ -2,14 +2,11 @@ import { Suspense } from "react";
 import { TurnPublicDetails } from "./turn-public-details";
 import { TurnSkeleton } from "./turn-skeleton";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
-import appSettings from "@/config/app-settings.json";
 import type { Metadata } from "next";
 
 interface TurnPageProps {
   params: Promise<{ id: string }>;
 }
-
-const brandName = appSettings.shortName;
 
 export async function generateMetadata({
   params,

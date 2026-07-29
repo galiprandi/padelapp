@@ -20,6 +20,7 @@ export function PasskeyLoginButton() {
 
   useEffect(() => {
     if (!browserSupportsWebAuthn()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSupported(false);
       return;
     }
@@ -51,11 +52,12 @@ export function PasskeyLoginButton() {
 
         router.push("/me");
         router.refresh();
-      } catch (err: any) {
-        if (err.name === "NotAllowedError") {
+      } catch (err: unknown) {
+        const error = err as { name?: string };
+        if (error.name === "NotAllowedError") {
           return;
         }
-        if (err.name === "InvalidStateError") {
+        if (error.name === "InvalidStateError") {
           showToast(
             "No se encontró huella registrada. Entrá con Google y activá la huella desde tu perfil.",
           );

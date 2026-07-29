@@ -14,7 +14,6 @@ import {
 } from "@/db/schema";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import { getTurnLabel, capitalizeName } from "@/lib/utils";
 import { updateEdgesForTurnEnrollment } from "@/lib/graph/turn-edges";
 
@@ -315,7 +314,6 @@ export async function leaveTurnAction(turnId: string) {
     revalidateTag("turns", "default");
 
     // Notify remaining players + creator (excluding leaver)
-    const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
     const leaverName = await getUserDisplayName(session.user.id);
     const recipientIds = [
       ...new Set([...turn.players.map((p) => p.userId), turn.creatorId]),

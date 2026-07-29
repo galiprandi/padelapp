@@ -68,8 +68,9 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         showToast("Huella registrada");
         sessionStorage.setItem(DISMISS_KEY, "1");
         setVisible(false);
-      } catch (err: any) {
-        if (err.name === "NotAllowedError") {
+      } catch (err: unknown) {
+        const error = err as { name?: string };
+        if (error.name === "NotAllowedError") {
           showToast("Cancelaste el registro de huella");
         } else {
           showToast("No pudimos registrar la huella");

@@ -1,7 +1,6 @@
 import { db } from "@/db";
 import {
   playerEdges,
-  playerGraphStats,
   matchPlayerFeedback,
 } from "@/db/schema";
 import { eq, sql, and } from "drizzle-orm";
@@ -191,7 +190,6 @@ export async function computePlayerSideStats(userId: string): Promise<{
   const rightMatches = playersWithMatches.filter((p) => p.side === "RIGHT");
   const leftMatches = playersWithMatches.filter((p) => p.side === "LEFT");
 
-  const totalPlayers = 4;
   const teamOf = (pos: number) => (pos < 2 ? "A" : "B");
 
   let rightWins = 0;

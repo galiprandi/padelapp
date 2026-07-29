@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { saveMatchResultAction } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { MatchNavigation } from "@/components/matches/match-navigation";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { AttendanceMarker } from "@/components/matches/attendance-marker";
@@ -165,7 +165,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
       .join(", ");
 
     const sidesPayload = Object.entries(playerSides)
-      .filter(([_, side]) => side !== null)
+      .filter(([, side]) => side !== null)
       .map(([playerId, side]) => ({ playerId, side: side! }));
 
     startTransition(async () => {

@@ -64,6 +64,7 @@ interface GraphViewProps {
 
 export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ForceGraph2D instance type not available from dynamic import
   const fgRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 800,
@@ -218,8 +219,9 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     return COMMUNITY_COLORS[community % COMMUNITY_COLORS.length];
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const linkWidth = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d mutates link source/target to node objects at runtime
     (link: any) => {
       const isSelected =
         selectedNode &&
@@ -230,8 +232,9 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     [selectedNode],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const linkColor = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d mutates link source/target to node objects at runtime
     (link: any) => {
       const isSelected =
         selectedNode &&
@@ -366,8 +369,9 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     [nodeColor, hoveredNode, selectedNode, viewerId],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const handleNodeClick = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d node type includes simulation fields not in GraphNode
     (node: any) => {
       setSelectedNode(selectedNode === node.id ? null : node.id);
     },

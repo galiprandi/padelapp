@@ -38,6 +38,7 @@ export function InstallButton({
     if (typeof window === "undefined") return;
 
     if ("HTMLInstallElement" in window) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMethod("install-element");
       return;
     }

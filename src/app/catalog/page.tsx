@@ -1,8 +1,7 @@
 "use client";
-import { useState, Suspense, Fragment } from "react";
+import { useState, Suspense } from "react";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import {
-  PairInline,
   PairPreview,
   PlayerCompact,
   PlayerPreview,
@@ -27,8 +26,8 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Check, UserCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Check } from "lucide-react";
+
 
 // The catalog is a tool for developers to see UI components in isolation.
 const SAMPLE_PLAYERS: PlayerPreviewProps[] = [
@@ -382,7 +381,7 @@ export default function ComponentCatalogPage() {
 
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-foreground">
-                    Botón "Abrir a mi red"
+                    Botón &quot;Abrir a mi red&quot;
                   </h3>
                   <div className="space-y-3">
                     <OpenToNetworkButton

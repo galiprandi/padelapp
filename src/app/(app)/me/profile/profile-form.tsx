@@ -46,6 +46,7 @@ export function ProfileForm({
   const lastSavedAlias = useRef(initialAlias);
   const previousAliasRef = useRef(initialAlias);
 
+  // eslint-disable-next-line react-hooks/refs -- intentional: tracks dirty state without causing re-render
   const isAliasDirty = alias !== lastSavedAlias.current;
   const isPendingSave = isAliasDirty && !isSaving;
 
@@ -150,6 +151,7 @@ export function ProfileForm({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setChecklistDismissed(localStorage.getItem("onboarding-checklist-dismissed") === "true");
     }
   }, []);

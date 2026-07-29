@@ -14,7 +14,7 @@ function RegisterMatchInner() {
   const searchParams = useSearchParams();
   const turnId = searchParams.get("turnId");
 
-  const [activeSlot, setActiveSlot] = useState<{ team: TeamKey; index: 0 | 1 }>(
+  const [activeSlot] = useState<{ team: TeamKey; index: 0 | 1 }>(
     { team: "A", index: 1 },
   );
   const [manageModal, setManageModal] = useState<{

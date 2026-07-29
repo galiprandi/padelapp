@@ -4,7 +4,7 @@ import { useState, useTransition, useCallback } from "react";
 import { redirect } from "next/navigation";
 import { createMatchAction, type CreateMatchInput, type SlotPayload } from "@/app/(app)/match/actions";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
-import type { TeamState, MatchTypeValue, StepIndex, SlotValue } from "@/lib/match-types";
+import type { TeamState, MatchTypeValue, StepIndex } from "@/lib/match-types";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;

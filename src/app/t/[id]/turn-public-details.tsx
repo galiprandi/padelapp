@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
-import { getPadelContacts } from "@/lib/queries";
+import { getPadelContacts, type PadelContact } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
@@ -12,21 +12,14 @@ import {
 } from "@/components/turns/organizer-actions";
 import { createMagicLink } from "@/lib/magic-link";
 import { SignInForm } from "@/components/auth/sign-in-form";
-import { getTurnLabel } from "@/lib/utils";
 import {
   Calendar,
   Clock,
-  Trophy,
-  LogOut,
-  UserPlus,
-  Play,
   Users,
   ChevronRight,
   ChevronLeft,
   Edit3,
-  Trash2,
   MapPin,
-  CalendarPlus,
 } from "lucide-react";
 import {
   CancelTurnForm,
@@ -66,7 +59,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const isCancelled = turn.status === "CANCELLED";
 
   // Fetch viewer's contacts
-  let viewerContacts: any[] = [];
+  let viewerContacts: PadelContact[] = [];
   if (viewerId) {
     viewerContacts = await getPadelContacts(viewerId);
   }

@@ -20,7 +20,6 @@ interface OpenToNetworkButtonProps {
 
 export function OpenToNetworkButton({
   turnId,
-  club,
   lastNetworkNotificationAt,
   variant = "default",
   size = "default",
@@ -39,6 +38,7 @@ export function OpenToNetworkButton({
 
   useEffect(() => {
     if (!lastNetworkNotificationAt) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMinutesRemaining(0);
       return;
     }

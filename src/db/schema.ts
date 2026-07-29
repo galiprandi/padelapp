@@ -374,7 +374,7 @@ export const passkeyCredentials = pgTable("PasskeyCredential", {
 // Relations (for Drizzle's query API — db.query.X.findMany with `with`)
 // ---------------------------------------------------------------------------
 
-export const userRelations = relations(users, ({ many, one }) => ({
+export const userRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   matches: many(matches, { relationName: "MatchCreator" }),
   matchPlayers: many(matchPlayers),

@@ -7,7 +7,7 @@ import {
   playerGraphStats,
 } from "@/db/schema";
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
-import { userInMatch, userInMatchFromList } from "./helpers";
+import { userInMatch } from "./helpers";
 
 export interface PadelContact {
   id: string;
@@ -251,7 +251,11 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   mappedContacts.sort((a, b) => b.score - a.score);
 
   // Return the sorted contacts without the score field
-  return mappedContacts.map(({ score, ...contact }) => contact);
+  return mappedContacts.map((contact) => {
+    const { score, ...rest } = contact;
+    void score;
+    return rest;
+  });
 }
 
 type ContactMatchPlayer = {

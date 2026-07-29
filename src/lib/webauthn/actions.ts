@@ -176,6 +176,7 @@ export async function getAuthOptions() {
     userVerification: "preferred",
     timeout: 30_000,
     hints: ["client-device"],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- hints is supported in WebAuthn v13.3+ but the wrapper's TS types don't expose it yet (AGENTS.md pitfall #5)
   } as any);
 
   (await cookies()).set(CHALLENGE_COOKIE, options.challenge, {

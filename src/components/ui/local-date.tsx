@@ -9,29 +9,42 @@ interface LocalFormatProps {
   locale?: string;
 }
 
+/**
+ * Hydration-safe mount gate.
+ * Returns false during SSR and the initial client render, then true
+ * after mount. The setState-in-effect is intentional: it prevents
+ * hydration mismatches when formatting dates with the user's locale.
+ */
+function useMountedGate() {
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
+
+function toDate(date: Date | string): Date | null {
+  try {
+    return typeof date === "string" ? new Date(date) : date;
+  } catch {
+    return null;
+  }
+}
+
 export function LocalDate({
   date,
   options = { weekday: "long", day: "numeric", month: "long" },
   fallback = "",
   locale = "es-ES",
 }: LocalFormatProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMountedGate();
 
   if (!mounted) {
     return <span className="h-4 w-24 bg-muted animate-pulse rounded inline-block" />;
   }
 
-  try {
-    const d = typeof date === "string" ? new Date(date) : date;
-    const formatted = d.toLocaleDateString(locale, options);
-    return <span>{formatted}</span>;
-  } catch (e) {
-    return <span>{fallback}</span>;
-  }
+  const d = toDate(date);
+  if (!d) return <span>{fallback}</span>;
+  return <span>{d.toLocaleDateString(locale, options)}</span>;
 }
 
 export function LocalTime({
@@ -40,23 +53,15 @@ export function LocalTime({
   fallback = "",
   locale = "es-ES",
 }: LocalFormatProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMountedGate();
 
   if (!mounted) {
     return <span className="h-4 w-12 bg-muted animate-pulse rounded inline-block" />;
   }
 
-  try {
-    const d = typeof date === "string" ? new Date(date) : date;
-    const formatted = d.toLocaleTimeString(locale, options);
-    return <span>{formatted}</span>;
-  } catch (e) {
-    return <span>{fallback}</span>;
-  }
+  const d = toDate(date);
+  if (!d) return <span>{fallback}</span>;
+  return <span>{d.toLocaleTimeString(locale, options)}</span>;
 }
 
 export function LocalDay({
@@ -66,22 +71,15 @@ export function LocalDay({
   date: Date | string;
   fallback?: string;
 }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMountedGate();
 
   if (!mounted) {
     return <span className="h-6 w-6 bg-muted animate-pulse rounded inline-block" />;
   }
 
-  try {
-    const d = typeof date === "string" ? new Date(date) : date;
-    return <span>{d.getDate()}</span>;
-  } catch (e) {
-    return <span>{fallback}</span>;
-  }
+  const d = toDate(date);
+  if (!d) return <span>{fallback}</span>;
+  return <span>{d.getDate()}</span>;
 }
 
 export function LocalMonth({
@@ -93,21 +91,13 @@ export function LocalMonth({
   fallback?: string;
   locale?: string;
 }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMountedGate();
 
   if (!mounted) {
     return <span className="h-4 w-10 bg-muted animate-pulse rounded inline-block" />;
   }
 
-  try {
-    const d = typeof date === "string" ? new Date(date) : date;
-    const formatted = d.toLocaleDateString(locale, { month: "short" });
-    return <span className="capitalize">{formatted}</span>;
-  } catch (e) {
-    return <span>{fallback}</span>;
-  }
+  const d = toDate(date);
+  if (!d) return <span>{fallback}</span>;
+  return <span className="capitalize">{d.toLocaleDateString(locale, { month: "short" })}</span>;
 }

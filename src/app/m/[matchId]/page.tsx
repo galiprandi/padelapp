@@ -17,7 +17,6 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import appSettings from "@/config/app-settings.json";
 import { LocalDate } from "@/components/ui/local-date";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { Suspense } from "react";
@@ -26,8 +25,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface InvitationPageProps {
   params: Promise<{ matchId: string }>;
 }
-
-const brandName = appSettings.shortName;
 
 export async function generateMetadata({
   params,
@@ -56,8 +53,6 @@ const MATCH_STATUS = {
   DISPUTED: "DISPUTED",
   CANCELLED: "CANCELLED",
 } as const;
-
-type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
 
 function formatStatus(status: string) {
   switch (status) {

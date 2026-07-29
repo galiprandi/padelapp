@@ -57,14 +57,15 @@ const rawAdapter = DrizzleAdapter(db, {
   accountsTable: accounts,
   sessionsTable: sessions,
   verificationTokensTable: verificationTokens,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DrizzleAdapter config type mismatch with @auth/drizzle-adapter
 } as any);
 
 // Wrap the adapter with error logging (masks sensitive fields).
 const loggedAdapter = new Proxy(rawAdapter, {
   get(target, prop) {
-    const original = (target as any)[prop];
+    const original = (target as Record<string | symbol, unknown>)[prop];
     if (typeof original !== "function") return original;
-    return async (...args: any[]) => {
+    return async (...args: unknown[]) => {
       try {
         return await original.apply(target, args);
       } catch (error) {
@@ -160,8 +161,8 @@ const {
       if (session.user) {
         const adapterUser = user as AdapterUserWithAlias;
         session.user.id = adapterUser.id;
-        session.user.displayName = (adapterUser as any).displayName;
-        session.user.alias = (adapterUser as any).alias;
+        session.user.displayName = adapterUser.displayName;
+        session.user.alias = adapterUser.alias;
         session.user.email = adapterUser.email;
         session.user.image = adapterUser.image;
       }
@@ -219,7 +220,7 @@ export async function auth(): Promise<Session | null> {
     // If so, we MUST rethrow it so Next.js's PPR engine can handle it correctly.
     if (error instanceof Error) {
       const message = error.message;
-      const digest = (error as any).digest;
+      const digest = (error as Error & { digest?: string }).digest;
       if (
         digest === "HANGING_PROMISE_REJECTION" ||
         digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||

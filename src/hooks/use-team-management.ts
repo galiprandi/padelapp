@@ -30,6 +30,7 @@ export function useTeamManagement() {
       image: userImage,
     };
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs external user identity into team state when userId changes
     setTeamState((previous) => {
       const next: TeamState = {
         A: [...previous.A] as [SlotValue | null, SlotValue | null],

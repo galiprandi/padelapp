@@ -22,11 +22,13 @@ export function PwaInstallBanner() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (isInstalled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(false);
       localStorage.removeItem(DISMISS_KEY);
       return;

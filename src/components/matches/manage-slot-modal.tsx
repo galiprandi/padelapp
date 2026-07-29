@@ -53,6 +53,7 @@ export function ManageSlotModal({
           : slot?.kind === "placeholder"
             ? slot.displayName
             : placeholderName;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputValue(initial);
       setSearchResults([]);
       setIsSearching(false);
@@ -129,6 +130,7 @@ export function ManageSlotModal({
     }
 
     if (query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchResults([]);
       setIsSearching(false);
       return;
@@ -267,7 +269,7 @@ export function ManageSlotModal({
                 <Check className="h-4 w-4 text-primary" />
               </div>
               <p className="text-xs font-medium text-muted-foreground/60 leading-relaxed px-1">
-                Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.
+                Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés &quot;Quitar&quot; al jugador primero.
               </p>
             </div>
           ) : (
@@ -386,7 +388,7 @@ export function ManageSlotModal({
                 {/* No results hint */}
                 {showNoResults && (
                   <p className="text-xs font-medium text-muted-foreground italic px-1">
-                    No hay jugadores con ese nombre. Tocá "Guardar" para registrarlo igual.
+                    No hay jugadores con ese nombre. Tocá &quot;Guardar&quot; para registrarlo igual.
                   </p>
                 )}
 

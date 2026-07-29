@@ -31,11 +31,11 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
   const [passkeys, setPasskeys] = useState(initialPasskeys);
   const [isRegistering, startRegistering] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
-  const [deletingCredId, setDeletingCredId] = useState<string | null>(null);
   const [supported, setSupported] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!browserSupportsWebAuthn()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSupported(false);
       return;
     }
@@ -83,8 +83,9 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
 
         showToast("Huella registrada");
         window.location.reload();
-      } catch (err: any) {
-        if (err.name === "NotAllowedError") {
+      } catch (err: unknown) {
+        const error = err as { name?: string };
+        if (error.name === "NotAllowedError") {
           showToast("Cancelaste el registro de huella");
         } else {
           showToast("No pudimos registrar la huella");
@@ -149,7 +150,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
               </div>
               <button
                 onClick={() => handleDelete(passkey.credentialId)}
-                disabled={isDeleting && deletingCredId === passkey.credentialId}
+                disabled={isDeleting}
                 aria-label="Eliminar huella"
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-colors"
               >

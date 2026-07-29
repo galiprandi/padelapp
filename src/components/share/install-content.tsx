@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Share, PlusSquare, Smartphone, Check, HelpCircle } from "lucide-react";
+import { Share, PlusSquare, Smartphone, Check } from "lucide-react";
 import { InstallButton } from "@/components/share/install-button";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ export function InstallContent() {
       /iPad|iPhone|iPod/.test(window.navigator.userAgent) ||
       (window.navigator.userAgent.includes("Mac") && "ontouchend" in document);
     if (isIOSDevice) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPlatform("ios");
     }
   }, []);
@@ -55,7 +56,7 @@ export function InstallContent() {
       icon: <PlusSquare className="h-5 w-5 text-primary" />,
       text: (
         <>
-          Seleccioná la opción <strong>"Agregar a inicio"</strong> o <strong>"Add to Home Screen"</strong>.
+          Seleccioná la opción <strong>&quot;Agregar a inicio&quot;</strong> o <strong>&quot;Add to Home Screen&quot;</strong>.
         </>
       ),
     },
@@ -63,7 +64,7 @@ export function InstallContent() {
       icon: <Smartphone className="h-5 w-5 text-primary" />,
       text: (
         <>
-          Pulsá <strong>"Agregar"</strong> en la esquina superior derecha para finalizar.
+          Pulsá <strong>&quot;Agregar&quot;</strong> en la esquina superior derecha para finalizar.
         </>
       ),
     },
@@ -74,7 +75,7 @@ export function InstallContent() {
       icon: <Smartphone className="h-5 w-5 text-primary" />,
       text: (
         <>
-          Pulsá el botón superior de <strong>"Instalar app"</strong> si te aparece disponible.
+          Pulsá el botón superior de <strong>&quot;Instalar app&quot;</strong> si te aparece disponible.
         </>
       ),
     },
@@ -82,7 +83,7 @@ export function InstallContent() {
       icon: <PlusSquare className="h-5 w-5 text-primary" />,
       text: (
         <>
-          O abrí el menú de tu navegador (tres puntos <span className="font-bold">⋮</span>) y elegí <strong>"Instalar aplicación"</strong> o <strong>"Agregar a pantalla principal"</strong>.
+          O abrí el menú de tu navegador (tres puntos <span className="font-bold">⋮</span>) y elegí <strong>&quot;Instalar aplicación&quot;</strong> o <strong>&quot;Agregar a pantalla principal&quot;</strong>.
         </>
       ),
     },

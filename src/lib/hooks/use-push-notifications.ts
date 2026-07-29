@@ -32,29 +32,10 @@ export function usePushNotifications() {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    if (!("Notification" in window)) {
-      setPermission("unsupported");
-      return;
-    }
-
-    const currentPerm = Notification.permission as PermissionState;
-    setPermission(currentPerm);
-
-    // If permission was already granted, auto-initialize to recover the token.
-    // Without this, a page reload after granting permission would never obtain
-    // a token (the prompt is hidden when permission === "granted").
-    if (currentPerm === "granted") {
-      void initFirebaseMessaging();
-    }
-  }, []);
-
   /**
    * Initialize Firebase Messaging and obtain an FCM token.
    * Called both from requestPermission (user click) and from the
-   * useEffect above (auto-recovery on reload when permission already granted).
+   * useEffect below (auto-recovery on reload when permission already granted).
    */
   const initFirebaseMessaging = useCallback(async (): Promise<string | null> => {
     const config = getFirebaseConfig();
@@ -143,6 +124,26 @@ export function usePushNotifications() {
       return null;
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!("Notification" in window)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPermission("unsupported");
+      return;
+    }
+
+    const currentPerm = Notification.permission as PermissionState;
+    setPermission(currentPerm);
+
+    // If permission was already granted, auto-initialize to recover the token.
+    // Without this, a page reload after granting permission would never obtain
+    // a token (the prompt is hidden when permission === "granted").
+    if (currentPerm === "granted") {
+      void initFirebaseMessaging();
+    }
+  }, [initFirebaseMessaging]);
 
   const requestPermission = useCallback(async () => {
     if (typeof window === "undefined") return null;

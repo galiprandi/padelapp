@@ -44,6 +44,7 @@ export function ShareButton({
   // so that it formats dates/times using the client browser timezone on mount.
   useEffect(() => {
     if (shareData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setText(getNaturalShareText(shareData));
     } else {
       setText(textProp);
@@ -57,6 +58,7 @@ export function ShareButton({
         if (parsed.origin !== window.location.origin) {
           parsed.protocol = window.location.protocol;
           parsed.host = window.location.host;
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setUrl(parsed.toString());
         }
       } catch {

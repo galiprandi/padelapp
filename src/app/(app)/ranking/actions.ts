@@ -2,8 +2,8 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "@/db";
-import { users, matches, matchPlayers } from "@/db/schema";
-import { eq, and, inArray, isNotNull, exists } from "drizzle-orm";
+import { users, matchPlayers } from "@/db/schema";
+import { eq, inArray, isNotNull } from "drizzle-orm";
 import { getMatchWinner } from "@/lib/utils";
 
 interface UserStats {

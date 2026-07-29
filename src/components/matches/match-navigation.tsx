@@ -52,22 +52,6 @@ export function MatchNavigation({
   secondaryHref = "",
   secondaryVariant = "ghost",
 }: MatchNavigationProps) {
-  const SecondaryButton = () => (
-    <Button
-      type="button"
-      variant={secondaryVariant}
-      className={cn(
-        "w-full h-10",
-        secondaryVariant === "ghost"
-          ? "text-muted-foreground hover:text-foreground"
-          : "",
-      )}
-      onClick={onSecondaryClick}
-    >
-      {secondaryButtonText}
-    </Button>
-  );
-
   return (
     <div className="flex flex-col gap-2">
       <Button
@@ -95,7 +79,19 @@ export function MatchNavigation({
           <Link href={secondaryHref}>{secondaryButtonText}</Link>
         </Button>
       ) : (
-        <SecondaryButton />
+        <Button
+          type="button"
+          variant={secondaryVariant}
+          className={cn(
+            "w-full h-10",
+            secondaryVariant === "ghost"
+              ? "text-muted-foreground hover:text-foreground"
+              : "",
+          )}
+          onClick={onSecondaryClick}
+        >
+          {secondaryButtonText}
+        </Button>
       )}
     </div>
   );

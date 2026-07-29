@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { matches as matchesTable, turnPlayers } from "@/db/schema";
+import { matches as matchesTable } from "@/db/schema";
 
 /**
  * SQL exists clause for checking if a user is a player in a match.

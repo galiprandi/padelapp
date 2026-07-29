@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { users, matches as matchesTable } from "@/db/schema";
+import { users } from "@/db/schema";
 import { eq, or, desc, asc, ilike } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

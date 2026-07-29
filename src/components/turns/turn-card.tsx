@@ -21,8 +21,8 @@ interface TurnCardProps {
     id: string;
     club: string;
     date: Date | string;
-    players: any[];
-    substitutes?: any[];
+    players: { userId?: string }[];
+    substitutes?: { userId?: string }[];
     maxPlayers: number;
     suggestedLevel: number | string;
     status?: string;
@@ -64,6 +64,7 @@ export function TurnCard({
 
   // Urgency: turn in < 3h with open slots
   const hoursUntilTurn = mounted
+    // eslint-disable-next-line react-hooks/purity -- Date.now() is intentional: computes urgency for UI display
     ? (dateObj.getTime() - Date.now()) / (1000 * 60 * 60)
     : 999;
   const isUrgent =

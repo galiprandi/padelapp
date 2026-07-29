@@ -11,7 +11,7 @@ import {
   turnPlayers,
 } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
-import { inArray, count, gte, lt, and, eq, sql } from "drizzle-orm";
+import { inArray, count, gte, lt, and, eq } from "drizzle-orm";
 
 export interface GraphNode {
   id: string;

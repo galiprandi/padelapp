@@ -6,10 +6,8 @@ import {
   Check,
   Loader2,
   X,
-  User,
   Smartphone,
   Bell,
-  CalendarDays,
 } from "lucide-react";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
@@ -43,6 +41,7 @@ export function OnboardingChecklist({
 
   // 1. Checkmount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const isDismissed = localStorage.getItem(DISMISS_KEY);
     if (isDismissed === "true") {

@@ -1,10 +1,10 @@
 "use server";
 
-import { and, eq, asc, count, inArray } from "drizzle-orm";
+import { and, eq, asc, count } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { matches, matchPlayers, teams, users, matchPlayerFeedback } from "@/db/schema";
+import { matches, matchPlayers, teams, matchPlayerFeedback } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { capitalizeName } from "@/lib/utils";
