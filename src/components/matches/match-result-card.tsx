@@ -267,7 +267,12 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                       .url
                   }
                   title="Resultado de Pádel"
-                  text={`Mirá el resultado de nuestro partido: ${match.score}`}
+                  shareData={{
+                    type: "match-result",
+                    club: "", // Club not available directly on compact match object in this prop structure, but getNaturalShareText handles empty string clean
+                    date: match.date ?? match.createdAt ?? new Date(),
+                    score: match.score,
+                  }}
                   variant="ghost"
                   size="icon"
                   iconOnly

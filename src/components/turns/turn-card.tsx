@@ -174,7 +174,11 @@ export function TurnCard({
             <ShareButton
               url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
               title="Sumate al Turno"
-              text={`¡Sumate a mi turno de pádel en ${turn.club}!`}
+              shareData={{
+                type: "turn",
+                club: turn.club,
+                date: turn.date,
+              }}
               variant="default"
               size="sm"
               iconOnly={false}

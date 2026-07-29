@@ -400,7 +400,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               />
               <ShareButton
                 title="Sumate al Turno"
-                text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                shareData={{
+                  type: "turn",
+                  club: turn.club,
+                  date: turn.date,
+                }}
                 url={createMagicLink({ resource: "turn", identifier: id }).url}
                 variant="outline"
                 className="w-full h-12 rounded-lg text-base font-bold"
@@ -418,7 +422,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                  shareData={{
+                    type: "turn",
+                    club: turn.club,
+                    date: turn.date,
+                  }}
                   url={
                     createMagicLink({ resource: "turn", identifier: id }).url
                   }
@@ -476,7 +484,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               {turn.status !== "COMPLETED" && (
                 <ShareButton
                   title="Sumate al Turno"
-                  text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                  shareData={{
+                    type: "turn",
+                    club: turn.club,
+                    date: turn.date,
+                  }}
                   url={
                     createMagicLink({ resource: "turn", identifier: id }).url
                   }
@@ -508,7 +520,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     {turn.status !== "COMPLETED" && (
                       <ShareButton
                         title="Sumate al Turno"
-                        text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                        shareData={{
+                          type: "turn",
+                          club: turn.club,
+                          date: turn.date,
+                        }}
                         url={
                           createMagicLink({ resource: "turn", identifier: id }).url
                         }
@@ -551,7 +567,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   {turn.status !== "COMPLETED" && (
                     <ShareButton
                       title="Sumate al Turno"
-                      text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                      shareData={{
+                        type: "turn",
+                        club: turn.club,
+                        date: turn.date,
+                      }}
                       url={
                         createMagicLink({ resource: "turn", identifier: id }).url
                       }
@@ -589,7 +609,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 {turn.status !== "COMPLETED" && (
                   <ShareButton
                     title="Sumate al Turno"
-                    text={`¡Sumate a mi turno de pádel! ${getTurnLabel(turn.club, turn.date)}`}
+                    shareData={{
+                      type: "turn",
+                      club: turn.club,
+                      date: turn.date,
+                    }}
                     url={
                       createMagicLink({ resource: "turn", identifier: id }).url
                     }

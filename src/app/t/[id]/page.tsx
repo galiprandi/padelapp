@@ -22,7 +22,7 @@ export async function generateMetadata({
   }
 
   const turn = result.turn;
-  const title = `Turno en ${turn.club} - ${brandName}`;
+  const title = `Turno en ${turn.club}`;
   const description = `Unite al turno en ${turn.club} el ${new Date(turn.date).toLocaleDateString("es-ES", { timeZone: "America/Argentina/Buenos_Aires" })}.`;
 
   return {

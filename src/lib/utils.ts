@@ -81,3 +81,52 @@ export function getTurnLabel(club: string, date: Date | string): string {
   });
   return `${club} · ${day} ${time}hs`;
 }
+
+export interface ShareDataPayload {
+  type: "turn" | "match-invite" | "match-result";
+  club: string;
+  date: Date | string;
+  score?: string | null;
+}
+
+export function getNaturalShareText({
+  type,
+  club,
+  date,
+  score,
+}: ShareDataPayload): string {
+  const d = new Date(date);
+
+  // Dynamic day formatting
+  let dayStr = "";
+  if (isToday(d)) {
+    dayStr = "hoy";
+  } else if (isTomorrow(d)) {
+    dayStr = "mañana";
+  } else {
+    const weekday = d.toLocaleDateString("es-AR", { weekday: "long" });
+    const dayNumeric = d.getDate();
+    const monthNumeric = d.getMonth() + 1;
+    dayStr = `el ${weekday} ${dayNumeric}/${monthNumeric}`;
+  }
+
+  // Time formatting: 19hs or 19:30hs (strip :00)
+  const hour = d.getHours();
+  const minutes = d.getMinutes();
+  const timeStr = minutes === 0 ? `${hour}hs` : `${hour}:${minutes.toString().padStart(2, "0")}hs`;
+
+  if (type === "turn") {
+    return `Turno de pádel disponible en ${club} ${dayStr} ${timeStr}`;
+  }
+
+  if (type === "match-invite") {
+    return `Partido de pádel disponible en ${club} ${dayStr} ${timeStr}`;
+  }
+
+  if (type === "match-result") {
+    const scoreStr = score ? ` Marcador: ${score}` : "";
+    return `¡Mirá el resultado de nuestro partido de pádel!${scoreStr}`;
+  }
+
+  return "";
+}

@@ -294,7 +294,11 @@ async function MatchContent({ params }: MatchPageProps) {
               </Button>
               <ShareButton
                 title="Invitación a partido de Pádel"
-                text={`¡Sumate a mi partido de pádel en ${match.club || "el club"} el ${new Date(match.date).toLocaleDateString("es-AR")}!`}
+                shareData={{
+                  type: "match-invite",
+                  club: match.club || "el club",
+                  date: match.date,
+                }}
                 url={
                   createMagicLink({ resource: "match", identifier: match.id })
                     .url
@@ -319,7 +323,12 @@ async function MatchContent({ params }: MatchPageProps) {
               </Button>
               <ShareButton
                 title="Resultado de Pádel"
-                text={`¡Mirá el resultado de nuestro partido de pádel! Marcador: ${match.score}`}
+                shareData={{
+                  type: "match-result",
+                  club: match.club || "el club",
+                  date: match.date,
+                  score: match.score,
+                }}
                 url={
                   createMagicLink({ resource: "match", identifier: match.id })
                     .url
