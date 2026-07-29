@@ -43,16 +43,16 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
+        name: "Nuevo turno",
+        short_name: "Turno",
+        description: "Crear un nuevo turno de pádel",
+        url: "/turnos/nuevo?source=pwa",
+      },
+      {
         name: "Mi Dashboard",
         short_name: "Inicio",
         description: "Ver tu agenda y próximos partidos",
         url: "/me?source=pwa",
-      },
-      {
-        name: "Crear partido",
-        short_name: "Crear",
-        description: "Crear un nuevo partido o turno",
-        url: "/match/new?source=pwa",
       },
       {
         name: "Ranking",
@@ -61,5 +61,14 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/ranking?source=pwa",
       },
     ],
+    share_target: {
+      action: "/share-target",
+      method: "GET",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url",
+      },
+    },
   };
 }

@@ -34,6 +34,7 @@ import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
+import { AppBadgeUpdater } from "@/components/pwa/app-badge-updater";
 
 export default async function DashboardContent() {
   const session = await auth();
@@ -118,8 +119,15 @@ export default async function DashboardContent() {
     return winner === playerTeam ? "W" : "L";
   });
 
+  // Badge count: turns needing players + pending confirmations + pending attendance
+  const incompleteTurns = myTurns.filter(
+    (t) => t.players.length < t.maxPlayers,
+  ).length;
+  const badgeCount = incompleteTurns + pendingActionMatches.length + pendingAttendance.length;
+
   return (
     <div className="flex flex-col gap-6">
+      <AppBadgeUpdater count={badgeCount} />
       {/* Greeting */}
       <div className="flex items-center gap-4">
         <PlayerAvatar

@@ -3,7 +3,7 @@
 // to satisfy the browser's requirement that they are added on the initial
 // evaluation of the worker script.
 
-const CACHE_NAME = "padelred-static-assets-v4";
+const CACHE_NAME = "padelred-static-assets-v5";
 const OFFLINE_URL = "/offline.html";
 const STATIC_ASSET_REGEX = /\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|woff2?|json)$/i;
 
@@ -223,8 +223,122 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
-// --- message handler for Firebase init (optional, for onBackgroundMessage) ---
-self.addEventListener("message", (event) => {
+// --- Background Sync: replay queued POST requests when connection is restored ---
+// The client enqueues failed mutations via the Background Sync API.
+// When connectivity returns, the browser fires a "sync" event and we
+// replay all queued requests from IndexedDB.
+const SYNC_TAG = "padelred-bg-sync";
+const DB_NAME = "padelred-sync-queue";
+const DB_STORE = "requests";
+const DB_VERSION = 1;
+
+function openSyncDB() {
+  return new Promise(function (resolve, reject) {
+    var req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = function () {
+      var db = req.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE, { keyPath: "id", autoIncrement: true });
+      }
+    };
+    req.onsuccess = function () { resolve(req.result); };
+    req.onerror = function () { reject(req.error); };
+  });
+}
+
+async function enqueueRequest(request) {
+  var body = await request.clone().text();
+  var db = await openSyncDB();
+  return new Promise(function (resolve, reject) {
+    var tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).add({
+      url: request.url,
+      method: request.method,
+      headers: Object.fromEntries(request.headers.entries()),
+      body: body,
+      timestamp: Date.now(),
+    });
+    tx.oncomplete = function () { resolve(); };
+    tx.onerror = function () { reject(tx.error); };
+  });
+}
+
+async function getQueuedRequests() {
+  var db = await openSyncDB();
+  return new Promise(function (resolve, reject) {
+    var tx = db.transaction(DB_STORE, "readonly");
+    var req = tx.objectStore(DB_STORE).getAll();
+    req.onsuccess = function () { resolve(req.result); };
+    req.onerror = function () { reject(req.error); };
+  });
+}
+
+async function clearQueuedRequest(id) {
+  var db = await openSyncDB();
+  return new Promise(function (resolve, reject) {
+    var tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).delete(id);
+    tx.oncomplete = function () { resolve(); };
+    tx.onerror = function () { reject(tx.error); };
+  });
+}
+
+self.addEventListener("sync", function (event) {
+  if (event.tag === SYNC_TAG) {
+    event.waitUntil(
+      (async function () {
+        var queued = await getQueuedRequests();
+        for (var i = 0; i < queued.length; i++) {
+          var item = queued[i];
+          try {
+            var response = await fetch(item.url, {
+              method: item.method,
+              headers: item.headers,
+              body: item.body || undefined,
+            });
+            if (response.ok) {
+              await clearQueuedRequest(item.id);
+            }
+          } catch (e) {
+            // Will be retried on next sync event
+          }
+        }
+        // Notify clients that sync completed
+        var clients = await self.clients.matchAll({ includeUncontrolled: true });
+        for (var c = 0; c < clients.length; c++) {
+          clients[c].postMessage({ type: "BG_SYNC_COMPLETE" });
+        }
+      })()
+    );
+  }
+});
+
+// --- message handler for Firebase init + enqueue requests ---
+self.addEventListener("message", function (event) {
+  if (event.data && event.data.type === "ENQUEUE_REQUEST") {
+    var payload = event.data.payload;
+    if (payload) {
+      (async function () {
+        var db = await openSyncDB();
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).add({
+            url: payload.url,
+            method: payload.method,
+            headers: payload.headers,
+            body: payload.body,
+            timestamp: Date.now(),
+          });
+          tx.oncomplete = function () { resolve(); };
+          tx.onerror = function () { reject(tx.error); };
+        });
+      })().catch(function (e) {
+        console.error("[SW] Failed to enqueue request:", e);
+      });
+    }
+    return;
+  }
+
   if (event.data && event.data.type === "INIT_FIREBASE") {
     const { config, vapidKey } = event.data;
     if (config && vapidKey) {
