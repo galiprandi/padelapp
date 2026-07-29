@@ -37,6 +37,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { AddToCalendarButton } from "@/components/turns/add-to-calendar";
+import { AddPlayerButton } from "@/components/turns/add-player-button";
 import { db } from "@/db";
 import { playerEdges } from "@/db/schema";
 import { and, inArray } from "drizzle-orm";
@@ -376,6 +377,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             ),
           )}
         </div>
+
+        {isCreator && hasOpenSlot && !isCompleted && (
+          <AddPlayerButton
+            turnId={id}
+            existingPlayerIds={turn.players.map((p) => p.userId)}
+          />
+        )}
 
         {isJoined && !isFull && turn.status === "OPEN" && (
           <OpenToNetworkButton

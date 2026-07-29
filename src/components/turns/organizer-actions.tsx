@@ -7,6 +7,7 @@ import {
   assignSubstituteAction,
 } from "@/app/(app)/turnos/actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast/use-toast";
 
 export function RemovePlayerButton({
   turnId,
@@ -20,10 +21,16 @@ export function RemovePlayerButton({
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleRemove = async () => {
     setLoading(true);
-    await removePlayerAction(turnId, playerUserId);
+    const result = await removePlayerAction(turnId, playerUserId);
+    if (result.status === "ok") {
+      showToast(`${playerName} fue sacado del turno.`);
+    } else {
+      showToast(result.message ?? "Error al sacar al jugador");
+    }
     router.refresh();
   };
 

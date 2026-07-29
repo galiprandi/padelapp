@@ -1139,6 +1139,104 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
   }
 }
 
+/**
+ * Organizer adds a player directly to a turn.
+ * Used when a player confirms outside the app (e.g. WhatsApp).
+ * Notifies the added player.
+ */
+export async function addPlayerAction(turnId: string, playerUserId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { status: "error", message: "No autorizado" };
+  }
+
+  try {
+    const turn = await db.query.turns.findFirst({
+      where: eq(turns.id, turnId),
+      with: {
+        players: { columns: { userId: true } },
+        substitutes: { columns: { userId: true } },
+      },
+    });
+
+    if (!turn) {
+      return { status: "error", message: "Turno no encontrado" };
+    }
+
+    if (turn.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede agregar jugadores",
+      };
+    }
+
+    if (turn.status === "CANCELLED" || turn.status === "COMPLETED") {
+      return { status: "error", message: "Turno no disponible" };
+    }
+
+    if (turn.players.length >= turn.maxPlayers) {
+      return { status: "error", message: "El turno está completo" };
+    }
+
+    const isAlreadyPlayer = turn.players.some((p) => p.userId === playerUserId);
+    if (isAlreadyPlayer) {
+      return { status: "error", message: "Ese jugador ya está en el turno" };
+    }
+
+    // If the user is a substitute, remove them from the substitute list first
+    const isSubstitute = turn.substitutes.some((s) => s.userId === playerUserId);
+    if (isSubstitute) {
+      await db
+        .delete(turnSubstitutes)
+        .where(
+          and(
+            eq(turnSubstitutes.turnId, turnId),
+            eq(turnSubstitutes.userId, playerUserId),
+          ),
+        );
+    }
+
+    await db.insert(turnPlayers).values({
+      turnId,
+      userId: playerUserId,
+    });
+
+    // Update status to FULL if we just filled the last slot
+    if (turn.players.length + 1 >= turn.maxPlayers) {
+      await db
+        .update(turns)
+        .set({ status: "FULL" })
+        .where(eq(turns.id, turnId));
+    }
+
+    revalidatePath(`/t/${turnId}`);
+    revalidatePath("/turnos");
+    revalidatePath("/me");
+    revalidateTag("turns", "default");
+
+    // Notify the added player
+    const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
+    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const adderName = await getUserDisplayName(session.user.id);
+
+    void notifyUsers([playerUserId], {
+      title: `Te agregaron a ${turnLabel}`,
+      body: `${adderName} te agregó al turno.`,
+      url: turnUrl,
+    });
+
+    // Capture co-inscription edges for the player graph
+    void updateEdgesForTurnEnrollment(turnId, playerUserId).catch((err) =>
+      console.error("[addPlayer] edge update failed:", err),
+    );
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("Error adding player:", error);
+    return { status: "error", message: "Error al agregar al jugador" };
+  }
+}
+
 export async function assignSubstituteAction(
   turnId: string,
   substituteUserId: string,
