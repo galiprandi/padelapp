@@ -188,7 +188,7 @@ export async function joinTurnAction(turnId: string) {
       ].filter((id) => id !== session.user.id);
       void notifyUsers(recipientIds, {
         title: `${joinerName} se sumó a ${getTurnLabel(turn.club, turn.date)}`,
-        body: `${newPlayerCount}/${turn.maxPlayers} jugadores.${newPlayerCount < turn.maxPlayers ? " Falta uno." : ""}`,
+        body: `${newPlayerCount}/${turn.maxPlayers} jugadores.${newPlayerCount < turn.maxPlayers ? ` ${turn.maxPlayers - newPlayerCount === 1 ? "Falta 1." : `Faltan ${turn.maxPlayers - newPlayerCount}.`}` : ""}`,
         url: turnUrl,
       });
     }
