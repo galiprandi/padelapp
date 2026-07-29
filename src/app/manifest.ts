@@ -47,18 +47,30 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: "Turno",
         description: "Crear un nuevo turno de pádel",
         url: "/turnos/nuevo?source=pwa",
+        icons: [
+          { src: "/icons/shortcut-turno.png", sizes: "96x96", type: "image/png" },
+          { src: "/icons/shortcut-turno.svg", sizes: "any", type: "image/svg+xml" },
+        ],
       },
       {
         name: "Mi Dashboard",
         short_name: "Inicio",
         description: "Ver tu agenda y próximos partidos",
         url: "/me?source=pwa",
+        icons: [
+          { src: "/icons/shortcut-dashboard.png", sizes: "96x96", type: "image/png" },
+          { src: "/icons/shortcut-dashboard.svg", sizes: "any", type: "image/svg+xml" },
+        ],
       },
       {
         name: "Ranking",
         short_name: "Ranking",
         description: "Ver el ranking de jugadores",
         url: "/ranking?source=pwa",
+        icons: [
+          { src: "/icons/shortcut-ranking.png", sizes: "96x96", type: "image/png" },
+          { src: "/icons/shortcut-ranking.svg", sizes: "any", type: "image/svg+xml" },
+        ],
       },
     ],
     share_target: {
