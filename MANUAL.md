@@ -339,6 +339,13 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Si el navegador no soporta notificaciones → el banner no aparece
 - Si ya tiene permiso concedido → el banner no aparece
 
+### Recomendar la app
+- Tarjeta "Invitar amigos" en el dashboard, visible para usuarios con menos de 5 partidos jugados
+- Botón comparte `padelred.app?from=whatsapp` con texto: "Turnos de pádel que no se cancelan. Entrá y organizá los turnos del club — es gratis: padelred.app"
+- Usa Web Share API (mobile) con fallback a clipboard (desktop)
+- El invitado llega a la landing page con hero contextual ("Te invitaron a un turno") y trust signal "Gratis para siempre"
+- La tarjeta desaparece automáticamente después de 5 partidos — el usuario establecido recomienda la app creando y compartiendo turnos
+
 ### No implementado
 - Tutorial guiado paso a paso
 - Onboarding interactivo con tooltips
@@ -352,7 +359,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 **Defaults nuevo usuario:** Nivel 6, sin alias, sin foto, 1000 puntos ranking, 100% reputación
 
-**Banners en dashboard:** Completar perfil (si sin alias), Instalar PWA, Activar notificaciones
+**Banners en dashboard:** Completar perfil (si sin alias), Instalar PWA, Activar notificaciones, Invitar amigos (si <5 partidos)
 
 **PWA:** Instalable, banner descartable (localStorage), guía alternativa si no hay soporte nativo
 

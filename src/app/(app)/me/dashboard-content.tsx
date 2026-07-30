@@ -18,6 +18,7 @@ import {
   Activity,
   AlertTriangle,
   UserCheck,
+  UserPlus,
 } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import {
@@ -35,6 +36,7 @@ import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { AppBadgeUpdater } from "@/components/pwa/app-badge-updater";
+import { ShareButton } from "@/components/share/share-button";
 
 export default async function DashboardContent() {
   const session = await auth();
@@ -200,6 +202,34 @@ export default async function DashboardContent() {
 
       {/* Passkey Onboarding */}
       <PasskeyOnboarding hasPasskeys={passkeys.length > 0} />
+
+      {/* Invite friends — visible for early users (<5 matches) */}
+      {user && user.matchesPlayed < 5 && (
+        <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <UserPlus className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="flex-1 min-w-0 space-y-0.5">
+            <p className="text-sm font-bold text-foreground">
+              Invitar amigos
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Recomendá Padel Red a tu grupo de pádel. Es gratis.
+            </p>
+          </div>
+          <ShareButton
+            url="https://padelred.app?from=whatsapp"
+            title="Padel Red"
+            text="Turnos de pádel que no se cancelan. Entrá y organizá los turnos del club — es gratis: padelred.app"
+            successMessage="Link copiado"
+            copyMessage="Link copiado al portapapeles"
+            iconOnly
+            variant="outline"
+            className="shrink-0"
+            aria-label="Invitar amigos a Padel Red"
+          />
+        </div>
+      )}
 
       {/* Stats row */}
       {user && (

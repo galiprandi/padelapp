@@ -123,6 +123,9 @@ export default async function MarketingLanding({ searchParams }: LandingPageProp
           <p className="text-center text-xs text-muted-foreground">
             {ctaHelper}
           </p>
+          <p className="text-center text-xs font-semibold text-primary">
+            Gratis para siempre — sin costos ni suscripciones.
+          </p>
           <p className="text-center text-xs text-muted-foreground">
             Tu red de contactos es privada — solo jugadores con quienes
             compartiste cancha pueden ver tu actividad.
