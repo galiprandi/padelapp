@@ -38,7 +38,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             href={`/p/${second.id}?backUrl=/ranking`}
             aria-label={`2da posición: ${isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
-              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isSecondViewer
                 ? "border-primary/30 bg-primary/5"
                 : "border-border bg-card",
@@ -92,7 +92,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           <Link
             href={`/p/${first.id}?backUrl=/ranking`}
             aria-label={`1ra posición: ${isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
-            className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-all active:scale-[0.98] hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
@@ -143,7 +143,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             href={`/p/${third.id}?backUrl=/ranking`}
             aria-label={`3ra posición: ${isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
-              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isThirdViewer
                 ? "border-primary/30 bg-primary/5"
                 : "border-border bg-card",

@@ -58,12 +58,12 @@ export function SlotDisplay({
         }
       }}
       className={cn(
-        "group relative flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
+        "group relative flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
         isActive
           ? "border-primary bg-primary/5"
           : isUser
             ? "border-primary/20 bg-primary/5"
-            : "border-border bg-card hover:bg-muted/50",
+            : "border-border bg-card hover:bg-muted",
       )}
     >
       <div
