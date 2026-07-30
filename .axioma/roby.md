@@ -2,6 +2,7 @@
 - [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
+- [x] 2026-07-30 — Biometric Login Restoration, Back Navigation Standardization & Profile Centering Layout: Reinstated PasskeyLoginButton on the login screen, standardized magic-link back-navigation with MDS keyboard focus rings, and resolved public profile layout shifting with an absolute-positioned ShareButton. (PR #roby/profile/onboarding-ux-refinements)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 - [x] 2026-07-18 — Mejoras en Onboarding y Perfil: Onboarding prompt en /me, dual CTA en agenda vacía, descripciones de niveles de juego y selector de avatar interactivo con presets de Dicebear. (PR #1 — merged)
 - [x] 2026-07-19 — Foto original de Google: Ofrecer selector para restablecer a la foto original de Google decodificando el `id_token` de la cuenta vinculada del usuario.
@@ -18,6 +19,9 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 LEARNINGS
+## 2026-07-30 - Biometric Login Restoration, Back Navigation Standardization & Profile Centering Layout
+**Learning:** Reinstating passkey buttons directly under OAuth options ensures that returning users can enter immediately with biometric sensors, reducing conversion leakages. In layouts where sharing buttons are placed in inline headings, using absolute positioning instead of hardcoded padding-left (like `pl-8`) ensures perfect horizontal centering on all screen sizes and prevents text wrapping from creating uneven offsets. Finally, standardizing back-navigation elements using consistent utility-class buttons across public invitation/magic-link screens is critical for keyboard accessibility and visual cohesion.
+**Action:** Always prefer absolute positioning for peripheral utility icons adjacent to centered headings, and always maintain consistent back-navigation cues on all public or shareable user landing screens.
 ## 2026-07-30 - Biometric Login Access integration on primary Login page
 **Learning:** Biometric credentials (Passkeys) provide a high-conversion, low-friction entry mechanism that completely bypasses OAuth hops. Integrating biometric entry triggers directly into primary, unauthenticated redirect contexts (like `/login?callbackUrl=...`) ensures that returning or PWA-launched users can authenticate immediately with standard device sensors (Face ID, Touch ID), greatly elevating the overall mobile and onboarding experience.
 **Action:** Always make sure passkey login option is visible anywhere a standard OAuth button is offered to authenticated returnees.

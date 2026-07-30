@@ -175,19 +175,21 @@ async function PublicProfileContent({
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center justify-center gap-2">
-              <h2 className="text-2xl font-bold text-foreground pl-8">
+            <div className="relative flex items-center justify-center w-full min-h-[32px]">
+              <h2 className="text-2xl font-bold text-foreground px-10 truncate max-w-full">
                 {displayName}
               </h2>
-              <ShareButton
-                url={`/p/${userId}`}
-                title={`Perfil de ${displayName}`}
-                text={`Mirá las estadísticas de ${displayName} en Padel Red.`}
-                variant="ghost"
-                size="sm"
-                iconOnly
-                className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
-              />
+              <div className="absolute right-0">
+                <ShareButton
+                  url={`/p/${userId}`}
+                  title={`Perfil de ${displayName}`}
+                  text={`Mirá las estadísticas de ${displayName} en Padel Red.`}
+                  variant="ghost"
+                  size="sm"
+                  iconOnly
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+                />
+              </div>
             </div>
             <div className="flex flex-col items-center gap-2">
               {currentStreak >= 2 && (
