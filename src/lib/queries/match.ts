@@ -108,6 +108,17 @@ export async function getPendingActionsCount(userId: string): Promise<number> {
   return total;
 }
 
+/**
+ * Cached pending actions count for a user.
+ * Keyed by userId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 30s.
+ */
+export const getCachedPendingActionsCount = unstable_cache(
+  async (userId: string) => getPendingActionsCount(userId),
+  ["pending-actions-count"],
+  { tags: ["matches"], revalidate: 30 }
+);
+
 export async function getPendingAttendanceActions(userId: string) {
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 

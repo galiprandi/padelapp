@@ -2,6 +2,7 @@ export {
   getEnhancedUserMatches,
   getPendingActions,
   getPendingActionsCount,
+  getCachedPendingActionsCount,
   getPendingAttendanceActions,
   getHeadToHeadStats,
   getCachedConfirmedMatches,
