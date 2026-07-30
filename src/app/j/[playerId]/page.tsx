@@ -8,7 +8,7 @@ import { matchPlayers } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { JoinSlotButton } from "./join-slot-button";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, UserCheck, Trophy, MapPin, Users } from "lucide-react";
+import { AlertCircle, UserCheck, Trophy, MapPin, Users, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { Suspense } from "react";
@@ -58,12 +58,13 @@ function defaultTeamLabel(teamKey: "A" | "B", totalPlayers: number): string {
 export default function JoinSlotPage({ params }: JoinSlotPageProps) {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
-      <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-4">
         <Link
           href="/me"
-          className="text-sm font-semibold text-primary hover:underline"
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          aria-label="Volver"
         >
-          Volver
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">

@@ -475,7 +475,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
         <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm">
+          <div className="flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background transition-all duration-200">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
             <input
               type="text"
@@ -488,7 +488,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
                 aria-label="Limpiar búsqueda"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
@@ -499,7 +499,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             onClick={() => {
               if (fgRef.current) fgRef.current.zoomToFit(300, 50);
             }}
-            className="rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-colors hover:bg-muted active:scale-[0.98] shrink-0"
+            className="rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             aria-label="Centrar grafo"
           >
             Centrar
@@ -621,10 +621,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             </div>
             <button
               onClick={() => setSelectedNode(null)}
-              className="text-muted-foreground hover:text-foreground text-xl leading-none transition-colors"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               aria-label="Cerrar panel"
             >
-              ×
+              <X className="h-4 w-4" />
             </button>
           </div>
 
@@ -749,10 +749,10 @@ function FilterChip({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors active:scale-[0.98] ${
+      className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ${
         active
           ? "bg-card text-foreground border border-border shadow-sm"
-          : "bg-card/50 text-muted-foreground border border-transparent hover:bg-muted"
+          : "bg-muted text-muted-foreground border border-transparent hover:bg-card hover:text-foreground"
       }`}
       aria-pressed={active}
     >
