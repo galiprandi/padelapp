@@ -15,8 +15,13 @@
 - [x] 2026-07-27 — Cumplimiento de imágenes del sistema de diseño (MDS): Reemplazo de etiquetas nativas <img> por componentes <Image> de Next.js en las páginas de landing, login e instalación. (PR #roby/pwa/standardize-image-components)
 - [x] 2026-07-28 — Google Logo reinstating & Back Button Standardization: Added standard back-navigation header links to Profile and Security pages, and reinstated the Google brand logo inside OAuth SignInButton for visual micro-UX clarity. (PR #roby/profile/logo-and-back-navigation)
 - [x] 2026-07-29 — Google Account Details display & Welcome Guide Restoration Setting: Enhanced the profile settings form with read-only synced account info (Name, Email) and added a dedicated control to restore the dismissed Onboarding Checklist (Welcome Guide) for new users. (PR #roby/profile/onboarding-restoration-settings)
+- [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 LEARNINGS
+## 2026-07-30 - Biometric Login Access integration on primary Login page
+**Learning:** Biometric credentials (Passkeys) provide a high-conversion, low-friction entry mechanism that completely bypasses OAuth hops. Integrating biometric entry triggers directly into primary, unauthenticated redirect contexts (like `/login?callbackUrl=...`) ensures that returning or PWA-launched users can authenticate immediately with standard device sensors (Face ID, Touch ID), greatly elevating the overall mobile and onboarding experience.
+**Action:** Always make sure passkey login option is visible anywhere a standard OAuth button is offered to authenticated returnees.
+
 ## 2026-07-29 - Google Account Details display & Welcome Guide Restoration Setting
 **Learning:** During the onboarding phase of new users, providing highly accessible options to reset/restore dismissed checklists (Welcome Guide) prevents information loss and significantly enhances the user's initial setup flow. Placing a dedicated reset button inside settings or profile forms solves the friction of accidental dismissals. Furthermore, displaying synced read-only properties (like Google Name/Email) under clear account cards manages users' editing expectations elegantly.
 **Action:** Always provide options to restore critical discarded onboarding items in user settings pages, and present clear, read-only system-of-record markers for fields populated from OAuth providers.
