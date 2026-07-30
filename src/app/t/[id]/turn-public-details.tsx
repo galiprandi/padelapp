@@ -313,7 +313,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <Link
                 key={p.id}
                 href={`/p/${p.userId}`}
-                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-colors hover:bg-muted/50 group"
+                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
               >
                 <PlayerAvatar
                   name={p.user.alias ?? p.user.displayName}
@@ -412,7 +412,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 <Link
                   key={s.id}
                   href={`/p/${s.userId}`}
-                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-colors hover:bg-muted/50 group"
+                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                     {index + 1}

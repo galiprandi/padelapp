@@ -57,3 +57,7 @@
 ## 2026-08-01 - [Quick Action Accessibility & MDS Solid Hover States]
 **Learning:** Raw quick-action button elements (such as the quick-join and quick-confirm actions) are often forgotten when styling outline focus rings and tactile transitions, hindering keyboard-only user navigation. Furthermore, interactive selector hover states can inadvertently introduce semi-transparent backgrounds (e.g. `hover:bg-card/40`), violating Minimal Design System (MDS) solids-only constraints.
 **Action:** Always verify that quick-action `<button>` elements contain high-visibility focus states (`focus-visible:ring-2`) and responsive tactile scaling (`active:scale-[0.98]`). When styling hover properties in custom lists or filters, prioritize solid values (like `hover:bg-card`) over translucent alpha channels to preserve readability and contrast.
+
+## 2026-08-02 - [Card and List Hover Solidity & Tactile Scaling]
+**Learning:** List item and card links frequently default to semi-transparent hover states (e.g., `hover:bg-muted/50`), which dilutes visual clarity and contrast across pages. Replacing these with solid classes (like `hover:bg-muted`) enforces the MDS Translucency Prohibition. When combined with tactile scaling transitions (`active:scale-[0.98] transition-all`), this provides exceptional touch feedback on mobile devices.
+**Action:** Replace any semi-transparent hover backgrounds on interactive card links with solid colors and integrate tactile scaling to elevate interactive responsiveness.

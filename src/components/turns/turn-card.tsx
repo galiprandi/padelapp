@@ -83,7 +83,7 @@ export function TurnCard({
   return (
     <div
       className={cn(
-        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50",
+        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted active:scale-[0.98]",
         isRecommended && "border-primary bg-primary/5",
         isPending && "opacity-70 pointer-events-none",
       )}
