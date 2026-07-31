@@ -1,9 +1,9 @@
 ## 📋 BACKLOG
 - [ ] Visualización Detallada de la Fórmula: Desglose visual interactivo de cómo se calcula el puntaje exacto del jugador (racha actual, bonus de sets ganados, etc.).
-- [ ] Recordatorio de Confirmación Pendiente: Acción rápida o recordatorio para confirmar resultados directamente desde la vista del ranking o del historial de partidos.
 - [ ] Filtro de Actividad en Ranking: Tópico para filtrar jugadores inactivos (sin partidos en los últimos 30 días) para mantener la tabla global competitiva y dinámica.
 
 ## ✅ DONE
+- [x] 2026-07-31 — Recordatorio de Confirmación Pendiente: Acción interactiva y banner de alerta para confirmar resultados de partidos pendientes de confirmación directamente desde el ranking, actualizando las puntuaciones inmediatamente (PR #agus/ranking/confirmation-reminder).
 - [x] 2026-07-27 — Ranking Podium Position Deltas & Terminology Accessibility (PR #agus/ranking/podium-deltas-accessibility).
 - [x] 2026-07-17 — Corrección del bug de consistencia de posiciones relativas y deltas en `recalculateRankingAction` (PR #1).
 - [x] 2026-07-17 — Creación de la sección interactiva `RankingInfo` con explicación de fórmulas, decay, penalizaciones y tiebreak en la página de ranking (PR #1).
@@ -16,6 +16,10 @@
 - [x] 2026-07-28 — Verificación y validación de la compilación y de la arquitectura de Partial Prerendering (PPR) de Next.js. El codebase se encuentra en estado verde y completamente optimizado.
 
 ## 🧠 LEARNINGS
+### 2026-07-31 - Acción de Confirmación Contextual en Ranking (Gamificación)
+**Learning:** El ranking es el principal gancho de engagement (gamificación) del producto. Al permitir que el usuario visualice sus acciones de confirmación pendientes y resuelva sus partidos directamente desde la página de `/ranking`, cerramos el ciclo de feedback de manera inmediata. Confirmar un resultado actualiza instantáneamente sus puntos, victorias y posición en pantalla gracias a `router.refresh()`, ofreciendo una experiencia altamente reactiva, satisfactoria y motivadora para seguir participando.
+**Action:** Diseñar siempre las interfaces críticas de estadísticas vinculadas de forma directa con los CTA de acción rápida que alimentan esos mismos datos para simplificar el flujo del usuario.
+
 ### 2026-07-28 - Integridad de la Arquitectura de PPR y Compilación de Producción
 **Learning:** Al utilizar Next.js con pre-renderizado parcial (PPR) habilitado de forma global, asegurar que las consultas y operaciones dinámicas (como leer cookies, cabeceras o la sesión actual mediante `auth()`) estén debidamente aisladas en subcomponentes asíncronos y envueltas en límites de `<Suspense>` garantiza que las páginas puedan generar su esqueleto estático de forma inmediata y transmitir el contenido dinámico de manera incremental. La compilación estática (`next build`) confirma que no hay fugas de llamadas dinámicas no controladas en las páginas pre-renderizadas, manteniendo la velocidad de carga óptima y previniendo Cumulative Layout Shift (CLS).
 **Action:** Mantenga siempre las llamadas dinámicas o promesas que dependan de searchParams o sesiones alejadas del componente del shell exterior para asegurar la compatibilidad con PPR.
@@ -29,7 +33,7 @@
 **Action:** Al interactuar con fechas del sistema actual o APIS de navegador en componentes compartidos, asegure que se utilicen comprobaciones de montaje (`mounted`) y constructores diferidos dentro de los bloques de renderizado para evitar fallos de pre-renderizado.
 
 ### 2026-07-25 - Reseteo de Estadísticas del Ranking y Simetría del Comparador
-**Learning:** Al recalcular el ranking de forma incremental, si un jugador se ve afectado y termina con 0 partidos válidos (debido a la cancelación de su único partido, desvinculación o baja de cupo), el código anterior retenía por error los datos anteriores (`wins`, `losses`, `score`, etc.) debido a un fallback mal condicionado. Al detectar correctamente si un usuario se ve afectado por la recalculación (`isUserAffected`) y no tiene registros computados, debemos resetear sus estadísticas a los valores por defecto (1000 score, 1.0 reputación, 0 partidos, null fecha de último partido). Adicionalmente, el comparador de ordenación del ranking tenía una asimetría cuando ambos jugadores a comparar tenían fecha nula de último partido, lo que comprometía la estabilidad del ordenamiento.
+**Learning:** Al recalcular el ranking de forma incremental, si un jugador se ve afectado y termina con 0 partidos válidos (debido a la cancelación de su único partido, desvinculación o baja de cupo), el código anterior retenía por error los datos anteriores (`wins`, `losses`, `score`, etc.) debido a un fallback mal condicionado. Al detectar correctamente si un usuario se ve afectado por la recalculación (`isUserAffected`) y no tiene registros computados, debemos resetear sus estadísticas a los valores por defecto (1000 score, 1.0 reputación, 0 partidos, null fecha de último partido). Adicionalmente, the comparador de ordenación del ranking tenía una asimetría cuando ambos jugadores a comparar tenían fecha nula de último partido, lo que comprometía la estabilidad del ordenamiento.
 **Action:** Al resetear o recalcular conjuntos de datos complejos, siempre asegúrese de limpiar o establecer valores predeterminados explícitamente en lugar de confiar en fallbacks que puedan perpetuar datos antiguos y huérfanos.
 
 ### 2026-07-24 - Acción de Finalización Forzada de Partido para Organizadores (UX)
@@ -54,4 +58,4 @@
 
 ### 2026-07-17 - Transparencia de Mecánicas de Juego (MDS)
 **Learning:** Los sistemas de gamificación como los rankings son mucho más adictivos y motivadores cuando los jugadores entienden las reglas claras (por ejemplo, el decay por inactividad o las penalizaciones por ausencia). Un componente explicativo interactivo y elegante sin fricción visual (MDS Maxim 1.3/1.8) mejora radicalmente el entendimiento.
-**Action:** Integrar explicaciones interactivas ligeras (`details` / `useState` toggles) en áreas complejas del producto.
+**Action:** Integrar explicaciones interactivas ligeras (`details` / `useState` toggles) in áreas complejas del producto.
