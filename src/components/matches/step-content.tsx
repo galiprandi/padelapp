@@ -38,6 +38,8 @@ interface StepContentProps {
   onNextStep: () => void;
   onPreviousStep: () => void;
   onCreateMatch: () => void;
+  isSuggesting?: boolean;
+  onSuggestPairings?: () => void;
 }
 
 function ScoreSelector({
@@ -208,11 +210,24 @@ export function StepContent({
   onCreateMatch,
   recordScore,
   scores,
+  isSuggesting = false,
+  onSuggestPairings,
 }: StepContentProps) {
   const baseClass =
     "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
 
   if (currentStep === 0) {
+    const currentUserIds: string[] = [];
+    (["A", "B"] as const).forEach((team) => {
+      teamState[team].forEach((slot) => {
+        if (slot?.kind === "user") {
+          currentUserIds.push(slot.player.id);
+        }
+      });
+    });
+    const uniqueUserIds = Array.from(new Set(currentUserIds));
+    const canSuggest = uniqueUserIds.length === 4;
+
     return (
       <section className={baseClass}>
         <div className="space-y-6">
@@ -222,6 +237,35 @@ export function StepContent({
               Armá tu partido seleccionando las parejas. Tocá un jugador para
               gestionarlo. Usá el botón de intercambio para cambiar derecha/revés.
             </p>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <span>Sugerencia de Parejas 🧠</span>
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                ¿Querés nivelar el partido? El algoritmo analiza el historial y lado preferido de juego de los 4 jugadores para balancear las parejas automáticamente.
+              </p>
+            </div>
+            <button
+              type="button"
+              disabled={!canSuggest || isSuggesting}
+              onClick={onSuggestPairings}
+              className={cn(
+                "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                canSuggest
+                  ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-muted border-transparent text-muted-foreground cursor-not-allowed"
+              )}
+            >
+              {isSuggesting ? "Sugiriendo..." : "Sugerir Parejas 🧠"}
+            </button>
+            {!canSuggest && (
+              <p className="text-xs text-muted-foreground text-center">
+                Completá los 4 cupos con jugadores reales para activar. (Asignados: {uniqueUserIds.length}/4)
+              </p>
+            )}
           </div>
 
           <div className="space-y-6">

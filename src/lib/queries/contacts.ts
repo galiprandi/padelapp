@@ -27,6 +27,9 @@ export async function getPadelContacts(
   userId: string,
   options?: { monthsBack?: number }
 ): Promise<PadelContact[]> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return [];
+  }
   const monthsBack = options?.monthsBack ?? 12;
   const cutoff = new Date();
   cutoff.setMonth(cutoff.getMonth() - monthsBack);

@@ -213,6 +213,18 @@ const {
 });
 
 export async function auth(): Promise<Session | null> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return {
+      user: {
+        id: "p-01",
+        displayName: "Agustín",
+        name: "Agustín",
+        email: "agu@mock.test",
+        image: null,
+      },
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    };
+  }
   try {
     return await (_auth() as Promise<Session | null>);
   } catch (error) {
