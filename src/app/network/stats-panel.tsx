@@ -1,8 +1,24 @@
 import Link from "next/link";
-import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bell, Network, Activity } from "lucide-react";
+import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bell, Network, Activity, MapPin, Clock } from "lucide-react";
 import type { AdoptionMetrics } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName } from "@/lib/utils";
+
+function timeAgo(date: Date): string {
+  const now = Date.now();
+  const diff = now - new Date(date).getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days >= 30) {
+    const months = Math.floor(days / 30);
+    return months === 1 ? "hace 1 mes" : `hace ${months} meses`;
+  }
+  if (days >= 1) return days === 1 ? "hace 1 día" : `hace ${days} días`;
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (hours >= 1) return hours === 1 ? "hace 1 hora" : `hace ${hours} horas`;
+  const minutes = Math.floor(diff / (1000 * 60));
+  if (minutes >= 1) return `hace ${minutes} min`;
+  return "recién";
+}
 
 interface StatsPanelProps {
   metrics: AdoptionMetrics;
@@ -160,6 +176,41 @@ export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps)
         />
       </div>
 
+      {/* Latest registered users */}
+      {metrics.recentUsers.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
+            <h2 className="text-sm font-bold text-foreground">
+              Últimos usuarios
+            </h2>
+          </div>
+          <div className="space-y-2">
+            {metrics.recentUsers.map((u) => (
+              <Link
+                key={u.id}
+                href={`/p/${u.id}`}
+                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
+              >
+                <PlayerAvatar
+                  name={capitalizeName(u.name ?? u.alias ?? "?")}
+                  image={u.image ?? undefined}
+                  size={32}
+                />
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <p className="text-sm font-semibold text-foreground truncate">
+                    {capitalizeName(u.name ?? u.alias ?? "?")}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {timeAgo(u.createdAt)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Top communities */}
       {metrics.communities.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-4 space-y-3">
@@ -253,6 +304,45 @@ export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps)
           </div>
         </div>
       </div>
+
+      {/* Top clubs by activity */}
+      {metrics.topClubs.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+            <h2 className="text-sm font-bold text-foreground">
+              Clubes con más actividad
+            </h2>
+          </div>
+          <div className="space-y-2">
+            {metrics.topClubs.map((c, i) => {
+              const max = metrics.topClubs[0]?.total ?? 1;
+              const pct = (c.total / max) * 100;
+              return (
+                <div key={c.name} className="space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2 font-semibold text-foreground truncate">
+                      <span className="text-muted-foreground tabular-nums w-4">
+                        {i + 1}.
+                      </span>
+                      <span className="truncate">{c.name}</span>
+                    </span>
+                    <span className="text-muted-foreground tabular-nums shrink-0">
+                      {c.turns}T · {c.matches}P
+                    </span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,7 +11,7 @@ import {
   turnPlayers,
 } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
-import { inArray, count, gte, lt, and, eq } from "drizzle-orm";
+import { inArray, count, gte, lt, and, eq, desc, isNotNull } from "drizzle-orm";
 
 export interface GraphNode {
   id: string;
@@ -160,6 +160,21 @@ export interface AdoptionMetrics {
     matchesPlayed: number;
     networkSize: number;
   }[];
+  // Latest registered users
+  recentUsers: {
+    id: string;
+    name: string;
+    alias: string | null;
+    image: string | null;
+    createdAt: Date;
+  }[];
+  // Clubs with most turns + matches
+  topClubs: {
+    name: string;
+    turns: number;
+    matches: number;
+    total: number;
+  }[];
 }
 
 const METRICS_TAG = "adoption-metrics";
@@ -298,6 +313,66 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     };
   });
 
+  // Latest registered users
+  const recentUsers = await db
+    .select({
+      id: users.id,
+      displayName: users.displayName,
+      alias: users.alias,
+      image: users.image,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(5);
+
+  const recentUsersMapped = recentUsers.map((u) => ({
+    id: u.id,
+    name: u.displayName,
+    alias: u.alias,
+    image: u.image,
+    createdAt: u.createdAt,
+  }));
+
+  // Clubs with most activity (turns + matches)
+  const turnClubs = await db
+    .select({ club: turns.club, count: count() })
+    .from(turns)
+    .groupBy(turns.club);
+
+  const matchClubs = await db
+    .select({ club: matches.club, count: count() })
+    .from(matches)
+    .where(isNotNull(matches.club))
+    .groupBy(matches.club);
+
+  const clubMap = new Map<string, { turns: number; matches: number }>();
+  for (const t of turnClubs) {
+    const name = (t.club ?? "").trim();
+    if (!name) continue;
+    clubMap.set(name, {
+      turns: t.count,
+      matches: clubMap.get(name)?.matches ?? 0,
+    });
+  }
+  for (const m of matchClubs) {
+    const name = (m.club ?? "").trim();
+    if (!name) continue;
+    const existing = clubMap.get(name) ?? { turns: 0, matches: 0 };
+    existing.matches = m.count;
+    clubMap.set(name, existing);
+  }
+
+  const topClubs = Array.from(clubMap.entries())
+    .map(([name, c]) => ({
+      name,
+      turns: c.turns,
+      matches: c.matches,
+      total: c.turns + c.matches,
+    }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+
   const prevU = prevUsers30dRow.value;
   const prevT = prevTurns30dRow.value;
   const prevM = prevMatches30dRow.value;
@@ -323,6 +398,8 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     avgConnectionsPerPlayer: avgConnections,
     communities,
     topPlayers,
+    recentUsers: recentUsersMapped,
+    topClubs,
   };
 }
 
