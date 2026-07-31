@@ -25,6 +25,8 @@ interface StepContentProps {
   recordScore: boolean;
   scores: number[][];
   isSubmitting: boolean;
+  isSuggesting?: boolean;
+  onSuggestPairings?: () => void;
   onSlotClick: (team: TeamKey, index: 0 | 1) => void;
   onManageClick: (team: TeamKey, index: 0 | 1) => void;
   onSwapSides: (team: TeamKey) => void;
@@ -38,8 +40,6 @@ interface StepContentProps {
   onNextStep: () => void;
   onPreviousStep: () => void;
   onCreateMatch: () => void;
-  isSuggesting?: boolean;
-  onSuggestPairings?: () => void;
 }
 
 function ScoreSelector({
@@ -215,6 +215,15 @@ export function StepContent({
 }: StepContentProps) {
   const baseClass =
     "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
+
+  const registeredUsersCount = [
+    teamState.A[0],
+    teamState.A[1],
+    teamState.B[0],
+    teamState.B[1],
+  ].filter((slot) => slot?.kind === "user").length;
+
+  const showSuggestButton = currentStep === 0 && registeredUsersCount === 4;
 
   if (currentStep === 0) {
     const currentUserIds: string[] = [];
