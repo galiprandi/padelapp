@@ -72,7 +72,7 @@ export function PendingConfirmationsAlert({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
       <div className="flex items-center gap-2">
         <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -150,7 +150,7 @@ export function PendingConfirmationsAlert({
                 <Link
                   href={`/match/${match.id}`}
                   aria-label={`Ver detalle del partido del ${formattedDate}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Link>
