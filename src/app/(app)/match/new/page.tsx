@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useTransition } from "react";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
@@ -164,6 +164,8 @@ function RegisterMatchInner() {
         recordScore={recordScore}
         scores={scores}
         isSubmitting={isSubmitting}
+        isSuggesting={isSuggesting}
+        onSuggestPairings={handleSuggestPairings}
         onSlotClick={(team, index) =>
           setManageModal({ open: true, team, index })
         }
@@ -181,8 +183,6 @@ function RegisterMatchInner() {
         onNextStep={goToNextStep}
         onPreviousStep={goToPreviousStep}
         onCreateMatch={handleCreateMatch}
-        isSuggesting={isSuggesting}
-        onSuggestPairings={handleSuggestPairings}
       />
 
       {formError ? (
