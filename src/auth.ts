@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { accounts, sessions, users, verificationTokens } from "@/db/schema";
+import { connection } from "next/server";
 
 type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
 
@@ -214,6 +215,7 @@ const {
 
 export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
+    await connection();
     return {
       user: {
         id: "p-01",

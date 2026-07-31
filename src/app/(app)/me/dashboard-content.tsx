@@ -37,8 +37,10 @@ import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { AppBadgeUpdater } from "@/components/pwa/app-badge-updater";
 import { ShareButton } from "@/components/share/share-button";
+import { connection } from "next/server";
 
 export default async function DashboardContent() {
+  await connection();
   const session = await auth();
   const viewerId = session?.user?.id;
 
