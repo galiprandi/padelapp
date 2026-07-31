@@ -271,6 +271,28 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               </p>
             </div>
           </div>
+
+          <div className="bg-card p-4 border-t border-border flex flex-col gap-2">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Cupos cubiertos</span>
+              <span className="text-xs font-bold text-foreground tabular-nums">
+                {turn.players.length} de {turn.maxPlayers}
+              </span>
+            </div>
+            <div
+              className="w-full bg-muted h-2 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={turn.players.length}
+              aria-valuemin={0}
+              aria-valuemax={turn.maxPlayers}
+              aria-label="Progreso de inscripción de jugadores"
+            >
+              <div
+                className="bg-primary h-full rounded-full transition-all duration-300"
+                style={{ width: `${(turn.players.length / turn.maxPlayers) * 100}%` }}
+              />
+            </div>
+          </div>
         </div>
 
         {turn.notes && (
@@ -368,10 +390,19 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
                   <Users className="h-5 w-5 text-muted-foreground/50" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs font-semibold italic opacity-60">
+                <div className="flex-1 flex items-center justify-between min-w-0 gap-2">
+                  <p className="text-xs font-semibold italic opacity-60 truncate">
                     Cupo disponible
                   </p>
+                  {(isJoined || isCreator) && (
+                    <TurnShareButton
+                      shareUrl={shareUrl}
+                      club={turn.club}
+                      date={turn.date}
+                      variant="icon"
+                      className="h-8 w-8 rounded-lg shrink-0"
+                    />
+                  )}
                 </div>
               </div>
             ),

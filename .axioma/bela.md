@@ -17,6 +17,7 @@
 - [x] 2026-07-26 — Filtro interactivo de Turnos "Todos" vs "Mis Turnos" bajo estándares MDS (PPR compatible)
 - [x] 2026-07-27 — Botones de Acción Interactivos en Detalle de Turno con Estados de Carga (PR actual)
 - [x] 2026-07-28 — Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno (PR bela/turnos/solid-filters-and-cooldown)
+- [x] 2026-07-30 — Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos (PR bela/turnos/progress-and-contextual-invite)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -36,8 +37,8 @@
 **Action:** Mantener la claridad semántica al realizar comparaciones numéricas inversas y buscar siempre oportunidades no intrusivas para mostrar relaciones de contacto frecuentes en vistas públicas.
 
 ## 2026-07-20 - Adopción de PPR con Parámetros Asíncronos de Ruta
-**Learning:** En Next.js 15+, los parámetros de ruta (`params`) se manejan como promesas de forma asíncrona. Bajo el esquema de Partial Prerendering (PPR), cualquier intento de resolver/esperar (`await`) estas promesas en el componente de página de nivel superior antes de entrar en un límite de `<Suspense>` desencadena errores de compilación por bailing de renderizado dinámico. El patrón óptimo is usar un componente contenedor síncrono que reciba `params` como promesa y lo delegue sin resolver al componente interno asíncrono envuelto en `<Suspense>`, donde finalmente es resuelto a nivel de streaming en tiempo de ejecución.
-**Action:** Utilizar siempre envoltorios síncronos y delegación de promesas de `params` en componentes bajo límites de Suspense para adoptar PPR y acelerar los tiempos de respuesta estática iniciales.
+**Learning:** En Next.js 15+, los parámetros de ruta (`params`) se manejan como promesas de forma asíncrona. Bajo el esquema de Partial Prerendering (PPR), cualquier intento de resolver/esperar (`await`) estas promesas en el componente de página de nivel superior antes de entrar en un límite de `<Suspense>` desencadena errores de compilación por bailing de renderizado dinámico. El patrón óptimo is usar un componente contenedor síncrono que reciba `params` as promesa y lo delegue sin resolver al componente interno asíncrono envuelto en `<Suspense>`, donde finalmente es resuelto a nivel de streaming en tiempo de ejecución.
+**Action:** Utilizar siempre envoltorios sínconos y delegación de promesas de `params` en componentes bajo límites de Suspense para adoptar PPR y acelerar los tiempos de respuesta estática iniciales.
 
 ## 2026-07-21 - Unificación de Suspense y Estructura Esqueleto para PPR en Turnos Públicos
 **Learning:** Al usar Next.js with `cacheComponents: true` (PPR habilitado), las vistas públicas de los turnos no deben contener indicadores de exclusión dinámica como `export const instant = false`. Para completar la adopción, es imperativo mover la lógica asíncrona (como `auth()` o fetch de base de datos) al subcomponente envuelto en `<Suspense>`. El contenedor visual externo de layout (`main`) debe declararse en la página raíz estática y asincrónica para evitar la duplicación de clases CSS en el fallback y eliminar por completo los saltos de layout (CLS).
@@ -70,3 +71,7 @@
 ## 2026-07-28 - Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno
 **Learning:** Pasar `lastNetworkNotificationAt` al componente `TurnCard` permite que los botones internos de salvage calculen y reflejen de manera proactiva el cooldown de 1 hora del lado del cliente, mejorando enormemente la experiencia del usuario sin forzarlo a ingresar a cada turno individual para verificar su estado. Reemplazar estilos translúcidos (`hover:bg-card/40`) por sólidos (`hover:bg-card`) garantiza el cumplimiento absoluto del Minimal Design System (MDS).
 **Action:** En cualquier listado interactivo, priorizar el traspaso de timestamps de cooldown a los componentes hijos y emplear siempre hover sólido bajo el MDS.
+
+## 2026-07-30 - Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos
+**Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participante (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
+**Action:** Maximizar siempre el uso de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
