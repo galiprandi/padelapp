@@ -9,12 +9,14 @@ import {
   getCachedRanking,
   getCachedRankingSearch,
   getCurrentUserRankingData,
+  getPendingActions,
 } from "@/lib/queries";
 import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { RankingListItem } from "@/components/ranking/ranking-list-item";
 import { RankingPodium } from "@/components/ranking/ranking-podium";
 import { RankingInfo } from "@/components/ranking/ranking-info";
+import { PendingConfirmationsAlert } from "@/components/ranking/pending-confirmations-alert";
 
 interface RankingPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -54,12 +56,21 @@ async function RankingContent({ searchParams }: RankingPageProps) {
     ? await getCurrentUserRankingData(viewerId)
     : null;
 
+  const pendingActions = viewerId ? await getPendingActions(viewerId) : [];
+
   const topThree = !query ? players.slice(0, 3) : [];
   const listPlayers = !query ? players.slice(3) : players;
 
   return (
     <div className="flex flex-col gap-6">
       {!query && <RankingInfo />}
+
+      {viewerId && pendingActions.length > 0 && !query && (
+        <PendingConfirmationsAlert
+          pendingActions={pendingActions}
+          viewerId={viewerId}
+        />
+      )}
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <UserRankingBanner
