@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-07-27
+## Última actualización: 2026-07-30
 
 ## Estado actual
 
 ### Completado
+- Phase 7 (Sugerencia de Parejas al Armar Match - PR coello/graph/matchmaking-pairings-suggestions):
+  - [x] 2026-07-30 — Hecho: sugerencia inteligente de parejas 2v2 al crear un partido (`suggestMatchPartnersAction` en `actions.ts`). Analiza preferencias de lado y sinergias (Laplace-smoothed) para balancear de forma óptima los equipos.
+  - [x] 2026-07-30 — Hecho: botón "Sugerir Parejas 🧠" integrado en Step 0 (`step-content.tsx`), con validación de 4 cupos y diseño 100% MDS (focus indicators, tactile transitions).
+  - [x] 2026-07-30 — Hecho: integración síncrona en `new/page.tsx` con mapeo instantáneo de `PlayerOption` locales para actualización instantánea de estado.
 - Spec creada: `specs/player-graph.md`
 - Agente creado: `.ants/gallery/coello.md`
 - Phase 1 (DB schema): tablas `playerEdges`, `playerGraphStats`, `matchPlayerFeedback` + campo `side` en `matchPlayers`. Migration `drizzle/0002_player_graph.sql` generada.
@@ -28,9 +32,10 @@
 ### Pendiente — Backlog
 
 #### Phase 7: Stats y red social
-- [ ] Sugerencia de parejas al armar match
 
 ## Learnings
+- **Equilibrio de Preferencias de Lado y Sinergia**: En el emparejamiento padel 2v2, el posicionamiento físico en cancha (Derecha vs Revés) es un factor crítico para la comodidad y rendimiento. Priorizar la minimización de penalizaciones por mala asignación de lado como objetivo principal (por sobre la sinergia) y resolver empates de lado mediante la nivelación de sinergias de parejas (con suavizado de Laplace) resulta en una distribución excepcionalmente cómoda y competitiva para todos los jugadores en cancha.
+- **Sincronización Síncrona en State**: Al actualizar un formulario complejo de múltiples pasos de creación, re-mapear IDs de sugerencias contra los objetos de metadatos de usuario (`PlayerOption`) existentes localmente en memoria permite modificar el layout de cupos de forma instantánea sin requerir consultas de red, garantizando una UX ultra-fluida y rápida.
 - **Estadísticas de Red Contextuales**: Presentar métricas calculadas por el motor del grafo (como el tamaño de la red, el lado preferido de juego con sus respectivos porcentajes de victoria, la pareja con más victorias compartidas y el rival más recurrente) en el perfil público del jugador fomenta un ecosistema social integrado y dinámico.
 - **Robustez ante Datos Fríos**: El diseño de consultas del grafo debe incorporar fallbacks por defecto para jugadores con historial incompleto (ej. 0 conexiones, sin partidos jugados en la derecha/revés o sin edges de pareja/rival), permitiendo que la interfaz renderice correctamente un estado inicial limpio sin errores de ejecución.
 - **Asistencia y Feedback Unificados**: Unificar la marcación de asistencia post-partido y el feedback sutil de nivel en un solo formulario y acción de guardado ("Guardar asistencia y feedback") reduce enormemente la fricción de uso para el organizador de partidos, logrando datos limpios del grafo de manera orgánica y sin requerir flujos de onboarding adicionales.

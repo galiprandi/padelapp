@@ -93,6 +93,9 @@ export async function getPendingActions(
 }
 
 export async function getPendingActionsCount(userId: string): Promise<number> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return 0;
+  }
   const now = new Date();
   const [{ count: total }] = await db
     .select({ count: count() })

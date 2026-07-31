@@ -1,10 +1,10 @@
 "use server";
 
-import { and, eq, asc, count } from "drizzle-orm";
+import { and, eq, asc, count, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { matches, matchPlayers, teams, matchPlayerFeedback } from "@/db/schema";
+import { matches, matchPlayers, teams, matchPlayerFeedback, playerEdges, playerGraphStats } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { capitalizeName } from "@/lib/utils";
@@ -370,6 +370,166 @@ export async function createMatchAction(
     return {
       status: "error",
       message: "We could not create the match. Please try again.",
+    };
+  }
+}
+
+export interface SuggestMatchPartnersInput {
+  userIds: string[];
+}
+
+export interface SuggestMatchPartnersResponse {
+  status: "ok" | "error";
+  message?: string;
+  suggestedPairings?: {
+    teamA: {
+      derecha: string;
+      reves: string;
+    };
+    teamB: {
+      derecha: string;
+      reves: string;
+    };
+  };
+}
+
+export async function suggestMatchPartnersAction(
+  input: SuggestMatchPartnersInput,
+): Promise<SuggestMatchPartnersResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return {
+      status: "error",
+      message: "Debes iniciar sesión para obtener sugerencias.",
+    };
+  }
+
+  const userIds = input.userIds;
+  if (!Array.isArray(userIds) || userIds.length !== 4) {
+    return {
+      status: "error",
+      message: "Se necesitan exactamente 4 jugadores para sugerir parejas.",
+    };
+  }
+
+  try {
+    // 1. Fetch playerGraphStats for side preferences
+    const stats = await db
+      .select({
+        userId: playerGraphStats.userId,
+        preferredSide: playerGraphStats.preferredSide,
+      })
+      .from(playerGraphStats)
+      .where(inArray(playerGraphStats.userId, userIds));
+
+    const prefMap = new Map<string, "RIGHT" | "LEFT" | null>();
+    for (const s of stats) {
+      prefMap.set(s.userId, s.preferredSide);
+    }
+
+    // 2. Fetch playerEdges for partnership synergy
+    const edges = await db
+      .select({
+        playerAId: playerEdges.playerAId,
+        playerBId: playerEdges.playerBId,
+        winsTogether: playerEdges.winsTogether,
+        lossesTogether: playerEdges.lossesTogether,
+        matchesAsPartners: playerEdges.matchesAsPartners,
+      })
+      .from(playerEdges)
+      .where(
+        and(
+          inArray(playerEdges.playerAId, userIds),
+          inArray(playerEdges.playerBId, userIds),
+        ),
+      );
+
+    const getSynergy = (x: string, y: string): number => {
+      const [min, max] = x < y ? [x, y] : [y, x];
+      const edge = edges.find((e) => e.playerAId === min && e.playerBId === max);
+      const winsTogether = edge ? edge.winsTogether : 0;
+      const matchesAsPartners = edge ? edge.matchesAsPartners : 0;
+      return (winsTogether + 1) / (matchesAsPartners + 2);
+    };
+
+    const getOptimalSideAssignment = (
+      x: string,
+      y: string,
+    ): { derecha: string; reves: string; penalty: number } => {
+      const prefX = prefMap.get(x) ?? null;
+      const prefY = prefMap.get(y) ?? null;
+
+      // Option A: x is RIGHT, y is LEFT
+      const penaltyA = (prefX === "LEFT" ? 1 : 0) + (prefY === "RIGHT" ? 1 : 0);
+
+      // Option B: x is LEFT, y is RIGHT
+      const penaltyB = (prefX === "RIGHT" ? 1 : 0) + (prefY === "LEFT" ? 1 : 0);
+
+      if (penaltyA <= penaltyB) {
+        return { derecha: x, reves: y, penalty: penaltyA };
+      } else {
+        return { derecha: y, reves: x, penalty: penaltyB };
+      }
+    };
+
+    // 3. Generate all 3 unique pairing configurations for 4 players (p0, p1, p2, p3)
+    const [p0, p1, p2, p3] = userIds;
+    const configs = [
+      { a1: p0, a2: p1, b1: p2, b2: p3 },
+      { a1: p0, a2: p2, b1: p1, b2: p3 },
+      { a1: p0, a2: p3, b1: p1, b2: p2 },
+    ];
+
+    const scoredConfigs = configs.map((config) => {
+      const teamASides = getOptimalSideAssignment(config.a1, config.a2);
+      const teamBSides = getOptimalSideAssignment(config.b1, config.b2);
+
+      const totalSidePenalty = teamASides.penalty + teamBSides.penalty;
+
+      const synergyA = getSynergy(config.a1, config.a2);
+      const synergyB = getSynergy(config.b1, config.b2);
+      const synergyDiff = Math.abs(synergyA - synergyB);
+
+      return {
+        config,
+        teamASides,
+        teamBSides,
+        totalSidePenalty,
+        synergyDiff,
+      };
+    });
+
+    // Sort scored configurations by:
+    // 1. Minimum total side penalty ascending
+    // 2. Minimum synergy difference ascending
+    scoredConfigs.sort((a, b) => {
+      if (a.totalSidePenalty !== b.totalSidePenalty) {
+        return a.totalSidePenalty - b.totalSidePenalty;
+      }
+      return a.synergyDiff - b.synergyDiff;
+    });
+
+    const best = scoredConfigs[0];
+
+    return {
+      status: "ok",
+      suggestedPairings: {
+        teamA: {
+          derecha: best.teamASides.derecha,
+          reves: best.teamASides.reves,
+        },
+        teamB: {
+          derecha: best.teamBSides.derecha,
+          reves: best.teamBSides.reves,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("suggestMatchPartnersAction failed", error);
+    return {
+      status: "error",
+      message: "No se pudieron obtener sugerencias de parejas.",
     };
   }
 }
