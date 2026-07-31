@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { getCachedPendingActionsCount } from "@/lib/queries";
+import { getPendingActionsCount } from "@/lib/queries";
 
 async function NotificationsCount({ userId }: { userId: string }) {
-  const count = await getCachedPendingActionsCount(userId);
+  const count = await getPendingActionsCount(userId);
 
   if (count === 0) return null;
 
@@ -15,7 +15,7 @@ async function NotificationsCount({ userId }: { userId: string }) {
           ? "1 notificación pendiente"
           : `${count} notificaciones pendientes`
       }
-      className="fixed bottom-12 right-6 z-50 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow-md transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+      className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow-md transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
     >
       {count}
     </Link>
