@@ -6,9 +6,10 @@ import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
 import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
-import type { TeamKey, SlotValue } from "@/lib/match-types";
+import type { TeamKey, SlotValue, PlayerOption } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { suggestMatchPartnersAction } from "@/app/(app)/match/actions";
 
 function RegisterMatchInner() {
   const searchParams = useSearchParams();
@@ -29,6 +30,54 @@ function RegisterMatchInner() {
 
   const { teamState, updateSlot, setWholeState, currentUser, userDisplayName } =
     useTeamManagement();
+
+  const [isSuggesting, setIsSuggesting] = useState(false);
+
+  const handleSuggestPairings = async () => {
+    const currentUserIds: string[] = [];
+    const userOptionsMap = new Map<string, PlayerOption>();
+
+    (["A", "B"] as const).forEach((team) => {
+      teamState[team].forEach((slot) => {
+        if (slot?.kind === "user") {
+          currentUserIds.push(slot.player.id);
+          userOptionsMap.set(slot.player.id, slot.player);
+        }
+      });
+    });
+
+    if (currentUserIds.length !== 4) return;
+
+    setIsSuggesting(true);
+    try {
+      const res = await suggestMatchPartnersAction({ userIds: currentUserIds });
+      if (res.status === "ok" && res.suggestedPairings) {
+        const { teamA, teamB } = res.suggestedPairings;
+        const slotA0 = userOptionsMap.get(teamA.derecha);
+        const slotA1 = userOptionsMap.get(teamA.reves);
+        const slotB0 = userOptionsMap.get(teamB.derecha);
+        const slotB1 = userOptionsMap.get(teamB.reves);
+
+        if (slotA0 && slotA1 && slotB0 && slotB1) {
+          setWholeState({
+            A: [
+              { kind: "user", player: slotA0 },
+              { kind: "user", player: slotA1 },
+            ],
+            B: [
+              { kind: "user", player: slotB0 },
+              { kind: "user", player: slotB1 },
+            ],
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to suggest pairings:", err);
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
+
   const {
     currentStep,
     matchType,
@@ -133,6 +182,8 @@ function RegisterMatchInner() {
         onNextStep={goToNextStep}
         onPreviousStep={goToPreviousStep}
         onCreateMatch={handleCreateMatch}
+        isSuggesting={isSuggesting}
+        onSuggestPairings={handleSuggestPairings}
       />
 
       {formError ? (

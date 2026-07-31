@@ -213,6 +213,18 @@ const {
 });
 
 export async function auth(): Promise<Session | null> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      user: {
+        id: "p-01",
+        displayName: "Agustín",
+        name: "Agustín",
+        email: "agu@mock.test",
+        image: null,
+      },
+      expires: "2026-12-31T23:59:59.999Z",
+    };
+  }
   try {
     return await (_auth() as Promise<Session | null>);
   } catch (error) {
