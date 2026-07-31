@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { ClubInput } from "@/components/club-input";
 import { SlotDisplay } from "./slot-display";
 import { MatchNavigation } from "./match-navigation";
 import type { TeamState, MatchTypeValue, TeamKey } from "@/lib/match-types";
@@ -481,12 +482,12 @@ export function StepContent({
               <Label htmlFor="club" className="text-sm font-semibold">
                 Club (opcional)
               </Label>
-              <Input
+              <ClubInput
                 id="club"
                 placeholder="Ej: Padel City, Tie Break"
                 value={club}
-                onChange={(event) => onClubChange(event.target.value)}
-                autoSelect
+                onChange={onClubChange}
+                onCourtChange={onCourtNumberChange}
               />
             </div>
             <div className="space-y-2">

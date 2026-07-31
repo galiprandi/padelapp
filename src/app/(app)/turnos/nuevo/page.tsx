@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ClubInput } from "@/components/club-input";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
@@ -109,11 +110,11 @@ export default function NewTurnPage() {
               >
                 Club y cancha
               </Label>
-              <Input
+              <ClubInput
                 id="club"
                 placeholder="Ej: Padel City · Cancha 3"
                 value={formData.club}
-                onChange={(e) => setFormData({ ...formData, club: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, club: value })}
                 required
                 aria-required="true"
                 className="h-12 rounded-lg"

@@ -12,6 +12,7 @@ import {
 } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
 import { inArray, count, gte, lt, and, eq, desc, isNotNull } from "drizzle-orm";
+import { normalizeClub, pickClubDisplayName } from "@/lib/club";
 
 export interface GraphNode {
   id: string;
@@ -334,7 +335,9 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     createdAt: u.createdAt,
   }));
 
-  // Clubs with most activity (turns + matches)
+  // Clubs with most activity (turns + matches), grouped by normalized name
+  // to avoid "Padel City" / "padel city" / "Padel City · Cancha 3" counting
+  // as separate clubs.
   const turnClubs = await db
     .select({ club: turns.club, count: count() })
     .from(turns)
@@ -346,26 +349,33 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     .where(isNotNull(matches.club))
     .groupBy(matches.club);
 
-  const clubMap = new Map<string, { turns: number; matches: number }>();
+  // group by normalized key, keep original spellings for display
+  const clubAgg = new Map<
+    string,
+    { turns: number; matches: number; originals: string[] }
+  >();
   for (const t of turnClubs) {
-    const name = (t.club ?? "").trim();
-    if (!name) continue;
-    clubMap.set(name, {
-      turns: t.count,
-      matches: clubMap.get(name)?.matches ?? 0,
-    });
+    const original = (t.club ?? "").trim();
+    const key = normalizeClub(original);
+    if (!key) continue;
+    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
+    entry.turns = t.count;
+    if (original) entry.originals.push(original);
+    clubAgg.set(key, entry);
   }
   for (const m of matchClubs) {
-    const name = (m.club ?? "").trim();
-    if (!name) continue;
-    const existing = clubMap.get(name) ?? { turns: 0, matches: 0 };
-    existing.matches = m.count;
-    clubMap.set(name, existing);
+    const original = (m.club ?? "").trim();
+    const key = normalizeClub(original);
+    if (!key) continue;
+    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
+    entry.matches = m.count;
+    if (original) entry.originals.push(original);
+    clubAgg.set(key, entry);
   }
 
-  const topClubs = Array.from(clubMap.entries())
-    .map(([name, c]) => ({
-      name,
+  const topClubs = Array.from(clubAgg.entries())
+    .map(([key, c]) => ({
+      name: pickClubDisplayName(c.originals) || key,
       turns: c.turns,
       matches: c.matches,
       total: c.turns + c.matches,

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClubInput } from "@/components/club-input";
 import { updateMatchDetailsAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, MapPin, Zap, Info } from "lucide-react";
@@ -91,10 +92,11 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="club" className="text-sm font-semibold">Club</Label>
-            <Input
+            <ClubInput
               id="club"
               value={formData.club}
-              onChange={(e) => setFormData({ ...formData, club: e.target.value })}
+              onChange={(value) => setFormData({ ...formData, club: value })}
+              onCourtChange={(court) => setFormData({ ...formData, courtNumber: court })}
               className="h-10 rounded-lg animate-none"
             />
           </div>
