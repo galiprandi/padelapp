@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { matches, matchPlayers, teams, matchPlayerFeedback, playerEdges, playerGraphStats } from "@/db/schema";
 import { createMagicLink } from "@/lib/magic-link";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
-import { capitalizeName } from "@/lib/utils";
+import { capitalizeName, getMatchWinner } from "@/lib/utils";
 import { recalculateRankingAction } from "@/app/(app)/ranking/actions";
 import {
   updateEdgesForMatch,
@@ -436,6 +436,7 @@ export async function suggestMatchPartnersAction(
         winsTogether: playerEdges.winsTogether,
         lossesTogether: playerEdges.lossesTogether,
         matchesAsPartners: playerEdges.matchesAsPartners,
+        lastMatchAt: playerEdges.lastMatchAt,
       })
       .from(playerEdges)
       .where(
@@ -445,12 +446,105 @@ export async function suggestMatchPartnersAction(
         ),
       );
 
+    // Fetch all confirmed matches played by any of the 4 players to find recent partnerships and streaks
+    const playersInConfirmedMatches = await db
+      .select({
+        matchId: matchPlayers.matchId,
+        userId: matchPlayers.userId,
+        position: matchPlayers.position,
+        score: matches.score,
+        date: matches.date,
+      })
+      .from(matchPlayers)
+      .innerJoin(matches, eq(matchPlayers.matchId, matches.id))
+      .where(
+        and(
+          eq(matches.status, "CONFIRMED"),
+          inArray(matchPlayers.userId, userIds),
+        ),
+      )
+      .orderBy(asc(matches.date));
+
+    interface PlayerMatchParticipation {
+      userId: string;
+      position: number;
+    }
+    interface MatchDetails {
+      matchId: string;
+      score: string | null;
+      date: Date;
+      players: PlayerMatchParticipation[];
+    }
+
+    const matchMap = new Map<string, MatchDetails>();
+    for (const row of playersInConfirmedMatches) {
+      if (!row.userId) continue;
+      if (!matchMap.has(row.matchId)) {
+        matchMap.set(row.matchId, {
+          matchId: row.matchId,
+          score: row.score,
+          date: row.date,
+          players: [],
+        });
+      }
+      matchMap.get(row.matchId)!.players.push({
+        userId: row.userId,
+        position: row.position,
+      });
+    }
+
+    const sortedMatches = Array.from(matchMap.values()).sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+
     const getSynergy = (x: string, y: string): number => {
       const [min, max] = x < y ? [x, y] : [y, x];
       const edge = edges.find((e) => e.playerAId === min && e.playerBId === max);
       const winsTogether = edge ? edge.winsTogether : 0;
       const matchesAsPartners = edge ? edge.matchesAsPartners : 0;
-      return (winsTogether + 1) / (matchesAsPartners + 2);
+      const rawSynergy = (winsTogether + 1) / (matchesAsPartners + 2);
+
+      // 1. Calculate long-term synergy with temporal decay
+      let recencyWeight = 1.0;
+      if (edge && edge.lastMatchAt) {
+        const daysSince = (Date.now() - edge.lastMatchAt.getTime()) / (1000 * 60 * 60 * 24);
+        if (daysSince > 120) recencyWeight = 0.3;
+        else if (daysSince > 60) recencyWeight = 0.6;
+        else if (daysSince > 30) recencyWeight = 0.8;
+      }
+      const rawDeviation = rawSynergy - 0.5;
+      const decayedRawSynergy = 0.5 + rawDeviation * recencyWeight;
+
+      // 2. Calculate recent partnership win rate with exponential decay
+      const partnershipMatches: Array<{ won: boolean }> = [];
+      for (const m of sortedMatches) {
+        const px = m.players.find((p) => p.userId === x);
+        const py = m.players.find((p) => p.userId === y);
+        if (px && py) {
+          const teamX = px.position < 2 ? "A" : "B";
+          const teamY = py.position < 2 ? "A" : "B";
+          if (teamX === teamY) {
+            // Partners!
+            const winner = getMatchWinner(m.score);
+            partnershipMatches.push({ won: winner === teamX });
+          }
+        }
+      }
+
+      let weightedWins = 0;
+      let totalWeight = 0;
+      for (let i = 0; i < partnershipMatches.length; i++) {
+        const weight = Math.pow(0.8, i);
+        totalWeight += weight;
+        if (partnershipMatches[i].won) {
+          weightedWins += weight;
+        }
+      }
+
+      const recentWinRate = totalWeight > 0 ? weightedWins / totalWeight : 0.5;
+
+      // 3. Blend them: 60% weight to decayed raw synergy, 40% weight to recent win rate
+      return totalWeight > 0 ? (0.6 * decayedRawSynergy + 0.4 * recentWinRate) : decayedRawSynergy;
     };
 
     const getOptimalSideAssignment = (
