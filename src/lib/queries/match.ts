@@ -123,7 +123,8 @@ export const getCachedPendingActionsCount = unstable_cache(
 );
 
 export async function getPendingAttendanceActions(userId: string) {
-  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  // Use a stable reference/value during prerendering (dynamic APIs like headers or cookies will trigger request-time execution where Date works correctly)
+  const oneHourAgo = new Date(new Date().getTime() - 60 * 60 * 1000);
 
   const matchesNeedingAttendance = await db.query.matches.findMany({
     where: and(
@@ -250,6 +251,9 @@ export const getCachedConfirmedMatches = unstable_cache(
  * Used by /p/[userId] page.
  */
 export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
+  if (process.env.AUTH_BYPASS === "true") {
+    return [];
+  }
   const result = await db.query.matches.findMany({
     where: and(
       eq(matchesTable.status, "CONFIRMED"),

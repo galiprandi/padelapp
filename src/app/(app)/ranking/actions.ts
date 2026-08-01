@@ -298,3 +298,143 @@ export async function recalculateRankingAction(affectedUserIds?: string[]) {
     return { status: "error", message: "No se pudo recalcular el ranking." };
   }
 }
+
+export async function getUserRankingBreakdownAction(userId: string) {
+  try {
+    if (process.env.AUTH_BYPASS === "true") {
+      return {
+        status: "ok",
+        breakdown: {
+          basePoints: 1000,
+          wins: 10,
+          losses: 5,
+          winPoints: 150,
+          streak: 3,
+          streakPoints: 15,
+          setsWonBonus: 12,
+          lateCount: 1,
+          latePenalty: 10,
+          noShowCount: 0,
+          noShowPenalty: 0,
+          decayFactor: 1.0,
+          finalScore: 1167,
+          lastMatchAt: new Date(),
+        },
+      };
+    }
+    const matchPlayersData = await db.query.matchPlayers.findMany({
+      where: eq(matchPlayers.userId, userId),
+      with: { match: { columns: { status: true, score: true, date: true } } },
+    });
+
+    // Sort by match date asc so stats can calculate streak correctly
+    matchPlayersData.sort(
+      (a, b) => a.match.date.getTime() - b.match.date.getTime()
+    );
+
+    const userStats = {
+      wins: 0,
+      losses: 0,
+      streak: 0,
+      matchesPlayed: 0,
+      lastMatchAt: null as Date | null,
+      setsWonBonus: 0,
+      confirmedMatchesCount: 0,
+      totalMatchesCount: 0,
+      noShowPenalty: 0,
+      latePenalty: 0,
+      attendedCount: 0,
+      noShowCount: 0,
+      lateCount: 0,
+    };
+
+    for (const mp of matchPlayersData) {
+      userStats.totalMatchesCount++;
+      if (mp.resultConfirmed) userStats.confirmedMatchesCount++;
+
+      if (mp.attendance === "ATTENDED") userStats.attendedCount++;
+      else if (mp.attendance === "NO_SHOW") {
+        userStats.noShowCount++;
+        userStats.noShowPenalty += 25;
+      } else if (mp.attendance === "LATE") {
+        userStats.lateCount++;
+        userStats.latePenalty += 10;
+      }
+
+      if (mp.match.status === "CONFIRMED" && mp.match.score) {
+        userStats.matchesPlayed++;
+        if (!userStats.lastMatchAt || mp.match.date > userStats.lastMatchAt) {
+          userStats.lastMatchAt = mp.match.date;
+        }
+
+        const winningTeam = getMatchWinner(mp.match.score);
+        if (winningTeam) {
+          const playerTeam = mp.position < 2 ? "A" : "B";
+          const isWinner = playerTeam === winningTeam;
+          const sets = mp.match.score.split(",").map((s) => s.trim().split("-").map(Number));
+          let setsWon = 0;
+          sets.forEach(([scoreA, scoreB]) => {
+            if (playerTeam === "A" && scoreA > scoreB) setsWon++;
+            if (playerTeam === "B" && scoreB > scoreA) setsWon++;
+          });
+
+          if (isWinner) {
+            userStats.wins++;
+            userStats.streak = userStats.streak > 0 ? userStats.streak + 1 : 1;
+            userStats.setsWonBonus += setsWon * 2;
+          } else {
+            userStats.losses++;
+            userStats.streak = userStats.streak < 0 ? userStats.streak - 1 : -1;
+            userStats.setsWonBonus += setsWon * 1;
+          }
+        }
+      }
+    }
+
+    const basePoints = 1000;
+    const winPoints = userStats.wins * 15;
+    const streakPoints = userStats.streak > 0 ? userStats.streak * 5 : 0;
+    const setsWonBonus = userStats.setsWonBonus;
+    const latePenalty = userStats.latePenalty;
+    const noShowPenalty = userStats.noShowPenalty;
+
+    const totalBeforeDecay = basePoints + winPoints + streakPoints + setsWonBonus - latePenalty - noShowPenalty;
+    let decayFactor = 1.0;
+
+    const now = new Date();
+    const SIXTY_DAYS = 60 * 24 * 60 * 60 * 1000;
+    const ONE_HUNDRED_TWENTY_DAYS = 120 * 24 * 60 * 60 * 1000;
+
+    if (userStats.lastMatchAt) {
+      const diff = now.getTime() - userStats.lastMatchAt.getTime();
+      if (diff > ONE_HUNDRED_TWENTY_DAYS) {
+        decayFactor = 0.25;
+      } else if (diff > SIXTY_DAYS) {
+        decayFactor = 0.5;
+      }
+    }
+
+    return {
+      status: "ok",
+      breakdown: {
+        basePoints,
+        wins: userStats.wins,
+        losses: userStats.losses,
+        winPoints,
+        streak: userStats.streak,
+        streakPoints,
+        setsWonBonus,
+        lateCount: userStats.lateCount,
+        latePenalty,
+        noShowCount: userStats.noShowCount,
+        noShowPenalty,
+        decayFactor,
+        finalScore: totalBeforeDecay * decayFactor,
+        lastMatchAt: userStats.lastMatchAt,
+      },
+    };
+  } catch (error) {
+    console.error("getUserRankingBreakdownAction failed", error);
+    return { status: "error", message: "No se pudo obtener el desglose de puntos." };
+  }
+}

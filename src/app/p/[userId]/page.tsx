@@ -205,6 +205,7 @@ async function PublicProfileContent({
         </div>
 
         <UserRankingBanner
+          userId={user.id}
           position={user.rankingPosition}
           score={user.rankingScore}
           delta={user.rankingDelta}

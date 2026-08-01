@@ -21,6 +21,22 @@ export interface PublicProfileUser {
  * Get a user's public profile data (for /p/[userId] page).
  */
 export async function getPublicProfileUser(userId: string): Promise<PublicProfileUser | null> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return {
+      id: userId,
+      displayName: userId === "p-01" ? "Agustín" : "Fernando",
+      alias: userId === "p-01" ? "agu" : "Bela",
+      image: null,
+      level: userId === "p-01" ? 7 : 8,
+      rankingScore: userId === "p-01" ? 1150 : 1200,
+      rankingPosition: userId === "p-01" ? 2 : 1,
+      rankingDelta: userId === "p-01" ? 2 : 0,
+      wins: userId === "p-01" ? 10 : 12,
+      losses: userId === "p-01" ? 5 : 3,
+      matchesPlayed: userId === "p-01" ? 15 : 15,
+      lastMatchAt: new Date(),
+    };
+  }
   const [user] = await db
     .select({
       id: users.id,
@@ -142,6 +158,17 @@ export interface PlayerNetworkStats {
  * Get a user's network and position statistics computed by the graph engine.
  */
 export async function getPlayerNetworkStats(userId: string): Promise<PlayerNetworkStats> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return {
+      preferredSide: "RIGHT",
+      winRateRight: 0.65,
+      winRateLeft: 0.50,
+      networkSize: 12,
+      community: 1,
+      frequentRival: null,
+      successfulPartner: null,
+    };
+  }
   const [stats] = await db
     .select({
       preferredSide: playerGraphStats.preferredSide,

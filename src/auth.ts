@@ -217,7 +217,22 @@ export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
     try {
       await cookies();
-    } catch {}
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = error.message;
+        const digest = (error as Error & { digest?: string }).digest;
+        if (
+          digest === "HANGING_PROMISE_REJECTION" ||
+          digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||
+          message.includes("During prerendering, `headers()` rejects") ||
+          message.includes("During prerendering, `cookies()` rejects") ||
+          message.includes("DynamicServerError") ||
+          digest?.startsWith("NEXT_")
+        ) {
+          throw error;
+        }
+      }
+    }
     return {
       user: {
         id: "p-01",
