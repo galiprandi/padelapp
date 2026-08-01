@@ -77,6 +77,27 @@ export function getTurnLabel(club: string, date: Date | string): string {
   return `${club} · ${timeStr}`;
 }
 
+export function getTurnLabelWithDate(club: string, date: Date | string): string {
+  const d = new Date(date);
+  const hour = d.getHours();
+  const minutes = d.getMinutes();
+  const timeStr = minutes === 0 ? `${hour}hs` : `${hour}:${minutes.toString().padStart(2, "0")}hs`;
+
+  let dayStr = "";
+  if (isToday(d)) {
+    dayStr = "hoy";
+  } else if (isTomorrow(d)) {
+    dayStr = "mañana";
+  } else {
+    const weekday = d.toLocaleDateString("es-AR", { weekday: "long" });
+    const dayNumeric = d.getDate();
+    const monthNumeric = d.getMonth() + 1;
+    dayStr = `${weekday} ${dayNumeric}/${monthNumeric}`;
+  }
+
+  return `${club} · ${dayStr} ${timeStr}`;
+}
+
 /** Calendar event title: "Pádel · Club · hora" (matches getTurnLabel format). */
 export function getCalendarTitle(club: string, date: Date | string): string {
   return `Pádel · ${getTurnLabel(club, date)}`;

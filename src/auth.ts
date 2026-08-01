@@ -5,6 +5,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 
+import { cookies } from "next/headers";
 import { db } from "@/db";
 import { accounts, sessions, users, verificationTokens } from "@/db/schema";
 
@@ -215,24 +216,7 @@ const {
 
 export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
-    try {
-      await cookies();
-    } catch (error) {
-      if (error instanceof Error) {
-        const message = error.message;
-        const digest = (error as Error & { digest?: string }).digest;
-        if (
-          digest === "HANGING_PROMISE_REJECTION" ||
-          digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||
-          message.includes("During prerendering, `headers()` rejects") ||
-          message.includes("During prerendering, `cookies()` rejects") ||
-          message.includes("DynamicServerError") ||
-          digest?.startsWith("NEXT_")
-        ) {
-          throw error;
-        }
-      }
-    }
+    await cookies();
     return {
       user: {
         id: "p-01",

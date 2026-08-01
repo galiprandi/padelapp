@@ -14,7 +14,7 @@ import {
 } from "@/db/schema";
 import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { getTurnLabel, capitalizeName } from "@/lib/utils";
+import { getTurnLabel, getTurnLabelWithDate, capitalizeName } from "@/lib/utils";
 import { updateEdgesForTurnEnrollment } from "@/lib/graph/turn-edges";
 
 export type CreateTurnInput = {
@@ -175,7 +175,7 @@ export async function joinTurnAction(turnId: string) {
         ...turn.players.map((p) => p.userId),
         session.user.id,
       ];
-      const turnLabel = getTurnLabel(turn.club, turn.date);
+      const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
       void notifyUsers(allUserIds, {
         title: `Turno completo: ${turnLabel}`,
         body: `Los ${turn.maxPlayers} cupos están cubiertos. Nos vemos en la cancha.`,
@@ -187,7 +187,7 @@ export async function joinTurnAction(turnId: string) {
         ...new Set([...turn.players.map((p) => p.userId), turn.creatorId]),
       ].filter((id) => id !== session.user.id);
       void notifyUsers(recipientIds, {
-        title: `${joinerName} se sumó a ${getTurnLabel(turn.club, turn.date)}`,
+        title: `${joinerName} se sumó a ${getTurnLabelWithDate(turn.club, turn.date)}`,
         body: `${newPlayerCount}/${turn.maxPlayers} jugadores.${newPlayerCount < turn.maxPlayers ? ` ${turn.maxPlayers - newPlayerCount === 1 ? "Falta 1." : `Faltan ${turn.maxPlayers - newPlayerCount}.`}` : ""}`,
         url: turnUrl,
       });
@@ -232,7 +232,7 @@ async function notifyNetworkForTurn(
   let sent = 0;
   for (const contact of contacts) {
     const success = await sendPushToUser(contact.id, {
-      title: `Cupo abierto en tu red: ${getTurnLabel(turn.club, turn.date)}`,
+      title: `Cupo abierto en tu red: ${getTurnLabelWithDate(turn.club, turn.date)}`,
       body: `${openSlots} ${openSlots === 1 ? "cupo libre" : "cupos libres"}. Si podés, sumate.`,
       url: turnUrl,
       actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
@@ -320,7 +320,7 @@ export async function leaveTurnAction(turnId: string) {
     ].filter((id) => id !== session.user.id);
 
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
-    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
     void notifyUsers(recipientIds, {
       title: `${leaverName} se bajó de ${turnLabel}`,
       body: `Quedó un cupo libre. Sumate o abrí a la red.`,
@@ -565,7 +565,7 @@ export async function convertTurnToMatchAction(turnId: string) {
       void notifyUsers(
         turn.substitutes.map((s) => s.userId),
         {
-          title: `El partido empezó: ${getTurnLabel(turn.club, turn.date)}`,
+          title: `El partido empezó: ${getTurnLabelWithDate(turn.club, turn.date)}`,
           body: `No se liberaron más cupos. Gracias por anotarte como suplente.`,
           url: turnUrl,
         },
@@ -636,7 +636,7 @@ export async function cancelTurnAction(turnId: string) {
     ].filter((id) => id !== session.user.id);
 
     void notifyUsers(recipientIds, {
-      title: `Turno cancelado: ${getTurnLabel(turn.club, turn.date)}`,
+      title: `Turno cancelado: ${getTurnLabelWithDate(turn.club, turn.date)}`,
       body: `El organizador canceló el turno.`,
       url: turnUrl,
     });
@@ -786,7 +786,7 @@ export async function openToNetworkAction(turnId: string) {
     let sent = 0;
     for (const contact of contacts) {
       const success = await sendPushToUser(contact.id, {
-        title: `Cupo abierto en tu red: ${getTurnLabel(turn.club, turn.date)}`,
+        title: `Cupo abierto en tu red: ${getTurnLabelWithDate(turn.club, turn.date)}`,
         body: `${organizerName} busca jugadores para ${openSlots} ${openSlots === 1 ? "cupo" : "cupos"}. Si podés, sumate.`,
         url: turnUrl,
         actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
@@ -980,7 +980,7 @@ export async function takeOpenSlotAction(turnId: string) {
     const newPlayerCount = turn.players.length + 1;
     const isNowFull = newPlayerCount >= turn.maxPlayers;
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
-    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
 
     // Players + creator (excluding taker)
     const playerRecipientIds = [
@@ -1081,7 +1081,7 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     revalidateTag("turns", "default");
 
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
-    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
     const removerName = await getUserDisplayName(session.user.id);
     const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
 
@@ -1216,7 +1216,7 @@ export async function addPlayerAction(turnId: string, playerUserId: string) {
 
     // Notify the added player
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
-    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
     const adderName = await getUserDisplayName(session.user.id);
 
     void notifyUsers([playerUserId], {
@@ -1324,7 +1324,7 @@ export async function assignSubstituteAction(
     revalidateTag("turns", "default");
 
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
-    const turnLabel = getTurnLabel(turn.club, turn.date);
+    const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
     const assigneeName = await getUserDisplayName(substituteUserId);
     const newPlayerCount = turn.players.length + 1;
     const isNowFull = newPlayerCount >= turn.maxPlayers;

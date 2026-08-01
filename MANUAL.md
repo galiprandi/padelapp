@@ -48,6 +48,8 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Al ocupar → push a jugadores y suplentes restantes con el estado del turno
 - Pueden salir de la lista con un botón (sin confirmación)
 - Al iniciar el partido, marcar como jugado o cancelar el turno → se limpia la lista + push a suplentes
+- El organizador puede asignar directamente un suplente a un cupo libre (titularizado automático)
+- Los suplentes de turnos programados en las próximas 48h reciben un recordatorio diario automático sobre su disponibilidad
 
 ### Organizador (acciones extra)
 - Editar turno (club, fecha, duración, cupos, nivel, notas) — no disponible si el turno ya finalizó
@@ -60,8 +62,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Abrir a la red (puede hacerlo cualquier jugador anotado, no solo el organizador) → push a contactos de los últimos 12 meses de todos los anotados, máximo 1 vez por hora
 
 ### No implementado
-- Asignar suplente a cupo libre (organizador)
-- Recordatorio push 24h antes a suplentes
+- Ninguno (todas las características clave de turnos y salvage están implementadas)
 
 ---
 
