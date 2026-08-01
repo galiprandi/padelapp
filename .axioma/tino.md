@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-01 — Integración de consulta de contador de notificaciones cacheada en NotificationsBadge (PR #tino/perf/notifications-badge-caching-integration)
 - [x] 2026-07-30 — Estandarización de escala táctil de navegación y corrección de colisiones de badge con safe area en móviles (PR #tino/ux/bottom-nav-safe-area-polish)
 - [x] 2026-07-30 — Almacenamiento en caché de la cantidad de acciones pendientes y optimización del feedback táctil del Bottom Navigation (PR #tino/perf/notifications-badge-performance-and-ux)
 - [x] 2026-07-28 — Refactorización de try/catch en auth() para reenviar señales de control de flujo/bailout de Next.js PPR (PR #tino/perf/rethrow-nextjs-bailout-signals)
@@ -16,6 +17,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 LEARNINGS
+### 2026-08-01 - Integración de Consulta Cacheada en Componentes Globales del Layout
+**Learning:** En Next.js con renderizado dinámico y PPR, los componentes globales del layout que se evalúan constantemente (como badges de notificación flotantes) deben consumir wrappers de caché optimizados (`unstable_cache`) con TTLs razonables y tags de revalidación. Importar o invocar accidentalmente la consulta de base de datos directa (`getPendingActionsCount`) en lugar del wrapper cacheado (`getCachedPendingActionsCount`) anula el beneficio de caching, provocando que la base de datos sea golpeada con consultas SQL duplicadas en cada transición o recarga parcial de página. Al auditar e integrar la función cacheada correcta, consolidamos un renderizado verdaderamente instantáneo del shell y evitamos waterfalls de red costosos.
+**Action:** Al auditar la performance, verificar que ningún componente transversal que dependa de datos globales llame directamente a consultas CRUD, y reemplace esas llamadas por sus wrappers cacheados correspondientes.
+
 ### 2026-07-30 - Estandarización de Escala Táctil y Evitación de Colisiones en Safe Areas de Móviles
 **Learning:** Los botones y enlaces flotantes fijos (`fixed`) en la parte inferior de la pantalla pueden colisionar o ser tapados por componentes fijos como `BottomNav` que se expanden para cubrir insets dinámicos de dispositivos (por ejemplo, el safe area de iOS/Android). En lugar de usar valores estáticos como `bottom-12`, emplear un cálculo matemático relativo con soporte para insets de safe area `bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)]` garantiza que el elemento flote de manera limpia a una distancia exacta (12px) sobre la barra de navegación sin importar el dispositivo. Adicionalmente, estandarizar las micro-interacciones de escala activa de `active:scale-[0.95]` a `active:scale-[0.98]` produce transiciones mucho más minimalistas y sofisticadas que respetan el sistema de diseño (MDS).
 **Action:** Al diseñar elementos flotantes interactivos que coexistan con barras inferiores seguras, usar cálculos relativos con `safe-area-inset-bottom` y adherirse al estándar de micro-escala `active:scale-[0.98]`.
@@ -30,7 +35,7 @@
 
 ### 2026-07-27 - Refactorización de Formularios Dinámicos para PPR y Cascarón Estático
 **Learning:** Las páginas de edición o carga de datos dinámicos (`/edit`, `/result`) suelen implementarse erróneamente como componentes puramente de cliente (`"use client"`) monolíticos con carga en `useEffect`, perdiendo todos los beneficios de la compilación estática parcial. Al dividirlas en un contenedor Server Component padre y un formulario secundario Client Component hijo, podemos renderizar la estructura y las cabeceras del cascarón de forma 100% estática para servirla instantáneamente desde el CDN, delegando las llamadas asíncronas de base de datos a un `<Suspense>` boundary con esqueletos estructurados exactamente con el diseño final.
-**Action:** Continuar reemplazando componentes monolíticos `"use client"` con este patrón asíncrono para mantener transiciones instantáneas y evitar CLS o pantallas en blanco molestas.
+**Action:** Continuar reemplazando componentes monolíticos `"use client"` with este patrón asíncrono para mantener transiciones instantáneas y evitar CLS o pantallas en blanco molestas.
 
 ### 2026-07-26 - Accesibilidad de teclado y feedback táctil en botones de retroceso (MDS)
 **Learning:** Los botones y enlaces de retroceso (`ChevronLeft` / `Volver`) distribuidos en vistas clave carecían de estilos de foco por teclado, impidiendo que usuarios de navegación accesible identifiquen visualmente el foco. Standardizar el uso de transiciones globales suaves (`transition-all`), el anillo de foco del MDS (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) y feedback táctil de escala activa (`active:scale-[0.98]`) mejora drásticamente la calidad y consistencia del diseño.
