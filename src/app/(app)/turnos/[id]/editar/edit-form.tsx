@@ -220,12 +220,18 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="notes" className="text-sm font-semibold flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              Notas adicionales
-            </Label>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="notes" className="text-sm font-semibold flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Notas adicionales
+              </Label>
+              <span className="text-xs text-muted-foreground">
+                {(formData.notes ?? "").length}/200
+              </span>
+            </div>
             <Textarea
               id="notes"
+              maxLength={200}
               placeholder="Ej: Traer pelotas nuevas..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}

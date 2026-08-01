@@ -202,14 +202,20 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
 
       <Card className="rounded-xl border border-border bg-card">
         <CardHeader className="pb-4">
-          <div className="flex items-center gap-2">
-            <Info className="h-4 w-4 text-primary" />
-            <CardTitle className="text-base font-bold">Notas</CardTitle>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <Info className="h-4 w-4 text-primary" />
+              <CardTitle className="text-base font-bold">Notas</CardTitle>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {(formData.notes ?? "").length}/200
+            </span>
           </div>
         </CardHeader>
         <CardContent>
           <Textarea
             value={formData.notes}
+            maxLength={200}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             className="min-h-[100px] rounded-lg resize-none animate-none"
             placeholder="Notas adicionales sobre el partido..."

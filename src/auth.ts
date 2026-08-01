@@ -222,7 +222,7 @@ export async function auth(): Promise<Session | null> {
         email: "agu@mock.test",
         image: null,
       },
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      expires: "2026-12-31T23:59:59.999Z",
     };
   }
   try {
