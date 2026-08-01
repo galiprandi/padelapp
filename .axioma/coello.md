@@ -29,7 +29,9 @@
   - [x] 2026-07-27 — Ego Network Filtering & Visual Highlights: se implementó el filtrado por "Mi red" y "Red completa" en el visualizador del grafo de jugadores.
 
 ### Pendiente — Backlog
-- [ ] Calibración del algoritmo de sinergia con mayor peso para rachas recientes
+
+## ✅ DONE
+- [x] 2026-08-01 — Matchmaking Synergy Calibration with Temporal Decay & Exponential Streak Weighting (PR #224 — merged)
 
 ## Learnings
 - **Equilibrio de Preferencias de Lado y Sinergia**: En el emparejamiento padel 2v2, el posicionamiento físico en cancha (Derecha vs Revés) es un factor crítico para la comodidad y rendimiento. Priorizar la minimización de penalizaciones por mala asignación de lado como objetivo principal (por sobre la sinergia) y resolver empates de lado mediante la nivelación de sinergias de parejas (con suavizado de Laplace) resulta en una distribución excepcionalmente cómoda y competitiva para todos los jugadores en cancha.
@@ -44,3 +46,4 @@
 - **Sinergia y Preferencia de Lado Combinadas**: Diseñar un modelo de optimización que evalúe las 24 permutaciones posibles de 4 jugadores asignados a 4 posiciones exactas (Team A Der/Rev, Team B Der/Rev) permite balancear de forma determinista la sinergia de pareja (net wins) al mismo tiempo que respeta la comodidad de los jugadores en cancha.
 - **Soporte de Mock y Bypass en Sandbox**: Cuando el sandbox de base de datos no tiene credenciales de escritura válidas o es inaccesible offline, introducir un modo de bypass `MOCK_AUTH === "true"` que simula la sesión del organizador Agustín y responde de forma determinista desde la acción del servidor en lugar de usar interceptores de red inestables, garantiza que todo el pipeline de compilación, Next.js PPR y Playwright E2E funcione con un 100% de fiabilidad y consistencia.
 - **Micro-UX Táctil Minimalista (MDS)**: En botones prominentes de sugerencia de nivel superior, usar la escala activa `active:scale-[0.98]` combinada con un estado de desactivación visual prolijo ("Pensando parejas... 🧠") mientras la transición está pendiente, crea una experiencia táctil inmersiva ideal para smartphones.
+- **Matchmaking Synergy Calibration with Temporal Decay & Streak Blending**: Calibrating player partnership synergy requires balancing long-term historical records with recent performance. Decay the deviation of older edges towards the 0.5 default based on `lastMatchAt`, calculate recent form using exponential weightings (`0.8^index`) on chronological partnership matches, and blend them (60% decayed synergy, 40% recent form) to create a streak-aware matchmaking recommender.

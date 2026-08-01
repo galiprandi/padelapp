@@ -1,8 +1,8 @@
 ## 📋 BACKLOG
-- [ ] Visualización Detallada de la Fórmula: Desglose visual interactivo de cómo se calcula el puntaje exacto del jugador (racha actual, bonus de sets ganados, etc.).
 - [ ] Filtro de Actividad en Ranking: Tópico para filtrar jugadores inactivos (sin partidos en los últimos 30 días) para mantener la tabla global competitiva y dinámica.
 
 ## ✅ DONE
+- [x] 2026-08-01 — Visualización Detallada de la Fórmula: Desglose visual interactivo de cómo se calcula el puntaje exacto del jugador (racha actual, bonus de sets ganados, etc.) (PR #agus/ranking/score-breakdown-details).
 - [x] 2026-07-31 — Recordatorio de Confirmación Pendiente: Acción interactiva y banner de alerta para confirmar resultados de partidos pendientes de confirmación directamente desde el ranking, actualizando las puntuaciones inmediatamente (PR #agus/ranking/confirmation-reminder).
 - [x] 2026-07-27 — Ranking Podium Position Deltas & Terminology Accessibility (PR #agus/ranking/podium-deltas-accessibility).
 - [x] 2026-07-17 — Corrección del bug de consistencia de posiciones relativas y deltas en `recalculateRankingAction` (PR #1).
@@ -16,6 +16,10 @@
 - [x] 2026-07-28 — Verificación y validación de la compilación y de la arquitectura de Partial Prerendering (PPR) de Next.js. El codebase se encuentra en estado verde y completamente optimizado.
 
 ## 🧠 LEARNINGS
+### 2026-08-01 - Desglose Detallado del Puntaje de Clasificación (Interactividad y Transparencia)
+**Learning:** El ranking es un factor clave en la retención del usuario, pero cuando las reglas y fórmulas de juego no son transparentes, los jugadores pierden motivación. Al incorporar un desglose interactivo ("Ver desglose de puntos") mediante un Server Action perezoso y un componente colapsable con estado de transición (`useTransition`), dotamos al usuario de total transparencia matemática de inmediato sin sobrecargar el primer renderizado de la página, ni incurrir en Cumulative Layout Shift (CLS), manteniendo el pre-renderizado parcial (PPR) de Next.js al 100% optimizado.
+**Action:** Utilizar siempre carga bajo demanda (on-demand lazy fetching) para bloques de datos secundarios complejos y detallados, combinando Server Actions con transiciones de React 19 para mantener la interfaz ultra-reactiva y libre de CLS.
+
 ### 2026-07-31 - Acción de Confirmación Contextual en Ranking (Gamificación)
 **Learning:** El ranking es el principal gancho de engagement (gamificación) del producto. Al permitir que el usuario visualice sus acciones de confirmación pendientes y resuelva sus partidos directamente desde la página de `/ranking`, cerramos el ciclo de feedback de manera inmediata. Confirmar un resultado actualiza instantáneamente sus puntos, victorias y posición en pantalla gracias a `router.refresh()`, ofreciendo una experiencia altamente reactiva, satisfactoria y motivadora para seguir participando.
 **Action:** Diseñar siempre las interfaces críticas de estadísticas vinculadas de forma directa con los CTA de acción rápida que alimentan esos mismos datos para simplificar el flujo del usuario.
@@ -29,7 +33,7 @@
 **Action:** En cualquier visualización de estadísticas relativas, verifique que la terminología en pantalla y en las etiquetas ARIA coincida exactamente con la naturaleza del dato medido para evitar desorientar a los usuarios de tecnologías asistivas.
 
 ### 2026-07-26 - Gating de Funciones Dinámicas (New Date()) en Pre-renderizado
-**Learning:** En Next.js con Partial Prerendering (PPR), durante la fase de compilación estática (`next build`), el compilador intentará evaluar las páginas estáticas (como `/catalog`) que importen o incorporen componentes del lado del cliente. Si estos componentes evalúan de forma directa y fuera de hooks funciones dinámicas inestables como `new Date()` para calcular deltas de tiempo, Next.js abortará la compilación debido a la evaluación de valores dinámicos inestables durante la compilación estática. Gating del constructor `new Date()` utilizando una comprobación de montaje (`useMounted()`) en un bloque de renderizado condicional asegura que la función dinámica no se ejecute en el servidor durante la compilación, garantizando una hidratación perfecta y 100% de compatibilidad con PPR.
+**Learning:** En Next.js con Partial Prerendering (PPR), durante la fase de compilación estática (`next build`), el compilador intentará evaluar las páginas estáticas (como `/catalog`) que importen o incorporen componentes del lado del cliente. Si estos componentes evalúan de forma directa y fuera de hooks funciones dinámicas inestables como `new Date()` para calcular deltas de tiempo, Next.js abortará la compilación debido a la evaluación de valores dinámicos inestables durante la compilación estática. Gating del constructor `new Date()` utilizando una comprobación de montaje (`useMounted()`) en un bloque de renderizado condicional asegura que la función dinámica no se ejecute en el servidor durante la compilación, garantizando una hidratación perfecta y 100% de compatibility con PPR.
 **Action:** Al interactuar con fechas del sistema actual o APIS de navegador en componentes compartidos, asegure que se utilicen comprobaciones de montaje (`mounted`) y constructores diferidos dentro de los bloques de renderizado para evitar fallos de pre-renderizado.
 
 ### 2026-07-25 - Reseteo de Estadísticas del Ranking y Simetría del Comparador
@@ -45,7 +49,7 @@
 **Action:** Utilizar patrones de sincronización lógica en elementos mutuamente excluyentes dentro de la misma entidad (ej. parejas, roles) para optimizar la interacción móvil (MDS Maxim 1.8).
 
 ### 2026-07-22 - Visualización Personalizada en el Podio (UX)
-**Learning:** En las tablas de clasificación o podios de juego competitivo, los jugadores buscan con ansias su propia posición. Resaltar visualmente al usuario actual como "Tú" utilizando la paleta e indicaciones visuales estándar (`bg-primary/5 border-primary/30`) reduce drásticamente el tiempo de reconocimiento visual y potencia la gratificación competitiva de estar en el Top 3.
+**Learning:** En las tablas de clasificación o podios de juego competitivo, los jugadores buscan con ansias su propia posición. Resaltar visualmente al usuario actual como "Tú" utilizando la paleta e indicaciones visuales estándar (`bg-primary/5 border-primary/30`) reduce drásticamente el tiempo de recognition visual y potencia la gratificación competitiva de estar en el Top 3.
 **Action:** Aplicar patrones similares de personalización con "Tú" en cualquier visualización de estadísticas, listas o podios en todo el sistema.
 
 ### 2026-07-21 - Optimización de Consultas en Drizzle (Over-fetching)

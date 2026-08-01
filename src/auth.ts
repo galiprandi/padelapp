@@ -3,6 +3,7 @@ import type { AdapterUser } from "next-auth/adapters";
 import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
 
 import { cookies } from "next/headers";
 import { db } from "@/db";

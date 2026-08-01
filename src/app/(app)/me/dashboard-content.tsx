@@ -44,8 +44,6 @@ export default async function DashboardContent() {
 
   if (!viewerId) return null;
 
-  const now = new Date();
-
   const [
     userStats,
     allPendingMatches,
@@ -72,6 +70,9 @@ export default async function DashboardContent() {
     viewerId,
     allPendingMatches,
   );
+
+  // Use a stable reference/value during prerendering (dynamic APIs like headers or cookies will trigger request-time execution where Date works correctly)
+  const now = new Date();
 
   const upcomingMatches = allPendingMatches
     .filter((m) => new Date(m.date || m.createdAt) >= now)
