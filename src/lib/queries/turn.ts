@@ -16,7 +16,33 @@ export async function getMyUpcomingTurns(userId: string, limit = 3) {
       inArray(turnsTable.status, ["OPEN", "FULL"]),
       userInTurn(userId),
     ),
-    with: { players: true },
+    with: {
+      players: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      substitutes: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      creator: true,
+    },
     orderBy: asc(turnsTable.date),
     limit,
   });
@@ -34,7 +60,33 @@ export async function getRecommendedTurns(userId: string, limit = 3) {
       eq(turnsTable.status, "OPEN"),
       userNotInTurn(userId),
     ),
-    with: { players: true },
+    with: {
+      players: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      substitutes: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      creator: true,
+    },
     orderBy: asc(turnsTable.date),
     limit,
   });
@@ -53,8 +105,30 @@ export const getCachedOpenTurns = unstable_cache(
         inArray(turnsTable.status, ["OPEN", "FULL"]),
       ),
       with: {
-        players: true,
-        substitutes: true,
+        players: {
+          with: {
+            user: {
+              columns: {
+                id: true,
+                displayName: true,
+                alias: true,
+                image: true,
+              },
+            },
+          },
+        },
+        substitutes: {
+          with: {
+            user: {
+              columns: {
+                id: true,
+                displayName: true,
+                alias: true,
+                image: true,
+              },
+            },
+          },
+        },
         creator: true,
       },
       orderBy: asc(turnsTable.date),
@@ -77,7 +151,33 @@ export async function getMySubstituteTurns(userId: string, limit = 3) {
       inArray(turnsTable.status, ["OPEN", "FULL"]),
       userIsSubstitute(userId),
     ),
-    with: { players: true, substitutes: true },
+    with: {
+      players: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      substitutes: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              alias: true,
+              image: true,
+            },
+          },
+        },
+      },
+      creator: true,
+    },
     orderBy: asc(turnsTable.date),
     limit,
   });

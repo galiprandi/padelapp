@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-01 — Turn Social Proof & Contact Highlights (bela/turnos/social-proof-contacts)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 - [x] 2026-07-17 — Enforce Cooldown en acción de salvage manual `openToNetworkAction` para evitar spam de notificaciones.
 - [x] 2026-07-17 — Refactorizar página de edición de turnos `/turnos/[id]/editar` a HTML semántico y escala Tailwind estándar (MDS).
@@ -21,6 +22,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 LEARNINGS
+## 2026-08-01 - Turn Social Proof & Contact Highlights
+**Learning:** Showing social proof (such as which of the viewer's padel contacts are already playing) on high-level list views like `/turnos` or the `/me` dashboard drastically drives user engagement and conversion for salvaging incomplete turns. This requires nested profile retrieval in parent queries while maintaining strict Next.js PPR boundaries.
+**Action:** Always seek to propagate minimal, high-impact social proof triggers in summary cards (e.g. TurnCard) by passing contextual contacts down from layout/shell components.
+
 ## 2026-07-17 - Setup inicial
 **Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
 **Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.

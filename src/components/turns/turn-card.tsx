@@ -15,14 +15,31 @@ import { createMagicLink } from "@/lib/magic-link";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
+import { type PadelContact } from "@/lib/queries";
 
 interface TurnCardProps {
   turn: {
     id: string;
     club: string;
     date: Date | string;
-    players: { userId?: string }[];
-    substitutes?: { userId?: string }[];
+    players: {
+      userId?: string;
+      user?: {
+        id: string;
+        displayName: string;
+        alias: string | null;
+        image: string | null;
+      };
+    }[];
+    substitutes?: {
+      userId?: string;
+      user?: {
+        id: string;
+        displayName: string;
+        alias: string | null;
+        image: string | null;
+      };
+    }[];
     maxPlayers: number;
     suggestedLevel: number | string;
     status?: string;
@@ -31,6 +48,7 @@ interface TurnCardProps {
   isJoined?: boolean;
   isSubstitute?: boolean;
   isCreator?: boolean;
+  contacts?: PadelContact[];
 }
 
 export function TurnCard({
@@ -38,6 +56,7 @@ export function TurnCard({
   variant = "default",
   isJoined,
   isSubstitute,
+  contacts,
 }: TurnCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -78,6 +97,22 @@ export function TurnCard({
         router.refresh();
       }
     });
+  };
+
+  // Find which of the enrolled players are in the contacts list
+  const contactIds = new Set(contacts?.map((c) => c.id));
+  const contactPlayers = turn.players
+    .filter((p) => p.user && contactIds.has(p.user.id))
+    .map((p) => p.user?.alias ?? p.user?.displayName ?? "");
+
+  // Format names nicely in Spanish
+  const formatNamesInSpanish = (names: string[]): string => {
+    if (names.length === 0) return "";
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return `${names[0]} y ${names[1]}`;
+    const firsts = names.slice(0, -1).join(", ");
+    const last = names[names.length - 1];
+    return `${firsts} y ${last}`;
   };
 
   return (
@@ -140,6 +175,17 @@ export function TurnCard({
                 )}
               </span>
             </div>
+
+            {mounted && contactPlayers.length > 0 && (
+              <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                <span className="truncate">
+                  {contactPlayers.length === 1
+                    ? `Juega tu contacto: ${contactPlayers[0]}`
+                    : `Juegan tus contactos: ${formatNamesInSpanish(contactPlayers)}`}
+                </span>
+              </p>
+            )}
           </div>
 
           {/* Status badge */}
