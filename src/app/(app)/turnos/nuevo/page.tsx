@@ -234,14 +234,20 @@ export default function NewTurnPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label
-                htmlFor="notes"
-                className="text-sm font-semibold text-foreground"
-              >
-                Notas adicionales
-              </Label>
+              <div className="flex justify-between items-center">
+                <Label
+                  htmlFor="notes"
+                  className="text-sm font-semibold text-foreground"
+                >
+                  Notas adicionales
+                </Label>
+                <span className="text-xs text-muted-foreground">
+                  {(formData.notes ?? "").length}/200
+                </span>
+              </div>
               <Textarea
                 id="notes"
+                maxLength={200}
                 placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
                 value={formData.notes}
                 onChange={(e) =>
