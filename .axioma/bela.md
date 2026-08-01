@@ -18,6 +18,7 @@
 - [x] 2026-07-27 — Botones de Acción Interactivos en Detalle de Turno con Estados de Carga (PR actual)
 - [x] 2026-07-28 — Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno (PR bela/turnos/solid-filters-and-cooldown)
 - [x] 2026-07-30 — Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos (PR bela/turnos/progress-and-contextual-invite)
+- [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 LEARNINGS
 ## 2026-07-17 - Setup inicial
@@ -42,7 +43,7 @@
 
 ## 2026-07-21 - Unificación de Suspense y Estructura Esqueleto para PPR en Turnos Públicos
 **Learning:** Al usar Next.js with `cacheComponents: true` (PPR habilitado), las vistas públicas de los turnos no deben contener indicadores de exclusión dinámica como `export const instant = false`. Para completar la adopción, es imperativo mover la lógica asíncrona (como `auth()` o fetch de base de datos) al subcomponente envuelto en `<Suspense>`. El contenedor visual externo de layout (`main`) debe declararse en la página raíz estática y asincrónica para evitar la duplicación de clases CSS en el fallback y eliminar por completo los saltos de layout (CLS).
-**Action:** Organizar siempre las vistas en un contenedor síncrono a nivel de página que encapsula la semántica de la cuadrícula o layout principal, y usar subcomponentes asíncronos para el streaming de datos e interacciones del cliente dentro de límites claros de Suspense.
+**Action:** Organizar siempre las vistas en un contenedor síncrono a nivel de página que encapsula la semántica de la cuadrícula o layout principal, y usar subcomponentes asínconos para el streaming de datos e interacciones del cliente dentro de límites claros de Suspense.
 
 ## 2026-07-22 - Visualización del Cooldown y Propagación Social en Salvage
 **Learning:** El botón "Salvar Turno" (`OpenToNetworkButton`) no mostraba retroalimentación sobre si estaba en cooldown hasta que el usuario hacía clic y recibía un error. Al pasando la fecha de última notificación (`lastNetworkNotificationAt`) y calcular un countdown en cliente de forma reactiva, mejoramos enormemente la UX del organizador. Adicionalmente, mapear las conexiones mutuas entre los jugadores según su orden cronológico de ingreso permite mostrar de manera clara cómo la red de contactos está ayudando a completar el turno, indicando etiquetas transparentes como "Contacto de [Nombre]".
@@ -75,3 +76,7 @@
 ## 2026-07-30 - Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos
 **Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participante (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
 **Action:** Maximizar siempre el uso de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
+
+## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
+**Learning:** Los destinatarios de notificaciones de turnos carecían del contexto sobre qué día se jugaría el turno (ej: veían "Cupo abierto en tu red: Club · 19hs"), lo que causaba confusión sobre si era hoy, mañana o un día posterior. La implementación de un helper robusto de fechas relativas adaptado al dialecto argentino (`getTurnLabelWithDate`) brinda un contexto inmediato y de alta fidelidad directamente en la bandeja de notificaciones.
+**Action:** Incluir siempre contextos temporales de fecha relativa clara y localizada en los envíos de notificaciones transaccionales para guiar al usuario a la toma rápida de decisiones.

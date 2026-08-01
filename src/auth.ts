@@ -4,6 +4,7 @@ import Google, { type GoogleProfile } from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 
+import { cookies } from "next/headers";
 import { db } from "@/db";
 import { accounts, sessions, users, verificationTokens } from "@/db/schema";
 
@@ -214,6 +215,7 @@ const {
 
 export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
+    await cookies();
     return {
       user: {
         id: "p-01",
@@ -222,7 +224,7 @@ export async function auth(): Promise<Session | null> {
         email: "agu@mock.test",
         image: null,
       },
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      expires: "2026-12-31T23:59:59.999Z",
     };
   }
   try {

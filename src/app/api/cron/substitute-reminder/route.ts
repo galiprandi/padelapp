@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { turns } from "@/db/schema";
 import { and, gte, lte, inArray, asc } from "drizzle-orm";
 import { notifyUsers } from "@/lib/notifications";
-import { getTurnLabel } from "@/lib/utils";
+import { getTurnLabelWithDate } from "@/lib/utils";
 
 // Runs daily at 9am via Vercel Cron (Hobby plan limit).
 // Sends a reminder to substitutes of turns happening in the next 48h.
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
       const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turn.id}`;
 
       await notifyUsers(substituteIds, {
-        title: `Sos suplente en ${getTurnLabel(turn.club, turn.date)}`,
+        title: `Sos suplente en ${getTurnLabelWithDate(turn.club, turn.date)}`,
         body: `El turno es en menos de 48h. ¿Seguís disponible?`,
         url: turnUrl,
       });
