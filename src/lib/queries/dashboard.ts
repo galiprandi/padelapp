@@ -22,6 +22,22 @@ export interface DashboardUserStats {
  * Used by /me page.
  */
 export async function getDashboardUserStats(userId: string): Promise<DashboardUserStats | null> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      id: "p-01",
+      displayName: "Agustín",
+      alias: "agu",
+      rankingScore: 1150,
+      rankingPosition: 2,
+      rankingDelta: 1,
+      level: 7,
+      matchesPlayed: 15,
+      wins: 10,
+      losses: 5,
+      image: null,
+      attendanceScore: 1.0,
+    };
+  }
   const [user] = await db
     .select({
       id: users.id,
