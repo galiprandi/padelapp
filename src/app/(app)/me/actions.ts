@@ -11,12 +11,13 @@ const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
 export type UpdateProfileResponse =
-  | { status: "ok"; alias: string | null; image: string | null }
+  | { status: "ok"; alias: string | null; image: string | null; level?: number | null }
   | { status: "error"; message: string };
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
   imageInput?: string | null,
+  levelInput?: number | null,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -34,12 +35,29 @@ export async function updateUserProfileAction(
     };
   }
 
+  if (levelInput !== undefined && levelInput !== null && (levelInput < 1 || levelInput > 8)) {
+    return {
+      status: "error",
+      message: "Level must be between 1 and 8.",
+    };
+  }
+
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
   const imageToSave = imageInput?.trim() || null;
+  const levelToSave = levelInput ?? undefined;
+
+  if (process.env.AUTH_BYPASS === "true") {
+    return { status: "ok", alias: aliasToSave, image: imageToSave, level: levelToSave };
+  }
+
+  const updatePayload: Record<string, any> = { alias: aliasToSave, image: imageToSave };
+  if (levelToSave !== undefined) {
+    updatePayload.level = levelToSave;
+  }
 
   await db
     .update(users)
-    .set({ alias: aliasToSave, image: imageToSave })
+    .set(updatePayload)
     .where(eq(users.id, session.user.id));
 
   revalidatePath("/me");
@@ -47,5 +65,5 @@ export async function updateUserProfileAction(
   revalidatePath("/ranking");
   revalidateTag("ranking", "default");
 
-  return { status: "ok", alias: aliasToSave, image: imageToSave };
+  return { status: "ok", alias: aliasToSave, image: imageToSave, level: levelToSave };
 }

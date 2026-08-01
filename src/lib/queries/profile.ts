@@ -63,6 +63,9 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
  * Get the original Google avatar URL from the id_token stored in the Account table.
  */
 export async function getGoogleAvatarUrl(userId: string): Promise<string | null> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return null;
+  }
   try {
     const [googleAccount] = await db
       .select({
@@ -112,6 +115,16 @@ export interface EditableProfileData {
  * Get the current user's editable profile data (for /me/profile page).
  */
 export async function getEditableProfile(userId: string): Promise<EditableProfileData | null> {
+  if (process.env.AUTH_BYPASS === "true") {
+    return {
+      displayName: "Agustín",
+      alias: "agu",
+      level: 6,
+      image: null,
+      email: "agu@mock.test",
+      matchesPlayed: 0,
+    };
+  }
   const [user] = await db
     .select({
       displayName: users.displayName,
