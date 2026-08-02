@@ -9,6 +9,9 @@ import { userInTurn, userNotInTurn, userIsSubstitute } from "./helpers";
  * status OPEN or FULL. Used by dashboard "Mi Agenda".
  */
 export async function getMyUpcomingTurns(userId: string, limit = 3) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [];
+  }
   const now = new Date();
   return db.query.turns.findMany({
     where: and(
@@ -27,6 +30,9 @@ export async function getMyUpcomingTurns(userId: string, limit = 3) {
  * Used by dashboard "Turnos recomendados".
  */
 export async function getRecommendedTurns(userId: string, limit = 3) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [];
+  }
   const now = new Date();
   return db.query.turns.findMany({
     where: and(
@@ -70,6 +76,9 @@ export const getCachedOpenTurns = unstable_cache(
  * status OPEN or FULL. Used by dashboard to show substitute commitments.
  */
 export async function getMySubstituteTurns(userId: string, limit = 3) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [];
+  }
   const now = new Date();
   return db.query.turns.findMany({
     where: and(

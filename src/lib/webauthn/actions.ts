@@ -146,7 +146,7 @@ export async function deletePasskey(credentialId: string) {
 
 export async function getUserPasskeys() {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user?.id || session.user.id === "p-01") {
     return [];
   }
 
