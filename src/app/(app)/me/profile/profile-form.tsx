@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
+import { levelOptions } from "@/lib/mock-data";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -16,6 +17,7 @@ const AUTOSAVE_DEBOUNCE_MS = 800;
 interface ProfileFormProps {
   initialAlias: string;
   initialImage: string | null;
+  initialLevel: number;
   googleAvatarUrl?: string | null;
   displayName?: string | null;
   email?: string | null;
@@ -32,6 +34,7 @@ function getInitials(name: string | null | undefined): string {
 export function ProfileForm({
   initialAlias,
   initialImage,
+  initialLevel,
   googleAvatarUrl,
   displayName,
   email,
@@ -40,6 +43,7 @@ export function ProfileForm({
   const { showToast } = useToast();
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
+  const [level, setLevel] = useState<number>(initialLevel);
   const [isSaving, startSaving] = useTransition();
   const [checklistDismissed, setChecklistDismissed] = useState(false);
 
@@ -60,7 +64,7 @@ export function ProfileForm({
     const previousImage = image;
     setImage(null);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, null);
+      const response = await updateUserProfileAction(alias, null, level);
       if (response.status === "ok") {
         showToast("Foto eliminada", {
           duration: 4000,
@@ -68,7 +72,7 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              updateUserProfileAction(alias, previousImage, level);
             },
           },
         });
@@ -94,7 +98,7 @@ export function ProfileForm({
     const timer = setTimeout(() => {
       previousAliasRef.current = lastSavedAlias.current;
       startSaving(async () => {
-        const response = await updateUserProfileAction(alias, image);
+        const response = await updateUserProfileAction(alias, image, level);
         if (response.status === "ok") {
           lastSavedAlias.current = response.alias ?? "";
           showToast("Perfil actualizado", {
@@ -111,14 +115,14 @@ export function ProfileForm({
     }, AUTOSAVE_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [alias, image, isAliasDirty, showToast]);
+  }, [alias, image, level, isAliasDirty, showToast]);
 
   function handleRestoreGooglePhoto() {
     if (!googleAvatarUrl) return;
     const previousImage = image;
     setImage(googleAvatarUrl);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, googleAvatarUrl);
+      const response = await updateUserProfileAction(alias, googleAvatarUrl, level);
       if (response.status === "ok") {
         showToast("Foto actualizada", {
           duration: 4000,
@@ -126,13 +130,36 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              updateUserProfileAction(alias, previousImage, level);
             },
           },
         });
       } else {
         showToast("No pudimos actualizar la foto.", { type: "error" });
         setImage(previousImage);
+      }
+    });
+  }
+
+  function handleLevelChange(newLevel: number) {
+    const previousLevel = level;
+    setLevel(newLevel);
+    startSaving(async () => {
+      const response = await updateUserProfileAction(alias, image, newLevel);
+      if (response.status === "ok") {
+        showToast("Nivel actualizado", {
+          duration: 4000,
+          action: {
+            label: "Deshacer",
+            onClick: () => {
+              setLevel(previousLevel);
+              updateUserProfileAction(alias, image, previousLevel);
+            },
+          },
+        });
+      } else {
+        showToast("No pudimos actualizar el nivel.", { type: "error" });
+        setLevel(previousLevel);
       }
     });
   }
@@ -273,6 +300,31 @@ export function ProfileForm({
             {aliasError}
           </p>
         )}
+      </div>
+
+      {/* Play Level Selector */}
+      <div className="space-y-2">
+        <Label htmlFor="level" className="text-sm font-semibold text-foreground">
+          Nivel de juego
+        </Label>
+        <select
+          id="level"
+          name="level"
+          value={level}
+          onChange={(event) => handleLevelChange(Number(event.target.value))}
+          disabled={isSaving}
+          className="flex w-full h-12 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {levelOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground leading-normal">
+          {levelOptions.find((opt) => Number(opt.value) === level)?.description ??
+            "Elegí tu nivel de juego como referencia práctica para armar partidos."}
+        </p>
       </div>
 
       {/* Datos de la cuenta (solo lectura) */}
