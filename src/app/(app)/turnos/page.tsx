@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getCachedOpenTurns } from "@/lib/queries";
+import { getCachedOpenTurns, getPadelContacts } from "@/lib/queries";
 import { TurnsFilter } from "@/components/turns/turns-filter";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -35,8 +35,18 @@ export default function TurnsPage() {
 async function TurnsList() {
   const session = await auth();
   const turns = await getCachedOpenTurns();
+  let contacts: any[] = [];
+  if (session?.user?.id) {
+    contacts = await getPadelContacts(session.user.id);
+  }
 
-  return <TurnsFilter turns={turns} userId={session?.user?.id ?? null} />;
+  return (
+    <TurnsFilter
+      turns={turns}
+      userId={session?.user?.id ?? null}
+      contacts={contacts}
+    />
+  );
 }
 
 function TurnsListSkeleton() {

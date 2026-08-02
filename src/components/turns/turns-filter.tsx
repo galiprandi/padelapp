@@ -7,23 +7,15 @@ import { EmptyState } from "@/components/empty-state";
 import { TurnCard } from "./turn-card";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { type PadelContact } from "@/lib/queries";
 
 interface TurnsFilterProps {
-  turns: {
-    id: string;
-    club: string;
-    date: Date | string;
-    creatorId: string;
-    players: { userId: string }[];
-    substitutes: { userId: string }[];
-    maxPlayers: number;
-    suggestedLevel: number | string;
-    status?: string;
-  }[];
+  turns: any[];
   userId: string | null;
+  contacts?: PadelContact[];
 }
 
-export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
+export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
   const [activeTab, setActiveTab] = useState<"todos" | "mis-turnos">("todos");
 
   // Helper values for determining relationships
@@ -117,6 +109,7 @@ export function TurnsFilter({ turns, userId }: TurnsFilterProps) {
                 isJoined={isJoined}
                 isSubstitute={isSubstitute}
                 isCreator={isCreator}
+                contacts={contacts}
               />
             );
           })

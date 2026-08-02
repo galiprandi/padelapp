@@ -29,6 +29,7 @@ import {
   getMyUpcomingTurns,
   getMySubstituteTurns,
   getRecommendedTurns,
+  getPadelContacts,
 } from "@/lib/queries";
 import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
@@ -53,6 +54,7 @@ export default async function DashboardContent() {
     mySubstituteTurns,
     recommendedTurns,
     passkeys,
+    contacts,
   ] = await Promise.all([
     getDashboardUserStats(viewerId),
     getEnhancedUserMatches(viewerId, "PENDING"),
@@ -62,6 +64,7 @@ export default async function DashboardContent() {
     getMySubstituteTurns(viewerId, 3),
     getRecommendedTurns(viewerId, 3),
     getUserPasskeys(),
+    getPadelContacts(viewerId),
   ]);
 
   const user = userStats;
@@ -331,6 +334,7 @@ export default async function DashboardContent() {
                 turn={heroActivity.data}
                 isJoined={true}
                 isCreator={heroActivity.data.creatorId === viewerId}
+                contacts={contacts}
               />
               {heroActivity.data.players.length <
                 heroActivity.data.maxPlayers && (
@@ -462,6 +466,7 @@ export default async function DashboardContent() {
                       (p: { userId: string }) => p.userId === viewerId,
                     )}
                     isCreator={item.data.creatorId === viewerId}
+                    contacts={contacts}
                   />
                 </div>
               ) : (
@@ -571,6 +576,7 @@ export default async function DashboardContent() {
                   (p: { userId: string }) => p.userId === viewerId,
                 )}
                 isCreator={turn.creatorId === viewerId}
+                contacts={contacts}
               />
             ))}
           </div>
