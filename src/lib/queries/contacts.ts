@@ -74,6 +74,29 @@ export async function getPadelContacts(
  * 4. Exclude rivals with extreme outcome (>85% or <15%)
  */
 export async function getTurnNetworkContacts(turnId: string): Promise<PadelContact[]> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [
+      {
+        id: "p-03",
+        displayName: "Diego Morales",
+        alias: "Gero",
+        image: null,
+        level: 6,
+        lastMatchAt: new Date(),
+        matchesTogether: 5,
+      },
+      {
+        id: "p-04",
+        displayName: "Facundo Lopez",
+        alias: "Facu",
+        image: null,
+        level: 5,
+        lastMatchAt: new Date(),
+        matchesTogether: 3,
+      },
+    ];
+  }
+
   const [turn] = await db.query.turns.findMany({
     where: eq(turnsTable.id, turnId),
     with: {
