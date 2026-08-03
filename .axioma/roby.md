@@ -2,6 +2,7 @@
 - [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
+- [x] 2026-08-03 — Correct Game Level Selector Initialization: Resolved a TypeScript type-checking and production build-breaking error by correctly passing the user's initialLevel prop (`initialLevel={user.level}`) to the `<ProfileForm />` component on the profile edit page (`/me/profile`). (PR #roby/profile/fix-level-initialization)
 - [x] 2026-08-02 — Profile Form initialLevel Prop Initialization Fix: Fixed a blocking compilation and build failure by correctly passing the `initialLevel` required property to the `ProfileForm` component inside `src/app/(app)/me/profile/page.tsx`. (PR #roby/profile/fix-profile-initial-level-prop)
 - [x] 2026-07-31 — Stable Bypass Auth & Next.js 16 PPR Dynamic Prerendering Restoration: Standardized the session expiration to a static date and integrated asynchronous `cookies()` signaling inside `auth()`'s bypass flow to resolve Next.js 16's strict prerendering bails, enabling a seamless production build pipeline. (PR #roby/profile/stable-bypass-auth-ppr)
 - [x] 2026-07-30 — Biometric Login Restoration, Back Navigation Standardization & Profile Centering Layout: Reinstated PasskeyLoginButton on the login screen, standardized magic-link back-navigation with MDS keyboard focus rings, and resolved public profile layout shifting with an absolute-positioned ShareButton. (PR #roby/profile/onboarding-ux-refinements)
@@ -21,6 +22,9 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 LEARNINGS
+## 2026-08-03 - Correct Game Level Selector Initialization
+**Learning:** When using structured profiles where child components (like `ProfileForm`) declare strict, mandatory prop types (such as `initialLevel: number`), any schema-driven parent wrapper must correctly forward these props from the database shell query. Neglecting to pass these properties results in compilation blocks during `pnpm tsc` and production build failures, even if the sub-component provides fallback or local state management.
+**Action:** Always inspect the required props defined in interactive client forms and ensure the parent page's dynamic query shell passes them exactly to prevent compilation breakages.
 ## 2026-08-02 - Profile Form initialLevel Prop Initialization Fix
 **Learning:** When using modular, stateful form subcomponents in server component wrappers, all required properties of the client form's type interface (like `initialLevel`) must be strictly passed from the server query's payload. Omitting required props breaks TypeScript type compilation and Next.js static generation pipelines.
 **Action:** Always verify client component prop requirements against server component data-feed sites, and run typescript typechecks (`pnpm tsc --noEmit`) before completing any layout refactoring.
