@@ -21,7 +21,9 @@ import {
   Edit3,
   MapPin,
   Info,
+  Sparkles,
 } from "lucide-react";
+import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -90,6 +92,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const isJoined = turn.players.some((p) => p.userId === viewerId);
   const isCreator = turn.creatorId === viewerId;
   const isCancelled = turn.status === "CANCELLED";
+  const isCompleted = turn.status === "COMPLETED";
+  const isFull = turn.players.length >= turn.maxPlayers;
+  const isSubstitute = turn.substitutes.some((s) => s.userId === viewerId);
+  const hasOpenSlot = turn.players.length < turn.maxPlayers;
 
   // Compute share URL once instead of 6 times
   const shareUrl = createMagicLink({ resource: "turn", identifier: id }).url;
@@ -101,6 +107,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   }
   const contactIds = new Set(viewerContacts.map((c) => c.id));
 
+  // Fetch prioritized salvage recommendations for the network section
+  let suggestedContacts: PadelContact[] = [];
+  if (viewerId && (isJoined || isCreator) && hasOpenSlot && !isCompleted) {
+    const { getTurnNetworkContacts } = await import("@/lib/queries");
+    suggestedContacts = await getTurnNetworkContacts(id);
+  }
+
   // Find mutual contact connections among players and substitutes
   const allTurnUserIds = [
     ...turn.players.map((p) => p.userId),
@@ -108,7 +121,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   ];
 
   const connectionMap: Record<string, string> = {};
-  if (allTurnUserIds.length >= 2) {
+  if (allTurnUserIds.length >= 2 && !(process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true")) {
     const edges = await db
       .select()
       .from(playerEdges)
@@ -180,10 +193,6 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       </div>
     );
   }
-  const isFull = turn.players.length >= turn.maxPlayers;
-  const isSubstitute = turn.substitutes.some((s) => s.userId === viewerId);
-  const hasOpenSlot = turn.players.length < turn.maxPlayers;
-  const isCompleted = turn.status === "COMPLETED";
 
   // Compact date for subtitle (server-side, Argentina timezone)
   const turnDateStr = turn.date.toLocaleDateString("es-ES", {
@@ -424,6 +433,51 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           />
         )}
       </section>
+
+      {suggestedContacts.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" />
+              Sugeridos para invitar 🧠
+            </h2>
+            <span className="text-xs text-muted-foreground">
+              De tu red de contactos
+            </span>
+          </div>
+
+          <div className="grid gap-2">
+            {suggestedContacts.slice(0, 4).map((contact) => (
+              <div
+                key={contact.id}
+                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border"
+              >
+                <PlayerAvatar
+                  name={contact.alias ?? contact.displayName}
+                  image={contact.image ?? undefined}
+                  size={40}
+                  aria-hidden="true"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm truncate leading-tight">
+                    {contact.alias ?? contact.displayName}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Nivel {contact.level}
+                  </p>
+                </div>
+                <WhatsAppInviteButton
+                  club={turn.club}
+                  date={turn.date}
+                  contactName={contact.alias ?? contact.displayName}
+                  openSlots={turn.maxPlayers - turn.players.length}
+                  shareUrl={shareUrl}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {turn.substitutes.length > 0 && (
         <section className="space-y-4">

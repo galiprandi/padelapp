@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
 - [x] 2026-08-01 — Turn Social Proof & Contact Highlights (bela/turnos/social-proof-contacts)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 - [x] 2026-07-17 — Enforce Cooldown en acción de salvage manual `openToNetworkAction` para evitar spam de notificaciones.
@@ -22,6 +23,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 LEARNINGS
+## 2026-08-03 - Interactive WhatsApp Invite Recommendations
+**Learning:** Recommending specific player contacts to invite with individual single-click WhatsApp share buttons drastically bridges the gap between wanting to fill a slot and taking action. Performing the dynamic text format client-side inside a React useEffect preserves strict Next.js PPR rendering compliance and keeps browser-specific timezones accurate.
+**Action:** Always provide proactive recommendation triggers when slots are open, accompanied by single-tap personalized share options using relative localized date and time formats.
+
 ## 2026-08-01 - Turn Social Proof & Contact Highlights
 **Learning:** Showing social proof (such as which of the viewer's padel contacts are already playing) on high-level list views like `/turnos` or the `/me` dashboard drastically drives user engagement and conversion for salvaging incomplete turns. This requires nested profile retrieval in parent queries while maintaining strict Next.js PPR boundaries.
 **Action:** Always seek to propagate minimal, high-impact social proof triggers in summary cards (e.g. TurnCard) by passing contextual contacts down from layout/shell components.
@@ -71,7 +76,7 @@
 **Action:** Emplear filtros interactivos del lado del cliente cuando el conjunto de datos sea acotado para brindar una experiencia libre de latencia, respetando siempre el marcado ARIA para tecnologías de asistencia.
 
 ## 2026-07-27 - Botones de Acción Interactivos en Detalle de Turno con Estados de Carga
-**Learning:** Los formularios de Server Actions del lado del servidor puros no brindan retroalimentación visual al usuario durante su procesamiento, lo que resulta en una experiencia lenta en conexiones lentas y el riesgo de dobles envíos accidentales. El uso de componentes cliente interactivos impulsados por `useTransition` y un botón estilizado MDS estándar proporciona una transición perfecta a estados de carga dinámicos y deshabilitados, mejorando drásticamente el flujo interactivo de alta fidelidad sin afectar la renderización estática (PPR).
+**Learning:** Los formularios de Server Actions del lado del servidor puros no brindan retroalimentación visual al usuario durante su procesamiento, lo que resulta en una experiencia lenta en conexiones lentas y el riesgo de dobles envíos accidentales. El uso de componentes cliente interactivos impulsados por `useTransition` and un botón estilizado MDS estándar proporciona una transición perfecta a estados de carga dinámicos y deshabilitados, mejorando drásticamente el flujo interactivo de alta fidelidad sin afectar la renderización estática (PPR).
 **Action:** Convertir los botones y formularios críticos de interacción directa (bajas, altas, inicios de partido) en componentes del lado del cliente rápidos con estados de transición pendientes.
 
 ## 2026-07-28 - Estandarización de Filtros Sólidos y Cooldown en Tarjetas de Turno

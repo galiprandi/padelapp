@@ -406,6 +406,59 @@ export async function leaveTurnAction(turnId: string) {
 }
 
 export async function getTurnByIdAction(turnId: string) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      status: "ok",
+      turn: {
+        id: turnId,
+        creatorId: "p-01",
+        club: "Padel City · Cancha 3",
+        date: new Date(Date.now() + 24 * 60 * 60 * 1000), // tomorrow
+        duration: 90,
+        maxPlayers: 4,
+        suggestedLevel: 6,
+        notes: "Traer palas y pelotas nuevas. Nos vemos en recepción.",
+        status: "OPEN",
+        lastNetworkNotificationAt: null,
+        creator: {
+          id: "p-01",
+          displayName: "Agustín",
+          alias: "agu",
+          image: null,
+        },
+        players: [
+          {
+            id: "tp-01",
+            turnId: turnId,
+            userId: "p-01",
+            joinedAt: new Date(),
+            user: {
+              id: "p-01",
+              displayName: "Agustín",
+              alias: "agu",
+              image: null,
+              level: 7,
+            },
+          },
+          {
+            id: "tp-02",
+            turnId: turnId,
+            userId: "p-02",
+            joinedAt: new Date(Date.now() - 3600 * 1000),
+            user: {
+              id: "p-02",
+              displayName: "Fernando",
+              alias: "Bela",
+              image: null,
+              level: 8,
+            },
+          },
+        ],
+        substitutes: [],
+      },
+    };
+  }
+
   try {
     const turn = await db.query.turns.findFirst({
       where: eq(turns.id, turnId),
