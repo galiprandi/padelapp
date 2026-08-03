@@ -74,6 +74,7 @@ async function ProfileFormSection() {
       displayName={user.displayName}
       email={user.email}
       matchesPlayed={user.matchesPlayed}
+      initialLevel={user.level}
     />
   );
 }

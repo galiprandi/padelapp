@@ -25,12 +25,14 @@ interface RankingListItemProps {
   };
   index: number;
   viewerId?: string | null;
+  customPosition?: number;
 }
 
 export function RankingListItem({
   player,
   index,
   viewerId,
+  customPosition,
 }: RankingListItemProps) {
   const isViewer = player.id === viewerId;
   const recentForm = player.matchPlayers.map((mp) => {
@@ -58,7 +60,7 @@ export function RankingListItem({
             : "bg-muted text-muted-foreground",
         )}
       >
-        {player.rankingPosition ?? index + 1}
+        {customPosition ?? player.rankingPosition ?? index + 1}
       </div>
 
       <div className="flex items-center gap-2 flex-1 min-w-0">
