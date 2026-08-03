@@ -2,6 +2,7 @@
 - [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
+- [x] 2026-08-03 — Correct Game Level Selector Initialization: Resolved a TypeScript type-checking and production build-breaking error by correctly passing the user's initialLevel prop (`initialLevel={user.level}`) to the `<ProfileForm />` component on the profile edit page (`/me/profile`). (PR #roby/profile/fix-level-initialization)
 - [x] 2026-07-31 — Stable Bypass Auth & Next.js 16 PPR Dynamic Prerendering Restoration: Standardized the session expiration to a static date and integrated asynchronous `cookies()` signaling inside `auth()`'s bypass flow to resolve Next.js 16's strict prerendering bails, enabling a seamless production build pipeline. (PR #roby/profile/stable-bypass-auth-ppr)
 - [x] 2026-07-30 — Biometric Login Restoration, Back Navigation Standardization & Profile Centering Layout: Reinstated PasskeyLoginButton on the login screen, standardized magic-link back-navigation with MDS keyboard focus rings, and resolved public profile layout shifting with an absolute-positioned ShareButton. (PR #roby/profile/onboarding-ux-refinements)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
@@ -20,6 +21,10 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 LEARNINGS
+## 2026-08-03 - Correct Game Level Selector Initialization
+**Learning:** When using structured profiles where child components (like `ProfileForm`) declare strict, mandatory prop types (such as `initialLevel: number`), any schema-driven parent wrapper must correctly forward these props from the database shell query. Neglecting to pass these properties results in compilation blocks during `pnpm tsc` and production build failures, even if the sub-component provides fallback or local state management.
+**Action:** Always inspect the required props defined in interactive client forms and ensure the parent page's dynamic query shell passes them exactly to prevent compilation breakages.
+
 ## 2026-07-31 - Stable Bypass Auth & Next.js 16 PPR Dynamic Prerendering Restoration
 **Learning:** Under Next.js 16's Partial Prerendering (PPR) compilation, any server component rendering that encounters dynamic execution (such as `new Date()`) is expected to have hit a dynamic data access first (like reading cookies or headers). When `AUTH_BYPASS === "true"` is activated, returning a purely static mock session prevents Next.js's compiler from realizing that components like `DashboardContent` are request-time dynamic, leading to unstable-value prerender failures during builds. Forcing a dynamic signal (by calling `await cookies()` inside the bypassed `auth()` function) and returning a static `expires` ISO timestamp ensures Next.js correctly defer-stream's dynamic regions at build time, restoring complete static shell compilation.
 **Action:** Always pair mock/bypassed dynamic server functions with a framework-native dynamic signal (like `cookies()` or `headers()`) and static mock datestamps to keep the build pipeline 100% compliant with PPR static compilation targets.
