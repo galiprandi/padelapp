@@ -21,7 +21,9 @@ import {
   Edit3,
   MapPin,
   Info,
+  TrendingUp,
 } from "lucide-react";
+import { levelOptions } from "@/lib/mock-data";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -271,6 +273,22 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               </p>
             </div>
           </div>
+
+          {turn.suggestedLevel && (
+            <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold truncate">
+                  {levelOptions.find((opt) => Number(opt.value) === turn.suggestedLevel)?.label ?? `Nivel ${turn.suggestedLevel}`}
+                </p>
+                <p className="text-xs text-muted-foreground leading-normal">
+                  {levelOptions.find((opt) => Number(opt.value) === turn.suggestedLevel)?.description ?? "Nivel de referencia para el partido."}
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="bg-card p-4 border-t border-border flex flex-col gap-2">
             <div className="flex justify-between items-center">

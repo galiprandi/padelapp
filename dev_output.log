@@ -1,0 +1,644 @@
+
+> padelred@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.3.0-preview.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 563ms
+✓ Running next.config.ts took 49ms
+- Cache Components enabled
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling /me/profile ...
+ GET /me/profile 200 in 7.2s (next.js: 5.5s, proxy.ts: 258ms, application-code: 1519ms)
+ POST /me/profile 200 in 44ms (next.js: 8ms, proxy.ts: 13ms, application-code: 23ms)
+  └─ ƒ updateUserProfileAction("agu", null, 4) in 3ms src/(app)/me/actions.ts
+ GET /turnos/nuevo 200 in 1755ms (next.js: 1064ms, proxy.ts: 9ms, application-code: 682ms)
+ GET /api/auth/session 200 in 47ms (next.js: 32ms, application-code: 15ms)
+ GET /api/auth/session 200 in 18ms (next.js: 4ms, application-code: 13ms)
+ GET /api/auth/session 200 in 24ms (next.js: 8ms, application-code: 16ms)
+ GET /api/auth/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+(node:114772) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+⨯ Error: Failed query: select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2
+params: p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: `select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2`,
+  params: [ 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 2.0s (next.js: 667ms, application-code: 1372ms)
+⨯ Error: Failed query: select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2
+params: p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: `select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2`,
+  params: [ 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1126ms (next.js: 4ms, application-code: 1123ms)
+Error creating turn: Error: Failed query: insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"
+params: e11bce8c-5907-4acd-ae26-e29344dcf0fc,p-01,Padel Club Urquiza,2026-12-15T19:00:00.000Z,90,4,4,,2026-08-02T20:17:48.769Z
+    at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+  34 |
+  35 |   try {
+> 36 |     const [turn] = await db
+     |                    ^
+  37 |       .insert(turns)
+  38 |       .values({
+  39 |         creatorId: session.user.id, {
+  query: 'insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"',
+  params: [
+    'e11bce8c-5907-4acd-ae26-e29344dcf0fc',
+    'p-01',
+    'Padel Club Urquiza',
+    '2026-12-15T19:00:00.000Z',
+    90,
+    4,
+    4,
+    '',
+    '2026-08-02T20:17:48.769Z'
+  ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+    34 |
+    35 |   try {
+  > 36 |     const [turn] = await db
+       |                    ^
+    37 |       .insert(turns)
+    38 |       .values({
+    39 |         creatorId: session.user.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ POST /turnos/nuevo 200 in 2.1s (next.js: 4ms, proxy.ts: 7ms, application-code: 2.1s)
+  └─ ƒ createTurnAction({"club":"Padel Club Urquiza","date":"2026-12-15T19:00:00.000Z","duration":90,"...":"3 items not stringified"}) in 2033ms src/(app)/turnos/actions.ts
+ GET /turnos/nuevo 200 in 504ms (next.js: 4ms, proxy.ts: 5ms, application-code: 495ms)
+ GET /api/auth/session 200 in 51ms (next.js: 37ms, application-code: 14ms)
+ GET /api/auth/session 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET /api/auth/session 200 in 12ms (next.js: 3ms, application-code: 9ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1158ms (next.js: 4ms, application-code: 1154ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1103ms (next.js: 2ms, application-code: 1101ms)
+Error creating turn: Error: Failed query: insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"
+params: 9fcfad3d-41fb-45bc-87f7-0d491e0f6088,p-01,Padel Club Urquiza,2026-12-15T19:00:00.000Z,90,4,4,,2026-08-02T20:18:22.373Z
+    at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+  34 |
+  35 |   try {
+> 36 |     const [turn] = await db
+     |                    ^
+  37 |       .insert(turns)
+  38 |       .values({
+  39 |         creatorId: session.user.id, {
+  query: 'insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"',
+  params: [
+    '9fcfad3d-41fb-45bc-87f7-0d491e0f6088',
+    'p-01',
+    'Padel Club Urquiza',
+    '2026-12-15T19:00:00.000Z',
+    90,
+    4,
+    4,
+    '',
+    '2026-08-02T20:18:22.373Z'
+  ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+    34 |
+    35 |   try {
+  > 36 |     const [turn] = await db
+       |                    ^
+    37 |       .insert(turns)
+    38 |       .values({
+    39 |         creatorId: session.user.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ POST /turnos/nuevo 200 in 1982ms (next.js: 9ms, proxy.ts: 7ms, application-code: 1966ms)
+  └─ ƒ createTurnAction({"club":"Padel Club Urquiza","date":"2026-12-15T19:00:00.000Z","duration":90,"...":"3 items not stringified"}) in 1952ms src/(app)/turnos/actions.ts
+ GET /turnos/nuevo 200 in 616ms (next.js: 4ms, proxy.ts: 6ms, application-code: 606ms)
+ GET /api/auth/session 200 in 42ms (next.js: 31ms, application-code: 11ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET /api/auth/session 200 in 7ms (next.js: 3ms, application-code: 4ms)
+ GET /api/auth/session 200 in 7ms (next.js: 2ms, application-code: 4ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1207ms (next.js: 3ms, application-code: 1204ms)
+⨯ Error: Failed query: select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2
+params: p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: `select "MatchPlayer"."id", "MatchPlayer"."displayName", null as "image", "MatchPlayer"."createdAt", false as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" where ("Match"."creatorId" = $1 and "MatchPlayer"."userId" is null and "MatchPlayer"."displayName" is not null and "MatchPlayer"."displayName" != '') order by "MatchPlayer"."createdAt" desc limit $2`,
+  params: [ 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1095ms (next.js: 2ms, application-code: 1092ms)
+Error creating turn: Error: Failed query: insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"
+params: da5441ec-3f56-46fa-a2c0-dfc27ca358e3,p-01,Padel Club Urquiza,2026-12-15T19:00:00.000Z,90,4,4,,2026-08-02T20:19:19.286Z
+    at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+  34 |
+  35 |   try {
+> 36 |     const [turn] = await db
+     |                    ^
+  37 |       .insert(turns)
+  38 |       .values({
+  39 |         creatorId: session.user.id, {
+  query: 'insert into "Turn" ("id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt") values ($1, $2, $3, $4, $5, $6, $7, $8, default, default, default, $9) returning "id", "creatorId", "club", "date", "duration", "maxPlayers", "suggestedLevel", "notes", "status", "lastNetworkNotificationAt", "createdAt", "updatedAt"',
+  params: [
+    'da5441ec-3f56-46fa-a2c0-dfc27ca358e3',
+    'p-01',
+    'Padel Club Urquiza',
+    '2026-12-15T19:00:00.000Z',
+    90,
+    4,
+    4,
+    '',
+    '2026-08-02T20:19:19.286Z'
+  ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async createTurnAction (src/app/(app)/turnos/actions.ts:36:20)
+    34 |
+    35 |   try {
+  > 36 |     const [turn] = await db
+       |                    ^
+    37 |       .insert(turns)
+    38 |       .values({
+    39 |         creatorId: session.user.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ POST /turnos/nuevo 200 in 2.3s (next.js: 22ms, proxy.ts: 45ms, application-code: 2.2s)
+  └─ ƒ createTurnAction({"club":"Padel Club Urquiza","date":"2026-12-15T19:00:00.000Z","duration":90,"...":"3 items not stringified"}) in 2163ms src/(app)/turnos/actions.ts
+✓ Compiled in 253ms
+ GET /turnos/nuevo 200 in 1519ms (next.js: 261ms, proxy.ts: 108ms, application-code: 1150ms)
+ GET /api/auth/session 200 in 313ms (next.js: 177ms, application-code: 137ms)
+ GET /api/auth/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ GET /api/auth/session 200 in 8ms (next.js: 2ms, application-code: 6ms)
+ GET /api/auth/session 200 in 8ms (next.js: 2ms, application-code: 6ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1409ms (next.js: 197ms, application-code: 1212ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1122ms (next.js: 2ms, application-code: 1120ms)
+ POST /turnos/nuevo 200 in 35ms (next.js: 9ms, proxy.ts: 7ms, application-code: 20ms)
+  └─ ƒ createTurnAction({"club":"Padel Club Urquiza","date":"2026-12-15T19:00:00.000Z","duration":90,"...":"3 items not stringified"}) in 2ms src/(app)/turnos/actions.ts
+ GET /t/mock-turn-id 200 in 6.6s (next.js: 2.0s, generate-params: 1049ms, application-code: 3.5s)
+ GET /turnos/nuevo 200 in 2.6s (next.js: 366ms, proxy.ts: 121ms, application-code: 2.1s)
+ GET /api/auth/session 200 in 475ms (next.js: 384ms, application-code: 91ms)
+ GET /api/auth/session 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /api/auth/session 200 in 55ms (next.js: 5ms, application-code: 51ms)
+ GET /api/auth/session 200 in 20ms (next.js: 9ms, application-code: 11ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 1740ms (next.js: 66ms, application-code: 1675ms)
+⨯ Error: Failed query: select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3
+params: p-01,p-01,20
+    at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+    at async GET (src/app/api/recent/route.ts:249:16)
+  10 | const getCachedRecent = unstable_cache(
+  11 |   async (userId: string) => {
+> 12 |     const [userRows, placeholderRows] = await Promise.all([
+     |                                         ^
+  13 |       db
+  14 |         .select({
+  15 |           id: users.id, {
+  query: 'select "User"."id", "User"."displayName", "User"."image", "MatchPlayer"."createdAt", true as "isUser" from "MatchPlayer" inner join "Match" on "MatchPlayer"."matchId" = "Match"."id" inner join "User" on "MatchPlayer"."userId" = "User"."id" where ("Match"."creatorId" = $1 and "User"."id" <> $2 and "MatchPlayer"."userId" is not null) order by "MatchPlayer"."createdAt" desc limit $3',
+  params: [ 'p-01', 'p-01', 20 ],
+  [cause]: error: password authentication failed for user 'neondb_owner'
+      at async getCachedRecent.revalidate (src/app/api/recent/route.ts:12:41)
+      at async GET (src/app/api/recent/route.ts:249:16)
+    10 | const getCachedRecent = unstable_cache(
+    11 |   async (userId: string) => {
+  > 12 |     const [userRows, placeholderRows] = await Promise.all([
+       |                                         ^
+    13 |       db
+    14 |         .select({
+    15 |           id: users.id, {
+    length: 75,
+    severity: 'ERROR',
+    code: '28P01',
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined
+  }
+}
+ GET /api/recent 500 in 2.1s (next.js: 21ms, application-code: 2.1s)
+ POST /turnos/nuevo 200 in 41ms (next.js: 14ms, proxy.ts: 11ms, application-code: 16ms)
+  └─ ƒ createTurnAction({"club":"Padel Club Urquiza","date":"2026-12-15T19:00:00.000Z","duration":90,"...":"3 items not stringified"}) in 1ms src/(app)/turnos/actions.ts
+ GET /t/mock-turn-id 200 in 946ms (next.js: 93ms, generate-params: 21ms, application-code: 832ms)

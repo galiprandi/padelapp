@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ClubInput } from "@/components/club-input";
-import { updateTurnAction } from "../../actions";
+import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
-import { Loader2, Zap, Info, Clock, Check } from "lucide-react";
+import { Loader2, Check, Zap, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { levelOptions } from "@/lib/mock-data";
 
@@ -26,33 +26,23 @@ const PLAYER_OPTIONS = [
   { value: "10", label: "10 jugadores" },
 ];
 
-interface EditTurnFormProps {
-  id: string;
-  initialTurn: {
-    club: string;
-    date: string;
-    time: string;
-    duration: string;
-    maxPlayers: string;
-    notes: string;
-    suggestedLevel: number;
-  };
+interface CreateTurnFormProps {
   userLevel: number;
 }
 
-export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) {
+export function CreateTurnForm({ userLevel }: CreateTurnFormProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const [formData, setFormData] = useState({
-    club: initialTurn.club,
-    date: initialTurn.date,
-    time: initialTurn.time,
-    duration: initialTurn.duration,
-    maxPlayers: initialTurn.maxPlayers,
-    notes: initialTurn.notes,
-    suggestedLevel: initialTurn.suggestedLevel ?? 6,
+    club: "",
+    date: "",
+    time: "",
+    duration: "90",
+    maxPlayers: "4",
+    notes: "",
+    suggestedLevel: 6,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,7 +56,7 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
     startTransition(async () => {
       const combinedDate = new Date(`${formData.date}T${formData.time}`);
 
-      const response = await updateTurnAction(id, {
+      const response = await createTurnAction({
         club: formData.club,
         date: combinedDate.toISOString(),
         duration: parseInt(formData.duration),
@@ -76,10 +66,17 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
       });
 
       if (response.status === "ok") {
-        showToast("Turno actualizado con éxito");
-        router.push(`/t/${id}`);
+        const turnUrl = `${window.location.origin}/t/${response.turnId}`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Sumate a mi turno de pádel: ${turnUrl}`)}`;
+        showToast("Turno creado. Compartilo por WhatsApp.", {
+          action: {
+            label: "WhatsApp",
+            onClick: () => window.open(whatsappUrl, "_blank"),
+          },
+        });
+        router.push(`/t/${response.turnId}`);
       } else {
-        showToast(response.message || "Error al actualizar el turno");
+        showToast(response.message || "Error al crear el turno");
       }
     });
   };
@@ -113,7 +110,7 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
               onChange={(value) => setFormData({ ...formData, club: value })}
               required
               aria-required="true"
-              className="h-10 rounded-lg animate-none"
+              className="h-12 rounded-lg"
             />
           </div>
 
@@ -131,10 +128,12 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
                 id="date"
                 type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
                 required
                 aria-required="true"
-                className="h-10 rounded-lg animate-none"
+                className="h-12 rounded-lg"
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -149,22 +148,20 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
                 id="time"
                 type="time"
                 value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
                 required
                 aria-required="true"
-                className="h-10 rounded-lg animate-none"
+                className="h-12 rounded-lg"
               />
             </div>
           </div>
 
           {/* Duration Selector */}
           <div className="flex flex-col gap-3">
-            <Label
-              id="duration-label"
-              className="text-sm font-semibold flex items-center gap-2 text-foreground"
-            >
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              Duración del turno
+            <Label id="duration-label" className="text-sm font-semibold text-foreground">
+              Duración
             </Label>
             <div
               role="radiogroup"
@@ -179,12 +176,14 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
-                    onClick={() => setFormData({ ...formData, duration: option.value })}
+                    onClick={() =>
+                      setFormData({ ...formData, duration: option.value })
+                    }
                     className={cn(
-                      "flex items-center justify-center h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                      "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                       isSelected
-                        ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
+                        ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
                     )}
                   >
                     {option.label}
@@ -196,8 +195,7 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
 
           {/* Suggested Level Selector */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="suggestedLevel" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-              <Info className="h-4 w-4 text-muted-foreground" />
+            <Label htmlFor="suggestedLevel" className="text-sm font-semibold text-foreground">
               Nivel sugerido
             </Label>
             <select
@@ -222,7 +220,7 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
             </p>
 
             {levelMismatch && (
-              <div className="mt-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 flex gap-2.5 items-start text-left text-xs text-amber-700 dark:text-amber-500 leading-normal animate-none">
+              <div className="mt-2 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 flex gap-2.5 items-start text-left text-xs text-amber-700 dark:text-amber-500 leading-normal">
                 <Info className="h-4 w-4 shrink-0 text-amber-500 mt-0.5" />
                 <div>
                   <p className="font-bold">Aviso de nivel</p>
@@ -238,11 +236,7 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
 
           {/* Max Players Selector */}
           <div className="flex flex-col gap-3">
-            <Label
-              id="players-label"
-              className="text-sm font-semibold flex items-center gap-2 text-foreground"
-            >
-              <Check className="h-4 w-4 text-muted-foreground" />
+            <Label id="players-label" className="text-sm font-semibold text-foreground">
               Cupos totales
             </Label>
             <div
@@ -258,12 +252,14 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
-                    onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
+                    onClick={() =>
+                      setFormData({ ...formData, maxPlayers: option.value })
+                    }
                     className={cn(
-                      "flex items-center justify-between px-4 h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                      "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                       isSelected
-                        ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
+                        ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
                     )}
                   >
                     <span>{option.label}</span>
@@ -277,8 +273,10 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
           {/* Notes */}
           <div className="flex flex-col gap-1.5">
             <div className="flex justify-between items-center">
-              <Label htmlFor="notes" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                <Info className="h-4 w-4 text-muted-foreground" />
+              <Label
+                htmlFor="notes"
+                className="text-sm font-semibold text-foreground"
+              >
                 Notas adicionales
               </Label>
               <span className="text-xs text-muted-foreground">
@@ -288,27 +286,25 @@ export function EditTurnForm({ id, initialTurn, userLevel }: EditTurnFormProps) 
             <Textarea
               id="notes"
               maxLength={200}
-              placeholder="Ej: Traer pelotas nuevas..."
+              placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
               value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="min-h-[100px] rounded-lg resize-none animate-none"
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
+              className="min-h-[100px] rounded-lg resize-none"
             />
           </div>
         </div>
       </div>
 
-      <Button
-        type="submit"
-        className="w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98]"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full h-12 rounded-lg font-bold text-base" disabled={isPending}>
         {isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Actualizando...
+            Creando...
           </>
         ) : (
-          "Guardar cambios"
+          "Crear turno y compartir link"
         )}
       </Button>
     </form>

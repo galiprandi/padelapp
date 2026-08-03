@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getTurnByIdAction } from "../../actions";
 import { EditTurnForm } from "./edit-form";
 import { Suspense } from "react";
+import { getEditableProfile } from "@/lib/queries";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -72,9 +73,12 @@ async function TurnEditContent({ params }: EditTurnPageProps) {
     redirect("/login");
   }
 
-  const response = await getTurnByIdAction(id);
+  const [response, user] = await Promise.all([
+    getTurnByIdAction(id),
+    getEditableProfile(session.user.id),
+  ]);
 
-  if (response.status !== "ok" || !response.turn) {
+  if (response.status !== "ok" || !response.turn || !user) {
     redirect("/turnos");
   }
 
@@ -88,6 +92,7 @@ async function TurnEditContent({ params }: EditTurnPageProps) {
     duration: turn.duration.toString(),
     maxPlayers: turn.maxPlayers.toString(),
     notes: turn.notes || "",
+    suggestedLevel: turn.suggestedLevel,
   };
 
   return (
@@ -106,7 +111,7 @@ async function TurnEditContent({ params }: EditTurnPageProps) {
         </div>
       </div>
 
-      <EditTurnForm id={id} initialTurn={initialTurn} />
+      <EditTurnForm id={id} initialTurn={initialTurn} userLevel={user.level} />
     </>
   );
 }

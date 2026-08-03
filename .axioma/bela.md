@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-02 — Suggested Game Level & Proactive Warning Banners (PR bela/turnos/level-recommendations-and-ppr-refactor)
 - [x] 2026-08-01 — Turn Social Proof & Contact Highlights (bela/turnos/social-proof-contacts)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 - [x] 2026-07-17 — Enforce Cooldown en acción de salvage manual `openToNetworkAction` para evitar spam de notificaciones.
@@ -22,6 +23,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 LEARNINGS
+## 2026-08-02 - Suggested Game Level & Proactive Warning Banners
+**Learning:** Adding a suggested level selector and presenting it in both the creation/editing forms and public detail views improves turn matching quality immensely. Refactoring the creation page to a server-side PPR/Suspense boundary with a nested client form allows us to load the user's level securely from the server, compare it client-side with zero layout shifts, and easily mock database operations under AUTH_BYPASS mode for robust offline testing.
+**Action:** Always favor separating monolithic client-side views into a Server Component shell and a nested stateful Client Form to leverage PPR, server-side data preloading, and safe local mocking.
+
 ## 2026-08-01 - Turn Social Proof & Contact Highlights
 **Learning:** Showing social proof (such as which of the viewer's padel contacts are already playing) on high-level list views like `/turnos` or the `/me` dashboard drastically drives user engagement and conversion for salvaging incomplete turns. This requires nested profile retrieval in parent queries while maintaining strict Next.js PPR boundaries.
 **Action:** Always seek to propagate minimal, high-impact social proof triggers in summary cards (e.g. TurnCard) by passing contextual contacts down from layout/shell components.
