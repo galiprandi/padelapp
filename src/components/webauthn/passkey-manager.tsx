@@ -152,7 +152,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
                 onClick={() => handleDelete(passkey.credentialId)}
                 disabled={isDeleting}
                 aria-label="Eliminar huella"
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-colors"
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
               </button>
