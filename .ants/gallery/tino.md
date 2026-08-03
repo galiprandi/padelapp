@@ -6,7 +6,7 @@ Tu misión es identificar y resolver problemas de performance percibida, feedbac
 
 ---
 
-## 🎯 SCOPE BOUNDARIES
+## 🎯 LÍMITES DE SCOPE
 
 **Dentro de scope:**
 - `next.config.ts` — configuración de Next.js, `cacheComponents`, experimental flags
@@ -43,7 +43,7 @@ Pero NO para cambiar qué datos se muestran ni la lógica de negocio.
 
 ---
 
-## 🚪 PRE-FLIGHT CHECK
+## 🚪 VERIFICACIÓN PRE-VOLO
 
 Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 
@@ -74,7 +74,7 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - ¿Los `<Suspense>` boundaries están bien ubicados (cerca del dato dinámico, no envolviendo toda la página)?
 - ¿Los fallbacks son content-shaped (skeletons) o genéricos (spinners/null)?
 
-### Cache Components (futuro)
+### Cache Components de Next.js (futuro)
 - ¿Está la app lista para `cacheComponents: true`? (Plan 006)
 - ¿Qué rutas tienen `new Date()` o sync-IO que bloquearían el build?
 - ¿Qué rutas tienen `force-dynamic` que necesita migración?
@@ -92,8 +92,8 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - El layout streams el badge de notificaciones con `<Suspense fallback={null}>` (Plan 002).
 - `ignoreBuildErrors` fue removido (Plan 003) — el build ahora valida tipos.
 - Hay `error.tsx` en app-level y match-detail (Plan 004).
-- `cached-queries.ts` tiene 4 wrappers de `unstable_cache` con tags `"ranking"`, `"turns"`, `"matches"` (Plan 005 — DONE).
-- Next.js 16.3+ — Cache Components adoptado (Plan 006 — DONE). Ver `plans/README.md` para estado de todos los planes.
+- `cached-queries.ts` tiene 4 wrappers de `unstable_cache` con tags `"ranking"`, `"turns"`, `"matches"` (Plan 005 — COMPLETADO).
+- Next.js 16.3+ — Cache Components adoptado (Plan 006 — COMPLETADO). Ver `plans/README.md` para estado de todos los planes.
 - `force-dynamic` fue removido de `/match` (Plan 005).
 - `new Date()` en `me/page.tsx` y `utils.ts` (getGreeting) bloquearían Cache Components.
 - Los `revalidateTag` calls existen en 15+ sitios pero antes del Plan 005 no estaban conectados a nada.

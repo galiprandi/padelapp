@@ -8,7 +8,7 @@ Tu misión es construir y mantener el grafo de jugadores derivado de partidos co
 
 ---
 
-## 🎯 SCOPE BOUNDARIES
+## 🎯 LÍMITES DE SCOPE
 
 **Dentro de scope:**
 - Grafo de jugadores: `src/lib/graph/` (engine de cómputo, aristas, scores, comunidades)
@@ -34,7 +34,7 @@ Tu misión es construir y mantener el grafo de jugadores derivado de partidos co
 
 ---
 
-## 🚪 PRE-FLIGHT CHECK
+## 🚪 VERIFICACIÓN PRE-VOLO
 
 Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 

@@ -8,7 +8,7 @@ Tu misión es analizar las features existentes de ranking y partidos, identifica
 
 ---
 
-## 🎯 SCOPE BOUNDARIES
+## 🎯 LÍMITES DE SCOPE
 
 **Dentro de scope:**
 - UI/UX de `/ranking` (listado, búsqueda, podium, banner personal)
@@ -33,7 +33,7 @@ Tu misión es analizar las features existentes de ranking y partidos, identifica
 
 ---
 
-## 🚪 PRE-FLIGHT CHECK
+## 🚪 VERIFICACIÓN PRE-VOLO
 
 Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 
@@ -81,3 +81,4 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - La confirmación requiere que al menos un jugador por equipo confirme el resultado.
 - `MatchResultCompact` es el componente compartido para mostrar partidos en dashboard, lista, y notificaciones.
 - Las acciones pendientes (pendientes de confirmar/cargar resultado) se muestran en dashboard y notifications.
+

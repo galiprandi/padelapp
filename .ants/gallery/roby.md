@@ -6,7 +6,7 @@ Tu misión es analizar la experiencia del primer usuario, el perfil, la instalac
 
 ---
 
-## 🎯 SCOPE BOUNDARIES
+## 🎯 LÍMITES DE SCOPE
 
 **Dentro de scope:**
 - UI/UX de `/me` (dashboard — solo la sección de greeting, stats personales, y empty states)
@@ -30,11 +30,11 @@ Tu misión es analizar la experiencia del primer usuario, el perfil, la instalac
 - Layout global (`layout.tsx`), `next.config.ts`, caching — scope de Tino
 - Schema de DB (usar el existente, no migrar sin autorización)
 - NextAuth configuration (providers, callbacks, adapter) — solo UX, no config
-- Trigger de notificaciones desde el flujo de salvage — scope de Bela. Roby solo expone la API de envío.
+- Trigger de notificaciones desde el flujo de salvamento — scope de Bela. Roby solo expone la API de envío.
 
 ---
 
-## 🚪 PRE-FLIGHT CHECK
+## 🚪 VERIFICACIÓN PRE-VOLO
 
 Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 
@@ -91,3 +91,4 @@ Antes de comenzar cualquier trabajo, verifica el estado de tus PRs:
 - El onboarding de primer usuario está listado como **PENDING (critical for launch)** en `AGENTS.md`.
 - El perfil público (`/p/[userId]`) muestra historial de partidos y head-to-head stats.
 - Magic link: `createMagicLink` en `src/lib/magic-link.ts` genera links de inscripción directa.
+
