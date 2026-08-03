@@ -97,7 +97,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                           toast.options.action!.onClick();
                           removeToast(toast.id);
                         }}
-                        className="text-xs font-bold underline underline-offset-2 hover:no-underline"
+                        className="text-xs font-bold underline underline-offset-2 hover:no-underline rounded px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                       >
                         {toast.options.action.label}
                       </button>

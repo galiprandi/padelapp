@@ -1,0 +1,17 @@
+
+> padelred@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.3.0-preview.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 581ms
+✓ Running next.config.ts took 50ms
+- Cache Components enabled
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling /me/profile ...
+ GET /me/profile 200 in 7.8s (next.js: 5.8s, proxy.ts: 289ms, application-code: 1682ms)
+ POST /me/profile 200 in 73ms (next.js: 8ms, proxy.ts: 18ms, application-code: 47ms)
+  └─ ƒ updateUserProfileAction("agu", null, 4) in 4ms src/(app)/me/actions.ts
