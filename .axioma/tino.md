@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-03 — Corrección de error de compilación de TypeScript en Mi Perfil al pasar la prop requerida initialLevel (PR #tino/ux/profile-level-selector-compile-fix)
 - [x] 2026-08-02 — Corrección de error de compilación por inicialización del selector de nivel en perfil (PR #tino/ux/profile-level-selector-compile-fix)
 - [x] 2026-08-01 — Integración de consulta de contador de notificaciones cacheada en NotificationsBadge (PR #tino/perf/notifications-badge-caching-integration)
 - [x] 2026-07-30 — Estandarización de escala táctil de navegación y corrección de colisiones de badge con safe area en móviles (PR #tino/ux/bottom-nav-safe-area-polish)
