@@ -16,7 +16,7 @@ let initError: string | null = null;
  * - Whitespace/quotes wrapping from shell or Vercel UI
  * - Missing "-----BEGIN PRIVATE KEY-----" header
  */
-function sanitizePrivateKey(raw: string): string {
+export function sanitizePrivateKey(raw: string): string {
   let key = raw.trim();
 
   // Strip surrounding quotes (Vercel sometimes wraps values)
