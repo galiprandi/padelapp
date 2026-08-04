@@ -9,8 +9,21 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { type PadelContact } from "@/lib/queries";
 
+interface TurnListItem {
+  id: string;
+  club: string;
+  date: string | Date;
+  creatorId: string | null;
+  players: Array<{ userId?: string; user?: { id: string; displayName: string; alias: string | null; image: string | null } }>;
+  substitutes?: Array<{ userId: string }>;
+  maxPlayers: number;
+  suggestedLevel: string | number;
+  status?: string;
+  [key: string]: unknown;
+}
+
 interface TurnsFilterProps {
-  turns: any[];
+  turns: TurnListItem[];
   userId: string | null;
   contacts?: PadelContact[];
 }
@@ -25,8 +38,8 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
     // For "mis-turnos", the viewer must be creator, player, or substitute
     if (!userId) return false;
     const isCreator = turn.creatorId === userId;
-    const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
-    const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
+    const isJoined = turn.players.some((p) => p.userId === userId);
+    const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
 
     return isCreator || isJoined || isSubstitute;
   });
@@ -35,8 +48,8 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
   const totalMyCount = userId
     ? turns.filter((turn) => {
         const isCreator = turn.creatorId === userId;
-        const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
-        const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
+        const isJoined = turn.players.some((p) => p.userId === userId);
+        const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
         return isCreator || isJoined || isSubstitute;
       }).length
     : 0;
@@ -99,8 +112,8 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
       <div className="flex flex-col gap-2">
         {filteredTurns.length > 0 ? (
           filteredTurns.map((turn) => {
-            const isJoined = turn.players?.some((p: { userId: string }) => p.userId === userId);
-            const isSubstitute = turn.substitutes?.some((s: { userId: string }) => s.userId === userId);
+            const isJoined = turn.players.some((p) => p.userId === userId);
+            const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
             const isCreator = turn.creatorId === userId;
             return (
               <TurnCard
