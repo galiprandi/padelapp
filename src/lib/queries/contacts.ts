@@ -8,6 +8,7 @@ import {
 } from "@/db/schema";
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
 import { userInMatch } from "./helpers";
+import { unstable_cache } from "next/cache";
 
 export interface PadelContact {
   id: string;
@@ -339,3 +340,15 @@ function buildContactsMap(
     (a, b) => b.lastMatchAt.getTime() - a.lastMatchAt.getTime()
   );
 }
+
+/**
+ * Cached version of getPadelContacts.
+ * Keyed by userId and monthsBack. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedPadelContacts = unstable_cache(
+  async (userId: string, options?: { monthsBack?: number }) =>
+    getPadelContacts(userId, options),
+  ["padel-contacts"],
+  { tags: ["matches"], revalidate: 60 }
+);

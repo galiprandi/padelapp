@@ -1,9 +1,11 @@
 export {
   getEnhancedUserMatches,
+  getCachedEnhancedUserMatches,
   getPendingActions,
   getPendingActionsCount,
   getCachedPendingActionsCount,
   getPendingAttendanceActions,
+  getCachedPendingAttendanceActions,
   getHeadToHeadStats,
   getCachedConfirmedMatches,
   getConfirmedMatchesForProfile,
@@ -11,8 +13,11 @@ export {
 
 export {
   getMyUpcomingTurns,
+  getCachedMyUpcomingTurns,
   getMySubstituteTurns,
+  getCachedMySubstituteTurns,
   getRecommendedTurns,
+  getCachedRecommendedTurns,
   getCachedOpenTurns,
 } from "./turn";
 
@@ -20,15 +25,17 @@ export {
   getCachedRanking,
   getCachedRankingSearch,
   getCurrentUserRankingData,
+  getCachedCurrentUserRankingData,
 } from "./ranking";
 
 export {
   getPadelContacts,
+  getCachedPadelContacts,
   getTurnNetworkContacts,
   type PadelContact,
 } from "./contacts";
 
-export { getDashboardUserStats, type DashboardUserStats } from "./dashboard";
+export { getDashboardUserStats, getCachedDashboardUserStats, type DashboardUserStats } from "./dashboard";
 
 export {
   getPublicProfileUser,

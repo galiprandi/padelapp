@@ -138,3 +138,14 @@ export async function getCurrentUserRankingData(userId: string) {
       .slice(0, 5),
   };
 }
+
+/**
+ * Cached version of getCurrentUserRankingData.
+ * Keyed by userId. Invalidated by revalidateTag("ranking").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedCurrentUserRankingData = unstable_cache(
+  async (userId: string) => getCurrentUserRankingData(userId),
+  ["user-ranking-data"],
+  { tags: ["ranking"], revalidate: 60 }
+);
