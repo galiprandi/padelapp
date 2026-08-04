@@ -9,7 +9,6 @@ interface RankingListItemProps {
     displayName: string | null;
     alias: string | null;
     image: string | null;
-    level: number;
     rankingScore: number;
     rankingPosition: number | null;
     rankingDelta: number;
