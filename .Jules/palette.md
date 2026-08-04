@@ -76,3 +76,7 @@
 ## 2026-08-05 - [Raw Custom Buttons Keyboard Focus & Tactile Standardization]
 **Learning:** Standard design library components handle focus rings natively, but raw custom button elements (such as inline action/dismiss controls inside Toast notifications or item deletion rows inside WebAuthn credential lists) frequently omit focus rings and hover/press feedback. Adding standard `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` outline rings and `active:scale-[0.98]` tactile transitions ensures non-mouse users and mobile touch interactions stay completely consistent across the Minimal Design System.
 **Action:** Always audit any manually constructed `<button>` tag and append high-visibility focus states and tactile feedback transitions using standard Tailwind classes.
+
+## 2026-08-06 - [Modal Search List Items Tactile Feedback & Branding Highlights]
+**Learning:** Custom interactive lists rendered inside modals (such as search results or quick-contacts lists) are often styled simply with standard hover highlights. Injecting subtle MDS-compliant active scaling animations (`active:scale-[0.98] transition-all`) on these custom selection rows drastically increases mobile tactile feel and user confidence during input flows without introducing visual weight or clutter.
+**Action:** When styling customized lists of selection buttons inside dialogs or steps, always integrate subtle tactile scaling transitions in conjunction with branding-aligned hover highlights (e.g. `hover:bg-primary/10`).
