@@ -1,7 +1,7 @@
 ## 📋 BACKLOG
-- [ ] Filtro de Actividad en Ranking: Tópico para filtrar jugadores inactivos (sin partidos en los últimos 30 días) para mantener la tabla global competitiva y dinámica.
 
 ## ✅ DONE
+- [x] 2026-08-02 — Implementación del Filtro de Actividad en el Ranking (RankingFilter) con persistencia offline en modo bypass, optimización de renderizado consecutivo para evitar huecos en la visualización de la clasificación (PR #agus/ranking/activity-filter).
 - [x] 2026-08-01 — Visualización Detallada de la Fórmula: Desglose visual interactivo de cómo se calcula el puntaje exacto del jugador (racha actual, bonus de sets ganados, etc.) (PR #agus/ranking/score-breakdown-details).
 - [x] 2026-07-31 — Recordatorio de Confirmación Pendiente: Acción interactiva y banner de alerta para confirmar resultados de partidos pendientes de confirmación directamente desde el ranking, actualizando las puntuaciones inmediatamente (PR #agus/ranking/confirmation-reminder).
 - [x] 2026-07-27 — Ranking Podium Position Deltas & Terminology Accessibility (PR #agus/ranking/podium-deltas-accessibility).
@@ -16,6 +16,10 @@
 - [x] 2026-07-28 — Verificación y validación de la compilación y de la arquitectura de Partial Prerendering (PPR) de Next.js. El codebase se encuentra en estado verde y completamente optimizado.
 
 ## 🧠 LEARNINGS
+### 2026-08-02 - Filtro de Actividad en Clasificación y Mock Bypass de Consultas
+**Learning:** Al introducir elementos interactivos que dependan de consultas pesadas de bases de datos de cara al público (como el listado del ranking), es fundamental asegurar que estas consultas cuenten con la infraestructura adecuada para soportar el modo de bypass de credenciales de base de datos (`AUTH_BYPASS === "true"`) que usan las pruebas visuales de Playwright. Suministrar una derivación de mock completa de `getCachedRanking` y búsquedas correspondientes permite que las CUJs se validen sin necesidad de un motor PostgreSQL activo. Asimismo, remapear posiciones de forma consecutiva cuando el filtro de inactividad oculta jugadores previene saltos numéricos visualmente incómodos para el usuario.
+**Action:** En cualquier modulo con consultas de clasificación o listados públicos, implemente siempre un fallback elegante para el entorno de bypass, de modo que las pruebas de integración visuales puedan ejecutarse de forma rápida y confiable offline.
+
 ### 2026-08-01 - Desglose Detallado del Puntaje de Clasificación (Interactividad y Transparencia)
 **Learning:** El ranking es un factor clave en la retención del usuario, pero cuando las reglas y fórmulas de juego no son transparentes, los jugadores pierden motivación. Al incorporar un desglose interactivo ("Ver desglose de puntos") mediante un Server Action perezoso y un componente colapsable con estado de transición (`useTransition`), dotamos al usuario de total transparencia matemática de inmediato sin sobrecargar el primer renderizado de la página, ni incurrir en Cumulative Layout Shift (CLS), manteniendo el pre-renderizado parcial (PPR) de Next.js al 100% optimizado.
 **Action:** Utilizar siempre carga bajo demanda (on-demand lazy fetching) para bloques de datos secundarios complejos y detallados, combinando Server Actions con transiciones de React 19 para mantener la interfaz ultra-reactiva y libre de CLS.
