@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   getCachedRanking,
   getCachedRankingSearch,
-  getCurrentUserRankingData,
+  getCachedCurrentUserRankingData,
   getPendingActions,
 } from "@/lib/queries";
 import { Users } from "lucide-react";
@@ -53,7 +53,7 @@ async function RankingContent({ searchParams }: RankingPageProps) {
     : await getCachedRanking();
 
   const currentUser = viewerId
-    ? await getCurrentUserRankingData(viewerId)
+    ? await getCachedCurrentUserRankingData(viewerId)
     : null;
 
   const pendingActions = viewerId ? await getPendingActions(viewerId) : [];

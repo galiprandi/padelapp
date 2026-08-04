@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
-import { getPadelContacts, type PadelContact } from "@/lib/queries";
+import { getCachedPadelContacts, type PadelContact } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
@@ -103,7 +103,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   // Fetch viewer's contacts
   let viewerContacts: PadelContact[] = [];
   if (viewerId) {
-    viewerContacts = await getPadelContacts(viewerId);
+    viewerContacts = await getCachedPadelContacts(viewerId);
   }
   const contactIds = new Set(viewerContacts.map((c) => c.id));
 

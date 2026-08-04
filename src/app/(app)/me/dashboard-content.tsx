@@ -22,14 +22,14 @@ import {
 } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import {
-  getEnhancedUserMatches,
+  getCachedEnhancedUserMatches,
   getPendingActions,
-  getPendingAttendanceActions,
-  getDashboardUserStats,
-  getMyUpcomingTurns,
-  getMySubstituteTurns,
-  getRecommendedTurns,
-  getPadelContacts,
+  getCachedPendingAttendanceActions,
+  getCachedDashboardUserStats,
+  getCachedMyUpcomingTurns,
+  getCachedMySubstituteTurns,
+  getCachedRecommendedTurns,
+  getCachedPadelContacts,
 } from "@/lib/queries";
 import { getUserPasskeys } from "@/lib/webauthn/actions";
 import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
@@ -56,15 +56,15 @@ export default async function DashboardContent() {
     passkeys,
     contacts,
   ] = await Promise.all([
-    getDashboardUserStats(viewerId),
-    getEnhancedUserMatches(viewerId, "PENDING"),
-    getEnhancedUserMatches(viewerId, "CONFIRMED"),
-    getPendingAttendanceActions(viewerId),
-    getMyUpcomingTurns(viewerId, 3),
-    getMySubstituteTurns(viewerId, 3),
-    getRecommendedTurns(viewerId, 3),
+    getCachedDashboardUserStats(viewerId),
+    getCachedEnhancedUserMatches(viewerId, "PENDING"),
+    getCachedEnhancedUserMatches(viewerId, "CONFIRMED"),
+    getCachedPendingAttendanceActions(viewerId),
+    getCachedMyUpcomingTurns(viewerId, 3),
+    getCachedMySubstituteTurns(viewerId, 3),
+    getCachedRecommendedTurns(viewerId, 3),
     getUserPasskeys(),
-    getPadelContacts(viewerId),
+    getCachedPadelContacts(viewerId),
   ]);
 
   const user = userStats;
