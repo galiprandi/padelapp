@@ -12,6 +12,7 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "public/firebase-messaging-sw.js",
+      "public/firebase/**",
     ],
   },
 ];

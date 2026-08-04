@@ -9,8 +9,25 @@ import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+interface RankingPlayer {
+  id: string;
+  displayName: string;
+  alias: string | null;
+  image: string | null;
+  level: number;
+  rankingScore: number;
+  rankingPosition: number | null;
+  rankingDelta: number;
+  wins: number;
+  losses: number;
+  attendanceScore: number;
+  matchesPlayed: number;
+  lastMatchAt: Date | null;
+  matchPlayers: Array<{ position: number; match: { score: string | null } }>;
+}
+
 interface RankingFilterProps {
-  players: any[];
+  players: RankingPlayer[];
   viewerId?: string | null;
   query?: string;
 }

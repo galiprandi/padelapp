@@ -6,6 +6,23 @@ import { cn, calculateWinRate } from "@/lib/utils";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { getUserRankingBreakdownAction } from "@/app/(app)/ranking/actions";
 
+interface RankingBreakdownData {
+  basePoints: number;
+  wins: number;
+  losses: number;
+  winPoints: number;
+  streak: number;
+  streakPoints: number;
+  setsWonBonus: number;
+  lateCount: number;
+  latePenalty: number;
+  noShowCount: number;
+  noShowPenalty: number;
+  decayFactor: number;
+  finalScore: number;
+  lastMatchAt: Date | null;
+}
+
 interface UserRankingStatsProps {
   userId?: string;
   position: number | null;
@@ -23,7 +40,7 @@ interface UserRankingStatsProps {
 function RankingBreakdown({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [breakdown, setBreakdown] = useState<any>(null);
+  const [breakdown, setBreakdown] = useState<RankingBreakdownData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleToggle = () => {
