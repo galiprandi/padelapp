@@ -14,15 +14,28 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Enable auto-merge (squash)
+      - name: Wait for mergeable state then enable auto-merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
+          # Wait for GitHub to calculate mergeable state (can take a few seconds)
+          for i in $(seq 1 10); do
+            MERGEABLE=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.mergeable')
+            echo "Attempt $i: mergeable=$MERGEABLE"
+            if [ "$MERGEABLE" != "null" ] && [ "$MERGEABLE" != "UNKNOWN" ]; then
+              break
+            fi
+            sleep 5
+          done
+
+          PR_ID=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.node_id')
           gh api graphql -f query='
             mutation($prId: ID!, $mergeMethod: PullRequestMergeMethod!) {
               enablePullRequestAutoMerge(input: {pullRequestId: $prId, mergeMethod: $mergeMethod}) {
                 pullRequest { autoMergeRequest { enabledAt } }
               }
             }' \
-            -F prId=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} --jq '.node_id') \
+            -F prId="$PR_ID" \
             -f mergeMethod=SQUASH
