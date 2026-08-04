@@ -109,6 +109,14 @@ The ranking is a **competitive hook** for engagement, not a technical skill meas
 - **Confirmation**: at least one player per team must confirm result.
 - **Attendance**: creator marks attendance post-match; no-shows and late arrivals penalized.
 
+### CI & Branch Protection
+
+- **CI workflow** (`.github/workflows/ci.yml`): runs `eslint .` + `tsc --noEmit` + `vitest run` + `next build` on every PR and push to `main`. Build uses `AUTH_BYPASS=true` with dummy env vars to skip real DB connections during prerender.
+- **Branch protection on `main`**: requires `Lint + Typecheck + Build + Test` (CI) and `Vercel` (deployment) status checks to pass before merge. Strict mode (branch must be up to date with `main`). Linear history enforced (squash or rebase only, no merge commits). Force pushes and branch deletions are blocked.
+- **Auto-merge** (`.github/workflows/auto-merge.yml`): automatically enables squash auto-merge for PRs authored by `galiprandi` on `opened`/`reopened` events. The merge only executes once all required checks pass. Auto-merge stays enabled across subsequent pushes (`synchronize`).
+- **Unit tests**: Vitest with 45 tests covering pure functions (`safeCallbackUrl`, `getMatchWinner`, `calculateWinRate`, `capitalizeName`, `getTurnLabel`, `positionFromTeam`, `avatarFallback`, `buildInitialState`). Test files in `src/lib/__tests__/`. Run locally with `pnpm test`.
+- **Lint**: `pnpm lint` runs `eslint .` (not `next lint`, which was removed in Next.js 16). Errors block CI; warnings do not.
+
 ### Auth — Pitfalls & Learnings
 
 Hard-won knowledge from the security audit (commit history: `508d006`, `916c2c8`, `8ea86a5`, `491bb95`).
