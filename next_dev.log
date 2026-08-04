@@ -5,13 +5,33 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 581ms
-✓ Running next.config.ts took 50ms
+✓ Ready in 564ms
+✓ Running next.config.ts took 51ms
 - Cache Components enabled
 - Experiments (use with caution):
   · optimizePackageImports
 
-○ Compiling /me/profile ...
- GET /me/profile 200 in 7.8s (next.js: 5.8s, proxy.ts: 289ms, application-code: 1682ms)
- POST /me/profile 200 in 73ms (next.js: 8ms, proxy.ts: 18ms, application-code: 47ms)
-  └─ ƒ updateUserProfileAction("agu", null, 4) in 4ms src/(app)/me/actions.ts
+○ Compiling /ranking ...
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 9.7s (next.js: 7.2s, proxy.ts: 265ms, application-code: 2.2s)
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 1152ms (next.js: 33ms, proxy.ts: 23ms, application-code: 1096ms)
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 1355ms (next.js: 6ms, proxy.ts: 6ms, application-code: 1343ms)
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 699ms (next.js: 7ms, proxy.ts: 7ms, application-code: 685ms)
+ GET /api/auth/session 200 in 4.8s (next.js: 4.7s, application-code: 154ms)
+ GET /api/auth/session 200 in 35ms (next.js: 27ms, application-code: 8ms)
+ GET /api/auth/session 200 in 27ms (next.js: 7ms, application-code: 19ms)
+UserRankingBanner rendered with userId: undefined
+ GET /api/auth/session 200 in 24ms (next.js: 16ms, application-code: 7ms)
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 659ms (next.js: 7ms, proxy.ts: 9ms, application-code: 643ms)
+UserRankingBanner rendered with userId: undefined
+UserRankingBanner rendered with userId: undefined
+ GET /ranking 200 in 348ms (next.js: 5ms, proxy.ts: 9ms, application-code: 334ms)
