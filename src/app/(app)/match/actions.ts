@@ -24,8 +24,6 @@ import {
   type MatchType,
 } from "@/lib/match-helpers";
 
-export type { TeamKey, MatchFormat, MatchType };
-
 const MIN_SETS = 1;
 const MAX_SETS = 5;
 
