@@ -103,7 +103,7 @@ export async function computeSkillScores(): Promise<Map<string, number>> {
   return scores;
 }
 
-function getRecencyWeight(lastMatchAt: Date | null): number {
+export function getRecencyWeight(lastMatchAt: Date | null): number {
   if (!lastMatchAt) return 0.5;
   const daysSince =
     (Date.now() - lastMatchAt.getTime()) / (1000 * 60 * 60 * 24);

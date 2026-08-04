@@ -14,13 +14,20 @@ import {
   recomputeStatsForPlayer,
   type ConfirmedMatchInfo,
 } from "@/lib/graph";
+import {
+  isValidMatchType,
+  defaultTeamLabel,
+  sanitizeTeamLabel,
+  teamForPosition,
+  type TeamKey,
+  type MatchFormat,
+  type MatchType,
+} from "@/lib/match-helpers";
+
+export type { TeamKey, MatchFormat, MatchType };
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
-
-export type TeamKey = "A" | "B";
-
-export type MatchFormat = "DOUBLES" | "SINGLES";
 
 export type SlotPayload =
   | {
@@ -44,13 +51,6 @@ const MATCH_STATUS = {
 } as const;
 
 type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
-
-const MATCH_TYPE = {
-  FRIENDLY: "FRIENDLY",
-  LOCAL_TOURNAMENT: "LOCAL_TOURNAMENT",
-} as const;
-
-type MatchType = (typeof MATCH_TYPE)[keyof typeof MATCH_TYPE];
 
 export interface CreateMatchInput {
   matchId?: string;
@@ -84,10 +84,6 @@ export interface CreateMatchResponse {
   message?: string;
 }
 
-function isValidMatchType(value: string): value is MatchType {
-  return Object.values(MATCH_TYPE).includes(value as MatchType);
-}
-
 const FORMAT_POSITIONS: Record<MatchFormat, number[]> = {
   DOUBLES: [0, 1, 2, 3],
   SINGLES: [0, 1],
@@ -97,32 +93,6 @@ const POSITION_TEAMS: Record<MatchFormat, Record<number, TeamKey>> = {
   DOUBLES: { 0: "A", 1: "A", 2: "B", 3: "B" },
   SINGLES: { 0: "A", 1: "B" },
 };
-
-function defaultTeamLabel(team: TeamKey, format: MatchFormat): string {
-  if (format === "SINGLES") {
-    return team === "A" ? "Jugador A" : "Jugador B";
-  }
-  return team === "A" ? "Pareja A" : "Pareja B";
-}
-
-function sanitizeTeamLabel(
-  value: string | undefined,
-  team: TeamKey,
-  format: MatchFormat,
-): string {
-  const trimmed = value?.trim();
-  if (!trimmed || trimmed.length === 0) {
-    return defaultTeamLabel(team, format);
-  }
-  return trimmed;
-}
-
-function teamForPosition(position: number, totalPlayers: number): TeamKey {
-  if (totalPlayers <= 2) {
-    return position === 0 ? "A" : "B";
-  }
-  return position < 2 ? "A" : "B";
-}
 
 /**
  * Helper: fetch a match with its players (used inside transactions).
@@ -1653,12 +1623,37 @@ export async function saveMatchResultAction(
         throw new Error("not-authorized");
       }
 
-      // Update the match score and status
+      // Block edits on already-confirmed matches (both teams validated)
+      const [existingMatch] = await tx
+        .select({ status: matches.status })
+        .from(matches)
+        .where(eq(matches.id, input.matchId))
+        .limit(1);
+
+      if (existingMatch?.status === MATCH_STATUS.CONFIRMED) {
+        throw new Error("already-confirmed");
+      }
+
+      // If editing an existing score, reset all confirmations (stale for the old result)
+      const [prevMatch] = await tx
+        .select({ score: matches.score })
+        .from(matches)
+        .where(eq(matches.id, input.matchId))
+        .limit(1);
+
+      if (prevMatch?.score) {
+        await tx
+          .update(matchPlayers)
+          .set({ resultConfirmed: false })
+          .where(eq(matchPlayers.matchId, input.matchId));
+      }
+
+      // Update the match score and status (PENDING until both teams confirm)
       await tx
         .update(matches)
         .set({
           score,
-          status: (input.status as MatchStatus) || MATCH_STATUS.CONFIRMED,
+          status: (input.status as MatchStatus) || MATCH_STATUS.PENDING,
         })
         .where(eq(matches.id, input.matchId));
 
@@ -1749,6 +1744,12 @@ export async function saveMatchResultAction(
       return {
         status: "error",
         message: "No puedes actualizar un partido en el que no participas.",
+      };
+    }
+    if (error instanceof Error && error.message === "already-confirmed") {
+      return {
+        status: "error",
+        message: "No se puede editar un partido ya confirmado por ambos equipos.",
       };
     }
     console.error("saveMatchResultAction failed", error);

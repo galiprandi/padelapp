@@ -6,7 +6,7 @@ import { users, matchPlayers } from "@/db/schema";
 import { eq, inArray, isNotNull } from "drizzle-orm";
 import { getMatchWinner } from "@/lib/utils";
 
-interface UserStats {
+export interface UserStats {
   wins: number;
   losses: number;
   streak: number;
@@ -22,7 +22,7 @@ interface UserStats {
   lateCount: number;
 }
 
-function computeScore(stats: UserStats): number {
+export function computeScore(stats: UserStats): number {
   let score = 1000 + stats.wins * 15 + stats.streak * 5 + stats.setsWonBonus;
   score -= stats.noShowPenalty + stats.latePenalty;
 
@@ -42,7 +42,7 @@ function computeScore(stats: UserStats): number {
   return score;
 }
 
-function computeAttendanceScore(stats: UserStats): number {
+export function computeAttendanceScore(stats: UserStats): number {
   const totalAttendanceTracked =
     stats.attendedCount + stats.lateCount + stats.noShowCount;
   return totalAttendanceTracked > 0
@@ -52,7 +52,7 @@ function computeAttendanceScore(stats: UserStats): number {
       : 1.0;
 }
 
-function computeStatsForUsers(matchPlayers: Array<{
+export function computeStatsForUsers(matchPlayers: Array<{
   userId: string | null;
   position: number;
   resultConfirmed: boolean;
