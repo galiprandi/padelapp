@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-04
+## Última actualización: 2026-08-05
 
 ## Estado actual
 
 ### Completado
+- Phase 8 (Clean Obsolete Level Remnants):
+  - [x] 2026-08-05 — Hecho: Eliminación de la etiqueta de nivel `Nivel {contact.level}` en la lista de sugeridos para invitar en la vista pública de detalles de turno (`/t/[id]` / `turn-public-details.tsx`).
+  - [x] 2026-08-05 — Hecho: Eliminación del tipo `level` inactivo de la interfaz `RankingPlayer` de la clasificación (`ranking-filter.tsx`).
+  - [x] 2026-08-05 — Hecho: Eliminación de la tarjeta legacy "Selección de Nivel" y del campo `level: 5` del Component Catalog (`/catalog` / `page.tsx`).
 - Phase 7 (Sugerencia de Parejas al Armar Match - PR coello/graph/matchmaking-pairings-suggestions):
   - [x] 2026-07-30 — Hecho: sugerencia inteligente de parejas 2v2 al crear un partido (`suggestMatchPartnersAction` en `actions.ts`). Analiza preferencias de lado y sinergias (Laplace-smoothed) para balancear de forma óptima los equipos.
   - [x] 2026-07-30 — Hecho: botón "Sugerir Parejas 🧠" integrado en Step 0 (`step-content.tsx`), con validación de 4 cupos y diseño 100% MDS (focus indicators, tactile transitions).
@@ -28,7 +32,7 @@
   - [x] 2026-07-26 — Estadísticas de Red en perfil público: se agregó la tarjeta "Red y Posición" en `/p/[userId]` mostrando el tamaño de red, posición de preferencia con WRs, pareja más exitosa y rival más frecuente.
   - [x] 2026-07-27 — Ego Network Filtering & Visual Highlights: se implementó el filtrado por "Mi red" y "Red completa" en el visualizador del grafo de jugadores.
 - Phase 8 (Mock Graph & Metric Actions, Deprecate Level Remnants):
-  - [x] 2026-08-04 — Mocking del Grafo y Métricas bajo bypass: agregado retorno temprano síncrono de nodos, links y métricas de adopción realistas en `fetchGraphDataRaw` y `fetchAdoptionMetricsRaw` bajo `AUTH_BYPASS` o `MOCK_AUTH`, permitiendo visualización del grafo offline y compilación de Next.js PPR 100% estables.
+  - [x] 2026-08-04 — Mocking del Grafo y Métricas bajo bypass: agregado retorno temprano síncrono de nodos, links y métricas de adopción realistas en `getGraphData` y `getAdoptionMetrics` bajo `AUTH_BYPASS` o `MOCK_AUTH`, permitiendo visualización del grafo offline y compilación de Next.js PPR 100% estables.
   - [x] 2026-08-04 — Deprecación de Nivel Autopercibido: eliminados remanentes del campo `level` de la UI y types, incluyendo detalles de turnos (`/t/[id]`), perfil público (`/p/[userId]`), ranking (`/ranking`), catálogo de componentes (`/catalog`) e interfaces asociadas.
 
 ### Pendiente — Backlog
@@ -36,6 +40,7 @@
 ## ✅ DONE
 - [x] 2026-08-01 — Matchmaking Synergy Calibration with Temporal Decay & Exponential Streak Weighting (PR #224 — merged)
 - [x] 2026-08-04 — High-Fidelity Graph Mocking and Clean Deprecation of Level Remnants (PR #241)
+- [x] 2026-08-05 — Eradicated visual and type-level level remnants in turn details, ranking, and component catalog (PR coello/graph/level-remnants)
 
 ## Learnings
 - **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
@@ -45,11 +50,11 @@
 - **Estadísticas de Red Contextuales**: Presentar métricas calculadas por el motor del grafo (como el tamaño de la red, el lado preferido de juego con sus respectivos porcentajes de victoria, la pareja con más victorias compartidas y el rival más recurrente) en el perfil público del jugador fomenta un ecosistema social integrado y dinámico.
 - **Robustez ante Datos Fríos**: El diseño de consultas del grafo debe incorporar fallbacks por defecto para jugadores con historial incompleto (ej. 0 conexiones, sin partidos jugados en la derecha/revés o sin edges de pareja/rival), permitiendo que la interfaz renderice correctamente un estado inicial limpio sin errores de ejecución.
 - **Asistencia y Feedback Unificados**: Unificar la marcación de asistencia post-partido y el feedback sutil de nivel en un solo formulario y acción de guardado ("Guardar asistencia y feedback") reduce enormemente la fricción de uso para el organizador de partidos, logrando datos limpios del grafo de manera orgánica y sin requerir flujos de onboarding adicionales.
-- **MDS Form Controls**: Al diseñar grupos de botones interactivos personalizados (como los botones de feedback de nivel), usar `role="radiogroup"` and `role="radio"` con estados `aria-checked` e indicadores de focus visibles (`focus-visible:ring-2`) asegura el cumplimiento de accesibilidad para lectores de pantalla sin sacrificar el diseño pulido.
+- **MDS Form Controls**: Al idenitificar grupos de botones interactivos personalizados (como los botones de feedback de nivel), usar `role="radiogroup"` and `role="radio"` con estados `aria-checked` e indicadores de focus visibles (`focus-visible:ring-2`) asegura el cumplimiento de accesibilidad para lectores de pantalla sin sacrificar el diseño pulido.
 - **Exclusión Global en Grafos de Recomendación**: Al priorizar candidatos utilizando múltiples fuentes de datos (ej. aristas directas de contacto y pertenencia a comunidades del grafo), es crítico mantener un registro unificado de exclusiones (`excludedUserIds`). De lo contrario, un candidato que deba ser estrictamente excluido por una regla de negocio (ej. disparidades extremas de habilidad) podría ser reintroducido incorrectamente a través de un canal secundario (ej. la bonificación de pertenecer a la misma comunidad).
 - **Redes Personales (Ego Networks) en Grafos**: El filtrado por "Mi red" permite al jugador concentrarse en su grupo inmediato, mejorando significativamente el rendimiento de carga visual en grafos densos. Al incluir enlaces internos de contactos directos, se puede observar de inmediato el nivel de interacción del ecosistema propio, creando una experiencia sumamente adictiva e interactiva.
 - **Sugerencias de Matchmaking No Intrusivas**: El botón "Sugerir Parejas 🧠" solo debe aparecer de forma proactiva en Step 0 cuando hay exactamente 4 jugadores registrados. Esto evita confusiones o ruido visual para partidos parciales o con placeholders, sirviendo como un gancho inteligente de valor añadido orgánico.
 - **Sinergia y Preferencia de Lado Combinadas**: Diseñar un modelo de optimización que evalúe las 24 permutaciones posibles de 4 jugadores asignados a 4 posiciones exactas (Team A Der/Rev, Team B Der/Rev) permite balancear de forma determinista la sinergia de pareja (net wins) al mismo tiempo que respeta la comodidad de los jugadores en cancha.
-- **Soporte de Mock y Bypass en Sandbox**: Cuando el sandbox de base de datos no tiene credenciales de escritura válidas o es inaccesible offline, introducir un modo de bypass `MOCK_AUTH === "true"` que simula la sesión del organizador Agustín y responde de forma determinista desde la acción del servidor en lugar de usar interceptores de red inestables, garantiza que todo el pipeline de compilación, Next.js PPR y Playwright E2E funcione con un 100% de fiabilidad y consistencia.
+- **Soporte de Mock y Bypass en Sandbox**: Cuando el sandbox de base de datos no tiene credenciales de escritura válidas o es inaccesible offline, introducir un modo de bypass `MOCK_AUTH === "true"` que simula la sesión del organizador Agustín y responde de forma determinista desde la acción del servidor en lugar de usar interceptores de red inestables, garantiza que todo el pipeline de compilación, Next.js PPR and Playwright E2E funcione con un 100% de fiabilidad y consistencia.
 - **Micro-UX Táctil Minimalista (MDS)**: En botones prominentes de sugerencia de nivel superior, usar la escala activa `active:scale-[0.98]` combinada con un estado de desactivación visual prolijo ("Pensando parejas... 🧠") mientras la transición está pendiente, crea una experiencia táctil inmersiva ideal para smartphones.
 - **Matchmaking Synergy Calibration with Temporal Decay & Streak Blending**: Calibrating player partnership synergy requires balancing long-term historical records with recent performance. Decay the deviation of older edges towards the 0.5 default based on `lastMatchAt`, calculate recent form using exponential weightings (`0.8^index`) on chronological partnership matches, and blend them (60% decayed synergy, 40% recent form) to create a streak-aware matchmaking recommender.

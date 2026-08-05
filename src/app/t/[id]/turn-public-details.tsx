@@ -462,9 +462,6 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   <p className="font-bold text-sm truncate leading-tight">
                     {contact.alias ?? contact.displayName}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Nivel {contact.level}
-                  </p>
                 </div>
                 <WhatsAppInviteButton
                   club={turn.club}
