@@ -64,6 +64,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
         onClick={handleToggle}
         className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-primary bg-muted rounded-lg border border-border hover:bg-muted/80 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-expanded={isOpen}
+        aria-controls={`ranking-breakdown-${userId}`}
       >
         {isPending ? (
           <>
@@ -78,7 +79,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
       </button>
 
       {isOpen && (
-        <div className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs">
+        <div id={`ranking-breakdown-${userId}`} className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs">
           {error && (
             <p className="text-rose-500 font-semibold text-center">{error}</p>
           )}

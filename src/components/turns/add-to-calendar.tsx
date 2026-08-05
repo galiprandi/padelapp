@@ -103,13 +103,15 @@ export function AddToCalendarButton({
           open && "border-primary text-primary bg-primary/5",
         )}
         aria-label="Agregar el partido a mi calendario"
+        aria-expanded={open}
+        aria-controls={`calendar-options-${turnId}`}
       >
         <CalendarPlus className="mr-2 h-4 w-4" />
         Agregar al calendario
       </Button>
 
       {open && (
-        <div className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150">
+        <div id={`calendar-options-${turnId}`} className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150">
           <p className="text-xs font-semibold text-muted-foreground text-center">
             Elegí tu calendario:
           </p>
