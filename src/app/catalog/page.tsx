@@ -56,7 +56,6 @@ const SAMPLE_RANKING_PLAYER = {
   displayName: "Carolina Ferrante",
   alias: "Caro",
   image: null,
-  level: 5,
   rankingScore: 1250,
   rankingPosition: 1,
   rankingDelta: 2,
@@ -261,33 +260,6 @@ export default function ComponentCatalogPage() {
                   <p className="text-xs text-muted-foreground">
                     Ingresá tu nombre tal como aparece en tu DNI.
                   </p>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">
-                    Selección de Nivel
-                  </Label>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      { label: "Nivel 5 - Avanzado", selected: true },
-                      { label: "Nivel 4 - Intermedio", selected: false },
-                    ].map((opt) => (
-                      <button
-                        key={opt.label}
-                        className={cn(
-                          "flex items-center justify-between px-4 py-3 rounded-xl border transition-colors text-sm font-medium text-left",
-                          opt.selected
-                            ? "bg-primary/5 border-primary text-foreground"
-                            : "bg-card border-border text-muted-foreground hover:bg-muted",
-                        )}
-                      >
-                        <span>{opt.label}</span>
-                        {opt.selected && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
             </section>
