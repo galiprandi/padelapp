@@ -49,6 +49,112 @@ const CACHE_TAG = "player-graph-viz";
 const CACHE_REVALIDATE = 300; // 5 minutes
 
 async function fetchGraphDataRaw(): Promise<GraphData> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    const mockNodes: GraphNode[] = [
+      {
+        id: "p-01",
+        name: "Agustín Aliprandi",
+        alias: "agu",
+        image: null,
+        skillScore: 1150,
+        community: 1,
+        networkSize: 3,
+        matchesPlayed: 15,
+        preferredSide: "RIGHT",
+      },
+      {
+        id: "p-02",
+        name: "Fernando Belasteguín",
+        alias: "Bela",
+        image: null,
+        skillScore: 1200,
+        community: 1,
+        networkSize: 3,
+        matchesPlayed: 12,
+        preferredSide: "LEFT",
+      },
+      {
+        id: "p-03",
+        name: "Diego Morales",
+        alias: "Gero",
+        image: null,
+        skillScore: 1080,
+        community: 1,
+        networkSize: 3,
+        matchesPlayed: 8,
+        preferredSide: "RIGHT",
+      },
+      {
+        id: "p-04",
+        name: "Facundo Lopez",
+        alias: "Facu",
+        image: null,
+        skillScore: 1020,
+        community: 1,
+        networkSize: 3,
+        matchesPlayed: 6,
+        preferredSide: "LEFT",
+      },
+    ];
+
+    const mockLinks: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 5,
+        partnerMatches: 3,
+        winsA: 2,
+        winsB: 3,
+        winsTogether: 2,
+        lossesTogether: 1,
+        turnsTogether: 4,
+        strength: 12,
+      },
+      {
+        source: "p-01",
+        target: "p-03",
+        rivalMatches: 2,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 2,
+        strength: 5,
+      },
+      {
+        source: "p-02",
+        target: "p-04",
+        rivalMatches: 3,
+        partnerMatches: 2,
+        winsA: 2,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 1,
+        turnsTogether: 3,
+        strength: 8,
+      },
+      {
+        source: "p-03",
+        target: "p-04",
+        rivalMatches: 4,
+        partnerMatches: 1,
+        winsA: 2,
+        winsB: 2,
+        winsTogether: 0,
+        lossesTogether: 1,
+        turnsTogether: 1,
+        strength: 6,
+      },
+    ];
+
+    return {
+      nodes: mockNodes,
+      links: mockLinks,
+      generatedAt: Date.now(),
+    };
+  }
+
   const edges = await db.select().from(playerEdges);
   const stats = await db.select().from(playerGraphStats);
 
@@ -181,6 +287,81 @@ export interface AdoptionMetrics {
 const METRICS_TAG = "adoption-metrics";
 
 async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      totalUsers: 45,
+      totalTurns: 112,
+      totalMatches: 84,
+      confirmedMatches: 76,
+      totalEnrollments: 345,
+      activeSessions: 18,
+      pushEnabled: 24,
+      newUsers7d: 5,
+      newTurns7d: 12,
+      newMatches7d: 8,
+      newUsers30d: 15,
+      newTurns30d: 35,
+      newMatches30d: 28,
+      userGrowthRate: 15.4,
+      turnGrowthRate: 8.5,
+      matchGrowthRate: 12.0,
+      networkDensity: 0.12,
+      avgConnectionsPerPlayer: 4.8,
+      communities: [
+        { id: 1, size: 24 },
+        { id: 2, size: 15 },
+        { id: 3, size: 6 },
+      ],
+      topPlayers: [
+        {
+          id: "p-01",
+          name: "Agustín Aliprandi",
+          alias: "agu",
+          image: null,
+          matchesPlayed: 15,
+          networkSize: 12,
+        },
+        {
+          id: "p-02",
+          name: "Fernando Belasteguín",
+          alias: "Bela",
+          image: null,
+          matchesPlayed: 12,
+          networkSize: 10,
+        },
+        {
+          id: "p-03",
+          name: "Diego Morales",
+          alias: "Gero",
+          image: null,
+          matchesPlayed: 8,
+          networkSize: 8,
+        },
+      ],
+      recentUsers: [
+        {
+          id: "p-01",
+          name: "Agustín Aliprandi",
+          alias: "agu",
+          image: null,
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        },
+        {
+          id: "p-02",
+          name: "Fernando Belasteguín",
+          alias: "Bela",
+          image: null,
+          createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        },
+      ],
+      topClubs: [
+        { name: "Padel City", turns: 42, matches: 30, total: 72 },
+        { name: "El Monasterio", turns: 25, matches: 18, total: 43 },
+        { name: "Padel 360", turns: 15, matches: 12, total: 27 },
+      ],
+    };
+  }
+
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);

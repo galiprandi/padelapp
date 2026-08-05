@@ -1,6 +1,6 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-07-31
+## Última actualización: 2026-08-04
 
 ## Estado actual
 
@@ -27,13 +27,19 @@
 - Phase 7 (Stats y red social):
   - [x] 2026-07-26 — Estadísticas de Red en perfil público: se agregó la tarjeta "Red y Posición" en `/p/[userId]` mostrando el tamaño de red, posición de preferencia con WRs, pareja más exitosa y rival más frecuente.
   - [x] 2026-07-27 — Ego Network Filtering & Visual Highlights: se implementó el filtrado por "Mi red" y "Red completa" en el visualizador del grafo de jugadores.
+- Phase 8 (Mock Graph & Metric Actions, Deprecate Level Remnants):
+  - [x] 2026-08-04 — Mocking del Grafo y Métricas bajo bypass: agregado retorno temprano síncrono de nodos, links y métricas de adopción realistas en `fetchGraphDataRaw` y `fetchAdoptionMetricsRaw` bajo `AUTH_BYPASS` o `MOCK_AUTH`, permitiendo visualización del grafo offline y compilación de Next.js PPR 100% estables.
+  - [x] 2026-08-04 — Deprecación de Nivel Autopercibido: eliminados remanentes del campo `level` de la UI y types, incluyendo detalles de turnos (`/t/[id]`), perfil público (`/p/[userId]`), ranking (`/ranking`), catálogo de componentes (`/catalog`) e interfaces asociadas.
 
 ### Pendiente — Backlog
 
 ## ✅ DONE
 - [x] 2026-08-01 — Matchmaking Synergy Calibration with Temporal Decay & Exponential Streak Weighting (PR #224 — merged)
+- [x] 2026-08-04 — High-Fidelity Graph Mocking and Clean Deprecation of Level Remnants (PR #241)
 
 ## Learnings
+- **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
+- **Limpieza de Remanentes de Tipado**: Al eliminar un concepto/campo en desuso (como el nivel auto-percibido `level`), es crítico limpiar no solo su renderizado en HTML sino también las firmas de props e interfaces de TypeScript. Esto previene advertencias de variables en desuso e inconsistencias en la mantenibilidad futura del codebase.
 - **Equilibrio de Preferencias de Lado y Sinergia**: En el emparejamiento padel 2v2, el posicionamiento físico en cancha (Derecha vs Revés) es un factor crítico para la comodidad y rendimiento. Priorizar la minimización de penalizaciones por mala asignación de lado como objetivo principal (por sobre la sinergia) y resolver empates de lado mediante la nivelación de sinergias de parejas (con suavizado de Laplace) resulta en una distribución excepcionalmente cómoda y competitiva para todos los jugadores en cancha.
 - **Sincronización Síncrona en State**: Al actualizar un formulario complejo de múltiples pasos de creación, re-mapear IDs de sugerencias contra los objetos de metadatos de usuario (`PlayerOption`) existentes localmente en memoria permite modificar el layout de cupos de forma instantánea sin requerir consultas de red, garantizando una UX ultra-fluida y rápida.
 - **Estadísticas de Red Contextuales**: Presentar métricas calculadas por el motor del grafo (como el tamaño de la red, el lado preferido de juego con sus respectivos porcentajes de victoria, la pareja con más victorias compartidas y el rival más recurrente) en el perfil público del jugador fomenta un ecosistema social integrado y dinámico.

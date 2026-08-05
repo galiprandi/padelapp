@@ -211,7 +211,6 @@ async function PublicProfileContent({
           delta={user.rankingDelta}
           wins={user.wins}
           losses={user.losses}
-          level={user.level}
           matchesPlayed={user.matchesPlayed}
           lastMatchAt={user.lastMatchAt}
         />

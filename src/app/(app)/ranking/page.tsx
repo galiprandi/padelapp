@@ -71,7 +71,6 @@ async function RankingContent({ searchParams }: RankingPageProps) {
           delta={currentUser.rankingDelta}
           wins={currentUser.wins}
           losses={currentUser.losses}
-          level={currentUser.level}
           attendanceScore={currentUser.attendanceScore}
           matchesPlayed={currentUser.matchesPlayed}
           lastMatchAt={currentUser.lastMatchAt}

@@ -30,7 +30,6 @@ interface UserRankingStatsProps {
   delta: number;
   wins: number;
   losses: number;
-  level?: number;
   attendanceScore?: number;
   className?: string;
   matchesPlayed?: number;
