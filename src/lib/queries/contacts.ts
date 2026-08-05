@@ -304,7 +304,7 @@ type ContactMatch = {
  * Shared helper: builds a sorted contacts map from a list of matches.
  * Excludes the user themselves (single-user mode) or all enrolled users (turn mode).
  */
-function buildContactsMap(
+export function buildContactsMap(
   matches: ContactMatch[],
   excludeIds: string | Set<string>,
 ): PadelContact[] {

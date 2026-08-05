@@ -322,7 +322,6 @@ export default function ComponentCatalogPage() {
                     delta={5}
                     wins={15}
                     losses={5}
-                    level={5}
                     attendanceScore={0.95}
                     matchesPlayed={20}
                   />
