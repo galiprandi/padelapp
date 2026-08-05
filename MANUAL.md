@@ -350,7 +350,9 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 ### No implementado
 - Tutorial guiado paso a paso
 - Onboarding interactivo con tooltips
-- Detección de primer login para redirigir automáticamente al perfil
+
+### Implementado
+- Detección de primer login para redirigir automáticamente al perfil (mediante redirección única por sesión al perfil si no tiene alias)
 
 ---
 
