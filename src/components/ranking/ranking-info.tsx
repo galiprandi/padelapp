@@ -13,6 +13,7 @@ export function RankingInfo() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 text-left hover:bg-muted transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         aria-expanded={isOpen}
+        aria-controls="ranking-rules-content"
       >
         <div className="flex items-center gap-2.5">
           <Info className="h-4 w-4 text-primary" />
@@ -29,7 +30,7 @@ export function RankingInfo() {
       </button>
 
       {isOpen && (
-        <div className="border-t border-border p-4 space-y-4 bg-card text-sm">
+        <div id="ranking-rules-content" className="border-t border-border p-4 space-y-4 bg-card text-sm">
           {/* Fórmulas */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
