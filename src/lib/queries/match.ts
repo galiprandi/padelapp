@@ -314,3 +314,26 @@ export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
   });
   return result;
 }
+
+/**
+ * Cached version of getEnhancedUserMatches.
+ * Keyed by userId, statusFilter, and limit. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedEnhancedUserMatches = unstable_cache(
+  async (userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED" | "CANCELLED", limit = 20) =>
+    getEnhancedUserMatches(userId, statusFilter, limit),
+  ["enhanced-user-matches"],
+  { tags: ["matches"], revalidate: 60 }
+);
+
+/**
+ * Cached version of getPendingAttendanceActions.
+ * Keyed by userId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedPendingAttendanceActions = unstable_cache(
+  async (userId: string) => getPendingAttendanceActions(userId),
+  ["pending-attendance-actions"],
+  { tags: ["matches"], revalidate: 60 }
+);

@@ -3,15 +3,7 @@ import { and, ilike, ne, or } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { getPadelContacts } from "@/lib/queries";
-import { unstable_cache } from "next/cache";
-
-// Cache contacts per user for 60s, tagged for invalidation on match changes
-const getCachedContacts = unstable_cache(
-  async (userId: string) => getPadelContacts(userId),
-  ["padel-contacts"],
-  { revalidate: 60, tags: ["matches"] },
-);
+import { getCachedPadelContacts } from "@/lib/queries";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -61,7 +53,7 @@ export async function GET(request: Request) {
   }
 
   // Empty query: return top 10 recent contacts (cached)
-  const contacts = await getCachedContacts(session.user.id);
+  const contacts = await getCachedPadelContacts(session.user.id);
 
   return NextResponse.json({
     players: contacts.slice(0, 10).map((player) => ({

@@ -288,7 +288,7 @@ export function ManageSlotModal({
                         type="button"
                         onClick={() => handleSelectRecentPlayer(player)}
                         aria-label={`Agregar a ${player.displayName}`}
-                        className="flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg"
+                        className="flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg active:scale-[0.98] transition-all"
                       >
                         <PlayerAvatar
                           name={player.displayName}
@@ -365,7 +365,7 @@ export function ManageSlotModal({
                         key={player.id}
                         onClick={() => handleSelectPlayer(player)}
                         aria-label={`Seleccionar a ${player.displayName}`}
-                        className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                        className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                       >
                         <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
                         <div className="flex-1 min-w-0">
@@ -404,7 +404,7 @@ export function ManageSlotModal({
                           key={player.id}
                           onClick={() => handleSelectPlayer(player)}
                           aria-label={`Seleccionar a ${player.displayName}`}
-                          className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                          className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                         >
                           <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
                           <div className="flex-1 min-w-0">

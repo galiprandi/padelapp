@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-05 — Integración de Capa de Caching Global para Consultas de Base de Datos en Dashboard y Ranking (PR #tino/perf/dashboard-and-ranking-caching-integration)
 - [x] 2026-08-03 — Corrección de error de compilación de TypeScript en Mi Perfil al pasar la prop requerida initialLevel (PR #tino/ux/profile-level-selector-compile-fix)
 - [x] 2026-08-02 — Corrección de error de compilación por inicialización del selector de nivel en perfil (PR #tino/ux/profile-level-selector-compile-fix)
 - [x] 2026-08-01 — Integración de consulta de contador de notificaciones cacheada en NotificationsBadge (PR #tino/perf/notifications-badge-caching-integration)
@@ -18,6 +19,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 LEARNINGS
+### 2026-08-05 - Capa de Caching Global y Centralización de Consultas en Next.js App Router
+**Learning:** En aplicaciones web Next.js con renderizado parcial (PPR) o estático, las páginas altamente interactivas o de uso frecuente (como el panel principal `/me` o la sección `/ranking`) tienden a realizar múltiples llamadas de base de datos en paralelo. Si estas consultas no están cacheadas, se genera un impacto constante en el pool de conexiones SQL en cada recarga o transición. Centralizar los wrappers de `unstable_cache` con tags de invalidación unificados (`"ranking"`, `"matches"`, `"turns"`) y reusarlos en páginas, componentes públicos y endpoints de API (como `/api/players`) no solo simplifica la arquitectura del codebase al evitar duplicaciones inline de caché, sino que garantiza tiempos de carga instantáneos (0ms de latencia de base de datos) con revalidación reactiva bajo demanda tras mutaciones (Server Actions).
+**Action:** Cachar de forma transversal consultas recurrentes de agregación o listados pesados usando tags de Next.js (`revalidateTag`), asegurando la reutilización del mismo wrapper tanto en rutas de API como en Server Components.
+
 ### 2026-08-02 - Integración y Tipado de Selectores de Referencia en el Perfil de Usuario
 **Learning:** En Next.js, cuando se refactorizan componentes interactivos de cliente o formularios (como `ProfileForm`) para cambiar el flujo de datos o eliminar elementos heredados, es fundamental auditar todas las páginas contenedoras y llamadas del servidor (Server Components) para asegurar que el tipado de TypeScript (`Props`) y los parámetros pasados coincidan exactamente con la firma esperada. Dejar propiedades obligatorias sin inicializar en Server Components genera errores de tipo silenciosos durante el desarrollo local pero que detienen por completo las compilaciones de producción en CI/CD. Al vincular propiedades tipadas estrictamente (`initialLevel`), no solo solucionamos la compilación sino que aseguramos que la hidratación y el estado inicial del cliente sean 100% coherentes.
 **Action:** Al trabajar con formularios interactivos complejos, realizar una comprobación estricta de TypeScript (`pnpm tsc --noEmit`) antes de dar por terminado un ajuste estructural.

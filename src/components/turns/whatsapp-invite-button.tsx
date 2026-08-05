@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { MessageSquare } from "lucide-react";
 import { isToday, isTomorrow } from "@/lib/utils";
 
@@ -19,9 +19,7 @@ export function WhatsAppInviteButton({
   openSlots,
   shareUrl,
 }: WhatsAppInviteButtonProps) {
-  const [whatsappUrl, setWhatsappUrl] = useState("");
-
-  useEffect(() => {
+  const whatsappUrl = useMemo(() => {
     const d = new Date(date);
 
     // Dynamic day formatting
@@ -50,7 +48,7 @@ export function WhatsAppInviteButton({
       openSlots === 1 ? "falta 1 jugador" : `faltan ${openSlots} jugadores`;
     const message = `¡Hola ${contactName}! ¿Te sumás al turno de pádel en ${club} ${dayStr} ${timeStr}? ${slotsText} para completarlo. Anotate acá: ${shareUrl}`;
 
-    setWhatsappUrl(`https://wa.me/?text=${encodeURIComponent(message)}`);
+    return `https://wa.me/?text=${encodeURIComponent(message)}`;
   }, [date, contactName, club, openSlots, shareUrl]);
 
   return (

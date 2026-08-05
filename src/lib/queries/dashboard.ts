@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
 export interface DashboardUserStats {
   id: string;
@@ -59,3 +60,14 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
 
   return user ?? null;
 }
+
+/**
+ * Cached version of getDashboardUserStats.
+ * Keyed by userId. Invalidated by revalidateTag("ranking").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedDashboardUserStats = unstable_cache(
+  async (userId: string) => getDashboardUserStats(userId),
+  ["dashboard-user-stats"],
+  { tags: ["ranking"], revalidate: 60 }
+);

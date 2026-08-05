@@ -1,20 +1,15 @@
 import { Suspense } from "react";
-import Link from "next/link";
-import { EmptyState } from "@/components/empty-state";
 import { UserRankingBanner } from "@/components/ranking/user-ranking-stats";
 import { RankingSearch } from "@/components/ranking/ranking-search";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   getCachedRanking,
   getCachedRankingSearch,
-  getCurrentUserRankingData,
+  getCachedCurrentUserRankingData,
   getPendingActions,
 } from "@/lib/queries";
-import { Users } from "lucide-react";
 import { auth } from "@/auth";
-import { RankingListItem } from "@/components/ranking/ranking-list-item";
-import { RankingPodium } from "@/components/ranking/ranking-podium";
+import { RankingFilter } from "@/components/ranking/ranking-filter";
 import { RankingInfo } from "@/components/ranking/ranking-info";
 import { PendingConfirmationsAlert } from "@/components/ranking/pending-confirmations-alert";
 
@@ -53,13 +48,10 @@ async function RankingContent({ searchParams }: RankingPageProps) {
     : await getCachedRanking();
 
   const currentUser = viewerId
-    ? await getCurrentUserRankingData(viewerId)
+    ? await getCachedCurrentUserRankingData(viewerId)
     : null;
 
   const pendingActions = viewerId ? await getPendingActions(viewerId) : [];
-
-  const topThree = !query ? players.slice(0, 3) : [];
-  const listPlayers = !query ? players.slice(3) : players;
 
   return (
     <div className="flex flex-col gap-6">
@@ -85,43 +77,11 @@ async function RankingContent({ searchParams }: RankingPageProps) {
         />
       )}
 
-      <div className="space-y-3">
-        {players.length > 0 ? (
-          <>
-            {!query && topThree.length > 0 && (
-              <RankingPodium topThree={topThree} viewerId={viewerId} />
-            )}
-
-            <div className="space-y-2">
-              {listPlayers.map((player, index) => (
-                <RankingListItem
-                  key={player.id}
-                  player={player}
-                  index={query ? index : index + 3}
-                  viewerId={viewerId}
-                />
-              ))}
-            </div>
-          </>
-        ) : (
-          <EmptyState
-            icon={Users}
-            title={query ? "No se encontraron jugadores" : "Sin jugadores"}
-            description={
-              query
-                ? `No hay resultados para "${query}".`
-                : "Aún no hay jugadores registrados."
-            }
-            action={
-              query ? (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/ranking">Limpiar búsqueda</Link>
-                </Button>
-              ) : null
-            }
-          />
-        )}
-      </div>
+      <RankingFilter
+        players={players}
+        viewerId={viewerId}
+        query={query}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
 } from "@/db/schema";
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
 import { userInMatch } from "./helpers";
+import { unstable_cache } from "next/cache";
 
 export interface PadelContact {
   id: string;
@@ -303,7 +304,7 @@ type ContactMatch = {
  * Shared helper: builds a sorted contacts map from a list of matches.
  * Excludes the user themselves (single-user mode) or all enrolled users (turn mode).
  */
-function buildContactsMap(
+export function buildContactsMap(
   matches: ContactMatch[],
   excludeIds: string | Set<string>,
 ): PadelContact[] {
@@ -339,3 +340,15 @@ function buildContactsMap(
     (a, b) => b.lastMatchAt.getTime() - a.lastMatchAt.getTime()
   );
 }
+
+/**
+ * Cached version of getPadelContacts.
+ * Keyed by userId and monthsBack. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedPadelContacts = unstable_cache(
+  async (userId: string, options?: { monthsBack?: number }) =>
+    getPadelContacts(userId, options),
+  ["padel-contacts"],
+  { tags: ["matches"], revalidate: 60 }
+);
