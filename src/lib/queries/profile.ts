@@ -7,7 +7,6 @@ export interface PublicProfileUser {
   displayName: string;
   alias: string | null;
   image: string | null;
-  level: number;
   rankingScore: number;
   rankingPosition: number | null;
   rankingDelta: number;
@@ -27,7 +26,6 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
       displayName: userId === "p-01" ? "Agustín" : "Fernando",
       alias: userId === "p-01" ? "agu" : "Bela",
       image: null,
-      level: userId === "p-01" ? 7 : 8,
       rankingScore: userId === "p-01" ? 1150 : 1200,
       rankingPosition: userId === "p-01" ? 2 : 1,
       rankingDelta: userId === "p-01" ? 2 : 0,
@@ -43,7 +41,6 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
       displayName: users.displayName,
       alias: users.alias,
       image: users.image,
-      level: users.level,
       rankingScore: users.rankingScore,
       rankingPosition: users.rankingPosition,
       rankingDelta: users.rankingDelta,
@@ -105,7 +102,6 @@ export async function getGoogleAvatarUrl(userId: string): Promise<string | null>
 export interface EditableProfileData {
   displayName: string;
   alias: string | null;
-  level: number;
   image: string | null;
   email: string;
   matchesPlayed: number;
@@ -119,7 +115,6 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
     return {
       displayName: "Agustín",
       alias: "agu",
-      level: 6,
       image: null,
       email: "agu@mock.test",
       matchesPlayed: 0,
@@ -129,7 +124,6 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
     .select({
       displayName: users.displayName,
       alias: users.alias,
-      level: users.level,
       image: users.image,
       email: users.email,
       matchesPlayed: users.matchesPlayed,

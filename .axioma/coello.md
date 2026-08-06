@@ -1,6 +1,6 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-05
+## Última actualización: 2026-08-06
 
 ## Estado actual
 
@@ -9,6 +9,7 @@
   - [x] 2026-08-05 — Hecho: Eliminación de la etiqueta de nivel `Nivel {contact.level}` en la lista de sugeridos para invitar en la vista pública de detalles de turno (`/t/[id]` / `turn-public-details.tsx`).
   - [x] 2026-08-05 — Hecho: Eliminación del tipo `level` inactivo de la interfaz `RankingPlayer` de la clasificación (`ranking-filter.tsx`).
   - [x] 2026-08-05 — Hecho: Eliminación de la tarjeta legacy "Selección de Nivel" y del campo `level: 5` del Component Catalog (`/catalog` / `page.tsx`).
+  - [x] 2026-08-06 — Hecho: Erradicación absoluta y completa de tipos e interfaces obsoletas de `level` y `suggestedLevel` en los esquemas, componentes y Server Actions de turnos, contactos, perfiles y dashboard. Se actualizó además `MANUAL.md` para remover remanentes del sistema de nivel auto-percibido.
 - Phase 7 (Sugerencia de Parejas al Armar Match - PR coello/graph/matchmaking-pairings-suggestions):
   - [x] 2026-07-30 — Hecho: sugerencia inteligente de parejas 2v2 al crear un partido (`suggestMatchPartnersAction` en `actions.ts`). Analiza preferencias de lado y sinergias (Laplace-smoothed) para balancear de forma óptima los equipos.
   - [x] 2026-07-30 — Hecho: botón "Sugerir Parejas 🧠" integrado en Step 0 (`step-content.tsx`), con validación de 4 cupos y diseño 100% MDS (focus indicators, tactile transitions).
@@ -23,7 +24,7 @@
 - Phase 3 (UI): Carga de posición en cancha ("Derecha" / "Revés") agregada a la UI de `src/app/(app)/match/[matchId]/result/page.tsx` y enviada correctamente en la acción.
 - Phase 4: Eliminar categoría auto-percibida de toda la UI y backend de la aplicación.
 - Phase 5 (Feedback del organizador post-partido):
-  - Creados los server actions `getMatchFeedbacksAction` y `savePlayerFeedbackAction` en `src/app/(app)/match/actions.ts` para obtener y persistir el feedback de nivel del organizador, disparando el recalculo automático del score de nivel (`skillScore`) de los jugadores evaluados.
+  - Creados los server actions `getMatchFeedbacksAction` and `savePlayerFeedbackAction` en `src/app/(app)/match/actions.ts` para obtener y persistir el feedback de nivel del organizador, disparando el recalculo automático del score de nivel (`skillScore`) de los jugadores evaluados.
   - Integrado de forma sutil en la UI de asistencia (`src/components/matches/attendance-marker.tsx`) para permitir al organizador calificar con un solo toque si algún invitado jugó a un nivel diferente ("Más fuerte 💪", "Más flojo 📉"), enviándose de forma simultánea junto con la asistencia sin fricción añadida.
 - Phase 6 (Recomendaciones de turnos con grafo):
   - Refactorizada la función `getTurnNetworkContacts` para implementar una exclusión estricta y global de candidatos con resultados/outcome extremos en rivalidad con cualquiera de los jugadores ya inscritos en el turno.
@@ -41,8 +42,10 @@
 - [x] 2026-08-01 — Matchmaking Synergy Calibration with Temporal Decay & Exponential Streak Weighting (PR #224 — merged)
 - [x] 2026-08-04 — High-Fidelity Graph Mocking and Clean Deprecation of Level Remnants (PR #241)
 - [x] 2026-08-05 — Eradicated visual and type-level level remnants in turn details, ranking, and component catalog (PR coello/graph/level-remnants)
+- [x] 2026-08-06 — Eradicated codebase-wide and documentation-wide remnants of auto-perceived player levels (PR coello/graph/level-remnants-cleanup)
 
 ## Learnings
+- **Limpieza Absoluta de Tipados en Interfaces**: Al erradicar un concepto legacy como el nivel auto-percibido de juego, se deben sincronizar y depurar no solo los componentes de la interfaz de usuario, sino también los types intermedios de las consultas (`PadelContact`, `PublicProfileUser`, `DashboardUserStats`), las estructuras de inputs de los Server Actions (`CreateTurnInput`) y el manual del usuario (`MANUAL.md`). Esto evita tener código "muerto" o inactivo que genere falsas expectativas sobre las capacidades de la plataforma.
 - **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
 - **Limpieza de Remanentes de Tipado**: Al eliminar un concepto/campo en desuso (como el nivel auto-percibido `level`), es crítico limpiar no solo su renderizado en HTML sino también las firmas de props e interfaces de TypeScript. Esto previene advertencias de variables en desuso e inconsistencias en la mantenibilidad futura del codebase.
 - **Equilibrio de Preferencias de Lado y Sinergia**: En el emparejamiento padel 2v2, el posicionamiento físico en cancha (Derecha vs Revés) es un factor crítico para la comodidad y rendimiento. Priorizar la minimización de penalizaciones por mala asignación de lado como objetivo principal (por sobre la sinergia) y resolver empates de lado mediante la nivelación de sinergias de parejas (con suavizado de Laplace) resulta en una distribución excepcionalmente cómoda y competitiva para todos los jugadores en cancha.
@@ -51,7 +54,7 @@
 - **Robustez ante Datos Fríos**: El diseño de consultas del grafo debe incorporar fallbacks por defecto para jugadores con historial incompleto (ej. 0 conexiones, sin partidos jugados en la derecha/revés o sin edges de pareja/rival), permitiendo que la interfaz renderice correctamente un estado inicial limpio sin errores de ejecución.
 - **Asistencia y Feedback Unificados**: Unificar la marcación de asistencia post-partido y el feedback sutil de nivel en un solo formulario y acción de guardado ("Guardar asistencia y feedback") reduce enormemente la fricción de uso para el organizador de partidos, logrando datos limpios del grafo de manera orgánica y sin requerir flujos de onboarding adicionales.
 - **MDS Form Controls**: Al idenitificar grupos de botones interactivos personalizados (como los botones de feedback de nivel), usar `role="radiogroup"` and `role="radio"` con estados `aria-checked` e indicadores de focus visibles (`focus-visible:ring-2`) asegura el cumplimiento de accesibilidad para lectores de pantalla sin sacrificar el diseño pulido.
-- **Exclusión Global en Grafos de Recomendación**: Al priorizar candidatos utilizando múltiples fuentes de datos (ej. aristas directas de contacto y pertenencia a comunidades del grafo), es crítico mantener un registro unificado de exclusiones (`excludedUserIds`). De lo contrario, un candidato que deba ser estrictamente excluido por una regla de negocio (ej. disparidades extremas de habilidad) podría ser reintroducido incorrectamente a través de un canal secundario (ej. la bonificación de pertenecer a la misma comunidad).
+- **Exclusión Global en Grafos de Recomendación**: Al priorizar candidatos utilizando múltiples fuentes de datos (ej. aristas directas de contacto y pertenencia a comunidades del grafo), es crítico mantener un registro unificado de exclusiones (`excludedUserIds`). De lo contrario, un candidato que deba ser strictly excluido por una regla de negocio (ej. disparidades extremas de habilidad) podría ser reintroducido incorrectamente a través de un canal secundario (ej. la bonificación de pertenecer a la misma comunidad).
 - **Redes Personales (Ego Networks) en Grafos**: El filtrado por "Mi red" permite al jugador concentrarse en su grupo inmediato, mejorando significativamente el rendimiento de carga visual en grafos densos. Al incluir enlaces internos de contactos directos, se puede observar de inmediato el nivel de interacción del ecosistema propio, creando una experiencia sumamente adictiva e interactiva.
 - **Sugerencias de Matchmaking No Intrusivas**: El botón "Sugerir Parejas 🧠" solo debe aparecer de forma proactiva en Step 0 cuando hay exactamente 4 jugadores registrados. Esto evita confusiones o ruido visual para partidos parciales o con placeholders, sirviendo como un gancho inteligente de valor añadido orgánico.
 - **Sinergia y Preferencia de Lado Combinadas**: Diseñar un modelo de optimización que evalúe las 24 permutaciones posibles de 4 jugadores asignados a 4 posiciones exactas (Team A Der/Rev, Team B Der/Rev) permite balancear de forma determinista la sinergia de pareja (net wins) al mismo tiempo que respeta la comodidad de los jugadores en cancha.

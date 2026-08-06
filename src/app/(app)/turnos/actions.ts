@@ -22,7 +22,6 @@ export type CreateTurnInput = {
   date: string; // ISO string
   duration: number;
   maxPlayers: number;
-  suggestedLevel?: number;
   notes?: string;
 };
 
@@ -41,7 +40,7 @@ export async function createTurnAction(input: CreateTurnInput) {
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
-        suggestedLevel: input.suggestedLevel ?? 6,
+        suggestedLevel: 6,
         notes: input.notes,
       })
       .returning();
@@ -98,7 +97,7 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
         date: new Date(input.date),
         duration: input.duration,
         maxPlayers: input.maxPlayers,
-        suggestedLevel: input.suggestedLevel ?? 6,
+        suggestedLevel: 6,
         notes: input.notes,
       })
       .where(eq(turns.id, turnId));
@@ -416,7 +415,6 @@ export async function getTurnByIdAction(turnId: string) {
         date: new Date(Date.now() + 24 * 60 * 60 * 1000), // tomorrow
         duration: 90,
         maxPlayers: 4,
-        suggestedLevel: 6,
         notes: "Traer palas y pelotas nuevas. Nos vemos en recepción.",
         status: "OPEN",
         lastNetworkNotificationAt: null,
