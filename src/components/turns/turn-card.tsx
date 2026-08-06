@@ -41,7 +41,6 @@ interface TurnCardProps {
       };
     }[];
     maxPlayers: number;
-    suggestedLevel: number | string;
     status?: string;
   };
   variant?: "default" | "recommended";

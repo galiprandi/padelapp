@@ -3,7 +3,7 @@ import { buildContactsMap } from "@/lib/queries/contacts";
 
 function makeMatch(
   date: Date,
-  players: Array<{ id: string; displayName: string; alias: string | null; image: string | null; level: number }>,
+  players: Array<{ id: string; displayName: string; alias: string | null; image: string | null }>,
 ) {
   return {
     date,
@@ -20,8 +20,8 @@ describe("buildContactsMap", () => {
     const date = new Date("2026-01-01");
     const matches = [
       makeMatch(date, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, "user-1");
@@ -33,8 +33,8 @@ describe("buildContactsMap", () => {
     const date = new Date("2026-01-01");
     const matches = [
       makeMatch(date, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, new Set(["user-1"]));
@@ -46,9 +46,9 @@ describe("buildContactsMap", () => {
     const date = new Date("2026-01-01");
     const matches = [
       makeMatch(date, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
-        { id: "user-3", displayName: "Carl", alias: "carl", image: null, level: 7 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
+        { id: "user-3", displayName: "Carl", alias: "carl", image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, new Set(["user-1", "user-2"]));
@@ -61,12 +61,12 @@ describe("buildContactsMap", () => {
     const date2 = new Date("2026-02-01");
     const matches = [
       makeMatch(date1, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
       makeMatch(date2, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, "user-1");
@@ -78,12 +78,12 @@ describe("buildContactsMap", () => {
     const date2 = new Date("2026-06-01");
     const matches = [
       makeMatch(date1, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
       makeMatch(date2, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bob", image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, "user-1");
@@ -96,16 +96,16 @@ describe("buildContactsMap", () => {
     const date3 = new Date("2026-03-01");
     const matches = [
       makeMatch(date1, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "old-friend", displayName: "Old", alias: null, image: null, level: 4 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "old-friend", displayName: "Old", alias: null, image: null },
       ]),
       makeMatch(date2, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "new-friend", displayName: "New", alias: null, image: null, level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "new-friend", displayName: "New", alias: null, image: null },
       ]),
       makeMatch(date3, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "mid-friend", displayName: "Mid", alias: null, image: null, level: 5 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "mid-friend", displayName: "Mid", alias: null, image: null },
       ]),
     ];
     const contacts = buildContactsMap(matches, "user-1");
@@ -121,7 +121,7 @@ describe("buildContactsMap", () => {
         date,
         players: [
           { user: null },
-          { user: { id: "user-2", displayName: "Bob", alias: "bob", image: null, level: 6 } },
+          { user: { id: "user-2", displayName: "Bob", alias: "bob", image: null } },
         ],
       },
     ];
@@ -134,8 +134,8 @@ describe("buildContactsMap", () => {
     const date = new Date("2026-01-01");
     const matches = [
       makeMatch(date, [
-        { id: "user-1", displayName: "Me", alias: null, image: null, level: 5 },
-        { id: "user-2", displayName: "Bob", alias: "bobby", image: "img.png", level: 6 },
+        { id: "user-1", displayName: "Me", alias: null, image: null },
+        { id: "user-2", displayName: "Bob", alias: "bobby", image: "img.png" },
       ]),
     ];
     const contacts = buildContactsMap(matches, "user-1");
@@ -144,7 +144,6 @@ describe("buildContactsMap", () => {
       displayName: "Bob",
       alias: "bobby",
       image: "img.png",
-      level: 6,
       lastMatchAt: date,
       matchesTogether: 1,
     });
