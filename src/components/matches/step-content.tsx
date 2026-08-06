@@ -94,6 +94,7 @@ function ScoreSelector({
               type="button"
               role="radio"
               aria-checked={isSelected}
+              aria-label={`${num} ${num === 1 ? "juego" : "juegos"}`}
               onClick={() => onValueChange(num)}
               className={cn(
                 "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
@@ -142,11 +143,15 @@ function RecentClubs({
 
   return (
     <div className="space-y-2">
-      <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+      <Label id="recent-clubs-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
         <MapPin className="h-3 w-3" />
         Clubes recientes
       </Label>
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div
+        role="radiogroup"
+        aria-labelledby="recent-clubs-label"
+        className="flex gap-2 overflow-x-auto pb-1"
+      >
         {recentClubs.map((item) => {
           const label = item.courtNumber
             ? `${item.club} · ${item.courtNumber}`
@@ -158,6 +163,8 @@ function RecentClubs({
             <button
               key={label}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => {
                 if (isSelected) {
                   onClubChange("");

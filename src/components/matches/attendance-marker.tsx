@@ -149,10 +149,14 @@ export function AttendanceMarker({
                   image={player.image}
                   className="h-9 w-9 shrink-0"
                 />
-                <span className="flex-1 text-sm font-semibold text-foreground truncate">
+                <span id={`attendance-label-${player.id}`} className="flex-1 text-sm font-semibold text-foreground truncate">
                   {player.name}
                 </span>
-                <div className="flex gap-1.5 shrink-0">
+                <div
+                  role="radiogroup"
+                  aria-labelledby={`attendance-label-${player.id}`}
+                  className="flex gap-1.5 shrink-0"
+                >
                   {(Object.keys(STATUS_CONFIG) as AttendanceStatus[]).map(
                     (status) => {
                       const config = STATUS_CONFIG[status];
@@ -162,9 +166,10 @@ export function AttendanceMarker({
                         <button
                           key={status}
                           type="button"
+                          role="radio"
+                          aria-checked={isActive}
                           onClick={() => handleStatusChange(player.id, status)}
                           aria-label={`${config.label} - ${player.name}`}
-                          aria-pressed={isActive}
                           className={cn(
                             "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                             isActive
@@ -183,10 +188,14 @@ export function AttendanceMarker({
               {/* Row 2: Sutil level feedback (only for other players) */}
               {viewerId && player.userId !== viewerId && (
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                  <span className="text-xs text-muted-foreground font-medium">
+                  <span id={`feedback-label-${player.id}`} className="text-xs text-muted-foreground font-medium">
                     Nivel vs. el grupo (opcional):
                   </span>
-                  <div className="flex gap-1.5 shrink-0" role="radiogroup" aria-label={`Nivel de ${player.name} comparado con el grupo`}>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby={`attendance-label-${player.id} feedback-label-${player.id}`}
+                    className="flex gap-1.5 shrink-0"
+                  >
                     <button
                       type="button"
                       role="radio"

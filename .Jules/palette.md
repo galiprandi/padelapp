@@ -80,3 +80,7 @@
 ## 2026-08-06 - [Modal Search List Items Tactile Feedback & Branding Highlights]
 **Learning:** Custom interactive lists rendered inside modals (such as search results or quick-contacts lists) are often styled simply with standard hover highlights. Injecting subtle MDS-compliant active scaling animations (`active:scale-[0.98] transition-all`) on these custom selection rows drastically increases mobile tactile feel and user confidence during input flows without introducing visual weight or clutter.
 **Action:** When styling customized lists of selection buttons inside dialogs or steps, always integrate subtle tactile scaling transitions in conjunction with branding-aligned hover highlights (e.g. `hover:bg-primary/10`).
+
+## 2026-08-07 - [Combined ID Labeling and Accessibility in Custom Button Groups]
+**Learning:** When using custom button groups acting as radio selectors, pointing `aria-labelledby` to a generic label (e.g. "Nivel vs. el grupo (opcional):") causes screen reader users to lose the player name context. Combining multiple IDs (e.g., `aria-labelledby="attendance-label-${player.id} feedback-label-${player.id}"`) merges their texts together, providing complete context about which specific player is being rated.
+**Action:** Always combine the subject label's ID with the section label's ID inside `aria-labelledby` attributes to ensure users with assistive technologies maintain absolute clarity of the interactive context.
