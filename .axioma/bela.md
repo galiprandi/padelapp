@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
 - [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
 - [x] 2026-08-01 — Turn Social Proof & Contact Highlights (bela/turnos/social-proof-contacts)
@@ -24,6 +25,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-06 - Future-Date Turn Validation & Branded Toast Alignment
+**Learning:** Scheduling events (turnos) in the past corrupts listing logic and leads to dead links/records. Validating date/time during client-side submit events using `Date.now()` is safe and timezone-proof. Additionally, adding a 5-minute clock-skew window (`Date.now() - 5 * 60 * 1000`) on the server actions prevents minor network delays or client/server clock drifts from causing validation errors.
+**Action:** Enforce future-date constraint checks both in forms (client-side) and server actions (server-side) with a 5-minute skew tolerance. Align all interactive feedback toasts to the active voice and strictly avoid exclamation points (`¡`, `!`) to comply with the project's Voice & Language specifications.
+
 ## 2026-08-05 - Modernized Turn Action Confirmations
 **Learning:** Browser native `confirm()` popups feel extremely unpolished, unbranded, and interruptive on modern mobile PWA applications. Creating state-driven inline confirmations that fit gracefully within existing grid rows or expand into detailed explanatory cards (with side-by-side cancel and action triggers) drastically improves user focus, provides valuable context, and complies perfectly with Minimal Design System (MDS) design maxims.
 **Action:** Always avoid default window-level dialogs like `confirm()` or `alert()`. Opt for stateful React custom-rendered inline layouts with transition pending loaders for destructive or final actions.
@@ -90,7 +95,7 @@
 
 ## 2026-07-30 - Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos
 **Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participant (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
-**Action:** Maximizar siempre el uso de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
+**Action:** Maximizar siempre el use de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
 
 ## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
 **Learning:** Los destinatarios de notificaciones de turnos carecían del contexto sobre qué día se jugaría el turno (ej: veían "Cupo abierto en tu red: Club · 19hs"), lo que causaba confusión sobre si era hoy, mañana o un día posterior. La implementación de un helper robusto de fechas relativas adaptado al dialecto argentino (`getTurnLabelWithDate`) brinda un contexto inmediato y de alta fidelidad directamente en la bandeja de notificaciones.

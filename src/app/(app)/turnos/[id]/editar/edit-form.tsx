@@ -59,9 +59,13 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
       return;
     }
 
-    startTransition(async () => {
-      const combinedDate = new Date(`${formData.date}T${formData.time}`);
+    const combinedDate = new Date(`${formData.date}T${formData.time}`);
+    if (combinedDate.getTime() < Date.now()) {
+      showToast("No se puede guardar el turno en el pasado. Elegí una fecha y hora futura.", { type: "error" });
+      return;
+    }
 
+    startTransition(async () => {
       const response = await updateTurnAction(id, {
         club: formData.club,
         date: combinedDate.toISOString(),
@@ -71,10 +75,10 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
       });
 
       if (response.status === "ok") {
-        showToast("Turno actualizado con éxito");
+        showToast("Actualizaste el turno.");
         router.push(`/t/${id}`);
       } else {
-        showToast(response.message || "Error al actualizar el turno");
+        showToast(response.message || "No se pudo actualizar el turno.");
       }
     });
   };

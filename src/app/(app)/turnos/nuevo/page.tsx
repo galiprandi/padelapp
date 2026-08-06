@@ -48,9 +48,13 @@ export default function NewTurnPage() {
       return;
     }
 
-    startTransition(async () => {
-      const combinedDate = new Date(`${formData.date}T${formData.time}`);
+    const combinedDate = new Date(`${formData.date}T${formData.time}`);
+    if (combinedDate.getTime() < Date.now()) {
+      showToast("No se puede crear el turno en el pasado. Elegí una fecha y hora futura.", { type: "error" });
+      return;
+    }
 
+    startTransition(async () => {
       const response = await createTurnAction({
         club: formData.club,
         date: combinedDate.toISOString(),

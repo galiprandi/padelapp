@@ -7,6 +7,7 @@ import { ShareButton } from "@/components/share/share-button";
 import { createMagicLink } from "@/lib/magic-link";
 import { leaveTurnAction } from "@/app/(app)/turnos/actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast/use-toast";
 
 interface LeaveTurnButtonProps {
   turnId: string;
@@ -26,10 +27,16 @@ export function LeaveTurnButton({
   const [confirming, setConfirming] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleLeave = async () => {
     setLeaving(true);
-    await leaveTurnAction(turnId);
+    const result = await leaveTurnAction(turnId);
+    if (result.status === "ok") {
+      showToast("Te bajaste del turno.");
+    } else {
+      showToast(result.message ?? "No se pudo bajar del turno.");
+    }
     router.refresh();
   };
 

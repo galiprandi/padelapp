@@ -85,13 +85,13 @@ export function AddPlayerButton({
     setAddingId(player.id);
     const result = await addPlayerAction(turnId, player.id);
     if (result.status === "ok") {
-      showToast(`${player.displayName} fue agregado al turno.`);
+      showToast(`Agregaste a ${player.displayName} al turno.`);
       setExpanded(false);
       setQuery("");
       setResults([]);
       router.refresh();
     } else {
-      showToast(result.message ?? "Error al agregar al jugador");
+      showToast(result.message ?? "No se pudo agregar al jugador.");
     }
     setAddingId(null);
   }

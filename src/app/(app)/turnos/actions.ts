@@ -31,6 +31,11 @@ export async function createTurnAction(input: CreateTurnInput) {
     return { status: "error", message: "No autorizado" };
   }
 
+  const dateObj = new Date(input.date);
+  if (dateObj.getTime() < Date.now() - 5 * 60 * 1000) {
+    return { status: "error", message: "La fecha y hora del turno deben ser futuras" };
+  }
+
   try {
     const [turn] = await db
       .insert(turns)
@@ -63,6 +68,11 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
   const session = await auth();
   if (!session?.user?.id) {
     return { status: "error", message: "No autorizado" };
+  }
+
+  const dateObj = new Date(input.date);
+  if (dateObj.getTime() < Date.now() - 5 * 60 * 1000) {
+    return { status: "error", message: "La fecha y hora del turno deben ser futuras" };
   }
 
   try {

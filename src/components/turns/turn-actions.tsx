@@ -130,7 +130,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinTurnAction(turnId);
       if (result.status === "ok") {
-        showToast("¡Te sumaste al turno! Ya estás confirmado para jugar.");
+        showToast("Te sumaste al turno.");
         router.refresh();
       }
     });
@@ -255,7 +255,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await takeOpenSlotAction(turnId);
       if (result.status === "ok") {
-        showToast("¡Ocupaste el cupo! Ya estás confirmado para jugar.");
+        showToast("Ocupaste el cupo.");
         router.refresh();
       }
     });
@@ -324,10 +324,10 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await markTurnAsPlayedAction(turnId);
       if (result.status === "ok") {
-        showToast("Turno marcado como jugado.");
+        showToast("Marcaste el turno como jugado.");
         router.push("/turnos");
       } else {
-        showToast(result.message ?? "Error al marcar el turno como jugado");
+        showToast(result.message ?? "No se pudo marcar el turno como jugado.");
       }
     });
   };
