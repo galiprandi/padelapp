@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
 - [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
 - [x] 2026-08-01 — Turn Social Proof & Contact Highlights (bela/turnos/social-proof-contacts)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
@@ -22,7 +23,11 @@
 - [x] 2026-07-30 — Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos (PR bela/turnos/progress-and-contextual-invite)
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
-## 🧠 LEARNINGS
+## 🧠 APRENDIZAJES
+## 2026-08-05 - Modernized Turn Action Confirmations
+**Learning:** Browser native `confirm()` popups feel extremely unpolished, unbranded, and interruptive on modern mobile PWA applications. Creating state-driven inline confirmations that fit gracefully within existing grid rows or expand into detailed explanatory cards (with side-by-side cancel and action triggers) drastically improves user focus, provides valuable context, and complies perfectly with Minimal Design System (MDS) design maxims.
+**Action:** Always avoid default window-level dialogs like `confirm()` or `alert()`. Opt for stateful React custom-rendered inline layouts with transition pending loaders for destructive or final actions.
+
 ## 2026-08-03 - Interactive WhatsApp Invite Recommendations
 **Learning:** Recommending specific player contacts to invite with individual single-click WhatsApp share buttons drastically bridges the gap between wanting to fill a slot and taking action. Performing the dynamic text format client-side inside a React useEffect preserves strict Next.js PPR rendering compliance and keeps browser-specific timezones accurate.
 **Action:** Always provide proactive recommendation triggers when slots are open, accompanied by single-tap personalized share options using relative localized date and time formats.
@@ -84,7 +89,7 @@
 **Action:** En cualquier listado interactivo, priorizar el traspaso de timestamps de cooldown a los componentes hijos y emplear siempre hover sólido bajo el MDS.
 
 ## 2026-07-30 - Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos
-**Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participante (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
+**Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participant (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
 **Action:** Maximizar siempre el uso de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
 
 ## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
