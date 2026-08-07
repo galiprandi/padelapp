@@ -7,8 +7,10 @@ export {
   getPendingAttendanceActions,
   getCachedPendingAttendanceActions,
   getHeadToHeadStats,
+  getCachedHeadToHeadStats,
   getCachedConfirmedMatches,
   getConfirmedMatchesForProfile,
+  getCachedConfirmedMatchesForProfile,
 } from "./match";
 
 export {
@@ -39,9 +41,11 @@ export { getDashboardUserStats, getCachedDashboardUserStats, type DashboardUserS
 
 export {
   getPublicProfileUser,
+  getCachedPublicProfileUser,
   getEditableProfile,
   getGoogleAvatarUrl,
   getPlayerNetworkStats,
+  getCachedPlayerNetworkStats,
   type PublicProfileUser,
   type EditableProfileData,
   type PlayerNetworkStats,
