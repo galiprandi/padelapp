@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { getRecencyWeight } from "@/lib/graph/engine";
 
+process.env.AUTH_BYPASS = "true";
+
 describe("getRecencyWeight", () => {
   it("returns 0.5 for null date", () => {
     expect(getRecencyWeight(null)).toBe(0.5);
