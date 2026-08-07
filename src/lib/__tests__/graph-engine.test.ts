@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { getRecencyWeight } from "@/lib/graph/engine";
 
+process.env.AUTH_BYPASS = "true";
+
 describe("getRecencyWeight", () => {
   it("returns 0.5 for null date", () => {
     expect(getRecencyWeight(null)).toBe(0.5);
@@ -48,5 +50,23 @@ describe("getRecencyWeight", () => {
   it("handles boundary: exactly 120 days ago (returns 0.25)", () => {
     const date = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
     expect(getRecencyWeight(date)).toBe(0.25);
+  });
+});
+
+import { getPlayersLikeYouAction } from "@/app/network/actions";
+
+describe("getPlayersLikeYouAction", () => {
+  it("returns mock recommended player Facundo Lopez for viewer under mock/bypass conditions", async () => {
+    const result = await getPlayersLikeYouAction("p-01");
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      id: "p-04",
+      name: "Facundo Lopez",
+      alias: "Facu",
+      image: null,
+      skillScore: 1020,
+      preferredSide: "LEFT",
+      matchesPlayed: 6,
+    });
   });
 });

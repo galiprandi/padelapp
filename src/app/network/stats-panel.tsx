@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bell, Network, Activity, MapPin, Clock } from "lucide-react";
-import type { AdoptionMetrics } from "./actions";
+import type { AdoptionMetrics, RecommendedPlayer } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName } from "@/lib/utils";
 
@@ -24,6 +24,7 @@ interface StatsPanelProps {
   metrics: AdoptionMetrics;
   graphNodes: number;
   graphLinks: number;
+  playersLikeYou: RecommendedPlayer[];
 }
 
 function GrowthBadge({ rate }: { rate: number }) {
@@ -72,7 +73,7 @@ function StatCard({
   );
 }
 
-export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps) {
+export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: StatsPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -160,6 +161,59 @@ export function StatsPanel({ metrics, graphNodes, graphLinks }: StatsPanelProps)
           </p>
         </div>
       </div>
+
+      {/* Jugadores como vos 🧠 */}
+      {playersLikeYou.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+            <div className="space-y-0.5">
+              <h2 className="text-sm font-bold text-foreground">Jugadores como vos 🧠</h2>
+              <p className="text-xs text-muted-foreground">
+                Gente de tu nivel y comunidad con la que todavía no jugaste.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-2.5 pt-1">
+            {playersLikeYou.map((player) => (
+              <div
+                key={player.id}
+                className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <PlayerAvatar
+                    name={capitalizeName(player.name ?? player.alias ?? "?")}
+                    image={player.image ?? undefined}
+                    size={36}
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-foreground truncate">
+                      {capitalizeName(player.name ?? player.alias ?? "?")}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {player.preferredSide === "RIGHT" ? "Derecha" : player.preferredSide === "LEFT" ? "Revés" : "Lado no definido"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
+                    <p className="text-xs font-bold tabular-nums text-foreground">
+                      {player.skillScore}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/p/${player.id}`}
+                    className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  >
+                    Perfil
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Engagement stats */}
       <div className="grid grid-cols-2 gap-3">

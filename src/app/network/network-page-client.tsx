@@ -5,17 +5,18 @@ import { BarChart3, Network as NetworkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StatsPanel } from "./stats-panel";
 import { GraphView } from "./graph-view";
-import type { AdoptionMetrics, GraphData } from "./actions";
+import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 
 interface NetworkPageClientProps {
   metrics: AdoptionMetrics;
   graphData: GraphData;
   viewerId?: string;
+  playersLikeYou: RecommendedPlayer[];
 }
 
 type Tab = "stats" | "graph";
 
-export function NetworkPageClient({ metrics, graphData, viewerId }: NetworkPageClientProps) {
+export function NetworkPageClient({ metrics, graphData, viewerId, playersLikeYou }: NetworkPageClientProps) {
   const [tab, setTab] = useState<Tab>("stats");
 
   return (
@@ -44,6 +45,7 @@ export function NetworkPageClient({ metrics, graphData, viewerId }: NetworkPageC
               metrics={metrics}
               graphNodes={graphData.nodes.length}
               graphLinks={graphData.links.length}
+              playersLikeYou={playersLikeYou}
             />
           </div>
         ) : (
