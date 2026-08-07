@@ -38,6 +38,7 @@ import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { AppBadgeUpdater } from "@/components/pwa/app-badge-updater";
 import { ShareButton } from "@/components/share/share-button";
+import { OnboardingRedirect } from "@/components/onboarding-redirect";
 
 export default async function DashboardContent() {
   const session = await auth();
@@ -134,6 +135,7 @@ export default async function DashboardContent() {
   return (
     <div className="flex flex-col gap-6">
       <AppBadgeUpdater count={badgeCount} />
+      <OnboardingRedirect hasAlias={Boolean(user?.alias)} />
       {/* Greeting */}
       <div className="flex items-center gap-4">
         <PlayerAvatar
