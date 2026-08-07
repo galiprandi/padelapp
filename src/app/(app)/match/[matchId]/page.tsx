@@ -1,93 +1,28 @@
 import { auth } from "@/auth";
-import {
-  getMatchByIdAction,
-  confirmMatchResultAction,
-  cancelMatchAction,
-  finalizeMatchAction,
-} from "@/app/(app)/match/actions";
+import { getMatchByIdAction } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { FileText, CheckCircle2, Edit3, Trash2 } from "lucide-react";
+import { FileText, CheckCircle2, Edit3 } from "lucide-react";
 import { AttendanceBadge } from "@/components/matches/attendance-badge";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
-import { redirect } from "next/navigation";
 import { LocalDate } from "@/components/ui/local-date";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ConfirmResultForm,
+  FinalizeMatchForm,
+  CancelMatchForm,
+} from "@/components/matches/match-actions";
 
 interface MatchPageProps {
   params: Promise<{
     matchId: string;
   }>;
-}
-
-async function ConfirmResultForm({ matchId }: { matchId: string }) {
-  async function handleConfirm() {
-    "use server";
-    await confirmMatchResultAction(matchId);
-    redirect(`/match/${matchId}`);
-  }
-
-  return (
-    <form action={handleConfirm} className="w-full">
-      <Button type="submit" className="w-full h-12">
-        <CheckCircle2 className="mr-2 h-4 w-4" />
-        Confirmar Resultado
-      </Button>
-    </form>
-  );
-}
-
-async function FinalizeMatchForm({ matchId }: { matchId: string }) {
-  async function handleFinalize() {
-    "use server";
-    await finalizeMatchAction(matchId);
-    redirect(`/match/${matchId}`);
-  }
-
-  return (
-    <form action={handleFinalize} className="w-full">
-      <Button
-        type="submit"
-        variant="outline"
-        className="w-full h-10 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
-        aria-label="Finalizar el partido como organizador"
-      >
-        <CheckCircle2 className="mr-2 h-4 w-4" />
-        Finalizar como Organizador
-      </Button>
-    </form>
-  );
-}
-
-async function CancelMatchForm({ matchId }: { matchId: string }) {
-  async function handleCancel() {
-    "use server";
-    const result = await cancelMatchAction(matchId);
-    if (result.status === "ok") {
-      redirect("/match");
-    }
-    // Note: In a real RSC scenario we might want to handle the error state better,
-    // but for now this follows the pattern of redirecting only on success.
-  }
-
-  return (
-    <form action={handleCancel} className="w-full">
-      <Button
-        type="submit"
-        variant="ghost"
-        className="w-full text-destructive hover:bg-destructive/10"
-      >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Eliminar Partido
-      </Button>
-    </form>
-  );
 }
 
 export default function MatchPage({ params }: MatchPageProps) {
