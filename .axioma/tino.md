@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-05 — Optimización de Rendimiento en Perfil Público mediante Caché de Consultas con unstable_cache (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Integración de Capa de Caching Global para Consultas de Base de Datos en Dashboard y Ranking (PR #tino/perf/dashboard-and-ranking-caching-integration)
 - [x] 2026-08-03 — Corrección de error de compilación de TypeScript en Mi Perfil al pasar la prop requerida initialLevel (PR #tino/ux/profile-level-selector-compile-fix)
 - [x] 2026-08-02 — Corrección de error de compilación por inicialización del selector de nivel en perfil (PR #tino/ux/profile-level-selector-compile-fix)
@@ -19,6 +20,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 LEARNINGS
+### 2026-08-05 - Optimización de Rendimiento en Perfil Público con unstable_cache de Next.js
+**Learning:** En páginas públicas altamente visitadas (como la ficha de perfil público `/p/[userId]`), las consultas de agregación y el análisis del grafo de contactos (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) suelen ser costosas en base de datos. Implementar wrappers con `unstable_cache` compartiendo etiquetas de revalidación reactiva (como `"ranking"` y `"matches"`) permite servir el perfil de forma instantánea (0ms de tiempo de base de datos) manteniendo la coherencia perfecta de los datos, ya que estas etiquetas se invalidan automáticamente tras acciones del servidor.
+**Action:** Cachar siempre las consultas de estadísticas públicas y agregaciones en vistas de perfiles bajo demanda.
+
 ### 2026-08-05 - Capa de Caching Global y Centralización de Consultas en Next.js App Router
 **Learning:** En aplicaciones web Next.js con renderizado parcial (PPR) o estático, las páginas altamente interactivas o de uso frecuente (como el panel principal `/me` o la sección `/ranking`) tienden a realizar múltiples llamadas de base de datos en paralelo. Si estas consultas no están cacheadas, se genera un impacto constante en el pool de conexiones SQL en cada recarga o transición. Centralizar los wrappers de `unstable_cache` con tags de invalidación unificados (`"ranking"`, `"matches"`, `"turns"`) y reusarlos en páginas, componentes públicos y endpoints de API (como `/api/players`) no solo simplifica la arquitectura del codebase al evitar duplicaciones inline de caché, sino que garantiza tiempos de carga instantáneos (0ms de latencia de base de datos) con revalidación reactiva bajo demanda tras mutaciones (Server Actions).
 **Action:** Cachar de forma transversal consultas recurrentes de agregación o listados pesados usando tags de Next.js (`revalidateTag`), asegurando la reutilización del mismo wrapper tanto en rutas de API como en Server Components.
