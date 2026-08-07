@@ -5,6 +5,8 @@
 ## Estado actual
 
 ### Completado
+- Phase 9 (Players Like You Recommendation System):
+  - [x] 2026-08-07 — Hecho: Implementación del sistema de recomendación de jugadores "Jugadores como vos 🧠" en la vista de Métricas del grafo en `/network` (`stats-panel.tsx`). Utiliza un algoritmo de búsqueda por comunidad y cercanía de score de habilidad (`skillScore`) excluyendo los contactos con partidos ya disputados directos.
 - Phase 8 (Clean Obsolete Level Remnants):
   - [x] 2026-08-05 — Hecho: Eliminación de la etiqueta de nivel `Nivel {contact.level}` en la lista de sugeridos para invitar en la vista pública de detalles de turno (`/t/[id]` / `turn-public-details.tsx`).
   - [x] 2026-08-05 — Hecho: Eliminación del tipo `level` inactivo de la interfaz `RankingPlayer` de la clasificación (`ranking-filter.tsx`).
@@ -43,8 +45,10 @@
 - [x] 2026-08-04 — High-Fidelity Graph Mocking and Clean Deprecation of Level Remnants (PR #241)
 - [x] 2026-08-05 — Eradicated visual and type-level level remnants in turn details, ranking, and component catalog (PR coello/graph/level-remnants)
 - [x] 2026-08-06 — Eradicated codebase-wide and documentation-wide remnants of auto-perceived player levels (PR coello/graph/level-remnants-cleanup)
+- [x] 2026-08-07 — Players Like You Recommendation System (PR coello/network/players-like-you)
 
 ## Learnings
+- **Sistemas de Recomendación de Grafo de Jugadores (Players Like You)**: Para recomendar jugadores con los que aún no se ha jugado pero que tienen un perfil de habilidad similar, la combinación de comunidades del grafo (Louvain) con un filtrado estricto de aristas con partidos ya disputados proporciona recomendaciones extremadamente precisas y locales. Ordenar los candidatos por la diferencia absoluta de score de habilidad (`skillScore`) minimiza el cold-start y asegura compatibilidad de juego.
 - **Limpieza Absoluta de Tipados en Interfaces**: Al erradicar un concepto legacy como el nivel auto-percibido de juego, se deben sincronizar y depurar no solo los componentes de la interfaz de usuario, sino también los types intermedios de las consultas (`PadelContact`, `PublicProfileUser`, `DashboardUserStats`), las estructuras de inputs de los Server Actions (`CreateTurnInput`) y el manual del usuario (`MANUAL.md`). Esto evita tener código "muerto" o inactivo que genere falsas expectativas sobre las capacidades de la plataforma.
 - **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
 - **Limpieza de Remanentes de Tipado**: Al eliminar un concepto/campo en desuso (como el nivel auto-percibido `level`), es crítico limpiar no solo su renderizado en HTML sino también las firmas de props e interfaces de TypeScript. Esto previene advertencias de variables en desuso e inconsistencias en la mantenibilidad futura del codebase.

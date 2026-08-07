@@ -11,7 +11,7 @@ import {
   turnPlayers,
 } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
-import { inArray, count, gte, lt, and, eq, desc, isNotNull } from "drizzle-orm";
+import { inArray, count, gte, lt, and, eq, desc, isNotNull, or, ne } from "drizzle-orm";
 import { normalizeClub, pickClubDisplayName } from "@/lib/club";
 
 export interface GraphNode {
@@ -602,3 +602,128 @@ export const getAdoptionMetrics = unstable_cache(
     tags: [METRICS_TAG],
   },
 );
+
+// ---------------------------------------------------------------------------
+// Players Like You Recommendation
+// ---------------------------------------------------------------------------
+
+export interface RecommendedPlayer {
+  id: string;
+  name: string;
+  alias: string | null;
+  image: string | null;
+  skillScore: number;
+  preferredSide: "RIGHT" | "LEFT" | null;
+  matchesPlayed: number;
+}
+
+export async function getPlayersLikeYouAction(
+  viewerId: string
+): Promise<RecommendedPlayer[]> {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [
+      {
+        id: "p-04",
+        name: "Facundo Lopez",
+        alias: "Facu",
+        image: null,
+        skillScore: 1020,
+        preferredSide: "LEFT",
+        matchesPlayed: 6,
+      },
+    ];
+  }
+
+  // 1. Get viewer's graph stats (to get their community & skillScore)
+  const [viewerStats] = await db
+    .select()
+    .from(playerGraphStats)
+    .where(eq(playerGraphStats.userId, viewerId))
+    .limit(1);
+
+  // 2. Find direct played contacts of the viewer to exclude them
+  const directEdges = await db
+    .select()
+    .from(playerEdges)
+    .where(
+      or(
+        eq(playerEdges.playerAId, viewerId),
+        eq(playerEdges.playerBId, viewerId)
+      )
+    );
+
+  const playedUserIds = new Set<string>();
+  for (const edge of directEdges) {
+    if (edge.matchesAsRivals + edge.matchesAsPartners > 0) {
+      playedUserIds.add(edge.playerAId === viewerId ? edge.playerBId : edge.playerAId);
+    }
+  }
+
+  const viewerCommunity = viewerStats?.community ?? null;
+  const viewerScore = viewerStats?.skillScore ?? 1000;
+
+  let candidates: typeof playerGraphStats.$inferSelect[] = [];
+
+  // 3. Find candidates from the same community (excluding the viewer and already played contacts)
+  if (viewerCommunity !== null) {
+    const communityCandidates = await db
+      .select()
+      .from(playerGraphStats)
+      .where(
+        and(
+          eq(playerGraphStats.community, viewerCommunity),
+          ne(playerGraphStats.userId, viewerId)
+        )
+      );
+
+    candidates = communityCandidates.filter((c) => !playedUserIds.has(c.userId));
+  }
+
+  // 4. If fewer than 3 candidates in same community, fetch global players as supplement
+  if (candidates.length < 3) {
+    const globalCandidates = await db
+      .select()
+      .from(playerGraphStats)
+      .where(ne(playerGraphStats.userId, viewerId));
+
+    const filteredGlobal = globalCandidates.filter(
+      (c) => !playedUserIds.has(c.userId) && c.community !== viewerCommunity
+    );
+
+    candidates = [...candidates, ...filteredGlobal];
+  }
+
+  if (candidates.length === 0) return [];
+
+  // 5. Sort candidates by absolute skill score difference to the viewer
+  candidates.sort((a, b) => {
+    const diffA = Math.abs(a.skillScore - viewerScore);
+    const diffB = Math.abs(b.skillScore - viewerScore);
+    return diffA - diffB;
+  });
+
+  // Limit to 3 recommendations
+  const topCandidates = candidates.slice(0, 3);
+  const candidateIds = topCandidates.map((c) => c.userId);
+
+  // 6. Fetch user profiles
+  const candidatesUsers = await db
+    .select()
+    .from(users)
+    .where(inArray(users.id, candidateIds));
+
+  const usersMap = new Map(candidatesUsers.map((u) => [u.id, u]));
+
+  return topCandidates.map((c) => {
+    const u = usersMap.get(c.userId);
+    return {
+      id: c.userId,
+      name: u?.displayName ?? "Unknown",
+      alias: u?.alias ?? null,
+      image: u?.image ?? null,
+      skillScore: Math.round(c.skillScore),
+      preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
+      matchesPlayed: u?.matchesPlayed ?? 0,
+    };
+  });
+}
