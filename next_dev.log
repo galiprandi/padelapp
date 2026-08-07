@@ -5,20 +5,23 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 544ms
-✓ Running next.config.ts took 47ms
+✓ Ready in 1094ms
+✓ Running next.config.ts took 245ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
 - Cache Components enabled
 - Experiments (use with caution):
   · optimizePackageImports
 
-○ Compiling /catalog ...
-UserRankingBanner rendered with userId: undefined
-UserRankingBanner rendered with userId: undefined
-UserRankingBanner rendered with userId: undefined
-UserRankingBanner rendered with userId: undefined
- GET /catalog 200 in 6.1s (next.js: 5.3s, application-code: 765ms)
-UserRankingBanner rendered with userId: undefined
-UserRankingBanner rendered with userId: undefined
+○ Compiling / ...
+ GET / 200 in 11.5s (next.js: 9.7s, application-code: 1806ms)
 ○ Compiling /api/auth/[...nextauth] ...
-UserRankingBanner rendered with userId: undefined
-UserRankingBanner rendered with userId: undefined
+ GET /api/auth/session 200 in 3.7s (next.js: 3.6s, application-code: 145ms)
+ GET /login 200 in 3.3s (next.js: 2.1s, application-code: 1218ms)
+ GET /api/auth/session 200 in 73ms (next.js: 58ms, application-code: 15ms)
+ GET /api/auth/session 200 in 16ms (next.js: 4ms, application-code: 11ms)
+ GET /api/auth/session 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
