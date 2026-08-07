@@ -246,6 +246,17 @@ export async function getHeadToHeadStats(viewerId: string, profileId: string) {
 }
 
 /**
+ * Cached version of getHeadToHeadStats.
+ * Keyed by viewerId and profileId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedHeadToHeadStats = unstable_cache(
+  async (viewerId: string, profileId: string) => getHeadToHeadStats(viewerId, profileId),
+  ["head-to-head-stats"],
+  { tags: ["matches"], revalidate: 60 }
+);
+
+/**
  * Cached confirmed matches for a user.
  * Keyed by userId. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
@@ -314,6 +325,17 @@ export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
   });
   return result;
 }
+
+/**
+ * Cached version of getConfirmedMatchesForProfile.
+ * Keyed by userId and limit. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedConfirmedMatchesForProfile = unstable_cache(
+  async (userId: string, limit = 5) => getConfirmedMatchesForProfile(userId, limit),
+  ["confirmed-matches-profile"],
+  { tags: ["matches"], revalidate: 60 }
+);
 
 /**
  * Cached version of getEnhancedUserMatches.

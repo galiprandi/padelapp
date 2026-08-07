@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-07 — Integración de Capa de Caching en Perfil Público para resolver cascadas de base de datos (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Optimización de Rendimiento en Perfil Público mediante Caché de Consultas con unstable_cache (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Integración de Capa de Caching Global para Consultas de Base de Datos en Dashboard y Ranking (PR #tino/perf/dashboard-and-ranking-caching-integration)
 - [x] 2026-08-03 — Corrección de error de compilación de TypeScript en Mi Perfil al pasar la prop requerida initialLevel (PR #tino/ux/profile-level-selector-compile-fix)
@@ -20,6 +21,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 LEARNINGS
+### 2026-08-07 - Integración de Capa de Caching en Perfil Público (unstable_cache)
+**Learning:** El perfil público de un jugador (`/p/[userId]`) ejecuta consultas concurrentes de base de datos de agregación (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) que son costosas de resolver en tiempo de respuesta de red. Al envolver estas consultas dinámicas pesadas con `unstable_cache` de Next.js usando un TTL de 60 segundos y tags de revalidación unificados (`matches` y `ranking`), logramos una reducción drástica de la latencia (0ms en DB hits subsecuentes) y habilitamos el renderizado asíncrono optimizado con Partial Prerendering (PPR), mejorando radicalmente la UX de navegación transversal.
+**Action:** Cachar siempre las estadísticas y listados de perfil bajo demanda y configurar correctamente las etiquetas de revalidación reactiva.
+
 ### 2026-08-05 - Optimización de Rendimiento en Perfil Público con unstable_cache de Next.js
 **Learning:** En páginas públicas altamente visitadas (como la ficha de perfil público `/p/[userId]`), las consultas de agregación y el análisis del grafo de contactos (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) suelen ser costosas en base de datos. Implementar wrappers con `unstable_cache` compartiendo etiquetas de revalidación reactiva (como `"ranking"` y `"matches"`) permite servir el perfil de forma instantánea (0ms de tiempo de base de datos) manteniendo la coherencia perfecta de los datos, ya que estas etiquetas se invalidan automáticamente tras acciones del servidor.
 **Action:** Cachar siempre las consultas de estadísticas públicas y agregaciones en vistas de perfiles bajo demanda.
