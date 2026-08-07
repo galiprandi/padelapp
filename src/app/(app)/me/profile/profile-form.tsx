@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -38,6 +39,9 @@ export function ProfileForm({
   matchesPlayed = 0,
 }: ProfileFormProps) {
   const { showToast } = useToast();
+  const searchParams = useSearchParams();
+  const isOnboarding = searchParams ? searchParams.get("onboarding") === "true" : false;
+
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
   const [isSaving, startSaving] = useTransition();
@@ -170,6 +174,21 @@ export function ProfileForm({
 
   return (
     <div className="space-y-6">
+      {/* Onboarding Welcome Banner */}
+      {isOnboarding && (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
+            <h3 className="text-sm font-bold text-foreground">
+              ¡Te damos la bienvenida a Padel Red!
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground leading-normal">
+            Antes de empezar, configurate un alias. Este es el nombre con el que aparecerás en los partidos, turnos y ranking para que otros jugadores puedan identificarte.
+          </p>
+        </div>
+      )}
+
       {/* Avatar — static display, Google photo or initials */}
       <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
         {image ? (

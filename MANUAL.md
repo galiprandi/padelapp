@@ -318,6 +318,8 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Si llega con `?from=whatsapp` (link compartido por WhatsApp) → el hero cambia a "Te invitaron a un turno" con CTA contextual
 - Solo se puede entrar con Google — no hay registro con email/contraseña
 - Al loguear por primera vez, el usuario queda sin alias, sin foto personalizada
+- Si el usuario logueado no tiene alias, es redirigido automáticamente una vez por sesión (vía sessionStorage) al formulario de edición de perfil (`/me/profile?onboarding=true`) para que defina su alias.
+- Al ser redirigido por onboarding, visualiza un banner de bienvenida ("¡Te damos la bienvenida a Padel Red!") en la parte superior de la página de perfil explicando la importancia del alias.
 
 ### Completar perfil
 - En el dashboard, si el usuario no tiene alias, aparece un banner amarillo: "¡Completá tu perfil de jugador!" con botón "Configurar mi perfil"
@@ -348,7 +350,6 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 ### No implementado
 - Tutorial guiado paso a paso
 - Onboarding interactivo con tooltips
-- Detección de primer login para redirigir automáticamente al perfil
 
 ---
 
