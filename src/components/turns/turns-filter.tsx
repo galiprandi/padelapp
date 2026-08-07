@@ -17,7 +17,6 @@ interface TurnListItem {
   players: Array<{ userId?: string; user?: { id: string; displayName: string; alias: string | null; image: string | null } }>;
   substitutes?: Array<{ userId: string }>;
   maxPlayers: number;
-  suggestedLevel: string | number;
   status?: string;
   [key: string]: unknown;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useEffect, useRef } from "react";
+import { useTransition, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
@@ -11,6 +11,7 @@ import {
   LogOut,
   CalendarPlus,
   Loader2,
+  X,
 } from "lucide-react";
 import {
   cancelTurnAction,
@@ -26,36 +27,61 @@ import {
 export function CancelTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [confirming, setConfirming] = useState(false);
 
-  const handleCancel = (e: React.FormEvent) => {
+  const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (confirm("¿Estás seguro de que querés cancelar este turno?")) {
-      startTransition(async () => {
-        const result = await cancelTurnAction(turnId);
-        if (result.status === "ok") {
-          router.push("/turnos");
-        }
-      });
-    }
+    startTransition(async () => {
+      const result = await cancelTurnAction(turnId);
+      if (result.status === "ok") {
+        router.push("/turnos");
+      }
+    });
   };
 
-  return (
-    <form onSubmit={handleCancel} className="flex-1">
+  if (!confirming) {
+    return (
       <Button
-        type="submit"
+        type="button"
         variant="ghost"
-        disabled={isPending}
+        onClick={() => setConfirming(true)}
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Cancelar y eliminar este turno"
       >
-        {isPending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Trash2 className="mr-2 h-4 w-4" />
-        )}
-        {isPending ? "Eliminando..." : "Eliminar"}
+        <Trash2 className="mr-2 h-4 w-4" />
+        Eliminar
       </Button>
-    </form>
+    );
+  }
+
+  return (
+    <div className="flex-1 flex items-center gap-1.5">
+      <Button
+        type="button"
+        variant="ghost"
+        disabled={isPending}
+        onClick={() => setConfirming(false)}
+        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        aria-label="Cancelar eliminación del turno"
+      >
+        <X className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        disabled={isPending}
+        onClick={handleCancel}
+        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        aria-label="Confirmar eliminación del turno"
+      >
+        {isPending ? (
+          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+        )}
+        {isPending ? "Eliminando..." : "Confirmar"}
+      </Button>
+    </div>
   );
 }
 
@@ -292,40 +318,67 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
   const router = useRouter();
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const [confirming, setConfirming] = useState(false);
 
-  const handlePlayCasual = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      confirm(
-        "¿Marcar el turno como jugado? No se registrará partido ni resultado.",
-      )
-    ) {
-      startTransition(async () => {
-        const result = await markTurnAsPlayedAction(turnId);
-        if (result.status === "ok") {
-          showToast("Turno marcado como jugado.");
-          router.push("/turnos");
-        }
-      });
-    }
+  const handlePlayCasual = () => {
+    startTransition(async () => {
+      const result = await markTurnAsPlayedAction(turnId);
+      if (result.status === "ok") {
+        showToast("Turno marcado como jugado.");
+        router.push("/turnos");
+      } else {
+        showToast(result.message ?? "Error al marcar el turno como jugado");
+      }
+    });
   };
 
-  return (
-    <form onSubmit={handlePlayCasual}>
+  if (!confirming) {
+    return (
       <Button
-        type="submit"
+        type="button"
         variant="outline"
-        disabled={isPending}
+        onClick={() => setConfirming(true)}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Marcar turno como jugado sin registrar partido"
       >
-        {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-        ) : (
-          <Play className="mr-2 h-5 w-5" />
-        )}
-        {isPending ? "Marcando..." : "Jugar igual"}
+        <Play className="mr-2 h-5 w-5" />
+        Jugar igual
       </Button>
-    </form>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted p-3">
+      <p className="text-xs text-muted-foreground text-center">
+        ¿Marcar como jugado? <strong className="text-foreground">Se cerrará el turno</strong> sin registrar un partido ni resultados en el ranking.
+      </p>
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          onClick={() => setConfirming(false)}
+          variant="outline"
+          disabled={isPending}
+          className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        >
+          <X className="mr-2 h-4 w-4" />
+          Cancelar
+        </Button>
+        <Button
+          type="button"
+          onClick={handlePlayCasual}
+          variant="default"
+          disabled={isPending}
+          className="flex-1 h-10 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          aria-label="Confirmar marcar como jugado"
+        >
+          {isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Play className="mr-2 h-4 w-4 fill-current" />
+          )}
+          {isPending ? "Marcando..." : "Confirmar"}
+        </Button>
+      </div>
+    </div>
   );
 }

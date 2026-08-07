@@ -10,7 +10,6 @@ export interface DashboardUserStats {
   rankingScore: number;
   rankingPosition: number | null;
   rankingDelta: number | null;
-  level: number;
   matchesPlayed: number;
   wins: number;
   losses: number;
@@ -31,7 +30,6 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
       rankingScore: 1150,
       rankingPosition: 2,
       rankingDelta: 1,
-      level: 7,
       matchesPlayed: 15,
       wins: 10,
       losses: 5,
@@ -47,7 +45,6 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
       rankingScore: users.rankingScore,
       rankingPosition: users.rankingPosition,
       rankingDelta: users.rankingDelta,
-      level: users.level,
       matchesPlayed: users.matchesPlayed,
       wins: users.wins,
       losses: users.losses,
