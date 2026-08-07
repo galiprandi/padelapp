@@ -94,6 +94,7 @@ function ScoreSelector({
               type="button"
               role="radio"
               aria-checked={isSelected}
+              aria-label={num === 1 ? "1 juego" : `${num} juegos`}
               onClick={() => onValueChange(num)}
               className={cn(
                 "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",

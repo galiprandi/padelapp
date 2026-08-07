@@ -317,6 +317,10 @@ export function ManageSlotModal({
                         : ""}
                 </div>
 
+                <label htmlFor="player-input" className="sr-only">
+                  Buscar jugador o escribir nombre
+                </label>
+
                 <div className="relative h-12">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 pointer-events-none" />
                   <Input
