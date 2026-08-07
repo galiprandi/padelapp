@@ -15,7 +15,6 @@ export interface PadelContact {
   displayName: string;
   alias: string | null;
   image: string | null;
-  level: number;
   lastMatchAt: Date;
   matchesTogether: number;
 }
@@ -51,7 +50,6 @@ export async function getPadelContacts(
               displayName: true,
               alias: true,
               image: true,
-              level: true,
             },
           },
         },
@@ -82,7 +80,6 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
         displayName: "Diego Morales",
         alias: "Gero",
         image: null,
-        level: 6,
         lastMatchAt: new Date(),
         matchesTogether: 5,
       },
@@ -91,7 +88,6 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
         displayName: "Facundo Lopez",
         alias: "Facu",
         image: null,
-        level: 5,
         lastMatchAt: new Date(),
         matchesTogether: 3,
       },
@@ -253,7 +249,6 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
       displayName: users.displayName,
       alias: users.alias,
       image: users.image,
-      level: users.level,
     })
     .from(users)
     .where(inArray(users.id, finalCandidateIds));
@@ -267,7 +262,6 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
       displayName: u.displayName,
       alias: u.alias,
       image: u.image,
-      level: u.level,
       lastMatchAt: directInfo?.lastMatchAt ?? new Date(0),
       matchesTogether: directInfo?.matchesTogether ?? 0,
       score,
@@ -291,7 +285,6 @@ type ContactMatchPlayer = {
     displayName: string;
     alias: string | null;
     image: string | null;
-    level: number;
   } | null;
 };
 
@@ -328,7 +321,6 @@ export function buildContactsMap(
           displayName: player.user.displayName,
           alias: player.user.alias,
           image: player.user.image,
-          level: player.user.level,
           lastMatchAt: match.date,
           matchesTogether: 1,
         });

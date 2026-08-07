@@ -24,7 +24,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 ## Flujo: Turnos
 
 ### Crear
-- Cualquier usuario logueado crea un turno (club, fecha, duración, cupos, nivel sugerido, notas)
+- Cualquier usuario logueado crea un turno (club, fecha, duración, cupos, notas)
 - Queda automáticamente anotado como jugador y organizador
 - El turno queda abierto para que otros se sumen
 
@@ -52,7 +52,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Los suplentes de turnos programados en las próximas 48h reciben un recordatorio diario automático sobre su disponibilidad
 
 ### Organizador (acciones extra)
-- Editar turno (club, fecha, duración, cupos, nivel, notas) — no disponible si el turno ya finalizó
+- Editar turno (club, fecha, duración, cupos, notas) — no disponible si el turno ya finalizó
 - Iniciar partido (requiere 4 jugadores mínimos) → crea el partido con 2 equipos, toma los 4 primeros por orden de inscripción (si hay más, los restantes quedan fuera), el turno se finaliza
 - Jugar igual (2-3 jugadores) → marca el turno como jugado sin crear partido ni registrar resultado. Para cuando se juega informalmente y no hay 4 jugadores. El turno se finaliza.
 - Agregar jugador → busca y agrega un jugador directamente al turno (para confirmaciones fuera de la app, ej. WhatsApp). Si el jugador era suplente, pasa a ser titular. Push al jugador agregado.
@@ -193,7 +193,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Recalculo incremental: solo se recomputan los jugadores afectados, pero las posiciones se actualizan para todos
 
 ### No implementado
-- Ranking por nivel (1-8) — el nivel existe en el perfil pero no genera rankings separados
+- Ranking por nivel (1-8) — el nivel de juego no se auto-declara en perfiles ni influye de ninguna manera en los rankings o displays
 
 ---
 
@@ -219,7 +219,6 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 ### Datos editables
 - **Alias**: nombre que ven los demás en partidos, turnos y ranking. Entre 2 y 30 caracteres. Si no se setea, se usa el nombre de Google.
-- **Nivel (1-8)**: referencia práctica para armar partidos. 1 = profesional, 8 = principiante. No afecta el ranking.
 
 ### Foto de perfil
 - La foto viene automáticamente de la cuenta de Google.
@@ -243,18 +242,19 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 ### Perfil público
 - Cualquier usuario puede ver el perfil público de otro jugador
-- Muestra: alias, nivel, foto, posición en el ranking, puntaje, victorias/derrotas, efectividad (win rate), forma reciente (W/L de últimos 5 partidos)
+- Muestra: alias, foto, posición en el ranking, puntaje, victorias/derrotas, efectividad (win rate), forma reciente (W/L de últimos 5 partidos)
 - Si el que mira tiene partidos compartidos con el jugador → muestra "Cara a Cara": récord como socios y como rivales + último duelo
 - Muestra los últimos 5 partidos confirmados con resultado
 
 ### No implementado
 - Edición de nombre (viene de Google, no se puede cambiar)
+- Nivel auto-percibido de juego (eliminado por completo como selector y display)
 
 ---
 
 ### Referencia
 
-**Datos editables:** Alias (2-30 chars), Nivel (1-8)
+**Datos editables:** Alias (2-30 chars)
 
 **Foto de perfil:** Automática desde Google. Sin foto → iniciales. No editable desde la app.
 
@@ -265,8 +265,6 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 **Datos automáticos:** Reputación, Victorias, Derrotas, Partidos jugados, Posición ranking, Puntaje ranking
 
 **Perfil público muestra:** Stats generales, Win rate, Forma reciente (5 partidos), Cara a cara (si hay partidos compartidos), Historial reciente (5 partidos)
-
-**Niveles:** 1 (Profesional) a 8 (Principiante) — referencia informativa, no segmenta rankings
 
 ---
 
@@ -319,7 +317,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - El usuario llega a la landing page: logo, tagline ("Turnos que no se cancelan. Tu comunidad de pádel en un solo lugar.") y botón "Comenzar ahora"
 - Si llega con `?from=whatsapp` (link compartido por WhatsApp) → el hero cambia a "Te invitaron a un turno" con CTA contextual
 - Solo se puede entrar con Google — no hay registro con email/contraseña
-- Al loguear por primera vez, el usuario queda con nivel 6 (intermedio) por defecto, sin alias, sin foto personalizada
+- Al loguear por primera vez, el usuario queda sin alias, sin foto personalizada
 
 ### Completar perfil
 - En el dashboard, si el usuario no tiene alias, aparece un banner amarillo: "¡Completá tu perfil de jugador!" con botón "Configurar mi perfil"
@@ -360,7 +358,7 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 
 **Login:** Solo Google (NextAuth). Sin registro manual
 
-**Defaults nuevo usuario:** Nivel 6, sin alias, sin foto, 1000 puntos ranking, 100% reputación
+**Defaults nuevo usuario:** Sin alias, sin foto, 1000 puntos ranking, 100% reputación
 
 **Banners en dashboard:** Completar perfil (si sin alias), Instalar PWA, Activar notificaciones, Invitar amigos (si <5 partidos)
 
