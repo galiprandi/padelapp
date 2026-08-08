@@ -33,6 +33,7 @@ import {
   TakeOpenSlotForm,
   ScheduleNextTurnForm,
   PlayCasualForm,
+  QuickJoinEmptySlotButton,
 } from "@/components/turns/turn-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -403,7 +404,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   <p className="text-xs font-semibold italic opacity-60 truncate">
                     Cupo disponible
                   </p>
-                  {(isJoined || isCreator) && (
+                  {isJoined || isCreator ? (
                     <TurnShareButton
                       shareUrl={shareUrl}
                       club={turn.club}
@@ -411,6 +412,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       variant="icon"
                       className="h-8 w-8 rounded-lg shrink-0"
                     />
+                  ) : (
+                    viewerId && !isSubstitute && turn.status === "OPEN" && (
+                      <QuickJoinEmptySlotButton turnId={id} />
+                    )
                   )}
                 </div>
               </div>

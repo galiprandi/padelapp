@@ -85,6 +85,43 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
   );
 }
 
+export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
+  const handleJoin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startTransition(async () => {
+      const result = await joinTurnAction(turnId);
+      if (result.status === "ok") {
+        showToast("Te sumaste al turno.");
+        router.refresh();
+      } else {
+        showToast(result.message ?? "No se pudo sumar al turno.");
+      }
+    });
+  };
+
+  return (
+    <Button
+      onClick={handleJoin}
+      disabled={isPending}
+      size="sm"
+      variant="outline"
+      className="h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98]"
+      aria-label="Sumarse en este cupo disponible"
+    >
+      {isPending ? (
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      ) : (
+        "Sumarme"
+      )}
+    </Button>
+  );
+}
+
 export function StartMatchForm({ turnId }: { turnId: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
