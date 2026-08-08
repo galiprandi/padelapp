@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-09 — Propagación de Caché de Consultas en getPendingActions para Optimizar Vistas de Ranking, Partidos y Notificaciones (PR #tino/perf/pending-actions-caching)
 - [x] 2026-08-07 — Integración de Capa de Caching en Perfil Público para resolver cascadas de base de datos (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Optimización de Rendimiento en Perfil Público mediante Caché de Consultas con unstable_cache (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Integración de Capa de Caching Global para Consultas de Base de Datos en Dashboard y Ranking (PR #tino/perf/dashboard-and-ranking-caching-integration)
@@ -21,6 +22,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 LEARNINGS
+### 2026-08-09 - Propagación de Caché de Consultas y PPR en Next.js 16.3
+**Learning:** En Next.js 16.3-preview, la opción experimental `experimental.ppr` fue completamente fusionada dentro de `cacheComponents`. Declarar `ppr` explícitamente en `next.config.ts` detiene la compilación con un error fatal. Establecer `cacheComponents: true` es el método único para habilitar el renderizado asíncrono y PPR. Adicionalmente, al optimizar funciones asíncronas de utilidad (como `getPendingActions`) para que utilicen fallbacks cacheados (`getCachedEnhancedUserMatches`) en lugar de consultas de DB directas, extendemos transversalmente los beneficios de la caché a múltiples pantallas independientes (`/ranking`, `/match`, `/notifications`) sin duplicar lógica ni etiquetas de invalidación.
+**Action:** Usar siempre `cacheComponents: true` en Next.js 16.3+ para habilitar PPR de forma segura y asegurarse de que los helpers asíncronos consuman wrappers de caché para evitar bypasses accidentales de la base de datos.
+
 ### 2026-08-07 - Integración de Capa de Caching en Perfil Público (unstable_cache)
 **Learning:** El perfil público de un jugador (`/p/[userId]`) ejecuta consultas concurrentes de base de datos de agregación (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) que son costosas de resolver en tiempo de respuesta de red. Al envolver estas consultas dinámicas pesadas con `unstable_cache` de Next.js usando un TTL de 60 segundos y tags de revalidación unificados (`matches` y `ranking`), logramos una reducción drástica de la latencia (0ms en DB hits subsecuentes) y habilitamos el renderizado asíncrono optimizado con Partial Prerendering (PPR), mejorando radicalmente la UX de navegación transversal.
 **Action:** Cachar siempre las estadísticas y listados de perfil bajo demanda y configurar correctamente las etiquetas de revalidación reactiva.
