@@ -117,9 +117,13 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     .from(playerGraphStats)
     .where(inArray(playerGraphStats.userId, enrolledArray));
 
-  const enrolledCommunities = enrolledStats
-    .map((s) => s.community)
-    .filter((c): c is number => c !== null);
+  const enrolledCommunities = Array.from(
+    new Set(
+      enrolledStats
+        .map((s) => s.community)
+        .filter((c): c is number => c !== null)
+    )
+  );
 
   // 2. Fetch all edges involving any of the enrolled players
   const edges = await db

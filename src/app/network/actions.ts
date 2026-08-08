@@ -687,7 +687,7 @@ export async function getPlayersLikeYouAction(
       .where(ne(playerGraphStats.userId, viewerId));
 
     const filteredGlobal = globalCandidates.filter(
-      (c) => !playedUserIds.has(c.userId) && c.community !== viewerCommunity
+      (c) => !playedUserIds.has(c.userId) && (viewerCommunity === null || c.community !== viewerCommunity)
     );
 
     candidates = [...candidates, ...filteredGlobal];
