@@ -85,3 +85,7 @@
 ## 2026-08-07 - [Invisible Labels & Granular Choice Accessibility]
 **Learning:** For a clean visual design, search inputs inside modals and complex custom selection buttons (such as numeric score grids) often skip semantic labeling or context. Applying hidden `sr-only` labels on search inputs and highly descriptive, pluralized localized `aria-label` labels (e.g. "0 juegos", "1 juego") on numeric options provides a bulletproof accessibility tree for screen reader users without introducing layout or cosmetic shifts.
 **Action:** When creating text inputs or button groups in wizard steps or modal dialogs, always supply hidden screen-reader labels and descriptive localized aria-labels on every choice.
+
+## 2026-08-08 - [Standardization of Form Radio Button Selection Styles]
+**Learning:** Custom button-based radio selectors are highly interactive options, but when styled using flat semi-transparent states (like `bg-muted/50 border-transparent`), they violate the Minimal Design System's translucent container background prohibition. Using a clean, solid, outlined base style (like `bg-card border-border hover:bg-muted` for unselected options) drastically improves readability, contrast, and choice boundary affordance.
+**Action:** When styling custom button-based choices or radio selectors, always prefer standard solid card backgrounds and crisp, visible borders to improve visual depth and accessibility.

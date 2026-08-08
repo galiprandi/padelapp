@@ -177,7 +177,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                       "flex items-center justify-center h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                       isSelected
                         ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
+                        : "bg-card border-border text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {option.label}
@@ -213,7 +213,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                       "flex items-center justify-between px-4 h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                       isSelected
                         ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted"
+                        : "bg-card border-border text-muted-foreground hover:bg-muted"
                     )}
                   >
                     <span>{option.label}</span>

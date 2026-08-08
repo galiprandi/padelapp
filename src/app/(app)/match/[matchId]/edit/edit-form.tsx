@@ -161,7 +161,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                       "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
                       isSelected
                         ? "bg-primary border-primary text-primary-foreground font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                        : "bg-card border-border text-muted-foreground hover:bg-muted",
                       isClosed && isSelected && "opacity-50"
                     )}
                   >
@@ -189,7 +189,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                       "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
                       isSelected
                         ? "bg-primary border-primary text-primary-foreground font-semibold"
-                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                        : "bg-card border-border text-muted-foreground hover:bg-muted",
                       isClosed && isSelected && "opacity-50"
                     )}
                   >

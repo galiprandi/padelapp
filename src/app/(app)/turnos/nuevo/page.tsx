@@ -191,8 +191,8 @@ export default function NewTurnPage() {
                       className={cn(
                         "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+                          : "bg-card border-border text-muted-foreground hover:bg-muted",
                       )}
                     >
                       {option.label}
@@ -225,8 +225,8 @@ export default function NewTurnPage() {
                       className={cn(
                         "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+                          : "bg-card border-border text-muted-foreground hover:bg-muted",
                       )}
                     >
                       <span>{option.label}</span>
