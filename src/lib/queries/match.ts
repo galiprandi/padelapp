@@ -100,7 +100,7 @@ export async function getPendingActions(
   preloadedPendingMatches?: MatchResultCompactMatch[]
 ) {
   const allPendingMatches =
-    preloadedPendingMatches ?? (await getEnhancedUserMatches(userId, "PENDING"));
+    preloadedPendingMatches ?? (await getCachedEnhancedUserMatches(userId, "PENDING"));
   const now = new Date();
 
   // Filter for matches that have already happened AND the user hasn't confirmed yet
