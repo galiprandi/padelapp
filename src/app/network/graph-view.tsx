@@ -180,7 +180,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       const targetId = linkNodeId(link.target);
 
       // Node filter
-      if (matchingNodes.size > 0 && !matchingNodes.has(sourceId) && !matchingNodes.has(targetId)) {
+      if (query && !matchingNodes.has(sourceId) && !matchingNodes.has(targetId)) {
         return false;
       }
 
@@ -206,7 +206,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
     const filteredNodes = baseGraphData.nodes.filter((n) => {
       if (linkFilter !== "all" && !nodesInLinks.has(n.id)) return false;
-      if (matchingNodes.size > 0 && !matchingNodes.has(n.id)) return false;
+      if (query && !matchingNodes.has(n.id)) return false;
       return true;
     });
 
@@ -563,6 +563,21 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               Ver red completa
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Empty search results notice */}
+      {filteredData.nodes.length === 0 && searchQuery && (
+        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
+          <p className="text-sm font-semibold text-muted-foreground">
+            No se encontraron jugadores que coincidan con &quot;{searchQuery}&quot;
+          </p>
+          <button
+            onClick={() => setSearchQuery("")}
+            className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
+          >
+            Limpiar búsqueda
+          </button>
         </div>
       )}
 
