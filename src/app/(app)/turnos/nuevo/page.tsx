@@ -66,7 +66,7 @@ export default function NewTurnPage() {
       if (response.status === "ok") {
         const turnUrl = `${window.location.origin}/t/${response.turnId}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Sumate a mi turno de pádel: ${turnUrl}`)}`;
-        showToast("Turno creado. Compartilo por WhatsApp.", {
+        showToast("Creaste el turno. Compartilo por WhatsApp.", {
           action: {
             label: "WhatsApp",
             onClick: () => window.open(whatsappUrl, "_blank"),
@@ -74,7 +74,7 @@ export default function NewTurnPage() {
         });
         router.push(`/t/${response.turnId}`);
       } else {
-        showToast(response.message || "Error al crear el turno");
+        showToast(response.message || "No se pudo crear el turno.");
       }
     });
   };

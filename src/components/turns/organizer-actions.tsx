@@ -27,9 +27,9 @@ export function RemovePlayerButton({
     setLoading(true);
     const result = await removePlayerAction(turnId, playerUserId);
     if (result.status === "ok") {
-      showToast(`${playerName} fue sacado del turno.`);
+      showToast(`Sacaste a ${playerName} del turno.`);
     } else {
-      showToast(result.message ?? "Error al sacar al jugador");
+      showToast(result.message ?? "No se pudo sacar al jugador.");
     }
     router.refresh();
   };

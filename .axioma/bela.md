@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-08 — Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement (bela/turnos/quick-join-and-copy-polish)
 - [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
 - [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
@@ -25,6 +26,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-08 - Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement
+**Learning:** Rendering static placeholders for empty slots forces guest/unregistered users to scroll down to the bottom sticky bar to register. Incorporating a direct, inline "+ Sumarme" button within the empty slots when the viewer is a logged-in non-participant drastically streamlines the registration process. Furthermore, avoiding translucent utility borders (`border-emerald-600/30 bg-emerald-600/10`) in favor of solid layouts (`bg-muted border-border` with colored text) perfectly maintains strict MDS contrast and design consistency.
+**Action:** Always provide inline, contextual action buttons in empty card slots where possible. Ensure notifications/toasts strictly employ active voice, Argentine Spanish voseo, and zero exclamation marks, and keep container backgrounds and borders 100% solid.
+
 ## 2026-08-06 - Future-Date Turn Validation & Branded Toast Alignment
 **Learning:** Scheduling events (turnos) in the past corrupts listing logic and leads to dead links/records. Validating date/time during client-side submit events using `Date.now()` is safe and timezone-proof. Additionally, adding a 5-minute clock-skew window (`Date.now() - 5 * 60 * 1000`) on the server actions prevents minor network delays or client/server clock drifts from causing validation errors.
 **Action:** Enforce future-date constraint checks both in forms (client-side) and server actions (server-side) with a 5-minute skew tolerance. Align all interactive feedback toasts to the active voice and strictly avoid exclamation points (`¡`, `!`) to comply with the project's Voice & Language specifications.
