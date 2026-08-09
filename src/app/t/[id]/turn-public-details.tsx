@@ -610,7 +610,7 @@ function TurnActions({
       <div className="flex flex-col gap-3">
         <SignInForm
           callbackUrl={`/t/${turnId}`}
-          label={`Iniciá sesión para unirte a ${club}`}
+          label={`Iniciá sesión para sumarte a ${club}`}
           className="w-full h-12 rounded-lg text-base font-bold"
         />
         <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
