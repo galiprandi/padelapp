@@ -20,7 +20,7 @@ export async function updateUserProfileAction(
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
-    return { status: "error", message: "You must be signed in." };
+    return { status: "error", message: "Tenés que iniciar sesión." };
   }
 
   const trimmed = capitalizeName(aliasInput ?? "");
@@ -30,7 +30,7 @@ export async function updateUserProfileAction(
   ) {
     return {
       status: "error",
-      message: `Alias must be between ${MIN_ALIAS_LENGTH} and ${MAX_ALIAS_LENGTH} characters.`,
+      message: `El alias debe tener entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`,
     };
   }
 

@@ -2,6 +2,7 @@
 - [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
+- [x] 2026-08-09 — Profile Alias Validation, Spanish Localization & State Synchronization: Standardized and translated user profile update server action errors into natural Argentine Spanish (voseo). Refined alias input validation with a regex allowing only letters, accents, numbers, spaces, and hyphens to prevent invalid submissions. Sourced the server-formatted alias on successful saving to immediately update and synchronize the client form's local state, preventing visual differences between typed input and database-persisted results. (PR #roby/profile/alias-validation-polish)
 - [x] 2026-08-03 — Correct Game Level Selector Initialization: Resolved a TypeScript type-checking and production build-breaking error by correctly passing the user's initialLevel prop (`initialLevel={user.level}`) to the `<ProfileForm />` component on the profile edit page (`/me/profile`). (PR #roby/profile/fix-level-initialization)
 - [x] 2026-08-02 — Profile Form initialLevel Prop Initialization Fix: Fixed a blocking compilation and build failure by correctly passing the `initialLevel` required property to the `ProfileForm` component inside `src/app/(app)/me/profile/page.tsx`. (PR #roby/profile/fix-profile-initial-level-prop)
 - [x] 2026-07-31 — Stable Bypass Auth & Next.js 16 PPR Dynamic Prerendering Restoration: Standardized the session expiration to a static date and integrated asynchronous `cookies()` signaling inside `auth()`'s bypass flow to resolve Next.js 16's strict prerendering bails, enabling a seamless production build pipeline. (PR #roby/profile/stable-bypass-auth-ppr)
@@ -22,6 +23,10 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 LEARNINGS
+## 2026-08-09 - Profile Alias Validation, Spanish Localization & State Synchronization
+**Learning:** During auto-save inputs on forms, any backend transformation (like `capitalizeName` returning `El Muro` from `el muro`) can create visual inconsistencies on the frontend if the local state is not immediately synchronized with the sanitized response returned by the server. Updating the local React state with the server-formatted string on Promise resolution guarantees immediate, seamless consistency without requiring page refreshes. Additionally, server-side messages must strictly follow Argentine Spanish (voseo) language guidelines for UX branding consistency.
+**Action:** Always sync client state with the server-returned payload on successful updates of input fields, and ensure backend actions output localized, brand-consistent errors.
+
 ## 2026-08-03 - Correct Game Level Selector Initialization
 **Learning:** When using structured profiles where child components (like `ProfileForm`) declare strict, mandatory prop types (such as `initialLevel: number`), any schema-driven parent wrapper must correctly forward these props from the database shell query. Neglecting to pass these properties results in compilation blocks during `pnpm tsc` and production build failures, even if the sub-component provides fallback or local state management.
 **Action:** Always inspect the required props defined in interactive client forms and ensure the parent page's dynamic query shell passes them exactly to prevent compilation breakages.
