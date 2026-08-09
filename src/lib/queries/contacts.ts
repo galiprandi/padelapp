@@ -102,6 +102,11 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
           userId: true,
         },
       },
+      substitutes: {
+        columns: {
+          userId: true,
+        },
+      },
     },
     limit: 1,
   });
@@ -109,6 +114,8 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   if (!turn || turn.players.length === 0) return [];
 
   const enrolledUserIds = new Set(turn.players.map((p) => p.userId));
+  const substituteUserIds = new Set(turn.substitutes?.map((s) => s.userId) ?? []);
+  const participantUserIds = new Set([...enrolledUserIds, ...substituteUserIds]);
   const enrolledArray = Array.from(enrolledUserIds);
 
   // 1. Get graph stats for enrolled players (to find their communities)
@@ -161,6 +168,9 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
 
     const enrolledId = isPlayerAEnrolled ? edge.playerAId : edge.playerBId;
     const candidateId = isPlayerAEnrolled ? edge.playerBId : edge.playerAId;
+
+    // Skip if candidate is already part of the turn (either as player or substitute)
+    if (participantUserIds.has(candidateId)) continue;
 
     // Check extreme outcome exclusion
     // Exclude rivals with outcome extreme (>85% or <15%)
@@ -228,7 +238,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   // Process same community players
   for (const stats of communityPlayersStats) {
     const candidateId = stats.userId;
-    if (enrolledUserIds.has(candidateId)) continue;
+    if (participantUserIds.has(candidateId)) continue;
     if (excludedUserIds.has(candidateId)) continue;
 
     // Community bonus

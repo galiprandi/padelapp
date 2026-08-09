@@ -714,16 +714,19 @@ export async function getPlayersLikeYouAction(
 
   const usersMap = new Map(candidatesUsers.map((u) => [u.id, u]));
 
-  return topCandidates.map((c) => {
-    const u = usersMap.get(c.userId);
-    return {
-      id: c.userId,
-      name: u?.displayName ?? "Unknown",
-      alias: u?.alias ?? null,
-      image: u?.image ?? null,
-      skillScore: Math.round(c.skillScore),
-      preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
-      matchesPlayed: u?.matchesPlayed ?? 0,
-    };
-  });
+  return topCandidates
+    .map((c) => {
+      const u = usersMap.get(c.userId);
+      if (!u) return null;
+      return {
+        id: c.userId,
+        name: u.displayName,
+        alias: u.alias,
+        image: u.image,
+        skillScore: Math.round(c.skillScore),
+        preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
+        matchesPlayed: u.matchesPlayed ?? 0,
+      };
+    })
+    .filter((p): p is RecommendedPlayer => p !== null);
 }

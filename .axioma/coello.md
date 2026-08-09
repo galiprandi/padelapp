@@ -1,10 +1,13 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-06
+## Última actualización: 2026-08-09
 
 ## Estado actual
 
 ### Completado
+- Phase 10 (Turn Contact Recommendations and Player Similarity Safeguards):
+  - [x] 2026-08-09 — Hecho: Refinado de `getTurnNetworkContacts` (`src/lib/queries/contacts.ts`) para consultar y combinar tanto jugadores como suplentes inscritos en el turno, evitando que se sugiera invitar a personas que ya están registradas como suplentes en lista de espera.
+  - [x] 2026-08-09 — Hecho: Agregado de un safeguard robusto en `getPlayersLikeYouAction` (`src/app/network/actions.ts`) que descarta candidatos cuyos perfiles de usuario no existan o se hayan borrado de la base de datos (prevención de registros huérfanos).
 - Phase 9 (Players Like You Recommendation System):
   - [x] 2026-08-07 — Hecho: Implementación del sistema de recomendación de jugadores "Jugadores como vos 🧠" en la vista de Métricas del grafo en `/network` (`stats-panel.tsx`). Utiliza un algoritmo de búsqueda por comunidad y cercanía de score de habilidad (`skillScore`) excluyendo los contactos con partidos ya disputados directos.
 - Phase 8 (Clean Obsolete Level Remnants):
@@ -35,7 +38,7 @@
   - [x] 2026-07-26 — Estadísticas de Red en perfil público: se agregó la tarjeta "Red y Posición" en `/p/[userId]` mostrando el tamaño de red, posición de preferencia con WRs, pareja más exitosa y rival más frecuente.
   - [x] 2026-07-27 — Ego Network Filtering & Visual Highlights: se implementó el filtrado por "Mi red" y "Red completa" en el visualizador del grafo de jugadores.
 - Phase 8 (Mock Graph & Metric Actions, Deprecate Level Remnants):
-  - [x] 2026-08-04 — Mocking del Grafo y Métricas bajo bypass: agregado retorno temprano síncrono de nodos, links y métricas de adopción realistas en `getGraphData` y `getAdoptionMetrics` bajo `AUTH_BYPASS` o `MOCK_AUTH`, permitiendo visualización del grafo offline y compilación de Next.js PPR 100% estables.
+  - [x] 2026-08-04 — Mocking del Grafo y Métricas bajo bypass: agregado retorno temprano síncrono de nodos, links y métricas de adopción realistas en `getGraphData` and `getAdoptionMetrics` bajo `AUTH_BYPASS` o `MOCK_AUTH`, permitiendo visualización del grafo offline y compilación de Next.js PPR 100% estables.
   - [x] 2026-08-04 — Deprecación de Nivel Autopercibido: eliminados remanentes del campo `level` de la UI y types, incluyendo detalles de turnos (`/t/[id]`), perfil público (`/p/[userId]`), ranking (`/ranking`), catálogo de componentes (`/catalog`) e interfaces asociadas.
 
 ### Pendiente — Backlog
@@ -47,13 +50,16 @@
 - [x] 2026-08-06 — Eradicated codebase-wide and documentation-wide remnants of auto-perceived player levels (PR coello/graph/level-remnants-cleanup)
 - [x] 2026-08-07 — Players Like You Recommendation System (PR coello/network/players-like-you)
 - [x] 2026-08-08 — Graph View Empty Search Results, Node Filter Bug, and Recommender Fallback Optimizations (PR coello/graph/search-and-recommender-optimizations)
+- [x] 2026-08-09 — Turn Contact Recommendations and Player Similarity Safeguards (PR coello/graph/exclude-substitutes-from-suggestions)
 
 ## Learnings
+- **Sugerencias de Contactos de Turno con Filtro de Suplentes**: Al recomendar contactos o jugadores de la red para "salvar un turno" o invitarlos de forma proactiva mediante WhatsApp, no basta con excluir únicamente a los jugadores ya inscritos (`turn.players`). Los suplentes registrados en lista de espera (`turn.substitutes`) también forman parte activa del turno en su rol correspondiente y, por ende, deben ser excluidos estrictamente de las sugerencias para evitar duplicaciones y fricción en la experiencia del organizador.
+- **Resiliencia ante Registros de Usuarios Huérfanos**: En sistemas de recomendación que combinan estadísticas agregadas (`playerGraphStats`) con perfiles de usuario (`users`), es fundamental implementar salvaguardas (safeguards) que descarten proactivamente a candidatos con registros huérfanos o inexistentes en la tabla de usuarios principales. Esto garantiza una ejecución robusta de los mapeos y previene la aparición de perfiles inválidos o nulos en la interfaz.
 - **Búsqueda en Grafos Interactivos (Empty Search State)**: Al realizar búsquedas de jugadores en una visualización interactiva basada en canvas (ej. react-force-graph-2d), es de suma importancia asegurar que las consultas vacías o que no coinciden con ningún jugador filtren correctamente los nodos a cero, en lugar de desactivar el filtro por defecto. Integrar un overlay elegante de "No se encontraron jugadores" con una llamada de acción rápida ("Limpiar búsqueda") proporciona una experiencia altamente pulida y natural.
 - **Sistemas de Recomendación de Grafo de Jugadores (Players Like You)**: Para recomendar jugadores con los que aún no se ha jugado pero que tienen un perfil de habilidad similar, la combinación de comunidades del grafo (Louvain) con un filtrado estricto de aristas con partidos ya disputados proporciona recomendaciones extremadamente precisas y locales. Ordenar los candidatos por la diferencia absoluta de score de habilidad (`skillScore`) minimiza el cold-start y asegura compatibilidad de juego.
 - **Limpieza Absoluta de Tipados en Interfaces**: Al erradicar un concepto legacy como el nivel auto-percibido de juego, se deben sincronizar y depurar no solo los componentes de la interfaz de usuario, sino también los types intermedios de las consultas (`PadelContact`, `PublicProfileUser`, `DashboardUserStats`), las estructuras de inputs de los Server Actions (`CreateTurnInput`) y el manual del usuario (`MANUAL.md`). Esto evita tener código "muerto" o inactivo que genere falsas expectativas sobre las capacidades de la plataforma.
 - **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
-- **Limpieza de Remanentes de Tipado**: Al eliminar un concepto/campo en desuso (como el nivel auto-percibido `level`), es crítico limpiar no solo su renderizado en HTML sino también las firmas de props e interfaces de TypeScript. Esto previene advertencias de variables en desuso e inconsistencias en la mantenibilidad futura del codebase.
+- **Limpieza de Remanentes de Tipado**: Al eliminar un concept/campo en desuso (como el nivel auto-percibido `level`), es crítico limpiar no solo su renderizado en HTML sino también las firmas de props e interfaces de TypeScript. Esto previene advertencias de variables en desuso e inconsistencias en la mantenibilidad futura del codebase.
 - **Equilibrio de Preferencias de Lado y Sinergia**: En el emparejamiento padel 2v2, el posicionamiento físico en cancha (Derecha vs Revés) es un factor crítico para la comodidad y rendimiento. Priorizar la minimización de penalizaciones por mala asignación de lado como objetivo principal (por sobre la sinergia) y resolver empates de lado mediante la nivelación de sinergias de parejas (con suavizado de Laplace) resulta en una distribución excepcionalmente cómoda y competitiva para todos los jugadores en cancha.
 - **Sincronización Síncrona en State**: Al actualizar un formulario complejo de múltiples pasos de creación, re-mapear IDs de sugerencias contra los objetos de metadatos de usuario (`PlayerOption`) existentes localmente en memoria permite modificar el layout de cupos de forma instantánea sin requerir consultas de red, garantizando una UX ultra-fluida y rápida.
 - **Estadísticas de Red Contextuales**: Presentar métricas calculadas por el motor del grafo (como el tamaño de la red, el lado preferido de juego con sus respectivos porcentajes de victoria, la pareja con más victorias compartidas y el rival más recurrente) en el perfil público del jugador fomenta un ecosistema social integrado y dinámico.
