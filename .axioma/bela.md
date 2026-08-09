@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-09 — Argentine Spanish Voice & Language Standardization (bela/turnos/voice-language-standardization)
 - [x] 2026-08-08 — Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement (bela/turnos/quick-join-and-copy-polish)
 - [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
@@ -26,6 +27,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-09 - Argentine Spanish Voice & Language Standardization
+**Learning:** Banned terms like "unirte", "unirse" or "anotate" easily slip into codebase copy if not carefully audited against `specs/voice-and-language.md`. Furthermore, standardizing WhatsApp invite templates to completely avoid exclamation points (`¡...!`) and dynamically construct relative date-time formatting using `getNaturalShareText` on both turn creation and suggested invitation lists drastically increases click-through rates and ensures a polished, native Argentine Spanish experience.
+**Action:** Always audit form labels, placeholders, and share texts against the ubiquitous language spec. Replace any banned terms with "sumarte"/"sumate" and completely strip exclamation points from system-generated share texts.
+
 ## 2026-08-08 - Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement
 **Learning:** Rendering static placeholders for empty slots forces guest/unregistered users to scroll down to the bottom sticky bar to register. Incorporating a direct, inline "+ Sumarme" button within the empty slots when the viewer is a logged-in non-participant drastically streamlines the registration process. Furthermore, avoiding translucent utility borders (`border-emerald-600/30 bg-emerald-600/10`) in favor of solid layouts (`bg-muted border-border` with colored text) perfectly maintains strict MDS contrast and design consistency.
 **Action:** Always provide inline, contextual action buttons in empty card slots where possible. Ensure notifications/toasts strictly employ active voice, Argentine Spanish voseo, and zero exclamation marks, and keep container backgrounds and borders 100% solid.
