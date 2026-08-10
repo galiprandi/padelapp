@@ -258,7 +258,7 @@ async function PublicProfileContent({
 
         {/* Network & Position Stats Card */}
         <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-muted-foreground">
             Red y Posición
           </h3>
 
