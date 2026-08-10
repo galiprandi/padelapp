@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { auth } from "@/auth";
-import { MatchResultCompact } from "@/components/matches/match-result-card";
+import { MatchResultCompact, type MatchResultCompactMatch, type MatchResultCompactPlayer } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,6 +34,26 @@ export default function MatchListPage() {
   );
 }
 
+interface RawMatch {
+  id: string;
+  date: Date | string;
+  score: string | null;
+  status: string;
+  players: Array<{
+    id: string;
+    position: number;
+    displayName: string | null;
+    resultConfirmed: boolean;
+    side: "RIGHT" | "LEFT" | null;
+    user: {
+      id: string;
+      displayName: string | null;
+      alias: string | null;
+      image: string | null;
+    } | null;
+  }>;
+}
+
 async function MatchList() {
   const session = await auth();
   const viewerId = session?.user?.id;
@@ -44,7 +64,7 @@ async function MatchList() {
   ]);
 
   // Map to the same shape that getEnhancedUserMatches returns
-  const confirmedMatches = confirmedMatchesRaw.map((match) => ({
+  const confirmedMatches: MatchResultCompactMatch[] = (confirmedMatchesRaw as RawMatch[]).map((match: RawMatch) => ({
     id: match.id,
     createdAt: match.date,
     score: match.score,
@@ -71,10 +91,10 @@ async function MatchList() {
 
   const totalMatches = confirmedMatches.length;
 
-  const matchResults = confirmedMatches.map((match) => {
+  const matchResults = confirmedMatches.map((match: MatchResultCompactMatch) => {
     const winner = getMatchWinner(match.score ?? null);
     if (!winner) return "L";
-    const player = match.players.find((p) => p.user?.id === viewerId);
+    const player = match.players.find((p: MatchResultCompactPlayer) => p.user?.id === viewerId);
     const playerTeam = (player?.position ?? 0) < 2 ? "A" : "B";
     return winner === playerTeam ? "W" : "L";
   });
@@ -89,13 +109,16 @@ async function MatchList() {
   }
 
   const partnersWins: Record<string, { name: string; wins: number }> = {};
-  confirmedMatches.forEach((match, idx) => {
+  const rivalsLosses: Record<string, { name: string; losses: number }> = {};
+
+  confirmedMatches.forEach((match: MatchResultCompactMatch, idx: number) => {
+    const viewer = match.players.find((p: MatchResultCompactPlayer) => p.user?.id === viewerId);
+    if (!viewer) return;
+    const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
+
     if (matchResults[idx] === "W") {
-      const viewer = match.players.find((p) => p.user?.id === viewerId);
-      if (!viewer) return;
-      const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
       const partner = match.players.find(
-        (p) =>
+        (p: MatchResultCompactPlayer) =>
           p.user?.id !== viewerId &&
           (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2),
       );
@@ -105,6 +128,20 @@ async function MatchList() {
         if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
         partnersWins[pId].wins += 1;
       }
+    } else if (matchResults[idx] === "L") {
+      const rivals = match.players.filter(
+        (p: MatchResultCompactPlayer) =>
+          p.user?.id !== viewerId &&
+          (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
+      );
+      rivals.forEach((rival: MatchResultCompactPlayer) => {
+        if (rival.user) {
+          const rId = rival.user.id;
+          const rName = rival.user.displayName || "Rival";
+          if (!rivalsLosses[rId]) rivalsLosses[rId] = { name: rName, losses: 0 };
+          rivalsLosses[rId].losses += 1;
+        }
+      });
     }
   });
 
@@ -112,8 +149,12 @@ async function MatchList() {
     (a, b) => b.wins - a.wins,
   )[0];
 
+  const nemesis = Object.values(rivalsLosses).sort(
+    (a, b) => b.losses - a.losses,
+  )[0];
+
   const groupedMatches = confirmedMatches.reduce(
-    (groups: Record<string, typeof confirmedMatches>, match) => {
+    (groups: Record<string, MatchResultCompactMatch[]>, match: MatchResultCompactMatch) => {
       const date = new Date(match.date || match.createdAt);
       const month = date.toLocaleString("es-AR", { month: "long" });
       const year = date.getFullYear();
@@ -150,15 +191,26 @@ async function MatchList() {
               </div>
             )}
           </div>
-          {bestPartner && (
-            <div className="mt-3 pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                Mejor socio:{" "}
-                <span className="text-foreground font-semibold">
-                  {bestPartner.name}
-                </span>{" "}
-                ({bestPartner.wins} victorias)
-              </p>
+          {(bestPartner || nemesis) && (
+            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
+              {bestPartner && (
+                <p className="text-xs text-muted-foreground">
+                  Mejor socio:{" "}
+                  <span className="text-foreground font-semibold">
+                    {bestPartner.name}
+                  </span>{" "}
+                  ({bestPartner.wins} {bestPartner.wins === 1 ? "victoria" : "victorias"})
+                </p>
+              )}
+              {nemesis && (
+                <p className="text-xs text-muted-foreground">
+                  Némesis ⚔️:{" "}
+                  <span className="text-foreground font-semibold">
+                    {nemesis.name}
+                  </span>{" "}
+                  ({nemesis.losses} {nemesis.losses === 1 ? "derrota" : "derrotas"})
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -215,7 +267,7 @@ async function MatchList() {
                       {monthYear}
                     </h3>
                     <div className="flex flex-col gap-2">
-                      {monthMatches.map((match) => (
+                      {(monthMatches as MatchResultCompactMatch[]).map((match: MatchResultCompactMatch) => (
                         <MatchResultCompact
                           key={match.id}
                           match={match}
