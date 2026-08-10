@@ -9,12 +9,34 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, autoSelect, onFocus, ...props }, ref) => {
+  ({ className, type, autoSelect, onFocus, onClick, ...props }, ref) => {
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
       if (autoSelect) {
         event.currentTarget.select();
       }
+      if (type === "date" || type === "time") {
+        if (typeof event.currentTarget.showPicker === "function") {
+          try {
+            event.currentTarget.showPicker();
+          } catch {
+            // Ignored if browser restricts programmatic showPicker
+          }
+        }
+      }
       onFocus?.(event);
+    };
+
+    const handleClick = (event: React.MouseEvent<HTMLInputElement>) => {
+      if (type === "date" || type === "time") {
+        if (typeof event.currentTarget.showPicker === "function") {
+          try {
+            event.currentTarget.showPicker();
+          } catch {
+            // Ignored if browser restricts programmatic showPicker
+          }
+        }
+      }
+      onClick?.(event);
     };
 
     return (
@@ -26,6 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         ref={ref}
         onFocus={handleFocus}
+        onClick={handleClick}
         {...props}
       />
     );
