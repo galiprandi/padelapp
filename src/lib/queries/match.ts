@@ -292,7 +292,7 @@ export const getCachedConfirmedMatches = (userId: string) =>
               { id: "mp-08", position: 3, displayName: "Gero", resultConfirmed: true, side: "LEFT", user: { id: "p-04", displayName: "Gero", alias: "Ger", image: undefined } },
             ],
           }
-        ] as any;
+        ] as unknown as MatchResultCompactMatch[];
       }
       return db.query.matches.findMany({
         where: and(
