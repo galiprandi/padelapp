@@ -153,59 +153,60 @@ export const getCachedRanking = unstable_cache(
  * Keyed by query string so different searches have separate cache entries.
  * Invalidated by revalidateTag("ranking").
  */
-export const getCachedRankingSearch = unstable_cache(
-  async (query: string) => {
-    if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
-      const lower = query.toLowerCase();
-      return MOCK_RANKING_USERS.filter(
-        u =>
-          (u.displayName && u.displayName.toLowerCase().includes(lower)) ||
-          (u.alias && u.alias.toLowerCase().includes(lower))
-      );
-    }
-    const result = await db.query.users.findMany({
-      where: or(
-        ilike(users.displayName, `%${query}%`),
-        ilike(users.alias, `%${query}%`),
-      ),
-      orderBy: [
-        desc(users.rankingScore),
-        desc(users.attendanceScore),
-        desc(users.wins),
-        desc(users.lastMatchAt),
-        asc(users.displayName),
-      ],
-      limit: 20,
-      with: {
-        matchPlayers: {
-          limit: 50,
-          with: {
-            match: {
-              columns: {
-                score: true,
-                date: true,
-                status: true,
+export const getCachedRankingSearch = (query: string) =>
+  unstable_cache(
+    async () => {
+      if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+        const lower = query.toLowerCase();
+        return MOCK_RANKING_USERS.filter(
+          u =>
+            (u.displayName && u.displayName.toLowerCase().includes(lower)) ||
+            (u.alias && u.alias.toLowerCase().includes(lower))
+        );
+      }
+      const result = await db.query.users.findMany({
+        where: or(
+          ilike(users.displayName, `%${query}%`),
+          ilike(users.alias, `%${query}%`),
+        ),
+        orderBy: [
+          desc(users.rankingScore),
+          desc(users.attendanceScore),
+          desc(users.wins),
+          desc(users.lastMatchAt),
+          asc(users.displayName),
+        ],
+        limit: 20,
+        with: {
+          matchPlayers: {
+            limit: 50,
+            with: {
+              match: {
+                columns: {
+                  score: true,
+                  date: true,
+                  status: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      });
 
-    // Filter and sort in JS (same as getCachedRanking)
-    return result.map((user) => ({
-      ...user,
-      matchPlayers: user.matchPlayers
-        .filter((mp) => mp.match.status === "CONFIRMED")
-        .sort(
-          (a, b) => new Date(b.match.date).getTime() - new Date(a.match.date).getTime(),
-        )
-        .slice(0, 5),
-    }));
-  },
-  ["ranking-search"],
-  { tags: ["ranking"], revalidate: 60 }
-);
+      // Filter and sort in JS (same as getCachedRanking)
+      return result.map((user) => ({
+        ...user,
+        matchPlayers: user.matchPlayers
+          .filter((mp) => mp.match.status === "CONFIRMED")
+          .sort(
+            (a, b) => new Date(b.match.date).getTime() - new Date(a.match.date).getTime(),
+          )
+          .slice(0, 5),
+      }));
+    },
+    ["ranking-search", query],
+    { tags: ["ranking"], revalidate: 60 }
+  )();
 
 /**
  * Get the current user's ranking data with recent confirmed matches.
@@ -252,8 +253,9 @@ export async function getCurrentUserRankingData(userId: string) {
  * Keyed by userId. Invalidated by revalidateTag("ranking").
  * Fallback revalidate: 60s.
  */
-export const getCachedCurrentUserRankingData = unstable_cache(
-  async (userId: string) => getCurrentUserRankingData(userId),
-  ["user-ranking-data"],
-  { tags: ["ranking"], revalidate: 60 }
-);
+export const getCachedCurrentUserRankingData = (userId: string) =>
+  unstable_cache(
+    async () => getCurrentUserRankingData(userId),
+    ["user-ranking-data", userId],
+    { tags: ["ranking"], revalidate: 60 }
+  )();

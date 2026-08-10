@@ -281,19 +281,21 @@ export async function getPlayerNetworkStats(userId: string): Promise<PlayerNetwo
  * Keyed by userId. Invalidated by revalidateTag("ranking").
  * Fallback revalidate: 60s.
  */
-export const getCachedPublicProfileUser = unstable_cache(
-  async (userId: string) => getPublicProfileUser(userId),
-  ["public-profile-user"],
-  { tags: ["ranking"], revalidate: 60 }
-);
+export const getCachedPublicProfileUser = (userId: string) =>
+  unstable_cache(
+    async () => getPublicProfileUser(userId),
+    ["public-profile-user", userId],
+    { tags: ["ranking"], revalidate: 60 }
+  )();
 
 /**
  * Cached version of getPlayerNetworkStats.
  * Keyed by userId. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedPlayerNetworkStats = unstable_cache(
-  async (userId: string) => getPlayerNetworkStats(userId),
-  ["player-network-stats"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedPlayerNetworkStats = (userId: string) =>
+  unstable_cache(
+    async () => getPlayerNetworkStats(userId),
+    ["player-network-stats", userId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
