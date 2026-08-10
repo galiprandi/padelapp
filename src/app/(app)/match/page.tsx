@@ -44,13 +44,13 @@ async function MatchList() {
   ]);
 
   // Map to the same shape that getEnhancedUserMatches returns
-  const confirmedMatches = confirmedMatchesRaw.map((match) => ({
+  const confirmedMatches = confirmedMatchesRaw.map((match: any) => ({
     id: match.id,
     createdAt: match.date,
     score: match.score,
     status: match.status,
     date: match.date,
-    players: match.players.map((player) => {
+    players: match.players.map((player: any) => {
       return {
         id: player.id,
         position: player.position,
@@ -71,15 +71,15 @@ async function MatchList() {
 
   const totalMatches = confirmedMatches.length;
 
-  const matchResults = confirmedMatches.map((match) => {
+  const matchResults = confirmedMatches.map((match: any) => {
     const winner = getMatchWinner(match.score ?? null);
     if (!winner) return "L";
-    const player = match.players.find((p) => p.user?.id === viewerId);
+    const player = match.players.find((p: any) => p.user?.id === viewerId);
     const playerTeam = (player?.position ?? 0) < 2 ? "A" : "B";
     return winner === playerTeam ? "W" : "L";
   });
 
-  const wins = matchResults.filter((r) => r === "W").length;
+  const wins = matchResults.filter((r: any) => r === "W").length;
   const winRate = calculateWinRate(wins, totalMatches);
 
   let currentStreak = 0;
@@ -89,13 +89,16 @@ async function MatchList() {
   }
 
   const partnersWins: Record<string, { name: string; wins: number }> = {};
-  confirmedMatches.forEach((match, idx) => {
+  const rivalsLosses: Record<string, { name: string; losses: number }> = {};
+
+  confirmedMatches.forEach((match: any, idx: number) => {
+    const viewer = match.players.find((p: any) => p.user?.id === viewerId);
+    if (!viewer) return;
+    const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
+
     if (matchResults[idx] === "W") {
-      const viewer = match.players.find((p) => p.user?.id === viewerId);
-      if (!viewer) return;
-      const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
       const partner = match.players.find(
-        (p) =>
+        (p: any) =>
           p.user?.id !== viewerId &&
           (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2),
       );
@@ -105,6 +108,20 @@ async function MatchList() {
         if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
         partnersWins[pId].wins += 1;
       }
+    } else if (matchResults[idx] === "L") {
+      const rivals = match.players.filter(
+        (p: any) =>
+          p.user?.id !== viewerId &&
+          (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
+      );
+      rivals.forEach((rival: any) => {
+        if (rival.user) {
+          const rId = rival.user.id;
+          const rName = rival.user.displayName || "Rival";
+          if (!rivalsLosses[rId]) rivalsLosses[rId] = { name: rName, losses: 0 };
+          rivalsLosses[rId].losses += 1;
+        }
+      });
     }
   });
 
@@ -112,8 +129,12 @@ async function MatchList() {
     (a, b) => b.wins - a.wins,
   )[0];
 
+  const nemesis = Object.values(rivalsLosses).sort(
+    (a, b) => b.losses - a.losses,
+  )[0];
+
   const groupedMatches = confirmedMatches.reduce(
-    (groups: Record<string, typeof confirmedMatches>, match) => {
+    (groups: Record<string, any[]>, match: any) => {
       const date = new Date(match.date || match.createdAt);
       const month = date.toLocaleString("es-AR", { month: "long" });
       const year = date.getFullYear();
@@ -150,15 +171,26 @@ async function MatchList() {
               </div>
             )}
           </div>
-          {bestPartner && (
-            <div className="mt-3 pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                Mejor socio:{" "}
-                <span className="text-foreground font-semibold">
-                  {bestPartner.name}
-                </span>{" "}
-                ({bestPartner.wins} victorias)
-              </p>
+          {(bestPartner || nemesis) && (
+            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
+              {bestPartner && (
+                <p className="text-xs text-muted-foreground">
+                  Mejor socio:{" "}
+                  <span className="text-foreground font-semibold">
+                    {bestPartner.name}
+                  </span>{" "}
+                  ({bestPartner.wins} {bestPartner.wins === 1 ? "victoria" : "victorias"})
+                </p>
+              )}
+              {nemesis && (
+                <p className="text-xs text-muted-foreground">
+                  Némesis ⚔️:{" "}
+                  <span className="text-foreground font-semibold">
+                    {nemesis.name}
+                  </span>{" "}
+                  ({nemesis.losses} {nemesis.losses === 1 ? "derrota" : "derrotas"})
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -215,7 +247,7 @@ async function MatchList() {
                       {monthYear}
                     </h3>
                     <div className="flex flex-col gap-2">
-                      {monthMatches.map((match) => (
+                      {(monthMatches as any[]).map((match: any) => (
                         <MatchResultCompact
                           key={match.id}
                           match={match}

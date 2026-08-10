@@ -266,8 +266,33 @@ export const getCachedHeadToHeadStats = (viewerId: string, profileId: string) =>
 export const getCachedConfirmedMatches = (userId: string) =>
   unstable_cache(
     async () => {
-      if (process.env.AUTH_BYPASS === "true") {
-        return [];
+      if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+        return [
+          {
+            id: "m-01",
+            score: "6-4, 6-3",
+            status: "CONFIRMED",
+            date: new Date("2026-08-01T10:00:00.000Z"),
+            players: [
+              { id: "mp-01", position: 0, displayName: "Agustín", resultConfirmed: true, side: "RIGHT", user: { id: "p-01", displayName: "Agustín", alias: "agu", image: undefined } },
+              { id: "mp-02", position: 1, displayName: "Fernando", resultConfirmed: true, side: "LEFT", user: { id: "p-02", displayName: "Fernando", alias: "Bela", image: undefined } },
+              { id: "mp-03", position: 2, displayName: "Ramiro", resultConfirmed: true, side: "RIGHT", user: { id: "p-03", displayName: "Ramiro", alias: "Ram", image: undefined } },
+              { id: "mp-04", position: 3, displayName: "Gero", resultConfirmed: true, side: "LEFT", user: { id: "p-04", displayName: "Gero", alias: "Ger", image: undefined } },
+            ],
+          },
+          {
+            id: "m-02",
+            score: "4-6, 5-7",
+            status: "CONFIRMED",
+            date: new Date("2026-07-28T18:00:00.000Z"),
+            players: [
+              { id: "mp-05", position: 0, displayName: "Agustín", resultConfirmed: true, side: "RIGHT", user: { id: "p-01", displayName: "Agustín", alias: "agu", image: undefined } },
+              { id: "mp-06", position: 1, displayName: "Ramiro", resultConfirmed: true, side: "LEFT", user: { id: "p-03", displayName: "Ramiro", alias: "Ram", image: undefined } },
+              { id: "mp-07", position: 2, displayName: "Fernando", resultConfirmed: true, side: "RIGHT", user: { id: "p-02", displayName: "Fernando", alias: "Bela", image: undefined } },
+              { id: "mp-08", position: 3, displayName: "Gero", resultConfirmed: true, side: "LEFT", user: { id: "p-04", displayName: "Gero", alias: "Ger", image: undefined } },
+            ],
+          }
+        ] as any;
       }
       return db.query.matches.findMany({
         where: and(
