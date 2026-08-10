@@ -352,9 +352,9 @@ export function buildContactsMap(
  * Keyed by userId and monthsBack. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedPadelContacts = unstable_cache(
-  async (userId: string, options?: { monthsBack?: number }) =>
-    getPadelContacts(userId, options),
-  ["padel-contacts"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedPadelContacts = (userId: string, options?: { monthsBack?: number }) =>
+  unstable_cache(
+    async () => getPadelContacts(userId, options),
+    ["padel-contacts", userId, String(options?.monthsBack ?? "default")],
+    { tags: ["matches"], revalidate: 60 }
+  )();

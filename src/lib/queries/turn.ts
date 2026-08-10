@@ -56,33 +56,36 @@ export async function getMyUpcomingTurns(userId: string, limit = 3) {
  * Keyed by userId and limit. Invalidated by revalidateTag("turns").
  * Fallback revalidate: 30s.
  */
-export const getCachedMyUpcomingTurns = unstable_cache(
-  async (userId: string, limit = 3) => getMyUpcomingTurns(userId, limit),
-  ["my-upcoming-turns"],
-  { tags: ["turns"], revalidate: 30 }
-);
+export const getCachedMyUpcomingTurns = (userId: string, limit = 3) =>
+  unstable_cache(
+    async () => getMyUpcomingTurns(userId, limit),
+    ["my-upcoming-turns", userId, String(limit)],
+    { tags: ["turns"], revalidate: 30 }
+  )();
 
 /**
  * Cached version of getMySubstituteTurns.
  * Keyed by userId and limit. Invalidated by revalidateTag("turns").
  * Fallback revalidate: 30s.
  */
-export const getCachedMySubstituteTurns = unstable_cache(
-  async (userId: string, limit = 3) => getMySubstituteTurns(userId, limit),
-  ["my-substitute-turns"],
-  { tags: ["turns"], revalidate: 30 }
-);
+export const getCachedMySubstituteTurns = (userId: string, limit = 3) =>
+  unstable_cache(
+    async () => getMySubstituteTurns(userId, limit),
+    ["my-substitute-turns", userId, String(limit)],
+    { tags: ["turns"], revalidate: 30 }
+  )();
 
 /**
  * Cached version of getRecommendedTurns.
  * Keyed by userId and limit. Invalidated by revalidateTag("turns").
  * Fallback revalidate: 30s.
  */
-export const getCachedRecommendedTurns = unstable_cache(
-  async (userId: string, limit = 3) => getRecommendedTurns(userId, limit),
-  ["recommended-turns"],
-  { tags: ["turns"], revalidate: 30 }
-);
+export const getCachedRecommendedTurns = (userId: string, limit = 3) =>
+  unstable_cache(
+    async () => getRecommendedTurns(userId, limit),
+    ["recommended-turns", userId, String(limit)],
+    { tags: ["turns"], revalidate: 30 }
+  )();
 
 /**
  * Get recommended turns: OPEN status, user NOT enrolled, upcoming.
