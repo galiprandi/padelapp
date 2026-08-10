@@ -89,11 +89,14 @@ async function MatchList() {
   }
 
   const partnersWins: Record<string, { name: string; wins: number }> = {};
+  const rivalsLosses: Record<string, { name: string; losses: number }> = {};
+
   confirmedMatches.forEach((match, idx) => {
+    const viewer = match.players.find((p) => p.user?.id === viewerId);
+    if (!viewer) return;
+    const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
+
     if (matchResults[idx] === "W") {
-      const viewer = match.players.find((p) => p.user?.id === viewerId);
-      if (!viewer) return;
-      const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
       const partner = match.players.find(
         (p) =>
           p.user?.id !== viewerId &&
@@ -105,11 +108,29 @@ async function MatchList() {
         if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
         partnersWins[pId].wins += 1;
       }
+    } else if (matchResults[idx] === "L") {
+      const rivals = match.players.filter(
+        (p) =>
+          p.user?.id !== viewerId &&
+          (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
+      );
+      rivals.forEach((rival) => {
+        if (rival.user) {
+          const rId = rival.user.id;
+          const rName = rival.user.displayName || "Rival";
+          if (!rivalsLosses[rId]) rivalsLosses[rId] = { name: rName, losses: 0 };
+          rivalsLosses[rId].losses += 1;
+        }
+      });
     }
   });
 
   const bestPartner = Object.values(partnersWins).sort(
     (a, b) => b.wins - a.wins,
+  )[0];
+
+  const nemesis = Object.values(rivalsLosses).sort(
+    (a, b) => b.losses - a.losses,
   )[0];
 
   const groupedMatches = confirmedMatches.reduce(
@@ -150,15 +171,26 @@ async function MatchList() {
               </div>
             )}
           </div>
-          {bestPartner && (
-            <div className="mt-3 pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                Mejor socio:{" "}
-                <span className="text-foreground font-semibold">
-                  {bestPartner.name}
-                </span>{" "}
-                ({bestPartner.wins} victorias)
-              </p>
+          {(bestPartner || nemesis) && (
+            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
+              {bestPartner && (
+                <p className="text-xs text-muted-foreground">
+                  Mejor socio:{" "}
+                  <span className="text-foreground font-semibold">
+                    {bestPartner.name}
+                  </span>{" "}
+                  ({bestPartner.wins} {bestPartner.wins === 1 ? "victoria" : "victorias"})
+                </p>
+              )}
+              {nemesis && (
+                <p className="text-xs text-muted-foreground">
+                  Némesis ⚔️:{" "}
+                  <span className="text-foreground font-semibold">
+                    {nemesis.name}
+                  </span>{" "}
+                  ({nemesis.losses} {nemesis.losses === 1 ? "derrota" : "derrotas"})
+                </p>
+              )}
             </div>
           )}
         </div>
