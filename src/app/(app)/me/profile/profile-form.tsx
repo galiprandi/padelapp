@@ -180,7 +180,7 @@ export function ProfileForm({
     <div className="space-y-6">
       {/* Onboarding Welcome Banner */}
       {isOnboarding && (
-        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-2">
+        <div className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
             <h3 className="text-sm font-bold text-foreground">
