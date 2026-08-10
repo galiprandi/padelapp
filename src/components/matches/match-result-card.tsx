@@ -314,18 +314,34 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 )}
               >
                 <div className="flex items-center">
-                  {team.players.map((player, index) => (
-                    <PlayerAvatar
-                      key={`team-${team.id}-player-${player.id}`}
-                      name={player.name}
-                      image={player.image ?? undefined}
-                      className={cn(
-                        "border-2 border-card",
-                        index === 0 ? "ml-0" : "-ml-2",
-                      )}
-                      size={32}
-                    />
-                  ))}
+                  {team.players.map((player, index) => {
+                    const avatarElement = (
+                      <PlayerAvatar
+                        name={player.name}
+                        image={player.image ?? undefined}
+                        className={cn(
+                          "border-2 border-card transition-all hover:opacity-80 active:scale-[0.95]",
+                          index === 0 ? "ml-0" : "-ml-2",
+                        )}
+                        size={32}
+                      />
+                    );
+
+                    return player.userId ? (
+                      <Link
+                        key={`team-${team.id}-player-${player.id}`}
+                        href={`/p/${player.userId}`}
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
+                        aria-label={`Ver perfil de ${player.name}`}
+                      >
+                        {avatarElement}
+                      </Link>
+                    ) : (
+                      <div key={`team-${team.id}-player-${player.id}`}>
+                        {avatarElement}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex flex-col text-sm font-semibold text-foreground min-w-0 leading-tight">
