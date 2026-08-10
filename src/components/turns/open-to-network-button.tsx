@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 interface OpenToNetworkButtonProps {
   turnId: string;
   club: string;
-  lastNetworkNotificationAt?: Date | null;
+  lastNetworkNotificationAt?: Date | string | null;
   variant?: "default" | "outline" | "secondary" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;

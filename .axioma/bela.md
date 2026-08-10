@@ -2,6 +2,7 @@
 - [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
 - [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
 - [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
@@ -25,6 +26,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-10 - Turn Card Cooldown and Offline Visual Test Coverage
+**Learning:** Forgetting to pass cooldown metadata (like `lastNetworkNotificationAt`) from query results down to listing components (like `TurnCard`'s `OpenToNetworkButton`) creates user frustration because they cannot see whether their "Salvar turno" action is on cooldown until after clicking. Passing this timestamp and enhancing prop types to accept `Date | string | null` is vital since Date serialization over Next.js Server/Client boundary converts them to strings. Additionally, ensuring public queries like `getCachedOpenTurns` have robust AUTH_BYPASS mocks is crucial for Playwright E2E and visual testing to run cleanly offline.
+**Action:** Always verify that cooldown metadata fetched in the queries is properly declared in card props and propagated to interactive triggers. Include comprehensive mock values under bypass inside queries so that automated QA tools can verify listing state visuals.
+
 ## 2026-08-06 - Future-Date Turn Validation & Branded Toast Alignment
 **Learning:** Scheduling events (turnos) in the past corrupts listing logic and leads to dead links/records. Validating date/time during client-side submit events using `Date.now()` is safe and timezone-proof. Additionally, adding a 5-minute clock-skew window (`Date.now() - 5 * 60 * 1000`) on the server actions prevents minor network delays or client/server clock drifts from causing validation errors.
 **Action:** Enforce future-date constraint checks both in forms (client-side) and server actions (server-side) with a 5-minute skew tolerance. Align all interactive feedback toasts to the active voice and strictly avoid exclamation points (`¡`, `!`) to comply with the project's Voice & Language specifications.
