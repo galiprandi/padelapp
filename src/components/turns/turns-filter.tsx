@@ -18,6 +18,7 @@ interface TurnListItem {
   substitutes?: Array<{ userId: string }>;
   maxPlayers: number;
   status?: string;
+  lastNetworkNotificationAt?: Date | string | null;
   [key: string]: unknown;
 }
 

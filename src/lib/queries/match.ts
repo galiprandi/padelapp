@@ -146,11 +146,12 @@ export async function getPendingActionsCount(userId: string): Promise<number> {
  * Keyed by userId. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 30s.
  */
-export const getCachedPendingActionsCount = unstable_cache(
-  async (userId: string) => getPendingActionsCount(userId),
-  ["pending-actions-count"],
-  { tags: ["matches"], revalidate: 30 }
-);
+export const getCachedPendingActionsCount = (userId: string) =>
+  unstable_cache(
+    async () => getPendingActionsCount(userId),
+    ["pending-actions-count", userId],
+    { tags: ["matches"], revalidate: 30 }
+  )();
 
 export async function getPendingAttendanceActions(userId: string) {
   if (userId === "p-01") {
@@ -250,11 +251,12 @@ export async function getHeadToHeadStats(viewerId: string, profileId: string) {
  * Keyed by viewerId and profileId. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedHeadToHeadStats = unstable_cache(
-  async (viewerId: string, profileId: string) => getHeadToHeadStats(viewerId, profileId),
-  ["head-to-head-stats"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedHeadToHeadStats = (viewerId: string, profileId: string) =>
+  unstable_cache(
+    async () => getHeadToHeadStats(viewerId, profileId),
+    ["head-to-head-stats", viewerId, profileId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 
 /**
  * Cached confirmed matches for a user.
@@ -309,14 +311,13 @@ export const getCachedConfirmedMatches = unstable_cache(
             },
           },
         },
-      },
-      orderBy: desc(matchesTable.date),
-      limit: 20,
-    });
-  },
-  ["confirmed-matches"],
-  { tags: ["matches"], revalidate: 60 }
-);
+        orderBy: desc(matchesTable.date),
+        limit: 20,
+      });
+    },
+    ["confirmed-matches", userId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 
 /**
  * Get confirmed matches for a public profile (limited to 5, with players).
@@ -356,31 +357,37 @@ export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
  * Keyed by userId and limit. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedConfirmedMatchesForProfile = unstable_cache(
-  async (userId: string, limit = 5) => getConfirmedMatchesForProfile(userId, limit),
-  ["confirmed-matches-profile"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedConfirmedMatchesForProfile = (userId: string, limit = 5) =>
+  unstable_cache(
+    async () => getConfirmedMatchesForProfile(userId, limit),
+    ["confirmed-matches-profile", userId, String(limit)],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 
 /**
  * Cached version of getEnhancedUserMatches.
  * Keyed by userId, statusFilter, and limit. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedEnhancedUserMatches = unstable_cache(
-  async (userId: string, statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED" | "CANCELLED", limit = 20) =>
-    getEnhancedUserMatches(userId, statusFilter, limit),
-  ["enhanced-user-matches"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedEnhancedUserMatches = (
+  userId: string,
+  statusFilter?: "PENDING" | "CONFIRMED" | "DISPUTED" | "CANCELLED",
+  limit = 20,
+) =>
+  unstable_cache(
+    async () => getEnhancedUserMatches(userId, statusFilter, limit),
+    ["enhanced-user-matches", userId, statusFilter ?? "ALL", String(limit)],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 
 /**
  * Cached version of getPendingAttendanceActions.
  * Keyed by userId. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedPendingAttendanceActions = unstable_cache(
-  async (userId: string) => getPendingAttendanceActions(userId),
-  ["pending-attendance-actions"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedPendingAttendanceActions = (userId: string) =>
+  unstable_cache(
+    async () => getPendingAttendanceActions(userId),
+    ["pending-attendance-actions", userId],
+    { tags: ["matches"], revalidate: 60 }
+  )();

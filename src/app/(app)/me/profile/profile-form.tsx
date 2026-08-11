@@ -14,6 +14,24 @@ const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 const AUTOSAVE_DEBOUNCE_MS = 800;
 
+function validateAlias(value: string): string | null {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) return null;
+  if (
+    trimmed.length < MIN_ALIAS_LENGTH ||
+    trimmed.length > MAX_ALIAS_LENGTH
+  ) {
+    return `Usá entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`;
+  }
+
+  // Permitir letras (con acentos, diéresis y eñes), números, espacios y guiones comunes
+  const aliasRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s-]+$/;
+  if (!aliasRegex.test(trimmed)) {
+    return "El alias solo puede tener letras, números, espacios y guiones.";
+  }
+  return null;
+}
+
 interface ProfileFormProps {
   initialAlias: string;
   initialImage: string | null;
@@ -87,11 +105,7 @@ export function ProfileForm({
   useEffect(() => {
     if (!isAliasDirty) return;
 
-    const trimmed = alias.trim();
-    if (
-      trimmed.length > 0 &&
-      (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)
-    ) {
+    if (validateAlias(alias) !== null) {
       return;
     }
 
@@ -100,7 +114,9 @@ export function ProfileForm({
       startSaving(async () => {
         const response = await updateUserProfileAction(alias, image);
         if (response.status === "ok") {
-          lastSavedAlias.current = response.alias ?? "";
+          const savedAlias = response.alias ?? "";
+          lastSavedAlias.current = savedAlias;
+          setAlias(savedAlias);
           showToast("Perfil actualizado", {
             duration: 4000,
             action: {
@@ -141,18 +157,6 @@ export function ProfileForm({
     });
   }
 
-  function validateAlias(value: string) {
-    const trimmed = value.trim();
-    if (trimmed.length === 0) return null;
-    if (
-      trimmed.length < MIN_ALIAS_LENGTH ||
-      trimmed.length > MAX_ALIAS_LENGTH
-    ) {
-      return `Usá entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`;
-    }
-    return null;
-  }
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -176,7 +180,7 @@ export function ProfileForm({
     <div className="space-y-6">
       {/* Onboarding Welcome Banner */}
       {isOnboarding && (
-        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-2">
+        <div className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
             <h3 className="text-sm font-bold text-foreground">

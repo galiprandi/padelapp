@@ -46,7 +46,7 @@ export function WhatsAppInviteButton({
     // Argentine Spanish copy standards
     const slotsText =
       openSlots === 1 ? "falta 1 jugador" : `faltan ${openSlots} jugadores`;
-    const message = `¡Hola ${contactName}! ¿Te sumás al turno de pádel en ${club} ${dayStr} ${timeStr}? ${slotsText} para completarlo. Anotate acá: ${shareUrl}`;
+    const message = `Hola ${contactName}, ¿te sumás al turno de pádel en ${club} ${dayStr} ${timeStr}? ${slotsText} para completarlo. Sumate acá: ${shareUrl}`;
 
     return `https://wa.me/?text=${encodeURIComponent(message)}`;
   }, [date, contactName, club, openSlots, shareUrl]);

@@ -617,7 +617,7 @@ export interface RecommendedPlayer {
   matchesPlayed: number;
 }
 
-export async function getPlayersLikeYouAction(
+async function getPlayersLikeYouRaw(
   viewerId: string
 ): Promise<RecommendedPlayer[]> {
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
@@ -662,13 +662,35 @@ export async function getPlayersLikeYouAction(
   const viewerCommunity = viewerStats?.community ?? null;
   const viewerScore = viewerStats?.skillScore ?? 1000;
 
-  let candidates: typeof playerGraphStats.$inferSelect[] = [];
+  // We define the shape of candidate data returned from the inner join query
+  interface CandidateWithProfile {
+    userId: string;
+    skillScore: number;
+    community: number | null;
+    preferredSide: "RIGHT" | "LEFT" | null;
+    displayName: string;
+    alias: string | null;
+    image: string | null;
+    matchesPlayed: number | null;
+  }
+
+  let candidates: CandidateWithProfile[] = [];
 
   // 3. Find candidates from the same community (excluding the viewer and already played contacts)
   if (viewerCommunity !== null) {
     const communityCandidates = await db
-      .select()
+      .select({
+        userId: playerGraphStats.userId,
+        skillScore: playerGraphStats.skillScore,
+        community: playerGraphStats.community,
+        preferredSide: playerGraphStats.preferredSide,
+        displayName: users.displayName,
+        alias: users.alias,
+        image: users.image,
+        matchesPlayed: users.matchesPlayed,
+      })
       .from(playerGraphStats)
+      .innerJoin(users, eq(playerGraphStats.userId, users.id))
       .where(
         and(
           eq(playerGraphStats.community, viewerCommunity),
@@ -682,8 +704,18 @@ export async function getPlayersLikeYouAction(
   // 4. If fewer than 3 candidates in same community, fetch global players as supplement
   if (candidates.length < 3) {
     const globalCandidates = await db
-      .select()
+      .select({
+        userId: playerGraphStats.userId,
+        skillScore: playerGraphStats.skillScore,
+        community: playerGraphStats.community,
+        preferredSide: playerGraphStats.preferredSide,
+        displayName: users.displayName,
+        alias: users.alias,
+        image: users.image,
+        matchesPlayed: users.matchesPlayed,
+      })
       .from(playerGraphStats)
+      .innerJoin(users, eq(playerGraphStats.userId, users.id))
       .where(ne(playerGraphStats.userId, viewerId));
 
     const filteredGlobal = globalCandidates.filter(
@@ -704,29 +736,28 @@ export async function getPlayersLikeYouAction(
 
   // Limit to 3 recommendations
   const topCandidates = candidates.slice(0, 3);
-  const candidateIds = topCandidates.map((c) => c.userId);
 
-  // 6. Fetch user profiles
-  const candidatesUsers = await db
-    .select()
-    .from(users)
-    .where(inArray(users.id, candidateIds));
+  // 6. Map to the expected return structure directly!
+  return topCandidates.map((c) => ({
+    id: c.userId,
+    name: c.displayName,
+    alias: c.alias,
+    image: c.image,
+    skillScore: Math.round(c.skillScore),
+    preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
+    matchesPlayed: c.matchesPlayed ?? 0,
+  }));
+}
 
-  const usersMap = new Map(candidatesUsers.map((u) => [u.id, u]));
-
-  return topCandidates
-    .map((c) => {
-      const u = usersMap.get(c.userId);
-      if (!u) return null;
-      return {
-        id: c.userId,
-        name: u.displayName,
-        alias: u.alias,
-        image: u.image,
-        skillScore: Math.round(c.skillScore),
-        preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
-        matchesPlayed: u.matchesPlayed ?? 0,
-      };
-    })
-    .filter((p): p is RecommendedPlayer => p !== null);
+/**
+ * Cached version of getPlayersLikeYouAction.
+ * Keyed by viewerId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export async function getPlayersLikeYouAction(viewerId: string): Promise<RecommendedPlayer[]> {
+  return unstable_cache(
+    async () => getPlayersLikeYouRaw(viewerId),
+    ["players-like-you", viewerId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 }

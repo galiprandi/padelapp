@@ -49,3 +49,6 @@ public/sw.js
 public/workbox-*.js
 
 .playwright-mcp/*
+
+# Playwright verification outputs
+verification/videos/

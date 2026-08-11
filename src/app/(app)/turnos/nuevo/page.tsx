@@ -10,7 +10,7 @@ import { ClubInput } from "@/components/club-input";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getNaturalShareText } from "@/lib/utils";
 import Link from "next/link";
 
 const DURATION_OPTIONS = [
@@ -65,7 +65,12 @@ export default function NewTurnPage() {
 
       if (response.status === "ok") {
         const turnUrl = `${window.location.origin}/t/${response.turnId}`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Sumate a mi turno de pádel: ${turnUrl}`)}`;
+        const shareText = getNaturalShareText({
+          type: "turn",
+          club: formData.club,
+          date: combinedDate,
+        });
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}. Sumate acá: ${turnUrl}`)}`;
         showToast("Creaste el turno. Compartilo por WhatsApp.", {
           action: {
             label: "WhatsApp",

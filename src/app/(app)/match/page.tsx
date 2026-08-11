@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { auth } from "@/auth";
-import { MatchResultCompact } from "@/components/matches/match-result-card";
+import { MatchResultCompact, type MatchResultCompactMatch, type MatchResultCompactPlayer } from "@/components/matches/match-result-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,6 +34,26 @@ export default function MatchListPage() {
   );
 }
 
+interface RawMatch {
+  id: string;
+  date: Date | string;
+  score: string | null;
+  status: string;
+  players: Array<{
+    id: string;
+    position: number;
+    displayName: string | null;
+    resultConfirmed: boolean;
+    side: "RIGHT" | "LEFT" | null;
+    user: {
+      id: string;
+      displayName: string | null;
+      alias: string | null;
+      image: string | null;
+    } | null;
+  }>;
+}
+
 async function MatchList() {
   const session = await auth();
   const viewerId = session?.user?.id;
@@ -44,7 +64,7 @@ async function MatchList() {
   ]);
 
   // Map to the same shape that getEnhancedUserMatches returns
-  const confirmedMatches = confirmedMatchesRaw.map((match) => ({
+  const confirmedMatches: MatchResultCompactMatch[] = (confirmedMatchesRaw as RawMatch[]).map((match: RawMatch) => ({
     id: match.id,
     createdAt: match.date,
     score: match.score,
@@ -71,10 +91,10 @@ async function MatchList() {
 
   const totalMatches = confirmedMatches.length;
 
-  const matchResults = confirmedMatches.map((match) => {
+  const matchResults = confirmedMatches.map((match: MatchResultCompactMatch) => {
     const winner = getMatchWinner(match.score ?? null);
     if (!winner) return "L";
-    const player = match.players.find((p) => p.user?.id === viewerId);
+    const player = match.players.find((p: MatchResultCompactPlayer) => p.user?.id === viewerId);
     const playerTeam = (player?.position ?? 0) < 2 ? "A" : "B";
     return winner === playerTeam ? "W" : "L";
   });
@@ -98,7 +118,7 @@ async function MatchList() {
 
     if (matchResults[idx] === "W") {
       const partner = match.players.find(
-        (p) =>
+        (p: MatchResultCompactPlayer) =>
           p.user?.id !== viewerId &&
           (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2),
       );
@@ -134,7 +154,7 @@ async function MatchList() {
   )[0];
 
   const groupedMatches = confirmedMatches.reduce(
-    (groups: Record<string, typeof confirmedMatches>, match) => {
+    (groups: Record<string, MatchResultCompactMatch[]>, match: MatchResultCompactMatch) => {
       const date = new Date(match.date || match.createdAt);
       const month = date.toLocaleString("es-AR", { month: "long" });
       const year = date.getFullYear();
@@ -247,7 +267,7 @@ async function MatchList() {
                       {monthYear}
                     </h3>
                     <div className="flex flex-col gap-2">
-                      {monthMatches.map((match) => (
+                      {(monthMatches as MatchResultCompactMatch[]).map((match: MatchResultCompactMatch) => (
                         <MatchResultCompact
                           key={match.id}
                           match={match}

@@ -1,7 +1,9 @@
 ## 📋 BACKLOG
-- [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
+- [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
+- [x] 2026-08-11 — Turn Chat with Ephemeral Upstash Redis Storage and System Bot (bela/turnos/turn-chat-implementation)
+- [x] 2026-08-09 — Argentine Spanish Voice & Language Standardization (bela/turnos/voice-language-standardization)
 - [x] 2026-08-08 — Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement (bela/turnos/quick-join-and-copy-polish)
 - [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
@@ -26,9 +28,9 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
-## 2026-08-08 - Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement
-**Learning:** Rendering static placeholders for empty slots forces guest/unregistered users to scroll down to the bottom sticky bar to register. Incorporating a direct, inline "+ Sumarme" button within the empty slots when the viewer is a logged-in non-participant drastically streamlines the registration process. Furthermore, avoiding translucent utility borders (`border-emerald-600/30 bg-emerald-600/10`) in favor of solid layouts (`bg-muted border-border` with colored text) perfectly maintains strict MDS contrast and design consistency.
-**Action:** Always provide inline, contextual action buttons in empty card slots where possible. Ensure notifications/toasts strictly employ active voice, Argentine Spanish voseo, and zero exclamation marks, and keep container backgrounds and borders 100% solid.
+## 2026-08-10 - Turn Card Cooldown and Offline Visual Test Coverage
+**Learning:** Forgetting to pass cooldown metadata (like `lastNetworkNotificationAt`) from query results down to listing components (like `TurnCard`'s `OpenToNetworkButton`) creates user frustration because they cannot see whether their "Salvar turno" action is on cooldown until after clicking. Passing this timestamp and enhancing prop types to accept `Date | string | null` is vital since Date serialization over Next.js Server/Client boundary converts them to strings. Additionally, ensuring public queries like `getCachedOpenTurns` have robust AUTH_BYPASS mocks is crucial for Playwright E2E and visual testing to run cleanly offline.
+**Action:** Always verify that cooldown metadata fetched in the queries is properly declared in card props and propagated to interactive triggers. Include comprehensive mock values under bypass inside queries so that automated QA tools can verify listing state visuals.
 
 ## 2026-08-06 - Future-Date Turn Validation & Branded Toast Alignment
 **Learning:** Scheduling events (turnos) in the past corrupts listing logic and leads to dead links/records. Validating date/time during client-side submit events using `Date.now()` is safe and timezone-proof. Additionally, adding a 5-minute clock-skew window (`Date.now() - 5 * 60 * 1000`) on the server actions prevents minor network delays or client/server clock drifts from causing validation errors.
@@ -105,3 +107,6 @@
 ## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
 **Learning:** Los destinatarios de notificaciones de turnos carecían del contexto sobre qué día se jugaría el turno (ej: veían "Cupo abierto en tu red: Club · 19hs"), lo que causaba confusión sobre si era hoy, mañana o un día posterior. La implementación de un helper robusto de fechas relativas adaptado al dialecto argentino (`getTurnLabelWithDate`) brinda un contexto inmediato y de alta fidelidad directamente en la bandeja de notificaciones.
 **Action:** Incluir siempre contextos temporales de fecha relativa clara y localizada en los envíos de notificaciones transaccionales para guiar al usuario a la toma rápida de decisiones.
+## 2026-08-11 - Turn Chat with Ephemeral Upstash Redis Storage and System Bot
+**Learning:** Designing chat storage using an ephemeral key-value/LIST mechanism in `@upstash/redis` with 90-day auto-expiry provides extremely high scalability without the need for relational database tables. To make this rock-solid for serverless on Vercel where long-lived WebSockets are unstable, using standard HTTP/Rest-based polling (e.g. 5-second interval) is an extremely resilient and performant solution. Furthermore, adding high-fidelity, realistic localized mock data under bypass mode guarantees perfect offline builds and E2E visual Playwright verification. Finally, when integrating scrollable features on views with a sticky fixed bottom bar, introducing a dedicated container margin or bottom height spacer (e.g., `h-64`) is essential to prevent interactive elements from being visually or functionally intercepted.
+**Action:** Always employ high-fidelity mock fallbacks in store wrappers to facilitate visual test compilation and execution. Ensure scrollable list elements on mobile viewports include proper spacing/padding to avoid collision or overlap with fixed-positioned action menus.

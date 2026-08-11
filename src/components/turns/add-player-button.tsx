@@ -122,14 +122,18 @@ export function AddPlayerButton({
       <div className="flex items-center gap-2 p-3 border-b border-border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 pointer-events-none" />
+          <label htmlFor="player-search-input" className="sr-only">
+            Buscar jugador por nombre o email
+          </label>
           <input
+            id="player-search-input"
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar jugador..."
             autoCapitalize="words"
-            className="h-10 w-full pl-9 pr-9 rounded-lg bg-background border border-border text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-10 w-full pl-9 pr-9 rounded-lg bg-background border border-border text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           />
           {isSearching && (
             <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
@@ -142,7 +146,7 @@ export function AddPlayerButton({
                 inputRef.current?.focus();
               }}
               aria-label="Limpiar"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -154,7 +158,7 @@ export function AddPlayerButton({
             setQuery("");
             setResults([]);
           }}
-          className="rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           aria-label="Cancelar"
         >
           <X className="h-5 w-5" />
@@ -171,7 +175,7 @@ export function AddPlayerButton({
                   key={player.id}
                   onClick={() => handleAdd(player)}
                   disabled={addingId !== null}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label={`Agregar a ${player.displayName}`}
                 >
                   <PlayerAvatar
