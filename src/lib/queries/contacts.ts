@@ -358,3 +358,15 @@ export const getCachedPadelContacts = (userId: string, options?: { monthsBack?: 
     ["padel-contacts", userId, String(options?.monthsBack ?? "default")],
     { tags: ["matches"], revalidate: 60 }
   )();
+
+/**
+ * Cached version of getTurnNetworkContacts.
+ * Keyed by turnId. Invalidated by revalidateTag("turns").
+ * Fallback revalidate: 30s.
+ */
+export const getCachedTurnNetworkContacts = (turnId: string) =>
+  unstable_cache(
+    async () => getTurnNetworkContacts(turnId),
+    ["turn-network-contacts", turnId],
+    { tags: ["turns"], revalidate: 30 }
+  )();

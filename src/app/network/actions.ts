@@ -617,7 +617,7 @@ export interface RecommendedPlayer {
   matchesPlayed: number;
 }
 
-export async function getPlayersLikeYouAction(
+async function getPlayersLikeYouRaw(
   viewerId: string
 ): Promise<RecommendedPlayer[]> {
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
@@ -747,4 +747,17 @@ export async function getPlayersLikeYouAction(
     preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
     matchesPlayed: c.matchesPlayed ?? 0,
   }));
+}
+
+/**
+ * Cached version of getPlayersLikeYouAction.
+ * Keyed by viewerId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export async function getPlayersLikeYouAction(viewerId: string): Promise<RecommendedPlayer[]> {
+  return unstable_cache(
+    async () => getPlayersLikeYouRaw(viewerId),
+    ["players-like-you", viewerId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
 }

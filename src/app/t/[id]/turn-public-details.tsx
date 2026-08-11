@@ -113,8 +113,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   // Fetch prioritized salvage recommendations for the network section
   let suggestedContacts: PadelContact[] = [];
   if (viewerId && (isJoined || isCreator) && hasOpenSlot && !isCompleted) {
-    const { getTurnNetworkContacts } = await import("@/lib/queries");
-    suggestedContacts = await getTurnNetworkContacts(id);
+    const { getCachedTurnNetworkContacts } = await import("@/lib/queries");
+    suggestedContacts = await getCachedTurnNetworkContacts(id);
   }
 
   // Find mutual contact connections among players and substitutes
