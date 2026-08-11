@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { getRecencyWeight } from "@/lib/graph/engine";
 
 vi.mock("next/cache", () => ({
-  unstable_cache: (fn: any) => fn,
+  unstable_cache: (fn: unknown) => fn,
   revalidateTag: vi.fn(),
 }));
 
