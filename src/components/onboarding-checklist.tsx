@@ -12,6 +12,7 @@ import {
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/toast/use-toast";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -29,6 +30,7 @@ export function OnboardingChecklist({
   initialAlias,
   hasActivity,
 }: OnboardingChecklistProps) {
+  const { showToast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [deferredPrompt, setDeferredPrompt] =
@@ -326,7 +328,12 @@ export function OnboardingChecklist({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => requestPermission()}
+                    onClick={async () => {
+                      const token = await requestPermission();
+                      if (token) {
+                        showToast("Activaste las notificaciones.");
+                      }
+                    }}
                     disabled={notificationLoading}
                     className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                     aria-label="Solicitar permisos para notificaciones"
