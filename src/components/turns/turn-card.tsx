@@ -42,6 +42,7 @@ interface TurnCardProps {
     }[];
     maxPlayers: number;
     status?: string;
+    lastNetworkNotificationAt?: Date | string | null;
   };
   variant?: "default" | "recommended";
   isJoined?: boolean;
@@ -206,6 +207,7 @@ export function TurnCard({
                 <OpenToNetworkButton
                   turnId={turn.id}
                   club={turn.club}
+                  lastNetworkNotificationAt={turn.lastNetworkNotificationAt}
                   variant="outline"
                   size="sm"
                   showText={false}
