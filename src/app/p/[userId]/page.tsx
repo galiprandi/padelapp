@@ -21,10 +21,10 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { cn, getMatchWinner } from "@/lib/utils";
 import {
-  getHeadToHeadStats,
-  getPublicProfileUser,
-  getConfirmedMatchesForProfile,
-  getPlayerNetworkStats,
+  getCachedHeadToHeadStats,
+  getCachedPublicProfileUser,
+  getCachedConfirmedMatchesForProfile,
+  getCachedPlayerNetworkStats,
 } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -91,15 +91,15 @@ async function PublicProfileContent({
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const user = await getPublicProfileUser(userId);
+  const user = await getCachedPublicProfileUser(userId);
 
   if (!user) {
     notFound();
   }
 
   const [matches_result, networkStats] = await Promise.all([
-    getConfirmedMatchesForProfile(userId, 5),
-    getPlayerNetworkStats(userId),
+    getCachedConfirmedMatchesForProfile(userId, 5),
+    getCachedPlayerNetworkStats(userId),
   ]);
 
   const formattedMatches = matches_result.map<MatchResultCompactMatch>((match) => ({
@@ -158,7 +158,7 @@ async function PublicProfileContent({
 
   const h2h =
     viewerId && viewerId !== userId
-      ? await getHeadToHeadStats(viewerId, userId)
+      ? await getCachedHeadToHeadStats(viewerId, userId)
       : null;
 
   return (
@@ -258,7 +258,7 @@ async function PublicProfileContent({
 
         {/* Network & Position Stats Card */}
         <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+          <h3 className="text-xs font-semibold text-muted-foreground">
             Red y Posición
           </h3>
 

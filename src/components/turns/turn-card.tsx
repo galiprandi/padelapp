@@ -149,8 +149,7 @@ export function TurnCard({
               {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
               {isUrgent && (
                 <Badge
-                  variant="default"
-                  className="bg-amber-500/20 text-amber-600 border-amber-500/30"
+                  variant="warning"
                 >
                   {hoursUntilTurn < 1
                     ? "Urgente"

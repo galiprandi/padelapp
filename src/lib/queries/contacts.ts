@@ -102,6 +102,11 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
           userId: true,
         },
       },
+      substitutes: {
+        columns: {
+          userId: true,
+        },
+      },
     },
     limit: 1,
   });
@@ -109,6 +114,8 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   if (!turn || turn.players.length === 0) return [];
 
   const enrolledUserIds = new Set(turn.players.map((p) => p.userId));
+  const substituteUserIds = new Set(turn.substitutes?.map((s) => s.userId) ?? []);
+  const participantUserIds = new Set([...enrolledUserIds, ...substituteUserIds]);
   const enrolledArray = Array.from(enrolledUserIds);
 
   // 1. Get graph stats for enrolled players (to find their communities)
@@ -117,9 +124,13 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     .from(playerGraphStats)
     .where(inArray(playerGraphStats.userId, enrolledArray));
 
-  const enrolledCommunities = enrolledStats
-    .map((s) => s.community)
-    .filter((c): c is number => c !== null);
+  const enrolledCommunities = Array.from(
+    new Set(
+      enrolledStats
+        .map((s) => s.community)
+        .filter((c): c is number => c !== null)
+    )
+  );
 
   // 2. Fetch all edges involving any of the enrolled players
   const edges = await db
@@ -157,6 +168,9 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
 
     const enrolledId = isPlayerAEnrolled ? edge.playerAId : edge.playerBId;
     const candidateId = isPlayerAEnrolled ? edge.playerBId : edge.playerAId;
+
+    // Skip if candidate is already part of the turn (either as player or substitute)
+    if (participantUserIds.has(candidateId)) continue;
 
     // Check extreme outcome exclusion
     // Exclude rivals with outcome extreme (>85% or <15%)
@@ -224,7 +238,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   // Process same community players
   for (const stats of communityPlayersStats) {
     const candidateId = stats.userId;
-    if (enrolledUserIds.has(candidateId)) continue;
+    if (participantUserIds.has(candidateId)) continue;
     if (excludedUserIds.has(candidateId)) continue;
 
     // Community bonus
@@ -338,9 +352,21 @@ export function buildContactsMap(
  * Keyed by userId and monthsBack. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedPadelContacts = unstable_cache(
-  async (userId: string, options?: { monthsBack?: number }) =>
-    getPadelContacts(userId, options),
-  ["padel-contacts"],
-  { tags: ["matches"], revalidate: 60 }
-);
+export const getCachedPadelContacts = (userId: string, options?: { monthsBack?: number }) =>
+  unstable_cache(
+    async () => getPadelContacts(userId, options),
+    ["padel-contacts", userId, String(options?.monthsBack ?? "default")],
+    { tags: ["matches"], revalidate: 60 }
+  )();
+
+/**
+ * Cached version of getTurnNetworkContacts.
+ * Keyed by turnId. Invalidated by revalidateTag("turns").
+ * Fallback revalidate: 30s.
+ */
+export const getCachedTurnNetworkContacts = (turnId: string) =>
+  unstable_cache(
+    async () => getTurnNetworkContacts(turnId),
+    ["turn-network-contacts", turnId],
+    { tags: ["turns"], revalidate: 30 }
+  )();

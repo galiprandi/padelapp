@@ -85,3 +85,15 @@
 ## 2026-08-07 - [Invisible Labels & Granular Choice Accessibility]
 **Learning:** For a clean visual design, search inputs inside modals and complex custom selection buttons (such as numeric score grids) often skip semantic labeling or context. Applying hidden `sr-only` labels on search inputs and highly descriptive, pluralized localized `aria-label` labels (e.g. "0 juegos", "1 juego") on numeric options provides a bulletproof accessibility tree for screen reader users without introducing layout or cosmetic shifts.
 **Action:** When creating text inputs or button groups in wizard steps or modal dialogs, always supply hidden screen-reader labels and descriptive localized aria-labels on every choice.
+
+## 2026-08-08 - [Standardization of Form Radio Button Selection Styles]
+**Learning:** Custom button-based radio selectors are highly interactive options, but when styled using flat semi-transparent states (like `bg-muted/50 border-transparent`), they violate the Minimal Design System's translucent container background prohibition. Using a clean, solid, outlined base style (like `bg-card border-border hover:bg-muted` for unselected options) drastically improves readability, contrast, and choice boundary affordance.
+**Action:** When styling custom button-based choices or radio selectors, always prefer standard solid card backgrounds and crisp, visible borders to improve visual depth and accessibility.
+
+## 2026-08-09 - [Biometric Credential Nicknaming & iOS PWA Banner Visual Consistency]
+**Learning:** Adding a stateful, character-limited (maxLength=30) device nickname text input in WebAuthn registration flows allows users to easily organize and identify registered devices (e.g. "Mi Celular", "Notebook Trabajo") on multiple biometric authentications, fully utilizing backend support. Furthermore, wrapping iOS/Safari installation links in `<Button asChild>` components standardizes visual homogeneity (aligning with Android native install triggers) and ensures consistent mobile hover/focus/tactile micro-interactions under the Minimal Design System (MDS).
+**Action:** Always provide clear labelling and character boundaries for biometric nickname inputs, and encapsulate installation and informational links inside standard custom Button components for uniform design hierarchy.
+
+## 2026-08-10 - [Full-Field Native Date & Time Picker Micro-UX]
+**Learning:** Standard date and time inputs (`<input type="date">` and `<input type="time">`) natively restrict trigger hotspots to tiny icons on desktop and specific sub-regions on mobile. Programmatically invoking the modern `element.showPicker()` API defensively inside focus and click handlers on the base input element enables an incredibly smooth, responsive full-field touch-target experience that eliminates physical input friction.
+**Action:** Always intercept focus and click events on date/time inputs to request browser-native picker dialog activation using `showPicker()`, enclosed in clean feature detection and try/catch handlers to maintain cross-platform safety.

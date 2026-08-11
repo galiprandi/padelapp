@@ -1,8 +1,10 @@
 ## 📋 BACKLOG
-- [ ] Implementar Chat de Turnos con historial efímero mediante Socket.io y Redis cuando las variables de entorno de Upstash estén configuradas.
 
 ## ✅ DONE
 - [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
+- [x] 2026-08-11 — Turn Chat with Ephemeral Upstash Redis Storage and System Bot (bela/turnos/turn-chat-implementation)
+- [x] 2026-08-09 — Argentine Spanish Voice & Language Standardization (bela/turnos/voice-language-standardization)
+- [x] 2026-08-08 — Contextual Quick-Join, Branded Active Toast Copy & MDS Styling Refinement (bela/turnos/quick-join-and-copy-polish)
 - [x] 2026-08-06 — Future-Date Turn Validation & Branded Toast Alignment (bela/turnos/future-date-validation-and-branded-toasts)
 - [x] 2026-08-05 — Modernized Turn Action Confirmations (bela/turnos/modern-confirmations)
 - [x] 2026-08-03 — Interactive WhatsApp Invite Recommendations (bela/turnos/whatsapp-invite-suggestions)
@@ -105,3 +107,6 @@
 ## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
 **Learning:** Los destinatarios de notificaciones de turnos carecían del contexto sobre qué día se jugaría el turno (ej: veían "Cupo abierto en tu red: Club · 19hs"), lo que causaba confusión sobre si era hoy, mañana o un día posterior. La implementación de un helper robusto de fechas relativas adaptado al dialecto argentino (`getTurnLabelWithDate`) brinda un contexto inmediato y de alta fidelidad directamente en la bandeja de notificaciones.
 **Action:** Incluir siempre contextos temporales de fecha relativa clara y localizada en los envíos de notificaciones transaccionales para guiar al usuario a la toma rápida de decisiones.
+## 2026-08-11 - Turn Chat with Ephemeral Upstash Redis Storage and System Bot
+**Learning:** Designing chat storage using an ephemeral key-value/LIST mechanism in `@upstash/redis` with 90-day auto-expiry provides extremely high scalability without the need for relational database tables. To make this rock-solid for serverless on Vercel where long-lived WebSockets are unstable, using standard HTTP/Rest-based polling (e.g. 5-second interval) is an extremely resilient and performant solution. Furthermore, adding high-fidelity, realistic localized mock data under bypass mode guarantees perfect offline builds and E2E visual Playwright verification. Finally, when integrating scrollable features on views with a sticky fixed bottom bar, introducing a dedicated container margin or bottom height spacer (e.g., `h-64`) is essential to prevent interactive elements from being visually or functionally intercepted.
+**Action:** Always employ high-fidelity mock fallbacks in store wrappers to facilitate visual test compilation and execution. Ensure scrollable list elements on mobile viewports include proper spacing/padding to avoid collision or overlap with fixed-positioned action menus.

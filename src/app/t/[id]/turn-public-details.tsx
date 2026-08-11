@@ -22,8 +22,10 @@ import {
   MapPin,
   Info,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
+import { TurnChat } from "@/components/turns/turn-chat";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -33,6 +35,7 @@ import {
   TakeOpenSlotForm,
   ScheduleNextTurnForm,
   PlayCasualForm,
+  QuickJoinEmptySlotButton,
 } from "@/components/turns/turn-actions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -110,8 +113,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   // Fetch prioritized salvage recommendations for the network section
   let suggestedContacts: PadelContact[] = [];
   if (viewerId && (isJoined || isCreator) && hasOpenSlot && !isCompleted) {
-    const { getTurnNetworkContacts } = await import("@/lib/queries");
-    suggestedContacts = await getTurnNetworkContacts(id);
+    const { getCachedTurnNetworkContacts } = await import("@/lib/queries");
+    suggestedContacts = await getCachedTurnNetworkContacts(id);
   }
 
   // Find mutual contact connections among players and substitutes
@@ -403,7 +406,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   <p className="text-xs font-semibold italic opacity-60 truncate">
                     Cupo disponible
                   </p>
-                  {(isJoined || isCreator) && (
+                  {isJoined || isCreator ? (
                     <TurnShareButton
                       shareUrl={shareUrl}
                       club={turn.club}
@@ -411,6 +414,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       variant="icon"
                       className="h-8 w-8 rounded-lg shrink-0"
                     />
+                  ) : (
+                    viewerId && !isSubstitute && turn.status === "OPEN" && (
+                      <QuickJoinEmptySlotButton turnId={id} />
+                    )
                   )}
                 </div>
               </div>
@@ -545,6 +552,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </section>
       )}
 
+      {(isJoined || isCreator || isSubstitute) && (
+        <section className="space-y-4 mb-6">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            Chat del turno 💬
+          </h2>
+          <TurnChat turnId={id} currentUserId={viewerId} />
+        </section>
+      )}
+
+      <div className="h-64" />
+
       <div
         className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50"
         role="region"
@@ -605,7 +624,7 @@ function TurnActions({
       <div className="flex flex-col gap-3">
         <SignInForm
           callbackUrl={`/t/${turnId}`}
-          label={`Iniciá sesión para unirte a ${club}`}
+          label={`Iniciá sesión para sumarte a ${club}`}
           className="w-full h-12 rounded-lg text-base font-bold"
         />
         <TurnShareButton shareUrl={shareUrl} club={club} date={date} />

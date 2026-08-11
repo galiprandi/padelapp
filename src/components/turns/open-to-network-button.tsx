@@ -90,8 +90,8 @@ export function OpenToNetworkButton({
       );
     }
     return (
-      <div className={cn("w-full rounded-lg border border-emerald-600/30 bg-emerald-600/10 px-4 py-3 text-sm", className)}>
-        <div className="flex items-center gap-2 text-emerald-600 font-bold">
+      <div className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm", className)}>
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-500 font-bold">
           <Check className="h-4 w-4" />
           <span>
             {result.notified > 0

@@ -10,7 +10,7 @@ import { ClubInput } from "@/components/club-input";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getNaturalShareText } from "@/lib/utils";
 import Link from "next/link";
 
 const DURATION_OPTIONS = [
@@ -65,8 +65,13 @@ export default function NewTurnPage() {
 
       if (response.status === "ok") {
         const turnUrl = `${window.location.origin}/t/${response.turnId}`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Sumate a mi turno de pádel: ${turnUrl}`)}`;
-        showToast("Turno creado. Compartilo por WhatsApp.", {
+        const shareText = getNaturalShareText({
+          type: "turn",
+          club: formData.club,
+          date: combinedDate,
+        });
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}. Sumate acá: ${turnUrl}`)}`;
+        showToast("Creaste el turno. Compartilo por WhatsApp.", {
           action: {
             label: "WhatsApp",
             onClick: () => window.open(whatsappUrl, "_blank"),
@@ -74,7 +79,7 @@ export default function NewTurnPage() {
         });
         router.push(`/t/${response.turnId}`);
       } else {
-        showToast(response.message || "Error al crear el turno");
+        showToast(response.message || "No se pudo crear el turno.");
       }
     });
   };
@@ -191,8 +196,8 @@ export default function NewTurnPage() {
                       className={cn(
                         "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+                          : "bg-card border-border text-muted-foreground hover:bg-muted",
                       )}
                     >
                       {option.label}
@@ -225,8 +230,8 @@ export default function NewTurnPage() {
                       className={cn(
                         "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                          : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+                          : "bg-card border-border text-muted-foreground hover:bg-muted",
                       )}
                     >
                       <span>{option.label}</span>

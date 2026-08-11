@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { users, accounts, playerGraphStats, playerEdges } from "@/db/schema";
 import { eq, and, or, desc, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
 export interface PublicProfileUser {
   id: string;
@@ -274,3 +275,27 @@ export async function getPlayerNetworkStats(userId: string): Promise<PlayerNetwo
     successfulPartner,
   };
 }
+
+/**
+ * Cached version of getPublicProfileUser.
+ * Keyed by userId. Invalidated by revalidateTag("ranking").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedPublicProfileUser = (userId: string) =>
+  unstable_cache(
+    async () => getPublicProfileUser(userId),
+    ["public-profile-user", userId],
+    { tags: ["ranking"], revalidate: 60 }
+  )();
+
+/**
+ * Cached version of getPlayerNetworkStats.
+ * Keyed by userId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedPlayerNetworkStats = (userId: string) =>
+  unstable_cache(
+    async () => getPlayerNetworkStats(userId),
+    ["player-network-stats", userId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
