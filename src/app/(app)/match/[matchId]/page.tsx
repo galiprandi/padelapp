@@ -1,93 +1,28 @@
 import { auth } from "@/auth";
-import {
-  getMatchByIdAction,
-  confirmMatchResultAction,
-  cancelMatchAction,
-  finalizeMatchAction,
-} from "@/app/(app)/match/actions";
+import { getMatchByIdAction } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
 import { MatchResultCompact } from "@/components/matches/match-result-card";
 import { MatchPlayersManager } from "@/components/matches/match-players-manager";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { ShareButton } from "@/components/share/share-button";
-import { FileText, CheckCircle2, Edit3, Trash2 } from "lucide-react";
+import { FileText, CheckCircle2, Edit3 } from "lucide-react";
 import { AttendanceBadge } from "@/components/matches/attendance-badge";
 import Link from "next/link";
 import { createMagicLink } from "@/lib/magic-link";
 import { cn } from "@/lib/utils";
-import { redirect } from "next/navigation";
 import { LocalDate } from "@/components/ui/local-date";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ConfirmResultForm,
+  FinalizeMatchForm,
+  CancelMatchForm,
+} from "@/components/matches/match-actions";
 
 interface MatchPageProps {
   params: Promise<{
     matchId: string;
   }>;
-}
-
-async function ConfirmResultForm({ matchId }: { matchId: string }) {
-  async function handleConfirm() {
-    "use server";
-    await confirmMatchResultAction(matchId);
-    redirect(`/match/${matchId}`);
-  }
-
-  return (
-    <form action={handleConfirm} className="w-full">
-      <Button type="submit" className="w-full h-12">
-        <CheckCircle2 className="mr-2 h-4 w-4" />
-        Confirmar Resultado
-      </Button>
-    </form>
-  );
-}
-
-async function FinalizeMatchForm({ matchId }: { matchId: string }) {
-  async function handleFinalize() {
-    "use server";
-    await finalizeMatchAction(matchId);
-    redirect(`/match/${matchId}`);
-  }
-
-  return (
-    <form action={handleFinalize} className="w-full">
-      <Button
-        type="submit"
-        variant="outline"
-        className="w-full h-10 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
-        aria-label="Finalizar el partido como organizador"
-      >
-        <CheckCircle2 className="mr-2 h-4 w-4" />
-        Finalizar como Organizador
-      </Button>
-    </form>
-  );
-}
-
-async function CancelMatchForm({ matchId }: { matchId: string }) {
-  async function handleCancel() {
-    "use server";
-    const result = await cancelMatchAction(matchId);
-    if (result.status === "ok") {
-      redirect("/match");
-    }
-    // Note: In a real RSC scenario we might want to handle the error state better,
-    // but for now this follows the pattern of redirecting only on success.
-  }
-
-  return (
-    <form action={handleCancel} className="w-full">
-      <Button
-        type="submit"
-        variant="ghost"
-        className="w-full text-destructive hover:bg-destructive/10"
-      >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Eliminar Partido
-      </Button>
-    </form>
-  );
 }
 
 export default function MatchPage({ params }: MatchPageProps) {
@@ -261,19 +196,38 @@ async function MatchContent({ params }: MatchPageProps) {
             </span>
           </div>
         )}
-        <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
-          <PlayerAvatar
-            name={match.creator?.displayName || "U"}
-            image={match.creator?.image ?? undefined}
-            className="h-8 w-8 rounded-lg"
-          />
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground">Organizador</span>
-            <span className="text-sm font-semibold text-foreground">
-              {match.creator?.displayName || "Usuario"}
-            </span>
+        {match.creatorId ? (
+          <Link
+            href={`/p/${match.creatorId}`}
+            className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          >
+            <PlayerAvatar
+              name={match.creator?.displayName || "U"}
+              image={match.creator?.image ?? undefined}
+              className="h-8 w-8 rounded-lg"
+            />
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">Organizador</span>
+              <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
+                {match.creator?.displayName || "Usuario"}
+              </span>
+            </div>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
+            <PlayerAvatar
+              name={match.creator?.displayName || "U"}
+              image={match.creator?.image ?? undefined}
+              className="h-8 w-8 rounded-lg"
+            />
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">Organizador</span>
+              <span className="text-sm font-semibold text-foreground">
+                {match.creator?.displayName || "Usuario"}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -365,15 +319,31 @@ async function MatchContent({ params }: MatchPageProps) {
               <div className="flex -space-x-2 items-center">
                 {match.players
                   .sort((a, b) => a.position - b.position)
-                  .map((p) => (
-                    <PlayerAvatar
-                      key={p.id}
-                      name={p.displayName || p.user?.displayName || ""}
-                      image={p.user?.image ?? undefined}
-                      className="border-2 border-card"
-                      size={40}
-                    />
-                  ))}
+                  .map((p) => {
+                    const avatarElement = (
+                      <PlayerAvatar
+                        name={p.displayName || p.user?.displayName || ""}
+                        image={p.user?.image ?? undefined}
+                        className="border-2 border-card transition-all hover:opacity-80 active:scale-[0.95]"
+                        size={40}
+                      />
+                    );
+
+                    return p.userId ? (
+                      <Link
+                        key={p.id}
+                        href={`/p/${p.userId}`}
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
+                        aria-label={`Ver perfil de ${p.displayName || p.user?.displayName || ""}`}
+                      >
+                        {avatarElement}
+                      </Link>
+                    ) : (
+                      <div key={p.id}>
+                        {avatarElement}
+                      </div>
+                    );
+                  })}
               </div>
               <p className="text-xs font-medium text-muted-foreground">
                 Modalidad {getMatchTypeLabel(match.matchType)}
@@ -411,21 +381,13 @@ async function MatchContent({ params }: MatchPageProps) {
                     const isConfirmed = player.resultConfirmed;
                     const isViewer = player.userId === viewerId;
 
-                    return (
-                      <div
-                        key={player.id}
-                        className={cn(
-                          "flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors",
-                          isConfirmed
-                            ? "bg-primary/5 border-primary/20"
-                            : "bg-muted/50 border-border opacity-70",
-                        )}
-                      >
+                    const content = (
+                      <>
                         <div className="relative">
                           <PlayerAvatar
                             name={displayName}
                             image={player.user?.image ?? undefined}
-                            className={cn("h-10 w-10 border-2 border-card")}
+                            className={cn("h-10 w-10 border-2 border-card group-hover:opacity-85 transition-opacity")}
                           />
                           {isConfirmed && (
                             <div className="absolute -right-1 -bottom-1 rounded-full bg-primary p-0.5 border-2 border-card shadow-sm">
@@ -437,7 +399,7 @@ async function MatchContent({ params }: MatchPageProps) {
                         <div className="flex flex-col items-center text-center gap-0.5 min-w-0 w-full">
                           <span
                             className={cn(
-                              "text-xs font-bold truncate w-full",
+                              "text-xs font-bold truncate w-full group-hover:text-primary transition-colors",
                               isConfirmed
                                 ? "text-foreground"
                                 : "text-muted-foreground",
@@ -456,6 +418,32 @@ async function MatchContent({ params }: MatchPageProps) {
                             {isConfirmed ? "Confirmado" : "Pendiente"}
                           </span>
                         </div>
+                      </>
+                    );
+
+                    return (
+                      <div
+                        key={player.id}
+                        className={cn(
+                          "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all",
+                          isConfirmed
+                            ? "bg-primary/5 border-primary/20"
+                            : "bg-muted/50 border-border opacity-70",
+                        )}
+                      >
+                        {player.userId ? (
+                          <Link
+                            href={`/p/${player.userId}`}
+                            className="flex flex-col items-center gap-2 w-full transition-all active:scale-[0.98] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+                            aria-label={`Ver perfil de ${displayName}`}
+                          >
+                            {content}
+                          </Link>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 w-full">
+                            {content}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -519,9 +507,18 @@ async function MatchContent({ params }: MatchPageProps) {
                         key={player.id}
                         className="flex items-center justify-between gap-2"
                       >
-                        <span className="text-sm font-semibold text-foreground truncate">
-                          {displayName}
-                        </span>
+                        {player.userId ? (
+                          <Link
+                            href={`/p/${player.userId}`}
+                            className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+                          >
+                            {displayName}
+                          </Link>
+                        ) : (
+                          <span className="text-sm font-semibold text-foreground truncate">
+                            {displayName}
+                          </span>
+                        )}
                         <AttendanceBadge
                           status={
                             (player.attendance as

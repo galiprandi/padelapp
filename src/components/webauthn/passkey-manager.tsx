@@ -8,6 +8,8 @@ import {
   platformAuthenticatorIsAvailable,
 } from "@simplewebauthn/browser";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/toast/use-toast";
 import {
   getRegistrationOptions,
@@ -32,6 +34,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
   const [isRegistering, startRegistering] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
   const [supported, setSupported] = useState<boolean | null>(null);
+  const [nickname, setNickname] = useState("");
 
   useEffect(() => {
     if (!browserSupportsWebAuthn()) {
@@ -74,7 +77,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         const response = await startRegistration({
           optionsJSON: result.options,
         });
-        const verification = await verifyRegistration(response);
+        const verification = await verifyRegistration(response, nickname);
 
         if ("error" in verification) {
           showToast(verification.error ?? "Error");
@@ -82,6 +85,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         }
 
         showToast("Huella registrada");
+        setNickname("");
         window.location.reload();
       } catch (err: unknown) {
         const error = err as { name?: string };
@@ -123,6 +127,22 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
             vez.
           </p>
         </div>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <Label htmlFor="passkey-nickname" className="text-xs font-semibold text-foreground">
+          Nombre del dispositivo (opcional)
+        </Label>
+        <Input
+          id="passkey-nickname"
+          type="text"
+          placeholder="Ej: Mi Celular, Mi Computadora..."
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value.slice(0, 30))}
+          maxLength={30}
+          disabled={isRegistering}
+          className="h-10 text-sm"
+        />
       </div>
 
       {passkeys.length > 0 && (

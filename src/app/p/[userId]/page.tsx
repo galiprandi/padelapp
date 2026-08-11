@@ -21,10 +21,10 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { cn, getMatchWinner } from "@/lib/utils";
 import {
-  getHeadToHeadStats,
-  getPublicProfileUser,
-  getConfirmedMatchesForProfile,
-  getPlayerNetworkStats,
+  getCachedHeadToHeadStats,
+  getCachedPublicProfileUser,
+  getCachedConfirmedMatchesForProfile,
+  getCachedPlayerNetworkStats,
 } from "@/lib/queries";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -91,15 +91,15 @@ async function PublicProfileContent({
   const session = await auth();
   const viewerId = session?.user?.id;
 
-  const user = await getPublicProfileUser(userId);
+  const user = await getCachedPublicProfileUser(userId);
 
   if (!user) {
     notFound();
   }
 
   const [matches_result, networkStats] = await Promise.all([
-    getConfirmedMatchesForProfile(userId, 5),
-    getPlayerNetworkStats(userId),
+    getCachedConfirmedMatchesForProfile(userId, 5),
+    getCachedPlayerNetworkStats(userId),
   ]);
 
   const formattedMatches = matches_result.map<MatchResultCompactMatch>((match) => ({
@@ -158,7 +158,7 @@ async function PublicProfileContent({
 
   const h2h =
     viewerId && viewerId !== userId
-      ? await getHeadToHeadStats(viewerId, userId)
+      ? await getCachedHeadToHeadStats(viewerId, userId)
       : null;
 
   return (

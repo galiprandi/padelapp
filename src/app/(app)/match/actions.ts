@@ -1807,6 +1807,85 @@ export async function getMatchByIdAction(matchId: string): Promise<{
     return { status: "error", message: "Invalid match identifier." };
   }
 
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      status: "ok",
+      match: {
+        id: matchId,
+        creatorId: "p-01",
+        status: "CONFIRMED",
+        sets: 3,
+        matchType: "FRIENDLY",
+        club: "Padel City",
+        courtNumber: "2",
+        notes: "Partidazo de fin de semana con la red de contactos.",
+        score: "6-4, 6-3",
+        date: new Date("2026-08-01T10:00:00.000Z"),
+        createdAt: new Date("2026-08-01T10:00:00.000Z"),
+        creator: {
+          id: "p-01",
+          displayName: "Agustín",
+          image: null,
+          alias: "agu",
+        },
+        players: [
+          {
+            id: "mp-01",
+            position: 0,
+            userId: "p-01",
+            displayName: "Agustín",
+            teamId: "team-a",
+            resultConfirmed: true,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "RIGHT",
+            user: { id: "p-01", displayName: "Agustín", image: null, alias: "agu" },
+            team: { id: "team-a", label: "Equipo A" }
+          },
+          {
+            id: "mp-02",
+            position: 1,
+            userId: "p-02",
+            displayName: "Fernando",
+            teamId: "team-a",
+            resultConfirmed: true,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT",
+            user: { id: "p-02", displayName: "Fernando", image: null, alias: "Bela" },
+            team: { id: "team-a", label: "Equipo A" }
+          },
+          {
+            id: "mp-03",
+            position: 2,
+            userId: "p-03",
+            displayName: "Ramiro",
+            teamId: "team-b",
+            resultConfirmed: true,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "RIGHT",
+            user: { id: "p-03", displayName: "Ramiro", image: null, alias: "Ram" },
+            team: { id: "team-b", label: "Equipo B" }
+          },
+          {
+            id: "mp-04",
+            position: 3,
+            userId: "p-04",
+            displayName: "Gero",
+            teamId: "team-b",
+            resultConfirmed: true,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT",
+            user: { id: "p-04", displayName: "Gero", image: null, alias: "Ger" },
+            team: { id: "team-b", label: "Equipo B" }
+          },
+        ],
+      },
+    };
+  }
+
   try {
     const match = await db.query.matches.findFirst({
       where: eq(matches.id, matchId),

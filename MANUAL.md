@@ -126,6 +126,14 @@ Además de los turnos, la app permite registrar partidos, cargar resultados, lle
 - Si el partido ya estaba confirmado → recalcula el ranking con los nuevos datos de asistencia
 - Si se marca "No asistió" → push al jugador: "Te marcaron ausente"
 
+### Resumen e Historial
+- En la pantalla de partidos, los usuarios logueados ven un resumen de estadísticas que incluye:
+  - **Partidos:** Total de partidos jugados y confirmados.
+  - **Win Rate:** Porcentaje de victorias sobre el total de partidos.
+  - **Racha:** Racha de victorias consecutivas (visible si es de 2 o más victorias).
+  - **Mejor socio:** El compañero con el que el usuario ha conseguido más victorias.
+  - **Némesis ⚔️:** El oponente que más derrotas le ha infligido al usuario en sus partidos confirmados.
+
 ### No implementado
 - Estado DISPUTED (resultado en disputa) — existe en el esquema pero no se usa
 

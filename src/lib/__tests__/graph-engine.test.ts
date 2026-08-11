@@ -1,5 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { getRecencyWeight } from "@/lib/graph/engine";
+
+vi.mock("next/cache", () => ({
+  unstable_cache: (fn: unknown) => fn,
+  revalidateTag: vi.fn(),
+}));
 
 process.env.AUTH_BYPASS = "true";
 
@@ -68,5 +73,18 @@ describe("getPlayersLikeYouAction", () => {
       preferredSide: "LEFT",
       matchesPlayed: 6,
     });
+  });
+});
+
+import { getCachedTurnNetworkContacts } from "@/lib/queries";
+
+describe("getCachedTurnNetworkContacts", () => {
+  it("returns mock network contacts under bypass/mock conditions", async () => {
+    const result = await getCachedTurnNetworkContacts("turn-01");
+    expect(result).toHaveLength(2);
+    expect(result[0].id).toBe("p-03");
+    expect(result[0].alias).toBe("Gero");
+    expect(result[1].id).toBe("p-04");
+    expect(result[1].alias).toBe("Facu");
   });
 });

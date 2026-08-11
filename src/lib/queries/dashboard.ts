@@ -63,8 +63,9 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
  * Keyed by userId. Invalidated by revalidateTag("ranking").
  * Fallback revalidate: 60s.
  */
-export const getCachedDashboardUserStats = unstable_cache(
-  async (userId: string) => getDashboardUserStats(userId),
-  ["dashboard-user-stats"],
-  { tags: ["ranking"], revalidate: 60 }
-);
+export const getCachedDashboardUserStats = (userId: string) =>
+  unstable_cache(
+    async () => getDashboardUserStats(userId),
+    ["dashboard-user-stats", userId],
+    { tags: ["ranking"], revalidate: 60 }
+  )();

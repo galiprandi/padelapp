@@ -116,12 +116,16 @@ export function PwaInstallBanner() {
           Instalar
         </Button>
       ) : (
-        <Link
-          href="/install"
-          className="text-xs font-semibold text-primary hover:underline whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background rounded px-1.5 py-1"
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary hover:bg-muted whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
         >
-          Ver cómo
-        </Link>
+          <Link href="/install">
+            Ver cómo
+          </Link>
+        </Button>
       )}
     </div>
   );
