@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -64,6 +65,8 @@ export function ProfileForm({
   const [image, setImage] = useState<string | null>(initialImage);
   const [isSaving, startSaving] = useTransition();
   const [checklistDismissed, setChecklistDismissed] = useState(false);
+  const [pwaDismissed, setPwaDismissed] = useState(false);
+  const [pushDismissed, setPushDismissed] = useState(false);
 
   const lastSavedAlias = useRef(initialAlias);
   const previousAliasRef = useRef(initialAlias);
@@ -161,6 +164,10 @@ export function ProfileForm({
     if (typeof window !== "undefined") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setChecklistDismissed(localStorage.getItem("onboarding-checklist-dismissed") === "true");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPwaDismissed(localStorage.getItem("pwa-banner-dismissed") === "true");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPushDismissed(localStorage.getItem("push-prompt-dismissed") === "true");
     }
   }, []);
 
@@ -315,23 +322,72 @@ export function ProfileForm({
         </div>
       </div>
 
-      {/* Guía de bienvenida / Onboarding restoration */}
-      {matchesPlayed === 0 && checklistDismissed && (
+      {isOnboarding && (
+        <Button
+          asChild
+          className="w-full h-12 text-sm font-bold"
+        >
+          <Link href="/me">Continuar al inicio</Link>
+        </Button>
+      )}
+
+      {/* Avisos de la aplicación / Suggestion & checklist restoration */}
+      {((matchesPlayed === 0 && checklistDismissed) || pwaDismissed || pushDismissed) && (
         <div className="rounded-xl border border-border bg-card p-4 space-y-3">
           <h3 className="text-sm font-bold text-foreground">
-            Guía de bienvenida
+            Avisos de la aplicación
           </h3>
           <p className="text-xs text-muted-foreground leading-normal">
-            Descartaste la guía de bienvenida en tu panel de inicio. Restablecela para seguir tu progreso de preparación (alias, instalación, notificaciones, primer turno).
+            Restablecé los carteles o sugerencias que ocultaste anteriormente para volver a verlos en tu panel de inicio.
           </p>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleRestoreChecklist}
-            className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
-          >
-            Restablecer guía de bienvenida
-          </Button>
+          <div className="space-y-2 pt-1">
+            {matchesPlayed === 0 && checklistDismissed && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleRestoreChecklist}
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+              >
+                Restablecer guía de bienvenida
+              </Button>
+            )}
+            {pwaDismissed && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem("pwa-banner-dismissed");
+                    setPwaDismissed(false);
+                    showToast("Sugerencia de instalación restablecida", {
+                      duration: 4000,
+                    });
+                  }
+                }}
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+              >
+                Restablecer sugerencia de instalación
+              </Button>
+            )}
+            {pushDismissed && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem("push-prompt-dismissed");
+                    setPushDismissed(false);
+                    showToast("Sugerencia de notificaciones restablecida", {
+                      duration: 4000,
+                    });
+                  }
+                }}
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+              >
+                Restablecer sugerencia de notificaciones
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { Bell, Loader2 } from "lucide-react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/toast/use-toast";
+
+const DISMISS_KEY = "push-prompt-dismissed";
 
 export function PushPermissionPrompt() {
+  const { showToast } = useToast();
   const { permission, requestPermission, loading } = usePushNotifications();
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -13,6 +17,9 @@ export function PushPermissionPrompt() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    if (typeof window !== "undefined") {
+      setDismissed(localStorage.getItem(DISMISS_KEY) === "true");
+    }
   }, []);
 
   // Don't render during SSR — permission state is only known on the client.
@@ -42,7 +49,12 @@ export function PushPermissionPrompt() {
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button
-              onClick={() => requestPermission()}
+              onClick={async () => {
+                const token = await requestPermission();
+                if (token) {
+                  showToast("Activaste las notificaciones.");
+                }
+              }}
               disabled={loading}
               size="sm"
               aria-label="Activar notificaciones de la aplicación"
@@ -57,7 +69,10 @@ export function PushPermissionPrompt() {
             </Button>
             <Button
               variant="ghost"
-              onClick={() => setDismissed(true)}
+              onClick={() => {
+                setDismissed(true);
+                localStorage.setItem(DISMISS_KEY, "true");
+              }}
               size="sm"
               aria-label="Descartar solicitud de notificaciones"
               className="h-9 font-semibold text-muted-foreground hover:bg-muted"
