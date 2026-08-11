@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 11 (Dynamic Caching of Players Like You & Turn Network Contacts):
+  - [x] 2026-08-10 — Hecho: Refactorizado `getPlayersLikeYouAction` (`src/app/network/actions.ts`) utilizando la capa de caché `unstable_cache` de Next.js, con aislamiento por `viewerId` y tag `"matches"` para invalidación proactiva tras confirmar partidos.
+  - [x] 2026-08-10 — Hecho: Implementado `getCachedTurnNetworkContacts` (`src/lib/queries/contacts.ts`) para almacenar en caché las sugerencias de salvataje de turnos con el tag `"turns"`.
+  - [x] 2026-08-10 — Hecho: Integrado `getCachedTurnNetworkContacts` en la vista pública de detalles de turno (`src/app/t/[id]/turn-public-details.tsx`).
 - Phase 10 (Turn Contact Recommendations and Player Similarity Safeguards):
   - [x] 2026-08-09 — Hecho: Refinado de `getTurnNetworkContacts` (`src/lib/queries/contacts.ts`) para consultar y combinar tanto jugadores como suplentes inscritos en el turno, evitando que se sugiera invitar a personas que ya están registradas como suplentes en lista de espera.
   - [x] 2026-08-09 — Hecho: Agregado de un safeguard robusto en `getPlayersLikeYouAction` (`src/app/network/actions.ts`) que descarta candidatos cuyos perfiles de usuario no existan o se hayan borrado de la base de datos (prevención de registros huérfanos).
@@ -73,3 +77,4 @@
 - **Soporte de Mock y Bypass en Sandbox**: Cuando el sandbox de base de datos no tiene credenciales de escritura válidas o es inaccesible offline, introducir un modo de bypass `MOCK_AUTH === "true"` que simula la sesión del organizador Agustín y responde de forma determinista desde la acción del servidor en lugar de usar interceptores de red inestables, garantiza que todo el pipeline de compilación, Next.js PPR and Playwright E2E funcione con un 100% de fiabilidad y consistencia.
 - **Micro-UX Táctil Minimalista (MDS)**: En botones prominentes de sugerencia de nivel superior, usar la escala activa `active:scale-[0.98]` combinada con un estado de desactivación visual prolijo ("Pensando parejas... 🧠") mientras la transición está pendiente, crea una experiencia táctil inmersiva ideal para smartphones.
 - **Matchmaking Synergy Calibration with Temporal Decay & Streak Blending**: Calibrating player partnership synergy requires balancing long-term historical records with recent performance. Decay the deviation of older edges towards the 0.5 default based on `lastMatchAt`, calculate recent form using exponential weightings (`0.8^index`) on chronological partnership matches, and blend them (60% decayed synergy, 40% recent form) to create a streak-aware matchmaking recommender.
+- **Aislamiento Dinámico de Caché en Acciones y Consultas Personalizadas**: Para almacenar en caché consultas personalizadas basadas en el usuario o en la entidad actual (`viewerId` o `turnId`), la envoltura de `unstable_cache` debe recibir estos identificadores en sus `keyParts` para asegurar el aislamiento de datos multiusuario. Además, declarar la acción como `async function` (y no como una constante currificada de flecha) es un requisito estricto del compilador de Next.js (Turbopack) para Server Actions.

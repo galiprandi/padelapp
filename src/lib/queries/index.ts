@@ -34,6 +34,7 @@ export {
   getPadelContacts,
   getCachedPadelContacts,
   getTurnNetworkContacts,
+  getCachedTurnNetworkContacts,
   type PadelContact,
 } from "./contacts";
 
