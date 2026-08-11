@@ -16,6 +16,7 @@ import { notifyUsers, getUserDisplayName } from "@/lib/notifications";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getTurnLabel, getTurnLabelWithDate, capitalizeName } from "@/lib/utils";
 import { updateEdgesForTurnEnrollment } from "@/lib/graph/turn-edges";
+import { sendSystemMessageAction } from "@/lib/chat-store";
 
 export type CreateTurnInput = {
   club: string;
@@ -190,6 +191,8 @@ export async function joinTurnAction(turnId: string) {
         body: `Los ${turn.maxPlayers} cupos están cubiertos. Nos vemos en la cancha.`,
         url: turnUrl,
       });
+      void sendSystemMessageAction(turnId, `${joinerName} se sumó al turno.`);
+      void sendSystemMessageAction(turnId, "✅ Turno completo. Nos vemos en la cancha.");
     } else {
       // #4: New player joined — notify existing players + creator (excluding joiner)
       const recipientIds = [
@@ -200,6 +203,7 @@ export async function joinTurnAction(turnId: string) {
         body: `${newPlayerCount}/${turn.maxPlayers} jugadores.${newPlayerCount < turn.maxPlayers ? ` ${turn.maxPlayers - newPlayerCount === 1 ? "Falta 1." : `Faltan ${turn.maxPlayers - newPlayerCount}.`}` : ""}`,
         url: turnUrl,
       });
+      void sendSystemMessageAction(turnId, `${joinerName} se sumó al turno.`);
     }
 
     return { status: "ok" };
@@ -337,6 +341,8 @@ export async function leaveTurnAction(turnId: string) {
       actions: [{ action: "join", title: "Sumarme", url: `${turnUrl}?join=1` }],
     });
 
+    void sendSystemMessageAction(turnId, `${leaverName} se bajó del turno. Quedó un cupo libre.`);
+
     // Notify new organizer if ownership was transferred
     if (isOrganizerLeaving && newCreatorId) {
       void notifyUsers([newCreatorId], {
@@ -344,6 +350,7 @@ export async function leaveTurnAction(turnId: string) {
         body: `${leaverName} se bajó. Podés editar o cancelar el turno.`,
         url: turnUrl,
       });
+      void sendSystemMessageAction(turnId, "Sos el organizador del turno. El anterior se bajó.");
     }
 
     // Notify substitutes when a spot opens (in join order — no priority)
@@ -633,6 +640,8 @@ export async function convertTurnToMatchAction(turnId: string) {
       );
     }
 
+    void sendSystemMessageAction(turnId, "🏆 Turno convertido a partido. Cargá el marcador cuando termine.");
+
     return { status: "ok", matchId };
   } catch (error) {
     console.error("Error converting turn to match:", error);
@@ -861,6 +870,8 @@ export async function openToNetworkAction(turnId: string) {
       .set({ lastNetworkNotificationAt: new Date() })
       .where(eq(turns.id, turnId));
 
+    void sendSystemMessageAction(turnId, "🔔 Notificando a tu red para buscar suplente.");
+
     return {
       status: "ok",
       notifiedCount: sent,
@@ -926,6 +937,9 @@ export async function joinSubstituteAction(turnId: string) {
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
 
+    const subName = await getUserDisplayName(session.user.id);
+    void sendSystemMessageAction(turnId, `${subName} se sumó como suplente.`);
+
     return { status: "ok" };
   } catch (error) {
     console.error("Error joining as substitute:", error);
@@ -952,6 +966,9 @@ export async function leaveSubstituteAction(turnId: string) {
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/turnos");
     revalidateTag("turns", "default");
+
+    const subName = await getUserDisplayName(session.user.id);
+    void sendSystemMessageAction(turnId, `${subName} se bajó de la lista de suplentes.`);
 
     return { status: "ok" };
   } catch (error) {
@@ -1071,6 +1088,11 @@ export async function takeOpenSlotAction(turnId: string) {
           : `Todavía hay ${turn.maxPlayers - newPlayerCount} ${turn.maxPlayers - newPlayerCount === 1 ? "cupo libre" : "cupos libres"}. Ocupá el cupo si podés.`,
         url: turnUrl,
       });
+    }
+
+    void sendSystemMessageAction(turnId, `${takerName} ocupó el cupo libre.`);
+    if (isNowFull) {
+      void sendSystemMessageAction(turnId, "✅ Turno completo. Nos vemos en la cancha.");
     }
 
     return { status: "ok" };
