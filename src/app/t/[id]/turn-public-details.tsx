@@ -22,8 +22,10 @@ import {
   MapPin,
   Info,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
+import { TurnChat } from "@/components/turns/turn-chat";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -549,6 +551,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </div>
         </section>
       )}
+
+      {(isJoined || isCreator || isSubstitute) && (
+        <section className="space-y-4 mb-6">
+          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            Chat del turno 💬
+          </h2>
+          <TurnChat turnId={id} currentUserId={viewerId} />
+        </section>
+      )}
+
+      <div className="h-64" />
 
       <div
         className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50"
