@@ -57,6 +57,13 @@ function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
 }
 
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 interface GraphViewProps {
   graphData: GraphData;
   viewerId?: string;
@@ -152,14 +159,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const filteredData = useMemo(() => {
     if (!searchQuery && linkFilter === "all") return baseGraphData;
 
-    const query = searchQuery.toLowerCase();
+    const query = normalizeText(searchQuery);
     const matchingNodes = new Set(
       baseGraphData.nodes
         .filter((n) => {
           if (!query) return true;
           return (
-            n.name.toLowerCase().includes(query) ||
-            (n.alias?.toLowerCase().includes(query) ?? false)
+            normalizeText(n.name || "").includes(query) ||
+            (n.alias ? normalizeText(n.alias).includes(query) : false)
           );
         })
         .map((n) => n.id),
