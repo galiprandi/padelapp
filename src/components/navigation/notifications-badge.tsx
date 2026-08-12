@@ -10,6 +10,7 @@ async function NotificationsCount({ userId }: { userId: string }) {
   return (
     <Link
       href="/notifications"
+      prefetch={true}
       aria-label={
         count === 1
           ? "1 notificación pendiente"

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-11 — Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (PR #tino/perf/eager-navigation-prefetching)
 - [x] 2026-08-11 — Auditoría y Verificación de Aislamiento de Caché Multiusuario en Consultas de Turnos (`src/lib/queries/turn.ts`) (PR #tino/perf/audit-turn-cache-isolation)
 - [x] 2026-08-11 — Navegación Transversal de Partidos a Fichas Públicas de Jugadores y Soporte de Mocks bajo Bypass (PR #tino/ux/match-profile-transversal-navigation)
 - [x] 2026-08-09 — Propagación de Caché de Consultas en getPendingActions para Optimizar Vistas de Ranking, Partidos y Notificaciones (PR #tino/perf/pending-actions-caching)
@@ -17,13 +18,17 @@
 - [x] 2026-07-26 — Estandarización de accesibilidad por teclado y feedback táctil en todos los botones y enlaces de retroceso (PR #tino/ux/back-button-accessibility)
 - [x] 2026-07-25 — Implementación de esqueleto de alta fidelidad para la página de red /network (PR #tino/perf/optimize-routing-performance)
 - [x] 2026-07-22 — Caching de assets estáticos y CDNs en el Service Worker para mejorar la carga instantánea y soporte offline del PWA (PR #tino/perf/optimize-fcm-sw-caching)
-- [x] 2026-07-21 — Adopción final y completa de Cache Components para la página pública de turnos /t/[id] (PR #tino/perf/t-id-cache-components-adoption)
+- [x] 2026-07-21 — Adopción final y completa de Cache Components (PPR) en el módulo de Perfil, Login y Onboarding (PR #roby/profile/cache-components-onboarding)
 - [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
 - [x] 2026-07-19 — Completar Plan 006: Upgrade a Next.js 16.3+ y adopción de Cache Components para rutas estáticas y dinámicas (PR #tino/perf/cache-components-adoption)
 - [x] 2026-07-17 — Resolver incompatibilidad de cron route segment config con cacheComponents (PR #tino/perf/cache-components-fix)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-11 - Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (Performance Transversal)
+**Aprendizaje:** En aplicaciones móviles y PWAs altamente interactivas, la latencia percibida al navegar entre módulos principales puede empañar la experiencia de usuario. Activar `prefetch={true}` de forma explícita en elementos de navegación estructurales (BottomNav, notificaciones y llamadas a la acción primarias) permite que Next.js precargue los bundles de código y cascarones estáticos en segundo plano en cuanto entran en el viewport. Esto reduce la transición a un renderizado instantáneo (0ms percibidos de lag) y potencia el engagement.
+**Acción:** Aplicar prefetch proactivo en cualquier enlace de navegación estructural o CTA principal de alta conversión para mantener la fluidez táctil.
+
 ### 2026-08-11 - Auditoría de Caché Multiusuario en Turnos (PPR)
 **Aprendizaje:** Las consultas parametrizadas como `getCachedMyUpcomingTurns(userId, limit)` deben garantizar que no compartan el mismo espacio de almacenamiento en caché en Next.js. El uso de patrones de clausura mediante funciones flecha que pasan parámetros explícitos (e.g. `userId` y `limit`) dentro del arreglo `keyParts` de `unstable_cache` asegura un aislamiento de datos estricto por usuario de forma limpia y transparente, evitando cualquier colisión accidental de datos privados entre jugadores del club.
 **Acción:** Mantener siempre el patrón de funciones flecha parametrizadas para consultas de caching que dependan del contexto de un usuario específico.
@@ -34,7 +39,7 @@
 
 ### 2026-08-09 - Propagación de Caché de Consultas y PPR en Next.js 16.3
 **Learning:** En Next.js 16.3-preview, la opción experimental `experimental.ppr` fue completamente fusionada dentro de `cacheComponents`. Declarar `ppr` explícitamente en `next.config.ts` detiene la compilación con un error fatal. Establecer `cacheComponents: true` es el método único para habilitar el renderizado asíncrono y PPR. Adicionalmente, al optimizar funciones asíncronas de utilidad (como `getPendingActions`) para que utilicen fallbacks cacheados (`getCachedEnhancedUserMatches`) en lugar de consultas de DB directas, extendemos transversalmente los beneficios de la caché a múltiples pantallas independientes (`/ranking`, `/match`, `/notifications`) sin duplicar lógica ni etiquetas de invalidación.
-**Action:** Usar siempre `cacheComponents: true` en Next.js 16.3+ para habilitar PPR de forma segura y asegurarse de que los helpers asíncronos consuman wrappers de caché para evitar bypasses accidentales de la base de datos.
+**Action:** Usar siempre `cacheComponents: true` in Next.js 16.3+ para habilitar PPR de forma segura y asegurarse de que los helpers asíncronos consuman wrappers de caché para evitar bypasses accidentales de la base de datos.
 
 ### 2026-08-07 - Integración de Capa de Caching en Perfil Público (unstable_cache)
 **Learning:** El perfil público de un jugador (`/p/[userId]`) ejecuta consultas concurrentes de base de datos de agregación (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) que son costosas de resolver en tiempo de respuesta de red. Al envolver estas consultas dinámicas pesadas con `unstable_cache` de Next.js usando un TTL de 60 segundos y tags de revalidación unificados (`matches` y `ranking`), logramos una reducción drástica de la latencia (0ms en DB hits subsecuentes) y habilitamos el renderizado asíncrono optimizado con Partial Prerendering (PPR), mejorando radicalmente la UX de navegación transversal.
@@ -61,7 +66,7 @@
 **Action:** Al diseñar elementos flotantes interactivos que coexistan con barras inferiores seguras, usar cálculos relativos con `safe-area-inset-bottom` and adherirse al estándar de micro-escala `active:scale-[0.98]`.
 
 ### 2026-07-30 - Almacenamiento en caché de contadores globales de notificaciones
-**Learning:** En una SPA/PWA móvil, hay componentes globales (como el badge de notificaciones flotante) que se renderizan y evalúan en casi todas las transiciones de página. Si estos componentes realizan consultas directas de agregación (como `count()`) sobre tablas de base de datos en cada transición, se genera un cuello de botella de rendimiento y un consumo innecesario de conexiones SQL. Al envolver estas consultas dinámicas con la función `unstable_cache` de Next.js usando un TTL corto (como 30 segundos) y asociándolas con tags de invalidación correspondientes (como `"matches"`), eliminamos por completo el waterfall de consultas a base de datos en transiciones de layout, garantizando una carga instantánea con datos siempre frescos.
+**Learning:** En una SPA/PWA móvil, hay componentes globales (como el badge de notificaciones flotante) que se renderizan y evalúan en casi todas las transiciones de página. Si estos componentes realizan consultas directas de agregación (como `count()`) sobre tablas de base de datos en cada transición, se genera un cuello de botella de rendimiento y un consumo innecesario de conexiones SQL. Al volver a envolver estas consultas dinámicas con la función `unstable_cache` de Next.js usando un TTL corto (como 30 segundos) y asociándolas con tags de invalidación correspondientes (como `"matches"`), eliminamos por completo el waterfall de consultas a base de datos en transiciones de layout, garantizando una carga instantánea con datos siempre frescos.
 **Action:** Cachar siempre los contadores privados de componentes globales y layouts recurrentes con un TTL ágil para optimizar la latencia en navegación.
 
 ### 2026-07-28 - Reenvío de Señales de Control de Flujo de Next.js PPR en `auth()`
