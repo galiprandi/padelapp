@@ -1,9 +1,10 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-11 — Auditoría y Verificación de Aislamiento de Caché Multiusuario en Consultas de Turnos (`src/lib/queries/turn.ts`) (PR #tino/perf/audit-turn-cache-isolation)
 - [x] 2026-08-11 — Navegación Transversal de Partidos a Fichas Públicas de Jugadores y Soporte de Mocks bajo Bypass (PR #tino/ux/match-profile-transversal-navigation)
 - [x] 2026-08-09 — Propagación de Caché de Consultas en getPendingActions para Optimizar Vistas de Ranking, Partidos y Notificaciones (PR #tino/perf/pending-actions-caching)
-- [x] 2026-08-07 — Integración de Capa de Caching en Perfil Público para resolver cascadas de base de datos (PR #tino/perf/public-profile-caching-integration)
+- [x] 2026-08-07 — Integración de Caché para Consultas del Perfil Público (`src/lib/queries/profile.ts`) (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Optimización de Rendimiento en Perfil Público mediante Caché de Consultas con unstable_cache (PR #tino/perf/public-profile-caching-integration)
 - [x] 2026-08-05 — Integración de Capa de Caching Global para Consultas de Base de Datos en Dashboard y Ranking (PR #tino/perf/dashboard-and-ranking-caching-integration)
 - [x] 2026-08-03 — Corrección de error de compilación de TypeScript en Mi Perfil al pasar la prop requerida initialLevel (PR #tino/ux/profile-level-selector-compile-fix)
@@ -14,7 +15,7 @@
 - [x] 2026-07-28 — Refactorización de try/catch en auth() para reenviar señales de control de flujo/bailout de Next.js PPR (PR #tino/perf/rethrow-nextjs-bailout-signals)
 - [x] 2026-07-27 — Refactorización y optimización de formularios dinámicos a Server Components para PPR (PR #tino/perf/optimize-routing-performance)
 - [x] 2026-07-26 — Estandarización de accesibilidad por teclado y feedback táctil en todos los botones y enlaces de retroceso (PR #tino/ux/back-button-accessibility)
-- [x] 2026-07-25 — Implementación de esqueleto de alta fidelidad para la pestaña de red /network (PR #tino/perf/optimize-routing-performance)
+- [x] 2026-07-25 — Implementación de esqueleto de alta fidelidad para la página de red /network (PR #tino/perf/optimize-routing-performance)
 - [x] 2026-07-22 — Caching de assets estáticos y CDNs en el Service Worker para mejorar la carga instantánea y soporte offline del PWA (PR #tino/perf/optimize-fcm-sw-caching)
 - [x] 2026-07-21 — Adopción final y completa de Cache Components para la página pública de turnos /t/[id] (PR #tino/perf/t-id-cache-components-adoption)
 - [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
@@ -22,7 +23,11 @@
 - [x] 2026-07-17 — Resolver incompatibilidad de cron route segment config con cacheComponents (PR #tino/perf/cache-components-fix)
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
-## 🧠 LEARNINGS
+## 🧠 APRENDIZAJES
+### 2026-08-11 - Auditoría de Caché Multiusuario en Turnos (PPR)
+**Aprendizaje:** Las consultas parametrizadas como `getCachedMyUpcomingTurns(userId, limit)` deben garantizar que no compartan el mismo espacio de almacenamiento en caché en Next.js. El uso de patrones de clausura mediante funciones flecha que pasan parámetros explícitos (e.g. `userId` y `limit`) dentro del arreglo `keyParts` de `unstable_cache` asegura un aislamiento de datos estricto por usuario de forma limpia y transparente, evitando cualquier colisión accidental de datos privados entre jugadores del club.
+**Acción:** Mantener siempre el patrón de funciones flecha parametrizadas para consultas de caching que dependan del contexto de un usuario específico.
+
 ### 2026-08-11 - Navegación Transversal de Partidos e Interconectividad de la App (MDS)
 **Aprendizaje:** En una aplicación móvil social de deportes, la navegación fluida y transversal entre entidades (como partidos y perfiles de jugadores) es clave para mantener al usuario enganchado. Permitir que cualquier elemento de visualización del jugador (avatares superpuestos en MatchResultCompact y en el resultado final, la tarjeta de organizador, las celdas de confirmación y el listado de asistencia) redirija al perfil público del jugador aumenta significativamente la interactividad de la app. Al mismo tiempo, en un diseño de avatares apilados con márgenes negativos, usar `z-10 hover:z-20 relative` asegura que el avatar interactivo sobre el cual el usuario pasa el mouse resalte limpiamente sobre el resto sin romper el layout.
 **Acción:** Siempre que se presenten listas o avatares de jugadores en nuevas secciones, envolverlos en componentes `<Link>` que apunten a su perfil `/p/[userId]` e implementar micro-escalados interactivos.
@@ -68,7 +73,7 @@
 **Action:** Continuar reemplazando componentes monolíticos `"use client"` con este patrón asíncrono para mantener transiciones instantáneas y evitar CLS o pantallas en blanco molestas.
 
 ### 2026-07-26 - Accesibilidad de teclado y feedback táctil en botones de retroceso (MDS)
-**Learning:** Los botones y enlaces de retroceso (`ChevronLeft` / `Volver`) distribuidos en vistas clave carecían de estilos de foco por teclado, impidiendo que usuarios de navegación accesible identifiquen visualmente el foco. Estandarizar el uso de transiciones globales suaves (`transition-all`), el anillo de foco del MDS (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) y feedback táctil de escala activa (`active:scale-[0.98]`) mejora drásticamente la calidad y consistencia del diseño.
+**Learning:** Los botones y enlaces de retroceso (`ChevronLeft` / `Volver`) distribuidos en vistas clave carecían de estilos de foco por teclado, impidiendo que usuarios de navegación accesible identifiquen visualmente el foco. Estandarizar el uso de transiciones globales suaves (`transition-all`), el anillo de foco del MDS (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) and feedback táctil de escala activa (`active:scale-[0.98]`) mejora drásticamente la calidad y consistencia del diseño.
 **Action:** Asegurar que cualquier enlace o botón personalizado de retroceso implementado a futuro cumpla rigurosamente con esta especificación visual del MDS.
 
 ### 2026-07-25 - Esqueleto de alta fidelidad para la página de Red
