@@ -18,7 +18,7 @@ export default function TurnsPage() {
           </p>
         </div>
         <Button asChild size="sm">
-          <Link href="/turnos/nuevo">
+          <Link href="/turnos/nuevo" prefetch={true}>
             <Plus className="mr-1 h-4 w-4" />
             Crear
           </Link>
