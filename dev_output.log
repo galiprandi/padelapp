@@ -5,21 +5,20 @@
 ▲ Next.js 16.3.0-preview.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 566ms
-✓ Running next.config.ts took 51ms
+✓ Ready in 616ms
+✓ Running next.config.ts took 58ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
 - Cache Components enabled
 - Experiments (use with caution):
   · optimizePackageImports
 
-○ Compiling /me/profile ...
- GET /me/profile?onboarding=true 200 in 7.7s (next.js: 5.7s, proxy.ts: 279ms, application-code: 1777ms)
- GET /api/auth/session 200 in 3.4s (next.js: 3.2s, application-code: 152ms)
- GET /api/auth/session 200 in 32ms (next.js: 24ms, application-code: 8ms)
- GET /api/auth/session 200 in 14ms (next.js: 5ms, application-code: 9ms)
- GET /api/auth/session 200 in 11ms (next.js: 4ms, application-code: 7ms)
- GET /me/profile?onboarding=true 200 in 802ms (next.js: 12ms, proxy.ts: 8ms, application-code: 782ms)
- GET /me/profile?onboarding=true 200 in 689ms (next.js: 4ms, proxy.ts: 9ms, application-code: 676ms)
- GET /api/auth/session 200 in 32ms (next.js: 22ms, application-code: 9ms)
+○ Compiling /network ...
+ GET /network 200 in 10.8s (next.js: 8.3s, proxy.ts: 445ms, application-code: 2.1s)
+ GET /api/auth/session 200 in 2.9s (next.js: 2.8s, application-code: 146ms)
+ GET /api/auth/session 200 in 34ms (next.js: 26ms, application-code: 8ms)
  GET /api/auth/session 200 in 15ms (next.js: 5ms, application-code: 10ms)
- GET /api/auth/session 200 in 17ms (next.js: 8ms, application-code: 9ms)
- GET /api/auth/session 200 in 10ms (next.js: 4ms, application-code: 6ms)
+ GET /api/auth/session 200 in 15ms (next.js: 6ms, application-code: 9ms)

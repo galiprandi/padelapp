@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-09
+## Última actualización: 2026-08-11
 
 ## Estado actual
 
 ### Completado
+- Phase 12 (Unicode Accent-Insensitive Graph Search & Legacy Level Eradication):
+  - [x] 2026-08-11 — Hecho: Implementada normalización de texto unicode (`NFD` + regex replacement) para lograr búsquedas insensibles a acentos y mayúsculas en el grafo de contactos (ej. buscando "agustin" para encontrar a "Agustín").
+  - [x] 2026-08-11 — Hecho: Eliminados los campos remanentes y redundantes de `level` de las consultas y mocks del centro de turnos (`getTurnByIdAction`) y ranking (`MOCK_RANKING_USERS`).
+  - [x] 2026-08-11 — Hecho: Eliminado el archivo `src/lib/mock-data.ts` que se encontraba inactivo y obsoleto por el sistema de niveles auto-percibidos.
 - Phase 11 (Dynamic Caching of Players Like You & Turn Network Contacts):
   - [x] 2026-08-10 — Hecho: Refactorizado `getPlayersLikeYouAction` (`src/app/network/actions.ts`) utilizando la capa de caché `unstable_cache` de Next.js, con aislamiento por `viewerId` y tag `"matches"` para invalidación proactiva tras confirmar partidos.
   - [x] 2026-08-10 — Hecho: Implementado `getCachedTurnNetworkContacts` (`src/lib/queries/contacts.ts`) para almacenar en caché las sugerencias de salvataje de turnos con el tag `"turns"`.
@@ -55,8 +59,11 @@
 - [x] 2026-08-07 — Players Like You Recommendation System (PR coello/network/players-like-you)
 - [x] 2026-08-08 — Graph View Empty Search Results, Node Filter Bug, and Recommender Fallback Optimizations (PR coello/graph/search-and-recommender-optimizations)
 - [x] 2026-08-09 — Turn Contact Recommendations and Player Similarity Safeguards (PR coello/graph/exclude-substitutes-from-suggestions)
+- [x] 2026-08-11 — Unicode Accent-Insensitive Graph Search & Legacy Level Eradication (PR coello/network/graph-diacritic-search)
 
 ## Learnings
+- **Búsqueda Insensible a Acentos en Redes de Contacto (Grafo)**: En mercados hispanohablantes donde los nombres de jugadores contienen acentos ("Agustín", "Belasteguín"), implementar búsquedas insensibles a diacríticos utilizando normalización unicode (`normalize("NFD")` y reemplazo de rango de caracteres `[\u0300-\u036f]`) es un pilar fundamental de UX. Esto elimina la fricción en smartphones donde los teclados rápidos incitan a escribir sin acentos.
+- **Remoción Completa de Columnas Legacy en APIs de Datos**: Al realizar tareas de limpieza técnica de sistemas heredados (como el nivel auto-percibido de juego), es de vital importancia eliminar los atributos no solo de los modelos de base de datos principales, sino también de los selectores de columnas en queries (`db.query`), de los mocks de pruebas/bypass, y de las interfaces de respuestas asociadas. Esto evita que código muerto siga consumiendo recursos o induciendo a errores de tipado futuros.
 - **Sugerencias de Contactos de Turno con Filtro de Suplentes**: Al recomendar contactos o jugadores de la red para "salvar un turno" o invitarlos de forma proactiva mediante WhatsApp, no basta con excluir únicamente a los jugadores ya inscritos (`turn.players`). Los suplentes registrados en lista de espera (`turn.substitutes`) también forman parte activa del turno en su rol correspondiente y, por ende, deben ser excluidos estrictamente de las sugerencias para evitar duplicaciones y fricción en la experiencia del organizador.
 - **Resiliencia ante Registros de Usuarios Huérfanos**: En sistemas de recomendación que combinan estadísticas agregadas (`playerGraphStats`) con perfiles de usuario (`users`), es fundamental implementar salvaguardas (safeguards) que descarten proactivamente a candidatos con registros huérfanos o inexistentes en la tabla de usuarios principales. Esto garantiza una ejecución robusta de los mapeos y previene la aparición de perfiles inválidos o nulos en la interfaz.
 - **Búsqueda en Grafos Interactivos (Empty Search State)**: Al realizar búsquedas de jugadores en una visualización interactiva basada en canvas (ej. react-force-graph-2d), es de suma importancia asegurar que las consultas vacías o que no coinciden con ningún jugador filtren correctamente los nodos a cero, en lugar de desactivar el filtro por defecto. Integrar un overlay elegante de "No se encontraron jugadores" con una llamada de acción rápida ("Limpiar búsqueda") proporciona una experiencia altamente pulida y natural.
