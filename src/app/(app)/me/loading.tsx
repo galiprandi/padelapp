@@ -23,7 +23,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* Hero activity */}
-      <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-20 w-full" />
       </div>
