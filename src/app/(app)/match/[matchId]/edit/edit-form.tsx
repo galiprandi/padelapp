@@ -72,10 +72,10 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       });
 
       if (response.status === "ok") {
-        showToast("Partido actualizado con éxito");
+        showToast("Actualizaste el partido con éxito.");
         router.push(`/match/${matchId}`);
       } else {
-        showToast(response.message || "Error al actualizar el partido");
+        showToast(response.message || "No pudimos actualizar el partido.");
       }
     });
   };

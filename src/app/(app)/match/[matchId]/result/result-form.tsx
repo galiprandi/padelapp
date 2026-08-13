@@ -175,11 +175,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
         sides: sidesPayload,
       });
       if (res.status === "ok") {
-        showToast("Resultado guardado");
+        showToast("Guardaste el resultado.");
         router.push(`/match/${match.id}`);
         router.refresh();
       } else {
-        showToast(res.message || "No se pudo guardar el resultado", {
+        showToast(res.message || "No pudimos guardar el resultado.", {
           duration: 4000,
         });
       }
