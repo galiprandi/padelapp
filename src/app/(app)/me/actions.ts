@@ -24,6 +24,13 @@ export async function updateUserProfileAction(
   }
 
   const trimmed = capitalizeName(aliasInput ?? "");
+
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    const aliasToSave = trimmed.length === 0 ? null : trimmed;
+    const imageToSave = imageInput?.trim() || null;
+    return { status: "ok", alias: aliasToSave, image: imageToSave };
+  }
+
   if (
     trimmed.length > 0 &&
     (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)
