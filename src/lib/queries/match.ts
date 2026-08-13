@@ -321,15 +321,8 @@ export const getCachedConfirmedMatches = (userId: string) =>
     { tags: ["matches"], revalidate: 60 }
   )();
 
-/**
- * Get confirmed matches for a public profile (limited to 5, with players).
- * Used by /p/[userId] page.
- */
-export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
-  if (process.env.AUTH_BYPASS === "true") {
-    return [];
-  }
-  const result = await db.query.matches.findMany({
+async function getConfirmedMatchesFromDb(userId: string, limit = 5) {
+  return db.query.matches.findMany({
     where: and(
       eq(matchesTable.status, "CONFIRMED"),
       userInMatch(userId),
@@ -351,7 +344,42 @@ export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
     orderBy: desc(matchesTable.date),
     limit,
   });
-  return result;
+}
+
+/**
+ * Get confirmed matches for a public profile (limited to 5, with players).
+ * Used by /p/[userId] page.
+ */
+export async function getConfirmedMatchesForProfile(userId: string, limit = 5) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [
+      {
+        id: "m-01",
+        score: "6-4, 6-3",
+        status: "CONFIRMED" as const,
+        date: new Date("2026-08-01T10:00:00.000Z"),
+        players: [
+          { id: "mp-01", position: 0, displayName: "Agustín", side: "RIGHT" as const, userId: "p-01", user: { id: "p-01", displayName: "Agustín", alias: "agu", image: null } },
+          { id: "mp-02", position: 1, displayName: "Fernando", side: "LEFT" as const, userId: "p-02", user: { id: "p-02", displayName: "Fernando", alias: "Bela", image: null } },
+          { id: "mp-03", position: 2, displayName: "Ramiro", side: "RIGHT" as const, userId: "p-03", user: { id: "p-03", displayName: "Ramiro", alias: "Ram", image: null } },
+          { id: "mp-04", position: 3, displayName: "Gero", side: "LEFT" as const, userId: "p-04", user: { id: "p-04", displayName: "Gero", alias: "Ger", image: null } },
+        ],
+      },
+      {
+        id: "m-02",
+        score: "4-6, 5-7",
+        status: "CONFIRMED" as const,
+        date: new Date("2026-07-28T18:00:00.000Z"),
+        players: [
+          { id: "mp-05", position: 0, displayName: "Agustín", side: "RIGHT" as const, userId: "p-01", user: { id: "p-01", displayName: "Agustín", alias: "agu", image: null } },
+          { id: "mp-06", position: 1, displayName: "Ramiro", side: "LEFT" as const, userId: "p-03", user: { id: "p-03", displayName: "Ramiro", alias: "Ram", image: null } },
+          { id: "mp-07", position: 2, displayName: "Fernando", side: "RIGHT" as const, userId: "p-02", user: { id: "p-02", displayName: "Fernando", alias: "Bela", image: null } },
+          { id: "mp-08", position: 3, displayName: "Gero", side: "LEFT" as const, userId: "p-04", user: { id: "p-04", displayName: "Gero", alias: "Ger", image: null } },
+        ],
+      }
+    ] as unknown as Awaited<ReturnType<typeof getConfirmedMatchesFromDb>>;
+  }
+  return getConfirmedMatchesFromDb(userId, limit);
 }
 
 /**
