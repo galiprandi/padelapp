@@ -253,7 +253,7 @@ export function ManageSlotModal({
           {isUserSlot && !canEdit ? (
             /* Confirmed user slot — read-only display */
             <div className="space-y-4">
-              <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-4">
                 <PlayerAvatar
                   name={slot.player.displayName}
                   image={slot.player.image ?? undefined}
@@ -261,7 +261,7 @@ export function ManageSlotModal({
                   className="rounded-lg"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-primary truncate">
+                  <p className="text-sm font-bold text-foreground truncate">
                     {slot.player.displayName}
                   </p>
                   <p className="text-xs text-muted-foreground">Jugador verificado</p>

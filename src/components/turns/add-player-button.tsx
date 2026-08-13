@@ -100,10 +100,10 @@ export function AddPlayerButton({
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="flex items-center gap-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-primary transition-colors hover:bg-primary/10 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Agregar jugador al turno"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
           <UserPlus className="h-5 w-5" />
         </div>
         <div className="flex-1 text-left">
