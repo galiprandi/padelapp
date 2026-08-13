@@ -234,11 +234,17 @@ async function PublicProfileContent({
             <div className="text-xs font-bold text-muted-foreground">
               Forma
             </div>
-            <div className="flex gap-1.5 pt-1">
-              {recentForm.length > 0 ? (
-                recentForm.map((result, i) => (
+            {recentForm.length > 0 ? (
+              <div
+                className="flex gap-1.5 pt-1"
+                aria-label={`Forma reciente: ${recentForm
+                  .map((r) => (r === "W" ? "G" : "P"))
+                  .join(", ")}`}
+              >
+                {recentForm.map((result, i) => (
                   <div
                     key={i}
+                    aria-hidden="true"
                     className={cn(
                       "h-2.5 w-2.5 rounded-full",
                       result === "W"
@@ -246,13 +252,15 @@ async function PublicProfileContent({
                         : "bg-rose-500",
                     )}
                   />
-                ))
-              ) : (
-                <span className="text-xs font-semibold text-muted-foreground">
+                ))}
+              </div>
+            ) : (
+              <div className="flex gap-1.5 pt-1" aria-label="Sin partidos">
+                <span className="text-xs font-semibold text-muted-foreground" aria-hidden="true">
                   —
                 </span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
