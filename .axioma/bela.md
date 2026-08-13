@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-12 — Turn Chat Localized Timestamps and Scroll UX Optimization (bela/turnos/chat-timestamps-ux)
 - [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
 - [x] 2026-08-11 — Turn Chat with Ephemeral Upstash Redis Storage and System Bot (bela/turnos/turn-chat-implementation)
 - [x] 2026-08-09 — Argentine Spanish Voice & Language Standardization (bela/turnos/voice-language-standardization)
@@ -28,6 +29,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-12 - Turn Chat Localized Timestamps and Scroll UX Optimization
+**Learning:** Adding timestamps to real-time communication modules (like Turn Chat) is critical for user coordination, as relative messages like "Llego 10 min tarde" lose value without chronological context. Implementing this purely on the client side with a decoupled, pure-function utility ensures deterministic, fast testing and avoids server-side NextAuth or Next.js transitive import issues in the test runner. Additionally, snapping the scroll position instantly (`auto`) on the initial rendering of the chat, while using smooth scrolling (`smooth`) only for subsequent incoming messages, significantly enhances the perceived loading speed and transitions.
+**Action:** Keep date and time formatting utilities pure and self-contained to avoid import pollution in Vitest. Use stateful references (`useRef`) to manage different scroll behavior modes between initial loads and dynamic updates.
+
 ## 2026-08-10 - Turn Card Cooldown and Offline Visual Test Coverage
 **Learning:** Forgetting to pass cooldown metadata (like `lastNetworkNotificationAt`) from query results down to listing components (like `TurnCard`'s `OpenToNetworkButton`) creates user frustration because they cannot see whether their "Salvar turno" action is on cooldown until after clicking. Passing this timestamp and enhancing prop types to accept `Date | string | null` is vital since Date serialization over Next.js Server/Client boundary converts them to strings. Additionally, ensuring public queries like `getCachedOpenTurns` have robust AUTH_BYPASS mocks is crucial for Playwright E2E and visual testing to run cleanly offline.
 **Action:** Always verify that cooldown metadata fetched in the queries is properly declared in card props and propagated to interactive triggers. Include comprehensive mock values under bypass inside queries so that automated QA tools can verify listing state visuals.

@@ -11,6 +11,7 @@ import {
   sendMessageAction,
   type ChatMessage,
 } from "@/lib/chat-store";
+import { formatChatTime } from "./turn-chat-utils";
 
 interface TurnChatProps {
   turnId: string;
@@ -56,13 +57,22 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
     };
   }, [turnId]);
 
+  const isFirstLoadRef = useRef(true);
+
   // Scroll to bottom on message load or new message
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (behavior: "smooth" | "auto" = "smooth") => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 0) {
+      if (isFirstLoadRef.current) {
+        scrollToBottom("auto");
+        isFirstLoadRef.current = false;
+      } else {
+        scrollToBottom("smooth");
+      }
+    }
   }, [messages]);
 
   const handleSend = async (e: React.FormEvent) => {
@@ -140,11 +150,14 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
               return (
                 <div
                   key={msg.id}
-                  className="flex justify-center my-1.5"
+                  className="flex flex-col items-center my-1.5 gap-1"
                 >
                   <div className="rounded-lg bg-muted px-3 py-1.5 border border-border text-[11px] font-semibold text-muted-foreground text-center max-w-[85%] leading-normal">
                     {msg.text}
                   </div>
+                  <span className="text-[9px] font-medium text-muted-foreground/50">
+                    {formatChatTime(msg.ts)}
+                  </span>
                 </div>
               );
             }
@@ -154,8 +167,9 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
                 key={msg.id}
                 className={cn("flex flex-col max-w-[75%]", isMe ? "ml-auto items-end" : "mr-auto items-start")}
               >
-                <span className="text-[10px] font-bold text-muted-foreground mb-0.5 px-1">
-                  {isMe ? "Vos" : msg.alias}
+                <span className="text-[10px] font-bold text-muted-foreground mb-0.5 px-1 flex items-center gap-1.5">
+                  <span>{isMe ? "Vos" : msg.alias}</span>
+                  <span className="font-normal text-muted-foreground/60">{formatChatTime(msg.ts)}</span>
                 </span>
                 <div
                   className={cn(
