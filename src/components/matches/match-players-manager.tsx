@@ -81,7 +81,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     }
 
     if (value.kind === "user") {
-       showToast("Asignación de jugadores existentes no permitida en esta vista todavía.");
+       showToast("Todavía no podés asignar jugadores existentes en esta vista.");
        closeManageModal();
        return;
     }
@@ -93,11 +93,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       });
 
       if (response.status === "ok") {
-        showToast("Jugador actualizado");
+        showToast("Actualizaste el jugador.");
         closeManageModal();
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos actualizar el jugador");
+        showToast(response.message ?? "No pudimos actualizar el jugador.");
       }
     });
   }
@@ -126,10 +126,10 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       try {
         await navigator.clipboard.writeText(`${appSettings.share.inviteTitle}\n${shareText}\n${shareUrl}`);
-        showToast("Enlace copiado");
+        showToast("Copiaste el enlace.");
       } catch (error) {
         console.error("navigator.clipboard.writeText failed", error);
-        showToast("No se pudo copiar el enlace");
+        showToast("No pudimos copiar el enlace.");
       }
     }
   }
@@ -141,11 +141,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       const response = await releaseMatchSlotAction({ playerId: manageModal.playerId! });
 
       if (response.status === "ok") {
-        showToast("Cupo liberado");
+        showToast("Liberaste el cupo.");
         closeManageModal();
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos liberar el cupo");
+        showToast(response.message ?? "No pudimos liberar el cupo.");
       }
     });
   }
@@ -154,7 +154,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (!manageModal.playerId) return;
     setSwapSourceId(manageModal.playerId);
     closeManageModal();
-    showToast("Seleccioná el otro jugador para intercambiar");
+    showToast("Seleccioná el otro jugador para intercambiar.");
   }
 
   async function handleSwap(targetId: string) {
@@ -171,11 +171,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       });
 
       if (response.status === "ok") {
-        showToast("Posiciones intercambiadas");
+        showToast("Intercambiaste las posiciones.");
         setSwapSourceId(null);
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos realizar el cambio");
+        showToast(response.message ?? "No pudimos realizar el cambio.");
         setSwapSourceId(null);
       }
     });

@@ -10,10 +10,12 @@ import type { TeamKey, SlotValue, PlayerOption } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { suggestMatchPartnersAction } from "@/app/(app)/match/actions";
+import { useToast } from "@/components/toast/use-toast";
 
 function RegisterMatchInner() {
   const searchParams = useSearchParams();
   const turnId = searchParams.get("turnId");
+  const { showToast } = useToast();
 
   const [activeSlot] = useState<{ team: TeamKey; index: 0 | 1 }>(
     { team: "A", index: 1 },
@@ -69,10 +71,16 @@ function RegisterMatchInner() {
               { kind: "user", player: slotB1 },
             ],
           });
+          showToast("Acomodamos las parejas según el historial de juego y lado preferido de cada uno.");
+        } else {
+          showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
         }
+      } else {
+        showToast(res.message || "No pudimos obtener la sugerencia de parejas.", { type: "error" });
       }
     } catch (err) {
       console.error("Failed to suggest pairings:", err);
+      showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
     } finally {
       setIsSuggesting(false);
     }
