@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition, useCallback } from "react";
 import { updateUserProfileAction } from "@/app/(app)/me/actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Input } from "@/components/ui/input";
@@ -75,6 +75,29 @@ export function ProfileForm({
   const isAliasDirty = alias !== lastSavedAlias.current;
   const isPendingSave = isAliasDirty && !isSaving;
 
+  const saveAlias = useCallback((targetAlias: string, targetImage: string | null) => {
+    previousAliasRef.current = lastSavedAlias.current;
+    startSaving(async () => {
+      const response = await updateUserProfileAction(targetAlias, targetImage);
+      if (response.status === "ok") {
+        const savedAlias = response.alias ?? "";
+        lastSavedAlias.current = savedAlias;
+        setAlias(savedAlias);
+        showToast("Perfil actualizado", {
+          duration: 4000,
+          action: {
+            label: "Deshacer",
+            onClick: () => {
+              setAlias(previousAliasRef.current);
+            },
+          },
+        });
+      } else {
+        showToast("No pudimos guardar. Probá de nuevo.", { type: "error" });
+      }
+    });
+  }, [showToast]);
+
   // Show "Usar foto de Google" only if Google photo exists and isn't the current image
   const canRestoreGooglePhoto =
     googleAvatarUrl && image !== googleAvatarUrl;
@@ -93,7 +116,15 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              startSaving(async () => {
+                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                if (undoResponse.status === "ok") {
+                  showToast("Foto restablecida", { duration: 2000 });
+                } else {
+                  showToast("No pudimos restablecer la foto.", { type: "error" });
+                  setImage(null);
+                }
+              });
             },
           },
         });
@@ -113,28 +144,13 @@ export function ProfileForm({
     }
 
     const timer = setTimeout(() => {
-      previousAliasRef.current = lastSavedAlias.current;
-      startSaving(async () => {
-        const response = await updateUserProfileAction(alias, image);
-        if (response.status === "ok") {
-          const savedAlias = response.alias ?? "";
-          lastSavedAlias.current = savedAlias;
-          setAlias(savedAlias);
-          showToast("Perfil actualizado", {
-            duration: 4000,
-            action: {
-              label: "Deshacer",
-              onClick: () => setAlias(previousAliasRef.current),
-            },
-          });
-        } else {
-          showToast("No pudimos guardar. Probá de nuevo.", { type: "error" });
-        }
-      });
+      if (alias !== lastSavedAlias.current) {
+        saveAlias(alias, image);
+      }
     }, AUTOSAVE_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [alias, image, isAliasDirty, showToast]);
+  }, [alias, image, isAliasDirty, saveAlias]);
 
   function handleRestoreGooglePhoto() {
     if (!googleAvatarUrl) return;
@@ -149,7 +165,15 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              startSaving(async () => {
+                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                if (undoResponse.status === "ok") {
+                  showToast("Foto restablecida", { duration: 2000 });
+                } else {
+                  showToast("No pudimos restablecer la foto.", { type: "error" });
+                  setImage(googleAvatarUrl);
+                }
+              });
             },
           },
         });
@@ -289,6 +313,14 @@ export function ProfileForm({
           placeholder="Ej: El Muro, Gero..."
           value={alias}
           onChange={(event) => setAlias(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              if (isAliasDirty && !aliasError && !isSaving) {
+                saveAlias(alias, image);
+              }
+            }
+          }}
           disabled={isSaving}
           autoSelect
           className="h-12"
