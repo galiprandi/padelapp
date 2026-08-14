@@ -662,10 +662,10 @@ async function getPlayersLikeYouRaw(
   const viewerCommunity = viewerStats?.community ?? null;
   const viewerScore = viewerStats?.skillScore ?? 1000;
 
-  // We define the shape of candidate data returned from the inner join query
+  // We define the shape of candidate data returned from the queries
   interface CandidateWithProfile {
     userId: string;
-    skillScore: number;
+    skillScore: number | null;
     community: number | null;
     preferredSide: "RIGHT" | "LEFT" | null;
     displayName: string;
@@ -675,6 +675,7 @@ async function getPlayersLikeYouRaw(
   }
 
   let candidates: CandidateWithProfile[] = [];
+  const addedCandidateIds = new Set<string>();
 
   // 3. Find candidates from the same community (excluding the viewer and already played contacts)
   if (viewerCommunity !== null) {
@@ -698,14 +699,18 @@ async function getPlayersLikeYouRaw(
         )
       );
 
-    candidates = communityCandidates.filter((c) => !playedUserIds.has(c.userId));
+    const filteredCommunity = communityCandidates.filter((c) => !playedUserIds.has(c.userId));
+    for (const c of filteredCommunity) {
+      candidates.push(c);
+      addedCandidateIds.add(c.userId);
+    }
   }
 
-  // 4. If fewer than 3 candidates in same community, fetch global players as supplement
+  // 4. If fewer than 3 candidates in same community, fetch global players as supplement (including cold start players via leftJoin)
   if (candidates.length < 3) {
     const globalCandidates = await db
       .select({
-        userId: playerGraphStats.userId,
+        userId: users.id,
         skillScore: playerGraphStats.skillScore,
         community: playerGraphStats.community,
         preferredSide: playerGraphStats.preferredSide,
@@ -714,12 +719,15 @@ async function getPlayersLikeYouRaw(
         image: users.image,
         matchesPlayed: users.matchesPlayed,
       })
-      .from(playerGraphStats)
-      .innerJoin(users, eq(playerGraphStats.userId, users.id))
-      .where(ne(playerGraphStats.userId, viewerId));
+      .from(users)
+      .leftJoin(playerGraphStats, eq(users.id, playerGraphStats.userId))
+      .where(ne(users.id, viewerId));
 
     const filteredGlobal = globalCandidates.filter(
-      (c) => !playedUserIds.has(c.userId) && (viewerCommunity === null || c.community !== viewerCommunity)
+      (c) =>
+        !playedUserIds.has(c.userId) &&
+        !addedCandidateIds.has(c.userId) &&
+        (viewerCommunity === null || c.community !== viewerCommunity)
     );
 
     candidates = [...candidates, ...filteredGlobal];
@@ -729,8 +737,10 @@ async function getPlayersLikeYouRaw(
 
   // 5. Sort candidates by absolute skill score difference to the viewer
   candidates.sort((a, b) => {
-    const diffA = Math.abs(a.skillScore - viewerScore);
-    const diffB = Math.abs(b.skillScore - viewerScore);
+    const scoreA = a.skillScore ?? 1000;
+    const scoreB = b.skillScore ?? 1000;
+    const diffA = Math.abs(scoreA - viewerScore);
+    const diffB = Math.abs(scoreB - viewerScore);
     return diffA - diffB;
   });
 
@@ -743,7 +753,7 @@ async function getPlayersLikeYouRaw(
     name: c.displayName,
     alias: c.alias,
     image: c.image,
-    skillScore: Math.round(c.skillScore),
+    skillScore: Math.round(c.skillScore ?? 1000),
     preferredSide: c.preferredSide as "RIGHT" | "LEFT" | null,
     matchesPlayed: c.matchesPlayed ?? 0,
   }));

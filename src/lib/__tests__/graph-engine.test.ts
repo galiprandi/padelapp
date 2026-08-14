@@ -74,6 +74,12 @@ describe("getPlayersLikeYouAction", () => {
       matchesPlayed: 6,
     });
   });
+
+  it("returns mock recommended player for a brand new user under mock/bypass conditions", async () => {
+    const result = await getPlayersLikeYouAction("p-99");
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("p-04");
+  });
 });
 
 import { getCachedTurnNetworkContacts } from "@/lib/queries";
