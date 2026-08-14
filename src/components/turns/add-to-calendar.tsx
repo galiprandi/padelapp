@@ -100,13 +100,13 @@ export function AddToCalendarButton({
         size="sm"
         className={cn(
           "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150",
-          open && "border-primary text-primary bg-primary/5",
+          open && "border-primary text-primary bg-muted",
         )}
         aria-label="Agregar el partido a mi calendario"
         aria-expanded={open}
         aria-controls={`calendar-options-${turnId}`}
       >
-        <CalendarPlus className="mr-2 h-4 w-4" />
+        <CalendarPlus className="mr-2 h-4 w-4" aria-hidden="true" />
         Agregar al calendario
       </Button>
 
@@ -123,7 +123,7 @@ export function AddToCalendarButton({
               className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               aria-label="Agregar a Google Calendar"
             >
-              <Calendar className="h-4 w-4 shrink-0 text-primary" />
+              <Calendar className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span>Google</span>
             </Button>
             <Button
@@ -133,7 +133,7 @@ export function AddToCalendarButton({
               className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               aria-label="Descargar archivo iCal"
             >
-              <Download className="h-4 w-4 shrink-0 text-primary" />
+              <Download className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span>Apple / Outlook</span>
             </Button>
           </div>
