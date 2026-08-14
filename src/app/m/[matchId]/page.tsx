@@ -181,11 +181,54 @@ function InvitationSkeleton() {
   );
 }
 
+interface MatchInvitationPlayer {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+}
+
+interface MatchInvitationDetails {
+  id: string;
+  creatorId: string;
+  status: string;
+  sets: number;
+  matchType: string;
+  club: string | null;
+  courtNumber: string | null;
+  notes: string | null;
+  score: string | null;
+  date: Date;
+  createdAt: Date;
+  creator?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  players: MatchInvitationPlayer[];
+}
+
 async function InvitationContent({ params }: InvitationPageProps) {
   const { matchId } = await params;
   const session = await auth();
 
-  let match: any = null;
+  let match: MatchInvitationDetails | null = null;
 
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     match = {
@@ -277,7 +320,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
       ],
     };
   } else {
-    match = await db.query.matches.findFirst({
+    const fetchedMatch = await db.query.matches.findFirst({
       where: eq(matches.id, matchId),
       with: {
         creator: {
@@ -309,6 +352,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
         },
       },
     });
+    match = fetchedMatch ?? null;
   }
 
   if (!match) {
@@ -316,9 +360,9 @@ async function InvitationContent({ params }: InvitationPageProps) {
   }
 
   const totalPlayers = match.players.length;
-  const teamGroups: Record<"A" | "B", typeof match.players> = { A: [], B: [] };
+  const teamGroups: Record<"A" | "B", MatchInvitationPlayer[]> = { A: [], B: [] };
 
-  for (const player of match.players as Array<any>) {
+  for (const player of match.players) {
     const teamKey = teamKeyForPosition(player.position, totalPlayers);
     teamGroups[teamKey].push(player);
   }
@@ -428,7 +472,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="grid gap-2">
-                  {teamPlayers.map((player: any) => {
+                  {teamPlayers.map((player) => {
                     const name =
                       player.user?.displayName ??
                       player.displayName ??

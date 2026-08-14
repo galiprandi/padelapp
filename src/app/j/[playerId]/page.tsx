@@ -83,6 +83,71 @@ export default function JoinSlotPage({ params }: JoinSlotPageProps) {
   );
 }
 
+interface MatchPlayerSlot {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+}
+
+interface MatchSlotDetails {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  matchId: string;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+  match: {
+    id: string;
+    creatorId: string;
+    status: MatchStatus;
+    sets: number;
+    matchType: string;
+    club: string | null;
+    courtNumber: string | null;
+    notes: string | null;
+    score: string | null;
+    date: Date;
+    createdAt: Date;
+    creator?: {
+      id: string;
+      displayName: string | null;
+      image: string | null;
+      alias: string | null;
+    } | null;
+    players: MatchPlayerSlot[];
+  };
+}
+
 async function JoinSlotContent({
   params,
 }: {
@@ -91,7 +156,7 @@ async function JoinSlotContent({
   const { playerId } = await params;
   const session = await auth();
 
-  let player: any = null;
+  let player: MatchSlotDetails | null = null;
 
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     player = {
@@ -197,7 +262,7 @@ async function JoinSlotContent({
       },
     };
   } else {
-    player = await db.query.matchPlayers.findFirst({
+    const fetchedPlayer = await db.query.matchPlayers.findFirst({
       where: eq(matchPlayers.id, playerId),
       with: {
         user: {
@@ -247,6 +312,7 @@ async function JoinSlotContent({
         },
       },
     });
+    player = fetchedPlayer ?? null;
   }
 
   if (!player) {
@@ -266,8 +332,8 @@ async function JoinSlotContent({
     : false;
   const matchClosed = match.status !== MATCH_STATUS.PENDING;
 
-  const teamGroups: Record<"A" | "B", typeof match.players> = { A: [], B: [] };
-  for (const slot of match.players as Array<any>) {
+  const teamGroups: Record<"A" | "B", MatchPlayerSlot[]> = { A: [], B: [] };
+  for (const slot of match.players) {
     const key = teamKeyForPosition(slot.position, totalPlayers);
     teamGroups[key].push(slot);
   }
@@ -361,7 +427,7 @@ async function JoinSlotContent({
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="grid gap-2">
-                  {slots.map((slot: any) => {
+                  {slots.map((slot) => {
                     const name =
                       slot.user?.displayName ??
                       slot.displayName ??
