@@ -1,10 +1,12 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-11
+## Última actualización: 2026-08-12
 
 ## Estado actual
 
 ### Completado
+- Phase 13 (Database-Level Left Join Optimization for Cold-Start Player Recommendations):
+  - [x] 2026-08-12 — Hecho: Optimización de la recomendación global ("Jugadores como vos") en '/network' utilizando un leftJoin para resolver el cold-start de nuevos usuarios sin registro en playerGraphStats, de-duplicando con un Set e implementando fallbacks adecuados.
 - Phase 12 (Unicode Accent-Insensitive Graph Search & Legacy Level Eradication):
   - [x] 2026-08-11 — Hecho: Implementada normalización de texto unicode (`NFD` + regex replacement) para lograr búsquedas insensibles a acentos y mayúsculas en el grafo de contactos (ej. buscando "agustin" para encontrar a "Agustín").
   - [x] 2026-08-11 — Hecho: Eliminados los campos remanentes y redundantes de `level` de las consultas y mocks del centro de turnos (`getTurnByIdAction`) y ranking (`MOCK_RANKING_USERS`).
@@ -62,6 +64,7 @@
 - [x] 2026-08-11 — Unicode Accent-Insensitive Graph Search & Legacy Level Eradication (PR coello/network/graph-diacritic-search)
 
 ## Learnings
+- **Optimización de Consultas Relacionales para Cold-Start de Usuarios en Recomendaciones**: En sistemas de recomendación que sugieren usuarios con habilidades similares basándose en tablas estadísticas del grafo (`playerGraphStats`), realizar un `innerJoin` con la tabla principal de usuarios (`users`) excluye por completo a los nuevos usuarios registrados que aún no tienen estadísticas generadas. Reemplazar este flujo por un `leftJoin` desde `users` permite capturar y recomendar a nuevos jugadores de inmediato, asignando puntuaciones neutrales por defecto (ej. `skillScore: 1000`) y de-duplicando eficientemente con un `Set` para garantizar que la lista de sugerencias siempre esté completa, viva y de fácil descubrimiento.
 - **Búsqueda Insensible a Acentos en Redes de Contacto (Grafo)**: En mercados hispanohablantes donde los nombres de jugadores contienen acentos ("Agustín", "Belasteguín"), implementar búsquedas insensibles a diacríticos utilizando normalización unicode (`normalize("NFD")` y reemplazo de rango de caracteres `[\u0300-\u036f]`) es un pilar fundamental de UX. Esto elimina la fricción en smartphones donde los teclados rápidos incitan a escribir sin acentos.
 - **Remoción Completa de Columnas Legacy en APIs de Datos**: Al realizar tareas de limpieza técnica de sistemas heredados (como el nivel auto-percibido de juego), es de vital importancia eliminar los atributos no solo de los modelos de base de datos principales, sino también de los selectores de columnas en queries (`db.query`), de los mocks de pruebas/bypass, y de las interfaces de respuestas asociadas. Esto evita que código muerto siga consumiendo recursos o induciendo a errores de tipado futuros.
 - **Sugerencias de Contactos de Turno con Filtro de Suplentes**: Al recomendar contactos o jugadores de la red para "salvar un turno" o invitarlos de forma proactiva mediante WhatsApp, no basta con excluir únicamente a los jugadores ya inscritos (`turn.players`). Los suplentes registrados en lista de espera (`turn.substitutes`) también forman parte activa del turno en su rol correspondiente y, por ende, deben ser excluidos estrictamente de las sugerencias para evitar duplicaciones y fricción en la experiencia del organizador.
