@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-13 — Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton (bela/turnos/assign-substitute-toast-and-ux)
 - [x] 2026-08-12 — Turn Chat Localized Timestamps and Scroll UX Optimization (bela/turnos/chat-timestamps-ux)
 - [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
 - [x] 2026-08-11 — Turn Chat with Ephemeral Upstash Redis Storage and System Bot (bela/turnos/turn-chat-implementation)
@@ -29,6 +30,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-13 - Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton
+**Learning:** Providing immediate feedback when organizers promote substitutes to active slots prevents double-clicking and gives clear operational confirmation. Using active voice in Argentine Spanish ("Promoviste a [Nombre] a titular.") aligns with project brand voice guidelines while tactile scaling (`active:scale-[0.98] transition-all`) delivers expected MDS micro-UX feedback.
+**Action:** Always capture server action responses in client button components to dispatch localized toast notifications and apply tactile scaling to interactive triggers.
+
 ## 2026-08-12 - Turn Chat Localized Timestamps and Scroll UX Optimization
 **Learning:** Adding timestamps to real-time communication modules (like Turn Chat) is critical for user coordination, as relative messages like "Llego 10 min tarde" lose value without chronological context. Implementing this purely on the client side with a decoupled, pure-function utility ensures deterministic, fast testing and avoids server-side NextAuth or Next.js transitive import issues in the test runner. Additionally, snapping the scroll position instantly (`auto`) on the initial rendering of the chat, while using smooth scrolling (`smooth`) only for subsequent incoming messages, significantly enhances the perceived loading speed and transitions.
 **Action:** Keep date and time formatting utilities pure and self-contained to avoid import pollution in Vitest. Use stateful references (`useRef`) to manage different scroll behavior modes between initial loads and dynamic updates.

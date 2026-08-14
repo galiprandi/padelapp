@@ -90,10 +90,16 @@ export function AssignSubstituteButton({
 }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleAssign = async () => {
     setLoading(true);
-    await assignSubstituteAction(turnId, substituteUserId);
+    const result = await assignSubstituteAction(turnId, substituteUserId);
+    if (result.status === "ok") {
+      showToast(`Promoviste a ${substituteName} a titular.`);
+    } else {
+      showToast(result.message ?? "No se pudo asignar al suplente.");
+    }
     router.refresh();
   };
 
@@ -105,7 +111,7 @@ export function AssignSubstituteButton({
         handleAssign();
       }}
       disabled={loading}
-      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
       aria-label={`Asignar a ${substituteName}`}
     >
       <UserCheck className="h-3.5 w-3.5" />
