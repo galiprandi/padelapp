@@ -95,7 +95,17 @@ const SAMPLE_TURN = {
   status: "OPEN",
 };
 
+import { CatalogSkeleton } from "./catalog-skeleton";
+
 export default function ComponentCatalogPage() {
+  return (
+    <Suspense fallback={<CatalogSkeleton />}>
+      <CatalogContent />
+    </Suspense>
+  );
+}
+
+function CatalogContent() {
   const [activeCategory, setActiveCategory] = useState("headers");
   const [viewportMode, setViewportMode] = useState<"mobile" | "desktop">(
     "mobile",
