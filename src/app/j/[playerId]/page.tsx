@@ -91,56 +91,163 @@ async function JoinSlotContent({
   const { playerId } = await params;
   const session = await auth();
 
-  const player = await db.query.matchPlayers.findFirst({
-    where: eq(matchPlayers.id, playerId),
-    with: {
-      user: {
-        columns: {
-          id: true,
-          displayName: true,
-          image: true,
-          alias: true,
-        },
-      },
-      team: {
-        columns: {
-          id: true,
-          label: true,
-        },
-      },
+  let player: any = null;
+
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    player = {
+      id: playerId,
+      position: 1,
+      userId: null,
+      displayName: "Jugador Invitado",
+      matchId: "m-01",
+      teamId: "team-a",
+      resultConfirmed: false,
+      joinedAt: null,
+      attendance: null,
+      side: "RIGHT",
+      user: null,
+      team: { id: "team-a", label: "Pareja A" },
       match: {
-        with: {
-          creator: {
-            columns: {
-              id: true,
-              displayName: true,
-              image: true,
-              alias: true,
+        id: "m-01",
+        creatorId: "p-01",
+        status: "PENDING",
+        sets: 3,
+        matchType: "FRIENDLY",
+        club: "Club El Balcón",
+        courtNumber: "1",
+        notes: "Llegar 10 min antes",
+        score: null,
+        date: new Date("2026-08-20T18:00:00.000Z"),
+        createdAt: new Date("2026-08-01T10:00:00.000Z"),
+        creator: {
+          id: "p-01",
+          displayName: "Agustín Tapia",
+          image: null,
+          alias: "tapia",
+        },
+        players: [
+          {
+            id: "slot-0",
+            position: 0,
+            userId: "p-01",
+            displayName: null,
+            teamId: "team-a",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT",
+            user: {
+              id: "p-01",
+              displayName: "Agustín Tapia",
+              image: null,
+              alias: "tapia",
             },
+            team: { id: "team-a", label: "Pareja A" },
           },
-          players: {
-            orderBy: asc(matchPlayers.position),
-            with: {
-              user: {
-                columns: {
-                  id: true,
-                  displayName: true,
-                  image: true,
-                  alias: true,
-                },
+          {
+            id: playerId,
+            position: 1,
+            userId: null,
+            displayName: "Cupo libre",
+            teamId: "team-a",
+            resultConfirmed: false,
+            joinedAt: null,
+            attendance: null,
+            side: "RIGHT",
+            user: null,
+            team: { id: "team-a", label: "Pareja A" },
+          },
+          {
+            id: "slot-2",
+            position: 2,
+            userId: "p-02",
+            displayName: null,
+            teamId: "team-b",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T11:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "RIGHT",
+            user: {
+              id: "p-02",
+              displayName: "Fernando Belasteguín",
+              image: null,
+              alias: "bela",
+            },
+            team: { id: "team-b", label: "Pareja B" },
+          },
+          {
+            id: "slot-3",
+            position: 3,
+            userId: "p-03",
+            displayName: null,
+            teamId: "team-b",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T11:30:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT",
+            user: {
+              id: "p-03",
+              displayName: "Martin Di Nenno",
+              image: null,
+              alias: "dinenno",
+            },
+            team: { id: "team-b", label: "Pareja B" },
+          },
+        ],
+      },
+    };
+  } else {
+    player = await db.query.matchPlayers.findFirst({
+      where: eq(matchPlayers.id, playerId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            displayName: true,
+            image: true,
+            alias: true,
+          },
+        },
+        team: {
+          columns: {
+            id: true,
+            label: true,
+          },
+        },
+        match: {
+          with: {
+            creator: {
+              columns: {
+                id: true,
+                displayName: true,
+                image: true,
+                alias: true,
               },
-              team: {
-                columns: {
-                  id: true,
-                  label: true,
+            },
+            players: {
+              orderBy: asc(matchPlayers.position),
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    displayName: true,
+                    image: true,
+                    alias: true,
+                  },
+                },
+                team: {
+                  columns: {
+                    id: true,
+                    label: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  });
+    });
+  }
 
   if (!player) {
     notFound();
@@ -155,12 +262,12 @@ async function JoinSlotContent({
   const slotTaken = Boolean(player.userId);
   const slotTakenByViewer = slotTaken && player.userId === viewerId;
   const viewerAlreadyInMatch = viewerId
-    ? match.players.some((slot) => slot.userId === viewerId)
+    ? match.players.some((slot: { userId: string | null }) => slot.userId === viewerId)
     : false;
   const matchClosed = match.status !== MATCH_STATUS.PENDING;
 
   const teamGroups: Record<"A" | "B", typeof match.players> = { A: [], B: [] };
-  for (const slot of match.players) {
+  for (const slot of match.players as Array<any>) {
     const key = teamKeyForPosition(slot.position, totalPlayers);
     teamGroups[key].push(slot);
   }
@@ -254,7 +361,7 @@ async function JoinSlotContent({
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="grid gap-2">
-                  {slots.map((slot) => {
+                  {slots.map((slot: any) => {
                     const name =
                       slot.user?.displayName ??
                       slot.displayName ??
@@ -283,7 +390,7 @@ async function JoinSlotContent({
                           {isOccupied
                             ? name
                                 .split(" ")
-                                .map((s) => s[0])
+                                .map((s: string) => s[0])
                                 .join("")
                                 .slice(0, 2)
                                 .toUpperCase()
