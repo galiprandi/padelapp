@@ -43,7 +43,7 @@ export function AttendanceBadge({ status, className }: AttendanceBadgeProps) {
         className,
       )}
     >
-      <Icon className="h-3 w-3" />
+      <Icon className="h-3 w-3" aria-hidden="true" />
       {config.label}
     </span>
   );

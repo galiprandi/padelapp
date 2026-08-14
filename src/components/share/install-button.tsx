@@ -113,7 +113,7 @@ export function InstallButton({
   if (isInstalled || hasInstalled) {
     return (
       <div className="flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500">
-        <Check className="h-4 w-4" />
+        <Check className="h-4 w-4" aria-hidden="true" />
         Instalada
       </div>
     );
@@ -133,9 +133,9 @@ export function InstallButton({
         disabled={isInstalling}
       >
         {isInstalling ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
-          <Download className="h-4 w-4" />
+          <Download className="h-4 w-4" aria-hidden="true" />
         )}
         Instalar app
       </Button>
@@ -147,7 +147,7 @@ export function InstallButton({
     <div className="flex flex-col items-center gap-2">
       {isInstalling && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           Instalando…
         </div>
       )}
@@ -160,7 +160,7 @@ export function InstallButton({
           className="w-full h-12 rounded-lg font-semibold text-sm"
           onClick={() => setIsInstalling(true)}
         >
-          <Download className="h-4 w-4" />
+          <Download className="h-4 w-4" aria-hidden="true" />
           Instalar app
         </Button>
       </install>
