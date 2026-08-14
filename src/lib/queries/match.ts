@@ -199,6 +199,20 @@ export async function getPendingAttendanceActions(userId: string) {
 }
 
 export async function getHeadToHeadStats(viewerId: string, profileId: string) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      together: { wins: 3, total: 5 },
+      against: { wins: 2, total: 4 },
+      lastMatch: {
+        id: "m-01",
+        date: new Date("2026-08-01T10:00:00.000Z"),
+        score: "6-4, 6-3",
+        winner: "A",
+        viewerTeam: "A",
+      },
+    };
+  }
+
   const sharedMatches = await db.query.matches.findMany({
     where: and(
       eq(matchesTable.status, "CONFIRMED"),
