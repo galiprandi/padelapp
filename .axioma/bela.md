@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-14 — Complete Turn Chat System Bot Coverage for Organizer Actions (bela/turnos/organizer-chat-bot-events)
 - [x] 2026-08-13 — Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton (bela/turnos/assign-substitute-toast-and-ux)
 - [x] 2026-08-12 — Turn Chat Localized Timestamps and Scroll UX Optimization (bela/turnos/chat-timestamps-ux)
 - [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
@@ -30,6 +31,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-14 - Complete Turn Chat System Bot Coverage for Organizer Actions
+**Learning:** Completing Turn Chat System Bot event triggers for organizer administrative actions (promoting substitutes, adding players manually, removing players, or marking games as played) ensures all chat participants maintain complete real-time visibility over turn state changes. Writing messages in natural Argentine Spanish (voseo, active voice, zero exclamation marks) maintains strict brand copy alignment across all communications.
+**Action:** Always complement push notifications and UI state revalidations with contextual System Bot chat messages when server actions mutate participant composition.
+
 ## 2026-08-13 - Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton
 **Learning:** Providing immediate feedback when organizers promote substitutes to active slots prevents double-clicking and gives clear operational confirmation. Using active voice in Argentine Spanish ("Promoviste a [Nombre] a titular.") aligns with project brand voice guidelines while tactile scaling (`active:scale-[0.98] transition-all`) delivers expected MDS micro-UX feedback.
 **Action:** Always capture server action responses in client button components to dispatch localized toast notifications and apply tactile scaling to interactive triggers.
@@ -95,7 +100,7 @@
 **Action:** Unificar siempre el layout estructural y los componentes de navegación en flujos hermanos y evitar translucidez o layouts planos inconsistentes.
 
 ## 2026-07-25 - Botón de Calendario y Reducción de Ausencias
-**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansión sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
+**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansion sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
 **Action:** Buscar siempre integrar herramientas de utilidad inmediata en el contexto donde el usuario toma decisiones críticas (ej: debajo de la información del turno, no aislado).
 
 ## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"
