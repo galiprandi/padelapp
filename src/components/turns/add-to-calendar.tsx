@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CalendarPlus, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/toast/use-toast";
 import { cn, getCalendarTitle } from "@/lib/utils";
 
 interface AddToCalendarButtonProps {
@@ -20,6 +21,7 @@ export function AddToCalendarButton({
   duration,
   notes,
 }: AddToCalendarButtonProps) {
+  const { showToast } = useToast();
   const [open, setOpen] = useState(false);
 
   const startDate = new Date(date);
@@ -90,6 +92,7 @@ export function AddToCalendarButton({
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    showToast("Archivo de calendario descargado.");
   };
 
   return (
