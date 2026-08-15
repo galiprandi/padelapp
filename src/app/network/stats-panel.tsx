@@ -163,17 +163,17 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
       </div>
 
       {/* Jugadores como vos 🧠 */}
-      {playersLikeYou.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
-            <div className="space-y-0.5">
-              <h2 className="text-sm font-bold text-foreground">Jugadores como vos 🧠</h2>
-              <p className="text-xs text-muted-foreground">
-                Gente de tu nivel y comunidad con la que todavía no jugaste.
-              </p>
-            </div>
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+          <div className="space-y-0.5">
+            <h2 className="text-sm font-bold text-foreground">Jugadores como vos 🧠</h2>
+            <p className="text-xs text-muted-foreground">
+              Gente de tu nivel y comunidad con la que todavía no jugaste.
+            </p>
           </div>
+        </div>
+        {playersLikeYou.length > 0 ? (
           <div className="space-y-2.5 pt-1">
             {playersLikeYou.map((player) => (
               <div
@@ -212,8 +212,12 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-xs text-muted-foreground pt-1 italic">
+            No hay nuevos jugadores sugeridos por ahora.
+          </p>
+        )}
+      </div>
 
       {/* Engagement stats */}
       <div className="grid grid-cols-2 gap-3">

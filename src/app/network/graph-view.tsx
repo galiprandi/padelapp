@@ -273,7 +273,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       const isViewer = viewerId === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
       const color = nodeColor(node);
-      const label = isViewer ? "Tú" : capitalizeName(node.name || node.alias || "?");
+      const label = isViewer ? "Vos" : capitalizeName(node.name || node.alias || "?");
       const fontSize = Math.max(11 / globalScale, 3.5);
 
       ctx.beginPath();
@@ -629,12 +629,12 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 className="h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
                 style={{ backgroundColor: nodeColor(selectedNodeData) }}
               >
-                {getInitials(selectedNodeData.id === viewerId ? "Tú" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
+                {getInitials(selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
               </div>
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">
-                {selectedNodeData.id === viewerId ? "Tú" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
+                {selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
               </p>
               <p className="text-xs text-muted-foreground">
                 {selectedNodeData.matchesPlayed} partidos ·{" "}

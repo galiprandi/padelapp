@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-08-12
+## Última actualización: 2026-08-15
 
 ## Estado actual
 
 ### Completado
+- Phase 14 (Argentine Voseo Localization & Network Recommender Refinements):
+  - [x] 2026-08-15 — Hecho: Estandarización de voz argentina (reemplazo de "Tú" por "Vos") en la vista interactiva del grafo de la red (`src/app/network/graph-view.tsx`).
+  - [x] 2026-08-15 — Hecho: Corrección del caso borde de auto-recomendación mock en `getPlayersLikeYouAction` (`src/app/network/actions.ts`) cuando el viewer es `p-04`.
+  - [x] 2026-08-15 — Hecho: Incorporación del mensaje de estado vacío ("No hay nuevos jugadores sugeridos por ahora.") en `StatsPanel` (`src/app/network/stats-panel.tsx`).
 - Phase 13 (Database-Level Left Join Optimization for Cold-Start Player Recommendations):
   - [x] 2026-08-12 — Hecho: Optimización de la recomendación global ("Jugadores como vos") en '/network' utilizando un leftJoin para resolver el cold-start de nuevos usuarios sin registro en playerGraphStats, de-duplicando con un Set e implementando fallbacks adecuados.
 - Phase 12 (Unicode Accent-Insensitive Graph Search & Legacy Level Eradication):
@@ -62,6 +66,7 @@
 - [x] 2026-08-08 — Graph View Empty Search Results, Node Filter Bug, and Recommender Fallback Optimizations (PR coello/graph/search-and-recommender-optimizations)
 - [x] 2026-08-09 — Turn Contact Recommendations and Player Similarity Safeguards (PR coello/graph/exclude-substitutes-from-suggestions)
 - [x] 2026-08-11 — Unicode Accent-Insensitive Graph Search & Legacy Level Eradication (PR coello/network/graph-diacritic-search)
+- [x] 2026-08-15 — Argentine Voseo Localization & Network Recommender Refinements
 
 ## Learnings
 - **Optimización de Consultas Relacionales para Cold-Start de Usuarios en Recomendaciones**: En sistemas de recomendación que sugieren usuarios con habilidades similares basándose en tablas estadísticas del grafo (`playerGraphStats`), realizar un `innerJoin` con la tabla principal de usuarios (`users`) excluye por completo a los nuevos usuarios registrados que aún no tienen estadísticas generadas. Reemplazar este flujo por un `leftJoin` desde `users` permite capturar y recomendar a nuevos jugadores de inmediato, asignando puntuaciones neutrales por defecto (ej. `skillScore: 1000`) y de-duplicando eficientemente con un `Set` para garantizar que la lista de sugerencias siempre esté completa, viva y de fácil descubrimiento.
@@ -69,7 +74,7 @@
 - **Remoción Completa de Columnas Legacy en APIs de Datos**: Al realizar tareas de limpieza técnica de sistemas heredados (como el nivel auto-percibido de juego), es de vital importancia eliminar los atributos no solo de los modelos de base de datos principales, sino también de los selectores de columnas en queries (`db.query`), de los mocks de pruebas/bypass, y de las interfaces de respuestas asociadas. Esto evita que código muerto siga consumiendo recursos o induciendo a errores de tipado futuros.
 - **Sugerencias de Contactos de Turno con Filtro de Suplentes**: Al recomendar contactos o jugadores de la red para "salvar un turno" o invitarlos de forma proactiva mediante WhatsApp, no basta con excluir únicamente a los jugadores ya inscritos (`turn.players`). Los suplentes registrados en lista de espera (`turn.substitutes`) también forman parte activa del turno en su rol correspondiente y, por ende, deben ser excluidos estrictamente de las sugerencias para evitar duplicaciones y fricción en la experiencia del organizador.
 - **Resiliencia ante Registros de Usuarios Huérfanos**: En sistemas de recomendación que combinan estadísticas agregadas (`playerGraphStats`) con perfiles de usuario (`users`), es fundamental implementar salvaguardas (safeguards) que descarten proactivamente a candidatos con registros huérfanos o inexistentes en la tabla de usuarios principales. Esto garantiza una ejecución robusta de los mapeos y previene la aparición de perfiles inválidos o nulos en la interfaz.
-- **Búsqueda en Grafos Interactivos (Empty Search State)**: Al realizar búsquedas de jugadores en una visualización interactiva basada en canvas (ej. react-force-graph-2d), es de suma importancia asegurar que las consultas vacías o que no coinciden con ningún jugador filtren correctamente los nodos a cero, en lugar de desactivar el filtro por defecto. Integrar un overlay elegante de "No se encontraron jugadores" con una llamada de acción rápida ("Limpiar búsqueda") proporciona una experiencia altamente pulida y natural.
+- **Búsqueda en Grafos Interactivos (Empty Search State)**: Al realizar búsquedas de jugadores en una visualización interactiva basada en canvas (ej. react-force-graph-2d), es de suma importancia asegurar que las consultas vacías o que no coinciden con ningún jugador filtren correctamente los nodos a cero, en lugar de desactivar el filtro por defecto. Integrar un overlay elegante de "No se encontraron jugadores" con una llamada de acción rápida ("Limpiar búsqueda") proporciona una experiencia highly pulida y natural.
 - **Sistemas de Recomendación de Grafo de Jugadores (Players Like You)**: Para recomendar jugadores con los que aún no se ha jugado pero que tienen un perfil de habilidad similar, la combinación de comunidades del grafo (Louvain) con un filtrado estricto de aristas con partidos ya disputados proporciona recomendaciones extremadamente precisas y locales. Ordenar los candidatos por la diferencia absoluta de score de habilidad (`skillScore`) minimiza el cold-start y asegura compatibilidad de juego.
 - **Limpieza Absoluta de Tipados en Interfaces**: Al erradicar un concepto legacy como el nivel auto-percibido de juego, se deben sincronizar y depurar no solo los componentes de la interfaz de usuario, sino también los types intermedios de las consultas (`PadelContact`, `PublicProfileUser`, `DashboardUserStats`), las estructuras de inputs de los Server Actions (`CreateTurnInput`) y el manual del usuario (`MANUAL.md`). Esto evita tener código "muerto" o inactivo que genere falsas expectativas sobre las capacidades de la plataforma.
 - **Sincronía en Entornos de Test/Offline**: Cuando la base de datos es inaccesible, o las credenciales no están configuradas localmente/en prerendering, proveer implementaciones simuladas (Mocks) robustas a nivel de Server Action (como en `getGraphData` o `getAdoptionMetrics`) garantiza que las herramientas de automatización de QA (Playwright, Cypress) y el compilador de Next.js (PPR) funcionen de forma fluida y sin fallar por credenciales/red.
