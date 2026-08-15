@@ -110,7 +110,7 @@ export function SlotDisplay({
       <div className="flex items-center gap-1">
         {isSelf ? (
           <div className="flex h-8 items-center px-2.5 rounded-lg bg-primary/10 border border-primary/20">
-            <span className="text-xs font-semibold text-primary">Tú</span>
+            <span className="text-xs font-semibold text-primary">Vos</span>
           </div>
         ) : null}
         <Button

@@ -67,7 +67,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {second && (
           <Link
             href={`/p/${second.id}?backUrl=/ranking`}
-            aria-label={`2da posición: ${isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`2da posición: ${isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isSecondViewer
@@ -89,7 +89,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
               <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                <span className="truncate">{isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}</span>
+                <span className="truncate">{isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}</span>
                 {secondStreak >= 2 && (
                   <span title={`Racha de ${secondStreak} victorias`}>
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />
@@ -127,7 +127,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {first && (
           <Link
             href={`/p/${first.id}?backUrl=/ranking`}
-            aria-label={`1ra posición: ${isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`1ra posición: ${isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
             className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-all active:scale-[0.98] hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative" aria-hidden="true">
@@ -144,7 +144,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
               <span className={cn("text-xs font-bold truncate w-full text-center flex items-center justify-center gap-0.5", isFirstViewer ? "text-primary" : "text-foreground")}>
-                <span className="truncate">{isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}</span>
+                <span className="truncate">{isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}</span>
                 {firstStreak >= 2 && (
                   <span title={`Racha de ${firstStreak} victorias`}>
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0 animate-pulse" />
@@ -182,7 +182,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {third && (
           <Link
             href={`/p/${third.id}?backUrl=/ranking`}
-            aria-label={`3ra posición: ${isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`3ra posición: ${isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isThirdViewer
@@ -204,7 +204,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
               <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                <span className="truncate">{isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}</span>
+                <span className="truncate">{isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}</span>
                 {thirdStreak >= 2 && (
                   <span title={`Racha de ${thirdStreak} victorias`}>
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />

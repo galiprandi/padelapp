@@ -360,7 +360,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                               isViewer && "text-primary",
                             )}
                           >
-                            {isViewer ? "Tú" : player.name}
+                            {isViewer ? "Vos" : player.name}
                           </Link>
                         ) : (
                           <span className="truncate">{player.name}</span>

@@ -405,7 +405,7 @@ async function MatchContent({ params }: MatchPageProps) {
                                 : "text-muted-foreground",
                             )}
                           >
-                            {isViewer ? "Tú" : displayName}
+                            {isViewer ? "Vos" : displayName}
                           </span>
                           <span
                             className={cn(
