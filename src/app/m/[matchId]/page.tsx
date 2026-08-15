@@ -1,9 +1,7 @@
 import { auth } from "@/auth";
-import { db } from "@/db";
-import { matches, matchPlayers } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getCachedMatchInvitationDetails } from "@/lib/queries";
 import {
   Calendar,
   Clock,
@@ -31,18 +29,7 @@ export async function generateMetadata({
 }: InvitationPageProps): Promise<Metadata> {
   const { matchId } = await params;
 
-  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
-    return {
-      title: "Invitación a Partido en Club El Balcón",
-      description: "Sumate al partido en Club El Balcón.",
-    };
-  }
-
-  const [match] = await db
-    .select()
-    .from(matches)
-    .where(eq(matches.id, matchId))
-    .limit(1);
+  const match = await getCachedMatchInvitationDetails(matchId);
 
   if (!match) {
     return { title: "Partido no encontrado" };
@@ -228,132 +215,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
   const { matchId } = await params;
   const session = await auth();
 
-  let match: MatchInvitationDetails | null = null;
-
-  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
-    match = {
-      id: matchId,
-      creatorId: "p-01",
-      status: "PENDING",
-      sets: 3,
-      matchType: "FRIENDLY",
-      club: "Club El Balcón",
-      courtNumber: "1",
-      notes: "Llegar 10 min antes",
-      score: null,
-      date: new Date("2026-08-20T18:00:00.000Z"),
-      createdAt: new Date("2026-08-01T10:00:00.000Z"),
-      creator: {
-        id: "p-01",
-        displayName: "Agustín Tapia",
-        image: null,
-        alias: "tapia",
-      },
-      players: [
-        {
-          id: "slot-0",
-          position: 0,
-          userId: "p-01",
-          displayName: null,
-          teamId: "team-a",
-          resultConfirmed: true,
-          joinedAt: new Date("2026-08-01T10:00:00.000Z"),
-          attendance: "ATTENDED",
-          side: "LEFT",
-          user: {
-            id: "p-01",
-            displayName: "Agustín Tapia",
-            image: null,
-            alias: "tapia",
-          },
-          team: { id: "team-a", label: "Pareja A" },
-        },
-        {
-          id: "slot-1",
-          position: 1,
-          userId: null,
-          displayName: "Cupo libre",
-          teamId: "team-a",
-          resultConfirmed: false,
-          joinedAt: null,
-          attendance: null,
-          side: "RIGHT",
-          user: null,
-          team: { id: "team-a", label: "Pareja A" },
-        },
-        {
-          id: "slot-2",
-          position: 2,
-          userId: "p-02",
-          displayName: null,
-          teamId: "team-b",
-          resultConfirmed: true,
-          joinedAt: new Date("2026-08-01T11:00:00.000Z"),
-          attendance: "ATTENDED",
-          side: "RIGHT",
-          user: {
-            id: "p-02",
-            displayName: "Fernando Belasteguín",
-            image: null,
-            alias: "bela",
-          },
-          team: { id: "team-b", label: "Pareja B" },
-        },
-        {
-          id: "slot-3",
-          position: 3,
-          userId: "p-03",
-          displayName: null,
-          teamId: "team-b",
-          resultConfirmed: true,
-          joinedAt: new Date("2026-08-01T11:30:00.000Z"),
-          attendance: "ATTENDED",
-          side: "LEFT",
-          user: {
-            id: "p-03",
-            displayName: "Martin Di Nenno",
-            image: null,
-            alias: "dinenno",
-          },
-          team: { id: "team-b", label: "Pareja B" },
-        },
-      ],
-    };
-  } else {
-    const fetchedMatch = await db.query.matches.findFirst({
-      where: eq(matches.id, matchId),
-      with: {
-        creator: {
-          columns: {
-            id: true,
-            displayName: true,
-            image: true,
-            alias: true,
-          },
-        },
-        players: {
-          orderBy: asc(matchPlayers.position),
-          with: {
-            user: {
-              columns: {
-                id: true,
-                displayName: true,
-                image: true,
-                alias: true,
-              },
-            },
-            team: {
-              columns: {
-                id: true,
-                label: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    match = fetchedMatch ?? null;
-  }
+  const match: MatchInvitationDetails | null = (await getCachedMatchInvitationDetails(matchId)) as MatchInvitationDetails | null;
 
   if (!match) {
     notFound();

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-15 — Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (PR #tino/perf/match-invitations-and-slot-join-caching)
 - [x] 2026-08-11 — Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (PR #tino/perf/eager-navigation-prefetching)
 - [x] 2026-08-11 — Auditoría y Verificación de Aislamiento de Caché Multiusuario en Consultas de Turnos (`src/lib/queries/turn.ts`) (PR #tino/perf/audit-turn-cache-isolation)
 - [x] 2026-08-11 — Navegación Transversal de Partidos a Fichas Públicas de Jugadores y Soporte de Mocks bajo Bypass (PR #tino/ux/match-profile-transversal-navigation)
@@ -25,6 +26,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-15 - Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (Performance Transversal)
+**Aprendizaje:** En enlaces públicos compartibles a través de redes sociales y WhatsApp (como invitaciones a partidos `/m/[matchId]` o uniones directas a cupos `/j/[playerId]`), los picos repentinos de tráfico pueden saturar el pool de conexiones a la base de datos si las consultas se ejecutan de forma directa en cada renderizado. Abstraer estas consultas hacia funciones cacheadas (`getCachedMatchInvitationDetails` y `getCachedMatchSlotDetails`) mediante `unstable_cache` etiquetadas con la tag `"matches"` y un TTL de 60s permite servir las vistas públicas de forma instantánea (0ms de latencia SQL) manteniendo la coherencia perfecta de los datos al invalidarse automáticamente en Server Actions.
+**Acción:** Cachar siempre las consultas de rutas públicas con enlaces de alta difusión para evitar saturación de DB en picos de tráfico.
+
 ### 2026-08-11 - Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (Performance Transversal)
 **Aprendizaje:** En aplicaciones móviles y PWAs altamente interactivas, la latencia percibida al navegar entre módulos principales puede empañar la experiencia de usuario. Activar `prefetch={true}` de forma explícita en elementos de navegación estructurales (BottomNav, notificaciones y llamadas a la acción primarias) permite que Next.js precargue los bundles de código y cascarones estáticos en segundo plano en cuanto entran en el viewport. Esto reduce la transición a un renderizado instantáneo (0ms percibidos de lag) y potencia el engagement.
 **Acción:** Aplicar prefetch proactivo en cualquier enlace de navegación estructural o CTA principal de alta conversión para mantener la fluidez táctil.

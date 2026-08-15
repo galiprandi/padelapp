@@ -11,6 +11,10 @@ export {
   getCachedConfirmedMatches,
   getConfirmedMatchesForProfile,
   getCachedConfirmedMatchesForProfile,
+  getMatchSlotDetails,
+  getCachedMatchSlotDetails,
+  getMatchInvitationDetails,
+  getCachedMatchInvitationDetails,
 } from "./match";
 
 export {

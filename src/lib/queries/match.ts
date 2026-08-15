@@ -409,6 +409,326 @@ export const getCachedConfirmedMatchesForProfile = (userId: string, limit = 5) =
   )();
 
 /**
+ * Get details for a direct match slot invitation by playerId (matchPlayers.id).
+ * Used by /j/[playerId] page.
+ */
+export async function getMatchSlotDetails(playerId: string) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      id: playerId,
+      position: 1,
+      userId: null,
+      displayName: "Jugador Invitado",
+      matchId: "m-01",
+      teamId: "team-a",
+      resultConfirmed: false,
+      joinedAt: null,
+      attendance: null,
+      side: "RIGHT" as const,
+      user: null,
+      team: { id: "team-a", label: "Pareja A" },
+      match: {
+        id: "m-01",
+        creatorId: "p-01",
+        status: "PENDING" as const,
+        sets: 3,
+        matchType: "FRIENDLY",
+        club: "Club El Balcón",
+        courtNumber: "1",
+        notes: "Llegar 10 min antes",
+        score: null,
+        date: new Date("2026-08-20T18:00:00.000Z"),
+        createdAt: new Date("2026-08-01T10:00:00.000Z"),
+        creator: {
+          id: "p-01",
+          displayName: "Agustín Tapia",
+          image: null,
+          alias: "tapia",
+        },
+        players: [
+          {
+            id: "slot-0",
+            position: 0,
+            userId: "p-01",
+            displayName: null,
+            teamId: "team-a",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT" as const,
+            user: {
+              id: "p-01",
+              displayName: "Agustín Tapia",
+              image: null,
+              alias: "tapia",
+            },
+            team: { id: "team-a", label: "Pareja A" },
+          },
+          {
+            id: playerId,
+            position: 1,
+            userId: null,
+            displayName: "Cupo libre",
+            teamId: "team-a",
+            resultConfirmed: false,
+            joinedAt: null,
+            attendance: null,
+            side: "RIGHT" as const,
+            user: null,
+            team: { id: "team-a", label: "Pareja A" },
+          },
+          {
+            id: "slot-2",
+            position: 2,
+            userId: "p-02",
+            displayName: null,
+            teamId: "team-b",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T11:00:00.000Z"),
+            attendance: "ATTENDED",
+            side: "RIGHT" as const,
+            user: {
+              id: "p-02",
+              displayName: "Fernando Belasteguín",
+              image: null,
+              alias: "bela",
+            },
+            team: { id: "team-b", label: "Pareja B" },
+          },
+          {
+            id: "slot-3",
+            position: 3,
+            userId: "p-03",
+            displayName: null,
+            teamId: "team-b",
+            resultConfirmed: false,
+            joinedAt: new Date("2026-08-01T11:30:00.000Z"),
+            attendance: "ATTENDED",
+            side: "LEFT" as const,
+            user: {
+              id: "p-03",
+              displayName: "Martin Di Nenno",
+              image: null,
+              alias: "dinenno",
+            },
+            team: { id: "team-b", label: "Pareja B" },
+          },
+        ],
+      },
+    };
+  }
+
+  const fetchedPlayer = await db.query.matchPlayers.findFirst({
+    where: eq(matchPlayers.id, playerId),
+    with: {
+      user: {
+        columns: {
+          id: true,
+          displayName: true,
+          image: true,
+          alias: true,
+        },
+      },
+      team: {
+        columns: {
+          id: true,
+          label: true,
+        },
+      },
+      match: {
+        with: {
+          creator: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+          players: {
+            orderBy: asc(matchPlayers.position),
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  displayName: true,
+                  image: true,
+                  alias: true,
+                },
+              },
+              team: {
+                columns: {
+                  id: true,
+                  label: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return fetchedPlayer ?? null;
+}
+
+/**
+ * Cached version of getMatchSlotDetails.
+ * Keyed by playerId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedMatchSlotDetails = (playerId: string) =>
+  unstable_cache(
+    async () => getMatchSlotDetails(playerId),
+    ["match-slot-details", playerId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
+
+/**
+ * Get details for a public match invitation by matchId.
+ * Used by /m/[matchId] page.
+ */
+export async function getMatchInvitationDetails(matchId: string) {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return {
+      id: matchId,
+      creatorId: "p-01",
+      status: "PENDING",
+      sets: 3,
+      matchType: "FRIENDLY",
+      club: "Club El Balcón",
+      courtNumber: "1",
+      notes: "Llegar 10 min antes",
+      score: null,
+      date: new Date("2026-08-20T18:00:00.000Z"),
+      createdAt: new Date("2026-08-01T10:00:00.000Z"),
+      creator: {
+        id: "p-01",
+        displayName: "Agustín Tapia",
+        image: null,
+        alias: "tapia",
+      },
+      players: [
+        {
+          id: "slot-0",
+          position: 0,
+          userId: "p-01",
+          displayName: null,
+          teamId: "team-a",
+          resultConfirmed: true,
+          joinedAt: new Date("2026-08-01T10:00:00.000Z"),
+          attendance: "ATTENDED",
+          side: "LEFT" as const,
+          user: {
+            id: "p-01",
+            displayName: "Agustín Tapia",
+            image: null,
+            alias: "tapia",
+          },
+          team: { id: "team-a", label: "Pareja A" },
+        },
+        {
+          id: "slot-1",
+          position: 1,
+          userId: null,
+          displayName: "Cupo libre",
+          teamId: "team-a",
+          resultConfirmed: false,
+          joinedAt: null,
+          attendance: null,
+          side: "RIGHT" as const,
+          user: null,
+          team: { id: "team-a", label: "Pareja A" },
+        },
+        {
+          id: "slot-2",
+          position: 2,
+          userId: "p-02",
+          displayName: null,
+          teamId: "team-b",
+          resultConfirmed: true,
+          joinedAt: new Date("2026-08-01T11:00:00.000Z"),
+          attendance: "ATTENDED",
+          side: "RIGHT" as const,
+          user: {
+            id: "p-02",
+            displayName: "Fernando Belasteguín",
+            image: null,
+            alias: "bela",
+          },
+          team: { id: "team-b", label: "Pareja B" },
+        },
+        {
+          id: "slot-3",
+          position: 3,
+          userId: "p-03",
+          displayName: null,
+          teamId: "team-b",
+          resultConfirmed: true,
+          joinedAt: new Date("2026-08-01T11:30:00.000Z"),
+          attendance: "ATTENDED",
+          side: "LEFT" as const,
+          user: {
+            id: "p-03",
+            displayName: "Martin Di Nenno",
+            image: null,
+            alias: "dinenno",
+          },
+          team: { id: "team-b", label: "Pareja B" },
+        },
+      ],
+    };
+  }
+
+  const fetchedMatch = await db.query.matches.findFirst({
+    where: eq(matchesTable.id, matchId),
+    with: {
+      creator: {
+        columns: {
+          id: true,
+          displayName: true,
+          image: true,
+          alias: true,
+        },
+      },
+      players: {
+        orderBy: asc(matchPlayers.position),
+        with: {
+          user: {
+            columns: {
+              id: true,
+              displayName: true,
+              image: true,
+              alias: true,
+            },
+          },
+          team: {
+            columns: {
+              id: true,
+              label: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return fetchedMatch ?? null;
+}
+
+/**
+ * Cached version of getMatchInvitationDetails.
+ * Keyed by matchId. Invalidated by revalidateTag("matches").
+ * Fallback revalidate: 60s.
+ */
+export const getCachedMatchInvitationDetails = (matchId: string) =>
+  unstable_cache(
+    async () => getMatchInvitationDetails(matchId),
+    ["match-invitation-details", matchId],
+    { tags: ["matches"], revalidate: 60 }
+  )();
+
+/**
  * Cached version of getEnhancedUserMatches.
  * Keyed by userId, statusFilter, and limit. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
