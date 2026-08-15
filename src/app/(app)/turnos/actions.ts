@@ -1164,6 +1164,8 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     const removerName = await getUserDisplayName(session.user.id);
     const remainingSlots = turn.maxPlayers - (turn.players.length - 1);
 
+    const removedName = await getUserDisplayName(playerUserId);
+
     // Notify the removed player
     void notifyUsers([playerUserId], {
       title: `El organizador te sacó de ${turnLabel}`,
@@ -1210,6 +1212,11 @@ export async function removePlayerAction(turnId: string, playerUserId: string) {
     if (wasFull && turn.substitutes.length === 0) {
       void notifyNetworkForTurn(turnId, turn);
     }
+
+    void sendSystemMessageAction(
+      turnId,
+      `El organizador sacó a ${removedName} del turno. Quedó un cupo libre.`,
+    );
 
     return { status: "ok" };
   } catch (error) {
@@ -1297,6 +1304,7 @@ export async function addPlayerAction(turnId: string, playerUserId: string) {
     const turnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/t/${turnId}`;
     const turnLabel = getTurnLabelWithDate(turn.club, turn.date);
     const adderName = await getUserDisplayName(session.user.id);
+    const addedName = await getUserDisplayName(playerUserId);
 
     void notifyUsers([playerUserId], {
       title: `Te agregaron a ${turnLabel}`,
@@ -1308,6 +1316,17 @@ export async function addPlayerAction(turnId: string, playerUserId: string) {
     void updateEdgesForTurnEnrollment(turnId, playerUserId).catch((err) =>
       console.error("[addPlayer] edge update failed:", err),
     );
+
+    void sendSystemMessageAction(
+      turnId,
+      `El organizador agregó a ${addedName} al turno.`,
+    );
+    if (turn.players.length + 1 >= turn.maxPlayers) {
+      void sendSystemMessageAction(
+        turnId,
+        "✅ Turno completo. Nos vemos en la cancha.",
+      );
+    }
 
     return { status: "ok" };
   } catch (error) {
@@ -1442,6 +1461,17 @@ export async function assignSubstituteAction(
       });
     }
 
+    void sendSystemMessageAction(
+      turnId,
+      `El organizador promovió a ${assigneeName} a titular.`,
+    );
+    if (isNowFull) {
+      void sendSystemMessageAction(
+        turnId,
+        "✅ Turno completo. Nos vemos en la cancha.",
+      );
+    }
+
     return { status: "ok" };
   } catch (error) {
     if (error instanceof Error && error.message === "El cupo ya fue ocupado") {
@@ -1510,6 +1540,11 @@ export async function markTurnAsPlayedAction(turnId: string) {
     revalidatePath(`/t/${turnId}`);
     revalidatePath("/me");
     revalidateTag("turns", "default");
+
+    void sendSystemMessageAction(
+      turnId,
+      "El organizador marcó el turno como jugado.",
+    );
 
     return { status: "ok" };
   } catch (error) {
