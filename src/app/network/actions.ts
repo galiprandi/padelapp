@@ -621,6 +621,19 @@ async function getPlayersLikeYouRaw(
   viewerId: string
 ): Promise<RecommendedPlayer[]> {
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    if (viewerId === "p-04") {
+      return [
+        {
+          id: "p-01",
+          name: "Agustín Aliprandi",
+          alias: "agu",
+          image: null,
+          skillScore: 1150,
+          preferredSide: "RIGHT",
+          matchesPlayed: 15,
+        },
+      ];
+    }
     return [
       {
         id: "p-04",
