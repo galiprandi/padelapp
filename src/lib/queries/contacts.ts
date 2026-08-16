@@ -5,6 +5,7 @@ import {
   users,
   playerEdges,
   playerGraphStats,
+  matchPlayerFeedback,
 } from "@/db/schema";
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
 import { userInMatch } from "./helpers";
@@ -152,6 +153,14 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
       .where(inArray(playerGraphStats.community, enrolledCommunities));
   }
 
+  // Fetch feedback signal given by enrolled turn participants
+  const feedbackRows = enrolledArray.length > 0
+    ? await db
+        .select()
+        .from(matchPlayerFeedback)
+        .where(inArray(matchPlayerFeedback.feedbackBy, enrolledArray))
+    : [];
+
   // 4. Score and filter candidates
   const candidateScores = new Map<string, number>();
   const candidateDirectMatches = new Map<string, { lastMatchAt: Date; matchesTogether: number }>();
@@ -244,6 +253,31 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     // Community bonus
     const currentScore = candidateScores.get(candidateId) ?? 0;
     candidateScores.set(candidateId, currentScore + 100);
+  }
+
+  // Process feedback signal given by enrolled turn participants
+  const candidateFeedbackMap = new Map<string, { weakerCount: number; strongerCount: number }>();
+  for (const f of feedbackRows) {
+    if (participantUserIds.has(f.playerId)) continue;
+    const stats = candidateFeedbackMap.get(f.playerId) ?? { weakerCount: 0, strongerCount: 0 };
+    if (f.feedback === "WEAKER") stats.weakerCount++;
+    if (f.feedback === "STRONGER") stats.strongerCount++;
+    candidateFeedbackMap.set(f.playerId, stats);
+  }
+
+  for (const [candidateId, fb] of candidateFeedbackMap.entries()) {
+    if (fb.weakerCount > 0) {
+      const netNegative = fb.weakerCount - fb.strongerCount;
+      if (netNegative > 0) {
+        const currentScore = candidateScores.get(candidateId) ?? 0;
+        // Penalize candidate score based on net negative feedback from turn participants
+        candidateScores.set(candidateId, currentScore - netNegative * 150);
+        // Exclude candidates with severe net negative feedback (>= 2)
+        if (netNegative >= 2) {
+          excludedUserIds.add(candidateId);
+        }
+      }
+    }
   }
 
   // We keep candidates that have either:
