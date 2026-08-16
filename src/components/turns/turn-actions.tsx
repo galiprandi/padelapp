@@ -26,6 +26,7 @@ import {
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [confirming, setConfirming] = useState(false);
 
@@ -34,7 +35,10 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await cancelTurnAction(turnId);
       if (result.status === "ok") {
+        showToast("Cancelaste el turno.");
         router.push("/turnos");
+      } else {
+        showToast(result.message ?? "No se pudo cancelar el turno.");
       }
     });
   };
@@ -124,6 +128,7 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
 
 export function StartMatchForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleStart = (e: React.FormEvent) => {
@@ -131,7 +136,10 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await convertTurnToMatchAction(turnId);
       if (result.status === "ok" && result.matchId) {
+        showToast("Iniciaste el partido.");
         router.push(`/match/${result.matchId}`);
+      } else {
+        showToast(result.message ?? "No se pudo iniciar el partido.");
       }
     });
   };
@@ -246,6 +254,7 @@ export function LeaveSubstituteForm({
   hasOpenSlot?: boolean;
 }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleLeaveSubstitute = (e: React.FormEvent) => {
@@ -253,7 +262,10 @@ export function LeaveSubstituteForm({
     startTransition(async () => {
       const result = await leaveSubstituteAction(turnId);
       if (result.status === "ok") {
+        showToast("Saliste de la lista de suplentes.");
         router.refresh();
+      } else {
+        showToast(result.message ?? "No se pudo salir de suplentes.");
       }
     });
   };
@@ -319,6 +331,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
 
 export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleScheduleNext = (e: React.FormEvent) => {
@@ -326,7 +339,10 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await scheduleNextTurnAction(turnId);
       if (result.status === "ok" && result.turnId) {
+        showToast("Programaste el próximo turno.");
         router.push(`/t/${result.turnId}`);
+      } else {
+        showToast(result.message ?? "No se pudo programar el próximo turno.");
       }
     });
   };
