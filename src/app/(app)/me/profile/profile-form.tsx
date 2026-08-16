@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition, useCallback } from "react";
 import { updateUserProfileAction } from "@/app/(app)/me/actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -58,15 +57,25 @@ export function ProfileForm({
   matchesPlayed = 0,
 }: ProfileFormProps) {
   const { showToast } = useToast();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isOnboarding = searchParams ? searchParams.get("onboarding") === "true" : false;
 
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
   const [isSaving, startSaving] = useTransition();
-  const [checklistDismissed, setChecklistDismissed] = useState(false);
-  const [pwaDismissed, setPwaDismissed] = useState(false);
-  const [pushDismissed, setPushDismissed] = useState(false);
+  const [checklistDismissed, setChecklistDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("onboarding-checklist-dismissed") === "true";
+  });
+  const [pwaDismissed, setPwaDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("pwa-banner-dismissed") === "true";
+  });
+  const [pushDismissed, setPushDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("push-prompt-dismissed") === "true";
+  });
 
   const lastSavedAlias = useRef(initialAlias);
   const previousAliasRef = useRef(initialAlias);
@@ -74,6 +83,33 @@ export function ProfileForm({
   // eslint-disable-next-line react-hooks/refs -- intentional: tracks dirty state without causing re-render
   const isAliasDirty = alias !== lastSavedAlias.current;
   const isPendingSave = isAliasDirty && !isSaving;
+
+  const saveAlias = useCallback((targetAlias: string, targetImage: string | null): Promise<boolean> => {
+    previousAliasRef.current = lastSavedAlias.current;
+    return new Promise((resolve) => {
+      startSaving(async () => {
+        const response = await updateUserProfileAction(targetAlias, targetImage);
+        if (response.status === "ok") {
+          const savedAlias = response.alias ?? "";
+          lastSavedAlias.current = savedAlias;
+          setAlias(savedAlias);
+          showToast("Perfil actualizado", {
+            duration: 4000,
+            action: {
+              label: "Deshacer",
+              onClick: () => {
+                setAlias(previousAliasRef.current);
+              },
+            },
+          });
+          resolve(true);
+        } else {
+          showToast("No pudimos guardar. Probá de nuevo.", { type: "error" });
+          resolve(false);
+        }
+      });
+    });
+  }, [showToast]);
 
   // Show "Usar foto de Google" only if Google photo exists and isn't the current image
   const canRestoreGooglePhoto =
@@ -93,7 +129,15 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              startSaving(async () => {
+                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                if (undoResponse.status === "ok") {
+                  showToast("Foto restablecida", { duration: 2000 });
+                } else {
+                  showToast("No pudimos restablecer la foto.", { type: "error" });
+                  setImage(null);
+                }
+              });
             },
           },
         });
@@ -113,28 +157,13 @@ export function ProfileForm({
     }
 
     const timer = setTimeout(() => {
-      previousAliasRef.current = lastSavedAlias.current;
-      startSaving(async () => {
-        const response = await updateUserProfileAction(alias, image);
-        if (response.status === "ok") {
-          const savedAlias = response.alias ?? "";
-          lastSavedAlias.current = savedAlias;
-          setAlias(savedAlias);
-          showToast("Perfil actualizado", {
-            duration: 4000,
-            action: {
-              label: "Deshacer",
-              onClick: () => setAlias(previousAliasRef.current),
-            },
-          });
-        } else {
-          showToast("No pudimos guardar. Probá de nuevo.", { type: "error" });
-        }
-      });
+      if (alias !== lastSavedAlias.current) {
+        saveAlias(alias, image);
+      }
     }, AUTOSAVE_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [alias, image, isAliasDirty, showToast]);
+  }, [alias, image, isAliasDirty, saveAlias]);
 
   function handleRestoreGooglePhoto() {
     if (!googleAvatarUrl) return;
@@ -149,7 +178,15 @@ export function ProfileForm({
             label: "Deshacer",
             onClick: () => {
               setImage(previousImage);
-              updateUserProfileAction(alias, previousImage);
+              startSaving(async () => {
+                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                if (undoResponse.status === "ok") {
+                  showToast("Foto restablecida", { duration: 2000 });
+                } else {
+                  showToast("No pudimos restablecer la foto.", { type: "error" });
+                  setImage(googleAvatarUrl);
+                }
+              });
             },
           },
         });
@@ -160,16 +197,6 @@ export function ProfileForm({
     });
   }
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setChecklistDismissed(localStorage.getItem("onboarding-checklist-dismissed") === "true");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPwaDismissed(localStorage.getItem("pwa-banner-dismissed") === "true");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPushDismissed(localStorage.getItem("push-prompt-dismissed") === "true");
-    }
-  }, []);
 
   function handleRestoreChecklist() {
     if (typeof window !== "undefined") {
@@ -184,7 +211,7 @@ export function ProfileForm({
   const aliasError = validateAlias(alias) ?? undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-16">
       {/* Onboarding Welcome Banner */}
       {isOnboarding && (
         <div className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm">
@@ -289,6 +316,19 @@ export function ProfileForm({
           placeholder="Ej: El Muro, Gero..."
           value={alias}
           onChange={(event) => setAlias(event.target.value)}
+          onBlur={() => {
+            if (isAliasDirty && !aliasError && !isSaving) {
+              saveAlias(alias, image);
+            }
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              if (isAliasDirty && !aliasError && !isSaving) {
+                saveAlias(alias, image);
+              }
+            }
+          }}
           disabled={isSaving}
           autoSelect
           className="h-12"
@@ -324,10 +364,21 @@ export function ProfileForm({
 
       {isOnboarding && (
         <Button
-          asChild
-          className="w-full h-12 text-sm font-bold"
+          type="button"
+          disabled={isSaving}
+          onClick={async () => {
+            if (isAliasDirty && !aliasError && !isSaving) {
+              const success = await saveAlias(alias, image);
+              if (success) {
+                router.push("/me");
+              }
+            } else if (!aliasError) {
+              router.push("/me");
+            }
+          }}
+          className="w-full h-12 text-sm font-bold active:scale-[0.98] transition-all"
         >
-          <Link href="/me">Continuar al inicio</Link>
+          {isSaving ? "Guardando…" : "Continuar al inicio"}
         </Button>
       )}
 
@@ -346,7 +397,7 @@ export function ProfileForm({
                 type="button"
                 variant="outline"
                 onClick={handleRestoreChecklist}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
               >
                 Restablecer guía de bienvenida
               </Button>
@@ -364,7 +415,7 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
               >
                 Restablecer sugerencia de instalación
               </Button>
@@ -382,7 +433,7 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted"
+                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
               >
                 Restablecer sugerencia de notificaciones
               </Button>

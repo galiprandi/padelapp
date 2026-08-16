@@ -20,7 +20,7 @@ export default function MatchListPage() {
           </p>
         </div>
         <Button asChild size="sm">
-          <Link href="/match/new">
+          <Link href="/match/new" prefetch={true}>
             <Plus className="mr-1 h-4 w-4" />
             Crear
           </Link>
@@ -228,6 +228,7 @@ async function MatchList() {
             {pendingActions.length > 3 && (
               <Link
                 href="/notifications"
+                prefetch={true}
                 className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
               >
                 Ver todas <ChevronRight className="h-3 w-3" />
@@ -287,7 +288,7 @@ async function MatchList() {
               icon={CalendarOff}
               action={
                 <Button asChild className="w-full">
-                  <Link href="/match/new">Crear primer partido</Link>
+                  <Link href="/match/new" prefetch={true}>Crear primer partido</Link>
                 </Button>
               }
             />
@@ -298,7 +299,7 @@ async function MatchList() {
               Iniciá sesión para ver tus partidos.
             </p>
             <Button asChild className="w-full">
-              <Link href="/login">Ir al login</Link>
+              <Link href="/login" prefetch={true}>Ir al login</Link>
             </Button>
           </div>
         )}

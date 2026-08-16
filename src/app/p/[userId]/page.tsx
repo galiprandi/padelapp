@@ -234,11 +234,17 @@ async function PublicProfileContent({
             <div className="text-xs font-bold text-muted-foreground">
               Forma
             </div>
-            <div className="flex gap-1.5 pt-1">
-              {recentForm.length > 0 ? (
-                recentForm.map((result, i) => (
+            {recentForm.length > 0 ? (
+              <div
+                className="flex gap-1.5 pt-1"
+                aria-label={`Forma reciente: ${recentForm
+                  .map((r) => (r === "W" ? "G" : "P"))
+                  .join(", ")}`}
+              >
+                {recentForm.map((result, i) => (
                   <div
                     key={i}
+                    aria-hidden="true"
                     className={cn(
                       "h-2.5 w-2.5 rounded-full",
                       result === "W"
@@ -246,13 +252,15 @@ async function PublicProfileContent({
                         : "bg-rose-500",
                     )}
                   />
-                ))
-              ) : (
-                <span className="text-xs font-semibold text-muted-foreground">
+                ))}
+              </div>
+            ) : (
+              <div className="flex gap-1.5 pt-1" aria-label="Sin partidos">
+                <span className="text-xs font-semibold text-muted-foreground" aria-hidden="true">
                   —
                 </span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -281,19 +289,22 @@ async function PublicProfileContent({
                 <Activity className="h-3.5 w-3.5 text-primary" />
                 Lado preferido
               </div>
-              <div className="flex flex-col">
-                <span className="text-base font-bold text-foreground leading-tight">
-                  {networkStats.preferredSide === "RIGHT"
-                    ? "Derecha"
-                    : networkStats.preferredSide === "LEFT"
-                      ? "Revés"
-                      : "Alterno"}
-                </span>
-                <span className="text-[10px] text-muted-foreground leading-normal mt-0.5">
-                  {networkStats.winRateRight !== null && `Der: ${Math.round(networkStats.winRateRight * 100)}% WR `}
-                  {networkStats.winRateLeft !== null && `Rev: ${Math.round(networkStats.winRateLeft * 100)}% WR`}
-                  {networkStats.winRateRight === null && networkStats.winRateLeft === null && "Sin partidos"}
-                </span>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-col min-w-0">
+                  <span className="text-base font-bold text-foreground leading-tight">
+                    {networkStats.preferredSide === "RIGHT"
+                      ? "Derecha"
+                      : networkStats.preferredSide === "LEFT"
+                        ? "Revés"
+                        : "Alterno"}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground leading-normal mt-0.5">
+                    {networkStats.winRateRight !== null && `Der: ${Math.round(networkStats.winRateRight * 100)}% WR `}
+                    {networkStats.winRateLeft !== null && `Rev: ${Math.round(networkStats.winRateLeft * 100)}% WR`}
+                    {networkStats.winRateRight === null && networkStats.winRateLeft === null && "Sin partidos"}
+                  </span>
+                </div>
+                <MiniCourtIndicator preferredSide={networkStats.preferredSide} />
               </div>
             </div>
           </div>
@@ -455,6 +466,39 @@ async function PublicProfileContent({
         </div>
       </section>
     </>
+  );
+}
+
+function MiniCourtIndicator({
+  preferredSide,
+}: {
+  preferredSide: "LEFT" | "RIGHT" | "BOTH" | null;
+}) {
+  const isLeft = preferredSide === "LEFT" || preferredSide === "BOTH";
+  const isRight = preferredSide === "RIGHT" || preferredSide === "BOTH";
+
+  return (
+    <div
+      className="flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs"
+      aria-hidden="true"
+    >
+      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40">
+        {/* Left side (Revés) */}
+        <div
+          className={cn(
+            "h-full rounded-[1px] transition-colors",
+            isLeft ? "bg-primary" : "bg-muted"
+          )}
+        />
+        {/* Right side (Derecha) */}
+        <div
+          className={cn(
+            "h-full rounded-[1px] transition-colors",
+            isRight ? "bg-primary" : "bg-muted"
+          )}
+        />
+      </div>
+    </div>
   );
 }
 

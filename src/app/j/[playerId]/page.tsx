@@ -3,10 +3,8 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { db } from "@/db";
-import { matchPlayers } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
 import { JoinSlotButton } from "./join-slot-button";
+import { getCachedMatchSlotDetails } from "@/lib/queries";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, UserCheck, Trophy, MapPin, Users, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,6 +81,71 @@ export default function JoinSlotPage({ params }: JoinSlotPageProps) {
   );
 }
 
+interface MatchPlayerSlot {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+}
+
+interface MatchSlotDetails {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  matchId: string;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+  match: {
+    id: string;
+    creatorId: string;
+    status: MatchStatus;
+    sets: number;
+    matchType: string;
+    club: string | null;
+    courtNumber: string | null;
+    notes: string | null;
+    score: string | null;
+    date: Date;
+    createdAt: Date;
+    creator?: {
+      id: string;
+      displayName: string | null;
+      image: string | null;
+      alias: string | null;
+    } | null;
+    players: MatchPlayerSlot[];
+  };
+}
+
 async function JoinSlotContent({
   params,
 }: {
@@ -91,56 +154,7 @@ async function JoinSlotContent({
   const { playerId } = await params;
   const session = await auth();
 
-  const player = await db.query.matchPlayers.findFirst({
-    where: eq(matchPlayers.id, playerId),
-    with: {
-      user: {
-        columns: {
-          id: true,
-          displayName: true,
-          image: true,
-          alias: true,
-        },
-      },
-      team: {
-        columns: {
-          id: true,
-          label: true,
-        },
-      },
-      match: {
-        with: {
-          creator: {
-            columns: {
-              id: true,
-              displayName: true,
-              image: true,
-              alias: true,
-            },
-          },
-          players: {
-            orderBy: asc(matchPlayers.position),
-            with: {
-              user: {
-                columns: {
-                  id: true,
-                  displayName: true,
-                  image: true,
-                  alias: true,
-                },
-              },
-              team: {
-                columns: {
-                  id: true,
-                  label: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const player: MatchSlotDetails | null = (await getCachedMatchSlotDetails(playerId)) as MatchSlotDetails | null;
 
   if (!player) {
     notFound();
@@ -155,11 +169,11 @@ async function JoinSlotContent({
   const slotTaken = Boolean(player.userId);
   const slotTakenByViewer = slotTaken && player.userId === viewerId;
   const viewerAlreadyInMatch = viewerId
-    ? match.players.some((slot) => slot.userId === viewerId)
+    ? match.players.some((slot: { userId: string | null }) => slot.userId === viewerId)
     : false;
   const matchClosed = match.status !== MATCH_STATUS.PENDING;
 
-  const teamGroups: Record<"A" | "B", typeof match.players> = { A: [], B: [] };
+  const teamGroups: Record<"A" | "B", MatchPlayerSlot[]> = { A: [], B: [] };
   for (const slot of match.players) {
     const key = teamKeyForPosition(slot.position, totalPlayers);
     teamGroups[key].push(slot);
@@ -283,7 +297,7 @@ async function JoinSlotContent({
                           {isOccupied
                             ? name
                                 .split(" ")
-                                .map((s) => s[0])
+                                .map((s: string) => s[0])
                                 .join("")
                                 .slice(0, 2)
                                 .toUpperCase()

@@ -44,6 +44,7 @@ export function BottomNav({
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={cn(
                 "group relative flex flex-1 flex-col items-center justify-center transition-all duration-100 min-h-[48px]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg",
@@ -66,6 +67,7 @@ export function BottomNav({
         {/* FAB Central */}
         <Link
           href="/match/new"
+          prefetch={true}
           className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           aria-label="Crear partido"
         >
@@ -80,6 +82,7 @@ export function BottomNav({
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={cn(
                 "group relative flex flex-1 flex-col items-center justify-center transition-all duration-100 min-h-[48px]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg",
@@ -102,6 +105,7 @@ export function BottomNav({
         {notificationsCount > 0 && (
           <Link
             href={notificationsHref}
+            prefetch={true}
             aria-label={
               notificationsCount === 1
                 ? "1 notificación pendiente"

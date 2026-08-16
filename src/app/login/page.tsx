@@ -26,7 +26,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             unoptimized
           />
           <div className="space-y-3 text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
               Padel Red
             </h1>
             <p className="text-sm text-muted-foreground max-w-[240px]">

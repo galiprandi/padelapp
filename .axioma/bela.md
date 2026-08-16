@@ -1,6 +1,10 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-15 — Argentine Spanish Toast Feedback in Turn Actions (bela/turnos/turn-actions-toast-feedback)
+- [x] 2026-08-14 — Complete Turn Chat System Bot Coverage for Organizer Actions (bela/turnos/organizer-chat-bot-events)
+- [x] 2026-08-13 — Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton (bela/turnos/assign-substitute-toast-and-ux)
+- [x] 2026-08-12 — Turn Chat Localized Timestamps and Scroll UX Optimization (bela/turnos/chat-timestamps-ux)
 - [x] 2026-08-10 — Turn Card Cooldown and Offline Visual Test Coverage (bela/turnos/turn-card-cooldown)
 - [x] 2026-08-11 — Turn Chat with Ephemeral Upstash Redis Storage and System Bot (bela/turnos/turn-chat-implementation)
 - [x] 2026-08-09 — Argentine Spanish Voice & Language Standardization (bela/turnos/voice-language-standardization)
@@ -28,6 +32,22 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-15 - Argentine Spanish Toast Feedback in Turn Actions
+**Learning:** Adding immediate, branded toast notifications to client action forms (cancel turn, start match, leave substitute list, schedule next turn) provides critical user confirmation and prevents repetitive form submissions. Adhering to active Argentine Spanish voice (voseo, zero exclamation marks) ensures brand consistency across all interactive modules.
+**Action:** Always capture server action result messages in form transition callbacks to trigger localized toast notifications for both success and error outcomes.
+
+## 2026-08-14 - Complete Turn Chat System Bot Coverage for Organizer Actions
+**Learning:** Completing Turn Chat System Bot event triggers for organizer administrative actions (promoting substitutes, adding players manually, removing players, or marking games as played) ensures all chat participants maintain complete real-time visibility over turn state changes. Writing messages in natural Argentine Spanish (voseo, active voice, zero exclamation marks) maintains strict brand copy alignment across all communications.
+**Action:** Always complement push notifications and UI state revalidations with contextual System Bot chat messages when server actions mutate participant composition.
+
+## 2026-08-13 - Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton
+**Learning:** Providing immediate feedback when organizers promote substitutes to active slots prevents double-clicking and gives clear operational confirmation. Using active voice in Argentine Spanish ("Promoviste a [Nombre] a titular.") aligns with project brand voice guidelines while tactile scaling (`active:scale-[0.98] transition-all`) delivers expected MDS micro-UX feedback.
+**Action:** Always capture server action responses in client button components to dispatch localized toast notifications and apply tactile scaling to interactive triggers.
+
+## 2026-08-12 - Turn Chat Localized Timestamps and Scroll UX Optimization
+**Learning:** Adding timestamps to real-time communication modules (like Turn Chat) is critical for user coordination, as relative messages like "Llego 10 min tarde" lose value without chronological context. Implementing this purely on the client side with a decoupled, pure-function utility ensures deterministic, fast testing and avoids server-side NextAuth or Next.js transitive import issues in the test runner. Additionally, snapping the scroll position instantly (`auto`) on the initial rendering of the chat, while using smooth scrolling (`smooth`) only for subsequent incoming messages, significantly enhances the perceived loading speed and transitions.
+**Action:** Keep date and time formatting utilities pure and self-contained to avoid import pollution in Vitest. Use stateful references (`useRef`) to manage different scroll behavior modes between initial loads and dynamic updates.
+
 ## 2026-08-10 - Turn Card Cooldown and Offline Visual Test Coverage
 **Learning:** Forgetting to pass cooldown metadata (like `lastNetworkNotificationAt`) from query results down to listing components (like `TurnCard`'s `OpenToNetworkButton`) creates user frustration because they cannot see whether their "Salvar turno" action is on cooldown until after clicking. Passing this timestamp and enhancing prop types to accept `Date | string | null` is vital since Date serialization over Next.js Server/Client boundary converts them to strings. Additionally, ensuring public queries like `getCachedOpenTurns` have robust AUTH_BYPASS mocks is crucial for Playwright E2E and visual testing to run cleanly offline.
 **Action:** Always verify that cooldown metadata fetched in the queries is properly declared in card props and propagated to interactive triggers. Include comprehensive mock values under bypass inside queries so that automated QA tools can verify listing state visuals.
@@ -85,7 +105,7 @@
 **Action:** Unificar siempre el layout estructural y los componentes de navegación en flujos hermanos y evitar translucidez o layouts planos inconsistentes.
 
 ## 2026-07-25 - Botón de Calendario y Reducción de Ausencias
-**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansión sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
+**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansion sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
 **Action:** Buscar siempre integrar herramientas de utilidad inmediata en el contexto donde el usuario toma decisiones críticas (ej: debajo de la información del turno, no aislado).
 
 ## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"

@@ -27,10 +27,10 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const result = await cancelMatchAction(matchId);
       if (result.status === "ok") {
-        showToast("Partido eliminado con éxito.");
+        showToast("Eliminaste el partido.");
         router.push("/match");
       } else {
-        showToast(result.message || "No se pudo eliminar el partido.", { type: "error" });
+        showToast(result.message || "No pudimos eliminar el partido.", { type: "error" });
       }
     });
   };
@@ -91,10 +91,10 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const res = await confirmMatchResultAction(matchId);
       if (res.status === "ok") {
-        showToast("Resultado confirmado 🏆", { type: "success" });
+        showToast("Confirmaste el resultado. 🏆", { type: "success" });
         router.refresh();
       } else {
-        showToast(res.message || "No se pudo confirmar el resultado.", { type: "error" });
+        showToast(res.message || "No pudimos confirmar el resultado.", { type: "error" });
       }
     });
   };
@@ -128,10 +128,10 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const res = await finalizeMatchAction(matchId);
       if (res.status === "ok") {
-        showToast("Partido finalizado con éxito 🏆", { type: "success" });
+        showToast("Finalizaste el partido. 🏆", { type: "success" });
         router.refresh();
       } else {
-        showToast(res.message || "No se pudo finalizar el partido.", { type: "error" });
+        showToast(res.message || "No pudimos finalizar el partido.", { type: "error" });
       }
     });
   };

@@ -160,7 +160,9 @@ export default async function DashboardContent() {
           {agendaItems.length === 0 && (
             <Link
               href="/turnos/nuevo"
-              className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10 active:scale-[0.98]"
+              prefetch={true}
+              className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+              aria-label="Creá tu primer turno. Armá un turno, compartilo por WhatsApp y jugá."
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -200,7 +202,7 @@ export default async function DashboardContent() {
               className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold"
               asChild
             >
-              <Link href="/me/profile">Configurar mi perfil</Link>
+              <Link href="/me/profile" prefetch={true}>Configurar mi perfil</Link>
             </Button>
           </div>
         )
@@ -242,9 +244,11 @@ export default async function DashboardContent() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Link
             href="/ranking"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            prefetch={true}
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            aria-label={`Ranking: posición actual #${user.rankingPosition ?? "sin clasificar"}. Ver clasificación.`}
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Ranking
             </span>
             <span className="text-xl font-bold text-foreground">
@@ -253,9 +257,11 @@ export default async function DashboardContent() {
           </Link>
           <Link
             href="/match"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            prefetch={true}
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            aria-label={`Partidos jugados: ${user.matchesPlayed}. Ver historial de partidos.`}
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Partidos
             </span>
             <span className="text-xl font-bold text-foreground">
@@ -264,18 +270,22 @@ export default async function DashboardContent() {
           </Link>
           <Link
             href="/ranking"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            prefetch={true}
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            aria-label={`Victorias: ${user.wins}. Ver tabla de posiciones.`}
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Victorias
             </span>
             <span className="text-xl font-bold text-primary">{user.wins}</span>
           </Link>
           <Link
             href="/ranking"
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/20 hover:bg-primary/[0.02]"
+            prefetch={true}
+            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            aria-label={`Reputación de asistencia: ${Math.round((user.attendanceScore ?? 1) * 100)}%. Ver ranking.`}
           >
-            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary/70 transition-colors">
+            <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Reputación
             </span>
             <span className="text-xl font-bold text-foreground">
@@ -299,8 +309,8 @@ export default async function DashboardContent() {
             "space-y-3 rounded-xl border p-4",
             heroActivity.type === "turn" &&
               heroActivity.data.players.length < heroActivity.data.maxPlayers
-              ? "border-amber-500/30 bg-amber-50"
-              : "border-primary/20 bg-muted/30",
+              ? "border-amber-500 bg-card"
+              : "border-border bg-card",
           )}
         >
           <div className="flex items-center justify-between">
@@ -376,6 +386,7 @@ export default async function DashboardContent() {
             {pendingActionMatches.length > 3 && (
               <Link
                 href="/notifications"
+                prefetch={true}
                 className="flex items-center text-xs text-muted-foreground hover:text-foreground"
               >
                 Ver todas <ChevronRight className="h-3 w-3" />
@@ -449,6 +460,7 @@ export default async function DashboardContent() {
           <h2 className="text-sm font-bold text-foreground">Mi Agenda</h2>
           <Link
             href="/turnos"
+            prefetch={true}
             className="flex items-center text-xs text-muted-foreground hover:text-foreground"
           >
             Ver todos <ChevronRight className="h-3 w-3" />
@@ -493,10 +505,10 @@ export default async function DashboardContent() {
               action={
                 <div className="flex flex-col gap-2 w-full">
                   <Button className="w-full h-12" asChild>
-                    <Link href="/turnos">Explorar turnos</Link>
+                    <Link href="/turnos" prefetch={true}>Explorar turnos</Link>
                   </Button>
                   <Button variant="outline" className="w-full h-12" asChild>
-                    <Link href="/turnos/nuevo">Crear un turno</Link>
+                    <Link href="/turnos/nuevo" prefetch={true}>Crear un turno</Link>
                   </Button>
                 </div>
               }

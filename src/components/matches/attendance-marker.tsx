@@ -108,17 +108,17 @@ export function AttendanceMarker({
             feedbacks: feedbackEntries,
           });
           if (fbRes.status !== "ok") {
-            showToast("Asistencia guardada, pero falló el feedback", {
+            showToast("Guardaste la asistencia, pero no pudimos registrar tu feedback.", {
               duration: 4000,
             });
             onSaved?.();
             return;
           }
         }
-        showToast("Asistencia y feedback guardados");
+        showToast("Guardaste la asistencia y el feedback.");
         onSaved?.();
       } else {
-        showToast(res.message || "No se pudo guardar la asistencia", {
+        showToast(res.message || "No pudimos guardar la asistencia.", {
           duration: 4000,
         });
       }
@@ -172,7 +172,7 @@ export function AttendanceMarker({
                               : "border-border bg-background text-muted-foreground hover:bg-muted",
                           )}
                         >
-                          <Icon className="h-4 w-4" />
+                          <Icon className="h-4 w-4" aria-hidden="true" />
                         </button>
                       );
                     },
@@ -243,7 +243,7 @@ export function AttendanceMarker({
         className="w-full h-11 rounded-lg text-sm font-semibold"
       >
         {pending ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
           "Guardar asistencia y feedback"
         )}

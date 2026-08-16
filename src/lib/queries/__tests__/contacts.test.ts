@@ -1,5 +1,10 @@
-import { describe, it, expect } from "vitest";
-import { buildContactsMap } from "@/lib/queries/contacts";
+import { describe, it, expect, vi } from "vitest";
+import { buildContactsMap, getTurnNetworkContacts } from "@/lib/queries/contacts";
+
+vi.mock("next/cache", () => ({
+  unstable_cache: (fn: unknown) => fn,
+  revalidateTag: vi.fn(),
+}));
 
 function makeMatch(
   date: Date,
@@ -147,5 +152,15 @@ describe("buildContactsMap", () => {
       lastMatchAt: date,
       matchesTogether: 1,
     });
+  });
+});
+
+describe("getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPASS", () => {
+  it("returns mock network contacts under mock conditions", async () => {
+    process.env.MOCK_AUTH = "true";
+    const contacts = await getTurnNetworkContacts("turn-01");
+    expect(contacts).toHaveLength(2);
+    expect(contacts[0].id).toBe("p-03");
+    expect(contacts[1].id).toBe("p-04");
   });
 });

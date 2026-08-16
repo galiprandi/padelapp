@@ -1,9 +1,7 @@
 import { auth } from "@/auth";
-import { db } from "@/db";
-import { matches, matchPlayers } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getCachedMatchInvitationDetails } from "@/lib/queries";
 import {
   Calendar,
   Clock,
@@ -30,11 +28,8 @@ export async function generateMetadata({
   params,
 }: InvitationPageProps): Promise<Metadata> {
   const { matchId } = await params;
-  const [match] = await db
-    .select()
-    .from(matches)
-    .where(eq(matches.id, matchId))
-    .limit(1);
+
+  const match = await getCachedMatchInvitationDetails(matchId);
 
   if (!match) {
     return { title: "Partido no encontrado" };
@@ -173,49 +168,61 @@ function InvitationSkeleton() {
   );
 }
 
+interface MatchInvitationPlayer {
+  id: string;
+  position: number;
+  userId: string | null;
+  displayName: string | null;
+  teamId: string | null;
+  resultConfirmed: boolean;
+  joinedAt: Date | null;
+  attendance: string | null;
+  side: "RIGHT" | "LEFT" | null;
+  user?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  team?: {
+    id: string;
+    label: string;
+  } | null;
+}
+
+interface MatchInvitationDetails {
+  id: string;
+  creatorId: string;
+  status: string;
+  sets: number;
+  matchType: string;
+  club: string | null;
+  courtNumber: string | null;
+  notes: string | null;
+  score: string | null;
+  date: Date;
+  createdAt: Date;
+  creator?: {
+    id: string;
+    displayName: string | null;
+    image: string | null;
+    alias: string | null;
+  } | null;
+  players: MatchInvitationPlayer[];
+}
+
 async function InvitationContent({ params }: InvitationPageProps) {
   const { matchId } = await params;
   const session = await auth();
 
-  const match = await db.query.matches.findFirst({
-    where: eq(matches.id, matchId),
-    with: {
-      creator: {
-        columns: {
-          id: true,
-          displayName: true,
-          image: true,
-          alias: true,
-        },
-      },
-      players: {
-        orderBy: asc(matchPlayers.position),
-        with: {
-          user: {
-            columns: {
-              id: true,
-              displayName: true,
-              image: true,
-              alias: true,
-            },
-          },
-          team: {
-            columns: {
-              id: true,
-              label: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const match: MatchInvitationDetails | null = (await getCachedMatchInvitationDetails(matchId)) as MatchInvitationDetails | null;
 
   if (!match) {
     notFound();
   }
 
   const totalPlayers = match.players.length;
-  const teamGroups: Record<"A" | "B", typeof match.players> = { A: [], B: [] };
+  const teamGroups: Record<"A" | "B", MatchInvitationPlayer[]> = { A: [], B: [] };
 
   for (const player of match.players) {
     const teamKey = teamKeyForPosition(player.position, totalPlayers);
@@ -224,7 +231,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
 
   const viewerId = session?.user?.id ?? null;
   const isParticipant = viewerId
-    ? match.players.some((slot) => slot.userId === viewerId)
+    ? match.players.some((slot: { userId: string | null }) => slot.userId === viewerId)
     : false;
 
   // dateStr is computed client-side via LocalDate to avoid hydration mismatch

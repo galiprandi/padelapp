@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, capitalizeName } from "@/lib/utils";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { cn, capitalizeName, getMatchWinner } from "@/lib/utils";
+import { TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 
 interface PodiumPlayer {
   id: string;
@@ -10,11 +10,38 @@ interface PodiumPlayer {
   image: string | null;
   rankingScore: number;
   rankingDelta?: number | null;
+  matchPlayers?: Array<{
+    position: number;
+    match: {
+      score: string | null;
+    };
+  }>;
 }
 
 interface RankingPodiumProps {
   topThree: PodiumPlayer[];
   viewerId?: string | null;
+}
+
+function getPlayerStreak(player: PodiumPlayer): number {
+  if (!player.matchPlayers || player.matchPlayers.length === 0) return 0;
+
+  const recentForm = player.matchPlayers.map((mp) => {
+    const winner = mp.match.score ? getMatchWinner(mp.match.score) : null;
+    if (!winner) return "L";
+    const playerTeam = mp.position < 2 ? "A" : "B";
+    return winner === playerTeam ? "W" : "L";
+  });
+
+  let winStreak = 0;
+  for (const res of recentForm) {
+    if (res === "W") {
+      winStreak++;
+    } else {
+      break;
+    }
+  }
+  return winStreak;
 }
 
 export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
@@ -28,6 +55,10 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
   const isSecondViewer = second && viewerId === second.id;
   const isThirdViewer = third && viewerId === third.id;
 
+  const secondStreak = second ? getPlayerStreak(second) : 0;
+  const firstStreak = first ? getPlayerStreak(first) : 0;
+  const thirdStreak = third ? getPlayerStreak(third) : 0;
+
   return (
     <div className="space-y-3">
       <h2 className="text-sm font-bold text-foreground">Podio</h2>
@@ -36,7 +67,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {second && (
           <Link
             href={`/p/${second.id}?backUrl=/ranking`}
-            aria-label={`2da posición: ${isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`2da posición: ${isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isSecondViewer
@@ -56,9 +87,14 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 2
               </div>
             </div>
-            <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
-              <span className={cn("text-xs truncate w-full text-center", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                {isSecondViewer ? "Tú" : capitalizeName(second.displayName ?? second.alias ?? "?")}
+            <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
+              <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
+                <span className="truncate">{isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}</span>
+                {secondStreak >= 2 && (
+                  <span title={`Racha de ${secondStreak} victorias`}>
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />
+                  </span>
+                )}
               </span>
               <span className="text-xs text-muted-foreground">
                 {Math.round(second.rankingScore)} pts
@@ -91,7 +127,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {first && (
           <Link
             href={`/p/${first.id}?backUrl=/ranking`}
-            aria-label={`1ra posición: ${isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`1ra posición: ${isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
             className="flex flex-col items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-all active:scale-[0.98] hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative" aria-hidden="true">
@@ -106,9 +142,14 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 1
               </div>
             </div>
-            <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
-              <span className={cn("text-xs font-bold truncate w-full text-center", isFirstViewer ? "text-primary" : "text-foreground")}>
-                {isFirstViewer ? "Tú" : capitalizeName(first.displayName ?? first.alias ?? "?")}
+            <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
+              <span className={cn("text-xs font-bold truncate w-full text-center flex items-center justify-center gap-0.5", isFirstViewer ? "text-primary" : "text-foreground")}>
+                <span className="truncate">{isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}</span>
+                {firstStreak >= 2 && (
+                  <span title={`Racha de ${firstStreak} victorias`}>
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0 animate-pulse" />
+                  </span>
+                )}
               </span>
               <span className="text-xs font-bold text-primary">
                 {Math.round(first.rankingScore)} pts
@@ -141,7 +182,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
         {third && (
           <Link
             href={`/p/${third.id}?backUrl=/ranking`}
-            aria-label={`3ra posición: ${isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={`3ra posición: ${isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isThirdViewer
@@ -161,9 +202,14 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 3
               </div>
             </div>
-            <div className="flex flex-col items-center min-w-0 w-full" aria-hidden="true">
-              <span className={cn("text-xs truncate w-full text-center", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                {isThirdViewer ? "Tú" : capitalizeName(third.displayName ?? third.alias ?? "?")}
+            <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
+              <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
+                <span className="truncate">{isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}</span>
+                {thirdStreak >= 2 && (
+                  <span title={`Racha de ${thirdStreak} victorias`}>
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />
+                  </span>
+                )}
               </span>
               <span className="text-xs text-muted-foreground">
                 {Math.round(third.rankingScore)} pts

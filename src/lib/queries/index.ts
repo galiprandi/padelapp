@@ -11,6 +11,10 @@ export {
   getCachedConfirmedMatches,
   getConfirmedMatchesForProfile,
   getCachedConfirmedMatchesForProfile,
+  getMatchSlotDetails,
+  getCachedMatchSlotDetails,
+  getMatchInvitationDetails,
+  getCachedMatchInvitationDetails,
 } from "./match";
 
 export {
@@ -21,6 +25,8 @@ export {
   getRecommendedTurns,
   getCachedRecommendedTurns,
   getCachedOpenTurns,
+  getTurnById,
+  getCachedTurnById,
 } from "./turn";
 
 export {

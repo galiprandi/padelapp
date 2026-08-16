@@ -1,19 +1,21 @@
 "use client";
 
-import { useState, Suspense, useTransition } from "react";
+import { useState, Suspense, useEffect, useMemo, useRef } from "react";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import { StepContent } from "@/components/matches/step-content";
 import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
 import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
+import { loadMatchPreferences } from "@/lib/match-preferences";
 import type { TeamKey, SlotValue, PlayerOption } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import { suggestMatchPartnersAction } from "@/app/(app)/match/actions";
+import { useToast } from "@/components/toast/use-toast";
 
 function RegisterMatchInner() {
   const searchParams = useSearchParams();
   const turnId = searchParams.get("turnId");
+  const { showToast } = useToast();
 
   const [activeSlot] = useState<{ team: TeamKey; index: 0 | 1 }>(
     { team: "A", index: 1 },
@@ -69,10 +71,16 @@ function RegisterMatchInner() {
               { kind: "user", player: slotB1 },
             ],
           });
+          showToast("Acomodamos las parejas según el historial de juego y lado preferido de cada uno.");
+        } else {
+          showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
         }
+      } else {
+        showToast(res.message || "No pudimos obtener la sugerencia de parejas.", { type: "error" });
       }
     } catch (err) {
       console.error("Failed to suggest pairings:", err);
+      showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
     } finally {
       setIsSuggesting(false);
     }
@@ -100,7 +108,38 @@ function RegisterMatchInner() {
     goToPreviousStep,
     handleCreateMatch,
     initializeWithTurn,
-  } = useMatchForm(teamState, setWholeState);
+    turnInitialized,
+  } = useMatchForm(teamState, setWholeState, currentUser?.id);
+
+  const storedPrefs = useMemo(() => loadMatchPreferences(), []);
+  const positionAppliedRef = useRef(false);
+
+  // Apply the user's last saved position (derecha/reves) in Team A once.
+  // Waits for the turn preload to finish when there is a turnId so the swap
+  // runs against the final team layout, not the default one.
+  useEffect(() => {
+    if (positionAppliedRef.current) return;
+    if (!currentUser) return;
+    if (turnId && !turnInitialized) return;
+
+    const slotA0 = teamState.A[0];
+    const slotA1 = teamState.A[1];
+    const userAt0 = slotA0?.kind === "user" && slotA0.player.id === currentUser.id;
+    const userAt1 = slotA1?.kind === "user" && slotA1.player.id === currentUser.id;
+    if (!userAt0 && !userAt1) return;
+
+    const desired = storedPrefs?.position ?? "derecha";
+    const needsSwap =
+      (desired === "reves" && userAt0) || (desired === "derecha" && userAt1);
+
+    if (needsSwap) {
+      const a = teamState.A[0];
+      const b = teamState.A[1];
+      updateSlot("A", 0, b);
+      updateSlot("A", 1, a);
+    }
+    positionAppliedRef.current = true;
+  }, [currentUser, teamState, turnId, turnInitialized, storedPrefs, updateSlot]);
 
   useEffect(() => {
     if (turnId) {

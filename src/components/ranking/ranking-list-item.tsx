@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { ShieldCheck, TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
 
@@ -43,6 +43,15 @@ export function RankingListItem({
 
   const displayName = capitalizeName(player.displayName ?? player.alias ?? "Jugador");
 
+  let winStreak = 0;
+  for (const res of recentForm) {
+    if (res === "W") {
+      winStreak++;
+    } else {
+      break;
+    }
+  }
+
   return (
     <Link
       href={`/p/${player.id}?backUrl=/ranking`}
@@ -80,6 +89,16 @@ export function RankingListItem({
             >
               {displayName}
             </p>
+            {winStreak >= 2 && (
+              <div
+                className="flex items-center gap-0.5 text-xs font-extrabold text-orange-500"
+                title={`Racha de ${winStreak} victorias`}
+                aria-label={`Racha de ${winStreak} victorias`}
+              >
+                <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
+                <span>{winStreak}</span>
+              </div>
+            )}
             {player.attendanceScore >= 0.9 && (
               <ShieldCheck
                 className="h-3 w-3 text-primary"

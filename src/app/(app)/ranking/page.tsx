@@ -66,6 +66,7 @@ async function RankingContent({ searchParams }: RankingPageProps) {
 
       {currentUser && currentUser.matchesPlayed > 0 && !query && (
         <UserRankingBanner
+          userId={currentUser.id}
           position={currentUser.rankingPosition}
           score={currentUser.rankingScore}
           delta={currentUser.rankingDelta}
