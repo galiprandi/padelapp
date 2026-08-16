@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-17 — Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (PR #tino/perf/turn-public-details-caching-and-streaming)
 - [x] 2026-08-15 — Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (PR #tino/perf/match-invitations-and-slot-join-caching)
 - [x] 2026-08-11 — Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (PR #tino/perf/eager-navigation-prefetching)
 - [x] 2026-08-11 — Auditoría y Verificación de Aislamiento de Caché Multiusuario en Consultas de Turnos (`src/lib/queries/turn.ts`) (PR #tino/perf/audit-turn-cache-isolation)
@@ -26,6 +27,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-17 - Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (Performance Transversal)
+**Aprendizaje:** En la vista pública de detalle de un turno (`/t/[id]`), abstraer la consulta de base de datos hacia `getCachedTurnById` utilizando `unstable_cache` con la etiqueta `"turns"` y un TTL de 30s permite reducir el tiempo de respuesta de la base de datos a 0ms en peticiones subsecuentes. Asimismo, incorporar el archivo `src/app/t/[id]/loading.tsx` exportando `TurnSkeleton` habilita la transmisión asíncrona del cascarón de la ruta mediante Partial Prerendering (PPR), mejorando la performance percibida y evitando la latencia de renderizado bloqueante.
+**Acción:** Cachar siempre las consultas de detalle de entidad de alto tráfico e incorporar `loading.tsx` dedicados para habilitar el streaming inmediato de los cascarones de ruta.
+
 ### 2026-08-15 - Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (Performance Transversal)
 **Aprendizaje:** En enlaces públicos compartibles a través de redes sociales y WhatsApp (como invitaciones a partidos `/m/[matchId]` o uniones directas a cupos `/j/[playerId]`), los picos repentinos de tráfico pueden saturar el pool de conexiones a la base de datos si las consultas se ejecutan de forma directa en cada renderizado. Abstraer estas consultas hacia funciones cacheadas (`getCachedMatchInvitationDetails` y `getCachedMatchSlotDetails`) mediante `unstable_cache` etiquetadas con la tag `"matches"` y un TTL de 60s permite servir las vistas públicas de forma instantánea (0ms de latencia SQL) manteniendo la coherencia perfecta de los datos al invalidarse automáticamente en Server Actions.
 **Acción:** Cachar siempre las consultas de rutas públicas con enlaces de alta difusión para evitar saturación de DB en picos de tráfico.
