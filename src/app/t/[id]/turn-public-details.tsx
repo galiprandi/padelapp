@@ -43,6 +43,7 @@ import { Suspense } from "react";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { AddToCalendarButton } from "@/components/turns/add-to-calendar";
 import { AddPlayerButton } from "@/components/turns/add-player-button";
+import { Badge } from "@/components/ui/badge";
 import { db } from "@/db";
 import { playerEdges } from "@/db/schema";
 import { and, inArray } from "drizzle-orm";
@@ -273,7 +274,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </div>
 
           <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
               <MapPin className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -335,9 +336,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             <Users className="h-4 w-4 text-muted-foreground" />
             Lista de jugadores
           </h2>
-          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+          <Badge variant="primary">
             {turn.maxPlayers - turn.players.length} cupos libres
-          </span>
+          </Badge>
         </div>
 
         <div className="grid gap-2">
@@ -375,9 +376,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   {p.userId === turn.creatorId && (
-                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                    <Badge variant="primary">
                       Organizador
-                    </span>
+                    </Badge>
                   )}
                   {isCreator &&
                     p.userId !== turn.creatorId &&
@@ -531,9 +532,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     )}
                   </div>
                   {s.userId === viewerId && (
-                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                    <Badge variant="primary">
                       Vos
-                    </span>
+                    </Badge>
                   )}
                   {isCreator &&
                     hasOpenSlot &&
@@ -689,7 +690,7 @@ function TurnActions({
         ) : isJoined ? (
           <Button
             disabled
-            className="w-full h-12 rounded-lg font-bold bg-primary/10 text-primary border border-primary/20"
+            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border"
           >
             Ya te sumaste
           </Button>
