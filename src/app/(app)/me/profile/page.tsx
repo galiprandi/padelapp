@@ -9,7 +9,7 @@ import { Shield, ChevronRight, ChevronLeft } from "lucide-react";
 
 export default function ProfilePage() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 pb-20">
       <div className="flex items-center gap-4">
         <Link
           href="/me"
