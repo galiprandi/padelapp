@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useTransition, useCallback } from "react";
+import { useState, useTransition, useCallback, useEffect } from "react";
 import { redirect } from "next/navigation";
 import { createMatchAction, type CreateMatchInput, type SlotPayload } from "@/app/(app)/match/actions";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
 import type { TeamState, MatchTypeValue, StepIndex } from "@/lib/match-types";
+import { loadMatchPreferences, saveMatchPreferences } from "@/lib/match-preferences";
 
 const MIN_SETS = 1;
 const MAX_SETS = 5;
 
-export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: TeamState) => void) {
+export function useMatchForm(
+  teamState: TeamState,
+  onTeamStateChange?: (state: TeamState) => void,
+  currentUserId?: string,
+) {
   const [currentStep, setCurrentStep] = useState<StepIndex>(0);
   const [matchType, setMatchType] = useState<MatchTypeValue>("FRIENDLY");
   const [sets, setSets] = useState<string>("3");
@@ -21,6 +26,21 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, startSubmit] = useTransition();
   const [prefilledTurnId, setPrefilledTurnId] = useState<string | null>(null);
+  const [turnInitialized, setTurnInitialized] = useState<boolean>(false);
+
+  // Preload configuration preferences from localStorage on mount.
+  // Runs before the turn preload effect in the page, so when there is a turnId
+  // the turn's club overrides the stored club (desired behavior).
+  useEffect(() => {
+    const prefs = loadMatchPreferences();
+    if (!prefs) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot hydration of form defaults from persisted user preferences
+    setMatchType(prefs.matchType);
+    setSets(prefs.sets);
+    setCountsForRanking(prefs.countsForRanking);
+    setCourtNumber(prefs.courtNumber);
+    setClub(prefs.club);
+  }, []);
 
   const initializeWithTurn = useCallback(async (turnId: string) => {
     const response = await getTurnByIdAction(turnId);
@@ -53,6 +73,7 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
         onTeamStateChange(newState);
       }
     }
+    setTurnInitialized(true);
   }, [onTeamStateChange]);
 
   const setsValue = Number.parseInt(sets, 10);
@@ -130,6 +151,24 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
         .join(', ');
     }
 
+    // Persist the user's last position and configuration for next time.
+    // Position is derived from Team A: index 1 = reves, otherwise derecha.
+    if (currentUserId) {
+      const slotA1 = teamState.A[1];
+      const position: "derecha" | "reves" =
+        slotA1?.kind === "user" && slotA1.player.id === currentUserId
+          ? "reves"
+          : "derecha";
+      saveMatchPreferences({
+        position,
+        matchType,
+        sets,
+        countsForRanking,
+        club,
+        courtNumber,
+      });
+    }
+
     startSubmit(async () => {
       const payload: CreateMatchInput = {
         sets: setsValue,
@@ -181,5 +220,6 @@ export function useMatchForm(teamState: TeamState, onTeamStateChange?: (state: T
     goToPreviousStep,
     handleCreateMatch,
     initializeWithTurn,
+    turnInitialized,
   };
 }
