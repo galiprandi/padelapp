@@ -111,8 +111,8 @@ async function MatchList() {
   const partnersWins: Record<string, { name: string; wins: number }> = {};
   const rivalsLosses: Record<string, { name: string; losses: number }> = {};
 
-  confirmedMatches.forEach((match: MatchResultCompactMatch, idx: number) => {
-    const viewer = match.players.find((p: MatchResultCompactPlayer) => p.user?.id === viewerId);
+  confirmedMatches.forEach((match, idx) => {
+    const viewer = match.players.find((p) => p.user?.id === viewerId);
     if (!viewer) return;
     const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
 
@@ -130,11 +130,11 @@ async function MatchList() {
       }
     } else if (matchResults[idx] === "L") {
       const rivals = match.players.filter(
-        (p: MatchResultCompactPlayer) =>
+        (p) =>
           p.user?.id !== viewerId &&
           (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
       );
-      rivals.forEach((rival: MatchResultCompactPlayer) => {
+      rivals.forEach((rival) => {
         if (rival.user) {
           const rId = rival.user.id;
           const rName = rival.user.displayName || "Rival";
