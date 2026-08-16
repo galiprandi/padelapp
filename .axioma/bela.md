@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-15 — Argentine Spanish Toast Feedback in Turn Actions (bela/turnos/turn-actions-toast-feedback)
 - [x] 2026-08-14 — Complete Turn Chat System Bot Coverage for Organizer Actions (bela/turnos/organizer-chat-bot-events)
 - [x] 2026-08-13 — Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton (bela/turnos/assign-substitute-toast-and-ux)
 - [x] 2026-08-12 — Turn Chat Localized Timestamps and Scroll UX Optimization (bela/turnos/chat-timestamps-ux)
@@ -31,6 +32,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-15 - Argentine Spanish Toast Feedback in Turn Actions
+**Learning:** Adding immediate, branded toast notifications to client action forms (cancel turn, start match, leave substitute list, schedule next turn) provides critical user confirmation and prevents repetitive form submissions. Adhering to active Argentine Spanish voice (voseo, zero exclamation marks) ensures brand consistency across all interactive modules.
+**Action:** Always capture server action result messages in form transition callbacks to trigger localized toast notifications for both success and error outcomes.
+
 ## 2026-08-14 - Complete Turn Chat System Bot Coverage for Organizer Actions
 **Learning:** Completing Turn Chat System Bot event triggers for organizer administrative actions (promoting substitutes, adding players manually, removing players, or marking games as played) ensures all chat participants maintain complete real-time visibility over turn state changes. Writing messages in natural Argentine Spanish (voseo, active voice, zero exclamation marks) maintains strict brand copy alignment across all communications.
 **Action:** Always complement push notifications and UI state revalidations with contextual System Bot chat messages when server actions mutate participant composition.
