@@ -49,7 +49,7 @@ export function RankingSearch() {
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
           "h-4 w-4 transition-colors",
-          query ? "text-primary" : "text-muted-foreground/40",
+          query || isPending ? "text-primary" : "text-muted-foreground",
           isPending && "animate-pulse"
         )} />
       </div>
@@ -66,31 +66,24 @@ export function RankingSearch() {
           }
         }}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus:ring-1 focus:ring-primary/20 transition-colors shadow-sm [&::-webkit-search-cancel-button]:hidden"
+        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background transition-colors shadow-sm [&::-webkit-search-cancel-button]:hidden"
       />
       {query && (
         <button
           type="button"
           onClick={handleClear}
           aria-label="Limpiar búsqueda"
-          className="absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-all active:scale-[0.95] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         >
           <X className="h-4 w-4" />
         </button>
       )}
 
       {isPending && (
-        <div className="absolute -bottom-px left-6 right-6 h-px bg-primary/20 overflow-hidden rounded-full">
-          <div className="h-full bg-primary w-1/3 animate-[loading_1s_infinite_linear]" />
+        <div className="absolute -bottom-px left-6 right-6 h-px bg-primary/30 overflow-hidden rounded-full">
+          <div className="h-full bg-primary w-full animate-pulse" />
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes loading {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(300%); }
-        }
-      `}</style>
     </div>
   );
 }
