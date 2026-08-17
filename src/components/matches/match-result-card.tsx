@@ -14,6 +14,7 @@ import { VariantProps } from "class-variance-authority";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
 import { useMounted } from "@/lib/hooks/use-mounted";
+import { useToast } from "@/components/toast/use-toast";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -111,6 +112,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   const { data: session } = useSession();
   const mounted = useMounted();
   const router = useRouter();
+  const { showToast } = useToast();
   const [isConfirming, startTransition] = useTransition();
   const viewerId = propViewerId ?? session?.user?.id;
   const parsedSets = parseScoreSets(match.score);
@@ -217,7 +219,10 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     startTransition(async () => {
       const res = await confirmMatchResultAction(match.id);
       if (res.status === "ok") {
+        showToast("Confirmaste el resultado.", { type: "success" });
         router.refresh();
+      } else {
+        showToast(res.message || "No pudimos confirmar el resultado.", { type: "error" });
       }
     });
   };
