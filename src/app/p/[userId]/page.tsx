@@ -317,6 +317,7 @@ async function PublicProfileContent({
                     <span className="font-semibold text-muted-foreground">Pareja más exitosa</span>
                     <Link
                       href={`/p/${networkStats.successfulPartner.user.id}?backUrl=/p/${userId}`}
+                          prefetch={true}
                       className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
                     >
                       <PlayerAvatar
@@ -342,6 +343,7 @@ async function PublicProfileContent({
                     <span className="font-semibold text-muted-foreground">Rival más frecuente</span>
                     <Link
                       href={`/p/${networkStats.frequentRival.user.id}?backUrl=/p/${userId}`}
+                          prefetch={true}
                       className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
                     >
                       <PlayerAvatar
