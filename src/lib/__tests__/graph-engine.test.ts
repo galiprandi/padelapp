@@ -1,9 +1,17 @@
 import { describe, it, expect, vi } from "vitest";
-import { getRecencyWeight } from "@/lib/graph/engine";
+import { getRecencyWeight, applyFeedbackToScore } from "@/lib/graph/engine";
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
   revalidateTag: vi.fn(),
+}));
+
+vi.mock("@/db", () => ({
+  db: {
+    select: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockImplementation(() => []),
+  },
 }));
 
 process.env.AUTH_BYPASS = "true";
@@ -99,5 +107,51 @@ describe("getCachedTurnNetworkContacts", () => {
     expect(result[0].alias).toBe("Gero");
     expect(result[1].id).toBe("p-04");
     expect(result[1].alias).toBe("Facu");
+  });
+});
+
+import { db } from "@/db";
+
+describe("applyFeedbackToScore", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockedDb = db as any;
+
+  it("returns current score unchanged when there are no feedback records", async () => {
+    mockedDb.where.mockResolvedValueOnce([]);
+    const score = await applyFeedbackToScore("user-1", 1000);
+    expect(score).toBe(1000);
+  });
+
+  it("increases score for net positive STRONGER feedback", async () => {
+    mockedDb.where.mockResolvedValueOnce([
+      { feedback: "STRONGER" },
+      { feedback: "STRONGER" },
+    ]);
+    // totalFeedback = 2, feedbackWeight = 2/5 = 0.4, signal = 1.0
+    // adjustment = 1.0 * 100 * 0.4 = +40
+    const score = await applyFeedbackToScore("user-1", 1000);
+    expect(score).toBe(1040);
+  });
+
+  it("decreases score for net negative WEAKER feedback", async () => {
+    mockedDb.where.mockResolvedValueOnce([
+      { feedback: "WEAKER" },
+      { feedback: "WEAKER" },
+      { feedback: "WEAKER" },
+    ]);
+    // totalFeedback = 3, feedbackWeight = 3/5 = 0.6, signal = -1.0
+    // adjustment = -1.0 * 100 * 0.6 = -60
+    const score = await applyFeedbackToScore("user-1", 1000);
+    expect(score).toBe(940);
+  });
+
+  it("handles balanced feedback (equal STRONGER and WEAKER)", async () => {
+    mockedDb.where.mockResolvedValueOnce([
+      { feedback: "STRONGER" },
+      { feedback: "WEAKER" },
+    ]);
+    // signal = 0
+    const score = await applyFeedbackToScore("user-1", 1000);
+    expect(score).toBe(1000);
   });
 });

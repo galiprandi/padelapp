@@ -180,7 +180,10 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
                 key={player.id}
                 className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <Link
+                  href={`/p/${player.id}`}
+                  className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                >
                   <PlayerAvatar
                     name={capitalizeName(player.name ?? player.alias ?? "?")}
                     image={player.image ?? undefined}
@@ -194,7 +197,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
                       {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {player.preferredSide === "RIGHT" ? "Derecha" : player.preferredSide === "LEFT" ? "Revés" : "Lado no definido"}
                     </p>
                   </div>
-                </div>
+                </Link>
                 <div className="flex items-center gap-2 shrink-0">
                   <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
                     <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
