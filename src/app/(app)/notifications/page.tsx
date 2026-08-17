@@ -40,7 +40,14 @@ async function NotificationsList() {
           Acciones requeridas
         </h2>
         {pendingActions.length > 0 && (
-          <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+          <span
+            className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground"
+            aria-label={
+              pendingActions.length === 1
+                ? "1 acción pendiente"
+                : `${pendingActions.length} acciones pendientes`
+            }
+          >
             {pendingActions.length}
           </span>
         )}
