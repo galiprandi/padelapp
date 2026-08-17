@@ -2,6 +2,7 @@
 - [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
 
 ## ✅ DONE
+- [x] 2026-08-17 — PWA & Push Notification Banner Tactile Polish: Standardized `PushPermissionPrompt` and `PwaInstallBanner` with active tactile scaling (`active:scale-[0.98] transition-all`), explicit focus-visible ring styles for keyboard accessibility, and proper `aria-hidden` attributes for decorative icons. (PR #roby/pwa/banner-tactile-polish)
 - [x] 2026-08-16 — Instant Profile Auto-Save & Onboarding Navigation Guard: Added `onBlur` event handler to the profile alias input in `ProfileForm` for immediate saving on focus loss, refactored `saveAlias` to return a `Promise<boolean>`, and updated the onboarding CTA button to await pending alias saves before routing to `/me`. Replaced synchronous `setState` in `useEffect` with lazy `useState` initializers, and added `pb-20` padding to `/me/profile` to keep CTAs clear of the fixed bottom navigation bar. (PR #roby/profile/instant-auto-save-onboarding-guard)
 - [x] 2026-08-15 — H1 Header MDS Standardization on Login & Install Pages: Removed non-compliant `tracking-tight` class from primary `<h1>` headings in `/login` (`src/app/login/page.tsx`) and `/install` (`src/app/install/page.tsx`) to strictly align with Minimal Design System (MDS) §1.8 specifications. (PR #roby/pwa/h1-header-mds-standardization)
 - [x] 2026-08-14 — Mini-Court Court Side Position Indicator on Public Profile: Integrated an interactive, mobile-first SVG/CSS mini-court diagram (`MiniCourtIndicator`) in the public profile screen (`/p/[userId]`) next to "Lado preferido" to visually highlight the player's primary court position (Derecha, Revés, or Alterno) in primary yellow theme while keeping full screen-reader accessibility. (PR #roby/profile/court-side-indicator)
@@ -28,6 +29,10 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-17 - PWA & Push Notification Banner Tactile Polish
+**Learning:** Banner components on dashboard views (like `PushPermissionPrompt` and `PwaInstallBanner`) benefit from uniform tactile feedback (`active:scale-[0.98] transition-all`) and explicit keyboard focus-visible ring offsets. Hiding purely decorative icons from screen readers with `aria-hidden="true"` ensures clean accessibility without speech redundancy.
+**Action:** Always include `active:scale-[0.98] transition-all` and explicit focus-visible rings on interactive banner CTAs, and mark decorative icons with `aria-hidden="true"`.
+
 ## 2026-08-16 - Instant Profile Auto-Save & Onboarding Navigation Guard
 **Learning:** In auto-saving forms where user actions trigger asynchronous server actions during onboarding transitions, executing client router navigation (`router.push('/me')`) synchronously before the async mutation resolves risks dropping pending alias changes or throwing unhandled unmount errors. Returning a `Promise<boolean>` from the save handler and awaiting its completion before routing guarantees data persistence. Additionally, reading client storage (e.g., `localStorage`) directly inside lazy `useState` initializers prevents cascading synchronous `setState` re-renders in `useEffect`.
 **Action:** Always return a Promise from auto-save handlers so navigation actions can await completion before transitioning, and use lazy `useState` initializers when initializing state from `localStorage`.

@@ -94,7 +94,7 @@ export function PwaInstallBanner() {
         size="sm"
         onClick={handleDismiss}
         aria-label="Cerrar aviso de instalación"
-        className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+        className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
@@ -105,13 +105,13 @@ export function PwaInstallBanner() {
           disabled={isInstalling}
           variant="ghost"
           size="sm"
-          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary active:scale-[0.98] transition-all whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           aria-label="Instalar aplicación de pádel"
         >
           {isInstalling ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
           ) : (
-            <Download className="h-3.5 w-3.5 mr-1" />
+            <Download className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
           )}
           Instalar
         </Button>
@@ -120,7 +120,7 @@ export function PwaInstallBanner() {
           asChild
           variant="ghost"
           size="sm"
-          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary hover:bg-muted whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary hover:bg-muted active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         >
           <Link href="/install">
             Ver cómo
