@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { LogOut, X } from "lucide-react";
+import { useState, useTransition } from "react";
+import { LogOut, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/share/share-button";
 import { createMagicLink } from "@/lib/magic-link";
@@ -25,19 +25,20 @@ export function LeaveTurnButton({
   date,
 }: LeaveTurnButtonProps) {
   const [confirming, setConfirming] = useState(false);
-  const [leaving, setLeaving] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
 
-  const handleLeave = async () => {
-    setLeaving(true);
-    const result = await leaveTurnAction(turnId);
-    if (result.status === "ok") {
-      showToast("Te bajaste del turno.");
-    } else {
-      showToast(result.message ?? "No se pudo bajar del turno.");
-    }
-    router.refresh();
+  const handleLeave = () => {
+    startTransition(async () => {
+      const result = await leaveTurnAction(turnId);
+      if (result.status === "ok") {
+        showToast("Te bajaste del turno.");
+      } else {
+        showToast(result.message ?? "No se pudo bajar del turno.");
+      }
+      router.refresh();
+    });
   };
 
   const turnDate = new Date(date);
@@ -50,7 +51,8 @@ export function LeaveTurnButton({
       <Button
         onClick={() => setConfirming(true)}
         variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+        aria-label="Bajarme del turno"
       >
         <LogOut className="mr-2 h-4 w-4" />
         Bajarme del turno
@@ -81,7 +83,7 @@ export function LeaveTurnButton({
             text={`Se liberó un cupo en ${club}`}
             url={createMagicLink({ resource: "turn", identifier: turnId }).url}
             variant="outline"
-            className="w-full h-10 rounded-lg text-xs font-bold"
+            className="w-full h-10 rounded-lg text-xs font-bold active:scale-[0.98] transition-all"
           />
         </div>
       )}
@@ -89,8 +91,9 @@ export function LeaveTurnButton({
         <Button
           onClick={() => setConfirming(false)}
           variant="outline"
-          className="flex-1 h-10 rounded-lg text-xs font-bold"
-          disabled={leaving}
+          className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+          disabled={isPending}
+          aria-label="Cancelar baja"
         >
           <X className="mr-2 h-4 w-4" />
           Cancelar
@@ -98,11 +101,16 @@ export function LeaveTurnButton({
         <Button
           onClick={handleLeave}
           variant="ghost"
-          className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/30 hover:bg-destructive/10"
-          disabled={leaving}
+          className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/30 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+          disabled={isPending}
+          aria-label="Confirmar baja del turno"
         >
-          <LogOut className="mr-2 h-4 w-4" />
-          Confirmar baja
+          {isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <LogOut className="mr-2 h-4 w-4" />
+          )}
+          {isPending ? "Bajando..." : "Confirmar baja"}
         </Button>
       </div>
     </div>

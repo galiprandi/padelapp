@@ -12,6 +12,7 @@ import {
 import { ShareButton } from "@/components/share/share-button";
 import { OpenToNetworkButton } from "@/components/turns/open-to-network-button";
 import { createMagicLink } from "@/lib/magic-link";
+import { useToast } from "@/components/toast/use-toast";
 import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
@@ -88,13 +89,23 @@ export function TurnCard({
   const isUrgent =
     mounted && hoursUntilTurn < 3 && hoursUntilTurn >= 0 && !isFull;
 
+  const { showToast } = useToast();
+
   const handleQuickJoin = () => {
     startTransition(async () => {
-      const res = canJoinAsSubstitute
+      const isSub = canJoinAsSubstitute;
+      const res = isSub
         ? await joinSubstituteAction(turn.id)
         : await joinTurnAction(turn.id);
       if (res.status === "ok") {
+        showToast(
+          isSub
+            ? "Te sumaste como suplente."
+            : "Te sumaste al turno."
+        );
         router.refresh();
+      } else {
+        showToast(res.message ?? "No se pudo sumar al turno.");
       }
     });
   };

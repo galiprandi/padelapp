@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-17 — Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor (bela/turnos/quick-join-toast-and-leave-turn-ux)
 - [x] 2026-08-15 — Argentine Spanish Toast Feedback in Turn Actions (bela/turnos/turn-actions-toast-feedback)
 - [x] 2026-08-14 — Complete Turn Chat System Bot Coverage for Organizer Actions (bela/turnos/organizer-chat-bot-events)
 - [x] 2026-08-13 — Argentine Spanish Toast Feedback and Tactile Scaling in AssignSubstituteButton (bela/turnos/assign-substitute-toast-and-ux)
@@ -32,6 +33,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-17 - Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor
+**Learning:** Refactoring leave-turn and quick-join action triggers to leverage React transitions (`useTransition`) and branded toast notifications (`useToast`) ensures immediate feedback and prevents double-submits. Standardizing focus ring indicators and tactile scaling (`active:scale-[0.98] transition-all`) across turn interactive buttons strictly satisfies Minimal Design System (MDS) §1.2 and accessibility standards.
+**Action:** Always wrap server actions in client button components with `useTransition` and dispatch localized Argentine Spanish toast feedback on both success and error paths.
+
 ## 2026-08-15 - Argentine Spanish Toast Feedback in Turn Actions
 **Learning:** Adding immediate, branded toast notifications to client action forms (cancel turn, start match, leave substitute list, schedule next turn) provides critical user confirmation and prevents repetitive form submissions. Adhering to active Argentine Spanish voice (voseo, zero exclamation marks) ensures brand consistency across all interactive modules.
 **Action:** Always capture server action result messages in form transition callbacks to trigger localized toast notifications for both success and error outcomes.
