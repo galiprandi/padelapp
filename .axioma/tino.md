@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-17 — Esqueleto de Carga Streaming y Prefetching en Perfil Público `/p/[userId]` (PR #tino/perf/public-profile-streaming-and-prefetching)
 - [x] 2026-08-17 — Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (PR #tino/perf/turn-public-details-caching-and-streaming)
 - [x] 2026-08-15 — Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (PR #tino/perf/match-invitations-and-slot-join-caching)
 - [x] 2026-08-11 — Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (PR #tino/perf/eager-navigation-prefetching)
@@ -27,6 +28,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-17 - Esqueleto de Carga Streaming y Prefetching en Perfil Público `/p/[userId]` (Performance Transversal)
+**Aprendizaje:** En rutas dinámicas parametrizadas de alto tráfico como la ficha de perfil público de un jugador (`/p/[userId]`), contar con un archivo `loading.tsx` dedicado que exporte un esqueleto de alta fidelidad reambulando la estructura exacta del perfil (avatar, banner de ranking, tarjetas de efectividad/forma, métricas de red y lista de historial) permite que el motor de Next.js App Router transmita asíncronamente el cascarón de la página vía Partial Prerendering (PPR). Esto elimina por completo el parpadeo visual y la latencia percibida al navegar desde cualquier punto de la aplicación. Adicionalmente, incorporar `prefetch={true}` en enlaces hacia perfiles de parejas y rivales garantiza que el bundle de la vista destino esté precargado en el navegador, ofreciendo transiciones instantáneas (0ms percibidos de lag).
+**Acción:** Implementar siempre `loading.tsx` dedicados y `prefetch={true}` en enlaces transversales de navegación entre fichas de entidades públicas.
+
 ### 2026-08-17 - Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (Performance Transversal)
 **Aprendizaje:** En la vista pública de detalle de un turno (`/t/[id]`), abstraer la consulta de base de datos hacia `getCachedTurnById` utilizando `unstable_cache` con la etiqueta `"turns"` y un TTL de 30s permite reducir el tiempo de respuesta de la base de datos a 0ms en peticiones subsecuentes. Asimismo, incorporar el archivo `src/app/t/[id]/loading.tsx` exportando `TurnSkeleton` habilita la transmisión asíncrona del cascarón de la ruta mediante Partial Prerendering (PPR), mejorando la performance percibida y evitando la latencia de renderizado bloqueante.
 **Acción:** Cachar siempre las consultas de detalle de entidad de alto tráfico e incorporar `loading.tsx` dedicados para habilitar el streaming inmediato de los cascarones de ruta.
