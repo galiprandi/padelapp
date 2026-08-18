@@ -280,6 +280,57 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     }
   }
 
+  // Process Skill Proximity & Side Preference Synergy
+  const activeCandidateIds = Array.from(candidateScores.keys()).filter(
+    (id) => !excludedUserIds.has(id)
+  );
+
+  if (activeCandidateIds.length > 0) {
+    const candidateStatsRows = await db
+      .select()
+      .from(playerGraphStats)
+      .where(inArray(playerGraphStats.userId, activeCandidateIds));
+
+    const candidateStatsMap = new Map(candidateStatsRows.map((s) => [s.userId, s]));
+
+    const validEnrolledScores = enrolledStats
+      .map((s) => s.skillScore)
+      .filter((s): s is number => s !== null);
+
+    const avgEnrolledSkillScore =
+      validEnrolledScores.length > 0
+        ? validEnrolledScores.reduce((sum, val) => sum + val, 0) / validEnrolledScores.length
+        : 1000;
+
+    let rightCount = 0;
+    let leftCount = 0;
+    for (const s of enrolledStats) {
+      if (s.preferredSide === "RIGHT") rightCount++;
+      if (s.preferredSide === "LEFT") leftCount++;
+    }
+
+    const neededSide = rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
+
+    for (const candidateId of activeCandidateIds) {
+      const stats = candidateStatsMap.get(candidateId);
+      const candScore = stats?.skillScore ?? 1000;
+      const skillDiff = Math.abs(candScore - avgEnrolledSkillScore);
+
+      let proximityScore = 0;
+      if (skillDiff <= 100) proximityScore += 60;
+      else if (skillDiff <= 200) proximityScore += 30;
+      else if (skillDiff > 350) proximityScore -= 50;
+
+      let sideScore = 0;
+      if (neededSide && stats?.preferredSide === neededSide) {
+        sideScore += 40;
+      }
+
+      const currentScore = candidateScores.get(candidateId) ?? 0;
+      candidateScores.set(candidateId, currentScore + proximityScore + sideScore);
+    }
+  }
+
   // We keep candidates that have either:
   // - A valid connection with at least one enrolled player (not excluded due to extreme outcome)
   // - Or are in the same community (even if no direct edge exists yet)

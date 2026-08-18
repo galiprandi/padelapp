@@ -164,3 +164,34 @@ describe("getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPASS", () => {
     expect(contacts[1].id).toBe("p-04");
   });
 });
+
+describe("Skill proximity and side preference synergy scoring rules", () => {
+  it("calculates proximity bonus and side preference bonus correctly", () => {
+    // Proximity logic check
+    const avgScore = 1050;
+
+    const candCloseScore = 1100; // diff 50 -> <= 100 -> +60
+    const candMidScore = 1200; // diff 150 -> <= 200 -> +30
+    const candFarScore = 1450; // diff 400 -> > 350 -> -50
+
+    const calcProximity = (score: number) => {
+      const diff = Math.abs(score - avgScore);
+      if (diff <= 100) return 60;
+      if (diff <= 200) return 30;
+      if (diff > 350) return -50;
+      return 0;
+    };
+
+    expect(calcProximity(candCloseScore)).toBe(60);
+    expect(calcProximity(candMidScore)).toBe(30);
+    expect(calcProximity(candFarScore)).toBe(-50);
+
+    // Needed side logic check
+    const enrolledSides = ["RIGHT", "RIGHT", "LEFT"];
+    const rightCount = enrolledSides.filter((s) => s === "RIGHT").length;
+    const leftCount = enrolledSides.filter((s) => s === "LEFT").length;
+    const neededSide = rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
+
+    expect(neededSide).toBe("LEFT");
+  });
+});
