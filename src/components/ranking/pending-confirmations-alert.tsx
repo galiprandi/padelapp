@@ -51,7 +51,7 @@ export function PendingConfirmationsAlert({
       try {
         const res = await confirmMatchResultAction(matchId);
         if (res.status === "ok") {
-          showToast("Resultado confirmado 🏆", {
+          showToast("Confirmaste el resultado. 🏆", {
             type: "success",
           });
           router.refresh();
@@ -72,15 +72,15 @@ export function PendingConfirmationsAlert({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
       <div className="flex items-center gap-2">
-        <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
+        <AlertCircle className="h-5 w-5 text-primary shrink-0" />
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold text-amber-800 leading-tight">
+          <h3 className="text-sm font-bold text-foreground leading-tight">
             Confirmaciones pendientes
           </h3>
-          <p className="text-xs text-amber-700/90 mt-0.5">
-            Tenés {pendingActions.length} {pendingActions.length === 1 ? "partido pendiente" : "partidos pendientes"}. ¡Confirmá para actualizar el ranking!
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Tenés {pendingActions.length} {pendingActions.length === 1 ? "partido pendiente" : "partidos pendientes"}. Confirmá para actualizar el ranking.
           </p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export function PendingConfirmationsAlert({
           return (
             <div
               key={match.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-amber-500/10 bg-card p-3 shadow-sm"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted/50 p-3"
             >
               <div className="flex flex-col gap-1 min-w-0">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -128,7 +128,7 @@ export function PendingConfirmationsAlert({
                     onClick={() => handleConfirm(match.id)}
                     disabled={isConfirming}
                     aria-label={`Confirmar resultado ${match.score} para el partido del ${formattedDate}`}
-                    className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+                    className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
                   >
                     {isThisConfirming ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -141,7 +141,7 @@ export function PendingConfirmationsAlert({
                   <Link
                     href={`/match/${match.id}/result`}
                     aria-label={`Cargar resultado para el partido del ${formattedDate}`}
-                    className="flex h-9 items-center justify-center gap-1 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 text-xs font-bold text-amber-700 transition-all hover:bg-amber-500/20 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     Cargar resultado
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -150,7 +150,7 @@ export function PendingConfirmationsAlert({
                 <Link
                   href={`/match/${match.id}`}
                   aria-label={`Ver detalle del partido del ${formattedDate}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Link>
