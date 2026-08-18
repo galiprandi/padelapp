@@ -261,8 +261,8 @@ export function UserRankingBanner({
         </div>
       </div>
       {decayFactor && (
-        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-amber-600 bg-amber-500/5 -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
-          <Calendar className="h-3.5 w-3.5 shrink-0" />
+        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
+          <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
           <span>
             {decayFactor === 0.25
               ? "Puntos reducidos al 25% por inactividad (más de 120 días)"
@@ -369,8 +369,8 @@ export function UserRankingCard({
         </div>
       </div>
       {decayFactor && (
-        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-amber-600 bg-amber-500/5 -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
-          <Calendar className="h-3.5 w-3.5 shrink-0" />
+        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
+          <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
           <span>
             {decayFactor === 0.25
               ? "Puntos reducidos al 25% por inactividad (más de 120 días)"
