@@ -111,7 +111,7 @@ export function BottomNav({
                 ? "1 notificación pendiente"
                 : `${notificationsCount} notificaciones pendientes`
             }
-            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground"
+            className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
             {notificationsCount}
           </Link>
