@@ -1,9 +1,11 @@
 "use client";
 
 import { useTransition, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Bell, Loader2, Check, BellOff } from "lucide-react";
 import { openToNetworkAction } from "@/app/(app)/turnos/actions";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/toast/use-toast";
 import { cn } from "@/lib/utils";
 
 interface OpenToNetworkButtonProps {
@@ -28,6 +30,8 @@ export function OpenToNetworkButton({
   label = "Abrir a mi red",
   iconOnly = false,
 }: OpenToNetworkButtonProps) {
+  const router = useRouter();
+  const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{
     notified: number;
@@ -71,12 +75,21 @@ export function OpenToNetworkButton({
     startTransition(async () => {
       const res = await openToNetworkAction(turnId);
       if (res.status === "ok") {
+        const notified = res.notifiedCount ?? 0;
         setResult({
-          notified: res.notifiedCount ?? 0,
+          notified,
           total: res.totalContacts ?? 0,
         });
+        showToast(
+          notified > 0
+            ? `Se notificó a ${notified} contacto${notified === 1 ? "" : "s"} de tu red.`
+            : "Se avisó a tu red."
+        );
+        router.refresh();
       } else {
-        setError(res.message ?? "Error al abrir el turno a tu red");
+        const errMsg = res.message ?? "No se pudo notificar a tu red.";
+        setError(errMsg);
+        showToast(errMsg);
       }
     });
   };
@@ -86,6 +99,18 @@ export function OpenToNetworkButton({
       return (
         <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-sm", className)}>
           <Check className="h-5 w-5" />
+        </div>
+      );
+    }
+    if (size === "sm" || !showText) {
+      return (
+        <div className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 text-xs font-bold text-emerald-600 dark:text-emerald-500", className)}>
+          <Check className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {result.notified > 0
+              ? `Se notificó a ${result.notified} contacto${result.notified === 1 ? "" : "s"}`
+              : "Red notificada"}
+          </span>
         </div>
       );
     }
