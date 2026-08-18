@@ -59,6 +59,7 @@ export default function JoinSlotPage({ params }: JoinSlotPageProps) {
       <div className="flex items-center gap-4">
         <Link
           href="/me"
+          prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           aria-label="Volver"
         >
@@ -373,7 +374,7 @@ async function JoinSlotContent({
                   variant="secondary"
                   className="w-full h-12 rounded-lg text-base font-bold"
                 >
-                  <Link href={`/match/${match.id}`}>
+                  <Link href={`/match/${match.id}`} prefetch={true}>
                     Ya estás unido · Ver partido
                   </Link>
                 </Button>
@@ -388,6 +389,7 @@ async function JoinSlotContent({
 
               <Link
                 href={`/match/${match.id}`}
+                prefetch={true}
                 className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1"
               >
                 Ver todos los detalles del encuentro
@@ -400,7 +402,7 @@ async function JoinSlotContent({
   );
 }
 
-function JoinSlotSkeleton() {
+export function JoinSlotSkeleton() {
   return (
     <div className="space-y-6">
       {/* Detail card skeleton */}

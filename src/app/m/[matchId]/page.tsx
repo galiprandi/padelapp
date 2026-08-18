@@ -88,7 +88,7 @@ export default function InvitationPage({ params }: InvitationPageProps) {
   );
 }
 
-function InvitationSkeleton() {
+export function InvitationSkeleton() {
   return (
     <>
       <div className="flex items-center gap-4">
@@ -241,6 +241,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
       <div className="flex items-center gap-4">
         <Link
           href={session?.user ? "/me" : "/"}
+          prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -414,7 +415,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
             asChild
             className="w-full h-12 rounded-lg text-base font-bold shadow-sm"
           >
-            <Link href={`/match/${match.id}`}>Ver partido en Padel Red</Link>
+            <Link href={`/match/${match.id}`} prefetch={true}>Ver partido en Padel Red</Link>
           </Button>
 
           {!session?.user ? (

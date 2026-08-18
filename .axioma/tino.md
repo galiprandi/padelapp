@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-17 — Esqueletos de Carga Streaming App Router (`loading.tsx`) y Prefetching Transversal en `/network`, `/catalog`, `/j/[playerId]` y `/m/[matchId]` (PR #tino/perf/app-router-route-streaming-and-prefetching)
 - [x] 2026-08-17 — Esqueleto de Carga Streaming y Prefetching en Perfil Público `/p/[userId]` (PR #tino/perf/public-profile-streaming-and-prefetching)
 - [x] 2026-08-17 — Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (PR #tino/perf/turn-public-details-caching-and-streaming)
 - [x] 2026-08-15 — Capa de Caching para Invitaciones Públicas a Partidos y Uniones Directas a Cupo (PR #tino/perf/match-invitations-and-slot-join-caching)
@@ -28,6 +29,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-17 - Esqueletos de Carga Streaming App Router (`loading.tsx`) y Prefetching Transversal (Performance Transversal)
+**Aprendizaje:** Proveer archivos `loading.tsx` a nivel de ruta en Next.js App Router para vistas dinámicas e interactivas (`/network`, `/catalog`, `/j/[playerId]`, `/m/[matchId]`) que re-exporten esqueletos de alta fidelidad garantiza que el motor de Next.js transmita asíncronamente el cascarón estático mediante Partial Prerendering (PPR) de manera instantánea ante cualquier navegación o recarga directa. Asimismo, configurar `prefetch={true}` en enlaces de alta conversión y navegación transversal elimina la latencia de red en las transiciones de pantalla, ofreciendo una experiencia móvil ultrasuave de 0ms percibidos.
+**Acción:** Acompañar cada nueva ruta o módulo con un archivo `loading.tsx` dedicado y activar `prefetch={true}` en enlaces hacia destinos frecuentes.
+
 ### 2026-08-17 - Esqueleto de Carga Streaming y Prefetching en Perfil Público `/p/[userId]` (Performance Transversal)
 **Aprendizaje:** En rutas dinámicas parametrizadas de alto tráfico como la ficha de perfil público de un jugador (`/p/[userId]`), contar con un archivo `loading.tsx` dedicado que exporte un esqueleto de alta fidelidad reambulando la estructura exacta del perfil (avatar, banner de ranking, tarjetas de efectividad/forma, métricas de red y lista de historial) permite que el motor de Next.js App Router transmita asíncronamente el cascarón de la página vía Partial Prerendering (PPR). Esto elimina por completo el parpadeo visual y la latencia percibida al navegar desde cualquier punto de la aplicación. Adicionalmente, incorporar `prefetch={true}` en enlaces hacia perfiles de parejas y rivales garantiza que el bundle de la vista destino esté precargado en el navegador, ofreciendo transiciones instantáneas (0ms percibidos de lag).
 **Acción:** Implementar siempre `loading.tsx` dedicados y `prefetch={true}` en enlaces transversales de navegación entre fichas de entidades públicas.

@@ -80,7 +80,7 @@ async function MatchContent({ params }: MatchPageProps) {
           Partido no encontrado
         </h1>
         <Button asChild>
-          <Link href="/match/new">Crear partido</Link>
+          <Link href="/match/new" prefetch={true}>Crear partido</Link>
         </Button>
       </div>
     );
@@ -95,7 +95,7 @@ async function MatchContent({ params }: MatchPageProps) {
       <div className="flex flex-col gap-4">
         <h1 className="text-xl font-bold text-foreground">Partido cancelado</h1>
         <Button asChild variant="ghost">
-          <Link href="/match">Volver a mis partidos</Link>
+          <Link href="/match" prefetch={true}>Volver a mis partidos</Link>
         </Button>
       </div>
     );
@@ -199,6 +199,7 @@ async function MatchContent({ params }: MatchPageProps) {
         {match.creatorId ? (
           <Link
             href={`/p/${match.creatorId}`}
+            prefetch={true}
             className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
             <PlayerAvatar
@@ -234,14 +235,14 @@ async function MatchContent({ params }: MatchPageProps) {
         {!isClosed ? (
           <>
             <Button asChild className="w-full h-12">
-              <Link href={`/match/${match.id}/result`}>
+              <Link href={`/match/${match.id}/result`} prefetch={true}>
                 <FileText className="mr-2 h-4 w-4" />
                 Ingresar Resultado
               </Link>
             </Button>
             <div className="flex gap-2">
               <Button asChild variant="outline" className="flex-1 h-10">
-                <Link href={`/match/${match.id}/edit`}>
+                <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
                 </Link>
@@ -333,6 +334,7 @@ async function MatchContent({ params }: MatchPageProps) {
                       <Link
                         key={p.id}
                         href={`/p/${p.userId}`}
+                        prefetch={true}
                         className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
                         aria-label={`Ver perfil de ${p.displayName || p.user?.displayName || ""}`}
                       >
@@ -434,6 +436,7 @@ async function MatchContent({ params }: MatchPageProps) {
                         {player.userId ? (
                           <Link
                             href={`/p/${player.userId}`}
+                            prefetch={true}
                             className="flex flex-col items-center gap-2 w-full transition-all active:scale-[0.98] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
                             aria-label={`Ver perfil de ${displayName}`}
                           >
@@ -510,6 +513,7 @@ async function MatchContent({ params }: MatchPageProps) {
                         {player.userId ? (
                           <Link
                             href={`/p/${player.userId}`}
+                            prefetch={true}
                             className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
                           >
                             {displayName}
