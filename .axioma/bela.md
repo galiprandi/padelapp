@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-18 — OpenToNetworkButton Branded Toast Feedback & Router Revalidation (bela/turnos/open-to-network-toast-ux)
 - [x] 2026-08-17 — Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor (bela/turnos/quick-join-toast-and-leave-turn-ux)
 - [x] 2026-08-15 — Argentine Spanish Toast Feedback in Turn Actions (bela/turnos/turn-actions-toast-feedback)
 - [x] 2026-08-14 — Complete Turn Chat System Bot Coverage for Organizer Actions (bela/turnos/organizer-chat-bot-events)
@@ -33,6 +34,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-18 - OpenToNetworkButton Branded Toast Feedback & Router Revalidation
+**Learning:** Wiring `useToast` and `useRouter` directly into turn salvage triggers (`OpenToNetworkButton`) ensures immediate visual confirmation across mobile viewports, especially for compact or text-hidden variants where inline error or success text is omitted. Calling `router.refresh()` on action completion instantly synchronizes Next.js server state (`lastNetworkNotificationAt`) across parent cards and details screens.
+**Action:** Always complement server action triggers with `useToast` notifications in natural Argentine Spanish voseo copy and invoke `router.refresh()` to propagate state mutations immediately across the UI.
+
 ## 2026-08-17 - Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor
 **Learning:** Refactoring leave-turn and quick-join action triggers to leverage React transitions (`useTransition`) and branded toast notifications (`useToast`) ensures immediate feedback and prevents double-submits. Standardizing focus ring indicators and tactile scaling (`active:scale-[0.98] transition-all`) across turn interactive buttons strictly satisfies Minimal Design System (MDS) §1.2 and accessibility standards.
 **Action:** Always wrap server actions in client button components with `useTransition` and dispatch localized Argentine Spanish toast feedback on both success and error paths.
