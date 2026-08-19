@@ -108,8 +108,8 @@ async function MatchList() {
     else break;
   }
 
-  const partnersWins: Record<string, { name: string; wins: number }> = {};
-  const rivalsLosses: Record<string, { name: string; losses: number }> = {};
+  const partnersWins: Record<string, { id: string; name: string; wins: number }> = {};
+  const rivalsLosses: Record<string, { id: string; name: string; losses: number }> = {};
 
   confirmedMatches.forEach((match, idx) => {
     const viewer = match.players.find((p) => p.user?.id === viewerId);
@@ -125,7 +125,7 @@ async function MatchList() {
       if (partner && partner.user) {
         const pId = partner.user.id;
         const pName = partner.user.displayName || "Compañero";
-        if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
+        if (!partnersWins[pId]) partnersWins[pId] = { id: pId, name: pName, wins: 0 };
         partnersWins[pId].wins += 1;
       }
     } else if (matchResults[idx] === "L") {
@@ -138,7 +138,7 @@ async function MatchList() {
         if (rival.user) {
           const rId = rival.user.id;
           const rName = rival.user.displayName || "Rival";
-          if (!rivalsLosses[rId]) rivalsLosses[rId] = { name: rName, losses: 0 };
+          if (!rivalsLosses[rId]) rivalsLosses[rId] = { id: rId, name: rName, losses: 0 };
           rivalsLosses[rId].losses += 1;
         }
       });
@@ -196,18 +196,26 @@ async function MatchList() {
               {bestPartner && (
                 <p className="text-xs text-muted-foreground">
                   Mejor socio:{" "}
-                  <span className="text-foreground font-semibold">
+                  <Link
+                    href={`/p/${bestPartner.id}`}
+                    prefetch={true}
+                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm active:scale-[0.98]"
+                  >
                     {bestPartner.name}
-                  </span>{" "}
+                  </Link>{" "}
                   ({bestPartner.wins} {bestPartner.wins === 1 ? "victoria" : "victorias"})
                 </p>
               )}
               {nemesis && (
                 <p className="text-xs text-muted-foreground">
                   Némesis ⚔️:{" "}
-                  <span className="text-foreground font-semibold">
+                  <Link
+                    href={`/p/${nemesis.id}`}
+                    prefetch={true}
+                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm active:scale-[0.98]"
+                  >
                     {nemesis.name}
-                  </span>{" "}
+                  </Link>{" "}
                   ({nemesis.losses} {nemesis.losses === 1 ? "derrota" : "derrotas"})
                 </p>
               )}

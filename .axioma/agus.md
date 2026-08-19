@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-19 — Enlaces Transversales a Perfiles Públicos en Resumen de Partidos (Mejor Socio y Némesis): Se actualizaron las estructuras de datos de `partnersWins` y `rivalsLosses` en `/match` (`src/app/(app)/match/page.tsx`) para retener el ID de los jugadores (`id`). Se envolvieron los nombres de 'Mejor socio' (`bestPartner`) y 'Némesis' (`nemesis`) en componentes `<Link href={`/p/${player.id}`}>` de Next.js con escala táctil activa (`active:scale-[0.98]`), foco accesible y transiciones de color.
 - [x] 2026-08-18 — Estandarización MDS y Voseo en Alertas de Confirmación y Banners de Inactividad de Ranking: Se refactorizó `PendingConfirmationsAlert` eliminando contenedores translúcidos `bg-amber-500/10` y signos de exclamación (`¡`), aplicando un diseño sólido conforme a MDS (`bg-card`, `border-border`, `bg-muted/50`) y voz activa en voseo argentino. Asimismo, se estandarizaron los banners de inactividad/decay en `UserRankingStats` para usar contenedores sólidos `bg-muted`.
 - [x] 2026-08-15 — Estandarización de Voseo Argentino y Conexión de Desglose de Ranking: Reemplazadas las instancias de "Tú" por "Vos" en podio, resultados, slots y detalle de partido para cumplir con el tono de voz local. Corregido el paso de `userId` a `UserRankingBanner` en la vista de ranking.
 - [x] 2026-08-14 — Soporte de Simulación de Alta Fidelidad y Estandarización MDS en Invitaciones de Partido (/m) e Inscripciones (/j): Implementación de fallbacks de datos simulados (mock) estructurados bajo `AUTH_BYPASS` / `MOCK_AUTH` en `/m/[matchId]`, `/j/[playerId]` y la acción `joinMatchPlayerAction`. Alineación de diseño mobile-first conforme a MDS (fondos sólidos sin translucidez, contrastes óptimos y accesibilidad ARIA). (PR #agus/match/invitation-and-join-slot-mocking-mds)
@@ -23,6 +24,10 @@
 - [x] 2026-07-28 — Verificación y validación de la compilación y de la arquitectura de Partial Prerendering (PPR) de Next.js. El codebase se encuentra en estado verde y completamente optimizado.
 
 ## 🧠 LEARNINGS
+### 2026-08-19 - Navegación Transversal desde Tarjetas Resumen hacia Perfiles Públicos
+**Learning:** Envolver nombres de jugadores en tarjetas de resumen o estadísticas competitivas (como "Mejor socio" o "Némesis") con enlaces pre-cargados de Next.js (`<Link prefetch={true}>`) hacia sus perfiles públicos `/p/[userId]` fomenta la navegación fluida y transversal en la app sin romper el contexto del partido. Además, incorporar escala táctil (`active:scale-[0.98]`) y estilos de foco visibles garantiza la mejor experiencia en dispositivos móviles y tecnologías de asistencia.
+**Action:** Al mostrar nombres o entidades de usuarios dentro de resúmenes de estadísticas o métricas grupales, retener siempre su `id` para posibilitar la navegación directa al perfil público del jugador.
+
 ### 2026-08-18 - Estandarización de Banners de Alerta según MDS y Voz Activa en Voseo
 **Learning:** Reemplazar fondos translúcidos (como `bg-amber-500/10` o `bg-amber-500/5`) por contenedores sólidos del sistema de diseño (`bg-card` y `bg-muted`) mejora significativamente la legibilidad, la consistencia visual y el contraste en modo oscuro. Asimismo, erradicar los signos de exclamación invertidos (`¡`) y estandarizar los textos a voz activa argentina ("Confirmá para actualizar el ranking", "Confirmaste el resultado.") garantiza un tono uniforme y cercano en todo el modulo de ranking.
 **Action:** Al crear o modificar alertas o avisos de confirmación en el módulo de partidos/ranking, utilizar siempre fondos sólidos `bg-card` o `bg-muted` y mantener la voz activa en voseo sin signos de exclamación.
