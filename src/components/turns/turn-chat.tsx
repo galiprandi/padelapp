@@ -11,7 +11,7 @@ import {
   sendMessageAction,
   type ChatMessage,
 } from "@/lib/chat-store";
-import { formatChatTime } from "./turn-chat-utils";
+import { formatChatTime, CHAT_QUICK_SUGGESTIONS } from "./turn-chat-utils";
 
 interface TurnChatProps {
   turnId: string;
@@ -186,6 +186,28 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
           })
         )}
         <div ref={messagesEndRef} />
+      </div>
+
+      {/* Quick suggestions bar */}
+      <div
+        className="px-3 py-2 bg-muted/60 border-t border-border flex items-center gap-1.5 overflow-x-auto scrollbar-none"
+        role="region"
+        aria-label="Atajos de mensajes rápidos"
+      >
+        <span className="text-[10px] font-bold text-muted-foreground/70 shrink-0 mr-0.5">
+          Atajos:
+        </span>
+        {CHAT_QUICK_SUGGESTIONS.map((chip) => (
+          <button
+            key={chip.id}
+            type="button"
+            onClick={() => setInputText(chip.text)}
+            className="rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            aria-label={`Usar atajo ${chip.text}`}
+          >
+            {chip.label}
+          </button>
+        ))}
       </div>
 
       {/* Input bar */}

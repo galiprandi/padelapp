@@ -1,5 +1,25 @@
 import { describe, it, expect } from "vitest";
-import { formatChatTime } from "../turn-chat-utils";
+import { formatChatTime, CHAT_QUICK_SUGGESTIONS } from "../turn-chat-utils";
+
+describe("CHAT_QUICK_SUGGESTIONS", () => {
+  it("contains valid quick chip presets for Turn Chat coordination", () => {
+    expect(CHAT_QUICK_SUGGESTIONS.length).toBeGreaterThan(0);
+    for (const chip of CHAT_QUICK_SUGGESTIONS) {
+      expect(chip.id).toBeTruthy();
+      expect(chip.label).toBeTruthy();
+      expect(chip.text).toBeTruthy();
+      expect(chip.text.length).toBeLessThanOrEqual(300);
+    }
+  });
+
+  it("includes essential padel coordination presets", () => {
+    const ids = CHAT_QUICK_SUGGESTIONS.map((c) => c.id);
+    expect(ids).toContain("late");
+    expect(ids).toContain("balls");
+    expect(ids).toContain("confirmed");
+    expect(ids).toContain("court");
+  });
+});
 
 describe("formatChatTime", () => {
   // Use a fixed base date for deterministic assertions: Wednesday, Aug 12, 2026, 15:30:00

@@ -199,13 +199,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   }
 
   // Compact date for subtitle (server-side, Argentina timezone)
-  const turnDateStr = turn.date.toLocaleDateString("es-ES", {
+  const turnDateObj = new Date(turn.date);
+  const turnDateStr = turnDateObj.toLocaleDateString("es-ES", {
     weekday: "short",
     day: "numeric",
     month: "short",
     timeZone: "America/Argentina/Buenos_Aires",
   });
-  const turnTimeStr = turn.date.toLocaleTimeString("es-ES", {
+  const turnTimeStr = turnDateObj.toLocaleTimeString("es-ES", {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "America/Argentina/Buenos_Aires",
