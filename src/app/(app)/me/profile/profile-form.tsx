@@ -258,7 +258,8 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRestoreGooglePhoto}
                 disabled={isSaving}
-                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1"
+                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1"
+                aria-label="Restablecer a la foto original de tu cuenta de Google"
               >
                 Usar mi foto de Google
               </button>
@@ -268,7 +269,8 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRemovePhoto}
                 disabled={isSaving}
-                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1"
+                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1"
+                aria-label="Quitar foto de perfil y mostrar iniciales"
               >
                 Quitar foto
               </button>
