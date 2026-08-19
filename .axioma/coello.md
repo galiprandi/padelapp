@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 15 (Interactive Player Graph Focus, Direct Connections Profile Links & Network Query Mocking):
+  - [x] 2026-08-19 — Hecho: Interactividad de navegación enfocada en el grafo de contactos (centrado/zoom de cámara al tocar conexiones) y enlaces directos al perfil público (`/p/[userId]`).
+  - [x] 2026-08-19 — Hecho: Expansión de datos mock para estadísticas de red de perfil público (`getPlayerNetworkStats`) bajo `AUTH_BYPASS` y `MOCK_AUTH`.
 - Phase 14 (Argentine Voseo Localization & Network Recommender Refinements):
   - [x] 2026-08-15 — Hecho: Estandarización de voz argentina (reemplazo de "Tú" por "Vos") en la vista interactiva del grafo de la red (`src/app/network/graph-view.tsx`).
   - [x] 2026-08-15 — Hecho: Corrección del caso borde de auto-recomendación mock en `getPlayersLikeYouAction` (`src/app/network/actions.ts`) cuando el viewer es `p-04`.
@@ -69,6 +72,7 @@
 - [x] 2026-08-15 — Argentine Voseo Localization & Network Recommender Refinements
 
 ## Learnings
+- **Navegación Interactiva por Grafo y Enfoque Dinámico de Cámara**: Permitir que el usuario seleccione conexiones directas desde el panel de detalles del grafo y centrar la cámara mediante animación (`centerAt` + `zoom`) del lienzo interactivo (`react-force-graph-2d`) transforma la exploración del grafo social de una experiencia estática a un descubrimiento dinámico e inmersivo. Integrar enlaces transversales directos al perfil público (`/p/[userId]`) en cada nodo de conexión potencia el engagement orgánico.
 - **Optimización de Consultas Relacionales para Cold-Start de Usuarios en Recomendaciones**: En sistemas de recomendación que sugieren usuarios con habilidades similares basándose en tablas estadísticas del grafo (`playerGraphStats`), realizar un `innerJoin` con la tabla principal de usuarios (`users`) excluye por completo a los nuevos usuarios registrados que aún no tienen estadísticas generadas. Reemplazar este flujo por un `leftJoin` desde `users` permite capturar y recomendar a nuevos jugadores de inmediato, asignando puntuaciones neutrales por defecto (ej. `skillScore: 1000`) y de-duplicando eficientemente con un `Set` para garantizar que la lista de sugerencias siempre esté completa, viva y de fácil descubrimiento.
 - **Búsqueda Insensible a Acentos en Redes de Contacto (Grafo)**: En mercados hispanohablantes donde los nombres de jugadores contienen acentos ("Agustín", "Belasteguín"), implementar búsquedas insensibles a diacríticos utilizando normalización unicode (`normalize("NFD")` y reemplazo de rango de caracteres `[\u0300-\u036f]`) es un pilar fundamental de UX. Esto elimina la fricción en smartphones donde los teclados rápidos incitan a escribir sin acentos.
 - **Remoción Completa de Columnas Legacy en APIs de Datos**: Al realizar tareas de limpieza técnica de sistemas heredados (como el nivel auto-percibido de juego), es de vital importancia eliminar los atributos no solo de los modelos de base de datos principales, sino también de los selectores de columnas en queries (`db.query`), de los mocks de pruebas/bypass, y de las interfaces de respuestas asociadas. Esto evita que código muerto siga consumiendo recursos o induciendo a errores de tipado futuros.
