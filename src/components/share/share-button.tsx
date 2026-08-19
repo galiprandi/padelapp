@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import { Share2, Check } from "lucide-react";
+import { Share2, Check, Loader2 } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { getNaturalShareText, type ShareDataPayload } from "@/lib/utils";
@@ -145,16 +145,27 @@ export function ShareButton({
     [onClick, url, title, text, successMessage, copyMessage, errorMessage, showToast],
   );
 
+  const dynamicAriaLabel = buttonProps["aria-label"]
+    ? buttonProps["aria-label"]
+    : iconOnly
+      ? isSuccess
+        ? (successMessage ?? DEFAULT_SUCCESS)
+        : "Compartir"
+      : undefined;
+
   return (
     <Button
       type="button"
       onClick={handleShare}
       disabled={isSharing || disabled}
-      aria-label={iconOnly && !buttonProps["aria-label"] ? "Compartir" : buttonProps["aria-label"]}
+      aria-busy={isSharing}
+      aria-label={dynamicAriaLabel}
       {...restButtonProps}
     >
       {iconOnly ? (
-        isSuccess ? (
+        isSharing ? (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" aria-hidden="true" />
+        ) : isSuccess ? (
           <Check className="h-4 w-4 text-emerald-500" aria-hidden="true" />
         ) : (
           <Share2 className="h-4 w-4" aria-hidden="true" />
@@ -162,12 +173,20 @@ export function ShareButton({
       ) : (
         children ?? (
           <span className="flex items-center gap-2">
-            {isSuccess ? (
+            {isSharing ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : isSuccess ? (
               <Check className="h-4 w-4 text-emerald-500" aria-hidden="true" />
             ) : (
               <Share2 className="h-4 w-4" aria-hidden="true" />
             )}
-            <span>{isSuccess ? (successMessage ?? DEFAULT_SUCCESS) : "Compartir"}</span>
+            <span>
+              {isSharing
+                ? "Compartiendo..."
+                : isSuccess
+                  ? (successMessage ?? DEFAULT_SUCCESS)
+                  : "Compartir"}
+            </span>
           </span>
         )
       )}
