@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-19 — Turn Chat Quick Coordination Suggestion Chips & Date Safety (bela/turnos/chat-quick-suggestions)
 - [x] 2026-08-18 — OpenToNetworkButton Branded Toast Feedback & Router Revalidation (bela/turnos/open-to-network-toast-ux)
 - [x] 2026-08-17 — Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor (bela/turnos/quick-join-toast-and-leave-turn-ux)
 - [x] 2026-08-15 — Argentine Spanish Toast Feedback in Turn Actions (bela/turnos/turn-actions-toast-feedback)
@@ -34,6 +35,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-19 - Turn Chat Quick Coordination Suggestion Chips & Date Safety
+**Learning:** Adding 1-tap quick coordination suggestion chips (`CHAT_QUICK_SUGGESTIONS`) above the Turn Chat input bar significantly streamlines mobile pre-turn coordination (e.g. reporting delays, checking ball availability, or confirming attendance) without forcing players to type out full messages manually. Ensuring input date fields or API responses are normalized via `new Date(val)` before calling `.toLocaleDateString()` prevents runtime string type mismatches when objects pass through Next.js server/client serialization boundaries.
+**Action:** Always provide accessible, 1-tap quick action chips for frequent mobile communication workflows and safely wrap dynamic date props with `new Date()` before invoking date-formatting methods.
+
 ## 2026-08-18 - OpenToNetworkButton Branded Toast Feedback & Router Revalidation
 **Learning:** Wiring `useToast` and `useRouter` directly into turn salvage triggers (`OpenToNetworkButton`) ensures immediate visual confirmation across mobile viewports, especially for compact or text-hidden variants where inline error or success text is omitted. Calling `router.refresh()` on action completion instantly synchronizes Next.js server state (`lastNetworkNotificationAt`) across parent cards and details screens.
 **Action:** Always complement server action triggers with `useToast` notifications in natural Argentine Spanish voseo copy and invoke `router.refresh()` to propagate state mutations immediately across the UI.

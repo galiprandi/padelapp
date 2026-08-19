@@ -5,6 +5,19 @@
  * - Yesterday: "Ayer, 19:30"
  * - Older: "D/M, 19:30"
  */
+export interface QuickSuggestion {
+  id: string;
+  label: string;
+  text: string;
+}
+
+export const CHAT_QUICK_SUGGESTIONS: QuickSuggestion[] = [
+  { id: "late", label: "⏱️ Llego 10 min tarde", text: "Llego 10 min tarde" },
+  { id: "balls", label: "🎾 ¿Llevan pelotas?", text: "¿Alguien lleva pelotas?" },
+  { id: "confirmed", label: "👍 Confirmado", text: "Confirmado 👍" },
+  { id: "court", label: "📍 ¿Qué cancha es?", text: "¿Saben qué cancha nos toca?" },
+];
+
 export function formatChatTime(ts: number, baseDate?: Date): string {
   const d = new Date(ts * 1000);
   const now = baseDate || new Date();
