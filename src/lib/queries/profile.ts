@@ -21,11 +21,11 @@ export interface PublicProfileUser {
  * Get a user's public profile data (for /p/[userId] page).
  */
 export async function getPublicProfileUser(userId: string): Promise<PublicProfileUser | null> {
-  if (process.env.AUTH_BYPASS === "true") {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     return {
       id: userId,
-      displayName: userId === "p-01" ? "Agustín" : "Fernando",
-      alias: userId === "p-01" ? "agu" : "Bela",
+      displayName: userId === "p-01" ? "Agustín" : userId === "p-02" ? "Fernando" : "Jugador Red",
+      alias: userId === "p-01" ? "agu" : userId === "p-02" ? "Bela" : null,
       image: null,
       rankingScore: userId === "p-01" ? 1150 : 1200,
       rankingPosition: userId === "p-01" ? 2 : 1,
@@ -61,7 +61,7 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
  * Get the original Google avatar URL from the id_token stored in the Account table.
  */
 export async function getGoogleAvatarUrl(userId: string): Promise<string | null> {
-  if (process.env.AUTH_BYPASS === "true") {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     return null;
   }
   try {
@@ -112,7 +112,7 @@ export interface EditableProfileData {
  * Get the current user's editable profile data (for /me/profile page).
  */
 export async function getEditableProfile(userId: string): Promise<EditableProfileData | null> {
-  if (process.env.AUTH_BYPASS === "true") {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     return {
       displayName: "Agustín",
       alias: "agu",
@@ -166,15 +166,31 @@ export interface PlayerNetworkStats {
  * Get a user's network and position statistics computed by the graph engine.
  */
 export async function getPlayerNetworkStats(userId: string): Promise<PlayerNetworkStats> {
-  if (process.env.AUTH_BYPASS === "true") {
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     return {
-      preferredSide: "RIGHT",
+      preferredSide: userId === "p-02" ? "LEFT" : "RIGHT",
       winRateRight: 0.65,
       winRateLeft: 0.50,
       networkSize: 12,
       community: 1,
-      frequentRival: null,
-      successfulPartner: null,
+      frequentRival: {
+        user: {
+          id: userId === "p-01" ? "p-02" : "p-01",
+          displayName: userId === "p-01" ? "Fernando Belasteguín" : "Agustín Aliprandi",
+          alias: userId === "p-01" ? "Bela" : "agu",
+          image: null,
+        },
+        matches: 5,
+      },
+      successfulPartner: {
+        user: {
+          id: "p-04",
+          displayName: "Facundo Lopez",
+          alias: "Facu",
+          image: null,
+        },
+        wins: 4,
+      },
     };
   }
   const [stats] = await db

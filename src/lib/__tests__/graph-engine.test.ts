@@ -97,7 +97,7 @@ describe("getPlayersLikeYouAction", () => {
   });
 });
 
-import { getCachedTurnNetworkContacts } from "@/lib/queries";
+import { getCachedTurnNetworkContacts, getPlayerNetworkStats, getPublicProfileUser } from "@/lib/queries";
 
 describe("getCachedTurnNetworkContacts", () => {
   it("returns mock network contacts under bypass/mock conditions", async () => {
@@ -107,6 +107,31 @@ describe("getCachedTurnNetworkContacts", () => {
     expect(result[0].alias).toBe("Gero");
     expect(result[1].id).toBe("p-04");
     expect(result[1].alias).toBe("Facu");
+  });
+});
+
+describe("getPlayerNetworkStats and getPublicProfileUser", () => {
+  it("returns full player network stats with frequent rival and successful partner under bypass mode", async () => {
+    const stats = await getPlayerNetworkStats("p-01");
+    expect(stats.preferredSide).toBe("RIGHT");
+    expect(stats.networkSize).toBe(12);
+    expect(stats.frequentRival?.user?.displayName).toBe("Fernando Belasteguín");
+    expect(stats.frequentRival?.matches).toBe(5);
+    expect(stats.successfulPartner?.user?.displayName).toBe("Facundo Lopez");
+    expect(stats.successfulPartner?.wins).toBe(4);
+  });
+
+  it("returns opposite frequent rival for p-02 under bypass mode", async () => {
+    const stats = await getPlayerNetworkStats("p-02");
+    expect(stats.preferredSide).toBe("LEFT");
+    expect(stats.frequentRival?.user?.displayName).toBe("Agustín Aliprandi");
+  });
+
+  it("returns mock public profile user details", async () => {
+    const profile = await getPublicProfileUser("p-01");
+    expect(profile).not.toBeNull();
+    expect(profile?.displayName).toBe("Agustín");
+    expect(profile?.rankingPosition).toBe(2);
   });
 });
 

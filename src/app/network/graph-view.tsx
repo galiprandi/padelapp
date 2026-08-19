@@ -377,12 +377,34 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   );
 
    
+  const focusCameraOnNode = useCallback((nodeId: string) => {
+    if (!fgRef.current) return;
+    const targetNode = filteredData.nodes.find((n) => n.id === nodeId);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const simNode = fgRef.current.graphData?.()?.nodes?.find((n: any) => n.id === nodeId) ?? targetNode;
+    if (simNode && isFinite(simNode.x) && isFinite(simNode.y)) {
+      fgRef.current.centerAt(simNode.x, simNode.y, 400);
+      fgRef.current.zoom(2.5, 400);
+    }
+  }, [filteredData.nodes]);
+
+  const handleSelectAndFocusNode = useCallback((nodeId: string) => {
+    if (selectedNode === nodeId) {
+      setSelectedNode(null);
+    } else {
+      setSelectedNode(nodeId);
+      focusCameraOnNode(nodeId);
+    }
+  }, [selectedNode, focusCameraOnNode]);
+
   const handleNodeClick = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d node type includes simulation fields not in GraphNode
     (node: any) => {
-      setSelectedNode(selectedNode === node.id ? null : node.id);
+      if (node?.id) {
+        handleSelectAndFocusNode(node.id);
+      }
     },
-    [selectedNode],
+    [handleSelectAndFocusNode],
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -700,31 +722,50 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   link.partnerMatches > 0 && link.rivalMatches === 0;
                 const isRival =
                   link.rivalMatches > 0 && link.partnerMatches === 0;
+                const otherName = capitalizeName(other?.name || other?.alias || "—");
+
                 return (
-                  <div key={i} className="flex items-center gap-2.5 text-xs">
-                    <span
-                      className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
-                      style={{
-                        backgroundColor: isPartner
-                          ? "rgba(16,185,129,0.1)"
-                          : isRival
-                            ? "rgba(239,68,68,0.1)"
-                            : "rgba(245,158,11,0.1)",
-                        color: isPartner
-                          ? "#10b981"
-                          : isRival
-                            ? "#ef4444"
-                            : "#f59e0b",
-                      }}
+                  <div
+                    key={i}
+                    className="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-muted/60 transition-colors"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleSelectAndFocusNode(otherId)}
+                      className="flex items-center gap-2 flex-1 min-w-0 text-left active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+                      aria-label={`Enfocar a ${otherName} en el grafo`}
                     >
-                      {isPartner ? "P" : isRival ? "R" : "M"}
-                    </span>
-                    <span className="text-muted-foreground flex-1 truncate">
-                      {capitalizeName(other?.name || other?.alias || "—")}
-                    </span>
-                    <span className="text-muted-foreground/50 text-xs tabular-nums">
-                      {link.strength}×
-                    </span>
+                      <span
+                        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
+                        style={{
+                          backgroundColor: isPartner
+                            ? "rgba(16,185,129,0.1)"
+                            : isRival
+                              ? "rgba(239,68,68,0.1)"
+                              : "rgba(245,158,11,0.1)",
+                          color: isPartner
+                            ? "#10b981"
+                            : isRival
+                              ? "#ef4444"
+                              : "#f59e0b",
+                        }}
+                      >
+                        {isPartner ? "P" : isRival ? "R" : "M"}
+                      </span>
+                      <span className="text-xs font-medium text-foreground truncate">
+                        {otherName}
+                      </span>
+                      <span className="text-muted-foreground/50 text-xs tabular-nums ml-auto shrink-0 pr-1">
+                        {link.strength}×
+                      </span>
+                    </button>
+                    <Link
+                      href={`/p/${otherId}`}
+                      className="text-[11px] font-bold text-primary hover:underline px-1.5 py-0.5 rounded-md active:scale-[0.95] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+                      aria-label={`Ver perfil de ${otherName}`}
+                    >
+                      Perfil
+                    </Link>
                   </div>
                 );
               })}
