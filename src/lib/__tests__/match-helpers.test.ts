@@ -135,8 +135,8 @@ describe("computeBestPartnerAndNemesis", () => {
       return winner === playerTeam ? "W" : "L";
     });
 
-    const partnersWins: Record<string, { name: string; wins: number }> = {};
-    const rivalsLosses: Record<string, { name: string; losses: number }> = {};
+    const partnersWins: Record<string, { id: string; name: string; wins: number }> = {};
+    const rivalsLosses: Record<string, { id: string; name: string; losses: number }> = {};
 
     confirmedMatches.forEach((match, idx) => {
       const viewer = match.players.find((p) => p.user?.id === viewerId);
@@ -152,7 +152,7 @@ describe("computeBestPartnerAndNemesis", () => {
         if (partner && partner.user) {
           const pId = partner.user.id;
           const pName = partner.user.displayName || "Compañero";
-          if (!partnersWins[pId]) partnersWins[pId] = { name: pName, wins: 0 };
+          if (!partnersWins[pId]) partnersWins[pId] = { id: pId, name: pName, wins: 0 };
           partnersWins[pId].wins += 1;
         }
       } else if (matchResults[idx] === "L") {
@@ -165,7 +165,7 @@ describe("computeBestPartnerAndNemesis", () => {
           if (rival.user) {
             const rId = rival.user.id;
             const rName = rival.user.displayName || "Rival";
-            if (!rivalsLosses[rId]) rivalsLosses[rId] = { name: rName, losses: 0 };
+            if (!rivalsLosses[rId]) rivalsLosses[rId] = { id: rId, name: rName, losses: 0 };
             rivalsLosses[rId].losses += 1;
           }
         });
@@ -181,10 +181,12 @@ describe("computeBestPartnerAndNemesis", () => {
     )[0];
 
     expect(bestPartner).toBeDefined();
+    expect(bestPartner.id).toBe("p-02");
     expect(bestPartner.name).toBe("Fernando");
     expect(bestPartner.wins).toBe(1);
 
     expect(nemesis).toBeDefined();
+    expect(["p-02", "p-04"]).toContain(nemesis.id);
     expect(["Fernando", "Gero"]).toContain(nemesis.name);
     expect(nemesis.losses).toBe(1);
   });
