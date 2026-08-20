@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-20 — Esqueletos de Carga Streaming (`loading.tsx`) para Formularios/Configuración y Fronteras de Error Resilientes (`error.tsx`) en Módulos Principales (PR #tino/perf/form-skeletons-and-resilient-error-boundaries)
 - [x] 2026-08-17 — Esqueletos de Carga Streaming App Router (`loading.tsx`) y Prefetching Transversal en `/network`, `/catalog`, `/j/[playerId]` y `/m/[matchId]` (PR #tino/perf/app-router-route-streaming-and-prefetching)
 - [x] 2026-08-17 — Esqueleto de Carga Streaming y Prefetching en Perfil Público `/p/[userId]` (PR #tino/perf/public-profile-streaming-and-prefetching)
 - [x] 2026-08-17 — Integración de Caching y Streaming PPR en Detalle Público de Turno `/t/[id]` (PR #tino/perf/turn-public-details-caching-and-streaming)
@@ -29,6 +30,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-20 - Esqueletos de Carga Streaming (`loading.tsx`) y Fronteras de Error Resilientes (`error.tsx`) (Performance & UX Transversal)
+**Aprendizaje:** En Next.js App Router con Partial Prerendering (PPR) y Cache Components, las subrutas de formularios y configuración (`/match/new`, `/turnos/nuevo`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/[id]/editar`, `/me/security`) requieren archivos `loading.tsx` dedicados que coincidan exactamente con la maquetación de tarjetas e inputs. Esto permite que el motor transmita el cascarón estático de la página en 0ms sin recurrir a los esqueletos de lista del contenedor padre. Asimismo, proveer límites de error (`error.tsx`) localizados en español argentino voseo ("No pudimos cargar los turnos / el ranking / la red") con llamadas a `reset()` previene caídas globales y ofrece recuperación inmediata a 1-tap.
+**Acción:** Proveer siempre `loading.tsx` a medida para cada subruta de formulario y `error.tsx` resiliente con reintento para cada módulo funcional.
+
 ### 2026-08-17 - Esqueletos de Carga Streaming App Router (`loading.tsx`) y Prefetching Transversal (Performance Transversal)
 **Aprendizaje:** Proveer archivos `loading.tsx` a nivel de ruta en Next.js App Router para vistas dinámicas e interactivas (`/network`, `/catalog`, `/j/[playerId]`, `/m/[matchId]`) que re-exporten esqueletos de alta fidelidad garantiza que el motor de Next.js transmita asíncronamente el cascarón estático mediante Partial Prerendering (PPR) de manera instantánea ante cualquier navegación o recarga directa. Asimismo, configurar `prefetch={true}` en enlaces de alta conversión y navegación transversal elimina la latencia de red en las transiciones de pantalla, ofreciendo una experiencia móvil ultrasuave de 0ms percibidos.
 **Acción:** Acompañar cada nueva ruta o módulo con un archivo `loading.tsx` dedicado y activar `prefetch={true}` en enlaces hacia destinos frecuentes.
