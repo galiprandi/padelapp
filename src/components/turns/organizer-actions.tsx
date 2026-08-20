@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { UserMinus, UserCheck, X } from "lucide-react";
+import { useState, useTransition } from "react";
+import { UserMinus, UserCheck, X, Loader2 } from "lucide-react";
 import {
   removePlayerAction,
   assignSubstituteAction,
@@ -19,19 +19,20 @@ export function RemovePlayerButton({
   playerName: string;
 }) {
   const [confirming, setConfirming] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
 
-  const handleRemove = async () => {
-    setLoading(true);
-    const result = await removePlayerAction(turnId, playerUserId);
-    if (result.status === "ok") {
-      showToast(`Sacaste a ${playerName} del turno.`);
-    } else {
-      showToast(result.message ?? "No se pudo sacar al jugador.");
-    }
-    router.refresh();
+  const handleRemove = () => {
+    startTransition(async () => {
+      const result = await removePlayerAction(turnId, playerUserId);
+      if (result.status === "ok") {
+        showToast(`Sacaste a ${playerName} del turno.`);
+      } else {
+        showToast(result.message ?? "No se pudo sacar al jugador.");
+      }
+      router.refresh();
+    });
   };
 
   if (!confirming) {
@@ -42,7 +43,7 @@ export function RemovePlayerButton({
           e.stopPropagation();
           setConfirming(true);
         }}
-        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label={`Sacar a ${playerName}`}
       >
         <UserMinus className="h-4 w-4" />
@@ -58,10 +59,15 @@ export function RemovePlayerButton({
           e.stopPropagation();
           handleRemove();
         }}
-        disabled={loading}
-        className="rounded-md px-2 py-1 text-xs font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        disabled={isPending}
+        className="rounded-md px-2 py-1 text-xs font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] flex items-center gap-1"
+        aria-label={`Confirmar sacar a ${playerName}`}
       >
-        {loading ? "..." : "Sacar"}
+        {isPending ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : (
+          "Sacar"
+        )}
       </button>
       <button
         onClick={(e) => {
@@ -69,8 +75,8 @@ export function RemovePlayerButton({
           e.stopPropagation();
           setConfirming(false);
         }}
-        disabled={loading}
-        className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        disabled={isPending}
+        className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Cancelar sacar jugador"
       >
         <X className="h-3.5 w-3.5" />
@@ -88,19 +94,20 @@ export function AssignSubstituteButton({
   substituteUserId: string;
   substituteName: string;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
 
-  const handleAssign = async () => {
-    setLoading(true);
-    const result = await assignSubstituteAction(turnId, substituteUserId);
-    if (result.status === "ok") {
-      showToast(`Promoviste a ${substituteName} a titular.`);
-    } else {
-      showToast(result.message ?? "No se pudo asignar al suplente.");
-    }
-    router.refresh();
+  const handleAssign = () => {
+    startTransition(async () => {
+      const result = await assignSubstituteAction(turnId, substituteUserId);
+      if (result.status === "ok") {
+        showToast(`Promoviste a ${substituteName} a titular.`);
+      } else {
+        showToast(result.message ?? "No se pudo asignar al suplente.");
+      }
+      router.refresh();
+    });
   };
 
   return (
@@ -110,12 +117,16 @@ export function AssignSubstituteButton({
         e.stopPropagation();
         handleAssign();
       }}
-      disabled={loading}
-      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+      disabled={isPending}
+      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-all disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
       aria-label={`Asignar a ${substituteName}`}
     >
-      <UserCheck className="h-3.5 w-3.5" />
-      {loading ? "..." : "Asignar"}
+      {isPending ? (
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      ) : (
+        <UserCheck className="h-3.5 w-3.5" />
+      )}
+      {isPending ? "Asignando..." : "Asignar"}
     </button>
   );
 }

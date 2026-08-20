@@ -31,4 +31,23 @@ describe("Chat Store System Messages", () => {
     expect(systemMsg?.userId).toBe("system-bot");
     expect(systemMsg?.alias).toBe("Sistema");
   });
+
+  it("stores system bot messages for turn updates and cancellations", async () => {
+    const turnId = "turn-test-system-events";
+    const editMsg = "✏️ El organizador actualizó los detalles del turno.";
+    const cancelMsg = "❌ Turno cancelado por el organizador.";
+
+    await sendSystemMessageAction(turnId, editMsg);
+    await sendSystemMessageAction(turnId, cancelMsg);
+
+    const messages = await getMessagesAction(turnId);
+
+    const editSystemMsg = messages.find((m) => m.text === editMsg);
+    expect(editSystemMsg).toBeDefined();
+    expect(editSystemMsg?.type).toBe("system");
+
+    const cancelSystemMsg = messages.find((m) => m.text === cancelMsg);
+    expect(cancelSystemMsg).toBeDefined();
+    expect(cancelSystemMsg?.type).toBe("system");
+  });
 });

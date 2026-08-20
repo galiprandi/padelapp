@@ -117,6 +117,11 @@ export async function updateTurnAction(turnId: string, input: CreateTurnInput) {
     revalidatePath(`/t/${turnId}`);
     revalidateTag("turns", "default");
 
+    await sendSystemMessageAction(
+      turnId,
+      "✏️ El organizador actualizó los detalles del turno.",
+    );
+
     return { status: "ok" };
   } catch (error) {
     console.error("Error updating turn:", error);
@@ -619,6 +624,11 @@ export async function cancelTurnAction(turnId: string) {
       body: `El organizador canceló el turno.`,
       url: turnUrl,
     });
+
+    await sendSystemMessageAction(
+      turnId,
+      "❌ Turno cancelado por el organizador.",
+    );
 
     return { status: "ok" };
   } catch (error) {
