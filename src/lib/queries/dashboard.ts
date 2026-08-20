@@ -7,6 +7,7 @@ export interface DashboardUserStats {
   id: string;
   displayName: string;
   alias: string | null;
+  level: number;
   rankingScore: number;
   rankingPosition: number | null;
   rankingDelta: number | null;
@@ -27,6 +28,7 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
       id: "p-01",
       displayName: "Agustín",
       alias: "agu",
+      level: 6,
       rankingScore: 1150,
       rankingPosition: 2,
       rankingDelta: 1,
@@ -42,6 +44,7 @@ export async function getDashboardUserStats(userId: string): Promise<DashboardUs
       id: users.id,
       displayName: users.displayName,
       alias: users.alias,
+      level: users.level,
       rankingScore: users.rankingScore,
       rankingPosition: users.rankingPosition,
       rankingDelta: users.rankingDelta,

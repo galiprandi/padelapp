@@ -10,6 +10,7 @@ import {
   isToday,
   isTomorrow,
   getGreeting,
+  getLevelBadgeLabel,
 } from "@/lib/utils";
 
 describe("getMatchWinner", () => {
@@ -156,6 +157,30 @@ describe("getGreeting", () => {
   it("returns one of the expected greetings", () => {
     const greeting = getGreeting();
     expect(["Buenas noches", "Buen día", "Buenas tardes"]).toContain(greeting);
+  });
+});
+
+describe("getLevelBadgeLabel", () => {
+  it("returns '1ª Cat.' for level 1", () => {
+    expect(getLevelBadgeLabel(1)).toBe("1ª Cat.");
+  });
+
+  it("returns '6ª Cat.' for level 6", () => {
+    expect(getLevelBadgeLabel(6)).toBe("6ª Cat.");
+  });
+
+  it("returns '8ª Cat.' for level 8", () => {
+    expect(getLevelBadgeLabel(8)).toBe("8ª Cat.");
+  });
+
+  it("returns default '6ª Cat.' when level is null or undefined", () => {
+    expect(getLevelBadgeLabel(null)).toBe("6ª Cat.");
+    expect(getLevelBadgeLabel(undefined)).toBe("6ª Cat.");
+  });
+
+  it("returns default '6ª Cat.' when level is out of range", () => {
+    expect(getLevelBadgeLabel(0)).toBe("6ª Cat.");
+    expect(getLevelBadgeLabel(9)).toBe("6ª Cat.");
   });
 });
 

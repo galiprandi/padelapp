@@ -42,6 +42,12 @@ export function getGreeting(): string {
   return "Buenas noches";
 }
 
+/** Map player category level integer (1-8) to Argentine Padel category label: 1 -> "1ª Cat.", 6 -> "6ª Cat.", etc. Defaults to "6ª Cat.". */
+export function getLevelBadgeLabel(level?: number | null): string {
+  if (!level || level < 1 || level > 8) return "6ª Cat.";
+  return `${level}ª Cat.`;
+}
+
 export function calculateWinRate(wins: number, matchesPlayed: number): number {
   if (!matchesPlayed || matchesPlayed === 0) return 0;
   return Math.round((wins / matchesPlayed) * 100);

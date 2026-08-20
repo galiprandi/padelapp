@@ -144,8 +144,8 @@ export default async function DashboardContent() {
           size={44}
           aria-hidden="true"
         />
-        <div className="space-y-0.5">
-          <Greeting name={displayName} />
+        <div className="space-y-0.5 min-w-0">
+          <Greeting name={displayName} level={user?.level} />
           <p className="text-sm text-muted-foreground">
             {isNewUser
               ? "Bienvenido. Empezá creando tu primer turno."
