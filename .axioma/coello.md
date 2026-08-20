@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 16 (Mock Padel Contacts Fallback & Player Recommendation Name Fallback):
+  - [x] 2026-08-20 — Hecho: Incorporado soporte de contactos mock en `getPadelContacts` bajo `AUTH_BYPASS` o `MOCK_AUTH` para sincronizar con `getTurnNetworkContacts`.
+  - [x] 2026-08-20 — Hecho: Mejorada la asignación de nombre de candidato en `getPlayersLikeYouRaw` (`src/app/network/actions.ts`) con fallback seguro a `alias` o `"Jugador"`.
 - Phase 15 (Interactive Player Graph Focus, Direct Connections Profile Links & Network Query Mocking):
   - [x] 2026-08-19 — Hecho: Interactividad de navegación enfocada en el grafo de contactos (centrado/zoom de cámara al tocar conexiones) y enlaces directos al perfil público (`/p/[userId]`).
   - [x] 2026-08-19 — Hecho: Expansión de datos mock para estadísticas de red de perfil público (`getPlayerNetworkStats`) bajo `AUTH_BYPASS` y `MOCK_AUTH`.
