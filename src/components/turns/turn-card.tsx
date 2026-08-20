@@ -130,13 +130,13 @@ export function TurnCard({
     <div
       className={cn(
         "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted active:scale-[0.98]",
-        isRecommended && "border-primary bg-primary/5",
+        isRecommended && "border-primary font-semibold shadow-sm",
         isPending && "opacity-70 pointer-events-none",
       )}
     >
       <Link
         href={`/t/${turn.id}`}
-        className="absolute inset-0 rounded-xl"
+        className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-label={`Ver turno en ${turn.club}`}
       />
         <div className="flex items-center gap-3">
@@ -246,7 +246,11 @@ export function TurnCard({
               <button
                 onClick={handleQuickJoin}
                 disabled={isPending}
-                aria-label={`Sumarse al turno en ${turn.club}`}
+                aria-label={
+                  canJoinAsSubstitute
+                    ? `Sumarse como suplente al turno en ${turn.club}`
+                    : `Sumarse al turno en ${turn.club}`
+                }
                 className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 {isPending ? (
