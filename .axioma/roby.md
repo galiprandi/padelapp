@@ -1,7 +1,8 @@
 ## 📋 BACKLOG
-- [ ] Implement a personalized greeting variation based on the user's selected level or play style if added post-MVP.
+- [ ] Add interactive level selection chips with category descriptions on `/me/profile` for fine-grained category customization.
 
 ## ✅ DONE
+- [x] 2026-08-20 — Player Category Level Badges & Dashboard/Profile Integration: Created `getLevelBadgeLabel` helper mapping user levels (1–8) to standard Argentine Padel category labels (`1ª Cat.` to `8ª Cat.`), backed by Vitest unit tests in `src/lib/__tests__/utils.test.ts`. Selected `users.level` in `getDashboardUserStats` query (`src/lib/queries/dashboard.ts`), and updated `Greeting` (`src/components/greeting.tsx`), `DashboardContent` (`src/app/(app)/me/dashboard-content.tsx`), and `PublicProfileContent` (`src/app/p/[userId]/page.tsx`) to display the MDS-compliant category badge.
 - [x] 2026-08-19 — Profile Action Buttons Tactile Polish & Player Avatar Unit Tests: Refactored photo action buttons in `ProfileForm` to add active press tactile scaling (`active:scale-[0.98] transition-all`), focus ring offset styling, and explicit screen reader `aria-label` attributes. Created comprehensive unit tests in `src/components/players/__tests__/player-avatar.test.ts` testing `getPlayerInitials` sanitization, Spanish accents/eñes, single/multi-word names, and special character filtering. (PR #roby/profile/avatar-tactile-polish-and-tests)
 - [x] 2026-08-17 — PWA & Push Notification Banner Tactile Polish: Standardized `PushPermissionPrompt` and `PwaInstallBanner` with active tactile scaling (`active:scale-[0.98] transition-all`), explicit focus-visible ring styles for keyboard accessibility, and proper `aria-hidden` attributes for decorative icons. (PR #roby/pwa/banner-tactile-polish)
 - [x] 2026-08-16 — Instant Profile Auto-Save & Onboarding Navigation Guard: Added `onBlur` event handler to the profile alias input in `ProfileForm` for immediate saving on focus loss, refactored `saveAlias` to return a `Promise<boolean>`, and updated the onboarding CTA button to await pending alias saves before routing to `/me`. Replaced synchronous `setState` in `useEffect` with lazy `useState` initializers, and added `pb-20` padding to `/me/profile` to keep CTAs clear of the fixed bottom navigation bar. (PR #roby/profile/instant-auto-save-onboarding-guard)
@@ -30,6 +31,10 @@
 - [x] 2026-07-30 — Biometric Login Access integration on primary Login page: Added PasskeyLoginButton to the main unauthenticated login layout under the Google OAuth connector to allow registered users to enter with Face ID / Touch ID immediately. (PR #roby/pwa/passkey-login-onboarding)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-20 - Player Category Level Badges & Dashboard/Profile Integration
+**Learning:** Displaying localized category badges (such as `6ª Cat.`) next to user names in dashboard greetings and public profile headers provides immediate competitive identity and context for padel players in Argentina without cluttering the UI shell. When adding database columns to cached query functions (`getDashboardUserStats`), ensure the field is selected in both mock bypass objects and SQL select queries.
+**Action:** Always include player category badges (`getLevelBadgeLabel`) alongside greetings and public profile summaries, and keep query selections aligned across cached query wrappers.
+
 ## 2026-08-19 - Profile Action Buttons Tactile Polish & Player Avatar Unit Tests
 **Learning:** Action text buttons inside forms require tactile active feedback (`active:scale-[0.98] transition-all`) and explicit screen reader labels (`aria-label`) so that both touch feedback on mobile screens and screen reader accessibility are maintained without visual clutter.
 **Action:** Include `active:scale-[0.98] transition-all` and descriptive `aria-label`s on action buttons across profile setting forms.

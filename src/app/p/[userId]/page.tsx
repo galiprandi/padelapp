@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { cn, getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner, getLevelBadgeLabel } from "@/lib/utils";
 import {
   getCachedHeadToHeadStats,
   getCachedPublicProfileUser,
@@ -191,11 +191,14 @@ async function PublicProfileContent({
                 />
               </div>
             </div>
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Badge variant="outline" className="border-border bg-muted text-muted-foreground font-bold px-2.5 py-0.5 text-xs">
+                {getLevelBadgeLabel(user.level)}
+              </Badge>
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-bold px-3 py-1"
+                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-bold px-3 py-0.5 text-xs"
                 >
                   Racha: {currentStreak} Victorias 🔥
                 </Badge>
