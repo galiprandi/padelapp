@@ -763,7 +763,7 @@ async function getPlayersLikeYouRaw(
   // 6. Map to the expected return structure directly!
   return topCandidates.map((c) => ({
     id: c.userId,
-    name: c.displayName,
+    name: c.displayName || c.alias || "Jugador",
     alias: c.alias,
     image: c.image,
     skillScore: Math.round(c.skillScore ?? 1000),

@@ -28,8 +28,33 @@ export async function getPadelContacts(
   userId: string,
   options?: { monthsBack?: number }
 ): Promise<PadelContact[]> {
-  if (process.env.AUTH_BYPASS === "true") {
-    return [];
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return [
+      {
+        id: "p-02",
+        displayName: "Fernando Belasteguín",
+        alias: "Bela",
+        image: null,
+        lastMatchAt: new Date(),
+        matchesTogether: 12,
+      },
+      {
+        id: "p-03",
+        displayName: "Diego Morales",
+        alias: "Gero",
+        image: null,
+        lastMatchAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        matchesTogether: 8,
+      },
+      {
+        id: "p-04",
+        displayName: "Facundo Lopez",
+        alias: "Facu",
+        image: null,
+        lastMatchAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        matchesTogether: 6,
+      },
+    ];
   }
   const monthsBack = options?.monthsBack ?? 12;
   const cutoff = new Date();

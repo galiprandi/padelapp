@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildContactsMap, getTurnNetworkContacts } from "@/lib/queries/contacts";
+import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts } from "@/lib/queries/contacts";
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
@@ -155,13 +155,31 @@ describe("buildContactsMap", () => {
   });
 });
 
-describe("getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPASS", () => {
-  it("returns mock network contacts under mock conditions", async () => {
+describe("getPadelContacts and getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPASS", () => {
+  it("returns mock turn network contacts under mock conditions", async () => {
     process.env.MOCK_AUTH = "true";
     const contacts = await getTurnNetworkContacts("turn-01");
     expect(contacts).toHaveLength(2);
     expect(contacts[0].id).toBe("p-03");
     expect(contacts[1].id).toBe("p-04");
+  });
+
+  it("returns mock padel contacts under MOCK_AUTH/AUTH_BYPASS conditions", async () => {
+    process.env.MOCK_AUTH = "true";
+    const contacts = await getPadelContacts("p-01");
+    expect(contacts).toHaveLength(3);
+    expect(contacts[0].id).toBe("p-02");
+    expect(contacts[0].displayName).toBe("Fernando Belasteguín");
+    expect(contacts[1].id).toBe("p-03");
+    expect(contacts[2].id).toBe("p-04");
+  });
+
+  it("returns cached mock padel contacts via getCachedPadelContacts", async () => {
+    process.env.AUTH_BYPASS = "true";
+    const contacts = await getCachedPadelContacts("p-01");
+    expect(contacts).toHaveLength(3);
+    expect(contacts[0].id).toBe("p-02");
+    expect(contacts[0].matchesTogether).toBe(12);
   });
 });
 
