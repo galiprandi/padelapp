@@ -8,6 +8,7 @@ export interface PublicProfileUser {
   displayName: string;
   alias: string | null;
   image: string | null;
+  level: number;
   rankingScore: number;
   rankingPosition: number | null;
   rankingDelta: number;
@@ -27,6 +28,7 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
       displayName: userId === "p-01" ? "Agustín" : userId === "p-02" ? "Fernando" : "Jugador Red",
       alias: userId === "p-01" ? "agu" : userId === "p-02" ? "Bela" : null,
       image: null,
+      level: 6,
       rankingScore: userId === "p-01" ? 1150 : 1200,
       rankingPosition: userId === "p-01" ? 2 : 1,
       rankingDelta: userId === "p-01" ? 2 : 0,
@@ -42,6 +44,7 @@ export async function getPublicProfileUser(userId: string): Promise<PublicProfil
       displayName: users.displayName,
       alias: users.alias,
       image: users.image,
+      level: users.level,
       rankingScore: users.rankingScore,
       rankingPosition: users.rankingPosition,
       rankingDelta: users.rankingDelta,
