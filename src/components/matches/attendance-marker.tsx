@@ -37,19 +37,22 @@ const STATUS_CONFIG: Record<
     label: "Presente",
     icon: Check,
     color: "text-muted-foreground",
-    activeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+    activeColor:
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 font-bold",
   },
   LATE: {
     label: "Tarde",
     icon: Clock,
     color: "text-muted-foreground",
-    activeColor: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+    activeColor:
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold",
   },
   NO_SHOW: {
     label: "No asistió",
     icon: X,
     color: "text-muted-foreground",
-    activeColor: "bg-red-500/10 text-red-600 border-red-500/30",
+    activeColor:
+      "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800 font-bold",
   },
 };
 
@@ -190,6 +193,7 @@ export function AttendanceMarker({
                     <button
                       type="button"
                       role="radio"
+                      aria-label={`Calificar a ${player.name} como más fuerte`}
                       aria-checked={feedbacks[player.userId] === "STRONGER"}
                       onClick={() => {
                         setFeedbacks((prev) => ({
@@ -203,8 +207,8 @@ export function AttendanceMarker({
                       className={cn(
                         "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         feedbacks[player.userId] === "STRONGER"
-                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                          ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                          : "border-border bg-card text-muted-foreground hover:bg-muted",
                       )}
                     >
                       Más fuerte 💪
@@ -212,6 +216,7 @@ export function AttendanceMarker({
                     <button
                       type="button"
                       role="radio"
+                      aria-label={`Calificar a ${player.name} como más flojo`}
                       aria-checked={feedbacks[player.userId] === "WEAKER"}
                       onClick={() => {
                         setFeedbacks((prev) => ({
@@ -223,8 +228,8 @@ export function AttendanceMarker({
                       className={cn(
                         "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                         feedbacks[player.userId] === "WEAKER"
-                          ? "bg-amber-500/10 text-amber-600 border-amber-500/30"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted",
+                          ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                          : "border-border bg-card text-muted-foreground hover:bg-muted",
                       )}
                     >
                       Más flojo 📉
