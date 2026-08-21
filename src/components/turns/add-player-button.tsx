@@ -6,6 +6,7 @@ import { UserPlus, Search, Loader2, X, Check } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { addPlayerAction } from "@/app/(app)/turnos/actions";
 import { useToast } from "@/components/toast/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 interface PlayerOption {
   id: string;
@@ -61,12 +62,16 @@ export function AddPlayerButton({
         );
         const data = await res.json();
         if (active && data.players) {
-          // Filter out players already in the turn
-          setResults(
-            data.players.filter(
-              (p: PlayerOption) => !existingPlayerIds.includes(p.id),
-            ),
+          // Filter out players already in the turn and sort contacts to top
+          const filtered = data.players.filter(
+            (p: PlayerOption) => !existingPlayerIds.includes(p.id),
           );
+          filtered.sort((a: PlayerOption, b: PlayerOption) => {
+            if (a.isContact && !b.isContact) return -1;
+            if (!a.isContact && b.isContact) return 1;
+            return 0;
+          });
+          setResults(filtered);
         }
       } catch {
         if (active) setResults([]);
@@ -185,8 +190,13 @@ export function AddPlayerButton({
                     aria-hidden="true"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate">
+                    <p className="text-sm font-bold truncate flex items-center gap-1.5">
                       {player.displayName}
+                      {player.isContact && (
+                        <Badge variant="primary">
+                          Contacto
+                        </Badge>
+                      )}
                     </p>
                     {player.email && (
                       <p className="text-xs text-muted-foreground truncate">
