@@ -108,6 +108,7 @@ export interface EditableProfileData {
   alias: string | null;
   image: string | null;
   email: string;
+  level: number;
   matchesPlayed: number;
 }
 
@@ -121,6 +122,7 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
       alias: "agu",
       image: null,
       email: "agu@mock.test",
+      level: 6,
       matchesPlayed: 0,
     };
   }
@@ -130,6 +132,7 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
       alias: users.alias,
       image: users.image,
       email: users.email,
+      level: users.level,
       matchesPlayed: users.matchesPlayed,
     })
     .from(users)

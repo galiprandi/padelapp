@@ -70,6 +70,7 @@ async function ProfileFormSection() {
     <ProfileForm
       initialAlias={user.alias ?? ""}
       initialImage={googleAvatarUrl ?? user.image}
+      initialLevel={user.level ?? 6}
       googleAvatarUrl={googleAvatarUrl}
       displayName={user.displayName}
       email={user.email}

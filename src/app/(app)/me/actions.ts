@@ -11,12 +11,13 @@ const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
 
 export type UpdateProfileResponse =
-  | { status: "ok"; alias: string | null; image: string | null }
+  | { status: "ok"; alias: string | null; image: string | null; level: number }
   | { status: "error"; message: string };
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
   imageInput?: string | null,
+  levelInput?: number | null,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -25,10 +26,21 @@ export async function updateUserProfileAction(
 
   const trimmed = capitalizeName(aliasInput ?? "");
 
+  let levelToSave = 6;
+  if (levelInput !== undefined && levelInput !== null) {
+    if (levelInput < 1 || levelInput > 8) {
+      return {
+        status: "error",
+        message: "La categoría debe estar entre 1ª Cat. y 8ª Cat.",
+      };
+    }
+    levelToSave = levelInput;
+  }
+
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     const aliasToSave = trimmed.length === 0 ? null : trimmed;
     const imageToSave = imageInput?.trim() || null;
-    return { status: "ok", alias: aliasToSave, image: imageToSave };
+    return { status: "ok", alias: aliasToSave, image: imageToSave, level: levelToSave };
   }
 
   if (
@@ -44,9 +56,17 @@ export async function updateUserProfileAction(
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
   const imageToSave = imageInput?.trim() || null;
 
+  const updateFields: Record<string, unknown> = {
+    alias: aliasToSave,
+    image: imageToSave,
+  };
+  if (levelInput !== undefined && levelInput !== null) {
+    updateFields.level = levelToSave;
+  }
+
   await db
     .update(users)
-    .set({ alias: aliasToSave, image: imageToSave })
+    .set(updateFields)
     .where(eq(users.id, session.user.id));
 
   revalidatePath("/me");
@@ -54,5 +74,5 @@ export async function updateUserProfileAction(
   revalidatePath("/ranking");
   revalidateTag("ranking", "default");
 
-  return { status: "ok", alias: aliasToSave, image: imageToSave };
+  return { status: "ok", alias: aliasToSave, image: imageToSave, level: levelToSave };
 }
