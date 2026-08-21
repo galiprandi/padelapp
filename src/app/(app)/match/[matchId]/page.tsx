@@ -271,7 +271,7 @@ async function MatchContent({ params }: MatchPageProps) {
           <>
             <div className="flex gap-2">
               <Button asChild variant="outline" className="flex-1 h-10">
-                <Link href={`/match/${match.id}/edit`}>
+                <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
                 </Link>

@@ -287,6 +287,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
               {showDetailLink && matchDetailUrl ? (
                 <Link
                   href={matchDetailUrl}
+                  prefetch={true}
                   className="flex items-center gap-0.5 text-xs font-semibold text-primary"
                   aria-label={`Ver detalle del partido del ${formattedDate || ""}`}
                 >
@@ -336,6 +337,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                       <Link
                         key={`team-${team.id}-player-${player.id}`}
                         href={`/p/${player.userId}`}
+                        prefetch={true}
                         className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
                         aria-label={`Ver perfil de ${player.name}`}
                       >
@@ -360,6 +362,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                         {player.userId ? (
                           <Link
                             href={`/p/${player.userId}`}
+                            prefetch={true}
                             className={cn(
                               "truncate hover:text-primary",
                               isViewer && "text-primary",
