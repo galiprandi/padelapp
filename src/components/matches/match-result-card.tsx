@@ -219,7 +219,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     startTransition(async () => {
       const res = await confirmMatchResultAction(match.id);
       if (res.status === "ok") {
-        showToast("Confirmaste el resultado.", { type: "success" });
+        showToast("Confirmaste el resultado. 🏆", { type: "success" });
         router.refresh();
       } else {
         showToast(res.message || "No pudimos confirmar el resultado.", { type: "error" });
@@ -371,7 +371,11 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                           <span className="truncate">{player.name}</span>
                         )}
                         {player.side && (
-                          <span className="inline-flex items-center shrink-0 text-xs font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none">
+                          <span
+                            className="inline-flex items-center shrink-0 text-xs font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none"
+                            title={player.side === "RIGHT" ? "Lado derecho" : "Lado revés"}
+                            aria-label={player.side === "RIGHT" ? "Lado derecho" : "Lado revés"}
+                          >
                             {player.side === "RIGHT" ? "Der" : "Rev"}
                           </span>
                         )}

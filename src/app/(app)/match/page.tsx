@@ -182,11 +182,18 @@ async function MatchList() {
               <p className="text-xs text-muted-foreground">Win Rate</p>
               <p className="text-xl font-bold text-primary">{winRate}%</p>
             </div>
-            {currentStreak >= 2 && (
+            {currentStreak >= 2 ? (
               <div>
                 <p className="text-xs text-muted-foreground">Racha</p>
                 <p className="text-xl font-bold text-primary">
                   {currentStreak}W
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-xs text-muted-foreground">Victorias</p>
+                <p className="text-xl font-bold text-foreground">
+                  {wins}
                 </p>
               </div>
             )}

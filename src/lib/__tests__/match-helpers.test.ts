@@ -191,3 +191,37 @@ describe("computeBestPartnerAndNemesis", () => {
     expect(nemesis.losses).toBe(1);
   });
 });
+
+describe("summaryGridMetricChoice", () => {
+  it("selects streak metric when current streak is 2 or higher", () => {
+    const currentStreak = 3;
+    const wins = 5;
+
+    const metric = currentStreak >= 2 ? { label: "Racha", value: `${currentStreak}W` } : { label: "Victorias", value: `${wins}` };
+
+    expect(metric.label).toBe("Racha");
+    expect(metric.value).toBe("3W");
+  });
+
+  it("selects total wins metric when current streak is less than 2", () => {
+    const currentStreak = 1;
+    const wins = 4;
+
+    const metric = currentStreak >= 2 ? { label: "Racha", value: `${currentStreak}W` } : { label: "Victorias", value: `${wins}` };
+
+    expect(metric.label).toBe("Victorias");
+    expect(metric.value).toBe("4");
+  });
+});
+
+describe("sideBadgeAccessibility", () => {
+  it("formats side labels and titles correctly for RIGHT and LEFT", () => {
+    const getSideInfo = (side: "RIGHT" | "LEFT") => ({
+      text: side === "RIGHT" ? "Der" : "Rev",
+      label: side === "RIGHT" ? "Lado derecho" : "Lado revés",
+    });
+
+    expect(getSideInfo("RIGHT")).toEqual({ text: "Der", label: "Lado derecho" });
+    expect(getSideInfo("LEFT")).toEqual({ text: "Rev", label: "Lado revés" });
+  });
+});
