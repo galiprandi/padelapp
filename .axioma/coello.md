@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 17 (Head-to-Head Connection Records & MDS Styling in Graph View):
+  - [x] 2026-08-21 — Hecho: Creada la función `calculateConnectionRecord` en `src/app/network/graph-utils.ts` para calcular historiales de enfrentamientos/parejas (`V` - `D` o turnos) desde la perspectiva del jugador seleccionado.
+  - [x] 2026-08-21 — Hecho: Integración en el panel lateral de detalles de nodo en `GraphView` (`src/app/network/graph-view.tsx`) con diseño de insignias sólidas MDS y tipografía legible.
 - Phase 16 (Mock Padel Contacts Fallback & Player Recommendation Name Fallback):
   - [x] 2026-08-20 — Hecho: Incorporado soporte de contactos mock en `getPadelContacts` bajo `AUTH_BYPASS` o `MOCK_AUTH` para sincronizar con `getTurnNetworkContacts`.
   - [x] 2026-08-20 — Hecho: Mejorada la asignación de nombre de candidato en `getPlayersLikeYouRaw` (`src/app/network/actions.ts`) con fallback seguro a `alias` o `"Jugador"`.
