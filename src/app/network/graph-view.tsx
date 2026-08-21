@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Search, X, CalendarDays, Users2, Globe2 } from "lucide-react";
 import type { GraphData, GraphNode } from "./actions";
 import { capitalizeName, cn } from "@/lib/utils";
+import { linkNodeId, calculateConnectionRecord } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -51,10 +52,6 @@ function getInitials(name: string): string {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }
   return name.slice(0, 2).toUpperCase();
-}
-
-function linkNodeId(val: string | { id: string }): string {
-  return typeof val === "string" ? val : val.id;
 }
 
 function normalizeText(text: string): string {
@@ -718,11 +715,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     ? linkNodeId(link.target)
                     : linkNodeId(link.source);
                 const other = graphData.nodes.find((n) => n.id === otherId);
-                const isPartner =
-                  link.partnerMatches > 0 && link.rivalMatches === 0;
-                const isRival =
-                  link.rivalMatches > 0 && link.partnerMatches === 0;
                 const otherName = capitalizeName(other?.name || other?.alias || "—");
+                const record = calculateConnectionRecord(link, selectedNode ?? "");
 
                 return (
                   <div
@@ -736,27 +730,21 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       aria-label={`Enfocar a ${otherName} en el grafo`}
                     >
                       <span
-                        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0"
-                        style={{
-                          backgroundColor: isPartner
-                            ? "rgba(16,185,129,0.1)"
-                            : isRival
-                              ? "rgba(239,68,68,0.1)"
-                              : "rgba(245,158,11,0.1)",
-                          color: isPartner
-                            ? "#10b981"
-                            : isRival
-                              ? "#ef4444"
-                              : "#f59e0b",
-                        }}
+                        className={cn(
+                          "inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0 border",
+                          record.type === "partner" && "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
+                          record.type === "rival" && "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800",
+                          record.type === "mixed" && "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
+                          record.type === "turns" && "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-800"
+                        )}
                       >
-                        {isPartner ? "P" : isRival ? "R" : "M"}
+                        {record.type === "partner" ? "P" : record.type === "rival" ? "R" : record.type === "mixed" ? "M" : "T"}
                       </span>
                       <span className="text-xs font-medium text-foreground truncate">
                         {otherName}
                       </span>
-                      <span className="text-muted-foreground/50 text-xs tabular-nums ml-auto shrink-0 pr-1">
-                        {link.strength}×
+                      <span className="text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1">
+                        {record.formattedRecord}
                       </span>
                     </button>
                     <Link

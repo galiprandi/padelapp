@@ -180,3 +180,111 @@ describe("applyFeedbackToScore", () => {
     expect(score).toBe(1000);
   });
 });
+
+import { calculateConnectionRecord } from "@/app/network/graph-utils";
+import type { GraphLink } from "@/app/network/actions";
+
+describe("calculateConnectionRecord", () => {
+  it("calculates partner win-loss record correctly", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 4,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 3,
+      lossesTogether: 1,
+      turnsTogether: 2,
+      strength: 6,
+    };
+
+    const record = calculateConnectionRecord(link, "p-01");
+    expect(record.type).toBe("partner");
+    expect(record.wins).toBe(3);
+    expect(record.losses).toBe(1);
+    expect(record.formattedRecord).toBe("3V - 1D");
+  });
+
+  it("calculates rival head-to-head record from source player perspective", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 5,
+      partnerMatches: 0,
+      winsA: 3,
+      winsB: 2,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 1,
+      strength: 6,
+    };
+
+    const recordSource = calculateConnectionRecord(link, "p-01");
+    expect(recordSource.type).toBe("rival");
+    expect(recordSource.wins).toBe(3);
+    expect(recordSource.losses).toBe(2);
+    expect(recordSource.formattedRecord).toBe("3V - 2D");
+  });
+
+  it("calculates rival head-to-head record from target player perspective", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 5,
+      partnerMatches: 0,
+      winsA: 3,
+      winsB: 2,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 1,
+      strength: 6,
+    };
+
+    const recordTarget = calculateConnectionRecord(link, "p-02");
+    expect(recordTarget.type).toBe("rival");
+    expect(recordTarget.wins).toBe(2);
+    expect(recordTarget.losses).toBe(3);
+    expect(recordTarget.formattedRecord).toBe("2V - 3D");
+  });
+
+  it("calculates mixed connection record combining rival and partner matches", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 3,
+      partnerMatches: 2,
+      winsA: 2,
+      winsB: 1,
+      winsTogether: 2,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 5,
+    };
+
+    const record = calculateConnectionRecord(link, "p-01");
+    expect(record.type).toBe("mixed");
+    expect(record.wins).toBe(4); // 2 rival wins + 2 partner wins
+    expect(record.losses).toBe(1); // 1 rival loss + 0 partner losses
+    expect(record.formattedRecord).toBe("4V - 1D");
+  });
+
+  it("formats turns-only connection when no confirmed matches exist", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 0,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 3,
+      strength: 3,
+    };
+
+    const record = calculateConnectionRecord(link, "p-01");
+    expect(record.type).toBe("turns");
+    expect(record.formattedRecord).toBe("3 turnos");
+  });
+});
