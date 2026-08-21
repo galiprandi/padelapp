@@ -55,6 +55,7 @@ export function RankingListItem({
   return (
     <Link
       href={`/p/${player.id}?backUrl=/ranking`}
+      prefetch={true}
       className={cn(
         "flex items-center gap-3 rounded-xl border px-4 py-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         isViewer ? "border-primary/30 bg-primary/5" : "border-border bg-card",

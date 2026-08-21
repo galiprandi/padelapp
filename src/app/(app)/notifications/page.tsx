@@ -79,7 +79,7 @@ async function NotificationsList() {
           description="No tenés acciones pendientes por ahora."
           action={
             <Button asChild className="w-full">
-              <Link href="/me">Volver al inicio</Link>
+              <Link href="/me" prefetch={true}>Volver al inicio</Link>
             </Button>
           }
         />

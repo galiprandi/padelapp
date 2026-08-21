@@ -76,7 +76,7 @@ export function MatchNavigation({
               : "",
           )}
         >
-          <Link href={secondaryHref}>{secondaryButtonText}</Link>
+          <Link href={secondaryHref} prefetch={true}>{secondaryButtonText}</Link>
         </Button>
       ) : (
         <Button

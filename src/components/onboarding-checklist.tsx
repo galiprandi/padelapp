@@ -181,7 +181,7 @@ export function OnboardingChecklist({
                   className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                   aria-label="Ir a configurar alias"
                 >
-                  <Link href="/me/profile">Configurar alias</Link>
+                  <Link href="/me/profile" prefetch={true}>Configurar alias</Link>
                 </Button>
               </div>
             )}
@@ -224,7 +224,7 @@ export function OnboardingChecklist({
                   className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                   aria-label="Crear tu primer turno de pádel"
                 >
-                  <Link href="/turnos/nuevo">Crear turno</Link>
+                  <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
                 </Button>
               </div>
             )}
@@ -284,7 +284,7 @@ export function OnboardingChecklist({
                     className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
                     aria-label="Ver cómo instalar la aplicación"
                   >
-                    <Link href="/install">Ver cómo instalar</Link>
+                    <Link href="/install" prefetch={true}>Ver cómo instalar</Link>
                   </Button>
                 )}
               </div>
