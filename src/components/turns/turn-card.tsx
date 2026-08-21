@@ -17,6 +17,7 @@ import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { type PadelContact } from "@/lib/queries";
+import { getOpenSlotsBadgeText } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
   turn: {
@@ -72,6 +73,7 @@ export function TurnCard({
   const isTomorrowDate = mounted && isTomorrow(dateObj);
 
   const isFull = turn.players.length >= turn.maxPlayers;
+  const openSlots = Math.max(0, turn.maxPlayers - turn.players.length);
   const canJoinAsSubstitute =
     isFull &&
     !isJoined &&
@@ -200,12 +202,16 @@ export function TurnCard({
 
           {/* Status badge */}
           <div className="shrink-0">
-            {canJoin ? null : isSubstitute ? (
+            {isSubstitute ? (
               <Badge variant="default">Suplente</Badge>
             ) : isJoined ? (
               <Badge variant="primary">Inscripto</Badge>
             ) : turn.status === "FULL" ? (
               <Badge variant="default">Completo</Badge>
+            ) : openSlots > 0 ? (
+              <Badge variant={openSlots === 1 ? "warning" : "outline"}>
+                {getOpenSlotsBadgeText(openSlots)}
+              </Badge>
             ) : null}
           </div>
         </div>

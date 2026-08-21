@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-21 — Turn Salvage UX & WhatsApp Invite Utility Standardization (bela/turnos/salvage-ux-and-whatsapp-utility)
 - [x] 2026-08-19 — Turn Chat Quick Coordination Suggestion Chips & Date Safety (bela/turnos/chat-quick-suggestions)
 - [x] 2026-08-18 — OpenToNetworkButton Branded Toast Feedback & Router Revalidation (bela/turnos/open-to-network-toast-ux)
 - [x] 2026-08-17 — Turn Card Quick-Join Toast Feedback & LeaveTurnButton MDS Refactor (bela/turnos/quick-join-toast-and-leave-turn-ux)
@@ -35,6 +36,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-21 - Turn Salvage UX & WhatsApp Invite Utility Standardization
+**Learning:** Extracting message-formatting logic (like WhatsApp invite text generation and missing player badge labels) into pure, decoupled utilities ensures deterministic unit testing without rendering full React component hierarchies. Surfacing missing slot badges ('Falta 1' / 'Faltan X') on high-level turn listings (`TurnCard`) gives immediate visual urgency to incomplete turns, driving turn salvage conversion across the platform. Highlighting and prioritizing network contacts when organizers manually add players further reduces friction during offline confirmations.
+**Action:** Extract text generation into pure utilities with comprehensive Vitest coverage and leverage visual badges on listing cards to highlight salvage opportunities.
+
 ## 2026-08-19 - Turn Chat Quick Coordination Suggestion Chips & Date Safety
 **Learning:** Adding 1-tap quick coordination suggestion chips (`CHAT_QUICK_SUGGESTIONS`) above the Turn Chat input bar significantly streamlines mobile pre-turn coordination (e.g. reporting delays, checking ball availability, or confirming attendance) without forcing players to type out full messages manually. Ensuring input date fields or API responses are normalized via `new Date(val)` before calling `.toLocaleDateString()` prevents runtime string type mismatches when objects pass through Next.js server/client serialization boundaries.
 **Action:** Always provide accessible, 1-tap quick action chips for frequent mobile communication workflows and safely wrap dynamic date props with `new Date()` before invoking date-formatting methods.
@@ -120,7 +125,7 @@
 **Action:** Unificar siempre el layout estructural y los componentes de navegación en flujos hermanos y evitar translucidez o layouts planos inconsistentes.
 
 ## 2026-07-25 - Botón de Calendario y Reducción de Ausencias
-**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidentales o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansion sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
+**Learning:** Permitir que los jugadores inscriptos y los creadores agreguen sus partidos directamente a sus calendarios (como Google Calendar o iCal) sirve como un elemento de retención clave y disminuye de forma drástica las cancelaciones accidental o bajas por olvido. Para respetar el Minimal Design System (MDS), la implementación debe ser 100% nativa en el navegador, sin servicios externos que ralenticen el renderizado, utilizando componentes con estados de expansion sólidos (`bg-muted`), botones táctiles con `active:scale-[0.98]` y etiquetas de accesibilidad en español.
 **Action:** Buscar siempre integrar herramientas de utilidad inmediata en el contexto donde el usuario toma decisiones críticas (ej: debajo de la información del turno, no aislado).
 
 ## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"
