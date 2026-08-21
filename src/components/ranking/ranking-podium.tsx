@@ -91,8 +91,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
                 <span className="truncate">{isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}</span>
                 {secondStreak >= 2 && (
-                  <span title={`Racha de ${secondStreak} victorias`}>
-                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />
+                  <span
+                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    title={`Racha de ${secondStreak} victorias`}
+                    aria-label={`Racha de ${secondStreak} victorias`}
+                  >
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
+                    <span className="text-[11px] leading-none">{secondStreak}</span>
                   </span>
                 )}
               </span>
@@ -146,8 +151,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               <span className={cn("text-xs font-bold truncate w-full text-center flex items-center justify-center gap-0.5", isFirstViewer ? "text-primary" : "text-foreground")}>
                 <span className="truncate">{isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}</span>
                 {firstStreak >= 2 && (
-                  <span title={`Racha de ${firstStreak} victorias`}>
-                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0 animate-pulse" />
+                  <span
+                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    title={`Racha de ${firstStreak} victorias`}
+                    aria-label={`Racha de ${firstStreak} victorias`}
+                  >
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
+                    <span className="text-[11px] leading-none">{firstStreak}</span>
                   </span>
                 )}
               </span>
@@ -206,8 +216,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
                 <span className="truncate">{isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}</span>
                 {thirdStreak >= 2 && (
-                  <span title={`Racha de ${thirdStreak} victorias`}>
-                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500 shrink-0" />
+                  <span
+                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    title={`Racha de ${thirdStreak} victorias`}
+                    aria-label={`Racha de ${thirdStreak} victorias`}
+                  >
+                    <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
+                    <span className="text-[11px] leading-none">{thirdStreak}</span>
                   </span>
                 )}
               </span>
