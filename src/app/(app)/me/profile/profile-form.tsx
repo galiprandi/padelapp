@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { CATEGORIES, getCategoryDefinition } from "@/lib/constants/categories";
 
 const MIN_ALIAS_LENGTH = 2;
 const MAX_ALIAS_LENGTH = 30;
@@ -35,6 +37,7 @@ function validateAlias(value: string): string | null {
 interface ProfileFormProps {
   initialAlias: string;
   initialImage: string | null;
+  initialLevel?: number;
   googleAvatarUrl?: string | null;
   displayName?: string | null;
   email?: string | null;
@@ -51,6 +54,7 @@ function getInitials(name: string | null | undefined): string {
 export function ProfileForm({
   initialAlias,
   initialImage,
+  initialLevel = 6,
   googleAvatarUrl,
   displayName,
   email,
@@ -63,7 +67,13 @@ export function ProfileForm({
 
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
+  const [level, setLevel] = useState(initialLevel);
   const [isSaving, startSaving] = useTransition();
+
+  const levelRef = useRef(level);
+  useEffect(() => {
+    levelRef.current = level;
+  }, [level]);
   const [checklistDismissed, setChecklistDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("onboarding-checklist-dismissed") === "true";
@@ -88,7 +98,7 @@ export function ProfileForm({
     previousAliasRef.current = lastSavedAlias.current;
     return new Promise((resolve) => {
       startSaving(async () => {
-        const response = await updateUserProfileAction(targetAlias, targetImage);
+        const response = await updateUserProfileAction(targetAlias, targetImage, levelRef.current);
         if (response.status === "ok") {
           const savedAlias = response.alias ?? "";
           lastSavedAlias.current = savedAlias;
@@ -121,7 +131,7 @@ export function ProfileForm({
     const previousImage = image;
     setImage(null);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, null);
+      const response = await updateUserProfileAction(alias, null, levelRef.current);
       if (response.status === "ok") {
         showToast("Foto eliminada", {
           duration: 4000,
@@ -130,7 +140,7 @@ export function ProfileForm({
             onClick: () => {
               setImage(previousImage);
               startSaving(async () => {
-                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                const undoResponse = await updateUserProfileAction(alias, previousImage, levelRef.current);
                 if (undoResponse.status === "ok") {
                   showToast("Foto restablecida", { duration: 2000 });
                 } else {
@@ -144,6 +154,22 @@ export function ProfileForm({
       } else {
         showToast("No pudimos eliminar la foto.", { type: "error" });
         setImage(previousImage);
+      }
+    });
+  }
+
+  function handleLevelChange(newLevel: number) {
+    if (newLevel === level || isSaving) return;
+    const previousLevel = level;
+    setLevel(newLevel);
+    startSaving(async () => {
+      const response = await updateUserProfileAction(alias, image, newLevel);
+      if (response.status === "ok") {
+        const cat = getCategoryDefinition(newLevel);
+        showToast(`Categoría actualizada a ${cat.shortLabel}`, { duration: 3000 });
+      } else {
+        showToast(response.message || "No pudimos guardar la categoría.", { type: "error" });
+        setLevel(previousLevel);
       }
     });
   }
@@ -170,7 +196,7 @@ export function ProfileForm({
     const previousImage = image;
     setImage(googleAvatarUrl);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, googleAvatarUrl);
+      const response = await updateUserProfileAction(alias, googleAvatarUrl, levelRef.current);
       if (response.status === "ok") {
         showToast("Foto actualizada", {
           duration: 4000,
@@ -179,7 +205,7 @@ export function ProfileForm({
             onClick: () => {
               setImage(previousImage);
               startSaving(async () => {
-                const undoResponse = await updateUserProfileAction(alias, previousImage);
+                const undoResponse = await updateUserProfileAction(alias, previousImage, levelRef.current);
                 if (undoResponse.status === "ok") {
                   showToast("Foto restablecida", { duration: 2000 });
                 } else {
@@ -345,6 +371,58 @@ export function ProfileForm({
             {aliasError}
           </p>
         )}
+      </div>
+
+      {/* Categoría de Juego */}
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-foreground">
+            Categoría de juego
+          </Label>
+          <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+            {getCategoryDefinition(level).shortLabel}
+          </span>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Seleccioná tu categoría habitual para buscar partidos, armar turnos y medir tu nivel en la red.
+        </p>
+
+        {/* Chips de selección 1ª a 8ª Cat. */}
+        <div className="grid grid-cols-4 gap-2 pt-1" role="radiogroup" aria-label="Categoría de juego">
+          {CATEGORIES.map((cat) => {
+            const isSelected = level === cat.level;
+            return (
+              <button
+                key={cat.level}
+                type="button"
+                onClick={() => handleLevelChange(cat.level)}
+                disabled={isSaving}
+                aria-checked={isSelected}
+                role="radio"
+                aria-label={`${cat.label}: ${cat.description}`}
+                className={cn(
+                  "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
+                  isSelected
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                )}
+              >
+                {cat.shortLabel}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Categoría actual descripción */}
+        <div className="mt-2 rounded-lg bg-muted/60 border border-border/60 p-3 space-y-1">
+          <p className="text-xs font-bold text-foreground">
+            {getCategoryDefinition(level).label}
+          </p>
+          <p className="text-xs text-muted-foreground leading-normal">
+            {getCategoryDefinition(level).description}
+          </p>
+        </div>
       </div>
 
       {/* Datos de la cuenta (solo lectura) */}
