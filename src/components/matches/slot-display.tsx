@@ -48,81 +48,71 @@ export function SlotDisplay({
 
   return (
     <div
-      role="button"
-      tabIndex={0}
-      onClick={() => onSlotClick(team, index)}
-      onKeyDown={(event) => {
-        if (event.key === " " || event.key === "Enter") {
-          event.preventDefault();
-          onSlotClick(team, index);
-        }
-      }}
       className={cn(
-        "group relative flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2",
+        "group relative flex items-center justify-between rounded-xl border p-1 transition-all",
         isActive
-          ? "border-primary bg-primary/5"
+          ? "border-primary bg-card"
           : isUser
-            ? "border-primary/20 bg-primary/5"
-            : "border-border bg-card hover:bg-muted",
+            ? "border-border bg-card"
+            : "border-border bg-card",
       )}
     >
-      <div
+      <button
+        type="button"
+        onClick={() => onSlotClick(team, index)}
+        aria-label={`Seleccionar Pareja ${team}, ${sideLabel}: ${displayName}`}
         className={cn(
-          "relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold transition-colors",
-          isActive
-            ? "bg-primary text-primary-foreground"
-            : isUser
-              ? "bg-primary/20 text-primary"
-              : "text-muted-foreground",
+          "flex flex-1 items-center gap-3 rounded-lg px-3 py-2 text-left transition-all active:scale-[0.98]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+          isActive ? "bg-muted font-semibold" : "hover:bg-muted",
         )}
       >
-        {slot?.kind === "user" && slot.player.image ? (
-          <Image
-            alt={slot.player.displayName}
-            src={slot.player.image}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-lg object-cover"
-          />
-        ) : slot?.kind === "user" ? (
-          <span className="text-sm">
-            {avatarFallback(slot.player.displayName)}
-          </span>
-        ) : (
-          <span className="text-sm">{position + 1}</span>
-        )}
-      </div>
-
-      <div className="flex flex-col flex-1 min-w-0">
-        <p
+        <div
           className={cn(
-            "truncate text-sm font-semibold leading-tight",
-            isActive || isUser ? "text-foreground" : "text-foreground/80",
+            "relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold transition-colors",
+            isActive
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground",
           )}
         >
-          {displayName}
-        </p>
-        <span className="text-xs text-muted-foreground mt-0.5">
-          {isUser ? sideLabel : `${sideLabel} · Cupo pendiente`}
-        </span>
-      </div>
+          {slot?.kind === "user" && slot.player.image ? (
+            <Image
+              alt={slot.player.displayName}
+              src={slot.player.image}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-lg object-cover"
+            />
+          ) : slot?.kind === "user" ? (
+            <span className="text-sm">
+              {avatarFallback(slot.player.displayName)}
+            </span>
+          ) : (
+            <span className="text-sm">{position + 1}</span>
+          )}
+        </div>
 
-      <div className="flex items-center gap-1">
+        <div className="flex flex-col flex-1 min-w-0">
+          <p className="truncate text-sm font-semibold leading-tight text-foreground">
+            {displayName}
+          </p>
+          <span className="text-xs text-muted-foreground mt-0.5">
+            {isUser ? sideLabel : `${sideLabel} · Cupo pendiente`}
+          </span>
+        </div>
+      </button>
+
+      <div className="flex items-center gap-1 pr-1">
         {isSelf ? (
-          <div className="flex h-8 items-center px-2.5 rounded-lg bg-primary/10 border border-primary/20">
-            <span className="text-xs font-semibold text-primary">Vos</span>
+          <div className="flex h-8 items-center px-2.5 rounded-lg bg-muted border border-border">
+            <span className="text-xs font-bold text-foreground">Vos</span>
           </div>
         ) : null}
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          className={cn(
-            "h-9 w-9 rounded-lg transition-colors",
-            isActive
-              ? "bg-primary/10 text-primary hover:bg-primary/20"
-              : "text-muted-foreground hover:bg-muted",
-          )}
+          className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           aria-label={
             slot?.kind === "placeholder"
               ? "Gestionar nombre del cupo"
@@ -130,12 +120,9 @@ export function SlotDisplay({
                 ? "Cambiar jugador"
                 : "Asignar jugador"
           }
-          onClick={(event) => {
-            event.stopPropagation();
-            onManageClick(team, index);
-          }}
+          onClick={() => onManageClick(team, index)}
         >
-          <UsersRound className="h-4 w-4" />
+          <UsersRound className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
     </div>
