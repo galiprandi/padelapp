@@ -287,4 +287,23 @@ describe("calculateConnectionRecord", () => {
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("3 turnos");
   });
+
+  it("formats single turn connection correctly (singular)", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 0,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 1,
+      strength: 1,
+    };
+
+    const record = calculateConnectionRecord(link, "p-01");
+    expect(record.type).toBe("turns");
+    expect(record.formattedRecord).toBe("1 turno");
+  });
 });

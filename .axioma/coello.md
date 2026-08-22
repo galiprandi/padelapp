@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 18 (Shared Turn Connections Filter & Legend in Graph View):
+  - [x] 2026-08-22 — Hecho: Agregado el filtro por chip "Turnos" en `GraphView` (`src/app/network/graph-view.tsx`) para aislar aristas de co-inscripción en turnos (`turnsTogether`).
+  - [x] 2026-08-22 — Hecho: Asignado color Slate distintivo (`bg-slate-500` / `rgba(100, 116, 139, 0.8)`) para representación de enlaces de turnos y leyenda informativa.
 - Phase 17 (Head-to-Head Connection Records & MDS Styling in Graph View):
   - [x] 2026-08-21 — Hecho: Creada la función `calculateConnectionRecord` en `src/app/network/graph-utils.ts` para calcular historiales de enfrentamientos/parejas (`V` - `D` o turnos) desde la perspectiva del jugador seleccionado.
   - [x] 2026-08-21 — Hecho: Integración en el panel lateral de detalles de nodo en `GraphView` (`src/app/network/graph-view.tsx`) con diseño de insignias sólidas MDS y tipografía legible.
