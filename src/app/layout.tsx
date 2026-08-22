@@ -47,12 +47,35 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        <link rel="preconnect" href="https://lh3.googleusercontent.com" />
+        <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
         {process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN && (
           <meta
             http-equiv="origin-trial"
             content={process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN}
           />
         )}
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              prerender: [
+                {
+                  source: "list",
+                  urls: [
+                    "/me",
+                    "/turnos",
+                    "/ranking",
+                    "/match",
+                    "/notifications",
+                    "/me/profile",
+                  ],
+                  eagerness: "moderate",
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} min-h-screen bg-background font-sans text-foreground`}

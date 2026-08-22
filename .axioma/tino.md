@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-22 — Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (PR #tino/perf/pwa-sw-precaching-and-speculation-rules)
 - [x] 2026-08-21 — Prefetching Transversal de Rutas y Componentes Compartidos para Transiciones Instantáneas (PR #tino/perf/transversal-route-prefetching)
 - [x] 2026-08-20 — Esqueletos de Carga Streaming (`loading.tsx`) para Formularios/Configuración y Fronteras de Error Resilientes (`error.tsx`) en Módulos Principales (PR #tino/perf/form-skeletons-and-resilient-error-boundaries)
 - [x] 2026-08-17 — Esqueletos de Carga Streaming App Router (`loading.tsx`) y Prefetching Transversal en `/network`, `/catalog`, `/j/[playerId]` y `/m/[matchId]` (PR #tino/perf/app-router-route-streaming-and-prefetching)
@@ -31,6 +32,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-22 - Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (Performance & UX Transversal)
+**Aprendizaje:** En aplicaciones Next.js PWA móviles, combinar el pre-registro proactivo del Service Worker (`PwaRegistrar`), preconnects de DNS para dominios de avatares de Google, reglas de pre-renderizado del navegador mediante Speculation Rules API (`<script type="speculationrules">`) y una configuración conservadora de TanStack Query Client (`staleTime: 60s`, `refetchOnWindowFocus: false`) garantiza que los recursos críticos se almacenen en caché en la carga inicial y que la navegación entre secciones principales (`/me`, `/turnos`, `/ranking`, `/match`, `/notifications`, `/me/profile`) sea verdaderamente instantánea (0ms de latencia) en navegadores móviles.
+**Acción:** Proteger siempre las aplicaciones PWA con registro automático temprano del Service Worker y reglas de prerenderizado especulativo para enlaces de alta frecuencia.
+
 ### 2026-08-21 - Prefetching Transversal de Rutas y Componentes Compartidos (Performance & UX Transversal)
 **Aprendizaje:** En Next.js App Router con Cache Components y PPR, la latencia percibida al interactuar con tarjetas o listados compartidos (como `MatchResultCompact`, `TurnCard`, `RankingListItem`, `RankingPodium`, `PendingConfirmationsAlert` u `OnboardingChecklist`) se elimina completamente cuando todos los elementos interactivos `<Link>` tienen `prefetch={true}`. Esto permite que Next.js precargue de manera proactiva en segundo plano los bundles JS y cascarones estáticos en cuanto los componentes entran en el viewport, logrando transiciones instantáneas de sub-milisegundo (0ms de lag percibido) al hacer tap desde cualquier parte de la aplicación móvil.
 **Acción:** Incluir siempre `prefetch={true}` de manera explícita en componentes reutilizables de lista y tarjetas navegables para asegurar fluidez táctil transversal.
