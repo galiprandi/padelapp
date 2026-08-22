@@ -109,6 +109,7 @@ export interface EditableProfileData {
   image: string | null;
   email: string;
   level: number;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null;
   matchesPlayed: number;
 }
 
@@ -123,6 +124,7 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
       image: null,
       email: "agu@mock.test",
       level: 6,
+      preferredSide: "RIGHT",
       matchesPlayed: 0,
     };
   }
@@ -139,7 +141,24 @@ export async function getEditableProfile(userId: string): Promise<EditableProfil
     .where(eq(users.id, userId))
     .limit(1);
 
-  return user ?? null;
+  if (!user) return null;
+
+  const [stats] = await db
+    .select({
+      preferredSide: playerGraphStats.preferredSide,
+    })
+    .from(playerGraphStats)
+    .where(eq(playerGraphStats.userId, userId))
+    .limit(1);
+
+  const sideInDb = stats?.preferredSide;
+  const preferredSide: "RIGHT" | "LEFT" | "BOTH" =
+    sideInDb === "RIGHT" || sideInDb === "LEFT" ? sideInDb : "BOTH";
+
+  return {
+    ...user,
+    preferredSide,
+  };
 }
 
 export interface PlayerNetworkStats {
