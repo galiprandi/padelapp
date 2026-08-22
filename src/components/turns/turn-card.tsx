@@ -58,6 +58,7 @@ export function TurnCard({
   variant = "default",
   isJoined,
   isSubstitute,
+  isCreator,
   contacts,
 }: TurnCardProps) {
   const router = useRouter();
