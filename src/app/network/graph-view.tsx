@@ -77,7 +77,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [linkFilter, setLinkFilter] = useState<"all" | "partner" | "rival" | "mixed">("all");
+  const [linkFilter, setLinkFilter] = useState<"all" | "partner" | "rival" | "mixed" | "turns">("all");
   const [scope, setScope] = useState<"personal" | "global">(viewerId ? "personal" : "global");
   const imageMapRef = useRef<Map<string, HTMLImageElement>>(new Map());
 
@@ -192,9 +192,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       if (linkFilter !== "all") {
         const isPartner = link.partnerMatches > 0 && link.rivalMatches === 0;
         const isRival = link.rivalMatches > 0 && link.partnerMatches === 0;
+        const isTurns = link.turnsTogether > 0 && link.partnerMatches === 0 && link.rivalMatches === 0;
         if (linkFilter === "partner" && !isPartner) return false;
         if (linkFilter === "rival" && !isRival) return false;
-        if (linkFilter === "mixed" && (isPartner || isRival)) return false;
+        if (linkFilter === "turns" && !isTurns) return false;
+        if (linkFilter === "mixed" && (isPartner || isRival || isTurns)) return false;
       }
 
       return true;
@@ -251,6 +253,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
           return "rgba(16, 185, 129, 0.8)";
         if (link.rivalMatches > 0 && link.partnerMatches === 0)
           return "rgba(239, 68, 68, 0.8)";
+        if (link.turnsTogether > 0 && link.partnerMatches === 0 && link.rivalMatches === 0)
+          return "rgba(100, 116, 139, 0.8)";
         return "rgba(245, 158, 11, 0.8)";
       }
       if (isHovered) return "rgba(100, 116, 139, 0.5)";
@@ -533,7 +537,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         </div>
 
         {/* Link filter chips */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
           <FilterChip
             active={linkFilter === "all"}
             onClick={() => setLinkFilter("all")}
@@ -557,7 +561,13 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             label="Mixtos"
             color="bg-amber-500"
           />
-          <span className="ml-auto text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border">
+          <FilterChip
+            active={linkFilter === "turns"}
+            onClick={() => setLinkFilter("turns")}
+            label="Turnos"
+            color="bg-slate-500"
+          />
+          <span className="ml-auto text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0">
             {filteredData.nodes.length} · {filteredData.links.length}
           </span>
         </div>
@@ -779,6 +789,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-amber-500" />
             <span className="text-xs text-muted-foreground">Mixto</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-slate-500" />
+            <span className="text-xs text-muted-foreground">Turnos</span>
           </div>
         </div>
       </div>
