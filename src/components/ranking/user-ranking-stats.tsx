@@ -179,7 +179,6 @@ export function UserRankingBanner({
   matchesPlayed = 0,
   lastMatchAt,
 }: UserRankingStatsProps) {
-  console.log("UserRankingBanner rendered with userId:", userId);
   const mounted = useMounted();
   const winRate = calculateWinRate(wins, matchesPlayed);
   const reputationPercent = Math.round(attendanceScore * 100);

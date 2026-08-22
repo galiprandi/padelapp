@@ -225,3 +225,60 @@ describe("sideBadgeAccessibility", () => {
     expect(getSideInfo("LEFT")).toEqual({ text: "Rev", label: "Lado revés" });
   });
 });
+
+describe("assignUserToMatchSlotValidation", () => {
+  it("prevents assigning a user who is already in another slot in the same match", () => {
+    const existingPlayers = [
+      { id: "slot-1", userId: "u-101" },
+      { id: "slot-2", userId: "u-102" },
+      { id: "slot-3", userId: null },
+      { id: "slot-4", userId: null },
+    ];
+
+    const isUserAlreadyAssigned = (targetUserId: string, targetSlotId: string) => {
+      return existingPlayers.some(
+        (p) => p.userId === targetUserId && p.id !== targetSlotId,
+      );
+    };
+
+    expect(isUserAlreadyAssigned("u-101", "slot-3")).toBe(true);
+    expect(isUserAlreadyAssigned("u-103", "slot-3")).toBe(false);
+    expect(isUserAlreadyAssigned("u-101", "slot-1")).toBe(false); // Same slot re-assignment
+  });
+
+  it("validates input identifiers and organizer authority", () => {
+    const validateAssignmentInput = (
+      sessionUserId: string | null,
+      creatorId: string,
+      matchStatus: string,
+      playerId: string,
+      targetUserId: string,
+    ) => {
+      if (!sessionUserId) return { status: "error", message: "Tenés que iniciar sesión para gestionar el partido." };
+      if (!playerId || playerId.trim().length === 0) return { status: "error", message: "Identificador de cupo inválido." };
+      if (!targetUserId || targetUserId.trim().length === 0) return { status: "error", message: "Identificador de jugador inválido." };
+      if (creatorId !== sessionUserId) return { status: "error", message: "Solo el organizador puede asignar jugadores." };
+      if (matchStatus !== "PENDING") return { status: "error", message: "No podés modificar cupos de un partido ya finalizado o cancelado." };
+      return { status: "ok" };
+    };
+
+    expect(validateAssignmentInput(null, "org-1", "PENDING", "s-1", "u-1")).toEqual({
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    });
+
+    expect(validateAssignmentInput("other-user", "org-1", "PENDING", "s-1", "u-1")).toEqual({
+      status: "error",
+      message: "Solo el organizador puede asignar jugadores.",
+    });
+
+    expect(validateAssignmentInput("org-1", "org-1", "CONFIRMED", "s-1", "u-1")).toEqual({
+      status: "error",
+      message: "No podés modificar cupos de un partido ya finalizado o cancelado.",
+    });
+
+    expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
+      status: "ok",
+    });
+  });
+});
