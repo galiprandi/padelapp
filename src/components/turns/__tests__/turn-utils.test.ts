@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   formatWhatsAppInviteMessage,
   getOpenSlotsBadgeText,
+  getTurnRoleBadgeText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -58,5 +59,24 @@ describe("getOpenSlotsBadgeText", () => {
   it("returns 'Faltan X' when more than 1 slot is open", () => {
     expect(getOpenSlotsBadgeText(2)).toBe("Faltan 2");
     expect(getOpenSlotsBadgeText(3)).toBe("Faltan 3");
+  });
+});
+
+describe("getTurnRoleBadgeText", () => {
+  it("returns 'Organizador' when isCreator is true", () => {
+    expect(getTurnRoleBadgeText({ isCreator: true, isJoined: true })).toBe("Organizador");
+    expect(getTurnRoleBadgeText({ isCreator: true, isSubstitute: false })).toBe("Organizador");
+  });
+
+  it("returns 'Suplente' when isSubstitute is true and not creator", () => {
+    expect(getTurnRoleBadgeText({ isCreator: false, isSubstitute: true })).toBe("Suplente");
+  });
+
+  it("returns 'Inscripto' when isJoined is true and not creator or substitute", () => {
+    expect(getTurnRoleBadgeText({ isCreator: false, isJoined: true })).toBe("Inscripto");
+  });
+
+  it("returns null when user has no role in turn", () => {
+    expect(getTurnRoleBadgeText({ isCreator: false, isJoined: false, isSubstitute: false })).toBeNull();
   });
 });

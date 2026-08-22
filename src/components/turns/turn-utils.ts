@@ -55,3 +55,21 @@ export function getOpenSlotsBadgeText(openSlots: number): string {
   if (openSlots === 1) return "Falta 1";
   return `Faltan ${openSlots}`;
 }
+
+/**
+ * Format participant role badge text in Argentine Spanish voseo copy.
+ */
+export function getTurnRoleBadgeText({
+  isCreator,
+  isJoined,
+  isSubstitute,
+}: {
+  isCreator?: boolean;
+  isJoined?: boolean;
+  isSubstitute?: boolean;
+}): string | null {
+  if (isCreator) return "Organizador";
+  if (isSubstitute) return "Suplente";
+  if (isJoined) return "Inscripto";
+  return null;
+}
