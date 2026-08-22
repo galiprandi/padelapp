@@ -38,6 +38,7 @@ interface ProfileFormProps {
   initialAlias: string;
   initialImage: string | null;
   initialLevel?: number;
+  initialPreferredSide?: "RIGHT" | "LEFT" | "BOTH" | null;
   googleAvatarUrl?: string | null;
   displayName?: string | null;
   email?: string | null;
@@ -51,10 +52,42 @@ function getInitials(name: string | null | undefined): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+function FormMiniCourtIndicator({
+  preferredSide,
+}: {
+  preferredSide: "LEFT" | "RIGHT" | "BOTH" | null;
+}) {
+  const isLeft = preferredSide === "LEFT" || preferredSide === "BOTH";
+  const isRight = preferredSide === "RIGHT" || preferredSide === "BOTH";
+
+  return (
+    <div
+      className="flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs"
+      aria-hidden="true"
+    >
+      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40">
+        <div
+          className={cn(
+            "h-full rounded-[1px] transition-colors",
+            isLeft ? "bg-primary" : "bg-muted"
+          )}
+        />
+        <div
+          className={cn(
+            "h-full rounded-[1px] transition-colors",
+            isRight ? "bg-primary" : "bg-muted"
+          )}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function ProfileForm({
   initialAlias,
   initialImage,
   initialLevel = 6,
+  initialPreferredSide = "BOTH",
   googleAvatarUrl,
   displayName,
   email,
@@ -68,12 +101,20 @@ export function ProfileForm({
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
   const [level, setLevel] = useState(initialLevel);
+  const [preferredSide, setPreferredSide] = useState<"RIGHT" | "LEFT" | "BOTH" | null>(
+    initialPreferredSide ?? "BOTH"
+  );
   const [isSaving, startSaving] = useTransition();
 
   const levelRef = useRef(level);
   useEffect(() => {
     levelRef.current = level;
   }, [level]);
+
+  const preferredSideRef = useRef(preferredSide);
+  useEffect(() => {
+    preferredSideRef.current = preferredSide;
+  }, [preferredSide]);
   const [checklistDismissed, setChecklistDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("onboarding-checklist-dismissed") === "true";
@@ -98,7 +139,12 @@ export function ProfileForm({
     previousAliasRef.current = lastSavedAlias.current;
     return new Promise((resolve) => {
       startSaving(async () => {
-        const response = await updateUserProfileAction(targetAlias, targetImage, levelRef.current);
+        const response = await updateUserProfileAction(
+          targetAlias,
+          targetImage,
+          levelRef.current,
+          preferredSideRef.current
+        );
         if (response.status === "ok") {
           const savedAlias = response.alias ?? "";
           lastSavedAlias.current = savedAlias;
@@ -131,7 +177,12 @@ export function ProfileForm({
     const previousImage = image;
     setImage(null);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, null, levelRef.current);
+      const response = await updateUserProfileAction(
+        alias,
+        null,
+        levelRef.current,
+        preferredSideRef.current
+      );
       if (response.status === "ok") {
         showToast("Foto eliminada", {
           duration: 4000,
@@ -140,7 +191,12 @@ export function ProfileForm({
             onClick: () => {
               setImage(previousImage);
               startSaving(async () => {
-                const undoResponse = await updateUserProfileAction(alias, previousImage, levelRef.current);
+                const undoResponse = await updateUserProfileAction(
+                  alias,
+                  previousImage,
+                  levelRef.current,
+                  preferredSideRef.current
+                );
                 if (undoResponse.status === "ok") {
                   showToast("Foto restablecida", { duration: 2000 });
                 } else {
@@ -163,7 +219,12 @@ export function ProfileForm({
     const previousLevel = level;
     setLevel(newLevel);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, image, newLevel);
+      const response = await updateUserProfileAction(
+        alias,
+        image,
+        newLevel,
+        preferredSideRef.current
+      );
       if (response.status === "ok") {
         const cat = getCategoryDefinition(newLevel);
         showToast(`Categoría actualizada a ${cat.shortLabel}`, { duration: 3000 });
@@ -196,7 +257,12 @@ export function ProfileForm({
     const previousImage = image;
     setImage(googleAvatarUrl);
     startSaving(async () => {
-      const response = await updateUserProfileAction(alias, googleAvatarUrl, levelRef.current);
+      const response = await updateUserProfileAction(
+        alias,
+        googleAvatarUrl,
+        levelRef.current,
+        preferredSideRef.current
+      );
       if (response.status === "ok") {
         showToast("Foto actualizada", {
           duration: 4000,
@@ -205,7 +271,12 @@ export function ProfileForm({
             onClick: () => {
               setImage(previousImage);
               startSaving(async () => {
-                const undoResponse = await updateUserProfileAction(alias, previousImage, levelRef.current);
+                const undoResponse = await updateUserProfileAction(
+                  alias,
+                  previousImage,
+                  levelRef.current,
+                  preferredSideRef.current
+                );
                 if (undoResponse.status === "ok") {
                   showToast("Foto restablecida", { duration: 2000 });
                 } else {
@@ -232,6 +303,34 @@ export function ProfileForm({
         duration: 4000,
       });
     }
+  }
+
+  function handlePreferredSideChange(newSide: "RIGHT" | "LEFT" | "BOTH" | null) {
+    if (newSide === preferredSide || isSaving) return;
+    const previousSide = preferredSide;
+    setPreferredSide(newSide);
+    startSaving(async () => {
+      const response = await updateUserProfileAction(
+        alias,
+        image,
+        levelRef.current,
+        newSide
+      );
+      if (response.status === "ok") {
+        const sideLabel =
+          newSide === "RIGHT"
+            ? "Derecha"
+            : newSide === "LEFT"
+            ? "Revés"
+            : newSide === "BOTH"
+            ? "Ambos lados"
+            : "Sin preferencia";
+        showToast(`Lado preferido actualizado a ${sideLabel}`, { duration: 3000 });
+      } else {
+        showToast(response.message || "No pudimos guardar el lado preferido.", { type: "error" });
+        setPreferredSide(previousSide);
+      }
+    });
   }
 
   const aliasError = validateAlias(alias) ?? undefined;
@@ -371,6 +470,65 @@ export function ProfileForm({
             {aliasError}
           </p>
         )}
+      </div>
+
+      {/* Lado preferido en la cancha */}
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-foreground">
+            Lado preferido en la cancha
+          </Label>
+          <div className="flex items-center gap-2">
+            <FormMiniCourtIndicator preferredSide={preferredSide} />
+            <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+              {preferredSide === "RIGHT"
+                ? "Derecha"
+                : preferredSide === "LEFT"
+                ? "Revés"
+                : preferredSide === "BOTH"
+                ? "Ambos lados"
+                : "Sin preferencia"}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Indicá tu posición habitual para armar mejores parejas y sugerencias de partidos en la red.
+        </p>
+
+        {/* Chips de selección Derecha / Revés / Ambos */}
+        <div className="grid grid-cols-3 gap-2 pt-1" role="radiogroup" aria-label="Lado preferido en la cancha">
+          {[
+            { id: "RIGHT", label: "Derecha", desc: "Juego en el drive o lado derecho" },
+            { id: "LEFT", label: "Revés", desc: "Juego en el lado izquierdo de revés" },
+            { id: "BOTH", label: "Ambos", desc: "Me adapto indistintamente a ambos lados" },
+          ].map((sideOption) => {
+            const isSelected = preferredSide === sideOption.id;
+            return (
+              <button
+                key={sideOption.id}
+                type="button"
+                onClick={() =>
+                  handlePreferredSideChange(
+                    sideOption.id as "RIGHT" | "LEFT" | "BOTH"
+                  )
+                }
+                disabled={isSaving}
+                aria-checked={isSelected}
+                role="radio"
+                aria-label={`Lado ${sideOption.label}: ${sideOption.desc}`}
+                className={cn(
+                  "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
+                  isSelected
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                )}
+              >
+                {sideOption.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Categoría de Juego */}
