@@ -149,6 +149,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
+              aria-label={`Paso 1: Configurá tu alias en la cancha (${stepAliasCompleted ? "completado" : "pendiente"})`}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepAliasCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -192,6 +193,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
+              aria-label={`Paso 2: Creá tu primer turno (${stepActivityCompleted ? "completado" : "pendiente"})`}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepActivityCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -235,6 +237,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
+              aria-label={`Paso 3: Instalá la aplicación (${stepPwaCompleted ? "completado" : "pendiente"})`}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepPwaCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -296,6 +299,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
+              aria-label={`Paso 4: Activá las notificaciones (${stepNotificationsCompleted ? "completado" : "pendiente"})`}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepNotificationsCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -332,6 +336,8 @@ export function OnboardingChecklist({
                       const token = await requestPermission();
                       if (token) {
                         showToast("Activaste las notificaciones.");
+                      } else if (permission === "denied") {
+                        showToast("Las notificaciones están bloqueadas.");
                       }
                     }}
                     disabled={notificationLoading}
