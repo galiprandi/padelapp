@@ -1373,6 +1373,101 @@ export async function finalizeMatchAction(
   }
 }
 
+interface AssignUserToMatchSlotInput {
+  playerId: string;
+  userId: string;
+}
+
+export async function assignUserToMatchSlotAction(
+  input: AssignUserToMatchSlotInput,
+): Promise<MatchActionResponse> {
+  const session = await auth();
+
+  if (!session?.user) {
+    return {
+      status: "error",
+      message: "Tenés que iniciar sesión para gestionar el partido.",
+    };
+  }
+
+  if (!input.playerId || input.playerId.trim().length === 0) {
+    return { status: "error", message: "Identificador de cupo inválido." };
+  }
+
+  if (!input.userId || input.userId.trim().length === 0) {
+    return { status: "error", message: "Identificador de jugador inválido." };
+  }
+
+  if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
+    return { status: "ok" };
+  }
+
+  try {
+    const player = await db.query.matchPlayers.findFirst({
+      where: eq(matchPlayers.id, input.playerId),
+      with: { match: true },
+    });
+
+    if (!player) {
+      return { status: "error", message: "No encontramos este cupo." };
+    }
+
+    if (player.match.creatorId !== session.user.id) {
+      return {
+        status: "error",
+        message: "Solo el organizador puede asignar jugadores.",
+      };
+    }
+
+    if (player.match.status !== MATCH_STATUS.PENDING) {
+      return {
+        status: "error",
+        message: "No podés modificar cupos de un partido ya finalizado o cancelado.",
+      };
+    }
+
+    const alreadyInMatch = await db
+      .select()
+      .from(matchPlayers)
+      .where(
+        and(
+          eq(matchPlayers.matchId, player.matchId),
+          eq(matchPlayers.userId, input.userId),
+        ),
+      )
+      .limit(1);
+
+    if (alreadyInMatch.length > 0 && alreadyInMatch[0].id !== input.playerId) {
+      return {
+        status: "error",
+        message: "El jugador ya está inscripto en este partido.",
+      };
+    }
+
+    await db
+      .update(matchPlayers)
+      .set({
+        userId: input.userId,
+        displayName: null,
+        joinedAt: new Date(),
+        resultConfirmed: false,
+      })
+      .where(eq(matchPlayers.id, input.playerId));
+
+    revalidatePath(`/match/${player.matchId}`);
+    revalidatePath(`/match`);
+    revalidateTag("matches", "default");
+
+    return { status: "ok" };
+  } catch (error) {
+    console.error("assignUserToMatchSlotAction failed", error);
+    return {
+      status: "error",
+      message: "No pudimos asignar al jugador. Intentá nuevamente.",
+    };
+  }
+}
+
 interface ReleaseMatchSlotInput {
   playerId: string;
   displayName?: string | null;

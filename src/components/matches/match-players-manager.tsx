@@ -6,7 +6,7 @@ import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import type { SlotValue } from "@/lib/match-types";
 import { PairPreview, PlayerPreviewProps } from "@/components/players/player-cards";
 import { useToast } from "@/components/toast/use-toast";
-import { renamePlaceholderAction, releaseMatchSlotAction, swapMatchPlayersAction } from "@/app/(app)/match/actions";
+import { renamePlaceholderAction, releaseMatchSlotAction, swapMatchPlayersAction, assignUserToMatchSlotAction } from "@/app/(app)/match/actions";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { X, ArrowUpDown } from "lucide-react";
@@ -81,9 +81,21 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     }
 
     if (value.kind === "user") {
-       showToast("Todavía no podés asignar jugadores existentes en esta vista.");
-       closeManageModal();
-       return;
+      startTransition(async () => {
+        const response = await assignUserToMatchSlotAction({
+          playerId: manageModal.playerId!,
+          userId: value.player.id,
+        });
+
+        if (response.status === "ok") {
+          showToast(`Asignaste a ${value.player.displayName} al partido.`);
+          closeManageModal();
+          router.refresh();
+        } else {
+          showToast(response.message ?? "No pudimos asignar al jugador.");
+        }
+      });
+      return;
     }
 
     startTransition(async () => {
