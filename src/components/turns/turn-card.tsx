@@ -203,7 +203,9 @@ export function TurnCard({
 
           {/* Status badge */}
           <div className="shrink-0">
-            {isSubstitute ? (
+            {isCreator ? (
+              <Badge variant="primary">Organizador</Badge>
+            ) : isSubstitute ? (
               <Badge variant="default">Suplente</Badge>
             ) : isJoined ? (
               <Badge variant="primary">Inscripto</Badge>
