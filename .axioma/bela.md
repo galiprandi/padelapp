@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-23 — OpenToNetworkButton MDS Solid Styling, Cooldown Utility & Status Badges Standardization (bela/turnos/open-to-network-mds-solid-styling)
 - [x] 2026-08-21 — Turn Salvage UX & WhatsApp Invite Utility Standardization (bela/turnos/salvage-ux-and-whatsapp-utility)
 - [x] 2026-08-19 — Turn Chat Quick Coordination Suggestion Chips & Date Safety (bela/turnos/chat-quick-suggestions)
 - [x] 2026-08-18 — OpenToNetworkButton Branded Toast Feedback & Router Revalidation (bela/turnos/open-to-network-toast-ux)
@@ -36,6 +37,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-23 - OpenToNetworkButton MDS Solid Styling, Cooldown Utility & Status Badges Standardization
+**Learning:** Extracting cooldown time calculations into pure, testable helpers (`getCooldownRemainingMinutes`) simplifies React component rendering and guarantees accurate time-based ARIA label pluralization ("minuto" vs "minutos"). Replacing semi-transparent background utilities (`bg-emerald-500/10`, `bg-amber-500/10`, `bg-muted/20`) with solid theme-aware container classes (`bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950...`) complies strictly with Minimal Design System (MDS) §1.3 and §4.2 guidelines.
+**Action:** Always extract dynamic time and text formatting into pure helper utilities with unit test coverage and enforce solid MDS container styling over semi-transparent color utility classes.
+
 ## 2026-08-21 - Turn Salvage UX & WhatsApp Invite Utility Standardization
 **Learning:** Extracting message-formatting logic (like WhatsApp invite text generation and missing player badge labels) into pure, decoupled utilities ensures deterministic unit testing without rendering full React component hierarchies. Surfacing missing slot badges ('Falta 1' / 'Faltan X') on high-level turn listings (`TurnCard`) gives immediate visual urgency to incomplete turns, driving turn salvage conversion across the platform. Highlighting and prioritizing network contacts when organizers manually add players further reduces friction during offline confirmations.
 **Action:** Extract text generation into pure utilities with comprehensive Vitest coverage and leverage visual badges on listing cards to highlight salvage opportunities.
