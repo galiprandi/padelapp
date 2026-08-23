@@ -181,8 +181,58 @@ describe("applyFeedbackToScore", () => {
   });
 });
 
-import { calculateConnectionRecord } from "@/app/network/graph-utils";
+import {
+  calculateConnectionRecord,
+  normalizeSearchQuery,
+  filterLinksBySelectedNode,
+} from "@/app/network/graph-utils";
 import type { GraphLink } from "@/app/network/actions";
+
+describe("normalizeSearchQuery", () => {
+  it("trims whitespace, converts to lowercase, and strips diacritics", () => {
+    expect(normalizeSearchQuery("  Agustín  ")).toBe("agustin");
+    expect(normalizeSearchQuery("BELA")).toBe("bela");
+    expect(normalizeSearchQuery("Facundo López ")).toBe("facundo lopez");
+  });
+});
+
+describe("filterLinksBySelectedNode", () => {
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 1,
+      partnerMatches: 0,
+      winsA: 1,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 1,
+    },
+    {
+      source: "p-02",
+      target: "p-03",
+      rivalMatches: 2,
+      partnerMatches: 0,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 2,
+    },
+  ];
+
+  it("filters links connected to selected player ID", () => {
+    const p1Links = filterLinksBySelectedNode(links, "p-01");
+    expect(p1Links).toHaveLength(1);
+    expect(p1Links[0].target).toBe("p-02");
+
+    const p2Links = filterLinksBySelectedNode(links, "p-02");
+    expect(p2Links).toHaveLength(2);
+  });
+});
 
 describe("calculateConnectionRecord", () => {
   it("calculates partner win-loss record correctly", () => {

@@ -4,6 +4,32 @@ export function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
 }
 
+/**
+ * Normalizes a search query string by trimming outer whitespace, converting to lowercase,
+ * and stripping unicode diacritics (accents).
+ */
+export function normalizeSearchQuery(text: string): string {
+  return text
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Filters a list of graph links to return only those connected to `selectedNodeId`.
+ */
+export function filterLinksBySelectedNode(
+  links: GraphLink[],
+  selectedNodeId: string,
+): GraphLink[] {
+  return links.filter(
+    (l) =>
+      linkNodeId(l.source) === selectedNodeId ||
+      linkNodeId(l.target) === selectedNodeId,
+  );
+}
+
 export interface ConnectionRecord {
   type: "partner" | "rival" | "mixed" | "turns";
   wins: number;
