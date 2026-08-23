@@ -15,7 +15,7 @@ export function InstallLinkButton() {
       className="h-10 w-full rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground"
       asChild
     >
-      <Link href="/install">Instalar App</Link>
+      <Link href="/install" prefetch={true}>Instalar App</Link>
     </Button>
   );
 }

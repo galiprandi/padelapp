@@ -35,7 +35,7 @@ export default function AppError({
           Reintentar
         </Button>
         <Button asChild variant="outline" size="sm">
-          <Link href="/me">
+          <Link href="/me" prefetch={true}>
             <Home className="mr-1 h-4 w-4" />
             Inicio
           </Link>

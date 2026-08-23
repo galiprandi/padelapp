@@ -133,7 +133,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
             icon={CalendarOff}
             action={
               <Button asChild className="w-full h-12 rounded-lg font-bold">
-                <Link href="/turnos/nuevo">Crear turno</Link>
+                <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
               </Button>
             }
           />
@@ -155,7 +155,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
                   className="w-full h-12 rounded-lg font-bold"
                   asChild
                 >
-                  <Link href="/turnos/nuevo">Crear un turno</Link>
+                  <Link href="/turnos/nuevo" prefetch={true}>Crear un turno</Link>
                 </Button>
               </div>
             }

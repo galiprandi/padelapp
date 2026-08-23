@@ -122,7 +122,7 @@ export function PwaInstallBanner() {
           size="sm"
           className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary hover:bg-muted active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         >
-          <Link href="/install">
+          <Link href="/install" prefetch={true}>
             Ver cómo
           </Link>
         </Button>

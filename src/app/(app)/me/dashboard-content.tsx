@@ -432,6 +432,7 @@ export default async function DashboardContent() {
               <Link
                 key={match.id}
                 href={`/match/${match.id}/result`}
+                prefetch={true}
                 className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-card p-3 transition-all hover:bg-muted hover:border-amber-500/50"
               >
                 <div className="flex flex-col gap-0.5 min-w-0">
@@ -539,6 +540,7 @@ export default async function DashboardContent() {
                 <Link
                   key={turn.id}
                   href={`/t/${turn.id}`}
+                  prefetch={true}
                   className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-card p-3 transition-all hover:bg-muted hover:border-amber-500/50"
                 >
                   <div className="flex flex-col gap-0.5 min-w-0">
@@ -642,7 +644,7 @@ export default async function DashboardContent() {
               description="Cuando registres un marcador, vas a verlo acá."
               action={
                 <Button variant="secondary" className="w-full" asChild>
-                  <Link href="/match">Ver historial</Link>
+                  <Link href="/match" prefetch={true}>Ver historial</Link>
                 </Button>
               }
             />

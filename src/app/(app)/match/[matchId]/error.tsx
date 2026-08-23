@@ -35,7 +35,7 @@ export default function MatchError({
           Reintentar
         </Button>
         <Button asChild variant="outline" size="sm">
-          <Link href="/match">
+          <Link href="/match" prefetch={true}>
             <ArrowLeft className="mr-1 h-4 w-4" />
             Mis partidos
           </Link>

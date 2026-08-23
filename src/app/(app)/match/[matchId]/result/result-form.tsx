@@ -217,7 +217,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
               Partido ya confirmado
             </p>
             <Button asChild className="w-full transition-all active:scale-[0.98]">
-              <Link href={`/match/${match.id}`}>Volver al detalle</Link>
+              <Link href={`/match/${match.id}`} prefetch={true}>Volver al detalle</Link>
             </Button>
           </section>
         ) : (
