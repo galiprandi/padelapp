@@ -3,6 +3,7 @@ import {
   formatWhatsAppInviteMessage,
   getOpenSlotsBadgeText,
   getTurnRoleBadgeText,
+  getCooldownRemainingMinutes,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -78,5 +79,32 @@ describe("getTurnRoleBadgeText", () => {
 
   it("returns null when user has no role in turn", () => {
     expect(getTurnRoleBadgeText({ isCreator: false, isJoined: false, isSubstitute: false })).toBeNull();
+  });
+});
+
+describe("getCooldownRemainingMinutes", () => {
+  it("returns 0 when lastNotificationAt is null or undefined", () => {
+    expect(getCooldownRemainingMinutes(null)).toBe(0);
+    expect(getCooldownRemainingMinutes(undefined)).toBe(0);
+  });
+
+  it("returns remaining minutes rounded up when notification was sent within the last hour", () => {
+    const nowMs = 1700000000000;
+    // Notification sent 15 minutes ago -> 45 minutes remaining
+    const lastNotified = new Date(nowMs - 15 * 60 * 1000);
+    expect(getCooldownRemainingMinutes(lastNotified, nowMs)).toBe(45);
+
+    // Notification sent 59 minutes and 10 seconds ago -> 1 minute remaining
+    const lastNotified2 = new Date(nowMs - 59 * 60 * 1000 - 10 * 1000);
+    expect(getCooldownRemainingMinutes(lastNotified2, nowMs)).toBe(1);
+  });
+
+  it("returns 0 when notification was sent 60+ minutes ago", () => {
+    const nowMs = 1700000000000;
+    const lastNotified = new Date(nowMs - 60 * 60 * 1000);
+    expect(getCooldownRemainingMinutes(lastNotified, nowMs)).toBe(0);
+
+    const oldNotified = new Date(nowMs - 2 * 60 * 60 * 1000);
+    expect(getCooldownRemainingMinutes(oldNotified, nowMs)).toBe(0);
   });
 });

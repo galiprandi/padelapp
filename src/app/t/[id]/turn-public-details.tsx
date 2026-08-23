@@ -251,12 +251,12 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             Información del turno
           </h2>
           <span
-            className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
+            className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${
               isCompleted
-                ? "bg-muted text-muted-foreground"
+                ? "bg-muted text-muted-foreground border-border"
                 : isFull
-                  ? "bg-amber-500/10 text-amber-500"
-                  : "bg-emerald-500/10 text-emerald-500"
+                  ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                  : "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
             }`}
           >
             {isCompleted ? "Finalizado" : isFull ? "Completo" : "Abierto"}

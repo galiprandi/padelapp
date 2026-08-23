@@ -7,6 +7,7 @@ import { openToNetworkAction } from "@/app/(app)/turnos/actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { cn } from "@/lib/utils";
+import { getCooldownRemainingMinutes } from "@/components/turns/turn-utils";
 
 interface OpenToNetworkButtonProps {
   turnId: string;
@@ -47,15 +48,8 @@ export function OpenToNetworkButton({
       return;
     }
 
-    const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
     const updateCountdown = () => {
-      const notifiedTime = new Date(lastNetworkNotificationAt).getTime();
-      const diff = Date.now() - notifiedTime;
-      if (diff < COOLDOWN_MS) {
-        setMinutesRemaining(Math.ceil((COOLDOWN_MS - diff) / (60 * 1000)));
-      } else {
-        setMinutesRemaining(0);
-      }
+      setMinutesRemaining(getCooldownRemainingMinutes(lastNetworkNotificationAt));
     };
 
     updateCountdown();
@@ -104,7 +98,7 @@ export function OpenToNetworkButton({
     }
     if (size === "sm" || !showText) {
       return (
-        <div className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 text-xs font-bold text-emerald-600 dark:text-emerald-500", className)}>
+        <div className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200", className)}>
           <Check className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate">
             {result.notified > 0
@@ -116,7 +110,7 @@ export function OpenToNetworkButton({
     }
     return (
       <div className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm", className)}>
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-500 font-bold">
+        <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
           <Check className="h-4 w-4" />
           <span>
             {result.notified > 0
@@ -134,6 +128,7 @@ export function OpenToNetworkButton({
   }
 
   const isIconOnly = iconOnly || size === "icon";
+  const cooldownAriaLabel = `Notificado, en cooldown por ${minutesRemaining} minuto${minutesRemaining === 1 ? "" : "s"}`;
 
   return (
     <div className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}>
@@ -145,10 +140,11 @@ export function OpenToNetworkButton({
         className={cn(
           !isIconOnly && "w-full",
           variant === "default" && !isOnCooldown && "font-bold",
-          isOnCooldown && "text-muted-foreground border-border bg-muted/20 cursor-not-allowed",
+          isOnCooldown && "text-muted-foreground border-border bg-muted cursor-not-allowed",
+          "transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
           className,
         )}
-        aria-label={isOnCooldown ? `Notificado, en cooldown por ${minutesRemaining} minutos` : label}
+        aria-label={isOnCooldown ? cooldownAriaLabel : label}
       >
         {isPending ? (
           <Loader2 className="h-4 w-4 animate-spin" />

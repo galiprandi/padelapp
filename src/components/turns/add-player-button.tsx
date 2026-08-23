@@ -180,7 +180,7 @@ export function AddPlayerButton({
                   key={player.id}
                   onClick={() => handleAdd(player)}
                   disabled={addingId !== null}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label={`Agregar a ${player.displayName}`}
                 >
                   <PlayerAvatar

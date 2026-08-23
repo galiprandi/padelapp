@@ -73,3 +73,21 @@ export function getTurnRoleBadgeText({
   if (isJoined) return "Inscripto";
   return null;
 }
+
+/**
+ * Calculate remaining cooldown minutes for turn network notifications (1 hour cooldown).
+ * Returns 0 if no notification was sent or if the 1-hour window has elapsed.
+ */
+export function getCooldownRemainingMinutes(
+  lastNotificationAt: Date | string | null | undefined,
+  nowMs: number = Date.now()
+): number {
+  if (!lastNotificationAt) return 0;
+  const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+  const notifiedTime = new Date(lastNotificationAt).getTime();
+  const diff = nowMs - notifiedTime;
+  if (diff < COOLDOWN_MS && diff >= 0) {
+    return Math.ceil((COOLDOWN_MS - diff) / (60 * 1000));
+  }
+  return 0;
+}
