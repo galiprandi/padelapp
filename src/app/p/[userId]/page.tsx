@@ -433,7 +433,7 @@ async function PublicProfileContent({
                   className="h-8 rounded-lg text-xs font-bold"
                   asChild
                 >
-                  <Link href={`/match/${h2h.lastMatch.id}`}>Detalle</Link>
+                  <Link href={`/match/${h2h.lastMatch.id}`} prefetch={true}>Detalle</Link>
                 </Button>
               </div>
             )}

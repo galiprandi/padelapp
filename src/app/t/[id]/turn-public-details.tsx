@@ -192,7 +192,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </div>
         </div>
         <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
-          <Link href="/turnos">Ver otros turnos</Link>
+          <Link href="/turnos" prefetch={true}>Ver otros turnos</Link>
         </Button>
       </div>
     );
@@ -349,6 +349,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <Link
                 key={p.id}
                 href={`/p/${p.userId}`}
+                prefetch={true}
                 className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
               >
                 <PlayerAvatar
@@ -503,6 +504,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 <Link
                   key={s.id}
                   href={`/p/${s.userId}`}
+                  prefetch={true}
                   className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
@@ -672,7 +674,7 @@ function TurnActions({
                 variant="outline"
                 className="flex-1 h-10 rounded-lg font-bold text-xs"
               >
-                <Link href={`/turnos/${turnId}/editar`}>
+                <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
                 </Link>
@@ -801,7 +803,7 @@ function TurnActions({
               variant="outline"
               className="flex-1 h-10 rounded-lg font-bold text-xs"
             >
-              <Link href={`/turnos/${turnId}/editar`}>
+              <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                 <Edit3 className="mr-2 h-4 w-4" />
                 Editar
               </Link>

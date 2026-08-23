@@ -35,7 +35,7 @@ export default function TurnosError({
           Reintentar
         </Button>
         <Button asChild variant="outline" size="sm" className="active:scale-[0.98]">
-          <Link href="/me">
+          <Link href="/me" prefetch={true}>
             <Home className="mr-1.5 h-4 w-4" />
             Inicio
           </Link>

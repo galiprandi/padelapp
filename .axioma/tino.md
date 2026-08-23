@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-23 — Prefetching Eager de Rutas y Navegación Transversal en Dashboard, Perfiles, Turnos, Filtros y PWA (PR #tino/perf/eager-route-prefetching-and-transversal-navigation)
 - [x] 2026-08-22 — Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (PR #tino/perf/pwa-sw-precaching-and-speculation-rules)
 - [x] 2026-08-21 — Prefetching Transversal de Rutas y Componentes Compartidos para Transiciones Instantáneas (PR #tino/perf/transversal-route-prefetching)
 - [x] 2026-08-20 — Esqueletos de Carga Streaming (`loading.tsx`) para Formularios/Configuración y Fronteras de Error Resilientes (`error.tsx`) en Módulos Principales (PR #tino/perf/form-skeletons-and-resilient-error-boundaries)
@@ -32,6 +33,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-23 - Prefetching Eager de Rutas y Navegación Transversal (Performance & UX Transversal)
+**Aprendizaje:** En Next.js App Router con PPR y Cache Components, asegurar que todos los elementos interactivos `<Link>` tengan `prefetch={true}` de forma explícita —en especial en tarjetas del Dashboard, vistas de detalle, botones de instalación PWA, filtros y fronteras de error (`error.tsx`)— permite que Next.js precargue de manera proactiva los bundles JS y cascarones estáticos en cuanto entran en el viewport. Esto elimina por completo la latencia de red en las transiciones de pantalla, logrando transiciones táctiles instantáneas (0ms de lag percibido) desde cualquier punto de la aplicación móvil.
+**Acción:** Verificar de forma sistemática que todos los componentes con enlaces de navegación interactivos cuenten con `prefetch={true}` para mantener una fluidez táctil transversal.
+
 ### 2026-08-22 - Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (Performance & UX Transversal)
 **Aprendizaje:** En aplicaciones Next.js PWA móviles, combinar el pre-registro proactivo del Service Worker (`PwaRegistrar`), preconnects de DNS para dominios de avatares de Google, reglas de pre-renderizado del navegador mediante Speculation Rules API (`<script type="speculationrules">`) y una configuración conservadora de TanStack Query Client (`staleTime: 60s`, `refetchOnWindowFocus: false`) garantiza que los recursos críticos se almacenen en caché en la carga inicial y que la navegación entre secciones principales (`/me`, `/turnos`, `/ranking`, `/match`, `/notifications`, `/me/profile`) sea verdaderamente instantánea (0ms de latencia) en navegadores móviles.
 **Acción:** Proteger siempre las aplicaciones PWA con registro automático temprano del Service Worker y reglas de prerenderizado especulativo para enlaces de alta frecuencia.

@@ -35,7 +35,7 @@ export default function InstallPage() {
           className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground"
           asChild
         >
-          <Link href="/">Volver al inicio</Link>
+          <Link href="/" prefetch={true}>Volver al inicio</Link>
         </Button>
       </div>
     </main>

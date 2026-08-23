@@ -130,7 +130,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
             action={
               query ? (
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/ranking">Limpiar búsqueda</Link>
+                  <Link href="/ranking" prefetch={true}>Limpiar búsqueda</Link>
                 </Button>
               ) : null
             }
