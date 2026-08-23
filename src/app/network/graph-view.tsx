@@ -6,7 +6,12 @@ import Link from "next/link";
 import { Search, X, CalendarDays, Users2, Globe2 } from "lucide-react";
 import type { GraphData, GraphNode } from "./actions";
 import { capitalizeName, cn } from "@/lib/utils";
-import { linkNodeId, calculateConnectionRecord } from "./graph-utils";
+import {
+  linkNodeId,
+  calculateConnectionRecord,
+  normalizeSearchQuery,
+  filterLinksBySelectedNode,
+} from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -54,12 +59,6 @@ function getInitials(name: string): string {
   return name.slice(0, 2).toUpperCase();
 }
 
-function normalizeText(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
 
 interface GraphViewProps {
   graphData: GraphData;
@@ -154,16 +153,17 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
   // Filter data based on search and link filter on top of base graph
   const filteredData = useMemo(() => {
-    if (!searchQuery && linkFilter === "all") return baseGraphData;
+    const trimmedSearch = searchQuery.trim();
+    if (!trimmedSearch && linkFilter === "all") return baseGraphData;
 
-    const query = normalizeText(searchQuery);
+    const query = normalizeSearchQuery(trimmedSearch);
     const matchingNodes = new Set(
       baseGraphData.nodes
         .filter((n) => {
           if (!query) return true;
           return (
-            normalizeText(n.name || "").includes(query) ||
-            (n.alias ? normalizeText(n.alias).includes(query) : false)
+            normalizeSearchQuery(n.name || "").includes(query) ||
+            (n.alias ? normalizeSearchQuery(n.alias).includes(query) : false)
           );
         })
         .map((n) => n.id),
@@ -442,11 +442,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     : null;
 
   const selectedLinks = selectedNode
-    ? graphData.links.filter(
-        (l) =>
-          linkNodeId(l.source) === selectedNode ||
-          linkNodeId(l.target) === selectedNode,
-      )
+    ? filterLinksBySelectedNode(filteredData.links, selectedNode)
     : [];
 
   return (
@@ -602,17 +598,22 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         </div>
       )}
 
-      {/* Empty search results notice */}
-      {filteredData.nodes.length === 0 && searchQuery && (
+      {/* Empty search or filter results notice */}
+      {filteredData.nodes.length === 0 && (searchQuery.trim() || linkFilter !== "all") && (
         <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
           <p className="text-sm font-semibold text-muted-foreground">
-            No se encontraron jugadores que coincidan con &quot;{searchQuery}&quot;
+            {searchQuery.trim()
+              ? `No se encontraron jugadores que coincidan con "${searchQuery.trim()}"`
+              : "No hay conexiones que coincidan con el filtro seleccionado"}
           </p>
           <button
-            onClick={() => setSearchQuery("")}
+            onClick={() => {
+              setSearchQuery("");
+              setLinkFilter("all");
+            }}
             className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
           >
-            Limpiar búsqueda
+            Restablecer filtros
           </button>
         </div>
       )}

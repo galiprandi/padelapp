@@ -86,7 +86,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
         <div className="space-y-0.5">
-          <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <h1 className="text-xl font-bold text-foreground">
             Red & Adopción
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -207,6 +207,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
                   </div>
                   <Link
                     href={`/p/${player.id}`}
+                    aria-label={`Ver perfil público de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}`}
                     className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     Perfil
