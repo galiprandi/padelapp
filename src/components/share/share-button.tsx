@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import { Share2, Check, Loader2 } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
-import { getNaturalShareText, type ShareDataPayload } from "@/lib/utils";
+import { getNaturalShareText, type ShareDataPayload, cn } from "@/lib/utils";
 
 interface ShareButtonProps extends ButtonProps {
   url: string;
@@ -74,7 +74,7 @@ export function ShareButton({
     }
   }, [isSuccess]);
 
-  const { disabled, ...restButtonProps } = buttonProps;
+  const { disabled, className, ...restButtonProps } = buttonProps;
 
   const handleShare = useCallback<NonNullable<ButtonProps["onClick"]>>(
     async (event) => {
@@ -159,7 +159,12 @@ export function ShareButton({
       onClick={handleShare}
       disabled={isSharing || disabled}
       aria-busy={isSharing}
+      aria-live="polite"
       aria-label={dynamicAriaLabel}
+      className={cn(
+        "active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+        className,
+      )}
       {...restButtonProps}
     >
       {iconOnly ? (
