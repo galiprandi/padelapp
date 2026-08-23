@@ -339,7 +339,11 @@ export function ProfileForm({
     <div className="space-y-6 pb-16">
       {/* Onboarding Welcome Banner */}
       {isOnboarding && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm">
+        <div
+          className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm"
+          role="region"
+          aria-label="Bienvenida a Padel Red"
+        >
           <div className="flex items-center gap-2">
             <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
             <h3 className="text-sm font-bold text-foreground">
@@ -547,7 +551,12 @@ export function ProfileForm({
         </p>
 
         {/* Chips de selección 1ª a 8ª Cat. */}
-        <div className="grid grid-cols-4 gap-2 pt-1" role="radiogroup" aria-label="Categoría de juego">
+        <div
+          className="grid grid-cols-4 gap-2 pt-1"
+          role="radiogroup"
+          aria-label="Categoría de juego"
+          aria-describedby="category-description"
+        >
           {CATEGORIES.map((cat) => {
             const isSelected = level === cat.level;
             return (
@@ -573,7 +582,10 @@ export function ProfileForm({
         </div>
 
         {/* Categoría actual descripción */}
-        <div className="mt-2 rounded-lg bg-muted/60 border border-border/60 p-3 space-y-1">
+        <div
+          id="category-description"
+          className="mt-2 rounded-lg bg-muted/60 border border-border/60 p-3 space-y-1"
+        >
           <p className="text-xs font-bold text-foreground">
             {getCategoryDefinition(level).label}
           </p>

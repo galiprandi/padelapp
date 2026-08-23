@@ -40,4 +40,14 @@ describe("categories constants and helper", () => {
     expect(getCategoryDefinition(9).shortLabel).toBe("6ª Cat.");
     expect(getCategoryDefinition(-1).shortLabel).toBe("6ª Cat.");
   });
+
+  it("ensures every category has a non-empty description and valid structure", () => {
+    for (const cat of CATEGORIES) {
+      expect(cat.level).toBeGreaterThanOrEqual(1);
+      expect(cat.level).toBeLessThanOrEqual(8);
+      expect(cat.shortLabel).toMatch(/^[1-8]ª Cat\.$/);
+      expect(cat.label).toMatch(/^[1-8]ª Categoría$/);
+      expect(cat.description.length).toBeGreaterThan(10);
+    }
+  });
 });
