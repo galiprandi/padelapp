@@ -226,6 +226,32 @@ describe("sideBadgeAccessibility", () => {
   });
 });
 
+describe("matchCompactAriaFormatting", () => {
+  it("formats quick confirm aria label with score when score is present", () => {
+    const formatQuickConfirmLabel = (score?: string | null) =>
+      `Confirmar resultado ${score ? `(${score})` : ""} del partido`;
+
+    expect(formatQuickConfirmLabel("6-4, 6-3")).toBe(
+      "Confirmar resultado (6-4, 6-3) del partido",
+    );
+    expect(formatQuickConfirmLabel(null)).toBe(
+      "Confirmar resultado  del partido",
+    );
+  });
+
+  it("formats match detail link aria label cleanly before and after client mount date formatting", () => {
+    const formatDetailLinkAriaLabel = (formattedDate: string | null) =>
+      formattedDate
+        ? `Ver detalle del partido del ${formattedDate}`
+        : "Ver detalle del partido";
+
+    expect(formatDetailLinkAriaLabel("23/08/26")).toBe(
+      "Ver detalle del partido del 23/08/26",
+    );
+    expect(formatDetailLinkAriaLabel(null)).toBe("Ver detalle del partido");
+  });
+});
+
 describe("assignUserToMatchSlotValidation", () => {
   it("prevents assigning a user who is already in another slot in the same match", () => {
     const existingPlayers = [

@@ -254,6 +254,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <button
                   onClick={handleQuickConfirm}
                   disabled={isConfirming}
+                  aria-label={`Confirmar resultado ${match.score ? `(${match.score})` : ""} del partido`}
                   className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 h-8 rounded-lg text-xs font-semibold transition-all hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
                 >
                   {isConfirming ? (
@@ -289,7 +290,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   href={matchDetailUrl}
                   prefetch={true}
                   className="flex items-center gap-0.5 text-xs font-semibold text-primary"
-                  aria-label={`Ver detalle del partido del ${formattedDate || ""}`}
+                  aria-label={formattedDate ? `Ver detalle del partido del ${formattedDate}` : "Ver detalle del partido"}
                 >
                   Detalle
                   <ChevronRight className="h-3 w-3" />
