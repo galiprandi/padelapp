@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-24 — Turn Urgency Calculation Helper & Substitute Action Row Refactor in TurnCard (bela/turnos/urgency-badge-and-substitute-actions)
 - [x] 2026-08-23 — OpenToNetworkButton MDS Solid Styling, Cooldown Utility & Status Badges Standardization (bela/turnos/open-to-network-mds-solid-styling)
 - [x] 2026-08-21 — Turn Salvage UX & WhatsApp Invite Utility Standardization (bela/turnos/salvage-ux-and-whatsapp-utility)
 - [x] 2026-08-19 — Turn Chat Quick Coordination Suggestion Chips & Date Safety (bela/turnos/chat-quick-suggestions)
@@ -37,6 +38,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-24 - Turn Urgency Calculation Helper & Substitute Action Row Refactor in TurnCard
+**Learning:** Extracting turn urgency badge calculations into a pure helper utility (`getTurnUrgencyBadgeText`) enables deterministic Vitest unit testing using fixed timestamps (`nowMs`) without timezone issues or hydration mismatches. Ensuring substitute participants (`isSubstitute`) have access to action triggers (such as `ShareButton`) on `TurnCard` enables substitutes to help recruit players for incomplete turnos, directly supporting the core turn salvage objective.
+**Action:** Always extract dynamic time/status badge text calculations into pure helper functions backed by unit tests and ensure all participant roles (including substitutes) have appropriate salvage sharing capabilities on listing cards.
+
 ## 2026-08-23 - OpenToNetworkButton MDS Solid Styling, Cooldown Utility & Status Badges Standardization
 **Learning:** Extracting cooldown time calculations into pure, testable helpers (`getCooldownRemainingMinutes`) simplifies React component rendering and guarantees accurate time-based ARIA label pluralization ("minuto" vs "minutos"). Replacing semi-transparent background utilities (`bg-emerald-500/10`, `bg-amber-500/10`, `bg-muted/20`) with solid theme-aware container classes (`bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950...`) complies strictly with Minimal Design System (MDS) §1.3 and §4.2 guidelines.
 **Action:** Always extract dynamic time and text formatting into pure helper utilities with unit test coverage and enforce solid MDS container styling over semi-transparent color utility classes.

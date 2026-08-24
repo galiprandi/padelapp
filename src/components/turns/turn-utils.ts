@@ -91,3 +91,25 @@ export function getCooldownRemainingMinutes(
   }
   return 0;
 }
+
+/**
+ * Calculate urgency badge text for an upcoming incomplete turn.
+ * Returns "Urgente" if less than 1 hour away, "En Xh" if between 1 and 3 hours away,
+ * or null if the turn is full, past, or more than 3 hours away.
+ */
+export function getTurnUrgencyBadgeText(
+  date: Date | string,
+  isFull: boolean,
+  nowMs: number = Date.now()
+): string | null {
+  if (isFull) return null;
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+
+  const diffHours = (d.getTime() - nowMs) / (1000 * 60 * 60);
+  if (diffHours >= 0 && diffHours < 3) {
+    if (diffHours < 1) return "Urgente";
+    return `En ${Math.round(diffHours)}h`;
+  }
+  return null;
+}

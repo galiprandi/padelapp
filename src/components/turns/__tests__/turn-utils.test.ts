@@ -4,6 +4,7 @@ import {
   getOpenSlotsBadgeText,
   getTurnRoleBadgeText,
   getCooldownRemainingMinutes,
+  getTurnUrgencyBadgeText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -106,5 +107,32 @@ describe("getCooldownRemainingMinutes", () => {
 
     const oldNotified = new Date(nowMs - 2 * 60 * 60 * 1000);
     expect(getCooldownRemainingMinutes(oldNotified, nowMs)).toBe(0);
+  });
+});
+
+describe("getTurnUrgencyBadgeText", () => {
+  const nowMs = 1700000000000;
+
+  it("returns null if turn is full", () => {
+    const turnDate = new Date(nowMs + 30 * 60 * 1000); // 30 min away
+    expect(getTurnUrgencyBadgeText(turnDate, true, nowMs)).toBeNull();
+  });
+
+  it("returns 'Urgente' when turn is less than 1 hour away and incomplete", () => {
+    const turnDate = new Date(nowMs + 30 * 60 * 1000); // 30 min away
+    expect(getTurnUrgencyBadgeText(turnDate, false, nowMs)).toBe("Urgente");
+  });
+
+  it("returns 'En Xh' when turn is between 1 and 3 hours away and incomplete", () => {
+    const turnDate2h = new Date(nowMs + 2 * 60 * 60 * 1000); // 2 hours away
+    expect(getTurnUrgencyBadgeText(turnDate2h, false, nowMs)).toBe("En 2h");
+  });
+
+  it("returns null when turn is in the past or more than 3 hours away", () => {
+    const pastDate = new Date(nowMs - 10 * 60 * 1000); // 10 min in the past
+    expect(getTurnUrgencyBadgeText(pastDate, false, nowMs)).toBeNull();
+
+    const future4h = new Date(nowMs + 4 * 60 * 60 * 1000); // 4 hours away
+    expect(getTurnUrgencyBadgeText(future4h, false, nowMs)).toBeNull();
   });
 });
