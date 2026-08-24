@@ -395,7 +395,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
                           </div>
                         </div>
                         {isCreator && (
-                          <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                          <span className="rounded-md bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
                             Organizador
                           </span>
                         )}
@@ -431,7 +431,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
               </p>
             </div>
           ) : (
-            <div className="rounded-xl p-3 bg-primary/5 border border-primary/20 text-center">
+            <div className="rounded-xl p-3 bg-card border border-primary text-center shadow-sm">
               <p className="text-xs font-bold text-primary">
                 Ya formás parte de este partido
               </p>
