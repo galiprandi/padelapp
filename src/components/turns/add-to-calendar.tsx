@@ -102,7 +102,7 @@ export function AddToCalendarButton({
         variant="outline"
         size="sm"
         className={cn(
-          "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150",
+          "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
           open && "border-primary text-primary bg-muted",
         )}
         aria-label="Agregar el partido a mi calendario"
