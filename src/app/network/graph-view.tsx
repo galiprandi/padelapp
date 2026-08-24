@@ -11,6 +11,8 @@ import {
   calculateConnectionRecord,
   normalizeSearchQuery,
   filterLinksBySelectedNode,
+  getSideCompatibilityLabel,
+  filterNodesAndLinksByCommunity,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -77,6 +79,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [linkFilter, setLinkFilter] = useState<"all" | "partner" | "rival" | "mixed" | "turns">("all");
+  const [selectedCommunity, setSelectedCommunity] = useState<number | null>(null);
   const [scope, setScope] = useState<"personal" | "global">(viewerId ? "personal" : "global");
   const imageMapRef = useRef<Map<string, HTMLImageElement>>(new Map());
 
@@ -151,14 +154,30 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     };
   }, [graphData, scope, viewerId, viewerNeighbors]);
 
-  // Filter data based on search and link filter on top of base graph
+  const availableCommunities = useMemo(() => {
+    const set = new Set<number>();
+    for (const n of baseGraphData.nodes) {
+      if (n.community !== null && n.community !== undefined) {
+        set.add(n.community);
+      }
+    }
+    return Array.from(set).sort((a, b) => a - b);
+  }, [baseGraphData.nodes]);
+
+  // Filter data based on community, search and link filter on top of base graph
   const filteredData = useMemo(() => {
+    const communityData = filterNodesAndLinksByCommunity(
+      baseGraphData.nodes,
+      baseGraphData.links,
+      selectedCommunity,
+    );
+
     const trimmedSearch = searchQuery.trim();
-    if (!trimmedSearch && linkFilter === "all") return baseGraphData;
+    if (!trimmedSearch && linkFilter === "all") return communityData;
 
     const query = normalizeSearchQuery(trimmedSearch);
     const matchingNodes = new Set(
-      baseGraphData.nodes
+      communityData.nodes
         .filter((n) => {
           if (!query) return true;
           return (
@@ -171,7 +190,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
     // If searching, also include connected nodes
     if (query && matchingNodes.size > 0) {
-      for (const link of baseGraphData.links) {
+      for (const link of communityData.links) {
         const sourceId = linkNodeId(link.source);
         const targetId = linkNodeId(link.target);
         if (matchingNodes.has(sourceId)) matchingNodes.add(targetId);
@@ -179,7 +198,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       }
     }
 
-    const filteredLinks = baseGraphData.links.filter((link) => {
+    const filteredLinks = communityData.links.filter((link) => {
       const sourceId = linkNodeId(link.source);
       const targetId = linkNodeId(link.target);
 
@@ -210,14 +229,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       ]),
     );
 
-    const filteredNodes = baseGraphData.nodes.filter((n) => {
+    const filteredNodes = communityData.nodes.filter((n) => {
       if (linkFilter !== "all" && !nodesInLinks.has(n.id)) return false;
       if (query && !matchingNodes.has(n.id)) return false;
       return true;
     });
 
     return { ...baseGraphData, nodes: filteredNodes, links: filteredLinks };
-  }, [baseGraphData, searchQuery, linkFilter]);
+  }, [baseGraphData, searchQuery, linkFilter, selectedCommunity]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeColor = useCallback((node: any) => {
@@ -563,6 +582,19 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             label="Turnos"
             color="bg-slate-500"
           />
+
+          {availableCommunities.map((cId) => (
+            <FilterChip
+              key={`community-${cId}`}
+              active={selectedCommunity === cId}
+              onClick={() =>
+                setSelectedCommunity(selectedCommunity === cId ? null : cId)
+              }
+              label={`Grupo ${cId}`}
+              dotColor={COMMUNITY_COLORS[cId % COMMUNITY_COLORS.length]}
+            />
+          ))}
+
           <span className="ml-auto text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0">
             {filteredData.nodes.length} · {filteredData.links.length}
           </span>
@@ -599,17 +631,18 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       )}
 
       {/* Empty search or filter results notice */}
-      {filteredData.nodes.length === 0 && (searchQuery.trim() || linkFilter !== "all") && (
+      {filteredData.nodes.length === 0 && (searchQuery.trim() || linkFilter !== "all" || selectedCommunity !== null) && (
         <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
           <p className="text-sm font-semibold text-muted-foreground">
             {searchQuery.trim()
               ? `No se encontraron jugadores que coincidan con "${searchQuery.trim()}"`
-              : "No hay conexiones que coincidan con el filtro seleccionado"}
+              : "No hay conexiones que coincidan con los filtros seleccionados"}
           </p>
           <button
             onClick={() => {
               setSearchQuery("");
               setLinkFilter("all");
+              setSelectedCommunity(null);
             }}
             className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
           >
@@ -699,12 +732,29 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             </div>
             <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
               <p className="text-xs text-muted-foreground">Grupo</p>
-              <p
-                className="text-sm font-bold"
-                style={{ color: nodeColor(selectedNodeData) }}
-              >
-                {selectedNodeData.community ?? "—"}
-              </p>
+              {selectedNodeData.community !== null ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedCommunity(
+                      selectedCommunity === selectedNodeData.community
+                        ? null
+                        : selectedNodeData.community,
+                    )
+                  }
+                  className="w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
+                  style={{ color: nodeColor(selectedNodeData) }}
+                  aria-label={
+                    selectedCommunity === selectedNodeData.community
+                      ? "Mostrar todas las comunidades"
+                      : `Filtrar el grafo por Grupo ${selectedNodeData.community}`
+                  }
+                >
+                  {selectedNodeData.community}
+                </button>
+              ) : (
+                <p className="text-sm font-bold text-muted-foreground">—</p>
+              )}
             </div>
           </div>
 
@@ -728,12 +778,17 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 const other = graphData.nodes.find((n) => n.id === otherId);
                 const otherName = capitalizeName(other?.name || other?.alias || "—");
                 const record = calculateConnectionRecord(link, selectedNode ?? "");
+                const sideCompatibility = getSideCompatibilityLabel(
+                  selectedNodeData.preferredSide,
+                  other?.preferredSide ?? null,
+                );
 
                 return (
                   <div
                     key={i}
-                    className="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-muted/60 transition-colors"
+                    className="flex flex-col gap-1 p-1.5 rounded-lg hover:bg-muted/60 transition-colors"
                   >
+                    <div className="flex items-center justify-between gap-2">
                     <button
                       type="button"
                       onClick={() => handleSelectAndFocusNode(otherId)}
@@ -765,6 +820,22 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     >
                       Perfil
                     </Link>
+                    </div>
+
+                    {sideCompatibility && (record.type === "partner" || record.type === "mixed") && (
+                      <div className="flex items-center gap-1 pl-8">
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            sideCompatibility.isComplementary
+                              ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                              : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                          )}
+                        >
+                          {sideCompatibility.label}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -806,11 +877,13 @@ function FilterChip({
   onClick,
   label,
   color,
+  dotColor,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   color?: string;
+  dotColor?: string;
 }) {
   return (
     <button
@@ -822,7 +895,11 @@ function FilterChip({
       }`}
       aria-pressed={active}
     >
-      {color && <div className={`h-2 w-2 rounded-full ${color}`} />}
+      {dotColor ? (
+        <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: dotColor }} />
+      ) : (
+        color && <div className={`h-2 w-2 rounded-full ${color}`} />
+      )}
       {label}
     </button>
   );

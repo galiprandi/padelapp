@@ -185,8 +185,10 @@ import {
   calculateConnectionRecord,
   normalizeSearchQuery,
   filterLinksBySelectedNode,
+  getSideCompatibilityLabel,
+  filterNodesAndLinksByCommunity,
 } from "@/app/network/graph-utils";
-import type { GraphLink } from "@/app/network/actions";
+import type { GraphLink, GraphNode } from "@/app/network/actions";
 
 describe("normalizeSearchQuery", () => {
   it("trims whitespace, converts to lowercase, and strips diacritics", () => {
@@ -355,5 +357,122 @@ describe("calculateConnectionRecord", () => {
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("1 turno");
+  });
+});
+
+describe("getSideCompatibilityLabel", () => {
+  it("returns null when either side is missing or null", () => {
+    expect(getSideCompatibilityLabel(null, "RIGHT")).toBeNull();
+    expect(getSideCompatibilityLabel("LEFT", null)).toBeNull();
+    expect(getSideCompatibilityLabel(null, null)).toBeNull();
+  });
+
+  it("returns complementary indicator for RIGHT + LEFT players", () => {
+    const res1 = getSideCompatibilityLabel("RIGHT", "LEFT");
+    expect(res1?.isComplementary).toBe(true);
+    expect(res1?.label).toBe("Der. + Rev. 🎯");
+
+    const res2 = getSideCompatibilityLabel("LEFT", "RIGHT");
+    expect(res2?.isComplementary).toBe(true);
+    expect(res2?.label).toBe("Der. + Rev. 🎯");
+  });
+
+  it("returns same-side indicator for RIGHT + RIGHT players", () => {
+    const res = getSideCompatibilityLabel("RIGHT", "RIGHT");
+    expect(res?.isComplementary).toBe(false);
+    expect(res?.label).toBe("Ambos derecha ⚠️");
+  });
+
+  it("returns same-side indicator for LEFT + LEFT players", () => {
+    const res = getSideCompatibilityLabel("LEFT", "LEFT");
+    expect(res?.isComplementary).toBe(false);
+    expect(res?.label).toBe("Ambos revés ⚠️");
+  });
+});
+
+describe("filterNodesAndLinksByCommunity", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 2,
+      networkSize: 1,
+      matchesPlayed: 5,
+      preferredSide: "RIGHT",
+    },
+  ];
+
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 2,
+      partnerMatches: 1,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 3,
+    },
+    {
+      source: "p-01",
+      target: "p-03",
+      rivalMatches: 1,
+      partnerMatches: 0,
+      winsA: 1,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 1,
+    },
+  ];
+
+  it("returns all nodes and links when communityId is null", () => {
+    const result = filterNodesAndLinksByCommunity(nodes, links, null);
+    expect(result.nodes).toHaveLength(3);
+    expect(result.links).toHaveLength(2);
+  });
+
+  it("filters nodes and links belonging strictly to community 1", () => {
+    const result = filterNodesAndLinksByCommunity(nodes, links, 1);
+    expect(result.nodes).toHaveLength(2);
+    expect(result.nodes.map((n) => n.id)).toEqual(["p-01", "p-02"]);
+    expect(result.links).toHaveLength(1);
+    expect(result.links[0].source).toBe("p-01");
+    expect(result.links[0].target).toBe("p-02");
+  });
+
+  it("filters nodes belonging to community 2 with zero internal links", () => {
+    const result = filterNodesAndLinksByCommunity(nodes, links, 2);
+    expect(result.nodes).toHaveLength(1);
+    expect(result.nodes[0].id).toBe("p-03");
+    expect(result.links).toHaveLength(0);
   });
 });
