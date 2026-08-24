@@ -32,7 +32,7 @@ export default function InstallPage() {
 
         <Button
           variant="ghost"
-          className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground"
+          className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           asChild
         >
           <Link href="/" prefetch={true}>Volver al inicio</Link>

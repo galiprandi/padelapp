@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { joinMatchPlayerAction } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface JoinSlotButtonProps {
   playerId: string;
@@ -32,8 +33,21 @@ export function JoinSlotButton({ playerId, matchId, disabled, redirectOnSuccess 
   }
 
   return (
-    <Button type="button" className="w-full" disabled={disabled || isPending} onClick={handleJoin}>
-      {isPending ? "Confirmando..." : "Confirmar mi lugar"}
+    <Button
+      type="button"
+      disabled={disabled || isPending}
+      onClick={handleJoin}
+      aria-label="Confirmar mi lugar en el partido"
+      className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    >
+      {isPending ? (
+        <>
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+          Confirmando...
+        </>
+      ) : (
+        "Confirmar mi lugar"
+      )}
     </Button>
   );
 }
