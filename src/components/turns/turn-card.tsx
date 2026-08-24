@@ -17,7 +17,7 @@ import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { type PadelContact } from "@/lib/queries";
-import { getOpenSlotsBadgeText } from "@/components/turns/turn-utils";
+import { getOpenSlotsBadgeText, getTurnUrgencyBadgeText } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
   turn: {
@@ -84,13 +84,7 @@ export function TurnCard({
     !isSubstitute &&
     (turn.status === "OPEN" || canJoinAsSubstitute);
 
-  // Urgency: turn in < 3h with open slots
-  const hoursUntilTurn = mounted
-    // eslint-disable-next-line react-hooks/purity -- Date.now() is intentional: computes urgency for UI display
-    ? (dateObj.getTime() - Date.now()) / (1000 * 60 * 60)
-    : 999;
-  const isUrgent =
-    mounted && hoursUntilTurn < 3 && hoursUntilTurn >= 0 && !isFull;
+  const urgencyText = mounted ? getTurnUrgencyBadgeText(turn.date, isFull) : null;
 
   const { showToast } = useToast();
 
@@ -162,13 +156,9 @@ export function TurnCard({
               </p>
               {isTodayDate && <Badge variant="success">Hoy</Badge>}
               {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
-              {isUrgent && (
-                <Badge
-                  variant="warning"
-                >
-                  {hoursUntilTurn < 1
-                    ? "Urgente"
-                    : `En ${Math.round(hoursUntilTurn)}h`}
+              {urgencyText && (
+                <Badge variant="warning">
+                  {urgencyText}
                 </Badge>
               )}
             </div>
@@ -221,7 +211,7 @@ export function TurnCard({
         </div>
 
         {/* Actions row */}
-        {(isJoined || canJoin) && (
+        {(isJoined || isSubstitute || canJoin) && (
           <div className="relative z-10 flex items-stretch gap-2">
             {isJoined && turn.players.length < turn.maxPlayers && (
               <div className="flex-1">
