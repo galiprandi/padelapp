@@ -1,4 +1,4 @@
-import type { GraphLink } from "./actions";
+import type { GraphLink, GraphNode } from "./actions";
 
 export function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
@@ -93,5 +93,77 @@ export function calculateConnectionRecord(
     wins: 0,
     losses: 0,
     formattedRecord: `${link.turnsTogether} ${link.turnsTogether === 1 ? "turno" : "turnos"}`,
+  };
+}
+
+export interface SideCompatibility {
+  label: string;
+  isComplementary: boolean;
+}
+
+/**
+ * Calculates physical court position synergy between two players.
+ * Returns complementary indicator when one plays RIGHT and the other plays LEFT.
+ */
+export function getSideCompatibilityLabel(
+  sideA: "RIGHT" | "LEFT" | null | string,
+  sideB: "RIGHT" | "LEFT" | null | string,
+): SideCompatibility | null {
+  if (!sideA || !sideB) return null;
+
+  const isComplementary =
+    (sideA === "RIGHT" && sideB === "LEFT") ||
+    (sideA === "LEFT" && sideB === "RIGHT");
+
+  if (isComplementary) {
+    return {
+      label: "Der. + Rev. 🎯",
+      isComplementary: true,
+    };
+  }
+
+  if (sideA === "RIGHT" && sideB === "RIGHT") {
+    return {
+      label: "Ambos derecha ⚠️",
+      isComplementary: false,
+    };
+  }
+
+  if (sideA === "LEFT" && sideB === "LEFT") {
+    return {
+      label: "Ambos revés ⚠️",
+      isComplementary: false,
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Isolates graph nodes and links belonging to a specific Louvain community cluster.
+ */
+export function filterNodesAndLinksByCommunity(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  communityId: number | null,
+): { nodes: GraphNode[]; links: GraphLink[] } {
+  if (communityId === null) {
+    return { nodes, links };
+  }
+
+  const communityNodeIds = new Set(
+    nodes.filter((n) => n.community === communityId).map((n) => n.id),
+  );
+
+  const filteredNodes = nodes.filter((n) => communityNodeIds.has(n.id));
+  const filteredLinks = links.filter(
+    (l) =>
+      communityNodeIds.has(linkNodeId(l.source)) &&
+      communityNodeIds.has(linkNodeId(l.target)),
+  );
+
+  return {
+    nodes: filteredNodes,
+    links: filteredLinks,
   };
 }
