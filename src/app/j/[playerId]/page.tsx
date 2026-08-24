@@ -229,8 +229,8 @@ async function JoinSlotContent({
           </div>
           {match.club && (
             <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
-                <MapPin className="h-5 w-5" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shrink-0">
+                <MapPin className="h-5 w-5" aria-hidden="true" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold truncate">
@@ -283,16 +283,16 @@ async function JoinSlotContent({
                         className={cn(
                           "flex items-center gap-3 rounded-xl p-3 border",
                           isViewer
-                            ? "bg-primary/5 border-primary/20"
+                            ? "bg-card border-primary font-semibold shadow-xs"
                             : "bg-card border-border",
                         )}
                       >
                         <div
                           className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold shrink-0",
+                            "flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold shrink-0 border border-border",
                             isOccupied
-                              ? "bg-primary/10 text-primary"
-                              : "bg-muted text-muted-foreground/30",
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground/40",
                           )}
                         >
                           {isOccupied
@@ -322,7 +322,12 @@ async function JoinSlotContent({
                         {isOccupied && (
                           <Badge
                             variant="outline"
-                            className="text-xs font-bold border-emerald-500/20 text-emerald-600 bg-emerald-500/5 px-2 py-0.5 rounded"
+                            className={cn(
+                              "text-xs font-bold px-2 py-0.5 rounded",
+                              slot.resultConfirmed
+                                ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                                : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                            )}
                           >
                             {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
                           </Badge>
@@ -355,8 +360,8 @@ async function JoinSlotContent({
             </div>
 
             {helperMessage && (
-              <div className="flex items-center gap-3 rounded-lg bg-destructive/5 p-3 text-destructive border border-destructive/20">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-3 rounded-lg bg-card p-3 text-destructive border border-destructive shadow-xs">
+                <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <p className="text-xs font-bold">{helperMessage}</p>
               </div>
             )}

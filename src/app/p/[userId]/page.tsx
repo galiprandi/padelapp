@@ -198,7 +198,7 @@ async function PublicProfileContent({
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-orange-500/10 border-orange-500/20 text-orange-600 font-bold px-3 py-0.5 text-xs"
+                  className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs"
                 >
                   Racha: {currentStreak} Victorias 🔥
                 </Badge>
@@ -446,8 +446,8 @@ async function PublicProfileContent({
           <h2 className="text-sm font-bold text-foreground">
             Historial Reciente
           </h2>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
-            <Zap className="h-3 w-3 fill-current" />
+          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
+            <Zap className="h-3 w-3 text-primary fill-current" aria-hidden="true" />
             {winRate}% WR
           </div>
         </div>
