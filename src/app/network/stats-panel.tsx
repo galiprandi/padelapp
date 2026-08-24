@@ -80,6 +80,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
       <div className="flex items-center gap-3">
         <Link
           href="/me"
+          prefetch={true}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           aria-label="Volver al inicio"
         >
@@ -182,6 +183,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
               >
                 <Link
                   href={`/p/${player.id}`}
+                  prefetch={true}
                   className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <PlayerAvatar
@@ -207,6 +209,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
                   </div>
                   <Link
                     href={`/p/${player.id}`}
+                    prefetch={true}
                     aria-label={`Ver perfil público de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}`}
                     className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
@@ -252,6 +255,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
               <Link
                 key={u.id}
                 href={`/p/${u.id}`}
+                prefetch={true}
                 className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
               >
                 <PlayerAvatar
@@ -315,6 +319,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
               <Link
                 key={p.id}
                 href={`/p/${p.id}`}
+                prefetch={true}
                 className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
               >
                 <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums">

@@ -75,6 +75,7 @@ async function DynamicBackButton({
   return (
     <Link
       href={backUrl}
+      prefetch={true}
       className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
     >
       <ChevronLeft className="h-5 w-5" />

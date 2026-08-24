@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-24 — Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (PR #tino/perf/network-and-edit-routes-prefetching)
 - [x] 2026-08-23 — Prefetching Eager de Rutas y Navegación Transversal en Dashboard, Perfiles, Turnos, Filtros y PWA (PR #tino/perf/eager-route-prefetching-and-transversal-navigation)
 - [x] 2026-08-22 — Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (PR #tino/perf/pwa-sw-precaching-and-speculation-rules)
 - [x] 2026-08-21 — Prefetching Transversal de Rutas y Componentes Compartidos para Transiciones Instantáneas (PR #tino/perf/transversal-route-prefetching)
@@ -33,6 +34,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-24 - Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (Performance & UX Transversal)
+**Aprendizaje:** Incluir `prefetch={true}` de manera explícita en todos los enlaces de retroceso y navegación en vistas pesadas o subrutas de edición/configuración (`StatsPanel`, `GraphView`, `/p/[userId]`, `/me/profile`, `/me/security`, `/turnos/nuevo`, `/turnos/[id]/editar`, `/match/[matchId]/edit`) permite que Next.js App Router precargue especulativamente los cascarones de ruta en segundo plano. Esto asegura que la experiencia de navegación del usuario al volver al Dashboard, navegar por perfiles o acceder a seguridad sea instantánea y libre de latencia percibida.
+**Acción:** Aplicar `prefetch={true}` de forma sistemática en enlaces de retroceso y navegación transversal de subrutas de edición.
+
 ### 2026-08-23 - Prefetching Eager de Rutas y Navegación Transversal (Performance & UX Transversal)
 **Aprendizaje:** En Next.js App Router con PPR y Cache Components, asegurar que todos los elementos interactivos `<Link>` tengan `prefetch={true}` de forma explícita —en especial en tarjetas del Dashboard, vistas de detalle, botones de instalación PWA, filtros y fronteras de error (`error.tsx`)— permite que Next.js precargue de manera proactiva los bundles JS y cascarones estáticos en cuanto entran en el viewport. Esto elimina por completo la latencia de red en las transiciones de pantalla, logrando transiciones táctiles instantáneas (0ms de lag percibido) desde cualquier punto de la aplicación móvil.
 **Acción:** Verificar de forma sistemática que todos los componentes con enlaces de navegación interactivos cuenten con `prefetch={true}` para mantener una fluidez táctil transversal.

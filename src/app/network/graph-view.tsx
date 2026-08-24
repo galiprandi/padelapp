@@ -616,6 +616,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
           <div className="flex gap-2 justify-center">
             <Link
               href="/turnos"
+            prefetch={true}
               className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
               Buscar turnos
@@ -760,6 +761,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
           <Link
             href={`/p/${selectedNodeData.id}`}
+            prefetch={true}
             className="block w-full text-center rounded-lg border border-border bg-card px-3 py-2 text-xs font-bold text-foreground transition-colors hover:bg-muted active:scale-[0.98] mb-3"
           >
             Ver perfil público
@@ -815,6 +817,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     </button>
                     <Link
                       href={`/p/${otherId}`}
+                      prefetch={true}
                       className="text-[11px] font-bold text-primary hover:underline px-1.5 py-0.5 rounded-md active:scale-[0.95] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
                       aria-label={`Ver perfil de ${otherName}`}
                     >
