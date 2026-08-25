@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn } from "@/lib/utils";
+import { cn, getLevelBadgeLabel } from "@/lib/utils";
 
 export interface PlayerPreviewProps {
   id: string;
@@ -45,7 +45,7 @@ export function PlayerPreview({
       aria-label={isInteractive ? (manageAriaLabel || (onManageClick ? (isConfirmed ? `Gestionar jugador ${name}` : `Invitar jugador ${name}`) : `Ver perfil de ${name}`)) : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
       )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
@@ -56,7 +56,7 @@ export function PlayerPreview({
           <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
             {role}
             {role && typeof category === "number" ? " · " : ""}
-            {typeof category === "number" ? `Cat. ${category}` : ""}
+            {typeof category === "number" ? getLevelBadgeLabel(category) : ""}
           </p>
         ) : null}
       </div>
@@ -89,7 +89,7 @@ export function PlayerWithRanking({ name, role, image, ranking, category, onClic
       aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
       )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
@@ -100,13 +100,13 @@ export function PlayerWithRanking({ name, role, image, ranking, category, onClic
           <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
             {role}
             {role && typeof category === "number" ? " · " : ""}
-            {typeof category === "number" ? `Cat. ${category}` : ""}
+            {typeof category === "number" ? getLevelBadgeLabel(category) : ""}
           </p>
         ) : null}
       </div>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-primary/10 px-2 text-xs font-bold text-primary border border-primary/20">
+        <span className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2 text-xs font-bold text-foreground border border-border shadow-xs">
           #{ranking}
         </span>
       ) : null}
@@ -133,7 +133,7 @@ export function PlayerCompact({ name, image, ranking, onClick }: PlayerPreviewPr
       aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
       )}
     >
       <PlayerAvatar name={name} image={image} size={32} className="rounded-lg" />
@@ -141,7 +141,7 @@ export function PlayerCompact({ name, image, ranking, onClick }: PlayerPreviewPr
       <p className="flex-1 truncate text-sm font-bold text-foreground">{name}</p>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-secondary/50 px-1.5 text-xs font-bold text-secondary-foreground border border-secondary/20">
+        <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs">
           #{ranking}
         </span>
       ) : null}
@@ -192,16 +192,16 @@ export function PairInline({ players, label }: { players: PlayerPreviewProps[]; 
           return (
             <Fragment key={`pair-inline-${label}-${player.id}`}>
               <div className="flex min-w-0 flex-1 items-center gap-3 group transition-colors">
-                <PlayerAvatar name={player.name} image={player.image} className="rounded-lg border border-border/20 shadow-sm" />
+                <PlayerAvatar name={player.name} image={player.image} className="rounded-lg border border-border shadow-sm" />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-bold text-foreground">{player.name}</p>
                   {typeof player.category === "number" ? (
-                    <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">Cat. {player.category}</p>
+                    <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">{getLevelBadgeLabel(player.category)}</p>
                   ) : null}
                 </div>
               </div>
               {index < players.length - 1 ? (
-                <div className="h-8 w-px bg-border/20" aria-hidden />
+                <div className="h-8 w-px bg-border" aria-hidden />
               ) : null}
             </Fragment>
           );
