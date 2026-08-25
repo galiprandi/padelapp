@@ -59,6 +59,25 @@ function ScoreSelector({
   onValueChange: (val: number) => void;
 }) {
   const groupLabelId = `score-label-${setIndex}-${teamIndex}`;
+  const options = [0, 1, 2, 3, 4, 5, 6, 7];
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+      e.preventDefault();
+      const currentIndex = options.indexOf(currentValue);
+      let nextIndex = currentIndex >= 0 ? currentIndex : 0;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        nextIndex = (nextIndex + 1) % options.length;
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        nextIndex = (nextIndex - 1 + options.length) % options.length;
+      }
+      const nextValue = options[nextIndex];
+      onValueChange(nextValue);
+      const container = e.currentTarget;
+      const buttons = container.querySelectorAll<HTMLButtonElement>("button[role='radio']");
+      buttons[nextIndex]?.focus();
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -84,9 +103,10 @@ function ScoreSelector({
       <div
         role="radiogroup"
         aria-labelledby={groupLabelId}
+        onKeyDown={handleKeyDown}
         className="grid grid-cols-4 gap-2"
       >
-        {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
+        {options.map((num) => {
           const isSelected = currentValue === num;
           return (
             <button
