@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 19 (Court Side Preference Badge & ARIA Accessibility in Graph Drawer):
+  - [x] 2026-08-23 — Hecho: Creada la función `getPreferredSideBadgeLabel` en `src/app/network/graph-utils.ts` para formatear de forma consistente las posiciones preferidas en cancha ('RIGHT' -> 'Der.', 'LEFT' -> 'Rev.', 'BOTH' -> 'Ambos', null/undefined -> '—') con etiquetas completas en español.
+  - [x] 2026-08-23 — Hecho: Integración en el panel lateral de detalles de nodo de `GraphView` (`src/app/network/graph-view.tsx`) con atributos `title` y `aria-label` descriptivos para accesibilidad en lectores de pantalla.
 - Phase 18 (Shared Turn Connections Filter & Legend in Graph View):
   - [x] 2026-08-22 — Hecho: Agregado el filtro por chip "Turnos" en `GraphView` (`src/app/network/graph-view.tsx`) para aislar aristas de co-inscripción en turnos (`turnsTogether`).
   - [x] 2026-08-22 — Hecho: Asignado color Slate distintivo (`bg-slate-500` / `rgba(100, 116, 139, 0.8)`) para representación de enlaces de turnos y leyenda informativa.
@@ -79,6 +82,7 @@
 - [x] 2026-08-09 — Turn Contact Recommendations and Player Similarity Safeguards (PR coello/graph/exclude-substitutes-from-suggestions)
 - [x] 2026-08-11 — Unicode Accent-Insensitive Graph Search & Legacy Level Eradication (PR coello/network/graph-diacritic-search)
 - [x] 2026-08-15 — Argentine Voseo Localization & Network Recommender Refinements
+- [x] 2026-08-23 — Court Side Preference Badge & ARIA Accessibility in Graph Drawer
 
 ## Learnings
 - **Navegación Interactiva por Grafo y Enfoque Dinámico de Cámara**: Permitir que el usuario seleccione conexiones directas desde el panel de detalles del grafo y centrar la cámara mediante animación (`centerAt` + `zoom`) del lienzo interactivo (`react-force-graph-2d`) transforma la exploración del grafo social de una experiencia estática a un descubrimiento dinámico e inmersivo. Integrar enlaces transversales directos al perfil público (`/p/[userId]`) en cada nodo de conexión potencia el engagement orgánico.

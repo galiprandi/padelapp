@@ -96,6 +96,29 @@ export function calculateConnectionRecord(
   };
 }
 
+export interface PreferredSideBadgeInfo {
+  label: string;
+  shortLabel: string;
+}
+
+/**
+ * Returns formatted label and abbreviation for court side preference.
+ */
+export function getPreferredSideBadgeLabel(
+  side: "RIGHT" | "LEFT" | "BOTH" | null | undefined | string,
+): PreferredSideBadgeInfo {
+  if (side === "RIGHT") {
+    return { label: "Posición preferida: Derecha", shortLabel: "Der." };
+  }
+  if (side === "LEFT") {
+    return { label: "Posición preferida: Revés", shortLabel: "Rev." };
+  }
+  if (side === "BOTH") {
+    return { label: "Posición preferida: Ambos lados", shortLabel: "Ambos" };
+  }
+  return { label: "Posición preferida: Sin definir", shortLabel: "—" };
+}
+
 export interface SideCompatibility {
   label: string;
   isComplementary: boolean;
