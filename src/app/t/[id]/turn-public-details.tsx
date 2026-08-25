@@ -748,7 +748,7 @@ function TurnActions({
                 variant="outline"
                 className="flex-1 h-10 rounded-lg font-bold text-xs"
               >
-                <Link href={`/turnos/${turnId}/editar`}>
+                <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
                 </Link>
