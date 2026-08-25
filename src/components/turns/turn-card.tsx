@@ -17,7 +17,7 @@ import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { type PadelContact } from "@/lib/queries";
-import { getOpenSlotsBadgeText, getTurnUrgencyBadgeText } from "@/components/turns/turn-utils";
+import { getOpenSlotsBadgeText, getTurnUrgencyBadgeText, getTurnSalvageShareMessage } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
   turn: {
@@ -231,11 +231,24 @@ export function TurnCard({
             <ShareButton
               url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
               title="Sumate al Turno"
-              shareData={{
-                type: "turn",
-                club: turn.club,
-                date: turn.date,
-              }}
+              text={
+                openSlots > 0
+                  ? getTurnSalvageShareMessage({
+                      club: turn.club,
+                      date: turn.date,
+                      openSlots,
+                    })
+                  : undefined
+              }
+              shareData={
+                openSlots <= 0
+                  ? {
+                      type: "turn",
+                      club: turn.club,
+                      date: turn.date,
+                    }
+                  : undefined
+              }
               variant="default"
               size="sm"
               iconOnly={false}

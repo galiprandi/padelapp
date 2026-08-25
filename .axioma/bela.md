@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-25 — Turn Salvage Share Copy Helper & ShareButton Integration (bela/turnos/salvage-share-copy)
 - [x] 2026-08-24 — Turn Urgency Calculation Helper & Substitute Action Row Refactor in TurnCard (bela/turnos/urgency-badge-and-substitute-actions)
 - [x] 2026-08-23 — OpenToNetworkButton MDS Solid Styling, Cooldown Utility & Status Badges Standardization (bela/turnos/open-to-network-mds-solid-styling)
 - [x] 2026-08-21 — Turn Salvage UX & WhatsApp Invite Utility Standardization (bela/turnos/salvage-ux-and-whatsapp-utility)
@@ -38,6 +39,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-25 - Turn Salvage Share Copy Helper & ShareButton Integration
+**Learning:** Extracting customized turn salvage share text payload formatting into a pure helper utility (`getTurnSalvageShareMessage`) ensures deterministic, localized Argentine Spanish voseo formatting without exclamation marks across both listing cards (`TurnCard`) and detailed views (`TurnPublicDetails`). Dynamically generating text payload when open slots exist (`openSlots > 0`) transforms generic web sharing into targeted salvage calls to action.
+**Action:** Always extract dynamic message generation into pure helper utilities backed by Vitest unit tests and ensure interactive share components deliver targeted, actionable copy when open slots are detected.
+
 ## 2026-08-24 - Turn Urgency Calculation Helper & Substitute Action Row Refactor in TurnCard
 **Learning:** Extracting turn urgency badge calculations into a pure helper utility (`getTurnUrgencyBadgeText`) enables deterministic Vitest unit testing using fixed timestamps (`nowMs`) without timezone issues or hydration mismatches. Ensuring substitute participants (`isSubstitute`) have access to action triggers (such as `ShareButton`) on `TurnCard` enables substitutes to help recruit players for incomplete turnos, directly supporting the core turn salvage objective.
 **Action:** Always extract dynamic time/status badge text calculations into pure helper functions backed by unit tests and ensure all participant roles (including substitutes) have appropriate salvage sharing capabilities on listing cards.
