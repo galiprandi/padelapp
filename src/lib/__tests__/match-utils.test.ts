@@ -40,6 +40,11 @@ describe("avatarFallback", () => {
   it("handles empty string", () => {
     expect(avatarFallback("")).toBe("");
   });
+
+  it("handles names with accents or multiple spaces", () => {
+    expect(avatarFallback("Agustín Tapia")).toBe("AT");
+    expect(avatarFallback("   Juan   Pérez   ")).toBe("JP");
+  });
 });
 
 describe("createPlaceholderSlot", () => {

@@ -317,7 +317,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
               <div
                 className={cn(
                   "grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-2 transition-colors",
-                  team.hasViewer && "bg-primary/5",
+                  team.hasViewer && "bg-muted/80 font-medium",
                 )}
               >
                 <div className="flex items-center">
@@ -412,7 +412,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                       ? didWinSet
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground"
-                      : "bg-muted/50 text-muted-foreground";
+                      : "bg-muted text-muted-foreground/60";
 
                     return (
                       <span

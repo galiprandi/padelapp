@@ -61,6 +61,7 @@ export function SlotDisplay({
         type="button"
         onClick={() => onSlotClick(team, index)}
         aria-label={`Seleccionar Pareja ${team}, ${sideLabel}: ${displayName}`}
+        aria-pressed={isActive}
         className={cn(
           "flex flex-1 items-center gap-3 rounded-lg px-3 py-2 text-left transition-all active:scale-[0.98]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
