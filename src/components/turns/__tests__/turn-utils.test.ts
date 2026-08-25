@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   formatWhatsAppInviteMessage,
+  getTurnSalvageShareMessage,
   getOpenSlotsBadgeText,
   getTurnRoleBadgeText,
   getCooldownRemainingMinutes,
@@ -45,6 +46,41 @@ describe("formatWhatsAppInviteMessage", () => {
     expect(msg).toContain("20:30hs");
     expect(msg).toContain("faltan 2 jugadores para completarlo.");
     expect(msg).toContain("Sumate acá: https://padelred.app/t/456");
+  });
+});
+
+describe("getTurnSalvageShareMessage", () => {
+  it("formats turn salvage share message for 1 missing slot", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(19, 0, 0, 0);
+
+    const msg = getTurnSalvageShareMessage({
+      club: "Central Padel",
+      date: futureDate,
+      openSlots: 1,
+    });
+
+    expect(msg).toContain("⚠️ Falta 1 jugador para el turno de pádel en Central Padel");
+    expect(msg).toContain("Ayudanos a completarlo o sumate acá:");
+    expect(msg).not.toContain("!");
+    expect(msg).not.toContain("¡");
+  });
+
+  it("formats turn salvage share message for multiple missing slots", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(20, 15, 0, 0);
+
+    const msg = getTurnSalvageShareMessage({
+      club: "La Cancha Padel",
+      date: futureDate,
+      openSlots: 2,
+    });
+
+    expect(msg).toContain("⚠️ Faltan 2 jugadores para el turno de pádel en La Cancha Padel");
+    expect(msg).toContain("20:15hs");
+    expect(msg).toContain("Ayudanos a completarlo o sumate acá:");
   });
 });
 

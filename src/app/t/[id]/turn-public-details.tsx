@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
 import { TurnChat } from "@/components/turns/turn-chat";
+import { getTurnSalvageShareMessage } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -57,19 +58,31 @@ function TurnShareButton({
   shareUrl,
   club,
   date,
+  openSlots = 0,
   variant = "full",
   className,
 }: {
   shareUrl: string;
   club: string;
   date: Date;
+  openSlots?: number;
   variant?: "full" | "icon";
   className?: string;
 }) {
+  const shareText =
+    openSlots > 0
+      ? getTurnSalvageShareMessage({ club, date, openSlots })
+      : undefined;
+
   return (
     <ShareButton
       title="Sumate al Turno"
-      shareData={{ type: "turn", club, date }}
+      text={shareText}
+      shareData={
+        openSlots <= 0
+          ? { type: "turn", club, date }
+          : undefined
+      }
       url={shareUrl}
       variant="outline"
       iconOnly={variant === "icon"}
@@ -414,6 +427,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       shareUrl={shareUrl}
                       club={turn.club}
                       date={turn.date}
+                      openSlots={turn.maxPlayers - turn.players.length}
                       variant="icon"
                       className="h-8 w-8 rounded-lg shrink-0"
                     />
@@ -582,6 +596,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             isCreator={isCreator}
             isCompleted={isCompleted}
             hasOpenSlot={hasOpenSlot}
+            openSlots={turn.maxPlayers - turn.players.length}
             turnId={id}
             club={turn.club}
             date={turn.date}
@@ -603,6 +618,7 @@ function TurnActions({
   isCreator,
   isCompleted,
   hasOpenSlot,
+  openSlots,
   turnId,
   club,
   date,
@@ -616,6 +632,7 @@ function TurnActions({
   isCreator: boolean;
   isCompleted: boolean;
   hasOpenSlot: boolean;
+  openSlots: number;
   turnId: string;
   club: string;
   date: Date;
@@ -631,7 +648,7 @@ function TurnActions({
           label={`Iniciá sesión para sumarte a ${club}`}
           className="w-full h-12 rounded-lg text-base font-bold"
         />
-        <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
+        <TurnShareButton shareUrl={shareUrl} club={club} date={date} openSlots={openSlots} />
       </div>
     );
   }
@@ -653,7 +670,7 @@ function TurnActions({
           </>
         )}
         {!isCompleted && (
-          <TurnShareButton shareUrl={shareUrl} club={club} date={date} />
+          <TurnShareButton shareUrl={shareUrl} club={club} date={date} openSlots={openSlots} />
         )}
         <LeaveSubstituteForm turnId={turnId} hasOpenSlot={hasOpenSlot} />
       </div>
@@ -737,6 +754,7 @@ function TurnActions({
                   shareUrl={shareUrl}
                   club={club}
                   date={date}
+                  openSlots={openSlots}
                   variant="icon"
                   className="h-10 w-10 rounded-lg shrink-0"
                 />
@@ -778,6 +796,7 @@ function TurnActions({
                 shareUrl={shareUrl}
                 club={club}
                 date={date}
+                openSlots={openSlots}
                 variant="icon"
                 className="h-10 w-10 rounded-lg shrink-0"
               />
@@ -823,6 +842,7 @@ function TurnActions({
             shareUrl={shareUrl}
             club={club}
             date={date}
+            openSlots={openSlots}
             variant="icon"
             className="h-12 w-12 rounded-lg shrink-0"
           />
