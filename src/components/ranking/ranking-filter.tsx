@@ -54,11 +54,25 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
             role="radiogroup"
             aria-labelledby="ranking-tabs-label"
             className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl"
+            onKeyDown={(e) => {
+              const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+              if (buttons.length < 2) return;
+              if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveTab("todos");
+                buttons[1]?.focus();
+              } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                e.preventDefault();
+                setActiveTab("activos");
+                buttons[0]?.focus();
+              }
+            }}
           >
             <button
               type="button"
               role="radio"
               aria-checked={activeTab === "activos"}
+              tabIndex={activeTab === "activos" ? 0 : -1}
               onClick={() => setActiveTab("activos")}
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
@@ -74,6 +88,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               type="button"
               role="radio"
               aria-checked={activeTab === "todos"}
+              tabIndex={activeTab === "todos" ? 0 : -1}
               onClick={() => setActiveTab("todos")}
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
