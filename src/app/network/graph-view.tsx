@@ -13,6 +13,7 @@ import {
   filterLinksBySelectedNode,
   getSideCompatibilityLabel,
   filterNodesAndLinksByCommunity,
+  getPreferredSideBadgeLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -721,16 +722,21 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 {selectedNodeData.skillScore}
               </p>
             </div>
-            <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
-              <p className="text-xs text-muted-foreground">Lado</p>
-              <p className="text-sm font-bold text-foreground">
-                {selectedNodeData.preferredSide === "RIGHT"
-                  ? "Der."
-                  : selectedNodeData.preferredSide === "LEFT"
-                    ? "Rev."
-                    : "—"}
-              </p>
-            </div>
+            {(() => {
+              const sideInfo = getPreferredSideBadgeLabel(selectedNodeData.preferredSide);
+              return (
+                <div
+                  className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border"
+                  title={sideInfo.label}
+                  aria-label={sideInfo.label}
+                >
+                  <p className="text-xs text-muted-foreground">Lado</p>
+                  <p className="text-sm font-bold text-foreground">
+                    {sideInfo.shortLabel}
+                  </p>
+                </div>
+              );
+            })()}
             <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
               <p className="text-xs text-muted-foreground">Grupo</p>
               {selectedNodeData.community !== null ? (

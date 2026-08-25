@@ -187,6 +187,7 @@ import {
   filterLinksBySelectedNode,
   getSideCompatibilityLabel,
   filterNodesAndLinksByCommunity,
+  getPreferredSideBadgeLabel,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -357,6 +358,41 @@ describe("calculateConnectionRecord", () => {
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("1 turno");
+  });
+});
+
+describe("getPreferredSideBadgeLabel", () => {
+  it("formats RIGHT side preference label and shortLabel correctly", () => {
+    const res = getPreferredSideBadgeLabel("RIGHT");
+    expect(res.label).toBe("Posición preferida: Derecha");
+    expect(res.shortLabel).toBe("Der.");
+  });
+
+  it("formats LEFT side preference label and shortLabel correctly", () => {
+    const res = getPreferredSideBadgeLabel("LEFT");
+    expect(res.label).toBe("Posición preferida: Revés");
+    expect(res.shortLabel).toBe("Rev.");
+  });
+
+  it("formats BOTH sides preference label and shortLabel correctly", () => {
+    const res = getPreferredSideBadgeLabel("BOTH");
+    expect(res.label).toBe("Posición preferida: Ambos lados");
+    expect(res.shortLabel).toBe("Ambos");
+  });
+
+  it("handles null, undefined, or unknown values with fallback label", () => {
+    expect(getPreferredSideBadgeLabel(null)).toEqual({
+      label: "Posición preferida: Sin definir",
+      shortLabel: "—",
+    });
+    expect(getPreferredSideBadgeLabel(undefined)).toEqual({
+      label: "Posición preferida: Sin definir",
+      shortLabel: "—",
+    });
+    expect(getPreferredSideBadgeLabel("UNKNOWN")).toEqual({
+      label: "Posición preferida: Sin definir",
+      shortLabel: "—",
+    });
   });
 });
 
