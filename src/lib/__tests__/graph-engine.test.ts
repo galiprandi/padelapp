@@ -188,6 +188,7 @@ import {
   getSideCompatibilityLabel,
   filterNodesAndLinksByCommunity,
   getPreferredSideBadgeLabel,
+  getConnectionAffinityLabel,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -358,6 +359,133 @@ describe("calculateConnectionRecord", () => {
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("1 turno");
+  });
+});
+
+describe("getConnectionAffinityLabel", () => {
+  it("returns 'Dupla exitosa 🏆' when partner matches >= 3 and win rate >= 65%", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 4,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 3, // 75% win rate
+      lossesTogether: 1,
+      turnsTogether: 0,
+      strength: 4,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Dupla exitosa 🏆");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+
+  it("returns 'Dupla frecuente 🤝' when partner matches >= 3 and win rate < 65%", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 4,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 2, // 50% win rate
+      lossesTogether: 2,
+      turnsTogether: 0,
+      strength: 4,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Dupla frecuente 🤝");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+
+  it("returns 'Rivalidad clásica ⚔️' when rival matches >= 3", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 5,
+      partnerMatches: 0,
+      winsA: 3,
+      winsB: 2,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 1,
+      strength: 6,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Rivalidad clásica ⚔️");
+    expect(res.badgeStyle).toContain("bg-rose-100");
+  });
+
+  it("returns 'Historial cruzado 🔄' when played both as partners and rivals (< 3 matches each)", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 2,
+      partnerMatches: 1,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 3,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Historial cruzado 🔄");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+  });
+
+  it("returns 'Compañeros de turno 📅' when no matches yet but turn co-inscriptions exist", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 0,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 2,
+      strength: 2,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Compañeros de turno 📅");
+    expect(res.badgeStyle).toContain("bg-slate-100");
+  });
+
+  it("returns 'En desarrollo 🌱' when 1 or 2 matches played in total", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 1,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 1,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("En desarrollo 🌱");
+    expect(res.badgeStyle).toContain("bg-muted");
+  });
+
+  it("returns 'Primera conexión 🌱' when zero matches and zero turn co-inscriptions", () => {
+    const link: GraphLink = {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 0,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 0,
+    };
+    const res = getConnectionAffinityLabel(link);
+    expect(res.label).toBe("Primera conexión 🌱");
   });
 });
 

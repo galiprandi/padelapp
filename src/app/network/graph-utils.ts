@@ -119,6 +119,73 @@ export function getPreferredSideBadgeLabel(
   return { label: "Posición preferida: Sin definir", shortLabel: "—" };
 }
 
+export interface ConnectionAffinityInfo {
+  label: string;
+  badgeStyle: string;
+}
+
+/**
+ * Categorizes connection dynamic between two players based on match history and turn co-inscriptions.
+ */
+export function getConnectionAffinityLabel(
+  link: GraphLink,
+): ConnectionAffinityInfo {
+  const { partnerMatches, rivalMatches, winsTogether, turnsTogether } = link;
+  const totalMatches = partnerMatches + rivalMatches;
+
+  if (partnerMatches >= 3) {
+    const winRate = winsTogether / partnerMatches;
+    if (winRate >= 0.65) {
+      return {
+        label: "Dupla exitosa 🏆",
+        badgeStyle:
+          "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
+      };
+    }
+    return {
+      label: "Dupla frecuente 🤝",
+      badgeStyle:
+        "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
+    };
+  }
+
+  if (rivalMatches >= 3) {
+    return {
+      label: "Rivalidad clásica ⚔️",
+      badgeStyle:
+        "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800",
+    };
+  }
+
+  if (partnerMatches > 0 && rivalMatches > 0) {
+    return {
+      label: "Historial cruzado 🔄",
+      badgeStyle:
+        "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
+    };
+  }
+
+  if (totalMatches === 0 && turnsTogether > 0) {
+    return {
+      label: "Compañeros de turno 📅",
+      badgeStyle:
+        "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-800",
+    };
+  }
+
+  if (totalMatches > 0 && totalMatches < 3) {
+    return {
+      label: "En desarrollo 🌱",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+    };
+  }
+
+  return {
+    label: "Primera conexión 🌱",
+    badgeStyle: "bg-muted text-muted-foreground border-border",
+  };
+}
+
 export interface SideCompatibility {
   label: string;
   isComplementary: boolean;
