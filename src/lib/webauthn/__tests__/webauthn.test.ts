@@ -53,7 +53,7 @@ describe("WebAuthn / Passkey Actions Unit Tests", () => {
 
   describe("getUserPasskeys", () => {
     it("returns empty array when user is unauthenticated", async () => {
-      vi.mocked(auth).mockResolvedValueOnce(null as any);
+      vi.mocked(auth).mockResolvedValueOnce(null as Awaited<ReturnType<typeof auth>>);
       const passkeys = await getUserPasskeys();
       expect(passkeys).toEqual([]);
     });
@@ -61,7 +61,8 @@ describe("WebAuthn / Passkey Actions Unit Tests", () => {
     it("returns empty array for mock bypass user 'p-01'", async () => {
       vi.mocked(auth).mockResolvedValueOnce({
         user: { id: "p-01", email: "p-01@test.com" },
-      } as any);
+        expires: "2026-12-31",
+      } as Awaited<ReturnType<typeof auth>>);
       const passkeys = await getUserPasskeys();
       expect(passkeys).toEqual([]);
     });
@@ -81,7 +82,7 @@ describe("WebAuthn / Passkey Actions Unit Tests", () => {
 
   describe("deletePasskey", () => {
     it("returns error object when user is unauthenticated", async () => {
-      vi.mocked(auth).mockResolvedValueOnce(null as any);
+      vi.mocked(auth).mockResolvedValueOnce(null as Awaited<ReturnType<typeof auth>>);
       const result = await deletePasskey("cred-01");
       expect(result).toEqual({ error: "Debés estar logueado." });
     });
