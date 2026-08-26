@@ -114,11 +114,15 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
       disabled={isPending}
       size="sm"
       variant="outline"
-      className="h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98]"
-      aria-label="Sumarse en este cupo disponible"
+      className="h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+      aria-label={isPending ? "Sumándome al turno..." : "Sumarse en este cupo disponible"}
+      aria-busy={isPending}
     >
       {isPending ? (
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <>
+          <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+          <span>Sumando...</span>
+        </>
       ) : (
         "Sumarme"
       )}
