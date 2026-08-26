@@ -161,13 +161,39 @@ function RecentClubs({
 
   if (recentClubs.length === 0) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+      e.preventDefault();
+      const container = e.currentTarget;
+      const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>("button[role='radio']"));
+      if (buttons.length === 0) return;
+
+      const activeElement = document.activeElement as HTMLButtonElement;
+      const currentIndex = buttons.indexOf(activeElement);
+      let nextIndex = currentIndex >= 0 ? currentIndex : 0;
+
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        nextIndex = (nextIndex + 1) % buttons.length;
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        nextIndex = (nextIndex - 1 + buttons.length) % buttons.length;
+      }
+
+      buttons[nextIndex]?.focus();
+    }
+  };
+
   return (
     <div className="space-y-2">
-      <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+      <Label id="recent-clubs-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
         <MapPin className="h-3 w-3" />
         Clubes recientes
       </Label>
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div
+        role="radiogroup"
+        aria-labelledby="recent-clubs-label"
+        onKeyDown={handleKeyDown}
+        className="flex gap-2 overflow-x-auto pb-1"
+      >
         {recentClubs.map((item) => {
           const label = item.courtNumber
             ? `${item.club} · ${item.courtNumber}`
@@ -179,6 +205,8 @@ function RecentClubs({
             <button
               key={label}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => {
                 if (isSelected) {
                   onClubChange("");

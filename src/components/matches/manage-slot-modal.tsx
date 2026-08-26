@@ -277,15 +277,41 @@ export function ManageSlotModal({
               {/* Recent players — one-tap avatar quick add */}
               {showRecentAvatars && (
                 <div className="space-y-2">
-                  <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 px-1">
+                  <span id="recent-players-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 px-1">
                     <Clock className="h-3 w-3" />
                     Jugadores recientes
                   </span>
-                  <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="recent-players-label"
+                    onKeyDown={(e) => {
+                      if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                        e.preventDefault();
+                        const container = e.currentTarget;
+                        const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>("button[role='radio']"));
+                        if (buttons.length === 0) return;
+
+                        const activeElement = document.activeElement as HTMLButtonElement;
+                        const currentIndex = buttons.indexOf(activeElement);
+                        let nextIndex = currentIndex >= 0 ? currentIndex : 0;
+
+                        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                          nextIndex = (nextIndex + 1) % buttons.length;
+                        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                          nextIndex = (nextIndex - 1 + buttons.length) % buttons.length;
+                        }
+
+                        buttons[nextIndex]?.focus();
+                      }
+                    }}
+                    className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1"
+                  >
                     {recentPlayers.map((player) => (
                       <button
                         key={player.id}
                         type="button"
+                        role="radio"
+                        aria-checked={false}
                         onClick={() => handleSelectRecentPlayer(player)}
                         aria-label={`Agregar a ${player.displayName}`}
                         className="flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg active:scale-[0.98] transition-all"
