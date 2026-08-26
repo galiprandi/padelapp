@@ -42,6 +42,40 @@ export function getGreeting(): string {
   return "Buenas noches";
 }
 
+/**
+ * Determines whether a navigation link is currently active based on the pathname.
+ * Handles exact matching for dashboard root ("/me"), special profile subroutes ("/me/profile", "/me/security"),
+ * and standard prefix matching for section roots like "/turnos" or "/ranking".
+ */
+export function isNavItemActive(itemHref: string, pathname: string | null): boolean {
+  if (!pathname) return false;
+
+  // Exact match always takes precedence
+  if (pathname === itemHref) return true;
+
+  // Dashboard home tab ("/me") should only match exact "/me"
+  // so sub-routes like "/me/profile" or "/me/security" don't double-highlight "Inicio"
+  if (itemHref === "/me") {
+    return false;
+  }
+
+  // Profile tab (" /me/profile ") should also match "/me/security" and sub-paths of profile
+  if (itemHref === "/me/profile") {
+    return (
+      pathname.startsWith("/me/profile/") ||
+      pathname === "/me/security" ||
+      pathname.startsWith("/me/security/")
+    );
+  }
+
+  // Generic prefix matching for other routes (e.g., "/turnos/nuevo" matches "/turnos", "/ranking/..." matches "/ranking")
+  if (itemHref !== "/") {
+    return pathname.startsWith(itemHref + "/");
+  }
+
+  return false;
+}
+
 /** Map player category level integer (1-8) to Argentine Padel category label: 1 -> "1ª Cat.", 6 -> "6ª Cat.", etc. Defaults to "6ª Cat.". */
 export function getLevelBadgeLabel(level?: number | null): string {
   if (!level || level < 1 || level > 8) return "6ª Cat.";

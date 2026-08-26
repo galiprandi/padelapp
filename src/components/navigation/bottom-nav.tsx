@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Trophy, CalendarDays, User, Home, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, isNavItemActive } from "@/lib/utils";
 
 interface BottomNavProps {
   position?: "fixed" | "static";
@@ -37,9 +37,7 @@ export function BottomNav({
     >
       <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background">
         {navItems.slice(0, 2).map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/" && pathname?.startsWith(item.href + "/"));
+          const isActive = isNavItemActive(item.href, pathname);
           return (
             <Link
               key={item.href}
@@ -75,9 +73,7 @@ export function BottomNav({
         </Link>
 
         {navItems.slice(2).map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/" && pathname?.startsWith(item.href + "/"));
+          const isActive = isNavItemActive(item.href, pathname);
           return (
             <Link
               key={item.href}
