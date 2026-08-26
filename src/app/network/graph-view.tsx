@@ -14,6 +14,7 @@ import {
   getSideCompatibilityLabel,
   filterNodesAndLinksByCommunity,
   getPreferredSideBadgeLabel,
+  getConnectionAffinityLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -786,6 +787,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 const other = graphData.nodes.find((n) => n.id === otherId);
                 const otherName = capitalizeName(other?.name || other?.alias || "—");
                 const record = calculateConnectionRecord(link, selectedNode ?? "");
+                const affinity = getConnectionAffinityLabel(link);
                 const sideCompatibility = getSideCompatibilityLabel(
                   selectedNodeData.preferredSide,
                   other?.preferredSide ?? null,
@@ -831,8 +833,18 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     </Link>
                     </div>
 
-                    {sideCompatibility && (record.type === "partner" || record.type === "mixed") && (
-                      <div className="flex items-center gap-1 pl-8">
+                    <div className="flex items-center gap-1.5 pl-8 flex-wrap">
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          affinity.badgeStyle
+                        )}
+                        title={`Afinidad: ${affinity.label}`}
+                        aria-label={`Afinidad: ${affinity.label}`}
+                      >
+                        {affinity.label}
+                      </span>
+                      {sideCompatibility && (record.type === "partner" || record.type === "mixed") && (
                         <span
                           className={cn(
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
@@ -843,8 +855,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         >
                           {sideCompatibility.label}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 );
               })}
