@@ -3,6 +3,7 @@ import {
   formatWhatsAppInviteMessage,
   getTurnSalvageShareMessage,
   getOpenSlotsBadgeText,
+  getTurnSalvageBannerText,
   getTurnRoleBadgeText,
   getCooldownRemainingMinutes,
   getTurnUrgencyBadgeText,
@@ -97,6 +98,27 @@ describe("getOpenSlotsBadgeText", () => {
   it("returns 'Faltan X' when more than 1 slot is open", () => {
     expect(getOpenSlotsBadgeText(2)).toBe("Faltan 2");
     expect(getOpenSlotsBadgeText(3)).toBe("Faltan 3");
+  });
+});
+
+describe("getTurnSalvageBannerText", () => {
+  it("returns empty string when no slots are open", () => {
+    expect(getTurnSalvageBannerText(0)).toBe("");
+    expect(getTurnSalvageBannerText(-1)).toBe("");
+  });
+
+  it("formats callout banner text for 1 open slot", () => {
+    const text = getTurnSalvageBannerText(1);
+    expect(text).toBe("Falta 1 jugador para completar este turno. Sumate o compartilo con tu red para jugar.");
+    expect(text).not.toContain("!");
+    expect(text).not.toContain("¡");
+  });
+
+  it("formats callout banner text for multiple open slots", () => {
+    const text = getTurnSalvageBannerText(2);
+    expect(text).toBe("Faltan 2 jugadores para completar este turno. Sumate o compartilo con tu red para jugar.");
+    expect(text).not.toContain("!");
+    expect(text).not.toContain("¡");
   });
 });
 

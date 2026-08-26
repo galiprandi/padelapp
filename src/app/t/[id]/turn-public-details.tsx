@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
 import { TurnChat } from "@/components/turns/turn-chat";
-import { getTurnSalvageShareMessage } from "@/components/turns/turn-utils";
+import { getTurnSalvageShareMessage, getTurnSalvageBannerText } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -239,6 +239,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
           : `Sumate a este turno · ${compactDate}`;
 
+  const openSlotsCount = turn.maxPlayers - turn.players.length;
+  const salvageBannerText = hasOpenSlot && !isCompleted ? getTurnSalvageBannerText(openSlotsCount) : null;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-4">
@@ -256,6 +259,28 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         </div>
       </div>
+
+      {salvageBannerText && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-100 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 shadow-xs">
+          <Sparkles className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+              Salvataje de turno
+            </p>
+            <p className="text-sm font-semibold mt-0.5 leading-snug">
+              {salvageBannerText}
+            </p>
+          </div>
+          <TurnShareButton
+            shareUrl={shareUrl}
+            club={turn.club}
+            date={turn.date}
+            openSlots={openSlotsCount}
+            variant="icon"
+            className="h-9 w-9 rounded-lg shrink-0 border-amber-300 dark:border-amber-700 bg-amber-200/50 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900"
+          />
+        </div>
+      )}
 
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">

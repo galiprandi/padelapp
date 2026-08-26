@@ -195,15 +195,22 @@ export function TurnCard({
           {/* Status badge */}
           <div className="shrink-0">
             {isCreator ? (
-              <Badge variant="primary">Organizador</Badge>
+              <Badge variant="primary" aria-label="Rol: Organizador del turno">Organizador</Badge>
             ) : isSubstitute ? (
-              <Badge variant="default">Suplente</Badge>
+              <Badge variant="default" aria-label="Rol: Suplente en lista de espera">Suplente</Badge>
             ) : isJoined ? (
-              <Badge variant="primary">Inscripto</Badge>
+              <Badge variant="primary" aria-label="Estado: Inscripto en el turno">Inscripto</Badge>
             ) : turn.status === "FULL" ? (
-              <Badge variant="default">Completo</Badge>
+              <Badge variant="default" aria-label="Estado: Turno completo">Completo</Badge>
             ) : openSlots > 0 ? (
-              <Badge variant={openSlots === 1 ? "warning" : "outline"}>
+              <Badge
+                className={cn(
+                  openSlots === 1
+                    ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold"
+                    : "bg-muted text-foreground border-border"
+                )}
+                aria-label={`Cupos disponibles: ${getOpenSlotsBadgeText(openSlots)}`}
+              >
                 {getOpenSlotsBadgeText(openSlots)}
               </Badge>
             ) : null}

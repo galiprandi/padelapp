@@ -99,6 +99,17 @@ export function getOpenSlotsBadgeText(openSlots: number): string {
 }
 
 /**
+ * Format turn salvage callout banner text in Argentine Spanish voseo copy without exclamation marks.
+ */
+export function getTurnSalvageBannerText(openSlots: number): string {
+  if (openSlots <= 0) return "";
+  if (openSlots === 1) {
+    return "Falta 1 jugador para completar este turno. Sumate o compartilo con tu red para jugar.";
+  }
+  return `Faltan ${openSlots} jugadores para completar este turno. Sumate o compartilo con tu red para jugar.`;
+}
+
+/**
  * Format participant role badge text in Argentine Spanish voseo copy.
  */
 export function getTurnRoleBadgeText({
