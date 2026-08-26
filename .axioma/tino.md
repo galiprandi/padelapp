@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-25 — Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (PR #tino/ux/bottom-nav-active-route-matching)
 - [x] 2026-08-24 — Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (PR #tino/perf/network-and-edit-routes-prefetching)
 - [x] 2026-08-23 — Prefetching Eager de Rutas y Navegación Transversal en Dashboard, Perfiles, Turnos, Filtros y PWA (PR #tino/perf/eager-route-prefetching-and-transversal-navigation)
 - [x] 2026-08-22 — Pre-Caching de Service Worker PWA, Speculation Rules API y Optimización de TanStack Query Client (PR #tino/perf/pwa-sw-precaching-and-speculation-rules)
@@ -34,6 +35,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-25 - Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (UX Transversal)
+**Aprendizaje:** Al determinar el estado activo (`isActive`) de los elementos de navegación en componentes globales como `BottomNav`, el uso de comparaciones por prefijo genérico (e.g., `pathname.startsWith(href + "/")`) puede causar colisiones donde múltiples pestañas se resaltan como activas al mismo tiempo (por ejemplo, `/me` y `/me/profile`). Extraer un helper pura y testeable `isNavItemActive` que diferencie explícitamente entre la raíz exacta del panel (`/me`), subrutas de configuración del perfil (`/me/profile`, `/me/security`) y prefijos de sección (`/turnos`, `/ranking`) garantiza un indicador de navegación limpio y preciso sin inconsistencias visuales.
+**Acción:** Usar siempre `isNavItemActive` para la lógica de resalte en barras de navegación con subrutas anidadas.
+
 ### 2026-08-24 - Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (Performance & UX Transversal)
 **Aprendizaje:** Incluir `prefetch={true}` de manera explícita en todos los enlaces de retroceso y navegación en vistas pesadas o subrutas de edición/configuración (`StatsPanel`, `GraphView`, `/p/[userId]`, `/me/profile`, `/me/security`, `/turnos/nuevo`, `/turnos/[id]/editar`, `/match/[matchId]/edit`) permite que Next.js App Router precargue especulativamente los cascarones de ruta en segundo plano. Esto asegura que la experiencia de navegación del usuario al volver al Dashboard, navegar por perfiles o acceder a seguridad sea instantánea y libre de latencia percibida.
 **Acción:** Aplicar `prefetch={true}` de forma sistemática en enlaces de retroceso y navegación transversal de subrutas de edición.

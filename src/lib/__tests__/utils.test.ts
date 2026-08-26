@@ -11,6 +11,7 @@ import {
   isTomorrow,
   getGreeting,
   getLevelBadgeLabel,
+  isNavItemActive,
 } from "@/lib/utils";
 
 describe("getMatchWinner", () => {
@@ -157,6 +158,40 @@ describe("getGreeting", () => {
   it("returns one of the expected greetings", () => {
     const greeting = getGreeting();
     expect(["Buenas noches", "Buen día", "Buenas tardes"]).toContain(greeting);
+  });
+});
+
+describe("isNavItemActive", () => {
+  it("returns true for exact match on /me", () => {
+    expect(isNavItemActive("/me", "/me")).toBe(true);
+  });
+
+  it("returns false for /me when pathname is /me/profile", () => {
+    expect(isNavItemActive("/me", "/me/profile")).toBe(false);
+  });
+
+  it("returns false for /me when pathname is /me/security", () => {
+    expect(isNavItemActive("/me", "/me/security")).toBe(false);
+  });
+
+  it("returns true for /me/profile when pathname is /me/profile", () => {
+    expect(isNavItemActive("/me/profile", "/me/profile")).toBe(true);
+  });
+
+  it("returns true for /me/profile when pathname is /me/security", () => {
+    expect(isNavItemActive("/me/profile", "/me/security")).toBe(true);
+  });
+
+  it("returns true for /turnos when pathname is /turnos/nuevo", () => {
+    expect(isNavItemActive("/turnos", "/turnos/nuevo")).toBe(true);
+  });
+
+  it("returns true for /ranking when pathname is /ranking", () => {
+    expect(isNavItemActive("/ranking", "/ranking")).toBe(true);
+  });
+
+  it("returns false when pathname is null", () => {
+    expect(isNavItemActive("/me", null)).toBe(false);
   });
 });
 
