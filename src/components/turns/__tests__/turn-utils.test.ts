@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   formatWhatsAppInviteMessage,
+  formatWhatsAppGroupInviteMessage,
   getTurnSalvageShareMessage,
   getOpenSlotsBadgeText,
   getTurnSalvageBannerText,
@@ -47,6 +48,42 @@ describe("formatWhatsAppInviteMessage", () => {
     expect(msg).toContain("20:30hs");
     expect(msg).toContain("faltan 2 jugadores para completarlo.");
     expect(msg).toContain("Sumate acá: https://padelred.app/t/456");
+  });
+});
+
+describe("formatWhatsAppGroupInviteMessage", () => {
+  it("formats WhatsApp group invite for 1 missing slot", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(19, 0, 0, 0);
+
+    const msg = formatWhatsAppGroupInviteMessage({
+      club: "Central Padel",
+      date: futureDate,
+      openSlots: 1,
+      shareUrl: "https://padelred.app/t/group123",
+    });
+
+    expect(msg).toContain("⚠️ Falta 1 jugador para el turno de pádel en Central Padel");
+    expect(msg).toContain("¿Quién se suma? Entren acá para anotarse: https://padelred.app/t/group123");
+    expect(msg).not.toContain("!");
+    expect(msg).not.toContain("¡");
+  });
+
+  it("formats WhatsApp group invite for multiple missing slots", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(21, 0, 0, 0);
+
+    const msg = formatWhatsAppGroupInviteMessage({
+      club: "Padel Park",
+      date: futureDate,
+      openSlots: 2,
+      shareUrl: "https://padelred.app/t/group456",
+    });
+
+    expect(msg).toContain("⚠️ Faltan 2 jugadores para el turno de pádel en Padel Park");
+    expect(msg).toContain("¿Quién se suma? Entren acá para anotarse: https://padelred.app/t/group456");
   });
 });
 
