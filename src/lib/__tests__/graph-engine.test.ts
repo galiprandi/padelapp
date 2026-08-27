@@ -189,6 +189,7 @@ import {
   filterNodesAndLinksByCommunity,
   getPreferredSideBadgeLabel,
   getConnectionAffinityLabel,
+  sortGraphLinksByStrength,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -238,8 +239,86 @@ describe("filterLinksBySelectedNode", () => {
   });
 });
 
+describe("sortGraphLinksByStrength", () => {
+  it("sorts graph links in descending order of total interactions", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 1,
+        partnerMatches: 0,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 1, // total = 2
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-03",
+        rivalMatches: 3,
+        partnerMatches: 2,
+        winsA: 2,
+        winsB: 1,
+        winsTogether: 2,
+        lossesTogether: 0,
+        turnsTogether: 2, // total = 7
+        strength: 7,
+      },
+      {
+        source: "p-01",
+        target: "p-04",
+        rivalMatches: 2,
+        partnerMatches: 2,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 1,
+        turnsTogether: 0, // total = 4
+        strength: 4,
+      },
+    ];
+
+    const sorted = sortGraphLinksByStrength(links);
+    expect(sorted.map((l) => l.target)).toEqual(["p-03", "p-04", "p-02"]);
+  });
+
+  it("breaks ties by match count when total interaction strength is equal", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 0,
+        partnerMatches: 0,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 5, // total = 5, matches = 0
+        strength: 5,
+      },
+      {
+        source: "p-01",
+        target: "p-03",
+        rivalMatches: 2,
+        partnerMatches: 2,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 1,
+        turnsTogether: 1, // total = 5, matches = 4
+        strength: 5,
+      },
+    ];
+
+    const sorted = sortGraphLinksByStrength(links);
+    expect(sorted.map((l) => l.target)).toEqual(["p-03", "p-02"]);
+  });
+});
+
 describe("calculateConnectionRecord", () => {
-  it("calculates partner win-loss record correctly", () => {
+  it("calculates partner win-loss record and winRatePercentage correctly", () => {
     const link: GraphLink = {
       source: "p-01",
       target: "p-02",
@@ -258,9 +337,10 @@ describe("calculateConnectionRecord", () => {
     expect(record.wins).toBe(3);
     expect(record.losses).toBe(1);
     expect(record.formattedRecord).toBe("3V - 1D");
+    expect(record.winRatePercentage).toBe(75);
   });
 
-  it("calculates rival head-to-head record from source player perspective", () => {
+  it("calculates rival head-to-head record and winRatePercentage from source player perspective", () => {
     const link: GraphLink = {
       source: "p-01",
       target: "p-02",
@@ -279,9 +359,10 @@ describe("calculateConnectionRecord", () => {
     expect(recordSource.wins).toBe(3);
     expect(recordSource.losses).toBe(2);
     expect(recordSource.formattedRecord).toBe("3V - 2D");
+    expect(recordSource.winRatePercentage).toBe(60);
   });
 
-  it("calculates rival head-to-head record from target player perspective", () => {
+  it("calculates rival head-to-head record and winRatePercentage from target player perspective", () => {
     const link: GraphLink = {
       source: "p-01",
       target: "p-02",
@@ -300,9 +381,10 @@ describe("calculateConnectionRecord", () => {
     expect(recordTarget.wins).toBe(2);
     expect(recordTarget.losses).toBe(3);
     expect(recordTarget.formattedRecord).toBe("2V - 3D");
+    expect(recordTarget.winRatePercentage).toBe(40);
   });
 
-  it("calculates mixed connection record combining rival and partner matches", () => {
+  it("calculates mixed connection record combining rival and partner matches with winRatePercentage", () => {
     const link: GraphLink = {
       source: "p-01",
       target: "p-02",
@@ -321,6 +403,7 @@ describe("calculateConnectionRecord", () => {
     expect(record.wins).toBe(4); // 2 rival wins + 2 partner wins
     expect(record.losses).toBe(1); // 1 rival loss + 0 partner losses
     expect(record.formattedRecord).toBe("4V - 1D");
+    expect(record.winRatePercentage).toBe(80);
   });
 
   it("formats turns-only connection when no confirmed matches exist", () => {
@@ -340,6 +423,7 @@ describe("calculateConnectionRecord", () => {
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("3 turnos");
+    expect(record.winRatePercentage).toBeNull();
   });
 
   it("formats single turn connection correctly (singular)", () => {
@@ -359,6 +443,7 @@ describe("calculateConnectionRecord", () => {
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("turns");
     expect(record.formattedRecord).toBe("1 turno");
+    expect(record.winRatePercentage).toBeNull();
   });
 });
 

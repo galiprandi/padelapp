@@ -35,6 +35,23 @@ export interface ConnectionRecord {
   wins: number;
   losses: number;
   formattedRecord: string;
+  winRatePercentage: number | null;
+}
+
+/**
+ * Sorts graph links in descending order of interaction strength.
+ */
+export function sortGraphLinksByStrength(links: GraphLink[]): GraphLink[] {
+  return [...links].sort((a, b) => {
+    const totalA = a.partnerMatches + a.rivalMatches + a.turnsTogether;
+    const totalB = b.partnerMatches + b.rivalMatches + b.turnsTogether;
+    if (totalB !== totalA) {
+      return totalB - totalA;
+    }
+    const matchesA = a.partnerMatches + a.rivalMatches;
+    const matchesB = b.partnerMatches + b.rivalMatches;
+    return matchesB - matchesA;
+  });
 }
 
 /**
@@ -55,22 +72,26 @@ export function calculateConnectionRecord(
   if (isPartner) {
     const wins = link.winsTogether;
     const losses = link.lossesTogether;
+    const total = wins + losses;
     return {
       type: "partner",
       wins,
       losses,
       formattedRecord: `${wins}V - ${losses}D`,
+      winRatePercentage: total > 0 ? Math.round((wins / total) * 100) : null,
     };
   }
 
   if (isRival) {
     const wins = isSource ? link.winsA : link.winsB;
     const losses = isSource ? link.winsB : link.winsA;
+    const total = wins + losses;
     return {
       type: "rival",
       wins,
       losses,
       formattedRecord: `${wins}V - ${losses}D`,
+      winRatePercentage: total > 0 ? Math.round((wins / total) * 100) : null,
     };
   }
 
@@ -79,11 +100,13 @@ export function calculateConnectionRecord(
     const rivalLosses = isSource ? link.winsB : link.winsA;
     const wins = rivalWins + link.winsTogether;
     const losses = rivalLosses + link.lossesTogether;
+    const total = wins + losses;
     return {
       type: "mixed",
       wins,
       losses,
       formattedRecord: `${wins}V - ${losses}D`,
+      winRatePercentage: total > 0 ? Math.round((wins / total) * 100) : null,
     };
   }
 
@@ -93,6 +116,7 @@ export function calculateConnectionRecord(
     wins: 0,
     losses: 0,
     formattedRecord: `${link.turnsTogether} ${link.turnsTogether === 1 ? "turno" : "turnos"}`,
+    winRatePercentage: null,
   };
 }
 
