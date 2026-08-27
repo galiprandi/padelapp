@@ -24,9 +24,9 @@ import {
   Sparkles,
   MessageSquare,
 } from "lucide-react";
-import { WhatsAppInviteButton } from "@/components/turns/whatsapp-invite-button";
+import { WhatsAppInviteButton, WhatsAppGroupInviteButton } from "@/components/turns/whatsapp-invite-button";
 import { TurnChat } from "@/components/turns/turn-chat";
-import { getTurnSalvageShareMessage, getTurnSalvageBannerText } from "@/components/turns/turn-utils";
+import { getTurnSalvageShareMessage, getTurnSalvageBannerText, getTurnUrgencyBadgeText } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -241,6 +241,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
   const openSlotsCount = turn.maxPlayers - turn.players.length;
   const salvageBannerText = hasOpenSlot && !isCompleted ? getTurnSalvageBannerText(openSlotsCount) : null;
+  const urgencyText = getTurnUrgencyBadgeText(turn.date, isFull);
 
   return (
     <div className="flex flex-col gap-6">
@@ -271,14 +272,24 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               {salvageBannerText}
             </p>
           </div>
-          <TurnShareButton
-            shareUrl={shareUrl}
-            club={turn.club}
-            date={turn.date}
-            openSlots={openSlotsCount}
-            variant="icon"
-            className="h-9 w-9 rounded-lg shrink-0 border-amber-300 dark:border-amber-700 bg-amber-200/50 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900"
-          />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <WhatsAppGroupInviteButton
+              club={turn.club}
+              date={turn.date}
+              openSlots={openSlotsCount}
+              shareUrl={shareUrl}
+              variant="amber"
+              className="h-9 text-xs font-bold"
+            />
+            <TurnShareButton
+              shareUrl={shareUrl}
+              club={turn.club}
+              date={turn.date}
+              openSlots={openSlotsCount}
+              variant="icon"
+              className="h-9 w-9 rounded-lg shrink-0 border-amber-300 dark:border-amber-700 bg-amber-200/50 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900"
+            />
+          </div>
         </div>
       )}
 
@@ -288,17 +299,24 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             <Calendar className="h-4 w-4 text-primary" />
             Información del turno
           </h2>
-          <span
-            className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${
-              isCompleted
-                ? "bg-muted text-muted-foreground border-border"
-                : isFull
-                  ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
-                  : "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-            }`}
-          >
-            {isCompleted ? "Finalizado" : isFull ? "Completo" : "Abierto"}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {urgencyText && (
+              <Badge variant="warning" aria-label={`Urgencia: ${urgencyText}`}>
+                {urgencyText}
+              </Badge>
+            )}
+            <span
+              className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${
+                isCompleted
+                  ? "bg-muted text-muted-foreground border-border"
+                  : isFull
+                    ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                    : "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+              }`}
+            >
+              {isCompleted ? "Finalizado" : isFull ? "Completo" : "Abierto"}
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-px bg-border">

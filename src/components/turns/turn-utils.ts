@@ -47,6 +47,49 @@ export function formatWhatsAppInviteMessage({
   return `Hola ${contactName}, ¿te sumás al turno de pádel en ${club} ${dayStr} ${timeStr}? ${slotsText} para completarlo. Sumate acá: ${shareUrl}`;
 }
 
+export interface WhatsAppGroupInviteMessageOptions {
+  club: string;
+  date: Date | string;
+  openSlots: number;
+  shareUrl: string;
+}
+
+/**
+ * Format WhatsApp group salvage invite copy following Argentine Spanish voseo conventions without exclamation marks.
+ */
+export function formatWhatsAppGroupInviteMessage({
+  club,
+  date,
+  openSlots,
+  shareUrl,
+}: WhatsAppGroupInviteMessageOptions): string {
+  const d = new Date(date);
+
+  let dayStr = "";
+  if (isToday(d)) {
+    dayStr = "hoy";
+  } else if (isTomorrow(d)) {
+    dayStr = "mañana";
+  } else {
+    const weekday = d.toLocaleDateString("es-AR", { weekday: "long" });
+    const dayNumeric = d.getDate();
+    const monthNumeric = d.getMonth() + 1;
+    dayStr = `el ${weekday} ${dayNumeric}/${monthNumeric}`;
+  }
+
+  const hour = d.getHours();
+  const minutes = d.getMinutes();
+  const timeStr =
+    minutes === 0
+      ? `${hour}hs`
+      : `${hour}:${minutes.toString().padStart(2, "0")}hs`;
+
+  const slotsText =
+    openSlots === 1 ? "Falta 1 jugador" : `Faltan ${openSlots} jugadores`;
+
+  return `⚠️ ${slotsText} para el turno de pádel en ${club} ${dayStr} ${timeStr}. ¿Quién se suma? Entren acá para anotarse: ${shareUrl}`;
+}
+
 export interface SalvageShareMessageOptions {
   club: string;
   date: Date | string;
