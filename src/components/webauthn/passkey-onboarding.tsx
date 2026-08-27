@@ -80,19 +80,19 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
   }
 
   return (
-    <div className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+    <div className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
       <Button
         variant="ghost"
         size="sm"
         onClick={handleDismiss}
         aria-label="Cerrar sugerencia de acceso biométrico"
-        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
 
       <div className="flex items-start gap-3 pr-6">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
           <Fingerprint className="h-5 w-5" aria-hidden="true" />
         </div>
         <div className="space-y-1">
@@ -109,7 +109,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
       <div className="flex gap-2">
         <Button
           type="button"
-          className="h-10 flex-1 text-xs font-bold"
+          className="h-10 flex-1 text-xs font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           disabled={isRegistering}
           onClick={handleRegister}
         >
@@ -128,7 +128,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         <Button
           type="button"
           variant="outline"
-          className="h-10 text-xs font-semibold"
+          className="h-10 text-xs font-semibold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           onClick={handleDismiss}
         >
           Ahora no

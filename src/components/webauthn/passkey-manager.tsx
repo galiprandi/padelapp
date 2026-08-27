@@ -115,7 +115,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start gap-3 mb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
           <Fingerprint className="h-5 w-5" aria-hidden="true" />
         </div>
         <div className="flex-1 space-y-1">
@@ -141,7 +141,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           onChange={(e) => setNickname(e.target.value.slice(0, 30))}
           maxLength={30}
           disabled={isRegistering}
-          className="h-10 text-sm"
+          className="h-10 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         />
       </div>
 
@@ -184,7 +184,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
       <Button
         type="button"
         variant="outline"
-        className="w-full h-10"
+        className="w-full h-10 font-semibold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         disabled={isRegistering || supported === null}
         onClick={handleRegister}
       >
