@@ -109,11 +109,28 @@ export function InstallContent() {
           role="radiogroup"
           aria-labelledby="platform-selector-label"
           className="grid grid-cols-2 gap-2"
+          onKeyDown={(e) => {
+            const buttons = Array.from(
+              e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+            );
+            if (buttons.length < 2) return;
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+              e.preventDefault();
+              setPlatform("ios");
+              buttons[1]?.focus();
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+              e.preventDefault();
+              setPlatform("android");
+              buttons[0]?.focus();
+            }
+          }}
         >
           <button
             type="button"
             role="radio"
             aria-checked={platform === "android"}
+            tabIndex={platform === "android" ? 0 : -1}
+            aria-label="Ver instrucciones de instalación para Android o Chrome"
             onClick={() => setPlatform("android")}
             className={cn(
               "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
@@ -128,6 +145,8 @@ export function InstallContent() {
             type="button"
             role="radio"
             aria-checked={platform === "ios"}
+            tabIndex={platform === "ios" ? 0 : -1}
+            aria-label="Ver instrucciones de instalación para iOS o Safari"
             onClick={() => setPlatform("ios")}
             className={cn(
               "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
