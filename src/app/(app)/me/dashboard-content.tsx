@@ -145,7 +145,12 @@ export default async function DashboardContent() {
           aria-hidden="true"
         />
         <div className="space-y-0.5 min-w-0">
-          <Greeting name={displayName} level={user?.level} />
+          <Greeting
+            name={displayName}
+            level={user?.level}
+            hasAlias={Boolean(user?.alias)}
+            matchesPlayed={user?.matchesPlayed ?? 0}
+          />
           <p className="text-sm text-muted-foreground">
             {isNewUser
               ? "Bienvenido. Empezá creando tu primer turno."
