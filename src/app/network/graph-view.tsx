@@ -15,6 +15,7 @@ import {
   filterNodesAndLinksByCommunity,
   getPreferredSideBadgeLabel,
   getConnectionAffinityLabel,
+  sortGraphLinksByStrength,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -462,9 +463,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     ? graphData.nodes.find((n) => n.id === selectedNode)
     : null;
 
-  const selectedLinks = selectedNode
-    ? filterLinksBySelectedNode(filteredData.links, selectedNode)
-    : [];
+  const selectedLinks = useMemo(() => {
+    if (!selectedNode) return [];
+    const unsorted = filterLinksBySelectedNode(filteredData.links, selectedNode);
+    return sortGraphLinksByStrength(unsorted);
+  }, [selectedNode, filteredData.links]);
 
   return (
     <div
@@ -659,6 +662,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         graphData={filteredData}
         width={dimensions.width}
         height={dimensions.height}
+        nodeVal={(node: any) => {
+          const matches = node.matchesPlayed || 0;
+          const r = 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
+          return r * r;
+        }}
         nodeRelSize={1}
         nodeCanvasObject={nodeCanvasObject}
         nodeCanvasObjectMode={() => "replace"}
@@ -819,8 +827,17 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       <span className="text-xs font-medium text-foreground truncate">
                         {otherName}
                       </span>
-                      <span className="text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1">
-                        {record.formattedRecord}
+                      <span className="text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1 flex items-center gap-1.5">
+                        {record.winRatePercentage !== null && (
+                          <span
+                            className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0"
+                            title={`Porcentaje de victorias: ${record.winRatePercentage}%`}
+                            aria-label={`Porcentaje de victorias: ${record.winRatePercentage}%`}
+                          >
+                            {record.winRatePercentage}% WR
+                          </span>
+                        )}
+                        <span>{record.formattedRecord}</span>
                       </span>
                     </button>
                     <Link
