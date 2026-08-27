@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-27 — Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (PR #tino/perf/public-turn-error-boundary)
 - [x] 2026-08-25 — Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (PR #tino/ux/bottom-nav-active-route-matching)
 - [x] 2026-08-24 — Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (PR #tino/perf/network-and-edit-routes-prefetching)
 - [x] 2026-08-23 — Prefetching Eager de Rutas y Navegación Transversal en Dashboard, Perfiles, Turnos, Filtros y PWA (PR #tino/perf/eager-route-prefetching-and-transversal-navigation)
@@ -35,6 +36,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-27 - Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (Performance & UX Transversal)
+**Aprendizaje:** En rutas dinámicas públicas parametrizadas con alto potencial de difusión externa (como el detalle público de un turno `/t/[id]` compartido en WhatsApp), es posible que los turnos expiren, sean eliminados o experimenten intermitencias de red. Proveer un archivo `error.tsx` cliente dedicado a nivel de ruta evita caídas globales del layout de Next.js y ofrece al usuario una experiencia de recuperación clara en español argentino voseo ("No pudimos cargar el turno") con opción de reintento (`reset()`) y enlace con prefetch a `/turnos`.
+**Acción:** Acompañar siempre las rutas públicas compartibles con su correspondiente `error.tsx` de frontera de error localizada.
+
 ### 2026-08-25 - Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (UX Transversal)
 **Aprendizaje:** Al determinar el estado activo (`isActive`) de los elementos de navegación en componentes globales como `BottomNav`, el uso de comparaciones por prefijo genérico (e.g., `pathname.startsWith(href + "/")`) puede causar colisiones donde múltiples pestañas se resaltan como activas al mismo tiempo (por ejemplo, `/me` y `/me/profile`). Extraer un helper pura y testeable `isNavItemActive` que diferencie explícitamente entre la raíz exacta del panel (`/me`), subrutas de configuración del perfil (`/me/profile`, `/me/security`) y prefijos de sección (`/turnos`, `/ranking`) garantiza un indicador de navegación limpio y preciso sin inconsistencias visuales.
 **Acción:** Usar siempre `isNavItemActive` para la lógica de resalte en barras de navegación con subrutas anidadas.
@@ -104,7 +109,7 @@
 **Action:** Cachar de forma transversal consultas recurrentes de agregación o listados pesados usando tags de Next.js (`revalidateTag`), asegurando la reutilización del mismo wrapper tanto en rutas de API como en Server Components.
 
 ### 2026-08-02 - Integración y Tipado de Selectores de Referencia en el Perfil de Usuario
-**Learning:** En Next.js, cuando se refactorizan componentes interactivos de cliente o formularios (como `ProfileForm`) para cambiar el flujo de datos o eliminar elementos heredados, es fundamental auditar todas las páginas contenedoras y llamadas del servidor (Server Components) para asegurar que el tipado de TypeScript (`Props`) y los parámetros pasados coincidan exactamente con la firma esperada. Dejar propiedades obligatorias sin inicializar en Server Components genera errores de tipo silenciosos durante el desarrollo local pero que detienen por completo las compilaciones de producción en CI/CD. Al vincular propiedades tipadas estrictamente (`initialLevel`), no solo solucionamos la compilación sino que aseguramos que la hidratación y el estado inicial del cliente sean 100% coherentes.
+**Learning:** En Next.js, cuando se refactorizan componentes interactivos de cliente o formularios (como `ProfileForm`) para cambiar el flujo de datos o eliminar elementos heredados, es fundamental auditar todas las páginas contenedoras y llamadas del servidor (Server Components) para asegurar que el tipado de TypeScript (`Props`) y los parámetros pasados coincidan exactamente con la firma esperada. Dejar propiedades obligatorias sin inicializar en Server Components genera errores de tipo silenciosos durante el desarrollo local pero que detienen por completo las compilaciones de producción en CI/CD. Al vincular propiedades tipadas strictly (`initialLevel`), no solo solucionamos la compilación sino que aseguramos que la hidratación y el estado inicial del cliente sean 100% coherentes.
 **Action:** Al trabajar con formularios interactivos complejos, realizar una comprobación estricta de TypeScript (`pnpm tsc --noEmit`) antes de dar por terminado un ajuste estructural.
 
 ### 2026-08-01 - Integración de Consulta Cacheada en Componentes Globales del Layout
@@ -124,7 +129,7 @@
 **Action:** Evitar siempre capturar silenciosamente errores de flujo de Next.js (como bailouts o redirecciones) en funciones transversales de autenticación o layouts.
 
 ### 2026-07-27 - Refactorización de Formularios Dinámicos para PPR y Cascarón Estático
-**Learning:** Las páginas de edición o carga de datos dinámicos (`/edit`, `/result`) suelen implementarse erróneamente como componentes puramente de cliente (`"use client"`) monolíticos con carga en `useEffect`, perdiendo todos los beneficios de la compilación estática parcial. Al dividirlas en un contenedor Server Component padre y un formulario secundario Client Component hijo, podemos renderizar la estructura y las cabeceras del cascarón de forma 100% estática para servirla instantáneamente desde el CDN, delegando las llamadas asíncronas de base de datos a un `<Suspense>` boundary con esqueletos estructurados exactamente con el diseño final.
+**Learning:** Las páginas de edición o carga de datos datos dinámicos (`/edit`, `/result`) suelen implementarse erróneamente como componentes puramente de cliente (`"use client"`) monolíticos con carga en `useEffect`, perdiendo todos los beneficios de la compilación estática parcial. Al dividirlas en un contenedor Server Component padre y un formulario secundario Client Component hijo, podemos renderizar la estructura y las cabeceras del cascarón de forma 100% estática para servirla instantáneamente desde el CDN, delegando las llamadas asíncronas de base de datos a un `<Suspense>` boundary con esqueletos estructurados exactamente con el diseño final.
 **Action:** Continuar reemplazando componentes monolíticos `"use client"` con este patrón asíncrono para mantener transiciones instantáneas y evitar CLS o pantallas en blanco molestas.
 
 ### 2026-07-26 - Accesibilidad de teclado y feedback táctil en botones de retroceso (MDS)
