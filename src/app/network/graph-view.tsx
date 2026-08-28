@@ -16,6 +16,7 @@ import {
   getPreferredSideBadgeLabel,
   getConnectionAffinityLabel,
   sortGraphLinksByStrength,
+  calculateMutualConnectionsCount,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -801,6 +802,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   selectedNodeData.preferredSide,
                   other?.preferredSide ?? null,
                 );
+                const mutualCount = calculateMutualConnectionsCount(
+                  filteredData.links,
+                  selectedNode ?? "",
+                  otherId,
+                );
 
                 return (
                   <div
@@ -872,6 +878,15 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           )}
                         >
                           {sideCompatibility.label}
+                        </span>
+                      )}
+                      {mutualCount > 0 && (
+                        <span
+                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0"
+                          title={`${mutualCount} ${mutualCount === 1 ? "contacto en común" : "contactos en común"}`}
+                          aria-label={`${mutualCount} ${mutualCount === 1 ? "contacto en común con" : "contactos en común con"} ${otherName}`}
+                        >
+                          {mutualCount} en común 🤝
                         </span>
                       )}
                     </div>

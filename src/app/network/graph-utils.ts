@@ -281,3 +281,37 @@ export function filterNodesAndLinksByCommunity(
     links: filteredLinks,
   };
 }
+
+/**
+ * Calculates the number of shared (mutual) connected players between nodeIdA and nodeIdB in the graph.
+ */
+export function calculateMutualConnectionsCount(
+  links: GraphLink[],
+  nodeIdA: string,
+  nodeIdB: string,
+): number {
+  if (!nodeIdA || !nodeIdB || nodeIdA === nodeIdB) return 0;
+
+  const neighborsA = new Set<string>();
+  const neighborsB = new Set<string>();
+
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+
+    if (src === nodeIdA && tgt !== nodeIdB) neighborsA.add(tgt);
+    else if (tgt === nodeIdA && src !== nodeIdB) neighborsA.add(src);
+
+    if (src === nodeIdB && tgt !== nodeIdA) neighborsB.add(tgt);
+    else if (tgt === nodeIdB && src !== nodeIdA) neighborsB.add(src);
+  }
+
+  let mutualCount = 0;
+  for (const neighborId of neighborsA) {
+    if (neighborsB.has(neighborId)) {
+      mutualCount++;
+    }
+  }
+
+  return mutualCount;
+}
