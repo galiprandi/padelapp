@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-28 — Fronteras de error localizadas en invitaciones públicas `/m/[matchId]`, `/j/[playerId]` y `/notifications` (PR #tino/perf/public-invitations-error-boundaries)
 - [x] 2026-08-27 — Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (PR #tino/perf/public-turn-error-boundary)
 - [x] 2026-08-25 — Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (PR #tino/ux/bottom-nav-active-route-matching)
 - [x] 2026-08-24 — Prefetching Transversal en Network StatsPanel/GraphView, Ficha de Perfil Público y Subrutas de Edición/Configuración (PR #tino/perf/network-and-edit-routes-prefetching)
@@ -36,6 +37,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-28 - Fronteras de Error Localizadas en Vistas Públicas de Invitación y Notificaciones (Performance & UX Transversal)
+**Aprendizaje:** Las páginas de alcance público o enlaces difundidos por WhatsApp (como invitaciones a partidos `/m/[matchId]` o uniones directas a cupos `/j/[playerId]`), al igual que vistas transversales como `/notifications`, son susceptibles a errores de red o expiración de recursos. Agregar fronteras de error cliente (`error.tsx`) dedicadas a nivel de cada subruta evita que un fallo en la consulta rompa el layout completo de la app. Ofrecer mensajes adaptados en español argentino voseo ("No pudimos cargar la invitación al partido" / "No pudimos cargar el cupo del partido"), un botón de reintento (`reset()`), micro-interacción táctil de escala activa (`active:scale-[0.98]`) y un enlace de retorno pre-cargado (`prefetch={true}`) proporciona una experiencia de recuperación sin fricciones y con cero pantalla en blanco.
+**Acción:** Proveer de manera sistemática un archivo `error.tsx` en toda ruta pública parametrizada o panel principal susceptible a fallas de conexión o recursos no encontrados.
+
 ### 2026-08-27 - Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (Performance & UX Transversal)
 **Aprendizaje:** En rutas dinámicas públicas parametrizadas con alto potencial de difusión externa (como el detalle público de un turno `/t/[id]` compartido en WhatsApp), es posible que los turnos expiren, sean eliminados o experimenten intermitencias de red. Proveer un archivo `error.tsx` cliente dedicado a nivel de ruta evita caídas globales del layout de Next.js y ofrece al usuario una experiencia de recuperación clara en español argentino voseo ("No pudimos cargar el turno") con opción de reintento (`reset()`) y enlace con prefetch a `/turnos`.
 **Acción:** Acompañar siempre las rutas públicas compartibles con su correspondiente `error.tsx` de frontera de error localizada.
@@ -81,7 +86,7 @@
 **Acción:** Cachar siempre las consultas de rutas públicas con enlaces de alta difusión para evitar saturación de DB en picos de tráfico.
 
 ### 2026-08-11 - Eager Prefetching de Rutas Críticas y Canales de Alta Conversión (Performance Transversal)
-**Aprendizaje:** En aplicaciones móviles y PWAs altamente interactivas, la latencia percibida al navegar entre módulos principales puede empañar la experiencia de usuario. Activar `prefetch={true}` de forma explícita en elementos de navegación estructurales (BottomNav, notificaciones y llamadas a la acción primarias) permite que Next.js precargue los bundles de código y cascarones estáticos en segundo plano en cuanto entran en el viewport. Esto reduce la transición a un renderizado instantáneo (0ms percibidos de lag) y potencia el engagement.
+**Aprendizaje:** En aplicaciones móviles y PWAs highly interactivas, la latencia percibida al navegar entre módulos principales puede empañar la experiencia de usuario. Activar `prefetch={true}` de forma explícita en elementos de navegación estructurales (BottomNav, notificaciones y llamadas a la acción primarias) permite que Next.js precargue los bundles de código y cascarones estáticos en segundo plano en cuanto entran en el viewport. Esto reduce la transición a un renderizado instantáneo (0ms percibidos de lag) y potencia el engagement.
 **Acción:** Aplicar prefetch proactivo en cualquier enlace de navegación estructural o CTA principal de alta conversión para mantener la fluidez táctil.
 
 ### 2026-08-11 - Auditoría de Caché Multiusuario en Turnos (PPR)
