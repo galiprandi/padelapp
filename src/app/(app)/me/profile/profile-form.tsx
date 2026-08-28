@@ -484,7 +484,7 @@ export function ProfileForm({
           </Label>
           <div className="flex items-center gap-2">
             <FormMiniCourtIndicator preferredSide={preferredSide} />
-            <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full">
               {preferredSide === "RIGHT"
                 ? "Derecha"
                 : preferredSide === "LEFT"
@@ -541,7 +541,7 @@ export function ProfileForm({
           <Label className="text-sm font-semibold text-foreground">
             Categoría de juego
           </Label>
-          <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+          <span className="text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full">
             {getCategoryDefinition(level).shortLabel}
           </span>
         </div>
@@ -647,7 +647,7 @@ export function ProfileForm({
                 type="button"
                 variant="outline"
                 onClick={handleRestoreChecklist}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
+                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 Restablecer guía de bienvenida
               </Button>
@@ -665,7 +665,7 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
+                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 Restablecer sugerencia de instalación
               </Button>
@@ -683,7 +683,7 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all"
+                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 Restablecer sugerencia de notificaciones
               </Button>

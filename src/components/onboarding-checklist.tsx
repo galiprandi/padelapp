@@ -179,7 +179,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label="Ir a configurar alias"
                 >
                   <Link href="/me/profile" prefetch={true}>Configurar alias</Link>
@@ -223,7 +223,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label="Crear tu primer turno de pádel"
                 >
                   <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
@@ -269,13 +269,13 @@ export function OnboardingChecklist({
                     size="sm"
                     onClick={handleInstallPwa}
                     disabled={isInstalling}
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     aria-label="Instalar aplicación de pádel directamente"
                   >
                     {isInstalling ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
                     ) : (
-                      <Smartphone className="h-3.5 w-3.5 mr-1" />
+                      <Smartphone className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                     )}
                     Instalar ahora
                   </Button>
@@ -284,7 +284,7 @@ export function OnboardingChecklist({
                     variant="outline"
                     size="sm"
                     asChild
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     aria-label="Ver cómo instalar la aplicación"
                   >
                     <Link href="/install" prefetch={true}>Ver cómo instalar</Link>
@@ -341,13 +341,13 @@ export function OnboardingChecklist({
                       }
                     }}
                     disabled={notificationLoading}
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted"
+                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     aria-label="Solicitar permisos para notificaciones"
                   >
                     {notificationLoading ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
                     ) : (
-                      <Bell className="h-3.5 w-3.5 mr-1" />
+                      <Bell className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                     )}
                     Activar notificaciones
                   </Button>
@@ -360,9 +360,9 @@ export function OnboardingChecklist({
 
       {/* Congratulatory / All Done Message */}
       {completedCount === 4 && (
-        <div className="rounded-lg bg-muted border border-primary/40 p-3 text-center">
-          <p className="text-xs font-bold text-primary">
-            Felicitaciones. Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.
+        <div className="rounded-lg bg-muted border border-primary p-3 text-center shadow-xs">
+          <p className="text-xs font-bold text-foreground">
+            ¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.
           </p>
         </div>
       )}
