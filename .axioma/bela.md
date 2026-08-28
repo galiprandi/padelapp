@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-28 — PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation (bela/turnos/play-casual-accessibility-and-keyboard-ux)
 - [x] 2026-08-27 — WhatsApp Group Salvage Invite Utility & Component Integration (bela/turnos/whatsapp-group-salvage-invite)
 - [x] 2026-08-26 — Turn Salvage Urgency Callout Banner & Card Badge Polish (bela/turnos/salvage-callout-banner)
 - [x] 2026-08-25 — Turn Salvage Share Copy Helper & ShareButton Integration (bela/turnos/salvage-share-copy)
@@ -41,6 +42,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-28 - PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation
+**Learning:** Adding an `Escape` key handler (`onKeyDown`) and dynamic `aria-busy` / `aria-label` attributes to inline confirmation containers (such as `PlayCasualForm`) provides instant keyboard dismissability and key screen reader accessibility during pending server transitions.
+**Action:** Always complement inline confirmation cards with keyboard escape handling and explicit accessibility attributes for assistive technologies.
+
 ## 2026-08-27 - WhatsApp Group Salvage Invite Utility & Component Integration
 **Learning:** Providing a dedicated 1-tap WhatsApp group salvage invite action (`WhatsAppGroupInviteButton`) with customized group copy ("⚠️ Falta X jugador... ¿Quién se suma? Entren acá...") within the turn salvage callout banner enables fast, multi-recipient recruitment into active padel WhatsApp groups. Extracting pure message formatting logic into `formatWhatsAppGroupInviteMessage` ensures deterministic Vitest coverage while enforcing Argentine Spanish voseo conventions without exclamation marks.
 **Action:** Offer explicit group-oriented invitation options alongside 1-on-1 contact sharing when open turn slots are detected.

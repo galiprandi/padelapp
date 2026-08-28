@@ -405,7 +405,17 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted p-3">
+    <div
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setConfirming(false);
+        }
+      }}
+      aria-busy={isPending}
+      className="flex flex-col gap-2 rounded-lg border border-border bg-muted p-3 focus-visible:outline-none"
+    >
       <p className="text-xs text-muted-foreground text-center">
         ¿Marcar como jugado? <strong className="text-foreground">Se cerrará el turno</strong> sin registrar un partido ni resultados en el ranking.
       </p>
@@ -416,6 +426,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           variant="outline"
           disabled={isPending}
           className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          aria-label="Cancelar confirmación de marcar como jugado"
         >
           <X className="mr-2 h-4 w-4" />
           Cancelar
@@ -425,6 +436,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           onClick={handlePlayCasual}
           variant="default"
           disabled={isPending}
+          aria-busy={isPending}
           className="flex-1 h-10 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           aria-label="Confirmar marcar como jugado"
         >
