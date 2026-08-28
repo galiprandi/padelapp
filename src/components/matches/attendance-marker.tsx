@@ -189,12 +189,32 @@ export function AttendanceMarker({
                   <span className="text-xs text-muted-foreground font-medium">
                     Nivel vs. el grupo (opcional):
                   </span>
-                  <div className="flex gap-1.5 shrink-0" role="radiogroup" aria-label={`Nivel de ${player.name} comparado con el grupo`}>
+                  <div
+                    className="flex gap-1.5 shrink-0"
+                    role="radiogroup"
+                    aria-label={`Nivel de ${player.name} comparado con el grupo`}
+                    onKeyDown={(e) => {
+                      if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
+                        e.preventDefault();
+                        const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
+                        if (buttons.length === 0) return;
+                        const currentIndex = buttons.findIndex((btn) => btn === document.activeElement);
+                        let nextIndex = 0;
+                        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                          nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+                        } else {
+                          nextIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+                        }
+                        buttons[nextIndex]?.focus();
+                      }
+                    }}
+                  >
                     <button
                       type="button"
                       role="radio"
                       aria-label={`Calificar a ${player.name} como más fuerte`}
                       aria-checked={feedbacks[player.userId] === "STRONGER"}
+                      tabIndex={feedbacks[player.userId] === "WEAKER" ? -1 : 0}
                       onClick={() => {
                         setFeedbacks((prev) => ({
                           ...prev,
@@ -218,6 +238,7 @@ export function AttendanceMarker({
                       role="radio"
                       aria-label={`Calificar a ${player.name} como más flojo`}
                       aria-checked={feedbacks[player.userId] === "WEAKER"}
+                      tabIndex={feedbacks[player.userId] === "WEAKER" ? 0 : -1}
                       onClick={() => {
                         setFeedbacks((prev) => ({
                           ...prev,

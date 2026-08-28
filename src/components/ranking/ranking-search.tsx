@@ -80,7 +80,7 @@ export function RankingSearch() {
       )}
 
       {isPending && (
-        <div className="absolute -bottom-px left-6 right-6 h-px bg-primary/30 overflow-hidden rounded-full">
+        <div className="absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-all">
           <div className="h-full bg-primary w-full animate-pulse" />
         </div>
       )}
