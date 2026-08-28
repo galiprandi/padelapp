@@ -213,37 +213,49 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
       {/* Input bar */}
       <form
         onSubmit={handleSend}
-        className="border-t border-border p-3 bg-muted flex items-center gap-2"
+        className="border-t border-border p-3 bg-muted flex flex-col gap-1.5"
       >
-        <div className="relative flex-1">
+        <div className="flex items-center gap-2">
           <Input
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Escribí un mensaje..."
             maxLength={300}
             disabled={isSending}
-            className="h-10 pr-12 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-primary focus-visible:ring-offset-1 text-sm"
+            className="h-10 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-primary focus-visible:ring-offset-1 text-sm flex-1"
             aria-label="Escribir mensaje"
           />
-          {inputText.length > 200 && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground/70">
-              {inputText.length}/300
-            </span>
-          )}
+          <Button
+            type="submit"
+            size="icon"
+            disabled={!inputText.trim() || isSending}
+            className="h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-ring active:scale-[0.98] transition-all"
+            aria-label="Enviar mensaje"
+          >
+            {isSending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
         </div>
-        <Button
-          type="submit"
-          size="icon"
-          disabled={!inputText.trim() || isSending}
-          className="h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-ring active:scale-[0.98] transition-all"
-          aria-label="Enviar mensaje"
-        >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
-        </Button>
+        {(inputText ?? "").length > 200 && (
+          <div className="flex justify-end px-1">
+            <span
+              className={cn(
+                "text-[11px] font-bold",
+                (inputText ?? "").length >= 290
+                  ? "text-destructive"
+                  : (inputText ?? "").length >= 250
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-muted-foreground",
+              )}
+              aria-hidden="true"
+            >
+              {(inputText ?? "").length}/300
+            </span>
+          </div>
+        )}
       </form>
     </div>
   );
