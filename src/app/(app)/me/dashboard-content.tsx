@@ -192,19 +192,19 @@ export default async function DashboardContent() {
         </>
       ) : (
         !user?.alias && (
-          <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-50 p-4">
+          <div className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs">
             <div className="flex items-center gap-3">
-              <UserCheck className="h-5 w-5 text-amber-600" />
-              <h2 className="text-sm font-bold text-amber-800">
+              <UserCheck className="h-5 w-5 text-amber-800 dark:text-amber-200" aria-hidden="true" />
+              <h2 className="text-sm font-bold text-amber-900 dark:text-amber-100">
                 Completá tu perfil de jugador
               </h2>
             </div>
-            <p className="text-xs text-amber-700 leading-normal">
+            <p className="text-xs text-amber-800 dark:text-amber-200 leading-normal">
               Elegí tu alias en la cancha para que otros
               jugadores te reconozcan en los partidos y ranking.
             </p>
             <Button
-              className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold"
+              className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               asChild
             >
               <Link href="/me/profile" prefetch={true}>Configurar mi perfil</Link>
@@ -428,7 +428,7 @@ export default async function DashboardContent() {
             <h2 className="text-sm font-bold text-foreground">
               Marcar asistencia
             </h2>
-            <span className="rounded-md bg-amber-500/20 px-1.5 py-0.5 text-xs font-bold text-amber-600">
+            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold">
               {pendingAttendance.length}
             </span>
           </div>
@@ -438,7 +438,7 @@ export default async function DashboardContent() {
                 key={match.id}
                 href={`/match/${match.id}/result`}
                 prefetch={true}
-                className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-card p-3 transition-all hover:bg-muted hover:border-amber-500/50"
+                className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="text-sm font-semibold text-foreground truncate">
@@ -534,7 +534,7 @@ export default async function DashboardContent() {
         <section className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">Soy suplente</h2>
-            <span className="rounded-md bg-amber-500/20 px-1.5 py-0.5 text-xs font-bold text-amber-600">
+            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold">
               {mySubstituteTurns.length}
             </span>
           </div>
@@ -546,7 +546,7 @@ export default async function DashboardContent() {
                   key={turn.id}
                   href={`/t/${turn.id}`}
                   prefetch={true}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-card p-3 transition-all hover:bg-muted hover:border-amber-500/50"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <div className="flex flex-col gap-0.5 min-w-0">
                     <span className="text-sm font-semibold text-foreground truncate">
@@ -568,11 +568,11 @@ export default async function DashboardContent() {
                     </span>
                   </div>
                   {hasOpenSlot ? (
-                    <span className="rounded-md bg-emerald-500/20 px-2 py-1 text-xs font-bold text-emerald-600 shrink-0">
+                    <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0">
                       Cupo libre
                     </span>
                   ) : (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                   )}
                 </Link>
               );
