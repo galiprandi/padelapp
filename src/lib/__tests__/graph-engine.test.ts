@@ -190,6 +190,7 @@ import {
   getPreferredSideBadgeLabel,
   getConnectionAffinityLabel,
   sortGraphLinksByStrength,
+  calculateMutualConnectionsCount,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -723,5 +724,82 @@ describe("filterNodesAndLinksByCommunity", () => {
     expect(result.nodes).toHaveLength(1);
     expect(result.nodes[0].id).toBe("p-03");
     expect(result.links).toHaveLength(0);
+  });
+});
+
+describe("calculateMutualConnectionsCount", () => {
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 1,
+      partnerMatches: 0,
+      winsA: 1,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 1,
+    },
+    {
+      source: "p-01",
+      target: "p-03",
+      rivalMatches: 2,
+      partnerMatches: 0,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 2,
+    },
+    {
+      source: "p-04",
+      target: "p-02",
+      rivalMatches: 1,
+      partnerMatches: 1,
+      winsA: 1,
+      winsB: 0,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 2,
+    },
+    {
+      source: "p-04",
+      target: "p-03",
+      rivalMatches: 0,
+      partnerMatches: 1,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 1,
+    },
+  ];
+
+  it("calculates mutual connections count correctly between two players with shared neighbors", () => {
+    // p-01 is connected to p-02, p-03
+    // p-04 is connected to p-02, p-03
+    // Shared neighbors = p-02, p-03 => count = 2
+    const mutual = calculateMutualConnectionsCount(links, "p-01", "p-04");
+    expect(mutual).toBe(2);
+  });
+
+  it("calculates mutual connections between directly connected players", () => {
+    // p-01 is connected to p-02 and p-03
+    // p-02 is connected to p-01 and p-04
+    // p-01's neighbors (excluding p-02) = {p-03}
+    // p-02's neighbors (excluding p-01) = {p-04}
+    // Intersection = 0
+    const mutual = calculateMutualConnectionsCount(links, "p-01", "p-02");
+    expect(mutual).toBe(0);
+  });
+
+  it("returns 0 for identical node IDs, empty inputs, or disconnected nodes", () => {
+    expect(calculateMutualConnectionsCount(links, "p-01", "p-01")).toBe(0);
+    expect(calculateMutualConnectionsCount(links, "", "p-02")).toBe(0);
+    expect(calculateMutualConnectionsCount(links, "p-01", "p-99")).toBe(0);
   });
 });
