@@ -128,23 +128,25 @@ export function InstallButton({
   if (method === "beforeinstallprompt" || deferredPrompt) {
     return (
       <Button
-        className="w-full h-12 rounded-lg font-semibold text-sm"
+        className="w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         onClick={handleNativePrompt}
         disabled={isInstalling}
+        aria-busy={isInstalling}
+        aria-label="Instalar app de Padel Red"
       >
         {isInstalling ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
           <Download className="h-4 w-4" aria-hidden="true" />
         )}
-        Instalar app
+        {isInstalling ? "Instalando..." : "Instalar app"}
       </Button>
     );
   }
 
   // <install> element (experimental, origin trial)
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-2 w-full">
       {isInstalling && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -155,10 +157,13 @@ export function InstallButton({
         ref={installRef}
         {...(installUrl ? { installurl: installUrl } : {})}
         {...(manifestId ? { manifestid: manifestId } : {})}
+        className="w-full"
       >
         <Button
-          className="w-full h-12 rounded-lg font-semibold text-sm"
+          className="w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           onClick={() => setIsInstalling(true)}
+          aria-busy={isInstalling}
+          aria-label="Instalar app de Padel Red"
         >
           <Download className="h-4 w-4" aria-hidden="true" />
           Instalar app
