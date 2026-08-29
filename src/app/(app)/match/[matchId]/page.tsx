@@ -164,10 +164,10 @@ async function MatchContent({ params }: MatchPageProps) {
         <div className="flex items-center gap-2 mt-1">
           <span
             className={cn(
-              "rounded-md px-2 py-0.5 text-xs font-semibold",
+              "rounded-md px-2 py-0.5 text-xs font-bold shadow-xs",
               match.status === "CONFIRMED"
-                ? "bg-primary/10 text-primary"
-                : "bg-muted text-muted-foreground",
+                ? "bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                : "bg-muted text-muted-foreground border border-border",
             )}
           >
             {match.status === "PENDING"
@@ -429,7 +429,7 @@ async function MatchContent({ params }: MatchPageProps) {
                         className={cn(
                           "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all",
                           isConfirmed
-                            ? "bg-primary/5 border-primary/20"
+                            ? "bg-card border-primary shadow-xs font-semibold"
                             : "bg-muted/50 border-border opacity-70",
                         )}
                       >
@@ -467,7 +467,7 @@ async function MatchContent({ params }: MatchPageProps) {
             <div className="fixed bottom-20 left-0 right-0 z-30 px-5 pb-4">
               <div className="mx-auto max-w-md rounded-xl border border-primary/20 bg-card p-4 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-xs">
                     <CheckCircle2 className="h-4 w-4" />
                   </div>
                   <div className="flex flex-col">
@@ -486,7 +486,7 @@ async function MatchContent({ params }: MatchPageProps) {
 
           {!isPendingConfirmation && match.status === "CONFIRMED" && (
             <div className="flex justify-center">
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-3 py-1.5 text-xs font-bold shadow-xs">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Partido procesado en el Ranking
               </span>

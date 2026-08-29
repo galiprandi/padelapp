@@ -256,7 +256,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               </span>
                             </div>
                           </div>
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-xl font-bold text-primary shrink-0">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xl shrink-0 shadow-xs">
                             {scores[setIndex]?.[teamIndex] ?? 0}
                           </div>
                         </div>
@@ -325,11 +325,31 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                             <PlayerAvatar name={p.name} image={p.image} className="h-8 w-8" />
                             <span className="text-sm font-semibold text-foreground truncate">{p.name}</span>
                           </div>
-                          <div className="flex items-center gap-1 bg-muted p-1 rounded-lg" role="radiogroup" aria-label={`Lado para ${p.name}`}>
+                          <div
+                            className="flex items-center gap-1 bg-muted p-1 rounded-lg"
+                            role="radiogroup"
+                            aria-label={`Lado para ${p.name}`}
+                            onKeyDown={(e) => {
+                              if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
+                                e.preventDefault();
+                                const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
+                                if (buttons.length === 0) return;
+                                const currentIndex = buttons.findIndex((btn) => btn === document.activeElement);
+                                let nextIndex = 0;
+                                if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                                  nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+                                } else {
+                                  nextIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+                                }
+                                buttons[nextIndex]?.focus();
+                              }
+                            }}
+                          >
                             <button
                               type="button"
                               role="radio"
                               aria-checked={playerSides[p.id] === "RIGHT"}
+                              tabIndex={playerSides[p.id] === "RIGHT" || (!playerSides[p.id]) ? 0 : -1}
                               onClick={() => handleSideChange(p.id, "RIGHT")}
                               className={cn(
                                 "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
@@ -344,6 +364,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               type="button"
                               role="radio"
                               aria-checked={playerSides[p.id] === "LEFT"}
+                              tabIndex={playerSides[p.id] === "LEFT" ? 0 : -1}
                               onClick={() => handleSideChange(p.id, "LEFT")}
                               className={cn(
                                 "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",

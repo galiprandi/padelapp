@@ -142,13 +142,13 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
         type="submit"
         disabled={isPending}
         variant="outline"
-        className="w-full h-10 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Finalizar el partido como organizador"
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
         ) : (
-          <CheckCircle2 className="mr-2 h-4 w-4" />
+          <CheckCircle2 className="mr-2 h-4 w-4 text-primary" />
         )}
         {isPending ? "Finalizando..." : "Finalizar como Organizador"}
       </Button>
