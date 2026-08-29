@@ -61,7 +61,14 @@ export function LeaveTurnButton({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      className="flex flex-col gap-2"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && !isPending) {
+          setConfirming(false);
+        }
+      }}
+    >
       {isLateLeave && (
         <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left">
           <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
@@ -103,7 +110,10 @@ export function LeaveTurnButton({
           variant="ghost"
           className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/30 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
           disabled={isPending}
-          aria-label="Confirmar baja del turno"
+          aria-busy={isPending}
+          aria-label={
+            isPending ? "Procesando baja del turno..." : "Confirmar baja del turno"
+          }
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
