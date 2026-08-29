@@ -191,6 +191,7 @@ import {
   getConnectionAffinityLabel,
   sortGraphLinksByStrength,
   calculateMutualConnectionsCount,
+  calculateCommunitySummary,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -801,5 +802,82 @@ describe("calculateMutualConnectionsCount", () => {
     expect(calculateMutualConnectionsCount(links, "p-01", "p-01")).toBe(0);
     expect(calculateMutualConnectionsCount(links, "", "p-02")).toBe(0);
     expect(calculateMutualConnectionsCount(links, "p-01", "p-99")).toBe(0);
+  });
+});
+
+describe("calculateCommunitySummary", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Facu",
+      alias: "facu",
+      image: null,
+      skillScore: 1000,
+      community: 1,
+      networkSize: 1,
+      matchesPlayed: 4,
+      preferredSide: "BOTH",
+    },
+    {
+      id: "p-04",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 2,
+      networkSize: 1,
+      matchesPlayed: 5,
+      preferredSide: null,
+    },
+  ];
+
+  it("calculates community summary for a populated group with side breakdown and average score", () => {
+    const summary = calculateCommunitySummary(nodes, 1);
+    expect(summary.communityId).toBe(1);
+    expect(summary.totalPlayers).toBe(3);
+    // (1100 + 1200 + 1000) / 3 = 1100
+    expect(summary.avgSkillScore).toBe(1100);
+    expect(summary.rightSideCount).toBe(1);
+    expect(summary.leftSideCount).toBe(1);
+    expect(summary.bothSidesCount).toBe(1);
+    expect(summary.undefinedSideCount).toBe(0);
+    expect(summary.formattedSummary).toBe("3 jugadores · Score prom. 1100 · 1 Der / 1 Rev / 1 Ambos");
+  });
+
+  it("calculates community summary for single member group with null side preference", () => {
+    const summary = calculateCommunitySummary(nodes, 2);
+    expect(summary.communityId).toBe(2);
+    expect(summary.totalPlayers).toBe(1);
+    expect(summary.avgSkillScore).toBe(1050);
+    expect(summary.undefinedSideCount).toBe(1);
+    expect(summary.formattedSummary).toBe("1 jugador · Score prom. 1050");
+  });
+
+  it("returns fallback summary for non-existent community ID", () => {
+    const summary = calculateCommunitySummary(nodes, 99);
+    expect(summary.totalPlayers).toBe(0);
+    expect(summary.formattedSummary).toBe("Grupo sin miembros registrados");
   });
 });

@@ -315,3 +315,82 @@ export function calculateMutualConnectionsCount(
 
   return mutualCount;
 }
+
+export interface CommunitySummary {
+  communityId: number;
+  totalPlayers: number;
+  avgSkillScore: number;
+  rightSideCount: number;
+  leftSideCount: number;
+  bothSidesCount: number;
+  undefinedSideCount: number;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates aggregate analytics (member count, average skill score, court side distribution)
+ * for a specific Louvain community group.
+ */
+export function calculateCommunitySummary(
+  nodes: GraphNode[],
+  communityId: number,
+): CommunitySummary {
+  const communityNodes = nodes.filter((n) => n.community === communityId);
+  const totalPlayers = communityNodes.length;
+
+  if (totalPlayers === 0) {
+    return {
+      communityId,
+      totalPlayers: 0,
+      avgSkillScore: 1000,
+      rightSideCount: 0,
+      leftSideCount: 0,
+      bothSidesCount: 0,
+      undefinedSideCount: 0,
+      formattedSummary: "Grupo sin miembros registrados",
+    };
+  }
+
+  const totalScore = communityNodes.reduce(
+    (sum, n) => sum + (n.skillScore ?? 1000),
+    0,
+  );
+  const avgSkillScore = Math.round(totalScore / totalPlayers);
+
+  let rightSideCount = 0;
+  let leftSideCount = 0;
+  let bothSidesCount = 0;
+  let undefinedSideCount = 0;
+
+  for (const n of communityNodes) {
+    if (n.preferredSide === "RIGHT") rightSideCount++;
+    else if (n.preferredSide === "LEFT") leftSideCount++;
+    else if (n.preferredSide === "BOTH") bothSidesCount++;
+    else undefinedSideCount++;
+  }
+
+  const parts: string[] = [
+    `${totalPlayers} ${totalPlayers === 1 ? "jugador" : "jugadores"}`,
+    `Score prom. ${avgSkillScore}`,
+  ];
+
+  const sideDetails: string[] = [];
+  if (rightSideCount > 0) sideDetails.push(`${rightSideCount} Der`);
+  if (leftSideCount > 0) sideDetails.push(`${leftSideCount} Rev`);
+  if (bothSidesCount > 0) sideDetails.push(`${bothSidesCount} Ambos`);
+
+  if (sideDetails.length > 0) {
+    parts.push(sideDetails.join(" / "));
+  }
+
+  return {
+    communityId,
+    totalPlayers,
+    avgSkillScore,
+    rightSideCount,
+    leftSideCount,
+    bothSidesCount,
+    undefinedSideCount,
+    formattedSummary: parts.join(" · "),
+  };
+}
