@@ -17,6 +17,7 @@ import {
   getConnectionAffinityLabel,
   sortGraphLinksByStrength,
   calculateMutualConnectionsCount,
+  calculateCommunitySummary,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -751,25 +752,34 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
               <p className="text-xs text-muted-foreground">Grupo</p>
               {selectedNodeData.community !== null ? (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedCommunity(
+              (() => {
+                const commSummary = calculateCommunitySummary(
+                  graphData.nodes,
+                  selectedNodeData.community,
+                );
+                return (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedCommunity(
+                        selectedCommunity === selectedNodeData.community
+                          ? null
+                          : selectedNodeData.community,
+                      )
+                    }
+                    className="w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
+                    style={{ color: nodeColor(selectedNodeData) }}
+                    title={`Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`}
+                    aria-label={
                       selectedCommunity === selectedNodeData.community
-                        ? null
-                        : selectedNodeData.community,
-                    )
-                  }
-                  className="w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
-                  style={{ color: nodeColor(selectedNodeData) }}
-                  aria-label={
-                    selectedCommunity === selectedNodeData.community
-                      ? "Mostrar todas las comunidades"
-                      : `Filtrar el grafo por Grupo ${selectedNodeData.community}`
-                  }
-                >
-                  {selectedNodeData.community}
-                </button>
+                        ? `Mostrar todas las comunidades. Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`
+                        : `Filtrar el grafo por Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`
+                    }
+                  >
+                    {selectedNodeData.community}
+                  </button>
+                );
+              })()
               ) : (
                 <p className="text-sm font-bold text-muted-foreground">—</p>
               )}

@@ -23,7 +23,7 @@ export interface GraphNode {
   community: number | null;
   networkSize: number;
   matchesPlayed: number;
-  preferredSide: "RIGHT" | "LEFT" | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null;
 }
 
 export interface GraphLink {
