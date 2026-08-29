@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-29 — WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests (bela/turnos/whatsapp-invite-mds-and-accessibility)
 - [x] 2026-08-28 — PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation (bela/turnos/play-casual-accessibility-and-keyboard-ux)
 - [x] 2026-08-27 — WhatsApp Group Salvage Invite Utility & Component Integration (bela/turnos/whatsapp-group-salvage-invite)
 - [x] 2026-08-26 — Turn Salvage Urgency Callout Banner & Card Badge Polish (bela/turnos/salvage-callout-banner)
@@ -42,6 +43,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-29 - WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests
+**Learning:** Enhancing `WhatsAppInviteButton` and `WhatsAppGroupInviteButton` with explicit, context-rich ARIA labels ("Invitar a X por WhatsApp para sumar al turno en Y") and solid MDS container styling (`bg-card border border-border hover:bg-muted shadow-xs`) improves both screen reader clarity and visual alignment with MDS guidelines. Testing relative date message formatting ("hoy" / "mañana") in pure helper utilities ensures reliable, localized Argentine Spanish voseo invite copy.
+**Action:** Always provide explicit venue and slot context in ARIA labels for external invite triggers and enforce solid theme container classes over semi-transparent color utilities.
+
 ## 2026-08-28 - PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation
 **Learning:** Adding an `Escape` key handler (`onKeyDown`) and dynamic `aria-busy` / `aria-label` attributes to inline confirmation containers (such as `PlayCasualForm`) provides instant keyboard dismissability and key screen reader accessibility during pending server transitions.
 **Action:** Always complement inline confirmation cards with keyboard escape handling and explicit accessibility attributes for assistive technologies.

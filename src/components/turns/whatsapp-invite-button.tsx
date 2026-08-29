@@ -48,7 +48,7 @@ export function WhatsAppInviteButton({
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0"
-      aria-label={`Invitar a ${contactName} por WhatsApp`}
+      aria-label={`Invitar a ${contactName} por WhatsApp para sumar al turno en ${club}`}
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
@@ -99,8 +99,11 @@ export function WhatsAppGroupInviteButton({
     variant === "amber"
       ? "bg-amber-600 text-white hover:bg-amber-700 border-transparent"
       : variant === "outline"
-        ? "border border-emerald-600 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-500 dark:text-emerald-300 dark:bg-emerald-950/40 dark:hover:bg-emerald-950"
+        ? "border border-border text-foreground bg-card hover:bg-muted shadow-xs"
         : "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent";
+
+  const slotsText =
+    openSlots === 1 ? "1 jugador" : `${openSlots} jugadores`;
 
   return (
     <a
@@ -108,7 +111,7 @@ export function WhatsAppGroupInviteButton({
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 ${variantStyles} ${className ?? ""}`}
-      aria-label="Invitar a grupo de WhatsApp"
+      aria-label={`Invitar a grupo de WhatsApp para sumar ${slotsText} al turno en ${club}`}
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />

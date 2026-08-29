@@ -49,6 +49,37 @@ describe("formatWhatsAppInviteMessage", () => {
     expect(msg).toContain("faltan 2 jugadores para completarlo.");
     expect(msg).toContain("Sumate acá: https://padelred.app/t/456");
   });
+
+  it("formats invite message correctly for today date", () => {
+    const todayDate = new Date();
+    todayDate.setHours(18, 0, 0, 0);
+
+    const msg = formatWhatsAppInviteMessage({
+      club: "Padel Club",
+      date: todayDate,
+      contactName: "Santi",
+      openSlots: 1,
+      shareUrl: "https://padelred.app/t/789",
+    });
+
+    expect(msg).toContain("hoy 18hs");
+  });
+
+  it("formats invite message correctly for tomorrow date", () => {
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    tomorrowDate.setHours(19, 30, 0, 0);
+
+    const msg = formatWhatsAppInviteMessage({
+      club: "Padel Club",
+      date: tomorrowDate,
+      contactName: "Lucas",
+      openSlots: 1,
+      shareUrl: "https://padelred.app/t/789",
+    });
+
+    expect(msg).toContain("mañana 19:30hs");
+  });
 });
 
 describe("formatWhatsAppGroupInviteMessage", () => {
