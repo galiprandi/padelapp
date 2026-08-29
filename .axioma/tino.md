@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-30 — Fronteras de error localizadas en `/match` y `/catalog` con feedback táctil y prefetch (PR #tino/perf/match-and-catalog-error-boundaries)
 - [x] 2026-08-28 — Fronteras de error localizadas en invitaciones públicas `/m/[matchId]`, `/j/[playerId]` y `/notifications` (PR #tino/perf/public-invitations-error-boundaries)
 - [x] 2026-08-27 — Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (PR #tino/perf/public-turn-error-boundary)
 - [x] 2026-08-25 — Función de Coincidencia de Ruta Activa `isNavItemActive` en BottomNav (PR #tino/ux/bottom-nav-active-route-matching)
@@ -37,6 +38,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-30 - Fronteras de Error Localizadas en Módulo de Partidos y Catálogo (Performance & UX Transversal)
+**Aprendizaje:** Proveer archivos `error.tsx` dedicados a nivel de subruta (`/match` y `/catalog`) en Next.js App Router previene que errores imprevistos de base de datos o fallos de renderizado cliente escalen al layout global de la app. Incorporar mensajes en español argentino voseo ("No pudimos cargar tus partidos" / "No pudimos cargar el catálogo de componentes"), junto con reintento ágil (`reset()`), navegación con prefetch (`prefetch={true}`), escala activa táctil (`active:scale-[0.98] transition-all`) y anillos de foco de accesibilidad por teclado (`ring-offset-background`) garantiza una recuperación suave sin frustración ni pantalla en blanco.
+**Acción:** Replicar de manera transversal el patrón de fronteras de error localizadas en todas las subrutas principales de la aplicación.
+
 ### 2026-08-28 - Fronteras de Error Localizadas en Vistas Públicas de Invitación y Notificaciones (Performance & UX Transversal)
 **Aprendizaje:** Las páginas de alcance público o enlaces difundidos por WhatsApp (como invitaciones a partidos `/m/[matchId]` o uniones directas a cupos `/j/[playerId]`), al igual que vistas transversales como `/notifications`, son susceptibles a errores de red o expiración de recursos. Agregar fronteras de error cliente (`error.tsx`) dedicadas a nivel de cada subruta evita que un fallo en la consulta rompa el layout completo de la app. Ofrecer mensajes adaptados en español argentino voseo ("No pudimos cargar la invitación al partido" / "No pudimos cargar el cupo del partido"), un botón de reintento (`reset()`), micro-interacción táctil de escala activa (`active:scale-[0.98]`) y un enlace de retorno pre-cargado (`prefetch={true}`) proporciona una experiencia de recuperación sin fricciones y con cero pantalla en blanco.
 **Acción:** Proveer de manera sistemática un archivo `error.tsx` en toda ruta pública parametrizada o panel principal susceptible a fallas de conexión o recursos no encontrados.

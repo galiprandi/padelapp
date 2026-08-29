@@ -30,13 +30,13 @@ export default function AppError({
         </p>
       </div>
       <div className="flex gap-2">
-        <Button onClick={reset} variant="default" size="sm">
-          <RotateCw className="mr-1 h-4 w-4" />
+        <Button onClick={reset} variant="default" size="sm" className="active:scale-[0.98] transition-all">
+          <RotateCw className="mr-1.5 h-4 w-4" />
           Reintentar
         </Button>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline" size="sm" className="active:scale-[0.98] transition-all">
           <Link href="/me" prefetch={true}>
-            <Home className="mr-1 h-4 w-4" />
+            <Home className="mr-1.5 h-4 w-4" />
             Inicio
           </Link>
         </Button>
