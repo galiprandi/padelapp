@@ -43,8 +43,8 @@ export function RemovePlayerButton({
           e.stopPropagation();
           setConfirming(true);
         }}
-        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={`Sacar a ${playerName}`}
+        className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted border border-transparent hover:border-border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        aria-label={`Sacar a ${playerName} del turno`}
       >
         <UserMinus className="h-4 w-4" />
       </button>
@@ -52,7 +52,16 @@ export function RemovePlayerButton({
   }
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div
+      className="flex items-center gap-1.5"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && !isPending) {
+          e.preventDefault();
+          e.stopPropagation();
+          setConfirming(false);
+        }
+      }}
+    >
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -60,8 +69,13 @@ export function RemovePlayerButton({
           handleRemove();
         }}
         disabled={isPending}
-        className="rounded-md px-2 py-1 text-xs font-bold text-destructive bg-destructive/10 hover:bg-destructive/20 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] flex items-center gap-1"
-        aria-label={`Confirmar sacar a ${playerName}`}
+        aria-busy={isPending}
+        className="rounded-md px-2 py-1 text-xs font-bold text-destructive-foreground bg-destructive hover:bg-destructive/90 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] flex items-center gap-1 shadow-xs"
+        aria-label={
+          isPending
+            ? `Sacando a ${playerName}...`
+            : `Confirmar sacar a ${playerName} del turno`
+        }
       >
         {isPending ? (
           <Loader2 className="h-3 w-3 animate-spin" />
@@ -76,7 +90,7 @@ export function RemovePlayerButton({
           setConfirming(false);
         }}
         disabled={isPending}
-        className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Cancelar sacar jugador"
       >
         <X className="h-3.5 w-3.5" />
@@ -118,8 +132,13 @@ export function AssignSubstituteButton({
         handleAssign();
       }}
       disabled={isPending}
-      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-all disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-      aria-label={`Asignar a ${substituteName}`}
+      aria-busy={isPending}
+      className="rounded-md px-2.5 py-1 text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
+      aria-label={
+        isPending
+          ? `Asignando a ${substituteName}...`
+          : `Asignar a ${substituteName} como titular`
+      }
     >
       {isPending ? (
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
