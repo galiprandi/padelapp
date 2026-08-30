@@ -35,7 +35,6 @@ interface PendingConfirmationsAlertProps {
 
 export function PendingConfirmationsAlert({
   pendingActions,
-  viewerId,
 }: PendingConfirmationsAlertProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -103,7 +102,7 @@ export function PendingConfirmationsAlert({
           return (
             <div
               key={match.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted/50 p-3"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3"
             >
               <div className="flex flex-col gap-1 min-w-0">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -128,7 +127,7 @@ export function PendingConfirmationsAlert({
                     onClick={() => handleConfirm(match.id)}
                     disabled={isConfirming}
                     aria-label={`Confirmar resultado ${match.score} para el partido del ${formattedDate}`}
-                    className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+                    className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50"
                   >
                     {isThisConfirming ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />

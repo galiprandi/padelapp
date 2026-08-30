@@ -4,6 +4,7 @@ import {
   defaultTeamLabel,
   sanitizeTeamLabel,
   teamForPosition,
+  getNextRadioIndex,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -306,5 +307,45 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("attendanceMarkerAriaAndStatus", () => {
+  it("computes tabIndex and aria-checked for status radiogroup buttons correctly", () => {
+    const getStatusButtonProps = (
+      statusOption: "ATTENDED" | "LATE" | "NO_SHOW",
+      currentStatus: "ATTENDED" | "LATE" | "NO_SHOW",
+      playerName: string,
+    ) => {
+      const isActive = currentStatus === statusOption;
+      return {
+        role: "radio",
+        ariaChecked: isActive,
+        tabIndex: isActive ? 0 : -1,
+        ariaLabel: `${statusOption === "ATTENDED" ? "Presente" : statusOption === "LATE" ? "Tarde" : "No asistió"} - ${playerName}`,
+      };
+    };
+
+    expect(getStatusButtonProps("ATTENDED", "ATTENDED", "Agustín")).toEqual({
+      role: "radio",
+      ariaChecked: true,
+      tabIndex: 0,
+      ariaLabel: "Presente - Agustín",
+    });
+
+    expect(getStatusButtonProps("LATE", "ATTENDED", "Agustín")).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+      ariaLabel: "Tarde - Agustín",
+    });
+  });
+
+  it("calculates next index correctly on radiogroup arrow key navigation", () => {
+    expect(getNextRadioIndex(0, 3, "ArrowRight")).toBe(1);
+    expect(getNextRadioIndex(2, 3, "ArrowRight")).toBe(0);
+    expect(getNextRadioIndex(0, 3, "ArrowLeft")).toBe(2);
+    expect(getNextRadioIndex(1, 3, "ArrowLeft")).toBe(0);
+    expect(getNextRadioIndex(0, 0, "ArrowRight")).toBe(0);
   });
 });
