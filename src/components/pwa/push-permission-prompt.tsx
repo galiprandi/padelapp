@@ -34,7 +34,12 @@ export function PushPermissionPrompt() {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+    <div
+      role="region"
+      aria-label="Aviso de notificaciones del sistema"
+      aria-busy={loading}
+      className="rounded-xl border border-border bg-card p-4 shadow-sm"
+    >
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
           <Bell className="h-5 w-5" aria-hidden="true" />
@@ -57,7 +62,11 @@ export function PushPermissionPrompt() {
               }}
               disabled={loading}
               size="sm"
-              aria-label="Activar notificaciones de la aplicación"
+              aria-label={
+                loading
+                  ? "Solicitando permisos de notificación"
+                  : "Activar notificaciones de la aplicación"
+              }
               className="h-9 font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
               {loading ? (
@@ -65,7 +74,7 @@ export function PushPermissionPrompt() {
               ) : (
                 <Bell className="h-3.5 w-3.5" aria-hidden="true" />
               )}
-              Activar
+              {loading ? "Activando..." : "Activar"}
             </Button>
             <Button
               variant="ghost"
@@ -73,6 +82,7 @@ export function PushPermissionPrompt() {
                 setDismissed(true);
                 localStorage.setItem(DISMISS_KEY, "true");
               }}
+              disabled={loading}
               size="sm"
               aria-label="Descartar solicitud de notificaciones por ahora"
               className="h-9 font-semibold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
@@ -81,6 +91,11 @@ export function PushPermissionPrompt() {
             </Button>
           </div>
         </div>
+      </div>
+      <div className="sr-only" aria-live="polite">
+        {loading
+          ? "Solicitando activación de notificaciones de la aplicación..."
+          : ""}
       </div>
     </div>
   );
