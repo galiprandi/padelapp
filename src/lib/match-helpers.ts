@@ -38,3 +38,15 @@ export function teamForPosition(position: number, totalPlayers: number): TeamKey
   }
   return position < 2 ? "A" : "B";
 }
+
+export function getNextRadioIndex(
+  currentIndex: number,
+  totalButtons: number,
+  key: "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+): number {
+  if (totalButtons <= 0) return 0;
+  if (key === "ArrowRight" || key === "ArrowDown") {
+    return currentIndex < totalButtons - 1 ? currentIndex + 1 : 0;
+  }
+  return currentIndex > 0 ? currentIndex - 1 : totalButtons - 1;
+}

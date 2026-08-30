@@ -11,6 +11,7 @@ import {
   savePlayerFeedbackAction,
 } from "@/app/(app)/match/actions";
 import { cn } from "@/lib/utils";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 
 type AttendanceStatus = "ATTENDED" | "LATE" | "NO_SHOW";
 
@@ -155,7 +156,25 @@ export function AttendanceMarker({
                 <span className="flex-1 text-sm font-semibold text-foreground truncate">
                   {player.name}
                 </span>
-                <div className="flex gap-1.5 shrink-0">
+                <div
+                  className="flex gap-1.5 shrink-0"
+                  role="radiogroup"
+                  aria-label={`Estado de asistencia para ${player.name}`}
+                  onKeyDown={(e) => {
+                    if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
+                      e.preventDefault();
+                      const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
+                      if (buttons.length === 0) return;
+                      const currentIndex = buttons.findIndex((btn) => btn === document.activeElement);
+                      const nextIndex = getNextRadioIndex(
+                        currentIndex,
+                        buttons.length,
+                        e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                      );
+                      buttons[nextIndex]?.focus();
+                    }
+                  }}
+                >
                   {(Object.keys(STATUS_CONFIG) as AttendanceStatus[]).map(
                     (status) => {
                       const config = STATUS_CONFIG[status];
@@ -165,9 +184,11 @@ export function AttendanceMarker({
                         <button
                           key={status}
                           type="button"
+                          role="radio"
+                          aria-checked={isActive}
+                          tabIndex={isActive ? 0 : -1}
                           onClick={() => handleStatusChange(player.id, status)}
                           aria-label={`${config.label} - ${player.name}`}
-                          aria-pressed={isActive}
                           className={cn(
                             "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                             isActive
@@ -199,12 +220,11 @@ export function AttendanceMarker({
                         const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
                         if (buttons.length === 0) return;
                         const currentIndex = buttons.findIndex((btn) => btn === document.activeElement);
-                        let nextIndex = 0;
-                        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                          nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
-                        } else {
-                          nextIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
-                        }
+                        const nextIndex = getNextRadioIndex(
+                          currentIndex,
+                          buttons.length,
+                          e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                        );
                         buttons[nextIndex]?.focus();
                       }
                     }}
@@ -266,7 +286,7 @@ export function AttendanceMarker({
       <Button
         onClick={handleSave}
         disabled={pending}
-        className="w-full h-11 rounded-lg text-sm font-semibold"
+        className="w-full h-12 rounded-lg text-sm font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
