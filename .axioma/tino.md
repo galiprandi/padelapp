@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-30 — Cobertura completa de fronteras de error localizadas en formularios, configuración y subrutas (`/me`, `/me/profile`, `/me/security`, `/install`, `/match/new`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/nuevo`, `/turnos/[id]/editar`) (PR #tino/perf/form-and-subroutes-error-boundaries)
 - [x] 2026-08-30 — Fronteras de error localizadas en `/match` y `/catalog` con feedback táctil y prefetch (PR #tino/perf/match-and-catalog-error-boundaries)
 - [x] 2026-08-28 — Fronteras de error localizadas en invitaciones públicas `/m/[matchId]`, `/j/[playerId]` y `/notifications` (PR #tino/perf/public-invitations-error-boundaries)
 - [x] 2026-08-27 — Frontera de Error Resiliente Localizada en Vista Pública de Detalle de Turno `/t/[id]` (PR #tino/perf/public-turn-error-boundary)
@@ -35,9 +36,13 @@
 - [x] 2026-07-20 — Adopción completa de Cache Components para todas las rutas restantes (PR #tino/perf/complete-cache-components-adoption)
 - [x] 2026-07-19 — Completar Plan 006: Upgrade a Next.js 16.3+ y adopción de Cache Components para rutas estáticas y dinámicas (PR #tino/perf/cache-components-adoption)
 - [x] 2026-07-17 — Resolver incompatibilidad de cron route segment config con cacheComponents (PR #tino/perf/cache-components-fix)
-- [x] 2026-07-17 — Setup inicial del agente (sistema .ants creado)
+- [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-30 - Cobertura Completa de Fronteras de Error Localizadas en Formularios, Configuración y Subrutas (Performance & UX Transversal)
+**Aprendizaje:** Completar la presencia de archivos `error.tsx` en todas las subrutas de formularios y configuración (`/me`, `/me/profile`, `/me/security`, `/install`, `/match/new`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/nuevo`, `/turnos/[id]/editar`) asegura que fallos puntuales de red o excepciones al procesar datos no escalen hacia la frontera global de la app. Acompañar cada frontera con un diseño consistente en español argentino voseo, botón de reintento (`reset()`), navegación de retorno pre-cargada (`prefetch={true}`), escala táctil activa (`active:scale-[0.98] transition-all`) y anillos de foco de accesibilidad (`ring-offset-background`) garantiza una navegación resiliente sin pantallas en blanco en ningún rincón de la app.
+**Acción:** Mantener la política de que cada nueva subruta o formulario cuente siempre con su correspondiente `error.tsx` client-side de recuperación.
+
 ### 2026-08-30 - Fronteras de Error Localizadas en Módulo de Partidos y Catálogo (Performance & UX Transversal)
 **Aprendizaje:** Proveer archivos `error.tsx` dedicados a nivel de subruta (`/match` y `/catalog`) en Next.js App Router previene que errores imprevistos de base de datos o fallos de renderizado cliente escalen al layout global de la app. Incorporar mensajes en español argentino voseo ("No pudimos cargar tus partidos" / "No pudimos cargar el catálogo de componentes"), junto con reintento ágil (`reset()`), navegación con prefetch (`prefetch={true}`), escala activa táctil (`active:scale-[0.98] transition-all`) y anillos de foco de accesibilidad por teclado (`ring-offset-background`) garantiza una recuperación suave sin frustración ni pantalla en blanco.
 **Acción:** Replicar de manera transversal el patrón de fronteras de error localizadas en todas las subrutas principales de la aplicación.
@@ -104,7 +109,7 @@
 
 ### 2026-08-09 - Propagación de Caché de Consultas y PPR en Next.js 16.3
 **Learning:** En Next.js 16.3-preview, la opción experimental `experimental.ppr` fue completamente fusionada dentro de `cacheComponents`. Declarar `ppr` explícitamente en `next.config.ts` detiene la compilación con un error fatal. Establecer `cacheComponents: true` es el método único para habilitar el renderizado asíncrono y PPR. Adicionalmente, al optimizar funciones asíncronas de utilidad (como `getPendingActions`) para que utilicen fallbacks cacheados (`getCachedEnhancedUserMatches`) en lugar de consultas de DB directas, extendemos transversalmente los beneficios de la caché a múltiples pantallas independientes (`/ranking`, `/match`, `/notifications`) sin duplicar lógica ni etiquetas de invalidación.
-**Action:** Usar siempre `cacheComponents: true` in Next.js 16.3+ para habilitar PPR de forma segura y asegurarse de que los helpers asíncronos consuman wrappers de caché para evitar bypasses accidentales de la base de datos.
+**Action:** Usar siempre `cacheComponents: true` in Next.js 16.3+ para habilitar PPR de forma segura y asegurarse de que los helpers asíncronos consuman wrappers de caché para evitar bypasses accidental de la base de datos.
 
 ### 2026-08-07 - Integración de Capa de Caching en Perfil Público (unstable_cache)
 **Learning:** El perfil público de un jugador (`/p/[userId]`) ejecuta consultas concurrentes de base de datos de agregación (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) que son costosas de resolver en tiempo de respuesta de red. Al envolver estas consultas dinámicas pesadas con `unstable_cache` de Next.js usando un TTL de 60 segundos y tags de revalidación unificados (`matches` y `ranking`), logramos una reducción drástica de la latencia (0ms en DB hits subsecuentes) y habilitamos el renderizado asíncrono optimizado con Partial Prerendering (PPR), mejorando radicalmente la UX de navegación transversal.
@@ -135,7 +140,7 @@
 **Action:** Cachar siempre los contadores privados de componentes globales y layouts recurrentes con un TTL ágil para optimizar la latencia en navegación.
 
 ### 2026-07-28 - Reenvío de Señales de Control de Flujo de Next.js PPR en `auth()`
-**Learning:** Durante la compilación con PPR habilitado, Next.js aborta de manera intencionada y controlada el flujo de ejecución cuando se llaman APIs dinámicas (como `headers()` o `cookies()`) en fase de prerenderizado para registrar los límites dinámicos. Si estos errores (identificados por digests como `NEXT_DYNAMIC_NO_SSR_CODE` o `HANGING_PROMISE_REJECTION`) son capturados e interceptados por un bloque `try/catch` genérico (como el que envuelve a la sesión en `auth()`), el motor de Next.js no puede registrar correctamente los límites dinámicos. Esto provoca advertencias ruidosas en el build y puede causar desoptimizaciones. Al detectar y relanzar (rethrow) explícitamente estas excepciones de prerenderizado, logramos que la compilación sea 100% limpia y precisa.
+**Learning:** Durante la compilación con PPR habilitado, Next.js aborta de manera intencionada y controlada el flujo de ejecución cuando se llaman APIs dinámicas (como `headers()` or `cookies()`) en fase de prerenderizado para registrar los límites dinámicos. Si estos errores (identificados por digests como `NEXT_DYNAMIC_NO_SSR_CODE` o `HANGING_PROMISE_REJECTION`) son capturados e interceptados por un bloque `try/catch` genérico (como el que envuelve a la sesión en `auth()`), el motor de Next.js no puede registrar correctamente los límites dinámicos. Esto provoca advertencias ruidosas en el build y puede causar desoptimizaciones. Al detectar y relanzar (rethrow) explícitamente estas excepciones de prerenderizado, logramos que la compilación sea 100% limpia y precisa.
 **Action:** Evitar siempre capturar silenciosamente errores de flujo de Next.js (como bailouts o redirecciones) en funciones transversales de autenticación o layouts.
 
 ### 2026-07-27 - Refactorización de Formularios Dinámicos para PPR y Cascarón Estático
