@@ -249,6 +249,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     return sortGraphLinksByStrength(unsorted);
   }, [selectedNode, filteredData.links]);
 
+  const activeCommunitySummary = useMemo(() => {
+    if (selectedCommunity === null) return null;
+    return calculateCommunitySummary(baseGraphData.nodes, selectedCommunity);
+  }, [baseGraphData.nodes, selectedCommunity]);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeColor = useCallback((node: any) => {
     const community = node.community ?? 0;
@@ -606,6 +611,35 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             {filteredData.nodes.length} · {filteredData.links.length}
           </span>
         </div>
+
+        {/* Active community summary banner */}
+        {activeCommunitySummary && selectedCommunity !== null && (
+          <div className="flex items-center justify-between gap-2 bg-card px-3 py-2 rounded-xl border border-border shadow-sm text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className="h-2.5 w-2.5 rounded-full shrink-0"
+                style={{
+                  backgroundColor:
+                    COMMUNITY_COLORS[selectedCommunity % COMMUNITY_COLORS.length],
+                }}
+              />
+              <span className="font-bold text-foreground shrink-0">
+                Grupo {selectedCommunity}
+              </span>
+              <span className="text-muted-foreground truncate">
+                · {activeCommunitySummary.formattedSummary}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedCommunity(null)}
+              className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5"
+              aria-label={`Limpiar filtro del Grupo ${selectedCommunity}`}
+            >
+              Limpiar filtro
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Empty personal network notice */}

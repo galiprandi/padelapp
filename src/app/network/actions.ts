@@ -195,7 +195,7 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
       community: s?.community ?? null,
       networkSize: s?.networkSize ?? 0,
       matchesPlayed: p?.matchesPlayed ?? 0,
-      preferredSide: (s?.preferredSide as "RIGHT" | "LEFT" | null) ?? null,
+      preferredSide: (s?.preferredSide as "RIGHT" | "LEFT" | "BOTH" | null) ?? null,
     };
   });
 
