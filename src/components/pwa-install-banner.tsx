@@ -11,7 +11,22 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const DISMISS_KEY = "pwa-banner-dismissed";
+export const PWA_BANNER_DISMISS_KEY = "pwa-banner-dismissed";
+
+export function isPwaBannerDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(PWA_BANNER_DISMISS_KEY) === "true";
+}
+
+export function dismissPwaBanner(): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PWA_BANNER_DISMISS_KEY, "true");
+}
+
+export function clearPwaBannerDismissal(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(PWA_BANNER_DISMISS_KEY);
+}
 
 export function PwaInstallBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,12 +45,11 @@ export function PwaInstallBanner() {
     if (isInstalled) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(false);
-      localStorage.removeItem(DISMISS_KEY);
+      clearPwaBannerDismissal();
       return;
     }
 
-    const isDismissed = localStorage.getItem(DISMISS_KEY);
-    if (!isDismissed) {
+    if (!isPwaBannerDismissed()) {
       setIsVisible(true);
     }
   }, [isInstalled]);
@@ -69,7 +83,7 @@ export function PwaInstallBanner() {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    localStorage.setItem(DISMISS_KEY, "true");
+    dismissPwaBanner();
   };
 
   if (!mounted || !isVisible) return null;
@@ -103,10 +117,15 @@ export function PwaInstallBanner() {
         <Button
           onClick={handleInstall}
           disabled={isInstalling}
-          variant="ghost"
+          aria-busy={isInstalling}
+          variant="default"
           size="sm"
-          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary active:scale-[0.98] transition-all whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-          aria-label="Instalar aplicación de pádel"
+          className="h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0"
+          aria-label={
+            isInstalling
+              ? "Instalando aplicación de pádel..."
+              : "Instalar aplicación de pádel"
+          }
         >
           {isInstalling ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
@@ -118,11 +137,11 @@ export function PwaInstallBanner() {
       ) : (
         <Button
           asChild
-          variant="ghost"
+          variant="default"
           size="sm"
-          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary hover:bg-muted active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className="h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0"
         >
-          <Link href="/install" prefetch={true}>
+          <Link href="/install" prefetch={true} aria-label="Ver cómo instalar la aplicación de pádel">
             Ver cómo
           </Link>
         </Button>
