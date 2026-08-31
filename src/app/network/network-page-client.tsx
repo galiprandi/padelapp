@@ -71,10 +71,10 @@ function TabButton({
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-colors active:scale-[0.98]",
+        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
         active
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted",
+          ? "bg-primary text-primary-foreground shadow-xs"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
       aria-pressed={active}
     >

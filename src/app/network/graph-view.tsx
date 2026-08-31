@@ -18,6 +18,7 @@ import {
   sortGraphLinksByStrength,
   calculateMutualConnectionsCount,
   calculateCommunitySummary,
+  calculateNodeConnectionSummary,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -829,6 +830,27 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
           </Link>
 
           <div className="pt-3 border-t border-border">
+            {(() => {
+              const summary = calculateNodeConnectionSummary(
+                filteredData.links,
+                selectedNodeData.id,
+              );
+              return (
+                <div
+                  className="mb-2.5 rounded-lg bg-muted p-2 border border-border text-xs"
+                  title={`Resumen de relaciones: ${summary.formattedSummary}`}
+                  aria-label={`Resumen de relaciones para ${selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "Jugador")}: ${summary.formattedSummary}`}
+                >
+                  <p className="font-semibold text-foreground text-[11px]">
+                    Resumen de red
+                  </p>
+                  <p className="text-muted-foreground text-[11px] truncate mt-0.5">
+                    {summary.formattedSummary}
+                  </p>
+                </div>
+              );
+            })()}
+
             <p className="text-xs text-muted-foreground mb-2 font-medium">
               Conexiones ({selectedLinks.length})
             </p>
