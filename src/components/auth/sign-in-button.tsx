@@ -3,28 +3,48 @@
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-interface SignInButtonProps {
+export interface SignInButtonProps {
   label?: string;
   className?: string;
 }
 
+export const DEFAULT_SIGN_IN_LABEL = "Continuar con Google";
+export const PENDING_SIGN_IN_LABEL = "Conectando con Google...";
+
+export function getSignInButtonClasses(customClassName?: string): string {
+  return cn(
+    "h-12 w-full rounded-lg text-base font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
+}
+
+export function getSignInButtonAriaProps(pending: boolean, label = DEFAULT_SIGN_IN_LABEL) {
+  return {
+    "aria-busy": pending,
+    "aria-label": pending ? PENDING_SIGN_IN_LABEL : label,
+  };
+}
+
 export function SignInButton({
-  label = "Continuar con Google",
-  className = "h-12 w-full rounded-lg text-base font-semibold",
+  label = DEFAULT_SIGN_IN_LABEL,
+  className,
 }: SignInButtonProps) {
   const { pending } = useFormStatus();
+  const ariaProps = getSignInButtonAriaProps(pending, label);
 
   return (
     <Button
       type="submit"
-      className={className}
+      className={getSignInButtonClasses(className)}
       size="lg"
       disabled={pending}
+      {...ariaProps}
     >
       {pending ? (
         <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary-foreground" aria-hidden="true" />
           Conectando…
         </>
       ) : (
