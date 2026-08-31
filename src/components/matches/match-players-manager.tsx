@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ManageSlotModal } from "@/components/matches/manage-slot-modal";
 import type { SlotValue } from "@/lib/match-types";
@@ -53,6 +53,20 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
   const [swapSourceId, setSwapSourceId] = useState<string | null>(null);
 
   const isOrganizer = session?.user?.id === creatorId;
+
+  // Listen for Escape key to cancel position swap mode
+  useEffect(() => {
+    if (!swapSourceId) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSwapSourceId(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [swapSourceId]);
 
   function openManageModal(player: MatchTeamPlayer) {
     if (!isOrganizer) return;
@@ -196,18 +210,23 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
   return (
     <>
       {swapSourceId && (
-        <div className="fixed inset-x-0 top-20 z-50 flex justify-center px-5">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar."
+          className="fixed inset-x-0 top-20 z-50 flex justify-center px-5"
+        >
           <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
-            <ArrowUpDown className="h-4 w-4" />
+            <ArrowUpDown className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="text-xs font-bold">Modo intercambio activo</span>
             <Button
               size="icon"
               variant="ghost"
-              className="h-6 w-6 rounded-lg hover:bg-white/20 text-primary-foreground"
-              aria-label="Cancelar intercambio"
+              className="h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              aria-label="Cancelar intercambio de posición"
               onClick={() => setSwapSourceId(null)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
