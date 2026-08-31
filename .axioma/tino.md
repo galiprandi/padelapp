@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-30 — Esqueletos de carga streaming y fronteras de error resilientes localizadas para inicio de sesión (`/login`), guía de instalación (`/install`) y raíz (`src/app/error.tsx`) (PR #tino/perf/login-install-and-root-error-boundaries)
 - [x] 2026-08-30 — Cobertura completa de fronteras de error localizadas en formularios, configuración y subrutas (`/me`, `/me/profile`, `/me/security`, `/install`, `/match/new`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/nuevo`, `/turnos/[id]/editar`) (PR #tino/perf/form-and-subroutes-error-boundaries)
 - [x] 2026-08-30 — Fronteras de error localizadas en `/match` y `/catalog` con feedback táctil y prefetch (PR #tino/perf/match-and-catalog-error-boundaries)
 - [x] 2026-08-28 — Fronteras de error localizadas en invitaciones públicas `/m/[matchId]`, `/j/[playerId]` y `/notifications` (PR #tino/perf/public-invitations-error-boundaries)
@@ -39,6 +40,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-08-30 - Esqueletos de Carga Streaming y Fronteras de Error Resilientes en Login, Instalación y Raíz (Performance & UX Transversal)
+**Aprendizaje:** Proveer archivos `loading.tsx` y `error.tsx` dedicados a nivel de rutas independientes como `/login`, `/install` y la raíz `src/app/` asegura que la totalidad de la aplicación cuente con una experiencia de carga instantánea de 0ms (vía PPR/streaming) y una red de seguridad ante excepciones imprevistas. Al alinear los esqueletos de carga con la estructura exacta de cada pantalla y diseñar las fronteras de error con mensajes en español argentino voseo, botones de reintento (`reset()`), navegación precargada (`prefetch={true}`), escala táctil activa (`active:scale-[0.98] transition-all`) y anillos de foco de accesibilidad (`ring-offset-background`), garantizamos un 100% de cobertura de resilencia sin pantallas en blanco en todo el App Router.
+**Acción:** Replicar de manera sistemática la inclusión de `loading.tsx` y `error.tsx` en cualquier nueva ruta o subsistema independiente que se cree a futuro.
+
 ### 2026-08-30 - Cobertura Completa de Fronteras de Error Localizadas en Formularios, Configuración y Subrutas (Performance & UX Transversal)
 **Aprendizaje:** Completar la presencia de archivos `error.tsx` en todas las subrutas de formularios y configuración (`/me`, `/me/profile`, `/me/security`, `/install`, `/match/new`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/nuevo`, `/turnos/[id]/editar`) asegura que fallos puntuales de red o excepciones al procesar datos no escalen hacia la frontera global de la app. Acompañar cada frontera con un diseño consistente en español argentino voseo, botón de reintento (`reset()`), navegación de retorno pre-cargada (`prefetch={true}`), escala táctil activa (`active:scale-[0.98] transition-all`) y anillos de foco de accesibilidad (`ring-offset-background`) garantiza una navegación resiliente sin pantallas en blanco en ningún rincón de la app.
 **Acción:** Mantener la política de que cada nueva subruta o formulario cuente siempre con su correspondiente `error.tsx` client-side de recuperación.
@@ -116,7 +121,7 @@
 **Action:** Cachar siempre las estadísticas y listados de perfil bajo demanda y configurar correctamente las etiquetas de revalidación reactiva.
 
 ### 2026-08-05 - Integración de Capa de Caching en Perfil Público con unstable_cache de Next.js
-**Learning:** En páginas públicas altamente visitadas (como la ficha de perfil público `/p/[userId]`), las consultas de agregación y el análisis del grafo de contactos (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) suelen ser costosas en base de datos. Implementar wrappers con `unstable_cache` compartiendo etiquetas de revalidación reactiva (como `"ranking"` y `"matches"`) permite servir el perfil de forma instantánea (0ms de tiempo de base de datos) manteniendo la coherencia perfecta de los datos, ya que estas etiquetas se invalidan automáticamente tras acciones del servidor.
+**Learning:** En páginas públicas highly visitadas (como la ficha de perfil público `/p/[userId]`), las consultas de agregación y el análisis del grafo de contactos (como `getPlayerNetworkStats`, `getHeadToHeadStats`, etc.) suelen ser costosas en base de datos. Implementar wrappers con `unstable_cache` compartiendo etiquetas de revalidación reactiva (como `"ranking"` y `"matches"`) permite servir el perfil de forma instantánea (0ms de tiempo de base de datos) manteniendo la coherencia perfecta de los datos, ya que estas etiquetas se invalidan automáticamente tras acciones del servidor.
 **Action:** Cachar siempre las consultas de estadísticas públicas y agregaciones en vistas de perfiles bajo demanda.
 
 ### 2026-08-05 - Capa de Caching Global y Centralización de Consultas en Next.js App Router
