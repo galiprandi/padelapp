@@ -141,7 +141,7 @@ export function PendingConfirmationsAlert({
                     href={`/match/${match.id}/result`}
                     prefetch={true}
                     aria-label={`Cargar resultado para el partido del ${formattedDate}`}
-                    className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     Cargar resultado
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -151,7 +151,7 @@ export function PendingConfirmationsAlert({
                   href={`/match/${match.id}`}
                   prefetch={true}
                   aria-label={`Ver detalle del partido del ${formattedDate}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Link>

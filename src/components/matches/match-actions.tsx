@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
@@ -35,6 +35,19 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
     });
   };
 
+  useEffect(() => {
+    if (!confirming) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setConfirming(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [confirming]);
+
   if (!confirming) {
     return (
       <Button
@@ -44,14 +57,22 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Eliminar este partido"
       >
-        <Trash2 className="mr-2 h-4 w-4" />
+        <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
         Eliminar Partido
       </Button>
     );
   }
 
   return (
-    <div className="flex-1 flex items-center gap-1.5">
+    <div
+      className="flex-1 flex items-center gap-1.5"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setConfirming(false);
+        }
+      }}
+    >
       <Button
         type="button"
         variant="ghost"
@@ -60,20 +81,21 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Cancelar eliminación del partido"
       >
-        <X className="h-4 w-4" />
+        <X className="h-4 w-4" aria-hidden="true" />
       </Button>
       <Button
         type="button"
         variant="ghost"
         disabled={isPending}
+        aria-busy={isPending}
         onClick={handleCancel}
         className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Confirmar eliminación del partido"
       >
         {isPending ? (
-          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
         ) : (
-          <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+          <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
         )}
         {isPending ? "Eliminando..." : "Confirmar"}
       </Button>
@@ -104,13 +126,14 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
       <Button
         type="submit"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Confirmar resultado del partido"
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
         ) : (
-          <CheckCircle2 className="mr-2 h-5 w-5" />
+          <CheckCircle2 className="mr-2 h-5 w-5" aria-hidden="true" />
         )}
         {isPending ? "Confirmando..." : "Confirmar Resultado"}
       </Button>
@@ -141,14 +164,15 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
       <Button
         type="submit"
         disabled={isPending}
+        aria-busy={isPending}
         variant="outline"
         className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         aria-label="Finalizar el partido como organizador"
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" aria-hidden="true" />
         ) : (
-          <CheckCircle2 className="mr-2 h-4 w-4 text-primary" />
+          <CheckCircle2 className="mr-2 h-4 w-4 text-primary" aria-hidden="true" />
         )}
         {isPending ? "Finalizando..." : "Finalizar como Organizador"}
       </Button>

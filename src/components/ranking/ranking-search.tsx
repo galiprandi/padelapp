@@ -58,6 +58,7 @@ export function RankingSearch() {
         type="search"
         placeholder="Buscar jugador o alias..."
         aria-label="Buscar jugadores por nombre o alias"
+        aria-busy={isPending}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {

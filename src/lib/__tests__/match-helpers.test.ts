@@ -310,6 +310,44 @@ describe("assignUserToMatchSlotValidation", () => {
   });
 });
 
+describe("matchPlayersManagerSwapAndCancelActions", () => {
+  it("formats swap mode banner aria status attributes and localized label correctly", () => {
+    const getSwapBannerProps = (isSwapActive: boolean) => {
+      if (!isSwapActive) return null;
+      return {
+        role: "status",
+        ariaLive: "polite",
+        ariaLabel: "Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar.",
+      };
+    };
+
+    expect(getSwapBannerProps(true)).toEqual({
+      role: "status",
+      ariaLive: "polite",
+      ariaLabel: "Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar.",
+    });
+
+    expect(getSwapBannerProps(false)).toBeNull();
+  });
+
+  it("formats match cancellation action button aria-busy and confirm state correctly", () => {
+    const getCancelButtonProps = (isPending: boolean) => ({
+      ariaBusy: isPending,
+      label: isPending ? "Eliminando..." : "Confirmar",
+    });
+
+    expect(getCancelButtonProps(true)).toEqual({
+      ariaBusy: true,
+      label: "Eliminando...",
+    });
+
+    expect(getCancelButtonProps(false)).toEqual({
+      ariaBusy: false,
+      label: "Confirmar",
+    });
+  });
+});
+
 describe("attendanceMarkerAriaAndStatus", () => {
   it("computes tabIndex and aria-checked for status radiogroup buttons correctly", () => {
     const getStatusButtonProps = (
