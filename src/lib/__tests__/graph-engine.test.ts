@@ -192,6 +192,7 @@ import {
   sortGraphLinksByStrength,
   calculateMutualConnectionsCount,
   calculateCommunitySummary,
+  calculateNodeConnectionSummary,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -879,5 +880,64 @@ describe("calculateCommunitySummary", () => {
     const summary = calculateCommunitySummary(nodes, 99);
     expect(summary.totalPlayers).toBe(0);
     expect(summary.formattedSummary).toBe("Grupo sin miembros registrados");
+  });
+});
+
+describe("calculateNodeConnectionSummary", () => {
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 4,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 3,
+      lossesTogether: 1,
+      turnsTogether: 0,
+      strength: 4,
+    },
+    {
+      source: "p-01",
+      target: "p-03",
+      rivalMatches: 5,
+      partnerMatches: 0,
+      winsA: 3,
+      winsB: 2,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 5,
+    },
+    {
+      source: "p-01",
+      target: "p-04",
+      rivalMatches: 0,
+      partnerMatches: 0,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 0,
+      lossesTogether: 0,
+      turnsTogether: 2,
+      strength: 2,
+    },
+  ];
+
+  it("calculates aggregate node connection summary breakdown and overall partner win rate", () => {
+    const summary = calculateNodeConnectionSummary(links, "p-01");
+    expect(summary.totalConnections).toBe(3);
+    expect(summary.partnerCount).toBe(1);
+    expect(summary.rivalCount).toBe(1);
+    expect(summary.mixedCount).toBe(0);
+    expect(summary.turnsOnlyCount).toBe(1);
+    expect(summary.overallPartnerWinRate).toBe(75);
+    expect(summary.formattedSummary).toBe("1 pareja · 1 rival · 1 turno · 75% WR dupla");
+  });
+
+  it("returns clean fallback for node with zero direct links", () => {
+    const summary = calculateNodeConnectionSummary(links, "p-99");
+    expect(summary.totalConnections).toBe(0);
+    expect(summary.overallPartnerWinRate).toBeNull();
+    expect(summary.formattedSummary).toBe("Sin conexiones directas");
   });
 });

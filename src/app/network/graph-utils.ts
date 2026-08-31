@@ -394,3 +394,88 @@ export function calculateCommunitySummary(
     formattedSummary: parts.join(" · "),
   };
 }
+
+export interface NodeConnectionSummary {
+  totalConnections: number;
+  partnerCount: number;
+  rivalCount: number;
+  mixedCount: number;
+  turnsOnlyCount: number;
+  overallPartnerWinRate: number | null;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates aggregate connection summary (breakdown of partner, rival, mixed, turn relationships
+ * and overall partnership win rate) for a given selected node.
+ */
+export function calculateNodeConnectionSummary(
+  links: GraphLink[],
+  selectedNodeId: string,
+): NodeConnectionSummary {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      totalConnections: 0,
+      partnerCount: 0,
+      rivalCount: 0,
+      mixedCount: 0,
+      turnsOnlyCount: 0,
+      overallPartnerWinRate: null,
+      formattedSummary: "Sin conexiones directas",
+    };
+  }
+
+  let partnerCount = 0;
+  let rivalCount = 0;
+  let mixedCount = 0;
+  let turnsOnlyCount = 0;
+
+  let totalPartnerWins = 0;
+  let totalPartnerMatches = 0;
+
+  for (const link of connectedLinks) {
+    const record = calculateConnectionRecord(link, selectedNodeId);
+    if (record.type === "partner") {
+      partnerCount++;
+      totalPartnerWins += record.wins;
+      totalPartnerMatches += record.wins + record.losses;
+    } else if (record.type === "rival") {
+      rivalCount++;
+    } else if (record.type === "mixed") {
+      mixedCount++;
+      // Calculate partner matches within mixed
+      totalPartnerWins += link.winsTogether;
+      totalPartnerMatches += link.winsTogether + link.lossesTogether;
+    } else if (record.type === "turns") {
+      turnsOnlyCount++;
+    }
+  }
+
+  const overallPartnerWinRate =
+    totalPartnerMatches > 0
+      ? Math.round((totalPartnerWins / totalPartnerMatches) * 100)
+      : null;
+
+  const parts: string[] = [];
+  if (partnerCount > 0) parts.push(`${partnerCount} ${partnerCount === 1 ? "pareja" : "parejas"}`);
+  if (rivalCount > 0) parts.push(`${rivalCount} ${rivalCount === 1 ? "rival" : "rivales"}`);
+  if (mixedCount > 0) parts.push(`${mixedCount} ${mixedCount === 1 ? "mixto" : "mixtos"}`);
+  if (turnsOnlyCount > 0) parts.push(`${turnsOnlyCount} ${turnsOnlyCount === 1 ? "turno" : "turnos"}`);
+
+  if (overallPartnerWinRate !== null) {
+    parts.push(`${overallPartnerWinRate}% WR dupla`);
+  }
+
+  return {
+    totalConnections,
+    partnerCount,
+    rivalCount,
+    mixedCount,
+    turnsOnlyCount,
+    overallPartnerWinRate,
+    formattedSummary: parts.join(" · "),
+  };
+}
