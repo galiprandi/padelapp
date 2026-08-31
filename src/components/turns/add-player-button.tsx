@@ -122,11 +122,20 @@ export function AddPlayerButton({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div
+      className="rounded-xl border border-border bg-card overflow-hidden"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          setExpanded(false);
+          setQuery("");
+          setResults([]);
+        }
+      }}
+    >
       {/* Search header */}
       <div className="flex items-center gap-2 p-3 border-b border-border">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <label htmlFor="player-search-input" className="sr-only">
             Buscar jugador por nombre o email
           </label>
@@ -135,6 +144,7 @@ export function AddPlayerButton({
             ref={inputRef}
             type="text"
             value={query}
+            aria-busy={isSearching}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar jugador..."
             autoCapitalize="words"
@@ -150,8 +160,8 @@ export function AddPlayerButton({
                 setResults([]);
                 inputRef.current?.focus();
               }}
-              aria-label="Limpiar"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]"
+              aria-label="Limpiar búsqueda de jugador"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -164,7 +174,7 @@ export function AddPlayerButton({
             setResults([]);
           }}
           className="rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Cancelar"
+          aria-label="Cancelar búsqueda de jugador"
         >
           <X className="h-5 w-5" />
         </button>
@@ -172,7 +182,7 @@ export function AddPlayerButton({
 
       {/* Results */}
       {query.trim().length >= 2 && (
-        <div className="max-h-64 overflow-y-auto">
+        <div className="max-h-64 overflow-y-auto" role="region" aria-label="Resultados de búsqueda de jugadores">
           {results.length > 0 ? (
             <div className="p-2 space-y-1">
               {results.map((player) => (
@@ -180,6 +190,7 @@ export function AddPlayerButton({
                   key={player.id}
                   onClick={() => handleAdd(player)}
                   disabled={addingId !== null}
+                  aria-busy={addingId === player.id}
                   className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label={`Agregar a ${player.displayName}`}
                 >
