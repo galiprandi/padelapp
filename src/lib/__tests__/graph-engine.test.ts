@@ -193,6 +193,8 @@ import {
   calculateMutualConnectionsCount,
   calculateCommunitySummary,
   calculateNodeConnectionSummary,
+  getNetworkActivityTier,
+  calculateSideSynergyBreakdown,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -939,5 +941,117 @@ describe("calculateNodeConnectionSummary", () => {
     expect(summary.totalConnections).toBe(0);
     expect(summary.overallPartnerWinRate).toBeNull();
     expect(summary.formattedSummary).toBe("Sin conexiones directas");
+  });
+});
+
+describe("getNetworkActivityTier", () => {
+  it("returns 'Conector leyenda ⚡' when networkSize >= 10 and matchesPlayed >= 10", () => {
+    const tier = getNetworkActivityTier(12, 15);
+    expect(tier.label).toBe("Conector leyenda ⚡");
+    expect(tier.badgeStyle).toContain("bg-amber-100");
+  });
+
+  it("returns 'Jugador activo 🎾' when networkSize >= 5 or matchesPlayed >= 5", () => {
+    const tier1 = getNetworkActivityTier(5, 2);
+    expect(tier1.label).toBe("Jugador activo 🎾");
+    expect(tier1.badgeStyle).toContain("bg-emerald-100");
+
+    const tier2 = getNetworkActivityTier(2, 6);
+    expect(tier2.label).toBe("Jugador activo 🎾");
+  });
+
+  it("returns 'En crecimiento 🌱' when networkSize >= 1 or matchesPlayed >= 1", () => {
+    const tier = getNetworkActivityTier(1, 0);
+    expect(tier.label).toBe("En crecimiento 🌱");
+    expect(tier.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("returns 'Nuevo en la red 🆕' when networkSize and matchesPlayed are 0", () => {
+    const tier = getNetworkActivityTier(0, 0);
+    expect(tier.label).toBe("Nuevo en la red 🆕");
+    expect(tier.badgeStyle).toContain("bg-muted");
+  });
+});
+
+describe("calculateSideSynergyBreakdown", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 5,
+      preferredSide: "RIGHT",
+    },
+  ];
+
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 0,
+      partnerMatches: 3,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 2,
+      lossesTogether: 1,
+      turnsTogether: 0,
+      strength: 3,
+    },
+    {
+      source: "p-01",
+      target: "p-03",
+      rivalMatches: 0,
+      partnerMatches: 2,
+      winsA: 0,
+      winsB: 0,
+      winsTogether: 1,
+      lossesTogether: 1,
+      turnsTogether: 0,
+      strength: 2,
+    },
+  ];
+
+  it("calculates partner side synergy breakdown with complementary and same-side count", () => {
+    // p-01 (RIGHT) with p-02 (LEFT) -> complementary
+    // p-01 (RIGHT) with p-03 (RIGHT) -> same side
+    const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-01");
+    expect(breakdown.totalPartners).toBe(2);
+    expect(breakdown.complementaryCount).toBe(1);
+    expect(breakdown.sameSideCount).toBe(1);
+    expect(breakdown.formattedSynergySummary).toBe(
+      "1 dupla complementaria 🎯 · 1 dupla misma posición ⚠️",
+    );
+  });
+
+  it("returns fallback summary when player has no partner connections", () => {
+    const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-99");
+    expect(breakdown.totalPartners).toBe(0);
+    expect(breakdown.formattedSynergySummary).toBe("Sin duplas registradas");
   });
 });

@@ -1,15 +1,55 @@
 
-> padelred@0.1.0 start /app
-> next start
+> padelred@0.1.0 dev /app
+> next dev
 
-⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3000
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3000)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '::',
-  port: 3000
-}
- ELIFECYCLE  Command failed with exit code 1.
+▲ Next.js 16.3.0-preview.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 644ms
+✓ Running next.config.ts took 61ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+- Cache Components enabled
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling / ...
+ HEAD / 200 in 10.0s (next.js: 8.1s, application-code: 1965ms)
+ GET /network 200 in 6.1s (next.js: 2.8s, proxy.ts: 131ms, application-code: 3.1s)
+ GET /api/auth/session 200 in 4.6s (next.js: 4.4s, application-code: 173ms)
+ GET /api/auth/session 200 in 75ms (next.js: 39ms, application-code: 36ms)
+ GET /api/auth/session 200 in 168ms (next.js: 157ms, application-code: 11ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 8ms)
+ GET /network 200 in 977ms (next.js: 11ms, proxy.ts: 8ms, application-code: 958ms)
+ GET /api/auth/session 200 in 46ms (next.js: 34ms, application-code: 12ms)
+ GET /api/auth/session 200 in 14ms (next.js: 6ms, application-code: 8ms)
+ GET /api/auth/session 200 in 17ms (next.js: 6ms, application-code: 11ms)
+ GET /api/auth/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ GET /network 200 in 797ms (next.js: 4ms, proxy.ts: 6ms, application-code: 787ms)
+ GET /api/auth/session 200 in 45ms (next.js: 33ms, application-code: 12ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET /api/auth/session 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ GET /api/auth/session 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET /network 200 in 841ms (next.js: 6ms, proxy.ts: 8ms, application-code: 826ms)
+ GET /api/auth/session 200 in 45ms (next.js: 30ms, application-code: 15ms)
+ GET /api/auth/session 200 in 21ms (next.js: 10ms, application-code: 11ms)
+ GET /api/auth/session 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET /api/auth/session 200 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /network 200 in 796ms (next.js: 4ms, proxy.ts: 8ms, application-code: 784ms)
+ GET /api/auth/session 200 in 36ms (next.js: 25ms, application-code: 11ms)
+ GET /api/auth/session 200 in 8ms (next.js: 3ms, application-code: 5ms)
+ GET /api/auth/session 200 in 14ms (next.js: 4ms, application-code: 10ms)
+ GET /api/auth/session 200 in 7ms (next.js: 2ms, application-code: 5ms)
+ GET /network 200 in 857ms (next.js: 8ms, proxy.ts: 8ms, application-code: 842ms)
+ GET /api/auth/session 200 in 37ms (next.js: 25ms, application-code: 12ms)
+ GET /api/auth/session 200 in 21ms (next.js: 7ms, application-code: 14ms)
+ GET /api/auth/session 200 in 31ms (next.js: 5ms, application-code: 26ms)
+ GET /api/auth/session 200 in 8ms (next.js: 3ms, application-code: 5ms)
+ GET /network 200 in 767ms (next.js: 7ms, proxy.ts: 7ms, application-code: 753ms)
+ GET /api/auth/session 200 in 35ms (next.js: 27ms, application-code: 8ms)
+ GET /api/auth/session 200 in 15ms (next.js: 7ms, application-code: 8ms)
+ GET /api/auth/session 200 in 11ms (next.js: 5ms, application-code: 6ms)
+ GET /api/auth/session 200 in 16ms (next.js: 7ms, application-code: 9ms)
