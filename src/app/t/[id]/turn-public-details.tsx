@@ -190,6 +190,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <div className="flex flex-col gap-4">
           <Link
             href={viewerId ? "/me" : "/"}
+            prefetch={true}
             aria-label="Volver"
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           >
@@ -248,6 +249,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
+          prefetch={true}
           aria-label="Volver"
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         >
