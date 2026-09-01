@@ -286,6 +286,6 @@ describe("getNextRadioValue", () => {
 
   it("handles empty options or invalid current value safely", () => {
     expect(getNextRadioValue([], "60", "ArrowRight")).toBeNull();
-    expect(getNextRadioValue(options, "invalid" as any, "ArrowRight")).toBe("60");
+    expect(getNextRadioValue(options, "invalid" as string, "ArrowRight")).toBe("60");
   });
 });
