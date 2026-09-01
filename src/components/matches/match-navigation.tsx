@@ -53,14 +53,21 @@ export function MatchNavigation({
   secondaryVariant = "ghost",
 }: MatchNavigationProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      role="region"
+      aria-label="Navegación de pasos del partido"
+      className="flex flex-col gap-2"
+    >
       <Button
         type="button"
-        className="w-full h-12"
+        className="w-full h-12 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
+        aria-busy={primaryLoading}
       >
-        {primaryLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {primaryLoading && (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+        )}
         {primaryButtonText}
       </Button>
 
@@ -70,20 +77,22 @@ export function MatchNavigation({
           type="button"
           variant={secondaryVariant}
           className={cn(
-            "w-full h-10",
+            "w-full h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
             secondaryVariant === "ghost"
               ? "text-muted-foreground hover:text-foreground"
               : "",
           )}
         >
-          <Link href={secondaryHref} prefetch={true}>{secondaryButtonText}</Link>
+          <Link href={secondaryHref} prefetch={true}>
+            {secondaryButtonText}
+          </Link>
         </Button>
       ) : (
         <Button
           type="button"
           variant={secondaryVariant}
           className={cn(
-            "w-full h-10",
+            "w-full h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
             secondaryVariant === "ghost"
               ? "text-muted-foreground hover:text-foreground"
               : "",

@@ -64,11 +64,12 @@ function RankingBreakdown({ userId }: { userId: string }) {
         onClick={handleToggle}
         className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-primary bg-muted rounded-lg border border-border hover:bg-muted/80 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-expanded={isOpen}
+        aria-busy={isPending}
         aria-controls={`ranking-breakdown-${userId}`}
       >
         {isPending ? (
           <>
-            <RefreshCw className="h-3 w-3 animate-spin" />
+            <RefreshCw className="h-3 w-3 animate-spin" aria-hidden="true" />
             <span>Cargando desglose...</span>
           </>
         ) : isOpen ? (
@@ -79,7 +80,12 @@ function RankingBreakdown({ userId }: { userId: string }) {
       </button>
 
       {isOpen && (
-        <div id={`ranking-breakdown-${userId}`} className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs">
+        <div
+          id={`ranking-breakdown-${userId}`}
+          role="region"
+          aria-label="Desglose detallado de puntos de ranking"
+          className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs"
+        >
           {error && (
             <p className="text-rose-500 font-semibold text-center">{error}</p>
           )}
