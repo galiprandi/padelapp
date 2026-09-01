@@ -36,10 +36,13 @@ export function AttendanceBadge({ status, className }: AttendanceBadgeProps) {
   if (!status) return null;
 
   const config = CONFIG[status];
+  if (!config) return null;
+
   const Icon = config.icon;
 
   return (
     <span
+      role="status"
       aria-label={`Asistencia: ${config.label}`}
       className={cn(
         "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold shadow-xs",

@@ -387,3 +387,63 @@ describe("attendanceMarkerAriaAndStatus", () => {
     expect(getNextRadioIndex(0, 0, "ArrowRight")).toBe(0);
   });
 });
+
+describe("attendanceBadgeAndNavigationProps", () => {
+  it("formats AttendanceBadge role and localized aria-label correctly for all statuses", () => {
+    const getBadgeProps = (status: "ATTENDED" | "LATE" | "NO_SHOW" | null) => {
+      if (!status) return null;
+      const labels: Record<string, string> = {
+        ATTENDED: "Presente",
+        LATE: "Tarde",
+        NO_SHOW: "No asistió",
+      };
+      return {
+        role: "status",
+        ariaLabel: `Asistencia: ${labels[status]}`,
+      };
+    };
+
+    expect(getBadgeProps("ATTENDED")).toEqual({
+      role: "status",
+      ariaLabel: "Asistencia: Presente",
+    });
+    expect(getBadgeProps("LATE")).toEqual({
+      role: "status",
+      ariaLabel: "Asistencia: Tarde",
+    });
+    expect(getBadgeProps("NO_SHOW")).toEqual({
+      role: "status",
+      ariaLabel: "Asistencia: No asistió",
+    });
+    expect(getBadgeProps(null)).toBeNull();
+  });
+
+  it("formats MatchNavigation region landmark and primary loading aria-busy correctly", () => {
+    const getNavigationProps = (primaryLoading: boolean) => ({
+      role: "region",
+      ariaLabel: "Navegación de pasos del partido",
+      primaryButtonProps: {
+        ariaBusy: primaryLoading,
+        disabled: primaryLoading,
+      },
+    });
+
+    expect(getNavigationProps(true)).toEqual({
+      role: "region",
+      ariaLabel: "Navegación de pasos del partido",
+      primaryButtonProps: {
+        ariaBusy: true,
+        disabled: true,
+      },
+    });
+
+    expect(getNavigationProps(false)).toEqual({
+      role: "region",
+      ariaLabel: "Navegación de pasos del partido",
+      primaryButtonProps: {
+        ariaBusy: false,
+        disabled: false,
+      },
+    });
+  });
+});
