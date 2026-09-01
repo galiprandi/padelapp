@@ -11,20 +11,21 @@ import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
 import { cn, getNaturalShareText } from "@/lib/utils";
+import { getNextRadioValue } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
   { value: "90", label: "90 min" },
   { value: "120", label: "120 min" },
-];
+] as const;
 
 const PLAYER_OPTIONS = [
   { value: "4", label: "4 jugadores" },
   { value: "6", label: "6 jugadores" },
   { value: "8", label: "8 jugadores" },
   { value: "10", label: "10 jugadores" },
-];
+] as const;
 
 export default function NewTurnPage() {
   const router = useRouter();
@@ -182,6 +183,17 @@ export default function NewTurnPage() {
                 role="radiogroup"
                 aria-labelledby="duration-label"
                 className="grid grid-cols-3 gap-2"
+                onKeyDown={(e) => {
+                  const durationValues = DURATION_OPTIONS.map((o) => o.value);
+                  const nextVal = getNextRadioValue(durationValues, formData.duration, e.key);
+                  if (nextVal) {
+                    e.preventDefault();
+                    setFormData((prev) => ({ ...prev, duration: nextVal }));
+                    const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+                    const targetIdx = durationValues.indexOf(nextVal);
+                    buttons[targetIdx]?.focus();
+                  }
+                }}
               >
                 {DURATION_OPTIONS.map((option) => {
                   const isSelected = formData.duration === option.value;
@@ -191,6 +203,7 @@ export default function NewTurnPage() {
                       type="button"
                       role="radio"
                       aria-checked={isSelected}
+                      tabIndex={isSelected ? 0 : -1}
                       onClick={() =>
                         setFormData({ ...formData, duration: option.value })
                       }
@@ -216,6 +229,17 @@ export default function NewTurnPage() {
                 role="radiogroup"
                 aria-labelledby="players-label"
                 className="grid grid-cols-2 gap-2"
+                onKeyDown={(e) => {
+                  const playerValues = PLAYER_OPTIONS.map((o) => o.value);
+                  const nextVal = getNextRadioValue(playerValues, formData.maxPlayers, e.key);
+                  if (nextVal) {
+                    e.preventDefault();
+                    setFormData((prev) => ({ ...prev, maxPlayers: nextVal }));
+                    const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+                    const targetIdx = playerValues.indexOf(nextVal);
+                    buttons[targetIdx]?.focus();
+                  }
+                }}
               >
                 {PLAYER_OPTIONS.map((option) => {
                   const isSelected = formData.maxPlayers === option.value;
@@ -225,6 +249,7 @@ export default function NewTurnPage() {
                       type="button"
                       role="radio"
                       aria-checked={isSelected}
+                      tabIndex={isSelected ? 0 : -1}
                       onClick={() =>
                         setFormData({ ...formData, maxPlayers: option.value })
                       }

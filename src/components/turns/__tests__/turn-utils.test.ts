@@ -8,6 +8,7 @@ import {
   getTurnRoleBadgeText,
   getCooldownRemainingMinutes,
   getTurnUrgencyBadgeText,
+  getNextRadioValue,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -260,5 +261,31 @@ describe("getTurnUrgencyBadgeText", () => {
 
     const future4h = new Date(nowMs + 4 * 60 * 60 * 1000); // 4 hours away
     expect(getTurnUrgencyBadgeText(future4h, false, nowMs)).toBeNull();
+  });
+});
+
+describe("getNextRadioValue", () => {
+  const options = ["60", "90", "120"] as const;
+
+  it("navigates forward with ArrowRight and ArrowDown with wrap-around", () => {
+    expect(getNextRadioValue(options, "60", "ArrowRight")).toBe("90");
+    expect(getNextRadioValue(options, "90", "ArrowDown")).toBe("120");
+    expect(getNextRadioValue(options, "120", "ArrowRight")).toBe("60");
+  });
+
+  it("navigates backward with ArrowLeft and ArrowUp with wrap-around", () => {
+    expect(getNextRadioValue(options, "120", "ArrowLeft")).toBe("90");
+    expect(getNextRadioValue(options, "90", "ArrowUp")).toBe("60");
+    expect(getNextRadioValue(options, "60", "ArrowLeft")).toBe("120");
+  });
+
+  it("returns null for unsupported keys", () => {
+    expect(getNextRadioValue(options, "60", "Enter")).toBeNull();
+    expect(getNextRadioValue(options, "60", "Tab")).toBeNull();
+  });
+
+  it("handles empty options or invalid current value safely", () => {
+    expect(getNextRadioValue([], "60", "ArrowRight")).toBeNull();
+    expect(getNextRadioValue(options, "invalid" as string, "ArrowRight")).toBe("60");
   });
 });

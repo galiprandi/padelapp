@@ -11,19 +11,20 @@ import { updateTurnAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Zap, Info, Clock, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getNextRadioValue } from "@/components/turns/turn-utils";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
   { value: "90", label: "90 min" },
   { value: "120", label: "120 min" },
-];
+] as const;
 
 const PLAYER_OPTIONS = [
   { value: "4", label: "4 jugadores" },
   { value: "6", label: "6 jugadores" },
   { value: "8", label: "8 jugadores" },
   { value: "10", label: "10 jugadores" },
-];
+] as const;
 
 interface EditTurnFormProps {
   id: string;
@@ -163,6 +164,17 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               role="radiogroup"
               aria-labelledby="duration-label"
               className="grid grid-cols-3 gap-2"
+              onKeyDown={(e) => {
+                const durationValues = DURATION_OPTIONS.map((o) => o.value);
+                const nextVal = getNextRadioValue(durationValues, formData.duration, e.key);
+                if (nextVal) {
+                  e.preventDefault();
+                  setFormData((prev) => ({ ...prev, duration: nextVal }));
+                  const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+                  const targetIdx = durationValues.indexOf(nextVal);
+                  buttons[targetIdx]?.focus();
+                }
+              }}
             >
               {DURATION_OPTIONS.map((option) => {
                 const isSelected = formData.duration === option.value;
@@ -172,6 +184,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
                     onClick={() => setFormData({ ...formData, duration: option.value })}
                     className={cn(
                       "flex items-center justify-center h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
@@ -199,6 +212,17 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               role="radiogroup"
               aria-labelledby="players-label"
               className="grid grid-cols-2 gap-2"
+              onKeyDown={(e) => {
+                const playerValues = PLAYER_OPTIONS.map((o) => o.value);
+                const nextVal = getNextRadioValue(playerValues, formData.maxPlayers, e.key);
+                if (nextVal) {
+                  e.preventDefault();
+                  setFormData((prev) => ({ ...prev, maxPlayers: nextVal }));
+                  const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+                  const targetIdx = playerValues.indexOf(nextVal);
+                  buttons[targetIdx]?.focus();
+                }
+              }}
             >
               {PLAYER_OPTIONS.map((option) => {
                 const isSelected = formData.maxPlayers === option.value;
@@ -208,6 +232,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
                     onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
                     className={cn(
                       "flex items-center justify-between px-4 h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
