@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-30 — Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms (bela/turnos/radiogroup-keyboard-a11y)
 - [x] 2026-08-29 — WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests (bela/turnos/whatsapp-invite-mds-and-accessibility)
 - [x] 2026-08-28 — PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation (bela/turnos/play-casual-accessibility-and-keyboard-ux)
 - [x] 2026-08-27 — WhatsApp Group Salvage Invite Utility & Component Integration (bela/turnos/whatsapp-group-salvage-invite)
@@ -43,6 +44,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-30 - Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms
+**Learning:** Extracting `getNextRadioValue` into pure, unit-tested turn utilities (`src/components/turns/turn-utils.ts`) simplifies keyboard arrow navigation (`ArrowRight`, `ArrowLeft`, `ArrowUp`, `ArrowDown`) across custom radiogroup forms (`NewTurnPage` and `EditTurnForm`). Adding roving `tabIndex` (`tabIndex={isSelected ? 0 : -1}`) and programmatic focus shifting (`buttons[idx]?.focus()`) ensures full compliance with W3C WAI-ARIA radiogroup standards while maintaining clean Next.js client form state management.
+**Action:** Always complement custom `role="radiogroup"` containers with arrow key handlers (`getNextRadioValue`) and roving `tabIndex` on child options for full keyboard accessibility.
+
 ## 2026-08-29 - WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests
 **Learning:** Enhancing `WhatsAppInviteButton` and `WhatsAppGroupInviteButton` with explicit, context-rich ARIA labels ("Invitar a X por WhatsApp para sumar al turno en Y") and solid MDS container styling (`bg-card border border-border hover:bg-muted shadow-xs`) improves both screen reader clarity and visual alignment with MDS guidelines. Testing relative date message formatting ("hoy" / "mañana") in pure helper utilities ensures reliable, localized Argentine Spanish voseo invite copy.
 **Action:** Always provide explicit venue and slot context in ARIA labels for external invite triggers and enforce solid theme container classes over semi-transparent color utilities.

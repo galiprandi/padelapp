@@ -209,3 +209,29 @@ export function getTurnUrgencyBadgeText(
   }
   return null;
 }
+
+/**
+ * Calculates the next selected value for a radiogroup when navigating using keyboard arrow keys.
+ * Supports ArrowRight/ArrowDown (next) and ArrowLeft/ArrowUp (previous) with wrap-around.
+ */
+export function getNextRadioValue<T extends string>(
+  options: readonly T[],
+  currentValue: string,
+  key: string
+): T | null {
+  if (options.length === 0) return null;
+  const currentIndex = (options as readonly string[]).indexOf(currentValue);
+  if (currentIndex === -1) return options[0] ?? null;
+
+  if (key === "ArrowRight" || key === "ArrowDown") {
+    const nextIndex = (currentIndex + 1) % options.length;
+    return options[nextIndex] ?? null;
+  }
+
+  if (key === "ArrowLeft" || key === "ArrowUp") {
+    const prevIndex = (currentIndex - 1 + options.length) % options.length;
+    return options[prevIndex] ?? null;
+  }
+
+  return null;
+}
