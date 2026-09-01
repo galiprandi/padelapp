@@ -68,6 +68,7 @@ export default function RootLayout({
                     "/ranking",
                     "/match",
                     "/notifications",
+                    "/network",
                     "/me/profile",
                   ],
                   eagerness: "moderate",
