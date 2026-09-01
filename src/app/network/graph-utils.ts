@@ -395,6 +395,129 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkActivityTier {
+  label: string;
+  badgeStyle: string;
+}
+
+/**
+ * Categorizes player activity in the network graph into standardized MDS activity tier badges.
+ */
+export function getNetworkActivityTier(
+  networkSize: number,
+  matchesPlayed: number,
+): NetworkActivityTier {
+  if (networkSize >= 10 && matchesPlayed >= 10) {
+    return {
+      label: "Conector leyenda ⚡",
+      badgeStyle:
+        "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
+    };
+  }
+  if (networkSize >= 5 || matchesPlayed >= 5) {
+    return {
+      label: "Jugador activo 🎾",
+      badgeStyle:
+        "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
+    };
+  }
+  if (networkSize >= 1 || matchesPlayed >= 1) {
+    return {
+      label: "En crecimiento 🌱",
+      badgeStyle:
+        "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800",
+    };
+  }
+  return {
+    label: "Nuevo en la red 🆕",
+    badgeStyle: "bg-muted text-muted-foreground border-border",
+  };
+}
+
+export interface SideSynergyBreakdown {
+  totalPartners: number;
+  complementaryCount: number;
+  sameSideCount: number;
+  formattedSynergySummary: string;
+}
+
+/**
+ * Calculates court position synergy across all partner and mixed connections for a given player.
+ */
+export function calculateSideSynergyBreakdown(
+  links: GraphLink[],
+  nodes: GraphNode[],
+  selectedNodeId: string,
+): SideSynergyBreakdown {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const selectedSide = selectedNode?.preferredSide ?? null;
+
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+
+  let totalPartners = 0;
+  let complementaryCount = 0;
+  let sameSideCount = 0;
+
+  for (const link of connectedLinks) {
+    const record = calculateConnectionRecord(link, selectedNodeId);
+    if (record.type === "partner" || record.type === "mixed") {
+      totalPartners++;
+      const otherId =
+        linkNodeId(link.source) === selectedNodeId
+          ? linkNodeId(link.target)
+          : linkNodeId(link.source);
+      const otherNode = nodes.find((n) => n.id === otherId);
+      const otherSide = otherNode?.preferredSide ?? null;
+
+      const comp = getSideCompatibilityLabel(selectedSide, otherSide);
+      if (comp) {
+        if (comp.isComplementary) {
+          complementaryCount++;
+        } else {
+          sameSideCount++;
+        }
+      }
+    }
+  }
+
+  if (totalPartners === 0) {
+    return {
+      totalPartners: 0,
+      complementaryCount: 0,
+      sameSideCount: 0,
+      formattedSynergySummary: "Sin duplas registradas",
+    };
+  }
+
+  const parts: string[] = [];
+  if (complementaryCount > 0) {
+    parts.push(
+      `${complementaryCount} ${complementaryCount === 1 ? "dupla complementaria" : "duplas complementarias"} 🎯`,
+    );
+  }
+  if (sameSideCount > 0) {
+    parts.push(
+      `${sameSideCount} ${sameSideCount === 1 ? "dupla misma posición" : "duplas misma posición"} ⚠️`,
+    );
+  }
+
+  if (parts.length === 0) {
+    return {
+      totalPartners,
+      complementaryCount: 0,
+      sameSideCount: 0,
+      formattedSynergySummary: `${totalPartners} ${totalPartners === 1 ? "dupla" : "duplas"} (posiciones abiertas)`,
+    };
+  }
+
+  return {
+    totalPartners,
+    complementaryCount,
+    sameSideCount,
+    formattedSynergySummary: parts.join(" · "),
+  };
+}
+
 export interface NodeConnectionSummary {
   totalConnections: number;
   partnerCount: number;

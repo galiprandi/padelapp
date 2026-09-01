@@ -19,6 +19,8 @@ import {
   calculateMutualConnectionsCount,
   calculateCommunitySummary,
   calculateNodeConnectionSummary,
+  getNetworkActivityTier,
+  calculateSideSynergyBreakdown,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -748,10 +750,30 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               <p className="text-sm font-bold text-foreground truncate">
                 {selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {selectedNodeData.matchesPlayed} partidos ·{" "}
-                {selectedNodeData.networkSize} contactos
-              </p>
+              <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                <p className="text-xs text-muted-foreground">
+                  {selectedNodeData.matchesPlayed} partidos ·{" "}
+                  {selectedNodeData.networkSize} contactos
+                </p>
+                {(() => {
+                  const activityTier = getNetworkActivityTier(
+                    selectedNodeData.networkSize,
+                    selectedNodeData.matchesPlayed,
+                  );
+                  return (
+                    <span
+                      className={cn(
+                        "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                        activityTier.badgeStyle,
+                      )}
+                      title={`Nivel de actividad: ${activityTier.label}`}
+                      aria-label={`Nivel de actividad: ${activityTier.label}`}
+                    >
+                      {activityTier.label}
+                    </span>
+                  );
+                })()}
+              </div>
             </div>
             <button
               onClick={() => setSelectedNode(null)}
@@ -835,18 +857,33 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 filteredData.links,
                 selectedNodeData.id,
               );
+              const synergyBreakdown = calculateSideSynergyBreakdown(
+                filteredData.links,
+                graphData.nodes,
+                selectedNodeData.id,
+              );
               return (
                 <div
-                  className="mb-2.5 rounded-lg bg-muted p-2 border border-border text-xs"
+                  className="mb-2.5 rounded-lg bg-muted p-2 border border-border text-xs space-y-1"
                   title={`Resumen de relaciones: ${summary.formattedSummary}`}
-                  aria-label={`Resumen de relaciones para ${selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "Jugador")}: ${summary.formattedSummary}`}
+                  aria-label={`Resumen de relaciones para ${selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "Jugador")}: ${summary.formattedSummary}. Sinergia de posiciones: ${synergyBreakdown.formattedSynergySummary}`}
                 >
-                  <p className="font-semibold text-foreground text-[11px]">
-                    Resumen de red
-                  </p>
-                  <p className="text-muted-foreground text-[11px] truncate mt-0.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="font-semibold text-foreground text-[11px]">
+                      Resumen de red
+                    </p>
+                    <span className="text-[10px] font-bold text-muted-foreground">
+                      {summary.totalConnections} {summary.totalConnections === 1 ? "conexión" : "conexiones"}
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground text-[11px] truncate">
                     {summary.formattedSummary}
                   </p>
+                  {synergyBreakdown.totalPartners > 0 && (
+                    <p className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 break-words leading-tight pt-0.5 border-t border-border/50">
+                      Sinergia: {synergyBreakdown.formattedSynergySummary}
+                    </p>
+                  )}
                 </div>
               );
             })()}
