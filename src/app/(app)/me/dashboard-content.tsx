@@ -219,7 +219,7 @@ export default async function DashboardContent() {
       {/* Invite friends — visible for early users (<5 matches) */}
       {user && user.matchesPlayed < 5 && (
         <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
             <UserPlus className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="flex-1 min-w-0 space-y-0.5">

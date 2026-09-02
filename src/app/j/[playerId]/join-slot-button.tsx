@@ -36,8 +36,13 @@ export function JoinSlotButton({ playerId, matchId, disabled, redirectOnSuccess 
     <Button
       type="button"
       disabled={disabled || isPending}
+      aria-busy={isPending}
       onClick={handleJoin}
-      aria-label="Confirmar mi lugar en el partido"
+      aria-label={
+        isPending
+          ? "Confirmando lugar en el partido..."
+          : "Confirmar mi lugar en el partido"
+      }
       className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
     >
       {isPending ? (

@@ -369,7 +369,7 @@ export function ProfileForm({
             unoptimized
           />
         ) : initials ? (
-          <div className="w-16 h-16 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-border shrink-0 text-xl font-bold">
+          <div className="w-16 h-16 rounded-xl bg-muted text-foreground flex items-center justify-center border border-border shadow-xs shrink-0 text-xl font-bold">
             {initials}
           </div>
         ) : (

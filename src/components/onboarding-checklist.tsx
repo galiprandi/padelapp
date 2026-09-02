@@ -21,6 +21,28 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "onboarding-checklist-dismissed";
 
+export interface OnboardingStepsState {
+  stepAliasCompleted: boolean;
+  stepActivityCompleted: boolean;
+  stepPwaCompleted: boolean;
+  stepNotificationsCompleted: boolean;
+}
+
+export function calculateOnboardingProgress(steps: OnboardingStepsState): {
+  completedCount: number;
+  progressPercent: number;
+} {
+  const completedCount =
+    (steps.stepAliasCompleted ? 1 : 0) +
+    (steps.stepActivityCompleted ? 1 : 0) +
+    (steps.stepPwaCompleted ? 1 : 0) +
+    (steps.stepNotificationsCompleted ? 1 : 0);
+
+  const progressPercent = Math.round((completedCount / 4) * 100);
+
+  return { completedCount, progressPercent };
+}
+
 interface OnboardingChecklistProps {
   initialAlias: string | null;
   hasActivity: boolean;
@@ -89,13 +111,12 @@ export function OnboardingChecklist({
   const stepNotificationsCompleted = permission === "granted";
   const stepActivityCompleted = hasActivity;
 
-  const completedCount =
-    (stepAliasCompleted ? 1 : 0) +
-    (stepPwaCompleted ? 1 : 0) +
-    (stepNotificationsCompleted ? 1 : 0) +
-    (stepActivityCompleted ? 1 : 0);
-
-  const progressPercent = Math.round((completedCount / 4) * 100);
+  const { completedCount, progressPercent } = calculateOnboardingProgress({
+    stepAliasCompleted,
+    stepActivityCompleted,
+    stepPwaCompleted,
+    stepNotificationsCompleted,
+  });
 
   const handleDismiss = () => {
     setDismissed(true);
@@ -179,7 +200,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label="Ir a configurar alias"
                 >
                   <Link href="/me/profile" prefetch={true}>Configurar alias</Link>
@@ -223,7 +244,7 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   aria-label="Crear tu primer turno de pádel"
                 >
                   <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
@@ -269,8 +290,13 @@ export function OnboardingChecklist({
                     size="sm"
                     onClick={handleInstallPwa}
                     disabled={isInstalling}
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label="Instalar aplicación de pádel directamente"
+                    aria-busy={isInstalling}
+                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    aria-label={
+                      isInstalling
+                        ? "Instalando aplicación de pádel..."
+                        : "Instalar aplicación de pádel directamente"
+                    }
                   >
                     {isInstalling ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
@@ -284,7 +310,7 @@ export function OnboardingChecklist({
                     variant="outline"
                     size="sm"
                     asChild
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     aria-label="Ver cómo instalar la aplicación"
                   >
                     <Link href="/install" prefetch={true}>Ver cómo instalar</Link>
@@ -341,8 +367,13 @@ export function OnboardingChecklist({
                       }
                     }}
                     disabled={notificationLoading}
-                    className="h-9 text-xs font-bold border-primary/30 hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label="Solicitar permisos para notificaciones"
+                    aria-busy={notificationLoading}
+                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    aria-label={
+                      notificationLoading
+                        ? "Activando notificaciones de la aplicación..."
+                        : "Solicitar permisos para notificaciones"
+                    }
                   >
                     {notificationLoading ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
