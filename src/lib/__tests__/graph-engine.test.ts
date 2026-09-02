@@ -195,6 +195,7 @@ import {
   calculateNodeConnectionSummary,
   getNetworkActivityTier,
   calculateSideSynergyBreakdown,
+  calculateNetworkRoleInfo,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -1053,5 +1054,207 @@ describe("calculateSideSynergyBreakdown", () => {
     const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-99");
     expect(breakdown.totalPartners).toBe(0);
     expect(breakdown.formattedSynergySummary).toBe("Sin duplas registradas");
+  });
+});
+
+describe("calculateNetworkRoleInfo", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 3,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 1,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Facu",
+      alias: "facu",
+      image: null,
+      skillScore: 1000,
+      community: 2,
+      networkSize: 2,
+      matchesPlayed: 4,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-04",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 1,
+      networkSize: 1,
+      matchesPlayed: 5,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-05",
+      name: "Diego",
+      alias: "diego",
+      image: null,
+      skillScore: 980,
+      community: 3,
+      networkSize: 1,
+      matchesPlayed: 3,
+      preferredSide: "LEFT",
+    },
+  ];
+
+  it("returns 'Nuevo participante 🆕' for unconnected or missing node", () => {
+    const res = calculateNetworkRoleInfo(nodes, [], "p-99");
+    expect(res.roleLabel).toBe("Nuevo participante 🆕");
+    expect(res.badgeStyle).toContain("bg-muted");
+  });
+
+  it("returns 'Nexo comunitario 🌉' when connected to neighbors in 2 or more distinct communities", () => {
+    // p-01 (community 1) connected to p-02 (community 1) and p-03 (community 2)
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-03",
+        rivalMatches: 2,
+        partnerMatches: 0,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+    ];
+
+    const res = calculateNetworkRoleInfo(nodes, links, "p-01");
+    expect(res.roleLabel).toBe("Nexo comunitario 🌉");
+    expect(res.badgeStyle).toContain("bg-indigo-100");
+  });
+
+  it("returns 'Anfitrión de grupo 👑' when top degree node in primary community with degree >= 3", () => {
+    // p-01 (community 1) connected to p-02, p-04 (both community 1) and p-04 has 1 link, p-02 has 1 link
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-04",
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 0,
+        partnerMatches: 1,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 1,
+        strength: 2,
+      },
+    ];
+
+    const res = calculateNetworkRoleInfo(nodes, links, "p-01");
+    expect(res.roleLabel).toBe("Anfitrión de grupo 👑");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+  });
+
+  it("returns 'Pivote de red 🔗' when total connections >= 5 within single community and not top host", () => {
+    const singleCommunityNodes: GraphNode[] = [
+      { id: "p-01", name: "P1", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 5, matchesPlayed: 10, preferredSide: "RIGHT" },
+      { id: "p-02", name: "P2", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 7, matchesPlayed: 12, preferredSide: "LEFT" },
+      { id: "p-03", name: "P3", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-04", name: "P4", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-05", name: "P5", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-06", name: "P6", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-07", name: "P7", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-08", name: "P8", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+      { id: "p-09", name: "P9", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+    ];
+
+    // p-01 has 5 connections, p-02 has 7 connections (distinct top host in community 1)
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-07", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-07", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-08", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-09", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateNetworkRoleInfo(singleCommunityNodes, links, "p-01");
+    expect(res.roleLabel).toBe("Pivote de red 🔗");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("returns 'Miembro activo 🎾' for standard connected participant (>= 1 connection)", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 1,
+        partnerMatches: 0,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 1,
+      },
+    ];
+
+    const res = calculateNetworkRoleInfo(nodes, links, "p-02");
+    expect(res.roleLabel).toBe("Miembro activo 🎾");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });
