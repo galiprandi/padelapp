@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-02 — Expansión de reglas de prerenderizado especulativo, accesibilidad de NotificationsBadge y tests de navegación (PR #tino/perf/speculation-rules-and-navigation-accessibility)
 - [x] 2026-08-30 — Esqueleto de carga streaming raíz (`src/app/loading.tsx`), prerenderizado especulativo y prefetching de rutas al 100% (PR #tino/perf/root-landing-skeleton-and-speculation-prerender)
 - [x] 2026-08-30 — Esqueletos de carga streaming y fronteras de error resilientes localizadas para inicio de sesión (`/login`), guía de instalación (`/install`) y raíz (`src/app/error.tsx`) (PR #tino/perf/login-install-and-root-error-boundaries)
 - [x] 2026-08-30 — Cobertura completa de fronteras de error localizadas en formularios, configuración y subrutas (`/me`, `/me/profile`, `/me/security`, `/install`, `/match/new`, `/match/[matchId]/result`, `/match/[matchId]/edit`, `/turnos/nuevo`, `/turnos/[id]/editar`) (PR #tino/perf/form-and-subroutes-error-boundaries)
@@ -41,6 +42,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-02 - Expansión de Prerenderizado Especulativo, Accesibilidad de Notificaciones y Tests de Navegación (Performance & UX Transversal)
+**Aprendizaje:** Incluir rutas de acción principal (`/match/new`, `/turnos/nuevo`) y utilidades (`/install`, `/catalog`) en la Speculation Rules API de Chrome (`<script type="speculationrules">`) permite que el navegador prerrenderee especulativamente los cascarones de creación en segundo plano, logrando aperturas instantáneas de 0ms al tocar el FAB central. Asimismo, dotar al `NotificationsBadge` de `role="status"` y `aria-live="polite"` junto a una visualización formateada para valores altos (`99+`) garantiza que los lectores de pantalla anuncien dinámicamente notificaciones entrantes sin romper el diseño visual.
+**Acción:** Mantener actualizadas las reglas de prerenderizado especulativo al agregar nuevas vistas primarias o acciones de alta frecuencia.
+
 ### 2026-08-30 - Esqueleto de Carga Streaming Raíz (`src/app/loading.tsx`), Prerenderizado Especulativo y Cobertura de Prefetching al 100% (Performance & UX Transversal)
 **Aprendizaje:** Proveer un archivo `loading.tsx` dedicado a nivel raíz (`src/app/`) asegura que la ruta inicial de aterrizaje (`/`) cuente con un esqueleto de carga instantáneo de 0ms (vía Partial Prerendering / streaming) diseñado con accesibilidad `aria-busy="true"` y `aria-label="Cargando Padel Red"`. Además, incorporar la ruta `/network` a las reglas de prerenderizado especulativo de Chrome (`<script type="speculationrules">`) en `src/app/layout.tsx` y asegurar que el 100% de los componentes `<Link>` de la aplicación tengan `prefetch={true}` de forma explícita elimina por completo la latencia percibida al navegar desde cualquier punto de la app móvil.
 **Acción:** Mantener siempre el 100% de cobertura de `prefetch={true}` en nuevos enlaces y contar con esqueletos a medida en todas las rutas raíz e independientes.
