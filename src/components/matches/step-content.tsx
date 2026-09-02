@@ -9,6 +9,7 @@ import { SlotDisplay } from "./slot-display";
 import { MatchNavigation } from "./match-navigation";
 import type { TeamState, MatchTypeValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
 interface StepContentProps {
@@ -136,6 +137,8 @@ const MATCH_TYPE_OPTIONS = [
   { value: "FRIENDLY", label: "Amistoso" },
   { value: "LOCAL_TOURNAMENT", label: "Torneo local" },
 ] as const;
+
+const SETS_OPTIONS = ["1", "3", "5"] as const;
 
 function RecentClubs({
   currentClub,
@@ -266,15 +269,6 @@ export function StepContent({
   const baseClass =
     "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
 
-  const registeredUsersCount = [
-    teamState.A[0],
-    teamState.A[1],
-    teamState.B[0],
-    teamState.B[1],
-  ].filter((slot) => slot?.kind === "user").length;
-
-  const showSuggestButton = currentStep === 0 && registeredUsersCount === 4;
-
   if (currentStep === 0) {
     const currentUserIds: string[] = [];
     (["A", "B"] as const).forEach((team) => {
@@ -335,7 +329,7 @@ export function StepContent({
                   <button
                     type="button"
                     onClick={() => onSwapSides(team)}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors rounded-lg px-2 py-1 hover:bg-primary/5"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-all active:scale-[0.98] rounded-lg px-2 py-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     aria-label={`Intercambiar derecha y revés de Pareja ${team}`}
                   >
                     <ArrowUpDown className="h-3.5 w-3.5" />
@@ -377,6 +371,48 @@ export function StepContent({
   }
 
   if (currentStep === 1) {
+    const handleMatchTypeKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+        e.preventDefault();
+        const currentIndex = MATCH_TYPE_OPTIONS.findIndex(
+          (opt) => opt.value === matchType,
+        );
+        const nextIndex = getNextRadioIndex(
+          currentIndex >= 0 ? currentIndex : 0,
+          MATCH_TYPE_OPTIONS.length,
+          e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+        );
+        const nextOption = MATCH_TYPE_OPTIONS[nextIndex];
+        if (nextOption) {
+          onMatchTypeChange(nextOption.value);
+          const container = e.currentTarget;
+          const buttons =
+            container.querySelectorAll<HTMLButtonElement>("button[role='radio']");
+          buttons[nextIndex]?.focus();
+        }
+      }
+    };
+
+    const handleSetsKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+        e.preventDefault();
+        const currentIndex = (SETS_OPTIONS as readonly string[]).indexOf(sets);
+        const nextIndex = getNextRadioIndex(
+          currentIndex >= 0 ? currentIndex : 0,
+          SETS_OPTIONS.length,
+          e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+        );
+        const nextOption = SETS_OPTIONS[nextIndex];
+        if (nextOption) {
+          onSetsChange(nextOption);
+          const container = e.currentTarget;
+          const buttons =
+            container.querySelectorAll<HTMLButtonElement>("button[role='radio']");
+          buttons[nextIndex]?.focus();
+        }
+      }
+    };
+
     return (
       <section className={baseClass}>
         <div className="space-y-6">
@@ -415,6 +451,7 @@ export function StepContent({
               <div
                 role="radiogroup"
                 aria-labelledby="match-type-label"
+                onKeyDown={handleMatchTypeKeyDown}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-2"
               >
                 {MATCH_TYPE_OPTIONS.map((option) => {
@@ -425,6 +462,7 @@ export function StepContent({
                       type="button"
                       role="radio"
                       aria-checked={isSelected}
+                      tabIndex={isSelected ? 0 : -1}
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
                         "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
@@ -448,9 +486,10 @@ export function StepContent({
               <div
                 role="radiogroup"
                 aria-labelledby="sets-count-label"
+                onKeyDown={handleSetsKeyDown}
                 className="grid grid-cols-3 gap-2"
               >
-                {["1", "3", "5"].map((option) => {
+                {SETS_OPTIONS.map((option) => {
                   const isSelected = sets === option;
                   return (
                     <button
@@ -458,6 +497,7 @@ export function StepContent({
                       type="button"
                       role="radio"
                       aria-checked={isSelected}
+                      tabIndex={isSelected ? 0 : -1}
                       onClick={() => onSetsChange(option)}
                       className={cn(
                         "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
