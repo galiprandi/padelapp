@@ -310,6 +310,75 @@ describe("assignUserToMatchSlotValidation", () => {
   });
 });
 
+describe("stepContentRadiogroupAriaAndNavigation", () => {
+  it("computes tabIndex and aria-checked for match format options correctly", () => {
+    const getOptionProps = (currentValue: string, optionValue: string) => {
+      const isSelected = currentValue === optionValue;
+      return {
+        role: "radio",
+        ariaChecked: isSelected,
+        tabIndex: isSelected ? 0 : -1,
+      };
+    };
+
+    expect(getOptionProps("FRIENDLY", "FRIENDLY")).toEqual({
+      role: "radio",
+      ariaChecked: true,
+      tabIndex: 0,
+    });
+
+    expect(getOptionProps("FRIENDLY", "LOCAL_TOURNAMENT")).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+    });
+  });
+
+  it("computes tabIndex and aria-checked for sets count options correctly", () => {
+    const getSetOptionProps = (currentSets: string, optionSets: string) => {
+      const isSelected = currentSets === optionSets;
+      return {
+        role: "radio",
+        ariaChecked: isSelected,
+        tabIndex: isSelected ? 0 : -1,
+      };
+    };
+
+    expect(getSetOptionProps("3", "3")).toEqual({
+      role: "radio",
+      ariaChecked: true,
+      tabIndex: 0,
+    });
+
+    expect(getSetOptionProps("3", "1")).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+    });
+  });
+
+  it("navigates match format and sets count radiogroups using getNextRadioIndex", () => {
+    const matchTypes = ["FRIENDLY", "LOCAL_TOURNAMENT"];
+    const setsList = ["1", "3", "5"];
+
+    // Match types navigation: FRIENDLY (0) -> LOCAL_TOURNAMENT (1)
+    const nextMatchTypeIdx = getNextRadioIndex(0, matchTypes.length, "ArrowRight");
+    expect(matchTypes[nextMatchTypeIdx]).toBe("LOCAL_TOURNAMENT");
+
+    // Wrap around: LOCAL_TOURNAMENT (1) -> FRIENDLY (0)
+    const wrapMatchTypeIdx = getNextRadioIndex(1, matchTypes.length, "ArrowRight");
+    expect(matchTypes[wrapMatchTypeIdx]).toBe("FRIENDLY");
+
+    // Sets navigation: "3" (1) -> "5" (2)
+    const nextSetIdx = getNextRadioIndex(1, setsList.length, "ArrowRight");
+    expect(setsList[nextSetIdx]).toBe("5");
+
+    // Sets backwards navigation: "1" (0) -> "5" (2)
+    const prevSetIdx = getNextRadioIndex(0, setsList.length, "ArrowLeft");
+    expect(setsList[prevSetIdx]).toBe("5");
+  });
+});
+
 describe("matchPlayersManagerSwapAndCancelActions", () => {
   it("formats swap mode banner aria status attributes and localized label correctly", () => {
     const getSwapBannerProps = (isSwapActive: boolean) => {
