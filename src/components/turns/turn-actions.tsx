@@ -59,7 +59,16 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
   }
 
   return (
-    <div className="flex-1 flex items-center gap-1.5">
+    <div
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && !isPending) {
+          e.preventDefault();
+          setConfirming(false);
+        }
+      }}
+      className="flex-1 flex items-center gap-1.5 focus-visible:outline-none"
+    >
       <Button
         type="button"
         variant="ghost"
@@ -74,9 +83,12 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         type="button"
         variant="ghost"
         disabled={isPending}
+        aria-busy={isPending}
         onClick={handleCancel}
         className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Confirmar eliminación del turno"
+        aria-label={
+          isPending ? "Eliminando el turno..." : "Confirmar eliminación del turno"
+        }
       >
         {isPending ? (
           <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />

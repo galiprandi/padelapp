@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-08-31 — CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish (bela/turnos/cancel-turn-and-remove-player-a11y)
 - [x] 2026-08-30 — Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms (bela/turnos/radiogroup-keyboard-a11y)
 - [x] 2026-08-29 — WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests (bela/turnos/whatsapp-invite-mds-and-accessibility)
 - [x] 2026-08-28 — PlayCasualForm Inline Confirmation Accessibility & Keyboard Navigation (bela/turnos/play-casual-accessibility-and-keyboard-ux)
@@ -44,6 +45,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-08-31 - CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish
+**Learning:** Adding keyboard `Escape` handling (`onKeyDown`) and focus management (`tabIndex={-1}`) to inline turn confirmation containers (`CancelTurnForm` and `RemovePlayerButton`) ensures seamless keyboard dismissability for organizers on mobile and desktop viewports. Dynamic `aria-busy={isPending}` attributes and dynamic `aria-label` screen reader feedback during server transitions provide clear accessibility feedback.
+**Action:** Always complement inline action confirmation cards with keyboard escape handling, explicit focusability, and dynamic `aria-busy` states for assistive technologies.
+
 ## 2026-08-30 - Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms
 **Learning:** Extracting `getNextRadioValue` into pure, unit-tested turn utilities (`src/components/turns/turn-utils.ts`) simplifies keyboard arrow navigation (`ArrowRight`, `ArrowLeft`, `ArrowUp`, `ArrowDown`) across custom radiogroup forms (`NewTurnPage` and `EditTurnForm`). Adding roving `tabIndex` (`tabIndex={isSelected ? 0 : -1}`) and programmatic focus shifting (`buttons[idx]?.focus()`) ensures full compliance with W3C WAI-ARIA radiogroup standards while maintaining clean Next.js client form state management.
 **Action:** Always complement custom `role="radiogroup"` containers with arrow key handlers (`getNextRadioValue`) and roving `tabIndex` on child options for full keyboard accessibility.
