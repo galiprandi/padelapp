@@ -395,6 +395,107 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkRoleInfo {
+  roleLabel: string;
+  badgeStyle: string;
+  description: string;
+}
+
+/**
+ * Categorizes a player's social role in the network graph based on community bridging,
+ * degree centrality within community, and connection counts.
+ */
+export function calculateNetworkRoleInfo(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  selectedNodeId: string,
+): NetworkRoleInfo {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (!selectedNode || totalConnections === 0) {
+    return {
+      roleLabel: "Nuevo participante 🆕",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      description: "Iniciando historial en la red",
+    };
+  }
+
+  // Find all neighbor node IDs connected to selectedNodeId
+  const neighborIds = connectedLinks.map((link) => {
+    const src = linkNodeId(link.source);
+    return src === selectedNodeId ? linkNodeId(link.target) : src;
+  });
+
+  // Collect distinct communities of neighbor nodes (excluding null/undefined)
+  const connectedCommunities = new Set<number>();
+  for (const nId of neighborIds) {
+    const neighborNode = nodes.find((n) => n.id === nId);
+    if (
+      neighborNode &&
+      neighborNode.community !== null &&
+      neighborNode.community !== undefined
+    ) {
+      connectedCommunities.add(neighborNode.community);
+    }
+  }
+
+  // 1. Community Bridge / Nexo comunitario: connects 2 or more distinct community groups
+  if (connectedCommunities.size >= 2) {
+    return {
+      roleLabel: "Nexo comunitario 🌉",
+      badgeStyle:
+        "bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-950 dark:text-indigo-200 dark:border-indigo-800",
+      description: "Conecta diferentes grupos de la comunidad",
+    };
+  }
+
+  // 2. Community Host / Anfitrión de grupo: highest connected node in primary community (with degree >= 3)
+  if (selectedNode.community !== null && selectedNode.community !== undefined) {
+    const communityNodes = nodes.filter(
+      (n) => n.community === selectedNode.community,
+    );
+    if (communityNodes.length > 1) {
+      let isTopDegreeInCommunity = true;
+      for (const compNode of communityNodes) {
+        if (compNode.id === selectedNodeId) continue;
+        const compDegree = filterLinksBySelectedNode(links, compNode.id).length;
+        if (compDegree > totalConnections) {
+          isTopDegreeInCommunity = false;
+          break;
+        }
+      }
+      if (isTopDegreeInCommunity && totalConnections >= 3) {
+        return {
+          roleLabel: "Anfitrión de grupo 👑",
+          badgeStyle:
+            "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
+          description: "Referente con más conexiones en su grupo",
+        };
+      }
+    }
+  }
+
+  // 3. Network Pivot / Pivote de red: high total connection frequency (>= 5 connections)
+  if (totalConnections >= 5) {
+    return {
+      roleLabel: "Pivote de red 🔗",
+      badgeStyle:
+        "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800",
+      description: "Jugador con alta frecuencia de interacción",
+    };
+  }
+
+  // 4. Active Member / Miembro activo: standard connected participant (>= 1 connection)
+  return {
+    roleLabel: "Miembro activo 🎾",
+    badgeStyle:
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
+    description: "Participante integrado a la red",
+  };
+}
+
 export interface NetworkActivityTier {
   label: string;
   badgeStyle: string;

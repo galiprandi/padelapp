@@ -21,6 +21,7 @@ import {
   calculateNodeConnectionSummary,
   getNetworkActivityTier,
   calculateSideSynergyBreakdown,
+  calculateNetworkRoleInfo,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -761,17 +762,34 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     selectedNodeData.networkSize,
                     selectedNodeData.matchesPlayed,
                   );
+                  const roleInfo = calculateNetworkRoleInfo(
+                    graphData.nodes,
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
-                    <span
-                      className={cn(
-                        "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                        activityTier.badgeStyle,
-                      )}
-                      title={`Nivel de actividad: ${activityTier.label}`}
-                      aria-label={`Nivel de actividad: ${activityTier.label}`}
-                    >
-                      {activityTier.label}
-                    </span>
+                    <>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          activityTier.badgeStyle,
+                        )}
+                        title={`Nivel de actividad: ${activityTier.label}`}
+                        aria-label={`Nivel de actividad: ${activityTier.label}`}
+                      >
+                        {activityTier.label}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          roleInfo.badgeStyle,
+                        )}
+                        title={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                        aria-label={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                      >
+                        {roleInfo.roleLabel}
+                      </span>
+                    </>
                   );
                 })()}
               </div>
