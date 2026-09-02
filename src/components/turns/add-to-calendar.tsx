@@ -55,6 +55,7 @@ export function AddToCalendarButton({
     googleUrl.searchParams.set("details", details);
     googleUrl.searchParams.set("location", location);
 
+    showToast("Abriendo Google Calendar...");
     window.open(googleUrl.toString(), "_blank");
   };
 
@@ -95,8 +96,14 @@ export function AddToCalendarButton({
     showToast("Archivo de calendario descargado.");
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape" && open) {
+      setOpen(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full" onKeyDown={handleKeyDown}>
       <Button
         onClick={() => setOpen(!open)}
         variant="outline"
@@ -114,7 +121,12 @@ export function AddToCalendarButton({
       </Button>
 
       {open && (
-        <div id={`calendar-options-${turnId}`} className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150">
+        <div
+          id={`calendar-options-${turnId}`}
+          role="region"
+          aria-label="Opciones para agregar a tu calendario"
+          className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150"
+        >
           <p className="text-xs font-semibold text-muted-foreground text-center">
             Elegí tu calendario:
           </p>
