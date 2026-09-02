@@ -53,7 +53,8 @@ export function RemovePlayerButton({
 
   return (
     <div
-      className="flex items-center gap-1.5"
+      tabIndex={-1}
+      className="flex items-center gap-1.5 focus-visible:outline-none"
       onKeyDown={(e) => {
         if (e.key === "Escape" && !isPending) {
           e.preventDefault();
