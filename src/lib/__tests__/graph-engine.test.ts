@@ -196,6 +196,9 @@ import {
   getNetworkActivityTier,
   calculateSideSynergyBreakdown,
   calculateNetworkRoleInfo,
+  calculateTurnRescueProximity,
+  type TurnRescueCandidateInput,
+  type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
 
@@ -1256,5 +1259,83 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculateTurnRescueProximity", () => {
+  const links: GraphLink[] = [
+    {
+      source: "cand-01",
+      target: "enrolled-01",
+      rivalMatches: 1,
+      partnerMatches: 1,
+      winsA: 1,
+      winsB: 0,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 2,
+    },
+  ];
+
+  it("returns fallback proximity info when turn has no enrolled players", () => {
+    const candidate: TurnRescueCandidateInput = {
+      id: "cand-01",
+      skillScore: 1050,
+      preferredSide: "RIGHT",
+      community: 1,
+    };
+    const res = calculateTurnRescueProximity(candidate, [], []);
+    expect(res.avgSkillScore).toBe(1000);
+    expect(res.skillDiff).toBe(50);
+    expect(res.proximityTier).toBe("Buena opción 👍");
+    expect(res.formattedSummary).toBe("Turno sin inscriptos previos · Posición abierta");
+  });
+
+  it("calculates 'Ideal 🎯' tier for candidate with close skill score, complementary side, direct connection and same community", () => {
+    const candidate: TurnRescueCandidateInput = {
+      id: "cand-01",
+      skillScore: 1100,
+      preferredSide: "LEFT",
+      community: 1,
+    };
+    const enrolled: EnrolledTurnPlayerInput[] = [
+      { id: "enrolled-01", skillScore: 1100, preferredSide: "RIGHT", community: 1 },
+      { id: "enrolled-02", skillScore: 1100, preferredSide: "RIGHT", community: 1 },
+    ];
+
+    const res = calculateTurnRescueProximity(candidate, enrolled, links);
+    expect(res.avgSkillScore).toBe(1100);
+    expect(res.skillDiff).toBe(0);
+    expect(res.isSideComplementary).toBe(true);
+    expect(res.directConnectionsCount).toBe(1);
+    expect(res.sameCommunityCount).toBe(2);
+    expect(res.score).toBeGreaterThanOrEqual(120);
+    expect(res.proximityTier).toBe("Ideal 🎯");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("Score cercano (dif. 0)");
+    expect(res.formattedSummary).toContain("Equilibra posición en cancha");
+    expect(res.formattedSummary).toContain("1 contacto en el turno");
+    expect(res.formattedSummary).toContain("2 del mismo grupo");
+  });
+
+  it("calculates 'Distante ⚠️' tier for candidate with large skill difference and no connections or community overlap", () => {
+    const candidate: TurnRescueCandidateInput = {
+      id: "cand-99",
+      skillScore: 1500,
+      preferredSide: "RIGHT",
+      community: 5,
+    };
+    const enrolled: EnrolledTurnPlayerInput[] = [
+      { id: "enrolled-01", skillScore: 1000, preferredSide: "RIGHT", community: 1 },
+    ];
+
+    const res = calculateTurnRescueProximity(candidate, enrolled, []);
+    expect(res.skillDiff).toBe(500);
+    expect(res.isSideComplementary).toBe(false);
+    expect(res.score).toBeLessThan(20);
+    expect(res.proximityTier).toBe("Distante ⚠️");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Dif. de score 500");
   });
 });
