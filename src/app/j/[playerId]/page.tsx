@@ -11,46 +11,18 @@ import { cn } from "@/lib/utils";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const MATCH_STATUS = {
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  DISPUTED: "DISPUTED",
-  CANCELLED: "CANCELLED",
-} as const;
-
-type MatchStatus = (typeof MATCH_STATUS)[keyof typeof MATCH_STATUS];
+import { PlayerAvatar } from "@/components/players/player-avatar";
+import {
+  MATCH_STATUS,
+  type MatchStatus,
+  formatStatus,
+  teamKeyForPosition,
+  defaultTeamLabel,
+  formatJoinSlotInvitationMessage,
+} from "./join-slot-utils";
 
 interface JoinSlotPageProps {
   params: Promise<{ playerId: string }>;
-}
-
-function formatStatus(status: MatchStatus): string {
-  switch (status) {
-    case MATCH_STATUS.CONFIRMED:
-      return "Confirmado";
-    case MATCH_STATUS.DISPUTED:
-      return "En disputa";
-    case MATCH_STATUS.CANCELLED:
-      return "Cancelado";
-    case MATCH_STATUS.PENDING:
-    default:
-      return "Pendiente";
-  }
-}
-
-function teamKeyForPosition(position: number, totalPlayers: number): "A" | "B" {
-  if (totalPlayers <= 2) {
-    return position === 0 ? "A" : "B";
-  }
-  return position < 2 ? "A" : "B";
-}
-
-function defaultTeamLabel(teamKey: "A" | "B", totalPlayers: number): string {
-  if (totalPlayers <= 2) {
-    return teamKey === "A" ? "Jugador A" : "Jugador B";
-  }
-  return teamKey === "A" ? "Pareja A" : "Pareja B";
 }
 
 export default function JoinSlotPage({ params }: JoinSlotPageProps) {
@@ -191,16 +163,39 @@ async function JoinSlotContent({
 
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
+  const creatorName =
+    match.creator?.alias ?? match.creator?.displayName ?? null;
+  const invitationMessage = formatJoinSlotInvitationMessage(
+    creatorName,
+    teamLabel
+  );
+
   return (
     <>
-      <div className="rounded-lg bg-muted p-4 border border-border">
-        <p className="text-sm font-medium text-muted-foreground">
-          Te invitaron a sumarte como{" "}
-          <span className="font-bold text-foreground">{teamLabel}</span>.
-        </p>
+      <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex items-center gap-3">
+          <PlayerAvatar
+            name={creatorName ?? "Organizador"}
+            image={match.creator?.image ?? undefined}
+            size={40}
+            className="border border-border shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-muted-foreground">
+              Invitación enviada
+            </p>
+            <p className="text-sm font-semibold text-foreground leading-snug">
+              {invitationMessage}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <Card className="rounded-xl border-border bg-card overflow-hidden">
+      <Card
+        role="region"
+        aria-label="Detalle del partido"
+        className="rounded-xl border-border bg-card overflow-hidden shadow-xs"
+      >
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
           <CardTitle className="text-xs font-bold text-muted-foreground">
             Detalle del partido
@@ -209,7 +204,7 @@ async function JoinSlotContent({
         <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Trophy className="h-4 w-4" />
+              <Trophy className="h-4 w-4" aria-hidden="true" />
               <span className="text-xs font-semibold">Modalidad</span>
             </div>
             <p className="text-lg font-bold">{match.sets} sets</p>
@@ -221,7 +216,7 @@ async function JoinSlotContent({
             <div className="flex items-center pt-1">
               <Badge
                 variant={match.status === "CONFIRMED" ? "success" : "default"}
-                className="text-xs font-bold px-2 py-0.5 rounded"
+                className="text-xs font-bold px-2 py-0.5 rounded border-border"
               >
                 {formatStatus(match.status)}
               </Badge>
@@ -246,12 +241,16 @@ async function JoinSlotContent({
         </CardContent>
       </Card>
 
-      <section className="space-y-4">
+      <section
+        role="region"
+        aria-label="Formación de los equipos"
+        className="space-y-4"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">
             Formación actual
           </h2>
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </div>
         <div className="grid gap-6">
           {(["A", "B"] as const).map((key) => {
@@ -271,6 +270,7 @@ async function JoinSlotContent({
                 <div className="grid gap-2">
                   {slots.map((slot) => {
                     const name =
+                      slot.user?.alias ??
                       slot.user?.displayName ??
                       slot.displayName ??
                       `Cupo ${slot.position + 1}`;
@@ -284,26 +284,18 @@ async function JoinSlotContent({
                           "flex items-center gap-3 rounded-xl p-3 border",
                           isViewer
                             ? "bg-card border-primary font-semibold shadow-xs"
-                            : "bg-card border-border",
+                            : "bg-card border-border shadow-xs",
                         )}
                       >
-                        <div
+                        <PlayerAvatar
+                          name={name}
+                          image={slot.user?.image ?? undefined}
+                          size={40}
                           className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold shrink-0 border border-border",
-                            isOccupied
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground/40",
+                            "border border-border shrink-0",
+                            !isOccupied && "opacity-50"
                           )}
-                        >
-                          {isOccupied
-                            ? name
-                                .split(" ")
-                                .map((s: string) => s[0])
-                                .join("")
-                                .slice(0, 2)
-                                .toUpperCase()
-                            : "?"}
-                        </div>
+                        />
                         <div className="flex-1 min-w-0">
                           <p
                             className={cn(
@@ -346,8 +338,8 @@ async function JoinSlotContent({
         <div className="max-w-md mx-auto">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0">
-                <UserCheck className="h-6 w-6" />
+              <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0 shadow-xs">
+                <UserCheck className="h-6 w-6" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-muted-foreground leading-none mb-1">
@@ -377,7 +369,7 @@ async function JoinSlotContent({
                 <Button
                   asChild
                   variant="secondary"
-                  className="w-full h-12 rounded-lg text-base font-bold"
+                  className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <Link href={`/match/${match.id}`} prefetch={true}>
                     Ya estás unido · Ver partido
