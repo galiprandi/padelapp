@@ -395,6 +395,170 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface TurnRescueCandidateInput {
+  id: string;
+  skillScore: number | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+  community: number | null;
+}
+
+export interface EnrolledTurnPlayerInput {
+  id: string;
+  skillScore: number | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+  community: number | null;
+}
+
+export interface TurnRescueProximityResult {
+  score: number;
+  avgSkillScore: number;
+  skillDiff: number;
+  isSideComplementary: boolean;
+  directConnectionsCount: number;
+  sameCommunityCount: number;
+  proximityTier: "Ideal 🎯" | "Buena opción 👍" | "Compatible 🤝" | "Distante ⚠️";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates a candidate player's network rescue proximity and court compatibility against
+ * enrolled participants of an open turn.
+ */
+export function calculateTurnRescueProximity(
+  candidate: TurnRescueCandidateInput,
+  enrolledPlayers: EnrolledTurnPlayerInput[],
+  links: GraphLink[],
+): TurnRescueProximityResult {
+  const candidateScore = candidate.skillScore ?? 1000;
+
+  if (enrolledPlayers.length === 0) {
+    return {
+      score: 60,
+      avgSkillScore: 1000,
+      skillDiff: Math.abs(candidateScore - 1000),
+      isSideComplementary: false,
+      directConnectionsCount: 0,
+      sameCommunityCount: 0,
+      proximityTier: "Buena opción 👍",
+      badgeStyle:
+        "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800",
+      formattedSummary: "Turno sin inscriptos previos · Posición abierta",
+    };
+  }
+
+  const totalEnrolledScore = enrolledPlayers.reduce(
+    (sum, p) => sum + (p.skillScore ?? 1000),
+    0,
+  );
+  const avgSkillScore = Math.round(totalEnrolledScore / enrolledPlayers.length);
+  const skillDiff = Math.abs(candidateScore - avgSkillScore);
+
+  // Determine court side complementarity based on enrolled side balance
+  let rightCount = 0;
+  let leftCount = 0;
+  for (const p of enrolledPlayers) {
+    if (p.preferredSide === "RIGHT") rightCount++;
+    else if (p.preferredSide === "LEFT") leftCount++;
+  }
+
+  const neededSide =
+    rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
+
+  const isSideComplementary =
+    candidate.preferredSide === "BOTH" ||
+    (neededSide !== null && candidate.preferredSide === neededSide);
+
+  // Count direct connections to enrolled players in the graph
+  const enrolledIds = new Set(enrolledPlayers.map((p) => p.id));
+  let directConnectionsCount = 0;
+
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    if (src === candidate.id && enrolledIds.has(tgt)) {
+      directConnectionsCount++;
+    } else if (tgt === candidate.id && enrolledIds.has(src)) {
+      directConnectionsCount++;
+    }
+  }
+
+  // Count enrolled players in the same community
+  let sameCommunityCount = 0;
+  if (candidate.community !== null && candidate.community !== undefined) {
+    for (const p of enrolledPlayers) {
+      if (p.community === candidate.community) {
+        sameCommunityCount++;
+      }
+    }
+  }
+
+  // Compute composite proximity score
+  let score = 0;
+  if (skillDiff <= 100) score += 60;
+  else if (skillDiff <= 200) score += 30;
+  else if (skillDiff > 350) score -= 50;
+
+  score += directConnectionsCount * 40;
+  score += isSideComplementary ? 40 : 0;
+  score += sameCommunityCount * 30;
+
+  let proximityTier: "Ideal 🎯" | "Buena opción 👍" | "Compatible 🤝" | "Distante ⚠️";
+  let badgeStyle: string;
+
+  if (score >= 120) {
+    proximityTier = "Ideal 🎯";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (score >= 70) {
+    proximityTier = "Buena opción 👍";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (score >= 20) {
+    proximityTier = "Compatible 🤝";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    proximityTier = "Distante ⚠️";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [];
+  parts.push(
+    skillDiff <= 100
+      ? `Score cercano (dif. ${skillDiff})`
+      : `Dif. de score ${skillDiff}`,
+  );
+
+  if (isSideComplementary) {
+    parts.push("Equilibra posición en cancha");
+  }
+
+  if (directConnectionsCount > 0) {
+    parts.push(
+      `${directConnectionsCount} ${directConnectionsCount === 1 ? "contacto en el turno" : "contactos en el turno"}`,
+    );
+  }
+
+  if (sameCommunityCount > 0) {
+    parts.push(
+      `${sameCommunityCount} ${sameCommunityCount === 1 ? "del mismo grupo" : "del mismo grupo"}`,
+    );
+  }
+
+  return {
+    score,
+    avgSkillScore,
+    skillDiff,
+    isSideComplementary,
+    directConnectionsCount,
+    sameCommunityCount,
+    proximityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface NetworkRoleInfo {
   roleLabel: string;
   badgeStyle: string;
