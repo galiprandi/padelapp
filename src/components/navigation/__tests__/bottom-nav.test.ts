@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import { BottomNav } from "../bottom-nav";
+import { BottomNavSkeleton } from "../bottom-nav-skeleton";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/me",
@@ -61,5 +62,22 @@ describe("BottomNav Component", () => {
     );
 
     expect(badgeLink?.props["aria-label"]).toBe("1 notificación pendiente");
+  });
+});
+
+describe("BottomNavSkeleton Component", () => {
+  it("renders status role and Spanish navigation loading ARIA label", () => {
+    const skeleton = BottomNavSkeleton({});
+
+    expect(skeleton.props.role).toBe("status");
+    expect(skeleton.props["aria-label"]).toBe("Cargando barra de navegación");
+  });
+
+  it("applies fixed positioning by default and static when position prop is set", () => {
+    const fixedSkeleton = BottomNavSkeleton({ position: "fixed" });
+    expect(fixedSkeleton.props.className).toContain("fixed inset-x-0 bottom-0");
+
+    const staticSkeleton = BottomNavSkeleton({ position: "static" });
+    expect(staticSkeleton.props.className).not.toContain("fixed inset-x-0 bottom-0");
   });
 });

@@ -70,6 +70,7 @@ export default function RootLayout({
                     "/notifications",
                     "/network",
                     "/me/profile",
+                    "/me/security",
                     "/match/new",
                     "/turnos/nuevo",
                     "/install",
