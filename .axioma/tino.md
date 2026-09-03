@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-03 — Esqueleto de carga streaming BottomNavSkeleton para eliminar CLS y expansión de reglas de prerenderizado especulativo (PR #tino/perf/bottom-nav-skeleton-and-speculation-rules)
 - [x] 2026-09-02 — Expansión de reglas de prerenderizado especulativo, accesibilidad de NotificationsBadge y tests de navegación (PR #tino/perf/speculation-rules-and-navigation-accessibility)
 - [x] 2026-08-30 — Esqueleto de carga streaming raíz (`src/app/loading.tsx`), prerenderizado especulativo y prefetching de rutas al 100% (PR #tino/perf/root-landing-skeleton-and-speculation-prerender)
 - [x] 2026-08-30 — Esqueletos de carga streaming y fronteras de error resilientes localizadas para inicio de sesión (`/login`), guía de instalación (`/install`) y raíz (`src/app/error.tsx`) (PR #tino/perf/login-install-and-root-error-boundaries)
