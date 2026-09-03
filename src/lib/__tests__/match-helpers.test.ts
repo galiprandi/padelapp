@@ -310,6 +310,71 @@ describe("assignUserToMatchSlotValidation", () => {
   });
 });
 
+describe("editMatchFormAndManageSlotModalRadiogroupAria", () => {
+  it("computes tabIndex and aria-checked for EditMatchForm matchType and sets options correctly", () => {
+    const getOptionProps = (currentValue: string, optionValue: string) => {
+      const isSelected = currentValue === optionValue;
+      return {
+        role: "radio",
+        ariaChecked: isSelected,
+        tabIndex: isSelected ? 0 : -1,
+      };
+    };
+
+    expect(getOptionProps("FRIENDLY", "FRIENDLY")).toEqual({
+      role: "radio",
+      ariaChecked: true,
+      tabIndex: 0,
+    });
+
+    expect(getOptionProps("FRIENDLY", "LOCAL_TOURNAMENT")).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+    });
+
+    expect(getOptionProps("3", "3")).toEqual({
+      role: "radio",
+      ariaChecked: true,
+      tabIndex: 0,
+    });
+
+    expect(getOptionProps("3", "1")).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+    });
+  });
+
+  it("computes roving tabIndex for ManageSlotModal recent player option buttons correctly", () => {
+    const getRecentPlayerTabProps = (index: number) => ({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: index === 0 ? 0 : -1,
+    });
+
+    expect(getRecentPlayerTabProps(0)).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: 0,
+    });
+
+    expect(getRecentPlayerTabProps(1)).toEqual({
+      role: "radio",
+      ariaChecked: false,
+      tabIndex: -1,
+    });
+  });
+
+  it("cycles through recent player options on keyboard arrow key press using getNextRadioIndex", () => {
+    const recentCount = 4;
+    expect(getNextRadioIndex(0, recentCount, "ArrowRight")).toBe(1);
+    expect(getNextRadioIndex(3, recentCount, "ArrowRight")).toBe(0);
+    expect(getNextRadioIndex(0, recentCount, "ArrowLeft")).toBe(3);
+    expect(getNextRadioIndex(2, recentCount, "ArrowLeft")).toBe(1);
+  });
+});
+
 describe("stepContentRadiogroupAriaAndNavigation", () => {
   it("computes tabIndex and aria-checked for match format options correctly", () => {
     const getOptionProps = (currentValue: string, optionValue: string) => {

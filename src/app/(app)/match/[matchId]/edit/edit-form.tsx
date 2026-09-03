@@ -12,6 +12,7 @@ import { updateMatchDetailsAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, MapPin, Zap, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 
 const MATCH_TYPE_OPTIONS = [
   { value: "FRIENDLY", label: "Amistoso" },
@@ -146,7 +147,33 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             <Label className="text-sm font-semibold">Tipo de partido</Label>
-            <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo de partido">
+            <div
+              className="grid grid-cols-2 gap-2"
+              role="radiogroup"
+              aria-label="Tipo de partido"
+              onKeyDown={(e) => {
+                if (isClosed) return;
+                if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                  e.preventDefault();
+                  const currentIndex = MATCH_TYPE_OPTIONS.findIndex(
+                    (opt) => opt.value === formData.matchType,
+                  );
+                  const nextIndex = getNextRadioIndex(
+                    currentIndex >= 0 ? currentIndex : 0,
+                    MATCH_TYPE_OPTIONS.length,
+                    e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                  );
+                  const nextOption = MATCH_TYPE_OPTIONS[nextIndex];
+                  if (nextOption) {
+                    setFormData({ ...formData, matchType: nextOption.value });
+                    const container = e.currentTarget;
+                    const buttons =
+                      container.querySelectorAll<HTMLButtonElement>("button[role='radio']");
+                    buttons[nextIndex]?.focus();
+                  }
+                }
+              }}
+            >
               {MATCH_TYPE_OPTIONS.map((option) => {
                 const isSelected = formData.matchType === option.value;
                 return (
@@ -155,6 +182,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
                     disabled={isClosed}
                     onClick={() => setFormData({ ...formData, matchType: option.value })}
                     className={cn(
@@ -174,7 +202,33 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
 
           <div className="flex flex-col gap-3">
             <Label className="text-sm font-semibold">Cantidad de sets</Label>
-            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Cantidad de sets">
+            <div
+              className="grid grid-cols-3 gap-2"
+              role="radiogroup"
+              aria-label="Cantidad de sets"
+              onKeyDown={(e) => {
+                if (isClosed) return;
+                if (["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                  e.preventDefault();
+                  const currentIndex = SETS_OPTIONS.findIndex(
+                    (opt) => opt.value === formData.sets,
+                  );
+                  const nextIndex = getNextRadioIndex(
+                    currentIndex >= 0 ? currentIndex : 0,
+                    SETS_OPTIONS.length,
+                    e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                  );
+                  const nextOption = SETS_OPTIONS[nextIndex];
+                  if (nextOption) {
+                    setFormData({ ...formData, sets: nextOption.value });
+                    const container = e.currentTarget;
+                    const buttons =
+                      container.querySelectorAll<HTMLButtonElement>("button[role='radio']");
+                    buttons[nextIndex]?.focus();
+                  }
+                }
+              }}
+            >
               {SETS_OPTIONS.map((option) => {
                 const isSelected = formData.sets === option.value;
                 return (
@@ -183,6 +237,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
                     disabled={isClosed}
                     onClick={() => setFormData({ ...formData, sets: option.value })}
                     className={cn(

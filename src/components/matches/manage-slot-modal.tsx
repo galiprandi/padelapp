@@ -7,6 +7,7 @@ import { Share2, UserMinus, ArrowUpDown, Search, UserPlus, Check, Loader2, X, Cl
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName } from "@/lib/utils";
 import type { SlotValue, PlayerOption } from "@/lib/match-types";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 
 interface RecentPlayer {
   id: string;
@@ -293,25 +294,24 @@ export function ManageSlotModal({
 
                         const activeElement = document.activeElement as HTMLButtonElement;
                         const currentIndex = buttons.indexOf(activeElement);
-                        let nextIndex = currentIndex >= 0 ? currentIndex : 0;
-
-                        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                          nextIndex = (nextIndex + 1) % buttons.length;
-                        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                          nextIndex = (nextIndex - 1 + buttons.length) % buttons.length;
-                        }
+                        const nextIndex = getNextRadioIndex(
+                          currentIndex >= 0 ? currentIndex : 0,
+                          buttons.length,
+                          e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                        );
 
                         buttons[nextIndex]?.focus();
                       }
                     }}
                     className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1"
                   >
-                    {recentPlayers.map((player) => (
+                    {recentPlayers.map((player, idx) => (
                       <button
                         key={player.id}
                         type="button"
                         role="radio"
                         aria-checked={false}
+                        tabIndex={idx === 0 ? 0 : -1}
                         onClick={() => handleSelectRecentPlayer(player)}
                         aria-label={`Agregar a ${player.displayName}`}
                         className="flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg active:scale-[0.98] transition-all"
