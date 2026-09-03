@@ -148,9 +148,11 @@ export function ShareButton({
   const dynamicAriaLabel = buttonProps["aria-label"]
     ? buttonProps["aria-label"]
     : iconOnly
-      ? isSuccess
-        ? (successMessage ?? DEFAULT_SUCCESS)
-        : "Compartir"
+      ? isSharing
+        ? "Compartiendo..."
+        : isSuccess
+          ? (successMessage ?? DEFAULT_SUCCESS)
+          : "Compartir"
       : undefined;
 
   return (
