@@ -8,6 +8,7 @@ import { TurnCard } from "./turn-card";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { type PadelContact } from "@/lib/queries";
+import { filterTurnsByTab, getNextRadioValue } from "./turn-utils";
 
 interface TurnListItem {
   id: string;
@@ -32,26 +33,11 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
   const [activeTab, setActiveTab] = useState<"todos" | "mis-turnos">("todos");
 
   // Helper values for determining relationships
-  const filteredTurns = turns.filter((turn) => {
-    if (activeTab === "todos") return true;
-
-    // For "mis-turnos", the viewer must be creator, player, or substitute
-    if (!userId) return false;
-    const isCreator = turn.creatorId === userId;
-    const isJoined = turn.players.some((p) => p.userId === userId);
-    const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
-
-    return isCreator || isJoined || isSubstitute;
-  });
+  const filteredTurns = filterTurnsByTab(turns, activeTab, userId);
 
   const totalAllCount = turns.length;
   const totalMyCount = userId
-    ? turns.filter((turn) => {
-        const isCreator = turn.creatorId === userId;
-        const isJoined = turn.players.some((p) => p.userId === userId);
-        const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
-        return isCreator || isJoined || isSubstitute;
-      }).length
+    ? filterTurnsByTab(turns, "mis-turnos", userId).length
     : 0;
 
   return (
@@ -66,17 +52,19 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
             aria-labelledby="turns-tabs-label"
             className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl"
             onKeyDown={(e) => {
-              const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
-              if (buttons.length < 2) return;
-              if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                e.preventDefault();
-                setActiveTab("mis-turnos");
-                buttons[1]?.focus();
-              } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                e.preventDefault();
-                setActiveTab("todos");
-                buttons[0]?.focus();
-              }
+              const nextTab = getNextRadioValue(
+                ["todos", "mis-turnos"] as const,
+                activeTab,
+                e.key
+              );
+              if (!nextTab) return;
+              e.preventDefault();
+              setActiveTab(nextTab);
+              const buttons = Array.from(
+                e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+              );
+              const targetIdx = nextTab === "todos" ? 0 : 1;
+              buttons[targetIdx]?.focus();
             }}
           >
             <button
@@ -147,7 +135,10 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
             description="No hay turnos disponibles. Sé el primero en crear uno."
             icon={CalendarOff}
             action={
-              <Button asChild className="w-full h-12 rounded-lg font-bold">
+              <Button
+                asChild
+                className="w-full h-12 rounded-lg font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+              >
                 <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
               </Button>
             }
@@ -161,13 +152,14 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
               <div className="flex flex-col gap-2 w-full">
                 <Button
                   onClick={() => setActiveTab("todos")}
-                  className="w-full h-12 rounded-lg font-bold"
+                  className="w-full h-12 rounded-lg font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+                  aria-label="Explorar todos los turnos abiertos disponibles"
                 >
                   Explorar turnos abiertos
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full h-12 rounded-lg font-bold"
+                  className="w-full h-12 rounded-lg font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                   asChild
                 >
                   <Link href="/turnos/nuevo" prefetch={true}>Crear un turno</Link>
