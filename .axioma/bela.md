@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-03 — Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish (bela/turnos/filter-by-tab-a11y-and-helper)
 - [x] 2026-08-31 — CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish (bela/turnos/cancel-turn-and-remove-player-a11y)
 - [x] 2026-08-30 — Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms (bela/turnos/radiogroup-keyboard-a11y)
 - [x] 2026-08-29 — WhatsApp Invite Buttons Accessibility, Solid MDS Container Styling & Relative Date Unit Tests (bela/turnos/whatsapp-invite-mds-and-accessibility)
@@ -45,6 +46,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-03 - Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish
+**Learning:** Extracting `filterTurnsByTab` into `src/components/turns/turn-utils.ts` decouples tab-filtering logic from React render functions, making turn filtering logic straightforwardly unit-testable in Vitest across logged-in, logged-out, and active tab states. Integrating `getNextRadioValue` in `TurnsFilter` guarantees W3C WAI-ARIA radiogroup compliance with arrow key navigation (`ArrowRight`, `ArrowLeft`, `ArrowUp`, `ArrowDown`) and programmatic focus shifting on tab selection.
+**Action:** Always extract filtering or tab-selection logic into pure helper functions backed by unit tests and support arrow key navigation with programmatic focus across custom radiogroup controls.
+
 ## 2026-08-31 - CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish
 **Learning:** Adding keyboard `Escape` handling (`onKeyDown`) and focus management (`tabIndex={-1}`) to inline turn confirmation containers (`CancelTurnForm` and `RemovePlayerButton`) ensures seamless keyboard dismissability for organizers on mobile and desktop viewports. Dynamic `aria-busy={isPending}` attributes and dynamic `aria-label` screen reader feedback during server transitions provide clear accessibility feedback.
 **Action:** Always complement inline action confirmation cards with keyboard escape handling, explicit focusability, and dynamic `aria-busy` states for assistive technologies.

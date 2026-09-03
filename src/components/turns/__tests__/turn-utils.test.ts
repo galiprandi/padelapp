@@ -9,6 +9,7 @@ import {
   getCooldownRemainingMinutes,
   getTurnUrgencyBadgeText,
   getNextRadioValue,
+  filterTurnsByTab,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -287,5 +288,53 @@ describe("getNextRadioValue", () => {
   it("handles empty options or invalid current value safely", () => {
     expect(getNextRadioValue([], "60", "ArrowRight")).toBeNull();
     expect(getNextRadioValue(options, "invalid" as string, "ArrowRight")).toBe("60");
+  });
+});
+
+describe("filterTurnsByTab", () => {
+  const turns = [
+    {
+      id: "t1",
+      creatorId: "u1",
+      players: [{ userId: "u1" }, { userId: "u2" }],
+      substitutes: [],
+    },
+    {
+      id: "t2",
+      creatorId: "u3",
+      players: [{ userId: "u3" }, { userId: "u1" }],
+      substitutes: [],
+    },
+    {
+      id: "t3",
+      creatorId: "u4",
+      players: [{ userId: "u4" }, { userId: "u5" }],
+      substitutes: [{ userId: "u1" }],
+    },
+    {
+      id: "t4",
+      creatorId: "u6",
+      players: [{ userId: "u6" }, { userId: "u7" }],
+      substitutes: [],
+    },
+  ];
+
+  it("returns all turns when activeTab is 'todos'", () => {
+    expect(filterTurnsByTab(turns, "todos", "u1")).toHaveLength(4);
+    expect(filterTurnsByTab(turns, "todos", null)).toHaveLength(4);
+  });
+
+  it("returns empty array when activeTab is 'mis-turnos' and userId is null", () => {
+    expect(filterTurnsByTab(turns, "mis-turnos", null)).toEqual([]);
+  });
+
+  it("filters turns where user is creator, player, or substitute when activeTab is 'mis-turnos'", () => {
+    const myTurns = filterTurnsByTab(turns, "mis-turnos", "u1");
+    expect(myTurns.map((t) => t.id)).toEqual(["t1", "t2", "t3"]);
+  });
+
+  it("excludes turns where user has no role when activeTab is 'mis-turnos'", () => {
+    const myTurns = filterTurnsByTab(turns, "mis-turnos", "u2");
+    expect(myTurns.map((t) => t.id)).toEqual(["t1"]);
   });
 });

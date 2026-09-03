@@ -235,3 +235,28 @@ export function getNextRadioValue<T extends string>(
 
   return null;
 }
+
+export interface TurnFilterableItem {
+  creatorId?: string | null;
+  players: Array<{ userId?: string }>;
+  substitutes?: Array<{ userId?: string }>;
+}
+
+/**
+ * Filter turns list based on selected active tab ("todos" vs "mis-turnos") and current user id.
+ */
+export function filterTurnsByTab<T extends TurnFilterableItem>(
+  turns: T[],
+  activeTab: "todos" | "mis-turnos",
+  userId: string | null
+): T[] {
+  if (activeTab === "todos") return turns;
+  if (!userId) return [];
+
+  return turns.filter((turn) => {
+    const isCreator = turn.creatorId === userId;
+    const isJoined = turn.players.some((p) => p.userId === userId);
+    const isSubstitute = turn.substitutes?.some((s) => s.userId === userId);
+    return isCreator || isJoined || isSubstitute;
+  });
+}
