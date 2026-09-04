@@ -197,6 +197,7 @@ import {
   calculateSideSynergyBreakdown,
   calculateNetworkRoleInfo,
   calculateTurnRescueProximity,
+  calculateCommunityCohesion,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1337,5 +1338,102 @@ describe("calculateTurnRescueProximity", () => {
     expect(res.proximityTier).toBe("Distante ⚠️");
     expect(res.badgeStyle).toContain("bg-muted");
     expect(res.formattedSummary).toBe("Dif. de score 500");
+  });
+});
+
+describe("calculateCommunityCohesion", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 2,
+      networkSize: 1,
+      matchesPlayed: 5,
+      preferredSide: "RIGHT",
+    },
+  ];
+
+  it("returns fallback cohesion info for empty or non-existent community", () => {
+    const res = calculateCommunityCohesion(nodes, [], 99);
+    expect(res.totalPlayers).toBe(0);
+    expect(res.cohesionTier).toBe("En formación 🆕");
+    expect(res.formattedCohesionSummary).toBe("Grupo sin miembros");
+  });
+
+  it("calculates 'Comunidad consolidada 🏆' tier for a group with internal connections", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02",
+        rivalMatches: 2,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 3,
+      },
+    ];
+
+    const res = calculateCommunityCohesion(nodes, links, 1);
+    expect(res.communityId).toBe(1);
+    expect(res.totalPlayers).toBe(2);
+    expect(res.internalLinksCount).toBe(1);
+    expect(res.externalLinksCount).toBe(0);
+    expect(res.cohesionTier).toBe("Comunidad consolidada 🏆");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedCohesionSummary).toContain("100% cohesión interna");
+    expect(res.formattedCohesionSummary).toContain("1 conexión interna");
+  });
+
+  it("calculates 'En integración 🌱' tier for a group connected only to external communities", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-03",
+        rivalMatches: 1,
+        partnerMatches: 0,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 1,
+      },
+    ];
+
+    const res = calculateCommunityCohesion(nodes, links, 2);
+    expect(res.totalPlayers).toBe(1);
+    expect(res.internalLinksCount).toBe(0);
+    expect(res.externalLinksCount).toBe(1);
+    expect(res.cohesionTier).toBe("En integración 🌱");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+    expect(res.formattedCohesionSummary).toBe("1 puente externo");
   });
 });

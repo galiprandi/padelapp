@@ -783,6 +783,125 @@ export function calculateSideSynergyBreakdown(
   };
 }
 
+export interface CommunityCohesion {
+  communityId: number;
+  totalPlayers: number;
+  internalLinksCount: number;
+  externalLinksCount: number;
+  internalDensityPercentage: number;
+  cohesionTier: "Comunidad consolidada 🏆" | "Grupo activo 🎾" | "En integración 🌱" | "En formación 🆕";
+  badgeStyle: string;
+  formattedCohesionSummary: string;
+}
+
+/**
+ * Calculates internal connection density and cohesion metrics for a Louvain community group.
+ */
+export function calculateCommunityCohesion(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  communityId: number,
+): CommunityCohesion {
+  const communityNodes = nodes.filter((n) => n.community === communityId);
+  const totalPlayers = communityNodes.length;
+
+  if (totalPlayers === 0) {
+    return {
+      communityId,
+      totalPlayers: 0,
+      internalLinksCount: 0,
+      externalLinksCount: 0,
+      internalDensityPercentage: 0,
+      cohesionTier: "En formación 🆕",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedCohesionSummary: "Grupo sin miembros",
+    };
+  }
+
+  const communityNodeIds = new Set(communityNodes.map((n) => n.id));
+
+  let internalLinksCount = 0;
+  let externalLinksCount = 0;
+
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    const srcIn = communityNodeIds.has(src);
+    const tgtIn = communityNodeIds.has(tgt);
+
+    if (srcIn && tgtIn) {
+      internalLinksCount++;
+    } else if (srcIn || tgtIn) {
+      externalLinksCount++;
+    }
+  }
+
+  const maxPossibleInternalLinks =
+    totalPlayers > 1 ? (totalPlayers * (totalPlayers - 1)) / 2 : 1;
+  const internalDensityRatio =
+    totalPlayers > 1 ? internalLinksCount / maxPossibleInternalLinks : 0;
+  const internalDensityPercentage = Math.round(
+    Math.min(internalDensityRatio, 1) * 100,
+  );
+
+  let cohesionTier:
+    | "Comunidad consolidada 🏆"
+    | "Grupo activo 🎾"
+    | "En integración 🌱"
+    | "En formación 🆕";
+  let badgeStyle: string;
+
+  if (
+    internalDensityRatio >= 0.5 ||
+    (totalPlayers <= 3 && internalLinksCount >= totalPlayers - 1 && internalLinksCount > 0)
+  ) {
+    cohesionTier = "Comunidad consolidada 🏆";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (internalDensityRatio >= 0.25 || internalLinksCount > 0) {
+    cohesionTier = "Grupo activo 🎾";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (externalLinksCount > 0) {
+    cohesionTier = "En integración 🌱";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    cohesionTier = "En formación 🆕";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [];
+  if (totalPlayers > 1) {
+    parts.push(`${internalDensityPercentage}% cohesión interna`);
+  }
+  if (internalLinksCount > 0) {
+    parts.push(
+      `${internalLinksCount} ${internalLinksCount === 1 ? "conexión interna" : "conexiones internas"}`,
+    );
+  }
+  if (externalLinksCount > 0) {
+    parts.push(
+      `${externalLinksCount} ${externalLinksCount === 1 ? "puente externo" : "puentes externos"}`,
+    );
+  }
+
+  if (parts.length === 0) {
+    parts.push("Sin interacciones registradas");
+  }
+
+  return {
+    communityId,
+    totalPlayers,
+    internalLinksCount,
+    externalLinksCount,
+    internalDensityPercentage,
+    cohesionTier,
+    badgeStyle,
+    formattedCohesionSummary: parts.join(" · "),
+  };
+}
+
 export interface NodeConnectionSummary {
   totalConnections: number;
   partnerCount: number;

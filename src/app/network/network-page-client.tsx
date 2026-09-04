@@ -46,6 +46,7 @@ export function NetworkPageClient({ metrics, graphData, viewerId, playersLikeYou
               graphNodes={graphData.nodes.length}
               graphLinks={graphData.links.length}
               playersLikeYou={playersLikeYou}
+              graphData={graphData}
             />
           </div>
         ) : (

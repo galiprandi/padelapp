@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bell, Network, Activity, MapPin, Clock } from "lucide-react";
-import type { AdoptionMetrics, RecommendedPlayer } from "./actions";
+import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { capitalizeName } from "@/lib/utils";
+import { capitalizeName, cn } from "@/lib/utils";
+import { calculateCommunityCohesion } from "./graph-utils";
 
 function timeAgo(date: Date): string {
   const now = Date.now();
@@ -25,6 +26,7 @@ interface StatsPanelProps {
   graphNodes: number;
   graphLinks: number;
   playersLikeYou: RecommendedPlayer[];
+  graphData?: GraphData;
 }
 
 function GrowthBadge({ rate }: { rate: number }) {
@@ -73,7 +75,7 @@ function StatCard({
   );
 }
 
-export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: StatsPanelProps) {
+export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, graphData }: StatsPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -280,19 +282,37 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou }: 
       {/* Top communities */}
       {metrics.communities.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-          <h2 className="text-sm font-bold text-foreground">Comunidades</h2>
-          <div className="space-y-2">
+          <h2 className="text-sm font-bold text-foreground">Comunidades de la red</h2>
+          <div className="space-y-2.5">
             {metrics.communities.map((c) => {
               const max = metrics.communities[0]?.size ?? 1;
               const pct = (c.size / max) * 100;
+              const cohesion = graphData
+                ? calculateCommunityCohesion(graphData.nodes, graphData.links, c.id)
+                : null;
+
               return (
-                <div key={c.id} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-foreground">
-                      Grupo {c.id}
-                    </span>
-                    <span className="text-muted-foreground tabular-nums">
-                      {c.size} jugadores
+                <div key={c.id} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs flex-wrap gap-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-foreground">
+                        Grupo {c.id}
+                      </span>
+                      {cohesion && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            cohesion.badgeStyle,
+                          )}
+                          title={`Cohesión: ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`}
+                          aria-label={`Cohesión de Grupo ${c.id}: ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`}
+                        >
+                          {cohesion.cohesionTier}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-muted-foreground tabular-nums text-xs">
+                      {c.size} {c.size === 1 ? "jugador" : "jugadores"}
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
