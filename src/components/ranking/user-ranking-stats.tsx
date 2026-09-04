@@ -58,7 +58,14 @@ function RankingBreakdown({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="mt-3 border-t border-border pt-3">
+    <div
+      className="mt-3 border-t border-border pt-3"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && isOpen) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
         type="button"
         onClick={handleToggle}

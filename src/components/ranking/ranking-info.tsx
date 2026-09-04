@@ -7,12 +7,20 @@ export function RankingInfo() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden transition-all">
+    <div
+      className="rounded-xl border border-border bg-card overflow-hidden transition-all"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && isOpen) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 text-left hover:bg-muted transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-expanded={isOpen}
+        aria-label={isOpen ? "Ocultar reglas y fórmulas del ranking" : "Mostrar reglas y fórmulas del ranking"}
         aria-controls="ranking-rules-content"
       >
         <div className="flex items-center gap-2.5">
@@ -30,7 +38,12 @@ export function RankingInfo() {
       </button>
 
       {isOpen && (
-        <div id="ranking-rules-content" className="border-t border-border p-4 space-y-4 bg-card text-sm">
+        <div
+          id="ranking-rules-content"
+          role="region"
+          aria-label="Reglas y fórmulas del ranking"
+          className="border-t border-border p-4 space-y-4 bg-card text-sm"
+        >
           {/* Fórmulas */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
@@ -40,7 +53,7 @@ export function RankingInfo() {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Todos los jugadores inician con <strong>1000 puntos base</strong>. Tu puntaje se actualiza con cada partido confirmado bajo la siguiente fórmula:
             </p>
-            <div className="rounded-lg bg-muted p-2.5 text-xs font-sans text-foreground space-y-1">
+            <div className="rounded-lg bg-muted border border-border p-2.5 text-xs font-mono text-foreground space-y-1">
               <div>Puntos = 1000 + (Victorias × 15) + (Racha × 5) + (Bonus de Sets) - Penalizaciones</div>
             </div>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">
