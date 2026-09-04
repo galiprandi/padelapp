@@ -121,3 +121,7 @@
 ## 2026-08-19 - [Radiogroup Keyboard Focus & Roving TabIndex Management]
 **Learning:** Adding `onKeyDown` arrow key navigation to custom `role="radiogroup"` controls without shifting programmatic focus (`.focus()`) and updating `tabIndex` leaves keyboard and screen reader users with focused elements that desynchronize from active selection states. Combining Arrow key handling with programmatic `.focus()` calls and roving `tabIndex={isSelected ? 0 : -1}` ensures complete compliance with W3C WAI-ARIA radiogroup standards.
 **Action:** Always shift focus programmatically with `.focus()` and implement roving `tabIndex` when intercepting Arrow key navigation on custom radiogroup tab selectors.
+
+## 2026-08-20 - [Input Autocomplete Clear Action & Keyboard Escape Reset]
+**Learning:** Autocomplete or datalist input fields (like `ClubInput`) encourage users to select from suggestions, but when a user picks the wrong suggestion or wants to change selection on mobile, backspacing character-by-character creates physical friction. Providing a 1-tap clear button (`X`) alongside an `Escape` key (`onKeyDown`) handler and explicit localized `aria-label` enables effortless input reset for both touch and keyboard/screen reader navigators.
+**Action:** Always supply a 1-tap clear action button with `Escape` key handling and explicit `aria-label` on search or datalist/autocomplete inputs.
