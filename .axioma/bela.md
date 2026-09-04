@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-04 — OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests (bela/turnos/open-to-network-a11y-and-tests)
 - [x] 2026-09-03 — Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish (bela/turnos/filter-by-tab-a11y-and-helper)
 - [x] 2026-08-31 — CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish (bela/turnos/cancel-turn-and-remove-player-a11y)
 - [x] 2026-08-30 — Radiogroup Keyboard Navigation & WAI-ARIA Roving TabIndex in Turn Creation & Edit Forms (bela/turnos/radiogroup-keyboard-a11y)
@@ -46,6 +47,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-04 - OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests
+**Learning:** Enhancing `OpenToNetworkButton` with `aria-busy={isPending}`, context-rich dynamic `aria-label` updates during pending states ("Notificando a tu red de pádel..."), `role="status"` with `aria-live="polite"` for result containers, and `role="alert"` with `aria-live="assertive"` for error feedback guarantees accessible screen reader notifications. Backing this trigger with dedicated unit tests in `src/components/turns/__tests__/open-to-network-button.test.ts` ensures reliable calculation of the 1-hour notification cooldown window.
+**Action:** Always complement server-action triggers with explicit ARIA pending feedback and live status regions so screen reader users receive dynamic feedback on state mutations.
+
 ## 2026-09-03 - Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish
 **Learning:** Extracting `filterTurnsByTab` into `src/components/turns/turn-utils.ts` decouples tab-filtering logic from React render functions, making turn filtering logic straightforwardly unit-testable in Vitest across logged-in, logged-out, and active tab states. Integrating `getNextRadioValue` in `TurnsFilter` guarantees W3C WAI-ARIA radiogroup compliance with arrow key navigation (`ArrowRight`, `ArrowLeft`, `ArrowUp`, `ArrowDown`) and programmatic focus shifting on tab selection.
 **Action:** Always extract filtering or tab-selection logic into pure helper functions backed by unit tests and support arrow key navigation with programmatic focus across custom radiogroup controls.
