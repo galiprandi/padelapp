@@ -30,6 +30,13 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { safeCallbackUrl } from "@/lib/auth-utils";
 import { ShareButton } from "@/components/share/share-button";
+import {
+  getPublicProfileSideLabel,
+  formatSideWinRateSummary,
+  calculateWinningStreak,
+  formatPartnerWinsText,
+  formatRivalMatchesText,
+} from "./public-profile-utils";
 
 interface PublicProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -45,7 +52,7 @@ export default function PublicProfilePage({
       <div className="flex items-center gap-4">
         <Suspense
           fallback={
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs">
               <ChevronLeft className="h-5 w-5" />
             </div>
           }
@@ -76,7 +83,8 @@ async function DynamicBackButton({
     <Link
       href={backUrl}
       prefetch={true}
-      className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+      aria-label="Volver atrás"
+      className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
     >
       <ChevronLeft className="h-5 w-5" />
     </Link>
@@ -148,14 +156,7 @@ async function PublicProfileContent({
     return winner === playerTeam ? "W" : "L";
   });
 
-  let currentStreak = 0;
-  for (const result of recentForm) {
-    if (result === "W") {
-      currentStreak++;
-    } else {
-      break;
-    }
-  }
+  const currentStreak = calculateWinningStreak(recentForm);
 
   const h2h =
     viewerId && viewerId !== userId
@@ -171,7 +172,7 @@ async function PublicProfileContent({
               name={displayName}
               image={user.image ?? undefined}
               size={96}
-              className="border-2 border-border"
+              className="border-2 border-border shadow-xs"
             />
           </div>
 
@@ -188,18 +189,18 @@ async function PublicProfileContent({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 />
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <Badge variant="outline" className="border-border bg-muted text-muted-foreground font-bold px-2.5 py-0.5 text-xs">
+              <Badge variant="outline" className="border-border bg-muted text-muted-foreground font-bold px-2.5 py-0.5 text-xs shadow-xs">
                 {getLevelBadgeLabel(user.level)}
               </Badge>
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs"
+                  className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs shadow-xs"
                 >
                   Racha: {currentStreak} Victorias 🔥
                 </Badge>
@@ -220,7 +221,7 @@ async function PublicProfileContent({
         />
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs">
             <div className="text-xs font-bold text-muted-foreground">
               Efectividad
             </div>
@@ -234,7 +235,7 @@ async function PublicProfileContent({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs">
             <div className="text-xs font-bold text-muted-foreground">
               Forma
             </div>
@@ -269,7 +270,7 @@ async function PublicProfileContent({
         </div>
 
         {/* Network & Position Stats Card */}
-        <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+        <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
           <h3 className="text-xs font-bold text-muted-foreground">
             Red y Posición
           </h3>
@@ -296,16 +297,13 @@ async function PublicProfileContent({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex flex-col min-w-0">
                   <span className="text-base font-bold text-foreground leading-tight">
-                    {networkStats.preferredSide === "RIGHT"
-                      ? "Derecha"
-                      : networkStats.preferredSide === "LEFT"
-                        ? "Revés"
-                        : "Alterno"}
+                    {getPublicProfileSideLabel(networkStats.preferredSide)}
                   </span>
                   <span className="text-[10px] text-muted-foreground leading-normal mt-0.5">
-                    {networkStats.winRateRight !== null && `Der: ${Math.round(networkStats.winRateRight * 100)}% WR `}
-                    {networkStats.winRateLeft !== null && `Rev: ${Math.round(networkStats.winRateLeft * 100)}% WR`}
-                    {networkStats.winRateRight === null && networkStats.winRateLeft === null && "Sin partidos"}
+                    {formatSideWinRateSummary(
+                      networkStats.winRateRight,
+                      networkStats.winRateLeft,
+                    )}
                   </span>
                 </div>
                 <MiniCourtIndicator preferredSide={networkStats.preferredSide} />
@@ -321,8 +319,8 @@ async function PublicProfileContent({
                     <span className="font-semibold text-muted-foreground">Pareja más exitosa</span>
                     <Link
                       href={`/p/${networkStats.successfulPartner.user.id}?backUrl=/p/${userId}`}
-                          prefetch={true}
-                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
+                      prefetch={true}
+                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
                     >
                       <PlayerAvatar
                         name={networkStats.successfulPartner.user.alias ?? networkStats.successfulPartner.user.displayName}
@@ -335,8 +333,8 @@ async function PublicProfileContent({
                       </span>
                     </Link>
                   </div>
-                  <span className="font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full whitespace-nowrap">
-                    {networkStats.successfulPartner.wins} {networkStats.successfulPartner.wins === 1 ? 'victoria' : 'victorias'} 🔥
+                  <span className="font-bold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs">
+                    {formatPartnerWinsText(networkStats.successfulPartner.wins)}
                   </span>
                 </div>
               )}
@@ -347,8 +345,8 @@ async function PublicProfileContent({
                     <span className="font-semibold text-muted-foreground">Rival más frecuente</span>
                     <Link
                       href={`/p/${networkStats.frequentRival.user.id}?backUrl=/p/${userId}`}
-                          prefetch={true}
-                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5"
+                      prefetch={true}
+                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
                     >
                       <PlayerAvatar
                         name={networkStats.frequentRival.user.alias ?? networkStats.frequentRival.user.displayName}
@@ -361,8 +359,8 @@ async function PublicProfileContent({
                       </span>
                     </Link>
                   </div>
-                  <span className="font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full whitespace-nowrap">
-                    {networkStats.frequentRival.matches} {networkStats.frequentRival.matches === 1 ? 'partido' : 'partidos'} ⚔️
+                  <span className="font-bold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs">
+                    {formatRivalMatchesText(networkStats.frequentRival.matches)}
                   </span>
                 </div>
               )}
@@ -371,7 +369,7 @@ async function PublicProfileContent({
         </div>
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
-          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
             <h3 className="text-xs font-bold text-muted-foreground">
               Cara a Cara
             </h3>
@@ -418,8 +416,8 @@ async function PublicProfileContent({
                     className={cn(
                       "text-xs font-bold",
                       h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
-                        ? "text-emerald-600"
-                        : "text-rose-600",
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : "text-rose-600 dark:text-rose-400",
                     )}
                   >
                     {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
@@ -431,7 +429,7 @@ async function PublicProfileContent({
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 rounded-lg text-xs font-bold"
+                  className="h-8 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                   asChild
                 >
                   <Link href={`/match/${h2h.lastMatch.id}`} prefetch={true}>Detalle</Link>
@@ -447,7 +445,7 @@ async function PublicProfileContent({
           <h2 className="text-sm font-bold text-foreground">
             Historial Reciente
           </h2>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border shadow-xs">
             <Zap className="h-3 w-3 text-primary fill-current" aria-hidden="true" />
             {winRate}% WR
           </div>
@@ -521,7 +519,7 @@ function PublicProfileSkeleton() {
       </div>
 
       {/* Ranking banner skeleton */}
-      <div className="h-24 rounded-xl bg-card border border-border p-4">
+      <div className="h-24 rounded-xl bg-card border border-border p-4 shadow-xs">
         <div className="grid grid-cols-3 gap-4 h-full items-center">
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
