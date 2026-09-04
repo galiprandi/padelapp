@@ -22,6 +22,7 @@ import {
   getNetworkActivityTier,
   calculateSideSynergyBreakdown,
   calculateNetworkRoleInfo,
+  calculateCommunityCohesion,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -255,8 +256,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
   const activeCommunitySummary = useMemo(() => {
     if (selectedCommunity === null) return null;
-    return calculateCommunitySummary(baseGraphData.nodes, selectedCommunity);
-  }, [baseGraphData.nodes, selectedCommunity]);
+    const summary = calculateCommunitySummary(baseGraphData.nodes, selectedCommunity);
+    const cohesion = calculateCommunityCohesion(
+      baseGraphData.nodes,
+      baseGraphData.links,
+      selectedCommunity,
+    );
+    return { ...summary, cohesion };
+  }, [baseGraphData.nodes, baseGraphData.links, selectedCommunity]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeColor = useCallback((node: any) => {
@@ -619,8 +626,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
         {/* Active community summary banner */}
         {activeCommunitySummary && selectedCommunity !== null && (
-          <div className="flex items-center justify-between gap-2 bg-card px-3 py-2 rounded-xl border border-border shadow-sm text-xs">
-            <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center justify-between gap-2 bg-card px-3 py-2 rounded-xl border border-border shadow-sm text-xs flex-wrap">
+            <div className="flex items-center gap-2 min-w-0 flex-wrap">
               <span
                 className="h-2.5 w-2.5 rounded-full shrink-0"
                 style={{
@@ -631,6 +638,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               <span className="font-bold text-foreground shrink-0">
                 Grupo {selectedCommunity}
               </span>
+              <span
+                className={cn(
+                  "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                  activeCommunitySummary.cohesion.badgeStyle,
+                )}
+                title={`Cohesión de comunidad: ${activeCommunitySummary.cohesion.cohesionTier}. ${activeCommunitySummary.cohesion.formattedCohesionSummary}`}
+                aria-label={`Cohesión de comunidad: ${activeCommunitySummary.cohesion.cohesionTier}. ${activeCommunitySummary.cohesion.formattedCohesionSummary}`}
+              >
+                {activeCommunitySummary.cohesion.cohesionTier}
+              </span>
               <span className="text-muted-foreground truncate">
                 · {activeCommunitySummary.formattedSummary}
               </span>
@@ -638,7 +655,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             <button
               type="button"
               onClick={() => setSelectedCommunity(null)}
-              className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5"
+              className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto"
               aria-label={`Limpiar filtro del Grupo ${selectedCommunity}`}
             >
               Limpiar filtro
