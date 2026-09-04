@@ -89,27 +89,43 @@ export function OpenToNetworkButton({
   };
 
   if (result) {
+    const resultText =
+      result.notified > 0
+        ? `Se notificó a ${result.notified} contacto${result.notified === 1 ? "" : "s"}`
+        : "Red notificada";
+
     if (iconOnly || size === "icon") {
       return (
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-sm", className)}>
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label={resultText}
+          className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-sm", className)}
+        >
           <Check className="h-5 w-5" />
         </div>
       );
     }
     if (size === "sm" || !showText) {
       return (
-        <div className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200", className)}>
+        <div
+          role="status"
+          aria-live="polite"
+          className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200", className)}
+        >
           <Check className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate">
-            {result.notified > 0
-              ? `Se notificó a ${result.notified} contacto${result.notified === 1 ? "" : "s"}`
-              : "Red notificada"}
+            {resultText}
           </span>
         </div>
       );
     }
     return (
-      <div className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm", className)}>
+      <div
+        role="status"
+        aria-live="polite"
+        className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm", className)}
+      >
         <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
           <Check className="h-4 w-4" />
           <span>
@@ -129,6 +145,11 @@ export function OpenToNetworkButton({
 
   const isIconOnly = iconOnly || size === "icon";
   const cooldownAriaLabel = `Notificado, en cooldown por ${minutesRemaining} minuto${minutesRemaining === 1 ? "" : "s"}`;
+  const computedAriaLabel = isPending
+    ? "Notificando a tu red de pádel..."
+    : isOnCooldown
+    ? cooldownAriaLabel
+    : label;
 
   return (
     <div className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}>
@@ -144,7 +165,8 @@ export function OpenToNetworkButton({
           "transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
           className,
         )}
-        aria-label={isOnCooldown ? cooldownAriaLabel : label}
+        aria-busy={isPending}
+        aria-label={computedAriaLabel}
       >
         {isPending ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -157,7 +179,7 @@ export function OpenToNetworkButton({
       </Button>
 
       {error && !isIconOnly && (
-        <p className="text-xs text-destructive font-semibold text-center">{error}</p>
+        <p role="alert" aria-live="assertive" className="text-xs text-destructive font-semibold text-center">{error}</p>
       )}
 
       {showText && !isIconOnly && (
