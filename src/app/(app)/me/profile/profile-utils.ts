@@ -1,5 +1,6 @@
 export const MIN_ALIAS_LENGTH = 2;
 export const MAX_ALIAS_LENGTH = 30;
+export const AUTOSAVE_DEBOUNCE_MS = 800;
 
 export type PreferredSideOption = "RIGHT" | "LEFT" | "BOTH";
 

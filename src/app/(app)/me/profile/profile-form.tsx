@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { CATEGORIES, getCategoryDefinition } from "@/lib/constants/categories";
 import {
   MAX_ALIAS_LENGTH,
+  AUTOSAVE_DEBOUNCE_MS,
   COURT_SIDE_OPTIONS,
   PreferredSideOption,
   validateAlias,
@@ -338,7 +339,6 @@ export function ProfileForm({
   };
 
   const aliasError = validateAlias(alias) ?? undefined;
-  const AUTOSAVE_DEBOUNCE_MS = 800;
 
   return (
     <div className="space-y-6 pb-16">
