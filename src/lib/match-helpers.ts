@@ -1,3 +1,5 @@
+import { getMatchWinner } from "@/lib/utils";
+
 export type TeamKey = "A" | "B";
 
 export type MatchFormat = "DOUBLES" | "SINGLES";
@@ -49,4 +51,44 @@ export function getNextRadioIndex(
     return currentIndex < totalButtons - 1 ? currentIndex + 1 : 0;
   }
   return currentIndex > 0 ? currentIndex - 1 : totalButtons - 1;
+}
+
+export interface MatchPlayerWithScore {
+  position: number;
+  match: {
+    score: string | null;
+  };
+}
+
+/**
+ * Derives recent match results ("W" for win, "L" for loss) for a given player based on position and match score.
+ */
+export function getPlayerRecentForm(
+  matchPlayers: MatchPlayerWithScore[] | undefined | null,
+): Array<"W" | "L"> {
+  if (!matchPlayers || matchPlayers.length === 0) return [];
+  return matchPlayers.map((mp) => {
+    const winner = mp.match.score ? getMatchWinner(mp.match.score) : null;
+    if (!winner) return "L";
+    const playerTeam = mp.position < 2 ? "A" : "B";
+    return winner === playerTeam ? "W" : "L";
+  });
+}
+
+/**
+ * Calculates the active consecutive win streak for a given player from recent match results.
+ */
+export function calculatePlayerStreak(
+  matchPlayers: MatchPlayerWithScore[] | undefined | null,
+): number {
+  const recentForm = getPlayerRecentForm(matchPlayers);
+  let winStreak = 0;
+  for (const res of recentForm) {
+    if (res === "W") {
+      winStreak++;
+    } else {
+      break;
+    }
+  }
+  return winStreak;
 }

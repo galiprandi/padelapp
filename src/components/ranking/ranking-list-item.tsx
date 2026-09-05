@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ShieldCheck, TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
+import { cn, capitalizeName } from "@/lib/utils";
+import { getPlayerRecentForm, calculatePlayerStreak } from "@/lib/match-helpers";
 
 interface RankingListItemProps {
   player: {
@@ -34,34 +35,33 @@ export function RankingListItem({
   customPosition,
 }: RankingListItemProps) {
   const isViewer = player.id === viewerId;
-  const recentForm = player.matchPlayers.map((mp) => {
-    const winner = mp.match.score ? getMatchWinner(mp.match.score) : null;
-    if (!winner) return "L";
-    const playerTeam = mp.position < 2 ? "A" : "B";
-    return winner === playerTeam ? "W" : "L";
-  });
+  const recentForm = getPlayerRecentForm(player.matchPlayers);
+  const winStreak = calculatePlayerStreak(player.matchPlayers);
 
   const displayName = capitalizeName(player.displayName ?? player.alias ?? "Jugador");
+  const positionNum = customPosition ?? player.rankingPosition ?? index + 1;
 
-  let winStreak = 0;
-  for (const res of recentForm) {
-    if (res === "W") {
-      winStreak++;
-    } else {
-      break;
-    }
-  }
+  const deltaText =
+    player.rankingDelta > 0
+      ? `subió ${player.rankingDelta}`
+      : player.rankingDelta < 0
+      ? `bajó ${Math.abs(player.rankingDelta)}`
+      : "sin cambios";
+
+  const ariaLabel = `Posición ${positionNum}: ${isViewer ? "Vos" : displayName}, ${Math.round(player.rankingScore)} puntos. ${player.wins} victorias, ${player.losses} derrotas. Cambio de posición: ${deltaText}.`;
 
   return (
     <Link
       href={`/p/${player.id}?backUrl=/ranking`}
       prefetch={true}
+      aria-label={ariaLabel}
       className={cn(
         "flex items-center gap-3 rounded-xl border px-4 py-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
         isViewer ? "border-primary font-semibold shadow-sm bg-card" : "border-border bg-card",
       )}
     >
       <div
+        aria-hidden="true"
         className={cn(
           "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold tabular-nums",
           isViewer
@@ -69,10 +69,10 @@ export function RankingListItem({
             : "bg-muted text-muted-foreground",
         )}
       >
-        {customPosition ?? player.rankingPosition ?? index + 1}
+        {positionNum}
       </div>
 
-      <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className="flex items-center gap-2 flex-1 min-w-0" aria-hidden="true">
         <PlayerAvatar
           name={displayName}
           image={player.image ?? undefined}
@@ -94,17 +94,15 @@ export function RankingListItem({
               <div
                 className="flex items-center gap-0.5 text-xs font-extrabold text-orange-500"
                 title={`Racha de ${winStreak} victorias`}
-                aria-label={`Racha de ${winStreak} victorias`}
               >
                 <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
                 <span>{winStreak}</span>
               </div>
             )}
             {player.attendanceScore >= 0.9 && (
-              <ShieldCheck
-                className="h-3 w-3 text-primary"
-                aria-label="Jugador confiable"
-              />
+              <span title="Jugador confiable">
+                <ShieldCheck className="h-3 w-3 text-primary" aria-hidden="true" />
+              </span>
             )}
           </div>
           <div className="flex items-center gap-2 mt-0.5">
@@ -114,7 +112,7 @@ export function RankingListItem({
             {recentForm.length > 0 && (
               <div
                 className="flex gap-0.5"
-                aria-label={`Forma reciente: ${recentForm
+                title={`Forma reciente: ${recentForm
                   .map((r) => (r === "W" ? "G" : "P"))
                   .join(", ")}`}
               >
@@ -134,35 +132,23 @@ export function RankingListItem({
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-0.5">
-        <span
-          className="text-sm font-bold text-foreground"
-          aria-label={`${Math.round(player.rankingScore)} puntos`}
-        >
+      <div className="flex flex-col items-end gap-0.5" aria-hidden="true">
+        <span className="text-sm font-bold text-foreground">
           {Math.round(player.rankingScore)}
         </span>
         <div className="flex items-center gap-0.5">
           {player.rankingDelta > 0 ? (
-            <div
-              className="flex items-center gap-0.5 text-xs text-primary"
-              aria-label={`Subió ${player.rankingDelta} posiciones`}
-            >
+            <div className="flex items-center gap-0.5 text-xs text-primary">
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
               <span>+{player.rankingDelta}</span>
             </div>
           ) : player.rankingDelta < 0 ? (
-            <div
-              className="flex items-center gap-0.5 text-xs text-muted-foreground"
-              aria-label={`Bajó ${Math.abs(player.rankingDelta)} posiciones`}
-            >
+            <div className="flex items-center gap-0.5 text-xs text-muted-foreground">
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
               <span>{player.rankingDelta}</span>
             </div>
           ) : (
-            <div
-              className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
-              aria-label="Posición sin cambios"
-            >
+            <div className="flex items-center gap-0.5 text-xs text-muted-foreground/50">
               <Minus className="h-3 w-3" aria-hidden="true" />
               <span>0</span>
             </div>
