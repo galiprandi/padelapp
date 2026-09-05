@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-05 — Estrategia de Speculation Rules Multinivel para Prerenderizado por Prioridad de Rutas (PR #tino/perf/multi-tier-speculation-rules)
 - [x] 2026-09-04 — Extracción de configuración helper `getSpeculationRulesConfig` para la Speculation Rules API e integración en `src/app/layout.tsx` (PR #tino/perf/speculation-rules-config-helper)
 - [x] 2026-09-03 — Esqueleto de carga streaming BottomNavSkeleton para eliminar CLS y expansión de reglas de prerenderizado especulativo (PR #tino/perf/bottom-nav-skeleton-and-speculation-rules)
 - [x] 2026-09-02 — Expansión de reglas de prerenderizado especulativo, accesibilidad de NotificationsBadge y tests de navegación (PR #tino/perf/speculation-rules-and-navigation-accessibility)
@@ -44,6 +45,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-05 - Speculation Rules API Multinivel para Prerenderizado Especulativo por Prioridad de Rutas (Performance Transversal)
+**Aprendizaje:** Categorizar las rutas de la aplicación en niveles de prioridad (`PRIMARY_SPECULATION_URLS` para rutas principales de navegación e inicio vs `SECONDARY_SPECULATION_URLS` para acciones secundarias o catálogos) y configurar el motor de Speculation Rules de Chrome con diferentes niveles de *eagerness* (`eager` para el nivel primario y `moderate` para el secundario) permite maximizar la velocidad percibida de navegación instantánea sin sobrecargar la memoria ni el procesamiento del navegador en dispositivos móviles.
+**Acción:** Mantener la separación de niveles al incorporar nuevas rutas principales o secundarias en la app.
+
 ### 2026-09-04 - Extracción de Función Helper `getSpeculationRulesConfig` para Speculation Rules API (Performance Transversal)
 **Aprendizaje:** Abstraer las estructuras JSON de configuración para la Speculation Rules API de Chrome hacia una función pura y fuertemente tipada (`getSpeculationRulesConfig` en `src/lib/speculation-rules.ts`) permite definir las estrategias de prerenderizado de forma limpia, extensible y testable de manera aislada. Al contar con un listado centralizado de URLs por defecto y soportar niveles de *eagerness* dinámicos ("eager", "moderate", "conservative"), garantizamos que la precarga de la app en navegadores compatibles sea fácil de mantener y probar mediante unit tests sin acoplamiento con la maquetación HTML de `RootLayout`.
 **Acción:** Reutilizar `getSpeculationRulesConfig` para cualquier futura personalización o extensión de rutas prerenderizadas.
