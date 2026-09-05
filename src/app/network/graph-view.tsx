@@ -23,6 +23,7 @@ import {
   calculateSideSynergyBreakdown,
   calculateNetworkRoleInfo,
   calculateCommunityCohesion,
+  calculateCommunityFilterOptions,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -164,15 +165,12 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     };
   }, [graphData, scope, viewerId, viewerNeighbors]);
 
-  const availableCommunities = useMemo(() => {
-    const set = new Set<number>();
-    for (const n of baseGraphData.nodes) {
-      if (n.community !== null && n.community !== undefined) {
-        set.add(n.community);
-      }
-    }
-    return Array.from(set).sort((a, b) => a - b);
-  }, [baseGraphData.nodes]);
+  const communityFilterOptions = useMemo(() => {
+    return calculateCommunityFilterOptions(
+      baseGraphData.nodes,
+      baseGraphData.links,
+    );
+  }, [baseGraphData.nodes, baseGraphData.links]);
 
   // Filter data based on community, search and link filter on top of base graph
   const filteredData = useMemo(() => {
@@ -607,15 +605,18 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             color="bg-slate-500"
           />
 
-          {availableCommunities.map((cId) => (
+          {communityFilterOptions.map((opt) => (
             <FilterChip
-              key={`community-${cId}`}
-              active={selectedCommunity === cId}
+              key={`community-${opt.communityId}`}
+              active={selectedCommunity === opt.communityId}
               onClick={() =>
-                setSelectedCommunity(selectedCommunity === cId ? null : cId)
+                setSelectedCommunity(
+                  selectedCommunity === opt.communityId ? null : opt.communityId,
+                )
               }
-              label={`Grupo ${cId}`}
-              dotColor={COMMUNITY_COLORS[cId % COMMUNITY_COLORS.length]}
+              label={opt.label}
+              dotColor={opt.color}
+              ariaLabel={opt.ariaLabel}
             />
           ))}
 
@@ -1071,12 +1072,14 @@ function FilterChip({
   label,
   color,
   dotColor,
+  ariaLabel,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   color?: string;
   dotColor?: string;
+  ariaLabel?: string;
 }) {
   return (
     <button
@@ -1087,6 +1090,7 @@ function FilterChip({
           : "bg-muted text-muted-foreground border border-transparent hover:bg-card hover:text-foreground"
       }`}
       aria-pressed={active}
+      aria-label={ariaLabel}
     >
       {dotColor ? (
         <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: dotColor }} />
