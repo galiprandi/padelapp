@@ -198,6 +198,7 @@ import {
   calculateNetworkRoleInfo,
   calculateTurnRescueProximity,
   calculateCommunityCohesion,
+  calculateCommunityFilterOptions,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1435,5 +1436,98 @@ describe("calculateCommunityCohesion", () => {
     expect(res.cohesionTier).toBe("En integración 🌱");
     expect(res.badgeStyle).toContain("bg-amber-100");
     expect(res.formattedCohesionSummary).toBe("1 puente externo");
+  });
+});
+
+describe("calculateCommunityFilterOptions", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 2,
+      networkSize: 1,
+      matchesPlayed: 5,
+      preferredSide: "RIGHT",
+    },
+  ];
+
+  const links: GraphLink[] = [
+    {
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 2,
+      partnerMatches: 1,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 1,
+      lossesTogether: 0,
+      turnsTogether: 0,
+      strength: 3,
+    },
+  ];
+
+  it("calculates community filter options with player counts, colors, cohesion tiers, and ARIA labels", () => {
+    const options = calculateCommunityFilterOptions(nodes, links);
+    expect(options).toHaveLength(2);
+
+    const opt1 = options.find((o) => o.communityId === 1);
+    expect(opt1).toBeDefined();
+    expect(opt1?.playerCount).toBe(2);
+    expect(opt1?.label).toBe("Grupo 1 (2)");
+    expect(opt1?.cohesionTier).toBe("Comunidad consolidada 🏆");
+    expect(opt1?.color).toBe("#10b981");
+    expect(opt1?.ariaLabel).toContain("Filtrar por Grupo 1: 2 jugadores");
+
+    const opt2 = options.find((o) => o.communityId === 2);
+    expect(opt2).toBeDefined();
+    expect(opt2?.playerCount).toBe(1);
+    expect(opt2?.label).toBe("Grupo 2 (1)");
+    expect(opt2?.cohesionTier).toBe("En formación 🆕");
+    expect(opt2?.color).toBe("#f59e0b");
+    expect(opt2?.ariaLabel).toContain("Filtrar por Grupo 2: 1 jugador");
+  });
+
+  it("returns empty options list when no nodes have assigned communities", () => {
+    const unassignedNodes: GraphNode[] = [
+      {
+        id: "p-99",
+        name: "Nuevo",
+        alias: null,
+        image: null,
+        skillScore: 1000,
+        community: null,
+        networkSize: 0,
+        matchesPlayed: 0,
+        preferredSide: null,
+      },
+    ];
+
+    const options = calculateCommunityFilterOptions(unassignedNodes, []);
+    expect(options).toHaveLength(0);
   });
 });

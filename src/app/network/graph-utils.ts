@@ -902,6 +902,69 @@ export function calculateCommunityCohesion(
   };
 }
 
+export interface CommunityFilterOption {
+  communityId: number;
+  playerCount: number;
+  color: string;
+  cohesionTier: "Comunidad consolidada 🏆" | "Grupo activo 🎾" | "En integración 🌱" | "En formación 🆕";
+  badgeStyle: string;
+  label: string;
+  ariaLabel: string;
+}
+
+const COMMUNITY_COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#f97316",
+  "#84cc16",
+  "#6366f1",
+  "#14b8a6",
+  "#e11d48",
+];
+
+/**
+ * Calculates community filter chip options with member counts, cluster colors, and cohesion information.
+ */
+export function calculateCommunityFilterOptions(
+  nodes: GraphNode[],
+  links: GraphLink[],
+): CommunityFilterOption[] {
+  const countsMap = new Map<number, number>();
+
+  for (const node of nodes) {
+    if (node.community !== null && node.community !== undefined) {
+      countsMap.set(node.community, (countsMap.get(node.community) ?? 0) + 1);
+    }
+  }
+
+  const communityIds = Array.from(countsMap.keys()).sort((a, b) => a - b);
+
+  return communityIds.map((cId) => {
+    const playerCount = countsMap.get(cId) ?? 0;
+    const cohesion = calculateCommunityCohesion(nodes, links, cId);
+    const color = COMMUNITY_COLORS[cId % COMMUNITY_COLORS.length];
+    const label = `Grupo ${cId} (${playerCount})`;
+    const ariaLabel = `Filtrar por Grupo ${cId}: ${playerCount} ${
+      playerCount === 1 ? "jugador" : "jugadores"
+    }, ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`;
+
+    return {
+      communityId: cId,
+      playerCount,
+      color,
+      cohesionTier: cohesion.cohesionTier,
+      badgeStyle: cohesion.badgeStyle,
+      label,
+      ariaLabel,
+    };
+  });
+}
+
 export interface NodeConnectionSummary {
   totalConnections: number;
   partnerCount: number;
