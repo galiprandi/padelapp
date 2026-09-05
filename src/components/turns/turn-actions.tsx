@@ -165,8 +165,9 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Iniciar partido ahora"
+        aria-label={isPending ? "Iniciando partido..." : "Iniciar partido ahora"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -212,8 +213,9 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Sumarme al turno"
+        aria-label={isPending ? "Sumándome al turno..." : "Sumarme al turno"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -248,8 +250,9 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         type="submit"
         variant="outline"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Sumarse como suplente"
+        aria-label={isPending ? "Sumándome como suplente..." : "Sumarse como suplente"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -292,8 +295,9 @@ export function LeaveSubstituteForm({
         type="submit"
         variant="ghost"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Salir de la lista de suplentes"
+        aria-label={isPending ? "Saliendo de la lista de suplentes..." : "Salir de la lista de suplentes"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -331,8 +335,9 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
       <Button
         type="submit"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Ocupar el cupo libre disponible"
+        aria-label={isPending ? "Ocupando cupo disponible..." : "Ocupar el cupo libre disponible"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -369,8 +374,9 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
         type="submit"
         variant="outline"
         disabled={isPending}
+        aria-busy={isPending}
         className="w-full h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Programar el próximo turno para la siguiente semana"
+        aria-label={isPending ? "Programando próximo turno..." : "Programar el próximo turno para la siguiente semana"}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
