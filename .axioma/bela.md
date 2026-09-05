@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-05 — TurnActions & TurnCard ARIA Loading States, Dynamic Labels & Unit Tests (bela/turnos/turn-actions-aria-loading-states)
 - [x] 2026-09-04 — OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests (bela/turnos/open-to-network-a11y-and-tests)
 - [x] 2026-09-03 — Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish (bela/turnos/filter-by-tab-a11y-and-helper)
 - [x] 2026-08-31 — CancelTurnForm and RemovePlayerButton Focus & Keyboard Escape Accessibility Polish (bela/turnos/cancel-turn-and-remove-player-a11y)
@@ -47,6 +48,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-05 - TurnActions & TurnCard ARIA Loading States, Dynamic Labels & Unit Tests
+**Learning:** Adding explicit `aria-busy={isPending}` loading state attributes and dynamic screen reader ARIA labels during pending transitions across turn action forms (`StartMatchForm`, `JoinTurnForm`, `JoinSubstituteForm`, `LeaveSubstituteForm`, `TakeOpenSlotForm`, `ScheduleNextTurnForm`) and quick-join triggers (`TurnCard`) gives instant screen reader feedback when server transitions are in progress. Backing these components with a dedicated unit test suite (`src/components/turns/__tests__/turn-actions.test.ts`) verifies React element creation and accessibility props contract.
+**Action:** Always provide dynamic `aria-label` updates and `aria-busy={isPending}` loading state attributes on server action form submit triggers.
+
 ## 2026-09-04 - OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests
 **Learning:** Enhancing `OpenToNetworkButton` with `aria-busy={isPending}`, context-rich dynamic `aria-label` updates during pending states ("Notificando a tu red de pádel..."), `role="status"` with `aria-live="polite"` for result containers, and `role="alert"` with `aria-live="assertive"` for error feedback guarantees accessible screen reader notifications. Backing this trigger with dedicated unit tests in `src/components/turns/__tests__/open-to-network-button.test.ts` ensures reliable calculation of the 1-hour notification cooldown window.
 **Action:** Always complement server-action triggers with explicit ARIA pending feedback and live status regions so screen reader users receive dynamic feedback on state mutations.

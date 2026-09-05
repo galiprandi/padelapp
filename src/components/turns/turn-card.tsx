@@ -266,10 +266,13 @@ export function TurnCard({
               <button
                 onClick={handleQuickJoin}
                 disabled={isPending}
+                aria-busy={isPending}
                 aria-label={
-                  canJoinAsSubstitute
-                    ? `Sumarse como suplente al turno en ${turn.club}`
-                    : `Sumarse al turno en ${turn.club}`
+                  isPending
+                    ? (canJoinAsSubstitute ? "Sumándome como suplente..." : "Sumándome al turno...")
+                    : (canJoinAsSubstitute
+                        ? `Sumarse como suplente al turno en ${turn.club}`
+                        : `Sumarse al turno en ${turn.club}`)
                 }
                 className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
