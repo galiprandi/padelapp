@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, capitalizeName, getMatchWinner } from "@/lib/utils";
+import { cn, capitalizeName } from "@/lib/utils";
+import { calculatePlayerStreak } from "@/lib/match-helpers";
 import { TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 
 interface PodiumPlayer {
@@ -23,27 +24,6 @@ interface RankingPodiumProps {
   viewerId?: string | null;
 }
 
-function getPlayerStreak(player: PodiumPlayer): number {
-  if (!player.matchPlayers || player.matchPlayers.length === 0) return 0;
-
-  const recentForm = player.matchPlayers.map((mp) => {
-    const winner = mp.match.score ? getMatchWinner(mp.match.score) : null;
-    if (!winner) return "L";
-    const playerTeam = mp.position < 2 ? "A" : "B";
-    return winner === playerTeam ? "W" : "L";
-  });
-
-  let winStreak = 0;
-  for (const res of recentForm) {
-    if (res === "W") {
-      winStreak++;
-    } else {
-      break;
-    }
-  }
-  return winStreak;
-}
-
 export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
   if (topThree.length === 0) return null;
 
@@ -55,9 +35,9 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
   const isSecondViewer = second && viewerId === second.id;
   const isThirdViewer = third && viewerId === third.id;
 
-  const secondStreak = second ? getPlayerStreak(second) : 0;
-  const firstStreak = first ? getPlayerStreak(first) : 0;
-  const thirdStreak = third ? getPlayerStreak(third) : 0;
+  const secondStreak = second ? calculatePlayerStreak(second.matchPlayers) : 0;
+  const firstStreak = first ? calculatePlayerStreak(first.matchPlayers) : 0;
+  const thirdStreak = third ? calculatePlayerStreak(third.matchPlayers) : 0;
 
   return (
     <div className="space-y-3">

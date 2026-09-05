@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 import { RankingPodium } from "./ranking-podium";
 import { RankingListItem } from "./ranking-list-item";
 import { EmptyState } from "@/components/empty-state";
@@ -55,17 +56,23 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
             aria-labelledby="ranking-tabs-label"
             className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl"
             onKeyDown={(e) => {
-              const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+              if (
+                e.key !== "ArrowRight" &&
+                e.key !== "ArrowLeft" &&
+                e.key !== "ArrowDown" &&
+                e.key !== "ArrowUp"
+              )
+                return;
+              const buttons = Array.from(
+                e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]'),
+              );
               if (buttons.length < 2) return;
-              if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                e.preventDefault();
-                setActiveTab("todos");
-                buttons[1]?.focus();
-              } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                e.preventDefault();
-                setActiveTab("activos");
-                buttons[0]?.focus();
-              }
+              e.preventDefault();
+              const currentIndex = activeTab === "activos" ? 0 : 1;
+              const nextIndex = getNextRadioIndex(currentIndex, buttons.length, e.key);
+              const nextTab = nextIndex === 0 ? "activos" : "todos";
+              setActiveTab(nextTab);
+              buttons[nextIndex]?.focus();
             }}
           >
             <button

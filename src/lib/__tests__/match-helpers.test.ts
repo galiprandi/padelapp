@@ -5,6 +5,8 @@ import {
   sanitizeTeamLabel,
   teamForPosition,
   getNextRadioIndex,
+  getPlayerRecentForm,
+  calculatePlayerStreak,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -307,6 +309,36 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("getPlayerRecentFormAndStreak", () => {
+  it("returns empty array and 0 streak for null or empty matchPlayers", () => {
+    expect(getPlayerRecentForm(null)).toEqual([]);
+    expect(getPlayerRecentForm([])).toEqual([]);
+    expect(calculatePlayerStreak(null)).toBe(0);
+    expect(calculatePlayerStreak([])).toBe(0);
+  });
+
+  it("calculates recent form and streak correctly for team A player", () => {
+    const matchPlayers = [
+      { position: 0, match: { score: "6-4, 6-3" } }, // Team A won -> W
+      { position: 1, match: { score: "6-2, 6-1" } }, // Team A won -> W
+      { position: 0, match: { score: "4-6, 3-6" } }, // Team A lost -> L
+    ];
+
+    expect(getPlayerRecentForm(matchPlayers)).toEqual(["W", "W", "L"]);
+    expect(calculatePlayerStreak(matchPlayers)).toBe(2);
+  });
+
+  it("calculates recent form and streak correctly for team B player", () => {
+    const matchPlayers = [
+      { position: 2, match: { score: "2-6, 3-6" } }, // Team B won -> W
+      { position: 3, match: { score: "6-4, 6-2" } }, // Team A won -> L
+    ];
+
+    expect(getPlayerRecentForm(matchPlayers)).toEqual(["W", "L"]);
+    expect(calculatePlayerStreak(matchPlayers)).toBe(1);
   });
 });
 
