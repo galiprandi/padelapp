@@ -1,9 +1,12 @@
-export const DEFAULT_SPECULATION_URLS = [
+export const PRIMARY_SPECULATION_URLS = [
   "/me",
   "/turnos",
   "/ranking",
   "/match",
   "/notifications",
+] as const;
+
+export const SECONDARY_SPECULATION_URLS = [
   "/network",
   "/me/profile",
   "/me/security",
@@ -11,6 +14,11 @@ export const DEFAULT_SPECULATION_URLS = [
   "/turnos/nuevo",
   "/install",
   "/catalog",
+] as const;
+
+export const DEFAULT_SPECULATION_URLS = [
+  ...PRIMARY_SPECULATION_URLS,
+  ...SECONDARY_SPECULATION_URLS,
 ] as const;
 
 export type SpeculationEagerness = "eager" | "moderate" | "conservative";
@@ -27,16 +35,31 @@ export interface SpeculationRulesConfig {
 
 export function getSpeculationRulesConfig(
   customUrls?: string[],
-  eagerness: SpeculationEagerness = "moderate",
+  eagerness?: SpeculationEagerness,
 ): SpeculationRulesConfig {
-  const urls = customUrls && customUrls.length > 0 ? customUrls : [...DEFAULT_SPECULATION_URLS];
+  if (customUrls && customUrls.length > 0) {
+    return {
+      prerender: [
+        {
+          source: "list",
+          urls: customUrls,
+          eagerness: eagerness ?? "moderate",
+        },
+      ],
+    };
+  }
 
   return {
     prerender: [
       {
         source: "list",
-        urls,
-        eagerness,
+        urls: [...PRIMARY_SPECULATION_URLS],
+        eagerness: eagerness ?? "eager",
+      },
+      {
+        source: "list",
+        urls: [...SECONDARY_SPECULATION_URLS],
+        eagerness: "moderate",
       },
     ],
   };
