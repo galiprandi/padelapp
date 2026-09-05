@@ -11,51 +11,32 @@ import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, getCategoryDefinition } from "@/lib/constants/categories";
-
-const MIN_ALIAS_LENGTH = 2;
-const MAX_ALIAS_LENGTH = 30;
-const AUTOSAVE_DEBOUNCE_MS = 800;
-
-function validateAlias(value: string): string | null {
-  const trimmed = value.trim();
-  if (trimmed.length === 0) return null;
-  if (
-    trimmed.length < MIN_ALIAS_LENGTH ||
-    trimmed.length > MAX_ALIAS_LENGTH
-  ) {
-    return `Usá entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`;
-  }
-
-  // Permitir letras (con acentos, diéresis y eñes), números, espacios y guiones comunes
-  const aliasRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s-]+$/;
-  if (!aliasRegex.test(trimmed)) {
-    return "El alias solo puede tener letras, números, espacios y guiones.";
-  }
-  return null;
-}
+import {
+  MAX_ALIAS_LENGTH,
+  COURT_SIDE_OPTIONS,
+  PreferredSideOption,
+  validateAlias,
+  getNextSideOption,
+  getNextCategoryLevel,
+  getSideOptionLabel,
+  getInitials,
+} from "./profile-utils";
 
 interface ProfileFormProps {
   initialAlias: string;
   initialImage: string | null;
   initialLevel?: number;
-  initialPreferredSide?: "RIGHT" | "LEFT" | "BOTH" | null;
+  initialPreferredSide?: PreferredSideOption | null;
   googleAvatarUrl?: string | null;
   displayName?: string | null;
   email?: string | null;
   matchesPlayed?: number;
 }
 
-function getInitials(name: string | null | undefined): string {
-  if (!name) return "";
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
 function FormMiniCourtIndicator({
   preferredSide,
 }: {
-  preferredSide: "LEFT" | "RIGHT" | "BOTH" | null;
+  preferredSide: PreferredSideOption | null;
 }) {
   const isLeft = preferredSide === "LEFT" || preferredSide === "BOTH";
   const isRight = preferredSide === "RIGHT" || preferredSide === "BOTH";
@@ -101,7 +82,7 @@ export function ProfileForm({
   const [alias, setAlias] = useState(initialAlias);
   const [image, setImage] = useState<string | null>(initialImage);
   const [level, setLevel] = useState(initialLevel);
-  const [preferredSide, setPreferredSide] = useState<"RIGHT" | "LEFT" | "BOTH" | null>(
+  const [preferredSide, setPreferredSide] = useState<PreferredSideOption | null>(
     initialPreferredSide ?? "BOTH"
   );
   const [isSaving, startSaving] = useTransition();
@@ -115,6 +96,10 @@ export function ProfileForm({
   useEffect(() => {
     preferredSideRef.current = preferredSide;
   }, [preferredSide]);
+
+  const sideContainerRef = useRef<HTMLDivElement>(null);
+  const categoryContainerRef = useRef<HTMLDivElement>(null);
+
   const [checklistDismissed, setChecklistDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("onboarding-checklist-dismissed") === "true";
@@ -294,7 +279,6 @@ export function ProfileForm({
     });
   }
 
-
   function handleRestoreChecklist() {
     if (typeof window !== "undefined") {
       localStorage.removeItem("onboarding-checklist-dismissed");
@@ -305,7 +289,7 @@ export function ProfileForm({
     }
   }
 
-  function handlePreferredSideChange(newSide: "RIGHT" | "LEFT" | "BOTH" | null) {
+  function handlePreferredSideChange(newSide: PreferredSideOption | null) {
     if (newSide === preferredSide || isSaving) return;
     const previousSide = preferredSide;
     setPreferredSide(newSide);
@@ -317,15 +301,7 @@ export function ProfileForm({
         newSide
       );
       if (response.status === "ok") {
-        const sideLabel =
-          newSide === "RIGHT"
-            ? "Derecha"
-            : newSide === "LEFT"
-            ? "Revés"
-            : newSide === "BOTH"
-            ? "Ambos lados"
-            : "Sin preferencia";
-        showToast(`Lado preferido actualizado a ${sideLabel}`, { duration: 3000 });
+        showToast(`Lado preferido actualizado a ${getSideOptionLabel(newSide)}`, { duration: 3000 });
       } else {
         showToast(response.message || "No pudimos guardar el lado preferido.", { type: "error" });
         setPreferredSide(previousSide);
@@ -333,7 +309,36 @@ export function ProfileForm({
     });
   }
 
+  const handleSideKeyDown = (e: React.KeyboardEvent) => {
+    const nextSide = getNextSideOption(preferredSide, e.key);
+    if (nextSide) {
+      e.preventDefault();
+      handlePreferredSideChange(nextSide);
+      setTimeout(() => {
+        const btn = sideContainerRef.current?.querySelector<HTMLButtonElement>(
+          `button[data-side="${nextSide}"]`
+        );
+        btn?.focus();
+      }, 0);
+    }
+  };
+
+  const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
+    const nextLevel = getNextCategoryLevel(level, e.key);
+    if (nextLevel !== null) {
+      e.preventDefault();
+      handleLevelChange(nextLevel);
+      setTimeout(() => {
+        const btn = categoryContainerRef.current?.querySelector<HTMLButtonElement>(
+          `button[data-level="${nextLevel}"]`
+        );
+        btn?.focus();
+      }, 0);
+    }
+  };
+
   const aliasError = validateAlias(alias) ?? undefined;
+  const AUTOSAVE_DEBOUNCE_MS = 800;
 
   return (
     <div className="space-y-6 pb-16">
@@ -485,13 +490,7 @@ export function ProfileForm({
           <div className="flex items-center gap-2">
             <FormMiniCourtIndicator preferredSide={preferredSide} />
             <span className="text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full">
-              {preferredSide === "RIGHT"
-                ? "Derecha"
-                : preferredSide === "LEFT"
-                ? "Revés"
-                : preferredSide === "BOTH"
-                ? "Ambos lados"
-                : "Sin preferencia"}
+              {getSideOptionLabel(preferredSide)}
             </span>
           </div>
         </div>
@@ -501,25 +500,25 @@ export function ProfileForm({
         </p>
 
         {/* Chips de selección Derecha / Revés / Ambos */}
-        <div className="grid grid-cols-3 gap-2 pt-1" role="radiogroup" aria-label="Lado preferido en la cancha">
-          {[
-            { id: "RIGHT", label: "Derecha", desc: "Juego en el drive o lado derecho" },
-            { id: "LEFT", label: "Revés", desc: "Juego en el lado izquierdo de revés" },
-            { id: "BOTH", label: "Ambos", desc: "Me adapto indistintamente a ambos lados" },
-          ].map((sideOption) => {
+        <div
+          ref={sideContainerRef}
+          className="grid grid-cols-3 gap-2 pt-1"
+          role="radiogroup"
+          aria-label="Lado preferido en la cancha"
+          onKeyDown={handleSideKeyDown}
+        >
+          {COURT_SIDE_OPTIONS.map((sideOption) => {
             const isSelected = preferredSide === sideOption.id;
             return (
               <button
                 key={sideOption.id}
+                data-side={sideOption.id}
                 type="button"
-                onClick={() =>
-                  handlePreferredSideChange(
-                    sideOption.id as "RIGHT" | "LEFT" | "BOTH"
-                  )
-                }
+                onClick={() => handlePreferredSideChange(sideOption.id)}
                 disabled={isSaving}
                 aria-checked={isSelected}
                 role="radio"
+                tabIndex={isSelected ? 0 : -1}
                 aria-label={`Lado ${sideOption.label}: ${sideOption.desc}`}
                 className={cn(
                   "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
@@ -552,21 +551,25 @@ export function ProfileForm({
 
         {/* Chips de selección 1ª a 8ª Cat. */}
         <div
+          ref={categoryContainerRef}
           className="grid grid-cols-4 gap-2 pt-1"
           role="radiogroup"
           aria-label="Categoría de juego"
           aria-describedby="category-description"
+          onKeyDown={handleCategoryKeyDown}
         >
           {CATEGORIES.map((cat) => {
             const isSelected = level === cat.level;
             return (
               <button
                 key={cat.level}
+                data-level={cat.level}
                 type="button"
                 onClick={() => handleLevelChange(cat.level)}
                 disabled={isSaving}
                 aria-checked={isSelected}
                 role="radio"
+                tabIndex={isSelected ? 0 : -1}
                 aria-label={`${cat.label}: ${cat.description}`}
                 className={cn(
                   "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
