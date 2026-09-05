@@ -80,13 +80,17 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
   }
 
   return (
-    <div className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+    <div
+      role="region"
+      aria-label="Sugerencia de acceso biométrico"
+      className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4"
+    >
       <Button
         variant="ghost"
         size="sm"
         onClick={handleDismiss}
         aria-label="Cerrar sugerencia de acceso biométrico"
-        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background"
+        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
@@ -109,18 +113,24 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
       <div className="flex gap-2">
         <Button
           type="button"
-          className="h-10 flex-1 text-xs font-bold"
+          className="h-10 flex-1 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           disabled={isRegistering}
+          aria-busy={isRegistering}
+          aria-label={
+            isRegistering
+              ? "Registrando huella biométrica..."
+              : "Activar acceso con huella"
+          }
           onClick={handleRegister}
         >
           {isRegistering ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
               Registrando…
             </>
           ) : (
             <>
-              <Fingerprint className="mr-2 h-4 w-4" />
+              <Fingerprint className="mr-2 h-4 w-4" aria-hidden="true" />
               Activar huella
             </>
           )}
@@ -128,7 +138,8 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         <Button
           type="button"
           variant="outline"
-          className="h-10 text-xs font-semibold"
+          className="h-10 text-xs font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          aria-label="Descartar sugerencia por ahora"
           onClick={handleDismiss}
         >
           Ahora no
