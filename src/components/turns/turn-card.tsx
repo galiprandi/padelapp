@@ -17,7 +17,12 @@ import { LocalDay, LocalMonth, LocalTime } from "@/components/ui/local-date";
 import { Badge } from "@/components/ui/badge";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { type PadelContact } from "@/lib/queries";
-import { getOpenSlotsBadgeText, getTurnUrgencyBadgeText, getTurnSalvageShareMessage } from "@/components/turns/turn-utils";
+import {
+  getOpenSlotsBadgeText,
+  getTurnUrgencyBadgeText,
+  getTurnSalvageShareMessage,
+  formatContactPlayersSummary,
+} from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
   turn: {
@@ -113,18 +118,10 @@ export function TurnCard({
     .filter((p) => p.user && contactIds.has(p.user.id))
     .map((p) => p.user?.alias ?? p.user?.displayName ?? "");
 
-  // Format names nicely in Spanish
-  const formatNamesInSpanish = (names: string[]): string => {
-    if (names.length === 0) return "";
-    if (names.length === 1) return names[0];
-    if (names.length === 2) return `${names[0]} y ${names[1]}`;
-    const firsts = names.slice(0, -1).join(", ");
-    const last = names[names.length - 1];
-    return `${firsts} y ${last}`;
-  };
-
   return (
     <div
+      role="region"
+      aria-label={`Tarjeta de turno en ${turn.club}`}
       className={cn(
         "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted active:scale-[0.98]",
         isRecommended && "border-primary font-semibold shadow-sm",
@@ -184,9 +181,7 @@ export function TurnCard({
               <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                 <span className="truncate">
-                  {contactPlayers.length === 1
-                    ? `Juega tu contacto: ${contactPlayers[0]}`
-                    : `Juegan tus contactos: ${formatNamesInSpanish(contactPlayers)}`}
+                  {formatContactPlayersSummary(contactPlayers)}
                 </span>
               </p>
             )}

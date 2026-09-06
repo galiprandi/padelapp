@@ -260,3 +260,71 @@ export function filterTurnsByTab<T extends TurnFilterableItem>(
     return isCreator || isJoined || isSubstitute;
   });
 }
+
+/**
+ * Format a list of Spanish names nicely using commas and 'y'.
+ */
+export function formatSpanishNamesList(names: string[]): string {
+  if (names.length === 0) return "";
+  if (names.length === 1) return names[0] ?? "";
+  if (names.length === 2) return `${names[0]} y ${names[1]}`;
+  const firsts = names.slice(0, -1).join(", ");
+  const last = names[names.length - 1];
+  return `${firsts} y ${last}`;
+}
+
+/**
+ * Format contact players summary text in Argentine Spanish voseo.
+ */
+export function formatContactPlayersSummary(names: string[]): string {
+  if (names.length === 0) return "";
+  if (names.length === 1) {
+    return `Juega tu contacto: ${names[0]}`;
+  }
+  return `Juegan tus contactos: ${formatSpanishNamesList(names)}`;
+}
+
+export interface TurnPublicSubtitleOptions {
+  viewerId?: string | null;
+  creatorName: string;
+  compactDate: string;
+  isJoined?: boolean;
+  isSubstitute?: boolean;
+  substituteIndex?: number;
+  substitutesCount?: number;
+  isCompleted?: boolean;
+  isFull?: boolean;
+}
+
+/**
+ * Format public turn header subtitle depending on user status, role, and turn state.
+ */
+export function getTurnPublicSubtitle({
+  viewerId,
+  creatorName,
+  compactDate,
+  isJoined = false,
+  isSubstitute = false,
+  substituteIndex = 0,
+  substitutesCount = 0,
+  isCompleted = false,
+  isFull = false,
+}: TurnPublicSubtitleOptions): string {
+  if (!viewerId) {
+    return `Te invita ${creatorName} · ${compactDate}`;
+  }
+  if (isSubstitute) {
+    return `Suplente #${substituteIndex + 1} de ${substitutesCount}`;
+  }
+  if (isJoined) {
+    if (isCompleted) {
+      return "Turno finalizado";
+    }
+    return `Ya te sumaste · ${compactDate}`;
+  }
+  if (isFull) {
+    const subLabel = substitutesCount === 1 ? "suplente" : "suplentes";
+    return `Turno completo · ${substitutesCount} ${subLabel}`;
+  }
+  return `Sumate a este turno · ${compactDate}`;
+}
