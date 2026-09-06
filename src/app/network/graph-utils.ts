@@ -395,6 +395,130 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkDiversityScore {
+  diversityScore: number;
+  distinctCommunitiesCount: number;
+  diversityTier:
+    | "Red ultra diversificada 🌐"
+    | "Red balanceada ⚖️"
+    | "En focalización 🎯"
+    | "Red concentrada 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates network diversity score (0-100%) evaluating multi-community reach,
+ * interaction relationship balance, and court position complementarity.
+ */
+export function calculateNetworkDiversityScore(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  selectedNodeId: string,
+): NetworkDiversityScore {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      diversityScore: 0,
+      distinctCommunitiesCount: 0,
+      diversityTier: "Red concentrada 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin interacciones registradas en la red",
+    };
+  }
+
+  // Collect distinct communities
+  const distinctCommunities = new Set<number>();
+  for (const link of connectedLinks) {
+    const otherId =
+      linkNodeId(link.source) === selectedNodeId
+        ? linkNodeId(link.target)
+        : linkNodeId(link.source);
+    const otherNode = nodes.find((n) => n.id === otherId);
+    if (otherNode && otherNode.community !== null && otherNode.community !== undefined) {
+      distinctCommunities.add(otherNode.community);
+    }
+  }
+
+  const distinctCommunitiesCount = distinctCommunities.size;
+
+  // Connection type mix
+  let partnersCount = 0;
+  let rivalsCount = 0;
+  let mixedCount = 0;
+
+  for (const link of connectedLinks) {
+    const rec = calculateConnectionRecord(link, selectedNodeId);
+    if (rec.type === "partner") partnersCount++;
+    else if (rec.type === "rival") rivalsCount++;
+    else if (rec.type === "mixed") mixedCount++;
+  }
+
+  // Calculate score components
+  // 1. Community reach component (up to 40 pts)
+  const communityScore = Math.min(distinctCommunitiesCount * 20, 40);
+
+  // 2. Connection volume & mix component (up to 40 pts)
+  let mixScore = Math.min(totalConnections * 5, 20);
+  const hasMultipleTypes =
+    (partnersCount > 0 ? 1 : 0) + (rivalsCount > 0 ? 1 : 0) + (mixedCount > 0 ? 1 : 0) >= 2;
+  if (hasMultipleTypes) mixScore += 20;
+
+  // 3. Side synergy balance component (up to 20 pts)
+  const synergy = calculateSideSynergyBreakdown(links, nodes, selectedNodeId);
+  let sideScore = 0;
+  if (synergy.totalPartners > 0) {
+    const compRatio = synergy.complementaryCount / synergy.totalPartners;
+    sideScore = Math.round(compRatio * 20);
+  } else {
+    sideScore = 10;
+  }
+
+  const diversityScore = Math.min(
+    Math.max(communityScore + mixScore + sideScore, 0),
+    100,
+  );
+
+  let diversityTier:
+    | "Red ultra diversificada 🌐"
+    | "Red balanceada ⚖️"
+    | "En focalización 🎯"
+    | "Red concentrada 📍";
+  let badgeStyle: string;
+
+  if (diversityScore >= 80) {
+    diversityTier = "Red ultra diversificada 🌐";
+    badgeStyle =
+      "bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800";
+  } else if (diversityScore >= 50) {
+    diversityTier = "Red balanceada ⚖️";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (diversityScore >= 20) {
+    diversityTier = "En focalización 🎯";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    diversityTier = "Red concentrada 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${distinctCommunitiesCount} ${distinctCommunitiesCount === 1 ? "grupo" : "grupos"} de la red`,
+    `${diversityScore}% índice de diversidad`,
+  ];
+
+  return {
+    diversityScore,
+    distinctCommunitiesCount,
+    diversityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface TurnRescueCandidateInput {
   id: string;
   skillScore: number | null;

@@ -199,6 +199,7 @@ import {
   calculateTurnRescueProximity,
   calculateCommunityCohesion,
   calculateCommunityFilterOptions,
+  calculateNetworkDiversityScore,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1529,5 +1530,136 @@ describe("calculateCommunityFilterOptions", () => {
 
     const options = calculateCommunityFilterOptions(unassignedNodes, []);
     expect(options).toHaveLength(0);
+  });
+});
+
+describe("calculateNetworkDiversityScore", () => {
+  const nodes: GraphNode[] = [
+    {
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: null,
+      skillScore: 1100,
+      community: 1,
+      networkSize: 3,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    },
+    {
+      id: "p-02",
+      name: "Belasteguín",
+      alias: "Bela",
+      image: null,
+      skillScore: 1200,
+      community: 1,
+      networkSize: 2,
+      matchesPlayed: 12,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-03",
+      name: "Gero",
+      alias: "gero",
+      image: null,
+      skillScore: 1050,
+      community: 2,
+      networkSize: 2,
+      matchesPlayed: 5,
+      preferredSide: "LEFT",
+    },
+    {
+      id: "p-04",
+      name: "Facu",
+      alias: "facu",
+      image: null,
+      skillScore: 1020,
+      community: 3,
+      networkSize: 1,
+      matchesPlayed: 4,
+      preferredSide: "RIGHT",
+    },
+  ];
+
+  it("returns 'Red concentrada 📍' tier with score 0 for unconnected node", () => {
+    const score = calculateNetworkDiversityScore(nodes, [], "p-99");
+    expect(score.diversityScore).toBe(0);
+    expect(score.distinctCommunitiesCount).toBe(0);
+    expect(score.diversityTier).toBe("Red concentrada 📍");
+    expect(score.badgeStyle).toContain("bg-muted");
+    expect(score.formattedSummary).toBe("Sin interacciones registradas en la red");
+  });
+
+  it("calculates 'Red ultra diversificada 🌐' for player connected to multiple communities with mixed duplas and complementary side balance", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02", // community 1, partner, complementary (RIGHT + LEFT)
+        rivalMatches: 0,
+        partnerMatches: 3,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 2,
+        lossesTogether: 1,
+        turnsTogether: 0,
+        strength: 3,
+      },
+      {
+        source: "p-01",
+        target: "p-03", // community 2, rival
+        rivalMatches: 2,
+        partnerMatches: 0,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-04", // community 3, mixed
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+    ];
+
+    const res = calculateNetworkDiversityScore(nodes, links, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(3);
+    expect(res.diversityScore).toBeGreaterThanOrEqual(80);
+    expect(res.diversityTier).toBe("Red ultra diversificada 🌐");
+    expect(res.badgeStyle).toContain("bg-teal-100");
+    expect(res.formattedSummary).toContain("3 grupos de la red");
+    expect(res.formattedSummary).toContain("índice de diversidad");
+  });
+
+  it("calculates 'En focalización 🎯' tier for single-community partner connections", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02", // community 1
+        rivalMatches: 0,
+        partnerMatches: 1,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 1,
+      },
+    ];
+
+    const res = calculateNetworkDiversityScore(nodes, links, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(1);
+    expect(res.diversityScore).toBeGreaterThanOrEqual(20);
+    expect(res.diversityScore).toBeLessThan(50);
+    expect(res.diversityTier).toBe("En focalización 🎯");
+    expect(res.badgeStyle).toContain("bg-amber-100");
   });
 });
