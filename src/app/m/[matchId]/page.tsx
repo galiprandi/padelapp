@@ -19,6 +19,13 @@ import { LocalDate } from "@/components/ui/local-date";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  formatStatus,
+  teamKeyForPosition,
+  defaultTeamLabel,
+  getMatchInvitationTitle,
+  getMatchInvitationMetadata,
+} from "./match-invitation-utils";
 
 interface InvitationPageProps {
   params: Promise<{ matchId: string }>;
@@ -28,54 +35,16 @@ export async function generateMetadata({
   params,
 }: InvitationPageProps): Promise<Metadata> {
   const { matchId } = await params;
-
   const match = await getCachedMatchInvitationDetails(matchId);
 
-  if (!match) {
-    return { title: "Partido no encontrado" };
-  }
+  const meta = getMatchInvitationMetadata(
+    match ? { club: match.club, date: match.date } : null,
+  );
 
-  const clubName = match.club || "el club";
   return {
-    title: `Invitación a Partido en ${clubName}`,
-    description: `Sumate al partido en ${clubName} el ${new Date(match.date).toLocaleDateString("es-AR")}.`,
+    title: meta.title,
+    description: meta.description,
   };
-}
-
-const MATCH_STATUS = {
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  DISPUTED: "DISPUTED",
-  CANCELLED: "CANCELLED",
-} as const;
-
-function formatStatus(status: string) {
-  switch (status) {
-    case MATCH_STATUS.PENDING:
-      return "Pendiente";
-    case MATCH_STATUS.CONFIRMED:
-      return "Confirmado";
-    case MATCH_STATUS.DISPUTED:
-      return "En disputa";
-    case MATCH_STATUS.CANCELLED:
-      return "Cancelado";
-    default:
-      return status;
-  }
-}
-
-function teamKeyForPosition(position: number, totalPlayers: number): "A" | "B" {
-  if (totalPlayers <= 2) {
-    return position === 0 ? "A" : "B";
-  }
-  return position < 2 ? "A" : "B";
-}
-
-function defaultTeamLabel(teamKey: "A" | "B", totalPlayers: number): string {
-  if (totalPlayers <= 2) {
-    return teamKey === "A" ? "Jugador A" : "Jugador B";
-  }
-  return teamKey === "A" ? "Pareja A" : "Pareja B";
 }
 
 export default function InvitationPage({ params }: InvitationPageProps) {
@@ -234,29 +203,30 @@ async function InvitationContent({ params }: InvitationPageProps) {
     ? match.players.some((slot: { userId: string | null }) => slot.userId === viewerId)
     : false;
 
-  // dateStr is computed client-side via LocalDate to avoid hydration mismatch
-
   return (
     <>
       <div className="flex items-center gap-4">
         <Link
           href={session?.user ? "/me" : "/"}
           prefetch={true}
+          aria-label="Volver"
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">
-            {match.matchType === "FRIENDLY"
-              ? "Partido Amistoso"
-              : "Torneo Local"}
+            {getMatchInvitationTitle(match.matchType)}
           </h1>
           <p className="text-sm text-muted-foreground">Invitación de Partido</p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div
+        role="region"
+        aria-label="Información del encuentro"
+        className="rounded-xl border border-border bg-card overflow-hidden"
+      >
         <div className="bg-muted border-b border-border px-4 py-3">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />
@@ -282,7 +252,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
           </div>
 
           <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border border-border text-primary shrink-0 shadow-xs">
               <MapPin className="h-5 w-5" />
             </div>
             <div className="min-w-0">
@@ -310,7 +280,11 @@ async function InvitationContent({ params }: InvitationPageProps) {
         )}
       </div>
 
-      <section className="space-y-4">
+      <section
+        role="region"
+        aria-label="Jugadores convocados"
+        className="space-y-4"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -413,16 +387,18 @@ async function InvitationContent({ params }: InvitationPageProps) {
         <div className="max-w-md mx-auto flex flex-col gap-3">
           <Button
             asChild
-            className="w-full h-12 rounded-lg text-base font-bold shadow-sm"
+            className="w-full h-12 rounded-lg text-base font-bold shadow-sm transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
-            <Link href={`/match/${match.id}`} prefetch={true}>Ver partido en Padel Red</Link>
+            <Link href={`/match/${match.id}`} prefetch={true}>
+              Ver partido en Padel Red
+            </Link>
           </Button>
 
           {!session?.user ? (
             <SignInForm
               callbackUrl={`/m/${match.id}`}
               label={`Iniciá sesión para unirte a ${match.club ?? "el partido"}`}
-              className="w-full h-10 rounded-lg text-sm font-semibold text-muted-foreground"
+              className="w-full h-10 rounded-lg text-sm font-semibold text-muted-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             />
           ) : !isParticipant ? (
             <div className="rounded-xl p-3 bg-muted border border-border text-center">
