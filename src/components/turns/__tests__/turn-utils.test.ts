@@ -10,6 +10,9 @@ import {
   getTurnUrgencyBadgeText,
   getNextRadioValue,
   filterTurnsByTab,
+  formatSpanishNamesList,
+  formatContactPlayersSummary,
+  getTurnPublicSubtitle,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -336,5 +339,112 @@ describe("filterTurnsByTab", () => {
   it("excludes turns where user has no role when activeTab is 'mis-turnos'", () => {
     const myTurns = filterTurnsByTab(turns, "mis-turnos", "u2");
     expect(myTurns.map((t) => t.id)).toEqual(["t1"]);
+  });
+});
+
+describe("formatSpanishNamesList", () => {
+  it("returns empty string for empty array", () => {
+    expect(formatSpanishNamesList([])).toBe("");
+  });
+
+  it("returns single name for 1 name", () => {
+    expect(formatSpanishNamesList(["Mateo"])).toBe("Mateo");
+  });
+
+  it("formats two names with 'y'", () => {
+    expect(formatSpanishNamesList(["Mateo", "Santi"])).toBe("Mateo y Santi");
+  });
+
+  it("formats three or more names with commas and 'y'", () => {
+    expect(formatSpanishNamesList(["Mateo", "Santi", "Lucas"])).toBe("Mateo, Santi y Lucas");
+    expect(formatSpanishNamesList(["A", "B", "C", "D"])).toBe("A, B, C y D");
+  });
+});
+
+describe("formatContactPlayersSummary", () => {
+  it("returns empty string for empty names", () => {
+    expect(formatContactPlayersSummary([])).toBe("");
+  });
+
+  it("formats singular contact player summary", () => {
+    expect(formatContactPlayersSummary(["Gonzalo"])).toBe("Juega tu contacto: Gonzalo");
+  });
+
+  it("formats plural contact players summary", () => {
+    expect(formatContactPlayersSummary(["Gonzalo", "Martín"])).toBe("Juegan tus contactos: Gonzalo y Martín");
+  });
+});
+
+describe("getTurnPublicSubtitle", () => {
+  const compactDate = "sáb, 25 jul · 19:00hs";
+
+  it("formats subtitle for unauthenticated viewer", () => {
+    const sub = getTurnPublicSubtitle({
+      viewerId: null,
+      creatorName: "Facundo",
+      compactDate,
+    });
+    expect(sub).toBe(`Te invita Facundo · ${compactDate}`);
+  });
+
+  it("formats subtitle for substitute viewer", () => {
+    const sub = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+      isSubstitute: true,
+      substituteIndex: 0,
+      substitutesCount: 2,
+    });
+    expect(sub).toBe("Suplente #1 de 2");
+  });
+
+  it("formats subtitle for joined viewer in completed vs active turn", () => {
+    const activeSub = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+      isJoined: true,
+      isCompleted: false,
+    });
+    expect(activeSub).toBe(`Ya te sumaste · ${compactDate}`);
+
+    const completedSub = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+      isJoined: true,
+      isCompleted: true,
+    });
+    expect(completedSub).toBe("Turno finalizado");
+  });
+
+  it("formats subtitle for full turn for non-joined viewer", () => {
+    const fullSub1 = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+      isFull: true,
+      substitutesCount: 1,
+    });
+    expect(fullSub1).toBe("Turno completo · 1 suplente");
+
+    const fullSub2 = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+      isFull: true,
+      substitutesCount: 3,
+    });
+    expect(fullSub2).toBe("Turno completo · 3 suplentes");
+  });
+
+  it("formats default open turn subtitle for authenticated viewer", () => {
+    const sub = getTurnPublicSubtitle({
+      viewerId: "usr123",
+      creatorName: "Facundo",
+      compactDate,
+    });
+    expect(sub).toBe(`Sumate a este turno · ${compactDate}`);
   });
 });

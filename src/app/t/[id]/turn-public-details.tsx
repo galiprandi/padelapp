@@ -26,7 +26,12 @@ import {
 } from "lucide-react";
 import { WhatsAppInviteButton, WhatsAppGroupInviteButton } from "@/components/turns/whatsapp-invite-button";
 import { TurnChat } from "@/components/turns/turn-chat";
-import { getTurnSalvageShareMessage, getTurnSalvageBannerText, getTurnUrgencyBadgeText } from "@/components/turns/turn-utils";
+import {
+  getTurnSalvageShareMessage,
+  getTurnSalvageBannerText,
+  getTurnUrgencyBadgeText,
+  getTurnPublicSubtitle,
+} from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
   StartMatchForm,
@@ -227,18 +232,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   });
   const compactDate = `${turnDateStr} · ${turnTimeStr}`;
 
-  // Expanded subtitle logic — covers all viewer states
-  const subtitle = !viewerId
-    ? `Te invita ${turn.creator.alias ?? turn.creator.displayName} · ${compactDate}`
-    : isSubstitute
-      ? `Suplente #${turn.substitutes.findIndex((s) => s.userId === viewerId) + 1} de ${turn.substitutes.length}`
-      : isJoined
-        ? isCompleted
-          ? "Turno finalizado"
-          : `Ya te sumaste · ${compactDate}`
-        : isFull
-          ? `Turno completo · ${turn.substitutes.length} ${turn.substitutes.length === 1 ? "suplente" : "suplentes"}`
-          : `Sumate a este turno · ${compactDate}`;
+  // Expanded subtitle logic — extracted to pure helper function
+  const subtitle = getTurnPublicSubtitle({
+    viewerId,
+    creatorName: turn.creator.alias ?? turn.creator.displayName,
+    compactDate,
+    isJoined,
+    isSubstitute,
+    substituteIndex: turn.substitutes.findIndex((s) => s.userId === viewerId),
+    substitutesCount: turn.substitutes.length,
+    isCompleted,
+    isFull,
+  });
 
   const openSlotsCount = turn.maxPlayers - turn.players.length;
   const salvageBannerText = hasOpenSlot && !isCompleted ? getTurnSalvageBannerText(openSlotsCount) : null;
@@ -408,7 +413,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 key={p.id}
                 href={`/p/${p.userId}`}
                 prefetch={true}
-                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
+                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 <PlayerAvatar
                   name={p.user.alias ?? p.user.displayName}
@@ -564,7 +569,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   key={s.id}
                   href={`/p/${s.userId}`}
                   prefetch={true}
-                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group"
+                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                     {index + 1}
