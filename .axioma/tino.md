@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-06 — Configuración de Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos (`/t/*`, `/m/*`, `/j/*`, `/p/*`) (PR #tino/perf/dynamic-document-speculation-rules)
 - [x] 2026-09-05 — Estrategia de Speculation Rules Multinivel para Prerenderizado por Prioridad de Rutas (PR #tino/perf/multi-tier-speculation-rules)
 - [x] 2026-09-04 — Extracción de configuración helper `getSpeculationRulesConfig` para la Speculation Rules API e integración en `src/app/layout.tsx` (PR #tino/perf/speculation-rules-config-helper)
 - [x] 2026-09-03 — Esqueleto de carga streaming BottomNavSkeleton para eliminar CLS y expansión de reglas de prerenderizado especulativo (PR #tino/perf/bottom-nav-skeleton-and-speculation-rules)
@@ -45,6 +46,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-06 - Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos
+**Aprendizaje:** Además de las listas estáticas de URLs primarias y secundarias, incorporar reglas de especulación a nivel de documento (`source: "document"`) con patrones de coincidencia de hipervínculos (`href_matches`: `/t/*`, `/m/*`, `/j/*`, `/p/*`, etc.) y nivel de *eagerness* `moderate` permite que Chrome detecte e inicie el prerenderizado especulativo automáticamente al interactuar o pasar el cursor sobre enlaces a partidos, turnos, cupos o perfiles de jugadores sin necesidad de conocer los identificadores dinámicos de antemano.
+**Acción:** Reutilizar reglas de documento para cualquier nuevo patrón de ruta dinámico que se añada a la aplicación.
+
 ### 2026-09-05 - Speculation Rules API Multinivel para Prerenderizado Especulativo por Prioridad de Rutas (Performance Transversal)
 **Aprendizaje:** Categorizar las rutas de la aplicación en niveles de prioridad (`PRIMARY_SPECULATION_URLS` para rutas principales de navegación e inicio vs `SECONDARY_SPECULATION_URLS` para acciones secundarias o catálogos) y configurar el motor de Speculation Rules de Chrome con diferentes niveles de *eagerness* (`eager` para el nivel primario y `moderate` para el secundario) permite maximizar la velocidad percibida de navegación instantánea sin sobrecargar la memoria ni el procesamiento del navegador en dispositivos móviles.
 **Acción:** Mantener la separación de niveles al incorporar nuevas rutas principales o secundarias en la app.

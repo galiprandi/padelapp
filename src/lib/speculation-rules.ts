@@ -16,6 +16,15 @@ export const SECONDARY_SPECULATION_URLS = [
   "/catalog",
 ] as const;
 
+export const DYNAMIC_SPECULATION_PATTERNS = [
+  "/t/*",
+  "/m/*",
+  "/j/*",
+  "/p/*",
+  "/match/*",
+  "/turnos/*",
+] as const;
+
 export const DEFAULT_SPECULATION_URLS = [
   ...PRIMARY_SPECULATION_URLS,
   ...SECONDARY_SPECULATION_URLS,
@@ -23,11 +32,23 @@ export const DEFAULT_SPECULATION_URLS = [
 
 export type SpeculationEagerness = "eager" | "moderate" | "conservative";
 
-export interface SpeculationRuleGroup {
+export interface SpeculationListRuleGroup {
   source: "list";
   urls: string[];
   eagerness: SpeculationEagerness;
 }
+
+export interface SpeculationDocumentRuleGroup {
+  source: "document";
+  where: {
+    or: Array<{ href_matches: string }>;
+  };
+  eagerness: SpeculationEagerness;
+}
+
+export type SpeculationRuleGroup =
+  | SpeculationListRuleGroup
+  | SpeculationDocumentRuleGroup;
 
 export interface SpeculationRulesConfig {
   prerender: SpeculationRuleGroup[];
@@ -59,6 +80,15 @@ export function getSpeculationRulesConfig(
       {
         source: "list",
         urls: [...SECONDARY_SPECULATION_URLS],
+        eagerness: "moderate",
+      },
+      {
+        source: "document",
+        where: {
+          or: DYNAMIC_SPECULATION_PATTERNS.map((pattern) => ({
+            href_matches: pattern,
+          })),
+        },
         eagerness: "moderate",
       },
     ],
