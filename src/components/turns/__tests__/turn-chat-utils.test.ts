@@ -19,6 +19,14 @@ describe("CHAT_QUICK_SUGGESTIONS", () => {
     expect(ids).toContain("confirmed");
     expect(ids).toContain("court");
   });
+
+  it("verifies CHAT_QUICK_SUGGESTIONS accessibility structure", () => {
+    CHAT_QUICK_SUGGESTIONS.forEach((chip) => {
+      expect(chip.id).toMatch(/^[a-z]+$/);
+      expect(typeof chip.label).toBe("string");
+      expect(typeof chip.text).toBe("string");
+    });
+  });
 });
 
 describe("formatChatTime", () => {

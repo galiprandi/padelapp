@@ -202,7 +202,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             key={chip.id}
             type="button"
             onClick={() => setInputText(chip.text)}
-            className="rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             aria-label={`Usar atajo ${chip.text}`}
           >
             {chip.label}
@@ -219,18 +219,26 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
           <Input
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && inputText) {
+                e.preventDefault();
+                setInputText("");
+              }
+            }}
             placeholder="Escribí un mensaje..."
             maxLength={300}
             disabled={isSending}
-            className="h-10 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-primary focus-visible:ring-offset-1 text-sm flex-1"
+            aria-busy={isSending}
+            className="h-10 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background text-sm flex-1"
             aria-label="Escribir mensaje"
           />
           <Button
             type="submit"
             size="icon"
             disabled={!inputText.trim() || isSending}
-            className="h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-ring active:scale-[0.98] transition-all"
-            aria-label="Enviar mensaje"
+            aria-busy={isSending}
+            className="h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+            aria-label={isSending ? "Enviando mensaje..." : "Enviar mensaje"}
           >
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
