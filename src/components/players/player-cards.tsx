@@ -2,6 +2,11 @@ import { Fragment } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, getLevelBadgeLabel } from "@/lib/utils";
+import {
+  getPlayerCardAriaLabel,
+  formatPlayerSubtitle,
+  handlePlayerCardKeyDown,
+} from "./player-card-utils";
 
 export interface PlayerPreviewProps {
   id: string;
@@ -24,83 +29,94 @@ export function PlayerPreview({
   category,
   onManageClick,
   manageAriaLabel,
-  onClick
+  onClick,
 }: PlayerPreviewProps) {
   const isInteractive = !!(onClick || onManageClick);
   const mainAction = onManageClick || onClick;
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
-      e.preventDefault();
-      mainAction?.();
-    }
-  };
+  const subtitle = formatPlayerSubtitle(role, category);
+  const ariaLabel = getPlayerCardAriaLabel({
+    name,
+    isInteractive,
+    onManageClick,
+    isConfirmed,
+    customLabel: manageAriaLabel,
+  });
 
   return (
     <div
       role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       onClick={mainAction}
-      onKeyDown={handleKeyDown}
-      aria-label={isInteractive ? (manageAriaLabel || (onManageClick ? (isConfirmed ? `Gestionar jugador ${name}` : `Invitar jugador ${name}`) : `Ver perfil de ${name}`)) : undefined}
+      onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, mainAction)}
+      aria-label={ariaLabel}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
+        isInteractive &&
+          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
       )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
       <div className="flex-1 truncate">
         <p className="truncate text-sm font-bold text-foreground">{name}</p>
-        {role || category ? (
+        {subtitle ? (
           <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
-            {role}
-            {role && typeof category === "number" ? " · " : ""}
-            {typeof category === "number" ? getLevelBadgeLabel(category) : ""}
+            {subtitle}
           </p>
         ) : null}
       </div>
 
       {onManageClick ? (
-        <div className="flex h-8 w-8 items-center justify-center text-muted-foreground" aria-hidden="true">
-          {isConfirmed ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+        <div
+          className="flex h-8 w-8 items-center justify-center text-muted-foreground"
+          aria-hidden="true"
+        >
+          {isConfirmed ? (
+            <UserCheck className="h-4 w-4" />
+          ) : (
+            <UserPlus className="h-4 w-4" />
+          )}
         </div>
       ) : null}
     </div>
   );
 }
 
-export function PlayerWithRanking({ name, role, image, ranking, category, onClick }: PlayerPreviewProps) {
+export function PlayerWithRanking({
+  name,
+  role,
+  image,
+  ranking,
+  category,
+  onClick,
+}: PlayerPreviewProps) {
   const isInteractive = !!onClick;
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
-      e.preventDefault();
-      onClick?.();
-    }
-  };
+  const subtitle = formatPlayerSubtitle(role, category);
+  const ariaLabel = getPlayerCardAriaLabel({
+    name,
+    isInteractive,
+  });
 
   return (
     <div
       role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       onClick={onClick}
-      onKeyDown={handleKeyDown}
-      aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
+      onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, onClick)}
+      aria-label={ariaLabel}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
+        isInteractive &&
+          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
       )}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
       <div className="flex-1 truncate">
         <p className="truncate text-sm font-bold text-foreground">{name}</p>
-        {role || category ? (
+        {subtitle ? (
           <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
-            {role}
-            {role && typeof category === "number" ? " · " : ""}
-            {typeof category === "number" ? getLevelBadgeLabel(category) : ""}
+            {subtitle}
           </p>
         ) : null}
       </div>
@@ -114,31 +130,41 @@ export function PlayerWithRanking({ name, role, image, ranking, category, onClic
   );
 }
 
-export function PlayerCompact({ name, image, ranking, onClick }: PlayerPreviewProps) {
+export function PlayerCompact({
+  name,
+  image,
+  ranking,
+  onClick,
+}: PlayerPreviewProps) {
   const isInteractive = !!onClick;
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (isInteractive && (e.key === "Enter" || e.key === " ")) {
-      e.preventDefault();
-      onClick?.();
-    }
-  };
+  const ariaLabel = getPlayerCardAriaLabel({
+    name,
+    isInteractive,
+  });
 
   return (
     <div
       role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       onClick={onClick}
-      onKeyDown={handleKeyDown}
-      aria-label={isInteractive ? `Ver perfil de ${name}` : undefined}
+      onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, onClick)}
+      aria-label={ariaLabel}
       className={cn(
         "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive && "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer"
+        isInteractive &&
+          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
       )}
     >
-      <PlayerAvatar name={name} image={image} size={32} className="rounded-lg" />
+      <PlayerAvatar
+        name={name}
+        image={image}
+        size={32}
+        className="rounded-lg"
+      />
 
-      <p className="flex-1 truncate text-sm font-bold text-foreground">{name}</p>
+      <p className="flex-1 truncate text-sm font-bold text-foreground">
+        {name}
+      </p>
 
       {typeof ranking === "number" ? (
         <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs">
@@ -149,11 +175,21 @@ export function PlayerCompact({ name, image, ranking, onClick }: PlayerPreviewPr
   );
 }
 
-export function PairPreview({ players, label }: { players: PlayerPreviewProps[]; label: string }) {
+export function PairPreview({
+  players,
+  label,
+}: {
+  players: PlayerPreviewProps[];
+  label: string;
+}) {
   const hasConnector = players.length > 1;
 
   return (
-    <div className="relative rounded-xl border border-border bg-card mt-8 shadow-sm">
+    <div
+      role="region"
+      aria-label={label}
+      className="relative rounded-xl border border-border bg-card mt-8 shadow-sm"
+    >
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
         {label}
       </span>
@@ -161,7 +197,7 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
         {hasConnector ? (
           <div
             className="pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-border"
-            aria-hidden
+            aria-hidden="true"
           />
         ) : null}
         {players.map((player) => (
@@ -169,7 +205,7 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
             {hasConnector ? (
               <span
                 className="pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-border"
-                aria-hidden
+                aria-hidden="true"
               />
             ) : null}
             <PlayerPreview {...player} />
@@ -180,9 +216,19 @@ export function PairPreview({ players, label }: { players: PlayerPreviewProps[];
   );
 }
 
-export function PairInline({ players, label }: { players: PlayerPreviewProps[]; label: string }) {
+export function PairInline({
+  players,
+  label,
+}: {
+  players: PlayerPreviewProps[];
+  label: string;
+}) {
   return (
-    <div className="relative rounded-xl border border-border bg-card shadow-sm">
+    <div
+      role="region"
+      aria-label={label}
+      className="relative rounded-xl border border-border bg-card shadow-sm"
+    >
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
         {label}
       </span>
@@ -192,16 +238,24 @@ export function PairInline({ players, label }: { players: PlayerPreviewProps[]; 
           return (
             <Fragment key={`pair-inline-${label}-${player.id}`}>
               <div className="flex min-w-0 flex-1 items-center gap-3 group transition-colors">
-                <PlayerAvatar name={player.name} image={player.image} className="rounded-lg border border-border shadow-sm" />
+                <PlayerAvatar
+                  name={player.name}
+                  image={player.image}
+                  className="rounded-lg border border-border shadow-sm"
+                />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-bold text-foreground">{player.name}</p>
+                  <p className="truncate text-sm font-bold text-foreground">
+                    {player.name}
+                  </p>
                   {typeof player.category === "number" ? (
-                    <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">{getLevelBadgeLabel(player.category)}</p>
+                    <p className="truncate text-xs font-medium text-muted-foreground mt-0.5">
+                      {getLevelBadgeLabel(player.category)}
+                    </p>
                   ) : null}
                 </div>
               </div>
               {index < players.length - 1 ? (
-                <div className="h-8 w-px bg-border" aria-hidden />
+                <div className="h-8 w-px bg-border" aria-hidden="true" />
               ) : null}
             </Fragment>
           );
