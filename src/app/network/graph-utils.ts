@@ -395,6 +395,107 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface CrossRivalryDensity {
+  rivalryTier:
+    | "Red de rivalidad activa ⚔️"
+    | "Duplas con rivalidad 🔄"
+    | "Predominio de duplas 🤝"
+    | "Sin partidos cruzados 📍";
+  badgeStyle: string;
+  crossRivalryPercentage: number;
+  partnerConnectionsCount: number;
+  rivalConnectionsCount: number;
+  mixedConnectionsCount: number;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates cross-rivalry interaction density for a given node evaluating the ratio
+ * of rival and mixed head-to-head connections against pure partnership relations.
+ */
+export function calculateCrossRivalryDensity(
+  links: GraphLink[],
+  selectedNodeId: string,
+): CrossRivalryDensity {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      rivalryTier: "Sin partidos cruzados 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      crossRivalryPercentage: 0,
+      partnerConnectionsCount: 0,
+      rivalConnectionsCount: 0,
+      mixedConnectionsCount: 0,
+      formattedSummary: "Sin interacciones cruzadas registradas",
+    };
+  }
+
+  let partnerConnectionsCount = 0;
+  let rivalConnectionsCount = 0;
+  let mixedConnectionsCount = 0;
+
+  for (const link of connectedLinks) {
+    const record = calculateConnectionRecord(link, selectedNodeId);
+    if (record.type === "partner") partnerConnectionsCount++;
+    else if (record.type === "rival") rivalConnectionsCount++;
+    else if (record.type === "mixed") mixedConnectionsCount++;
+  }
+
+  const matchesWithRivalry = rivalConnectionsCount + mixedConnectionsCount;
+  const matchConnections = partnerConnectionsCount + rivalConnectionsCount + mixedConnectionsCount;
+
+  const crossRivalryPercentage =
+    matchConnections > 0
+      ? Math.round((matchesWithRivalry / matchConnections) * 100)
+      : 0;
+
+  let rivalryTier:
+    | "Red de rivalidad activa ⚔️"
+    | "Duplas con rivalidad 🔄"
+    | "Predominio de duplas 🤝"
+    | "Sin partidos cruzados 📍";
+  let badgeStyle: string;
+
+  if (crossRivalryPercentage >= 65) {
+    rivalryTier = "Red de rivalidad activa ⚔️";
+    badgeStyle =
+      "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800";
+  } else if (crossRivalryPercentage >= 35) {
+    rivalryTier = "Duplas con rivalidad 🔄";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else if (matchConnections > 0) {
+    rivalryTier = "Predominio de duplas 🤝";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    rivalryTier = "Sin partidos cruzados 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${crossRivalryPercentage}% interacción con rivales`,
+  ];
+
+  if (mixedConnectionsCount > 0) {
+    parts.push(
+      `${mixedConnectionsCount} ${mixedConnectionsCount === 1 ? "vínculo mixto" : "vínculos mixtos"}`,
+    );
+  }
+
+  return {
+    rivalryTier,
+    badgeStyle,
+    crossRivalryPercentage,
+    partnerConnectionsCount,
+    rivalConnectionsCount,
+    mixedConnectionsCount,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface NetworkDiversityScore {
   diversityScore: number;
   distinctCommunitiesCount: number;

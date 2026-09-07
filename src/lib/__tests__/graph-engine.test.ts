@@ -200,6 +200,7 @@ import {
   calculateCommunityCohesion,
   calculateCommunityFilterOptions,
   calculateNetworkDiversityScore,
+  calculateCrossRivalryDensity,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1661,5 +1662,121 @@ describe("calculateNetworkDiversityScore", () => {
     expect(res.diversityScore).toBeLessThan(50);
     expect(res.diversityTier).toBe("En focalización 🎯");
     expect(res.badgeStyle).toContain("bg-amber-100");
+  });
+});
+
+describe("calculateCrossRivalryDensity", () => {
+  it("returns fallback density info for unconnected node", () => {
+    const res = calculateCrossRivalryDensity([], "p-99");
+    expect(res.crossRivalryPercentage).toBe(0);
+    expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
+  });
+
+  it("calculates 'Red de rivalidad activa ⚔️' tier for high rivalry interaction (>= 65%)", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02", // rival
+        rivalMatches: 3,
+        partnerMatches: 0,
+        winsA: 2,
+        winsB: 1,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 3,
+      },
+      {
+        source: "p-01",
+        target: "p-03", // mixed (rival + partner)
+        rivalMatches: 2,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 3,
+      },
+      {
+        source: "p-01",
+        target: "p-04", // partner
+        rivalMatches: 0,
+        partnerMatches: 2,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 2,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+    ];
+
+    // matchesWithRivalry = 1 rival + 1 mixed = 2; total match connections = 3 => 67%
+    const res = calculateCrossRivalryDensity(links, "p-01");
+    expect(res.crossRivalryPercentage).toBe(67);
+    expect(res.rivalryTier).toBe("Red de rivalidad activa ⚔️");
+    expect(res.badgeStyle).toContain("bg-rose-100");
+    expect(res.formattedSummary).toContain("67% interacción con rivales");
+    expect(res.formattedSummary).toContain("1 vínculo mixto");
+  });
+
+  it("calculates 'Duplas con rivalidad 🔄' tier for moderate rivalry interaction (35-64%)", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02", // mixed
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+      {
+        source: "p-01",
+        target: "p-03", // partner
+        rivalMatches: 0,
+        partnerMatches: 2,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 2,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+    ];
+
+    // matchesWithRivalry = 1 mixed = 1; total match connections = 2 => 50%
+    const res = calculateCrossRivalryDensity(links, "p-01");
+    expect(res.crossRivalryPercentage).toBe(50);
+    expect(res.rivalryTier).toBe("Duplas con rivalidad 🔄");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+  });
+
+  it("calculates 'Predominio de duplas 🤝' tier for low rivalry interaction (< 35%)", () => {
+    const links: GraphLink[] = [
+      {
+        source: "p-01",
+        target: "p-02", // partner
+        rivalMatches: 0,
+        partnerMatches: 3,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 2,
+        lossesTogether: 1,
+        turnsTogether: 0,
+        strength: 3,
+      },
+    ];
+
+    const res = calculateCrossRivalryDensity(links, "p-01");
+    expect(res.crossRivalryPercentage).toBe(0);
+    expect(res.rivalryTier).toBe("Predominio de duplas 🤝");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });

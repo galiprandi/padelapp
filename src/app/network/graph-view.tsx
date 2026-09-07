@@ -25,6 +25,7 @@ import {
   calculateCommunityCohesion,
   calculateCommunityFilterOptions,
   calculateNetworkDiversityScore,
+  calculateCrossRivalryDensity,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -791,6 +792,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const crossRivalry = calculateCrossRivalryDensity(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -822,6 +827,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
                       >
                         {diversity.diversityTier}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          crossRivalry.badgeStyle,
+                        )}
+                        title={`Rivalidad cruzada: ${crossRivalry.rivalryTier}. ${crossRivalry.formattedSummary}`}
+                        aria-label={`Rivalidad cruzada: ${crossRivalry.rivalryTier}. ${crossRivalry.formattedSummary}`}
+                      >
+                        {crossRivalry.rivalryTier}
                       </span>
                     </>
                   );
