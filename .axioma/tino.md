@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-07 — Gestión Automática de Atributos ARIA y Accesibilidad en Componente `Skeleton` durante Estados de Carga Streaming (PR #tino/ux/skeleton-aria-accessibility)
 - [x] 2026-09-06 — Configuración de Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos (`/t/*`, `/m/*`, `/j/*`, `/p/*`) (PR #tino/perf/dynamic-document-speculation-rules)
 - [x] 2026-09-05 — Estrategia de Speculation Rules Multinivel para Prerenderizado por Prioridad de Rutas (PR #tino/perf/multi-tier-speculation-rules)
 - [x] 2026-09-04 — Extracción de configuración helper `getSpeculationRulesConfig` para la Speculation Rules API e integración en `src/app/layout.tsx` (PR #tino/perf/speculation-rules-config-helper)
@@ -46,6 +47,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-07 - Gestión Automática de Atributos ARIA en Componente Skeleton para Estados de Carga Streaming
+**Aprendizaje:** Al utilizar componentes de marcadores de posición (`Skeleton`) durante la carga por streaming de UI en Next.js, asignar automáticamente `aria-hidden="true"` cuando no se especifican roles o etiquetas de accesibilidad explícitas (`role`, `aria-label`, `aria-labelledby`) evita que los lectores de pantalla anuncien bloques grises o divisores irrelevantes. Asimismo, si el contenedor de esqueleto posee un rol explícito (ej. `role="status"` o `aria-label`), omitir `aria-hidden="true"` preserva la accesibilidad del estado de carga interactivo para la tecnología asistiva.
+**Acción:** Reutilizar el componente `Skeleton` refactorizado en cualquier nueva pantalla o vista con estados de carga por streaming.
+
 ### 2026-09-06 - Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos
 **Aprendizaje:** Además de las listas estáticas de URLs primarias y secundarias, incorporar reglas de especulación a nivel de documento (`source: "document"`) con patrones de coincidencia de hipervínculos (`href_matches`: `/t/*`, `/m/*`, `/j/*`, `/p/*`, etc.) y nivel de *eagerness* `moderate` permite que Chrome detecte e inicie el prerenderizado especulativo automáticamente al interactuar o pasar el cursor sobre enlaces a partidos, turnos, cupos o perfiles de jugadores sin necesidad de conocer los identificadores dinámicos de antemano.
 **Acción:** Reutilizar reglas de documento para cualquier nuevo patrón de ruta dinámico que se añada a la aplicación.
