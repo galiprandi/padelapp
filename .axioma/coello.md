@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 29 (Cross-Rivalry Interaction Density Calculation & Solid MDS Badging in Graph View):
+  - [x] 2026-09-06 — Hecho: Creada la función pura `calculateCrossRivalryDensity` en `src/app/network/graph-utils.ts` para calcular la densidad de interacciones de rivalidad cruzada y duplas mixtas (`crossRivalryPercentage`), categorizando los nodos en niveles de rivalidad ('Red de rivalidad activa ⚔️', 'Duplas con rivalidad 🔄', 'Predominio de duplas 🤝', 'Sin partidos cruzados 📍').
+  - [x] 2026-09-06 — Hecho: Integrada la insignia sólida MDS de rivalidad cruzada en el panel de detalles del nodo seleccionado en `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas de accesibilidad ARIA descriptivas en voz argentina.
+  - [x] 2026-09-06 — Hecho: Pruebas unitarias en `src/lib/__tests__/graph-engine.test.ts` cubriendo nodos aislados, redes con alto porcentaje de rivalidad, duplas mixtas y predominio de parejas.
 - Phase 28 (Louvain Community Filter Options Calculation & Member Count Chips in Graph View):
   - [x] 2026-09-05 — Hecho: Creada la función `calculateCommunityFilterOptions` en `src/app/network/graph-utils.ts` para calcular la cantidad de miembros por cluster de comunidad Louvain, colores representativos, niveles de cohesión y etiquetas descriptivas de accesibilidad ARIA en voz argentina.
   - [x] 2026-09-05 — Hecho: Integración en los chips de filtro de `GraphView` (`src/app/network/graph-view.tsx`) desplegando el conteo de miembros (ej. 'Grupo 1 (3)') y atributos ARIA descriptivos para lectores de pantalla.
