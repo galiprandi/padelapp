@@ -5,6 +5,11 @@ import { TrendingUp, TrendingDown, Minus, Calendar, Award, AlertTriangle, Flame,
 import { cn, calculateWinRate } from "@/lib/utils";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { getUserRankingBreakdownAction } from "@/app/(app)/ranking/actions";
+import {
+  calculateDecayFactor,
+  getDecayFactorText,
+  getRankingDeltaText,
+} from "@/lib/match-helpers";
 
 interface RankingBreakdownData {
   basePoints: number;
@@ -196,22 +201,15 @@ export function UserRankingBanner({
   const winRate = calculateWinRate(wins, matchesPlayed);
   const reputationPercent = Math.round(attendanceScore * 100);
 
-  const lastMatchDate = lastMatchAt ? new Date(lastMatchAt) : null;
-  let decayFactor: number | null = null;
-  if (mounted && lastMatchDate) {
-    const now = new Date();
-    const diffTime = now.getTime() - lastMatchDate.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    if (diffDays > 120) {
-      decayFactor = 0.25;
-    } else if (diffDays > 60) {
-      decayFactor = 0.5;
-    }
-  }
+  const decayFactor = mounted ? calculateDecayFactor(lastMatchAt) : null;
+  const decayText = getDecayFactorText(decayFactor);
+  const deltaText = getRankingDeltaText(delta);
 
   return (
     <div
-      className={cn("rounded-xl border border-border bg-card p-4 overflow-hidden", className)}
+      role="region"
+      aria-label="Resumen de ranking de usuario"
+      className={cn("rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs", className)}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -247,7 +245,7 @@ export function UserRankingBanner({
             {delta > 0 ? (
               <div
                 className="flex items-center gap-0.5 text-xs text-primary"
-                aria-label={`Subió ${delta} posiciones`}
+                aria-label={deltaText}
               >
                 <TrendingUp className="h-3 w-3" aria-hidden="true" />
                 <span>+{delta}</span>
@@ -255,7 +253,7 @@ export function UserRankingBanner({
             ) : delta < 0 ? (
               <div
                 className="flex items-center gap-0.5 text-xs text-muted-foreground"
-                aria-label={`Bajó ${Math.abs(delta)} posiciones`}
+                aria-label={deltaText}
               >
                 <TrendingDown className="h-3 w-3" aria-hidden="true" />
                 <span>{delta}</span>
@@ -263,7 +261,7 @@ export function UserRankingBanner({
             ) : (
               <div
                 className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
-                aria-label="Posición sin cambios"
+                aria-label={deltaText}
               >
                 <Minus className="h-3 w-3" aria-hidden="true" />
                 <span>0</span>
@@ -272,14 +270,10 @@ export function UserRankingBanner({
           </div>
         </div>
       </div>
-      {decayFactor && (
+      {decayText && (
         <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
           <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
-          <span>
-            {decayFactor === 0.25
-              ? "Puntos reducidos al 25% por inactividad (más de 120 días)"
-              : "Puntos reducidos al 50% por inactividad (más de 60 días)"}
-          </span>
+          <span>{decayText}</span>
         </div>
       )}
 
@@ -304,23 +298,16 @@ export function UserRankingCard({
   const winRate = calculateWinRate(wins, matchesPlayed);
   const reputationPercent = Math.round(attendanceScore * 100);
 
-  const lastMatchDate = lastMatchAt ? new Date(lastMatchAt) : null;
-  let decayFactor: number | null = null;
-  if (mounted && lastMatchDate) {
-    const now = new Date();
-    const diffTime = now.getTime() - lastMatchDate.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    if (diffDays > 120) {
-      decayFactor = 0.25;
-    } else if (diffDays > 60) {
-      decayFactor = 0.5;
-    }
-  }
+  const decayFactor = mounted ? calculateDecayFactor(lastMatchAt) : null;
+  const decayText = getDecayFactorText(decayFactor);
+  const deltaText = getRankingDeltaText(delta);
 
   return (
     <div
+      role="region"
+      aria-label="Tarjeta de posición y puntos de ranking"
       className={cn(
-        "flex flex-col rounded-xl border border-border bg-card p-4 overflow-hidden",
+        "flex flex-col rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs",
         className,
       )}
     >
@@ -351,7 +338,7 @@ export function UserRankingCard({
           {delta && delta > 0 ? (
             <div
               className="flex items-center gap-0.5 text-xs text-primary"
-              aria-label={`Subió ${delta} posiciones`}
+              aria-label={deltaText}
             >
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
               <span>+{delta}</span>
@@ -359,7 +346,7 @@ export function UserRankingCard({
           ) : delta && delta < 0 ? (
             <div
               className="flex items-center gap-0.5 text-xs text-muted-foreground"
-              aria-label={`Bajó ${Math.abs(delta)} posiciones`}
+              aria-label={deltaText}
             >
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
               <span>{delta}</span>
@@ -367,7 +354,7 @@ export function UserRankingCard({
           ) : (
             <div
               className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
-              aria-label="Posición sin cambios"
+              aria-label={deltaText}
             >
               <Minus className="h-3 w-3" aria-hidden="true" />
               <span>0</span>
@@ -380,14 +367,10 @@ export function UserRankingCard({
           )}
         </div>
       </div>
-      {decayFactor && (
+      {decayText && (
         <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
           <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
-          <span>
-            {decayFactor === 0.25
-              ? "Puntos reducidos al 25% por inactividad (más de 120 días)"
-              : "Puntos reducidos al 50% por inactividad (más de 60 días)"}
-          </span>
+          <span>{decayText}</span>
         </div>
       )}
 

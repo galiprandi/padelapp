@@ -92,3 +92,43 @@ export function calculatePlayerStreak(
   }
   return winStreak;
 }
+
+/**
+ * Calculates the decay factor (0.5 for >60 days, 0.25 for >120 days) based on last match date.
+ */
+export function calculateDecayFactor(
+  lastMatchAt: Date | string | null | undefined,
+  now: Date = new Date(),
+): number | null {
+  if (!lastMatchAt) return null;
+  const lastMatchDate =
+    typeof lastMatchAt === "string" ? new Date(lastMatchAt) : lastMatchAt;
+  if (isNaN(lastMatchDate.getTime())) return null;
+  const diffTime = now.getTime() - lastMatchDate.getTime();
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  if (diffDays > 120) return 0.25;
+  if (diffDays > 60) return 0.5;
+  return null;
+}
+
+/**
+ * Returns localized Argentine Spanish description for decay factor.
+ */
+export function getDecayFactorText(decayFactor: number | null | undefined): string | null {
+  if (decayFactor === 0.25) {
+    return "Puntos reducidos al 25% por inactividad (más de 120 días)";
+  }
+  if (decayFactor === 0.5) {
+    return "Puntos reducidos al 50% por inactividad (más de 60 días)";
+  }
+  return null;
+}
+
+/**
+ * Returns localized Argentine Spanish text for ranking delta position changes.
+ */
+export function getRankingDeltaText(delta: number | null | undefined): string {
+  if (!delta || delta === 0) return "Posición sin cambios";
+  if (delta > 0) return `Subió ${delta} ${delta === 1 ? "posición" : "posiciones"}`;
+  return `Bajó ${Math.abs(delta)} ${Math.abs(delta) === 1 ? "posición" : "posiciones"}`;
+}
