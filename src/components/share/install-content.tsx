@@ -5,19 +5,26 @@ import { Share, PlusSquare, Smartphone, Check } from "lucide-react";
 import { InstallButton } from "@/components/share/install-button";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import { cn } from "@/lib/utils";
+import {
+  isIOSDeviceUserAgent,
+  getPlatformSteps,
+  PlatformType,
+  InstallStep,
+} from "@/components/share/install-utils";
 
 export function InstallContent() {
   const isInstalled = usePwaInstalled();
   const [hasInstallButton, setHasInstallButton] = useState(false);
-  const [platform, setPlatform] = useState<"android" | "ios">("android");
+  const [platform, setPlatform] = useState<PlatformType>("android");
 
   // Auto-detect operating system on mount to improve conversion & user onboarding
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const isIOSDevice =
-      /iPad|iPhone|iPod/.test(window.navigator.userAgent) ||
-      (window.navigator.userAgent.includes("Mac") && "ontouchend" in document);
-    if (isIOSDevice) {
+    const isIOS = isIOSDeviceUserAgent(
+      window.navigator.userAgent,
+      "ontouchend" in document
+    );
+    if (isIOS) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPlatform("ios");
     }
@@ -29,9 +36,13 @@ export function InstallContent() {
 
   if (isInstalled) {
     return (
-      <div className="flex flex-col items-center gap-3 py-6">
+      <div
+        role="region"
+        aria-label="Estado de instalación de Padel Red"
+        className="flex flex-col items-center gap-3 py-6"
+      >
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30">
-          <Check className="h-6 w-6 text-emerald-500" />
+          <Check className="h-6 w-6 text-emerald-500" aria-hidden="true" />
         </div>
         <p className="text-sm font-semibold text-foreground">
           Padel Red ya está instalada
@@ -43,60 +54,27 @@ export function InstallContent() {
     );
   }
 
-  const iosSteps = [
-    {
-      icon: <Share className="h-5 w-5 text-primary" />,
-      text: (
-        <>
-          Abrí el menú de <strong>compartir</strong> (ícono <Share className="h-4 w-4 inline mb-1" />) abajo en Safari.
-        </>
-      ),
-    },
-    {
-      icon: <PlusSquare className="h-5 w-5 text-primary" />,
-      text: (
-        <>
-          Seleccioná la opción <strong>&quot;Agregar a inicio&quot;</strong> o <strong>&quot;Add to Home Screen&quot;</strong>.
-        </>
-      ),
-    },
-    {
-      icon: <Smartphone className="h-5 w-5 text-primary" />,
-      text: (
-        <>
-          Pulsá <strong>&quot;Agregar&quot;</strong> en la esquina superior derecha para finalizar.
-        </>
-      ),
-    },
-  ];
+  const steps = getPlatformSteps(platform);
 
-  const androidSteps = [
-    {
-      icon: <Smartphone className="h-5 w-5 text-primary" />,
-      text: (
-        <>
-          Pulsá el botón superior de <strong>&quot;Instalar app&quot;</strong> si te aparece disponible.
-        </>
-      ),
-    },
-    {
-      icon: <PlusSquare className="h-5 w-5 text-primary" />,
-      text: (
-        <>
-          O abrí el menú de tu navegador (tres puntos <span className="font-bold">⋮</span>) y elegí <strong>&quot;Instalar aplicación&quot;</strong> o <strong>&quot;Agregar a pantalla principal&quot;</strong>.
-        </>
-      ),
-    },
-    {
-      icon: <Check className="h-5 w-5 text-primary" />,
-      text: "Y listo. Ya podés disfrutar de Padel Red como una aplicación nativa.",
-    },
-  ];
-
-  const activeSteps = platform === "ios" ? iosSteps : androidSteps;
+  const renderIcon = (iconName: InstallStep["iconName"]) => {
+    switch (iconName) {
+      case "share":
+        return <Share className="h-5 w-5 text-primary" aria-hidden="true" />;
+      case "plus-square":
+        return <PlusSquare className="h-5 w-5 text-primary" aria-hidden="true" />;
+      case "smartphone":
+        return <Smartphone className="h-5 w-5 text-primary" aria-hidden="true" />;
+      case "check":
+        return <Check className="h-5 w-5 text-primary" aria-hidden="true" />;
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div
+      role="region"
+      aria-label="Instrucciones de instalación de Padel Red"
+      className="space-y-6"
+    >
       {/* Platform Toggle (Custom selection button group standardizing h-12 and active:scale-[0.98]) */}
       <div className="space-y-2">
         <span
@@ -181,17 +159,22 @@ export function InstallContent() {
 
       {/* Platform-Specific Steps */}
       <div className="space-y-3">
-        {activeSteps.map((step, index) => (
+        {steps.map((step) => (
           <div
-            key={index}
-            className="flex items-center gap-4 rounded-xl bg-card p-4 border border-border"
+            key={step.id}
+            className="flex items-center gap-4 rounded-xl bg-card p-4 border border-border shadow-xs"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted border border-border">
-              {step.icon}
+              {renderIcon(step.iconName)}
             </div>
-            <p className="text-sm font-semibold leading-snug text-foreground">
-              {step.text}
-            </p>
+            <div className="space-y-0.5">
+              <p className="text-xs font-bold text-muted-foreground">
+                {step.title}
+              </p>
+              <p className="text-sm font-semibold leading-snug text-foreground">
+                {step.description}
+              </p>
+            </div>
           </div>
         ))}
       </div>
