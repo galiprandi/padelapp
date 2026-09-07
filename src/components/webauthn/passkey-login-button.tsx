@@ -72,18 +72,20 @@ export function PasskeyLoginButton() {
     <Button
       type="button"
       variant="outline"
-      className="h-12 w-full rounded-lg text-base font-semibold"
+      className="h-12 w-full rounded-lg text-base font-semibold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       disabled={isAuthenticating}
+      aria-busy={isAuthenticating}
+      aria-label={isAuthenticating ? "Verificando huella biométrica..." : "Entrar con huella o Face ID"}
       onClick={handlePasskeyLogin}
     >
       {isAuthenticating ? (
         <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
           Verificando…
         </>
       ) : (
         <>
-          <Fingerprint className="mr-2 h-5 w-5" />
+          <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
           Entrar con huella
         </>
       )}

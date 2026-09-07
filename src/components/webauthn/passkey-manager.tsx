@@ -47,9 +47,13 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
 
   if (supported === false) {
     return (
-      <div className="rounded-xl border border-border bg-card p-4">
+      <div
+        role="region"
+        aria-label="Gestor de acceso biométrico con huella"
+        className="rounded-xl border border-border bg-card p-4 shadow-xs"
+      >
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border">
             <Fingerprint className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="space-y-1">
@@ -113,10 +117,14 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div
+      role="region"
+      aria-label="Gestor de acceso biométrico con huella"
+      className="rounded-xl border border-border bg-card p-4 shadow-xs"
+    >
       <div className="flex items-start gap-3 mb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Fingerprint className="h-5 w-5" aria-hidden="true" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs">
+          <Fingerprint className="h-5 w-5 text-primary" aria-hidden="true" />
         </div>
         <div className="flex-1 space-y-1">
           <h2 className="text-sm font-bold text-foreground">
@@ -139,9 +147,16 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           placeholder="Ej: Mi Celular, Mi Computadora..."
           value={nickname}
           onChange={(e) => setNickname(e.target.value.slice(0, 30))}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setNickname("");
+              e.currentTarget.blur();
+            }
+          }}
           maxLength={30}
           disabled={isRegistering}
-          className="h-10 text-sm"
+          aria-label="Nombre del dispositivo para la huella"
+          className="h-10 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         />
       </div>
 
@@ -171,7 +186,8 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
               <button
                 onClick={() => handleDelete(passkey.credentialId)}
                 disabled={isDeleting}
-                aria-label="Eliminar huella"
+                aria-busy={isDeleting}
+                aria-label={`Eliminar huella ${passkey.nickname ? `"${passkey.nickname}"` : "registrada"}`}
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -184,8 +200,10 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
       <Button
         type="button"
         variant="outline"
-        className="w-full h-10"
+        className="w-full h-10 font-medium active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         disabled={isRegistering || supported === null}
+        aria-busy={isRegistering}
+        aria-label={isRegistering ? "Registrando huella biométrica..." : "Registrar nueva huella biométrica"}
         onClick={handleRegister}
       >
         {isRegistering ? (
