@@ -13,6 +13,7 @@ import {
   formatSpanishNamesList,
   formatContactPlayersSummary,
   getTurnPublicSubtitle,
+  isLateLeaveWarningRequired,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -446,5 +447,53 @@ describe("getTurnPublicSubtitle", () => {
       compactDate,
     });
     expect(sub).toBe(`Sumate a este turno · ${compactDate}`);
+  });
+});
+
+describe("isLateLeaveWarningRequired", () => {
+  const baseTime = new Date("2026-09-05T12:00:00Z").getTime();
+
+  it("returns true when turn is in 1.5 hours and user is not creator", () => {
+    const turnDate = new Date("2026-09-05T13:30:00Z");
+    expect(
+      isLateLeaveWarningRequired({
+        date: turnDate,
+        isCreator: false,
+        nowMs: baseTime,
+      })
+    ).toBe(true);
+  });
+
+  it("returns false when turn is in 3 hours", () => {
+    const turnDate = new Date("2026-09-05T15:00:00Z");
+    expect(
+      isLateLeaveWarningRequired({
+        date: turnDate,
+        isCreator: false,
+        nowMs: baseTime,
+      })
+    ).toBe(false);
+  });
+
+  it("returns false when user is turn creator", () => {
+    const turnDate = new Date("2026-09-05T13:30:00Z");
+    expect(
+      isLateLeaveWarningRequired({
+        date: turnDate,
+        isCreator: true,
+        nowMs: baseTime,
+      })
+    ).toBe(false);
+  });
+
+  it("returns false for past turn dates", () => {
+    const turnDate = new Date("2026-09-05T11:00:00Z");
+    expect(
+      isLateLeaveWarningRequired({
+        date: turnDate,
+        isCreator: false,
+        nowMs: baseTime,
+      })
+    ).toBe(false);
   });
 });
