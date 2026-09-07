@@ -7,6 +7,9 @@ import {
   getNextRadioIndex,
   getPlayerRecentForm,
   calculatePlayerStreak,
+  calculateDecayFactor,
+  getDecayFactorText,
+  getRankingDeltaText,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -309,6 +312,47 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("rankingDecayAndDeltaHelpers", () => {
+  it("calculateDecayFactor returns null when lastMatchAt is null, undefined, or invalid", () => {
+    expect(calculateDecayFactor(null)).toBeNull();
+    expect(calculateDecayFactor(undefined)).toBeNull();
+    expect(calculateDecayFactor("invalid-date")).toBeNull();
+  });
+
+  it("calculateDecayFactor computes correct factor for 30, 75, and 150 inactive days", () => {
+    const now = new Date("2026-09-06T12:00:00Z");
+
+    const recentDate = new Date("2026-08-15T12:00:00Z"); // ~22 days
+    expect(calculateDecayFactor(recentDate, now)).toBeNull();
+
+    const sixtyFiveDaysAgo = new Date("2026-07-01T12:00:00Z"); // ~67 days
+    expect(calculateDecayFactor(sixtyFiveDaysAgo, now)).toBe(0.5);
+
+    const hundredThirtyDaysAgo = new Date("2026-04-20T12:00:00Z"); // ~139 days
+    expect(calculateDecayFactor(hundredThirtyDaysAgo, now)).toBe(0.25);
+  });
+
+  it("getDecayFactorText returns correct localized messages", () => {
+    expect(getDecayFactorText(0.25)).toBe(
+      "Puntos reducidos al 25% por inactividad (más de 120 días)",
+    );
+    expect(getDecayFactorText(0.5)).toBe(
+      "Puntos reducidos al 50% por inactividad (más de 60 días)",
+    );
+    expect(getDecayFactorText(null)).toBeNull();
+  });
+
+  it("getRankingDeltaText formats position changes in Argentine Spanish correctly", () => {
+    expect(getRankingDeltaText(1)).toBe("Subió 1 posición");
+    expect(getRankingDeltaText(3)).toBe("Subió 3 posiciones");
+    expect(getRankingDeltaText(-1)).toBe("Bajó 1 posición");
+    expect(getRankingDeltaText(-2)).toBe("Bajó 2 posiciones");
+    expect(getRankingDeltaText(0)).toBe("Posición sin cambios");
+    expect(getRankingDeltaText(null)).toBe("Posición sin cambios");
+    expect(getRankingDeltaText(undefined)).toBe("Posición sin cambios");
   });
 });
 
