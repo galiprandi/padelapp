@@ -328,3 +328,26 @@ export function getTurnPublicSubtitle({
   }
   return `Sumate a este turno · ${compactDate}`;
 }
+
+export interface LateLeaveWarningOptions {
+  date: Date | string;
+  isCreator?: boolean;
+  nowMs?: number;
+}
+
+/**
+ * Checks whether a late leave warning is required for a player leaving a turn.
+ * A late leave warning applies if the turn is in less than 2 hours (and in the future) and the player is not the turn creator.
+ */
+export function isLateLeaveWarningRequired({
+  date,
+  isCreator = false,
+  nowMs = Date.now(),
+}: LateLeaveWarningOptions): boolean {
+  if (isCreator) return false;
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return false;
+
+  const hoursUntilTurn = (d.getTime() - nowMs) / (1000 * 60 * 60);
+  return hoursUntilTurn < 2 && hoursUntilTurn >= 0;
+}

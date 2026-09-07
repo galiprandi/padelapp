@@ -8,6 +8,7 @@ import { createMagicLink } from "@/lib/magic-link";
 import { leaveTurnAction } from "@/app/(app)/turnos/actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast/use-toast";
+import { isLateLeaveWarningRequired } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
   turnId: string;
@@ -41,17 +42,14 @@ export function LeaveTurnButton({
     });
   };
 
-  const turnDate = new Date(date);
-  // eslint-disable-next-line react-hooks/purity -- Date.now() is intentional: computes time-until-turn for UI display
-  const hoursUntilTurn = (turnDate.getTime() - Date.now()) / (1000 * 60 * 60);
-  const isLateLeave = hoursUntilTurn < 2 && hoursUntilTurn >= 0 && !isCreator;
+  const isLateLeave = isLateLeaveWarningRequired({ date, isCreator });
 
   if (!confirming) {
     return (
       <Button
         onClick={() => setConfirming(true)}
         variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Bajarme del turno"
       >
         <LogOut className="mr-2 h-4 w-4" />
@@ -62,7 +60,10 @@ export function LeaveTurnButton({
 
   return (
     <div
+      role="region"
+      aria-label="Baja del turno"
       className="flex flex-col gap-2"
+      tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape" && !isPending) {
           setConfirming(false);
@@ -70,7 +71,7 @@ export function LeaveTurnButton({
       }}
     >
       {isLateLeave && (
-        <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left">
+        <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left shadow-xs">
           <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
             <span className="inline-block h-2 w-2 rounded-full bg-destructive" />
             Baja tardía detectada
@@ -81,7 +82,7 @@ export function LeaveTurnButton({
         </div>
       )}
       {wasFull && (
-        <div className="rounded-lg border border-border bg-muted p-3 flex flex-col gap-2">
+        <div className="rounded-lg border border-border bg-card p-3 flex flex-col gap-2 shadow-xs">
           <p className="text-xs text-muted-foreground text-center">
             ¿No podés venir? Compartí el link para que alguien ocupe tu lugar:
           </p>
@@ -90,7 +91,7 @@ export function LeaveTurnButton({
             text={`Se liberó un cupo en ${club}`}
             url={createMagicLink({ resource: "turn", identifier: turnId }).url}
             variant="outline"
-            className="w-full h-10 rounded-lg text-xs font-bold active:scale-[0.98] transition-all"
+            className="w-full h-10 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
           />
         </div>
       )}
@@ -100,7 +101,7 @@ export function LeaveTurnButton({
           variant="outline"
           className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
           disabled={isPending}
-          aria-label="Cancelar baja"
+          aria-label="Cancelar baja del turno"
         >
           <X className="mr-2 h-4 w-4" />
           Cancelar
@@ -108,7 +109,7 @@ export function LeaveTurnButton({
         <Button
           onClick={handleLeave}
           variant="ghost"
-          className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/30 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+          className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
           disabled={isPending}
           aria-busy={isPending}
           aria-label={
