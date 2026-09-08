@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { MessageSquare } from "lucide-react";
-import { formatWhatsAppInviteMessage, formatWhatsAppGroupInviteMessage } from "@/components/turns/turn-utils";
+import { getWhatsAppInviteUrl, getWhatsAppGroupInviteUrl } from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
 interface WhatsAppInviteButtonProps {
@@ -23,15 +23,13 @@ export function WhatsAppInviteButton({
   const { showToast } = useToast();
 
   const whatsappUrl = useMemo(() => {
-    const message = formatWhatsAppInviteMessage({
+    return getWhatsAppInviteUrl({
       club,
       date,
       contactName,
       openSlots,
       shareUrl,
     });
-
-    return `https://wa.me/?text=${encodeURIComponent(message)}`;
   }, [date, contactName, club, openSlots, shareUrl]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -47,7 +45,7 @@ export function WhatsAppInviteButton({
       href={whatsappUrl || "#"}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0"
+      className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 shadow-xs"
       aria-label={`Invitar a ${contactName} por WhatsApp para sumar al turno en ${club}`}
       onClick={handleClick}
     >
@@ -77,14 +75,12 @@ export function WhatsAppGroupInviteButton({
   const { showToast } = useToast();
 
   const whatsappUrl = useMemo(() => {
-    const message = formatWhatsAppGroupInviteMessage({
+    return getWhatsAppGroupInviteUrl({
       club,
       date,
       openSlots,
       shareUrl,
     });
-
-    return `https://wa.me/?text=${encodeURIComponent(message)}`;
   }, [date, club, openSlots, shareUrl]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -97,10 +93,10 @@ export function WhatsAppGroupInviteButton({
 
   const variantStyles =
     variant === "amber"
-      ? "bg-amber-600 text-white hover:bg-amber-700 border-transparent"
+      ? "bg-amber-600 text-white hover:bg-amber-700 border-transparent shadow-xs"
       : variant === "outline"
         ? "border border-border text-foreground bg-card hover:bg-muted shadow-xs"
-        : "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent";
+        : "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent shadow-xs";
 
   const slotsText =
     openSlots === 1 ? "1 jugador" : `${openSlots} jugadores`;

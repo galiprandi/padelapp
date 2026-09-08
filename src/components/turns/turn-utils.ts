@@ -90,6 +90,22 @@ export function formatWhatsAppGroupInviteMessage({
   return `⚠️ ${slotsText} para el turno de pádel en ${club} ${dayStr} ${timeStr}. ¿Quién se suma? Entren acá para anotarse: ${shareUrl}`;
 }
 
+/**
+ * Generates full WhatsApp wa.me URL with encoded message payload for individual contact invites.
+ */
+export function getWhatsAppInviteUrl(options: WhatsAppInviteMessageOptions): string {
+  const message = formatWhatsAppInviteMessage(options);
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Generates full WhatsApp wa.me URL with encoded message payload for group salvage invites.
+ */
+export function getWhatsAppGroupInviteUrl(options: WhatsAppGroupInviteMessageOptions): string {
+  const message = formatWhatsAppGroupInviteMessage(options);
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+}
+
 export interface SalvageShareMessageOptions {
   club: string;
   date: Date | string;
