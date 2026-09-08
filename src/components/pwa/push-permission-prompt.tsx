@@ -6,7 +6,22 @@ import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 
-const DISMISS_KEY = "push-prompt-dismissed";
+export const PUSH_PROMPT_DISMISS_KEY = "push-prompt-dismissed";
+
+export function isPushPromptDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(PUSH_PROMPT_DISMISS_KEY) === "true";
+}
+
+export function dismissPushPrompt(): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PUSH_PROMPT_DISMISS_KEY, "true");
+}
+
+export function clearPushPromptDismissal(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(PUSH_PROMPT_DISMISS_KEY);
+}
 
 export function PushPermissionPrompt() {
   const { showToast } = useToast();
@@ -18,9 +33,27 @@ export function PushPermissionPrompt() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     if (typeof window !== "undefined") {
-      setDismissed(localStorage.getItem(DISMISS_KEY) === "true");
+      setDismissed(isPushPromptDismissed());
     }
   }, []);
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    dismissPushPrompt();
+  };
+
+  useEffect(() => {
+    if (!mounted || dismissed) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mounted, dismissed]);
 
   // Don't render during SSR — permission state is only known on the client.
   if (
@@ -78,10 +111,7 @@ export function PushPermissionPrompt() {
             </Button>
             <Button
               variant="ghost"
-              onClick={() => {
-                setDismissed(true);
-                localStorage.setItem(DISMISS_KEY, "true");
-              }}
+              onClick={handleDismiss}
               disabled={loading}
               size="sm"
               aria-label="Descartar solicitud de notificaciones por ahora"
