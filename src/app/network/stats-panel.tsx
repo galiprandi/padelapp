@@ -3,7 +3,11 @@ import { ChevronLeft, TrendingUp, TrendingDown, Users, CalendarDays, Trophy, Bel
 import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName, cn } from "@/lib/utils";
-import { calculateCommunityCohesion } from "./graph-utils";
+import {
+  calculateCommunityCohesion,
+  calculateNetworkRoleInfo,
+  getNetworkActivityTier,
+} from "./graph-utils";
 
 function timeAgo(date: Date): string {
   const now = Date.now();
@@ -258,7 +262,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                 key={u.id}
                 href={`/p/${u.id}`}
                 prefetch={true}
-                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
+                className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               >
                 <PlayerAvatar
                   name={capitalizeName(u.name ?? u.alias ?? "?")}
@@ -335,34 +339,68 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
             Más conectados
           </h2>
           <div className="space-y-2">
-            {metrics.topPlayers.map((p, i) => (
-              <Link
-                key={p.id}
-                href={`/p/${p.id}`}
-                prefetch={true}
-                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
-              >
-                <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums">
-                  {i + 1}
-                </span>
-                <PlayerAvatar
-                  name={capitalizeName(p.name ?? p.alias ?? "?")}
-                  image={p.image ?? undefined}
-                  size={32}
-                />
-                <div className="flex-1 min-w-0 space-y-0.5">
-                  <p className="text-sm font-semibold text-foreground truncate">
-                    {capitalizeName(p.name ?? p.alias ?? "?")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {p.matchesPlayed} partidos
-                  </p>
-                </div>
-                <span className="text-xs font-bold tabular-nums text-primary">
-                  {p.networkSize}
-                </span>
-              </Link>
-            ))}
+            {metrics.topPlayers.map((p, i) => {
+              const activityTier = getNetworkActivityTier(p.networkSize, p.matchesPlayed);
+              const roleInfo = graphData
+                ? calculateNetworkRoleInfo(graphData.nodes, graphData.links, p.id)
+                : null;
+
+              return (
+                <Link
+                  key={p.id}
+                  href={`/p/${p.id}`}
+                  prefetch={true}
+                  className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                >
+                  <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums shrink-0">
+                    {i + 1}
+                  </span>
+                  <PlayerAvatar
+                    name={capitalizeName(p.name ?? p.alias ?? "?")}
+                    image={p.image ?? undefined}
+                    size={32}
+                  />
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-sm font-semibold text-foreground truncate">
+                        {capitalizeName(p.name ?? p.alias ?? "?")}
+                      </p>
+                      {roleInfo ? (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            roleInfo.badgeStyle,
+                          )}
+                          title={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                          aria-label={`Rol en la red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                        >
+                          {roleInfo.roleLabel}
+                        </span>
+                      ) : (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            activityTier.badgeStyle,
+                          )}
+                          title={`Actividad: ${activityTier.label}`}
+                          aria-label={`Nivel de actividad de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${activityTier.label}`}
+                        >
+                          {activityTier.label}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {p.matchesPlayed} {p.matchesPlayed === 1 ? "partido" : "partidos"}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-bold tabular-nums text-primary block">
+                      {p.networkSize} {p.networkSize === 1 ? "contacto" : "contactos"}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
