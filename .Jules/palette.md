@@ -125,3 +125,7 @@
 ## 2026-08-20 - [Input Autocomplete Clear Action & Keyboard Escape Reset]
 **Learning:** Autocomplete or datalist input fields (like `ClubInput`) encourage users to select from suggestions, but when a user picks the wrong suggestion or wants to change selection on mobile, backspacing character-by-character creates physical friction. Providing a 1-tap clear button (`X`) alongside an `Escape` key (`onKeyDown`) handler and explicit localized `aria-label` enables effortless input reset for both touch and keyboard/screen reader navigators.
 **Action:** Always supply a 1-tap clear action button with `Escape` key handling and explicit `aria-label` on search or datalist/autocomplete inputs.
+
+## 2026-08-21 - [Interactive Prompt Banner Keyboard Escape Dismissal]
+**Learning:** Non-modal interactive prompt banners (such as system push notification activation cards) can disrupt keyboard navigation flow if non-mouse users are forced to Tab through all elements to locate the dismissal button. Registering a global `Escape` key listener when the prompt banner is active allows keyboard users to dismiss the prompt instantly from anywhere on the page, persisting the dismissal state via modular storage helpers.
+**Action:** Always implement a global or scoped `Escape` key dismissal listener on interactive onboarding or permission prompt banners to ensure non-mouse accessibility.
