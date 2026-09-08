@@ -15,6 +15,7 @@ import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { useToast } from "@/components/toast/use-toast";
+import { parseScoreSets, calculateMatchSetWins } from "@/lib/match-helpers";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -28,7 +29,11 @@ export function MatchResultCard({
   footer,
 }: MatchResultCardProps) {
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div
+      role="region"
+      aria-label={`Tarjeta de resultado: ${label}`}
+      className="rounded-xl border border-border bg-card shadow-xs overflow-hidden"
+    >
       <div className="border-b border-border px-4 py-2">
         <span className="text-xs font-semibold text-muted-foreground">
           {label}
@@ -82,25 +87,6 @@ export interface MatchResultCompactProps {
   showDetailLink?: boolean;
 }
 
-function parseScoreSets(score?: string | null): Array<[number, number]> {
-  if (!score) {
-    return [];
-  }
-
-  return score
-    .split(",")
-    .map((segment) => segment.trim())
-    .map((segment) => segment.replace(/[\[\]]/g, ""))
-    .map((segment) => {
-      const match = segment.match(/(\d+)[^\d]+(\d+)/);
-      if (!match) {
-        return null;
-      }
-      return [Number(match[1]), Number(match[2])];
-    })
-    .filter((value): value is [number, number] => Array.isArray(value));
-}
-
 export const MatchResultCompact = memo(function MatchResultCompact({
   label = "Resultado",
   match,
@@ -116,6 +102,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   const [isConfirming, startTransition] = useTransition();
   const viewerId = propViewerId ?? session?.user?.id;
   const parsedSets = parseScoreSets(match.score);
+  const { winnerIndex } = calculateMatchSetWins(parsedSets);
   const scoresMatrix: Array<Array<number>> = [[], []];
 
   parsedSets.forEach(([teamAScore, teamBScore]) => {
@@ -124,18 +111,6 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   });
 
   const totalSets = Math.max(scoresMatrix[0].length, scoresMatrix[1].length);
-  const setWins = [0, 0];
-
-  parsedSets.forEach(([teamAScore, teamBScore]) => {
-    if (teamAScore > teamBScore) {
-      setWins[0] += 1;
-    } else if (teamBScore > teamAScore) {
-      setWins[1] += 1;
-    }
-  });
-
-  const winnerIndex =
-    setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
 
   const sortedPlayers = [...match.players].sort(
     (a, b) => a.position - b.position,
@@ -254,15 +229,16 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <button
                   onClick={handleQuickConfirm}
                   disabled={isConfirming}
+                  aria-busy={isConfirming}
                   aria-label={`Confirmar resultado ${match.score ? `(${match.score})` : ""} del partido`}
                   className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 h-8 rounded-lg text-xs font-semibold transition-all hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
                 >
                   {isConfirming ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   ) : (
-                    <Check className="h-3 w-3" />
+                    <Check className="h-3 w-3" aria-hidden="true" />
                   )}
-                  Confirmar
+                  {isConfirming ? "Confirmando..." : "Confirmar"}
                 </button>
               )}
               {isConfirmed && match.score && (
@@ -282,18 +258,18 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   size="icon"
                   iconOnly
                   aria-label="Compartir resultado"
-                  className="h-8 w-8 rounded-lg text-primary hover:bg-primary/10"
+                  className="h-8 w-8 rounded-lg text-primary hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 />
               )}
               {showDetailLink && matchDetailUrl ? (
                 <Link
                   href={matchDetailUrl}
                   prefetch={true}
-                  className="flex items-center gap-0.5 text-xs font-semibold text-primary"
+                  className="flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
                   aria-label={formattedDate ? `Ver detalle del partido del ${formattedDate}` : "Ver detalle del partido"}
                 >
                   Detalle
-                  <ChevronRight className="h-3 w-3" />
+                  <ChevronRight className="h-3 w-3" aria-hidden="true" />
                 </Link>
               ) : null}
             </div>

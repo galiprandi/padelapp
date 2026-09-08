@@ -10,6 +10,8 @@ import {
   calculateDecayFactor,
   getDecayFactorText,
   getRankingDeltaText,
+  parseScoreSets,
+  calculateMatchSetWins,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -312,6 +314,63 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("parseScoreSetsAndCalculateMatchSetWins", () => {
+  it("parseScoreSets returns empty array for null, undefined, or empty score string", () => {
+    expect(parseScoreSets(null)).toEqual([]);
+    expect(parseScoreSets(undefined)).toEqual([]);
+    expect(parseScoreSets("")).toEqual([]);
+  });
+
+  it("parseScoreSets parses standard two-set and three-set scores correctly", () => {
+    expect(parseScoreSets("6-4, 6-3")).toEqual([
+      [6, 4],
+      [6, 3],
+    ]);
+
+    expect(parseScoreSets("6-2, 4-6, 7-6")).toEqual([
+      [6, 2],
+      [4, 6],
+      [7, 6],
+    ]);
+  });
+
+  it("parseScoreSets handles bracketed format or extra spaces cleanly", () => {
+    expect(parseScoreSets("[6-4], [3-6], [10-8]")).toEqual([
+      [6, 4],
+      [3, 6],
+      [10, 8],
+    ]);
+  });
+
+  it("parseScoreSets ignores non-matching or invalid segments", () => {
+    expect(parseScoreSets("6-4, invalid, 6-2")).toEqual([
+      [6, 4],
+      [6, 2],
+    ]);
+  });
+
+  it("calculateMatchSetWins correctly computes team A victory", () => {
+    const parsedSets = parseScoreSets("6-4, 6-3");
+    const result = calculateMatchSetWins(parsedSets);
+    expect(result.setWins).toEqual([2, 0]);
+    expect(result.winnerIndex).toBe(0);
+  });
+
+  it("calculateMatchSetWins correctly computes team B victory in three sets", () => {
+    const parsedSets = parseScoreSets("6-4, 3-6, 4-6");
+    const result = calculateMatchSetWins(parsedSets);
+    expect(result.setWins).toEqual([1, 2]);
+    expect(result.winnerIndex).toBe(1);
+  });
+
+  it("calculateMatchSetWins returns undefined winnerIndex when set wins are tied", () => {
+    const parsedSets = parseScoreSets("6-4, 4-6");
+    const result = calculateMatchSetWins(parsedSets);
+    expect(result.setWins).toEqual([1, 1]);
+    expect(result.winnerIndex).toBeUndefined();
   });
 });
 

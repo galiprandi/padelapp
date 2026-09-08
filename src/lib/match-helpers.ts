@@ -132,3 +132,48 @@ export function getRankingDeltaText(delta: number | null | undefined): string {
   if (delta > 0) return `Subió ${delta} ${delta === 1 ? "posición" : "posiciones"}`;
   return `Bajó ${Math.abs(delta)} ${Math.abs(delta) === 1 ? "posición" : "posiciones"}`;
 }
+
+/**
+ * Parses raw match score string (e.g. "6-4, 4-6, 7-6" or "[6-4],[4-6]") into numerical set pairs.
+ */
+export function parseScoreSets(score?: string | null): Array<[number, number]> {
+  if (!score) {
+    return [];
+  }
+
+  return score
+    .split(",")
+    .map((segment) => segment.trim())
+    .map((segment) => segment.replace(/[\[\]]/g, ""))
+    .map((segment) => {
+      const match = segment.match(/(\d+)[^\d]+(\d+)/);
+      if (!match) {
+        return null;
+      }
+      return [Number(match[1]), Number(match[2])];
+    })
+    .filter((value): value is [number, number] => Array.isArray(value));
+}
+
+/**
+ * Calculates set wins per team and winning team index (0 for Team A, 1 for Team B, undefined for draw/incomplete).
+ */
+export function calculateMatchSetWins(parsedSets: Array<[number, number]>): {
+  setWins: [number, number];
+  winnerIndex: number | undefined;
+} {
+  const setWins: [number, number] = [0, 0];
+
+  parsedSets.forEach(([teamAScore, teamBScore]) => {
+    if (teamAScore > teamBScore) {
+      setWins[0] += 1;
+    } else if (teamBScore > teamAScore) {
+      setWins[1] += 1;
+    }
+  });
+
+  const winnerIndex =
+    setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
+
+  return { setWins, winnerIndex };
+}
