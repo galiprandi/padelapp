@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 30 (Top Connected Players Social Role & Activity Badging in Network Stats Panel):
+  - [x] 2026-09-07 — Hecho: Refactorizado `StatsPanel` (`src/app/network/stats-panel.tsx`) para calcular e integrar insignias sólidas MDS de rol social en la red (`calculateNetworkRoleInfo`) y nivel de actividad (`getNetworkActivityTier`) junto a cada jugador en la lista 'Más conectados'.
+  - [x] 2026-09-07 — Hecho: Agregados atributos de accesibilidad ARIA (`aria-label` y `title`) descriptivos en voz argentina para lectores de pantalla, anillos de enfoque visible (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) y escala táctil activa (`active:scale-[0.98] transition-all`) en tarjetas interactivas de usuarios.
+  - [x] 2026-09-07 — Hecho: Pruebas unitarias en `src/lib/__tests__/graph-engine.test.ts` verificando el cálculo de niveles de actividad ('Conector leyenda ⚡') y roles sociales ('Nexo comunitario 🌉') para perfiles de jugadores destacados.
 - Phase 29 (Cross-Rivalry Interaction Density Calculation & Solid MDS Badging in Graph View):
   - [x] 2026-09-06 — Hecho: Creada la función pura `calculateCrossRivalryDensity` en `src/app/network/graph-utils.ts` para calcular la densidad de interacciones de rivalidad cruzada y duplas mixtas (`crossRivalryPercentage`), categorizando los nodos en niveles de rivalidad ('Red de rivalidad activa ⚔️', 'Duplas con rivalidad 🔄', 'Predominio de duplas 🤝', 'Sin partidos cruzados 📍').
   - [x] 2026-09-06 — Hecho: Integrada la insignia sólida MDS de rivalidad cruzada en el panel de detalles del nodo seleccionado en `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas de accesibilidad ARIA descriptivas en voz argentina.

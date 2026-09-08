@@ -1266,6 +1266,43 @@ describe("calculateNetworkRoleInfo", () => {
   });
 });
 
+describe("Top connected players role and activity badging in StatsPanel", () => {
+  const topPlayers = [
+    { id: "p-01", name: "Agustín Aliprandi", alias: "Agu", image: null, matchesPlayed: 12, networkSize: 10 },
+    { id: "p-02", name: "Fernando Belasteguín", alias: "Bela", image: null, matchesPlayed: 15, networkSize: 12 },
+    { id: "p-03", name: "Nuevo Jugador", alias: "Nuevo", image: null, matchesPlayed: 0, networkSize: 0 },
+  ];
+
+  const graphNodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "Agu", image: null, skillScore: 1100, community: 1, networkSize: 10, matchesPlayed: 12, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 12, matchesPlayed: 15, preferredSide: "LEFT" },
+    { id: "p-04", name: "Facundo", alias: "Facu", image: null, skillScore: 1020, community: 2, networkSize: 5, matchesPlayed: 6, preferredSide: "LEFT" },
+  ];
+
+  const graphLinks: GraphLink[] = [
+    { source: "p-01", target: "p-02", rivalMatches: 3, partnerMatches: 2, winsA: 2, winsB: 1, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 5 },
+    { source: "p-01", target: "p-04", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+  ];
+
+  it("calculates 'Conector leyenda ⚡' activity tier for top players with networkSize >= 10 and matchesPlayed >= 10", () => {
+    const tier = getNetworkActivityTier(topPlayers[0].networkSize, topPlayers[0].matchesPlayed);
+    expect(tier.label).toBe("Conector leyenda ⚡");
+    expect(tier.badgeStyle).toContain("bg-amber-100");
+  });
+
+  it("calculates 'Nuevo en la red 🆕' fallback activity tier for player with zero network connections and zero matches", () => {
+    const tier = getNetworkActivityTier(topPlayers[2].networkSize, topPlayers[2].matchesPlayed);
+    expect(tier.label).toBe("Nuevo en la red 🆕");
+    expect(tier.badgeStyle).toContain("bg-muted");
+  });
+
+  it("calculates network role 'Nexo comunitario 🌉' for top player connected to multiple communities", () => {
+    const role = calculateNetworkRoleInfo(graphNodes, graphLinks, "p-01");
+    expect(role.roleLabel).toBe("Nexo comunitario 🌉");
+    expect(role.badgeStyle).toContain("bg-indigo-100");
+  });
+});
+
 describe("calculateTurnRescueProximity", () => {
   const links: GraphLink[] = [
     {
