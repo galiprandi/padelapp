@@ -32,13 +32,21 @@ import {
   getCachedPadelContacts,
 } from "@/lib/queries";
 import { getUserPasskeys } from "@/lib/webauthn/actions";
-import { cn, getMatchWinner, capitalizeName } from "@/lib/utils";
+import { cn, capitalizeName } from "@/lib/utils";
 import { Greeting } from "@/components/greeting";
 import { LocalDate } from "@/components/ui/local-date";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { AppBadgeUpdater } from "@/components/pwa/app-badge-updater";
 import { ShareButton } from "@/components/share/share-button";
 import { OnboardingRedirect } from "@/components/onboarding-redirect";
+import {
+  calculateRecentForm,
+  calculateDashboardBadgeCount,
+  getAgendaItems,
+  getHeroActivity,
+  formatDashboardWelcomeSubtitle,
+  type DashboardTurn,
+} from "./dashboard-utils";
 
 export default async function DashboardContent() {
   const session = await auth();
@@ -75,7 +83,6 @@ export default async function DashboardContent() {
     allPendingMatches,
   );
 
-  // Use a stable reference/value during prerendering (dynamic APIs like headers or cookies will trigger request-time execution where Date works correctly)
   const now = new Date();
 
   const upcomingMatches = allPendingMatches
@@ -92,45 +99,24 @@ export default async function DashboardContent() {
 
   const isNewUser = user ? user.matchesPlayed === 0 : false;
 
-  const agendaItems = [
-    ...myTurns.map((turn) => ({
-      id: turn.id,
-      type: "turn" as const,
-      date: new Date(turn.date),
-      data: turn,
-    })),
-    ...upcomingMatches.map((match) => ({
-      id: match.id,
-      type: "match" as const,
-      date: new Date(match.date ?? match.createdAt),
-      data: match,
-    })),
-  ].sort((a, b) => a.date.getTime() - b.date.getTime());
-
-  const heroActivity =
-    agendaItems.length > 0 &&
-    agendaItems[0].date.getTime() - now.getTime() < 24 * 60 * 60 * 1000
-      ? agendaItems[0]
-      : null;
+  const agendaItems = getAgendaItems(myTurns, upcomingMatches);
+  const heroActivity = getHeroActivity(agendaItems, now);
 
   const remainingAgendaItems = heroActivity
     ? agendaItems.slice(1)
     : agendaItems;
 
-  const recentForm = recentMatches.slice(0, 5).map((match) => {
-    const winner = getMatchWinner(match.score ?? null);
-    if (!winner) return "L";
-    const player = match.players.find((p) => p.user?.id === viewerId);
-    if (!player) return "L";
-    const playerTeam = player.position < 2 ? "A" : "B";
-    return winner === playerTeam ? "W" : "L";
-  });
+  const recentForm = calculateRecentForm(recentMatches, viewerId, 5);
 
-  // Badge count: turns needing players + pending confirmations + pending attendance
   const incompleteTurns = myTurns.filter(
     (t) => t.players.length < t.maxPlayers,
   ).length;
-  const badgeCount = incompleteTurns + pendingActionMatches.length + pendingAttendance.length;
+
+  const badgeCount = calculateDashboardBadgeCount(
+    incompleteTurns,
+    pendingActionMatches.length,
+    pendingAttendance.length,
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -152,9 +138,7 @@ export default async function DashboardContent() {
             matchesPlayed={user?.matchesPlayed ?? 0}
           />
           <p className="text-sm text-muted-foreground">
-            {isNewUser
-              ? "Bienvenido. Empezá creando tu primer turno."
-              : "Tu actividad de pádel en un solo lugar."}
+            {formatDashboardWelcomeSubtitle(isNewUser)}
           </p>
         </div>
       </div>
@@ -192,7 +176,11 @@ export default async function DashboardContent() {
         </>
       ) : (
         !user?.alias && (
-          <div className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs">
+          <div
+            role="region"
+            aria-label="Perfil de jugador incompleto"
+            className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs"
+          >
             <div className="flex items-center gap-3">
               <UserCheck className="h-5 w-5 text-amber-800 dark:text-amber-200" aria-hidden="true" />
               <h2 className="text-sm font-bold text-amber-900 dark:text-amber-100">
@@ -218,7 +206,11 @@ export default async function DashboardContent() {
 
       {/* Invite friends — visible for early users (<5 matches) */}
       {user && user.matchesPlayed < 5 && (
-        <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+        <div
+          role="region"
+          aria-label="Invitar amigos a Padel Red"
+          className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+        >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
             <UserPlus className="h-5 w-5" aria-hidden="true" />
           </div>
@@ -246,7 +238,11 @@ export default async function DashboardContent() {
 
       {/* Stats row */}
       {user && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div
+          role="region"
+          aria-label="Resumen de estadísticas personales"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+        >
           <Link
             href="/ranking"
             prefetch={true}
@@ -308,83 +304,86 @@ export default async function DashboardContent() {
       )}
 
       {/* Hero Activity */}
-      {heroActivity && (
-        <section
-          className={cn(
-            "space-y-3 rounded-xl border p-4",
-            heroActivity.type === "turn" &&
-              heroActivity.data.players.length < heroActivity.data.maxPlayers
-              ? "border-amber-500 bg-card"
-              : "border-border bg-card",
-          )}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {heroActivity.type === "turn" &&
-              heroActivity.data.players.length <
-                heroActivity.data.maxPlayers ? (
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-              ) : (
-                <Activity className="h-4 w-4 text-primary" />
-              )}
-              <h2 className="text-sm font-bold text-foreground">
-                {heroActivity.type === "turn" &&
-                heroActivity.data.players.length < heroActivity.data.maxPlayers
-                  ? "Turno incompleto"
-                  : "Próxima actividad"}
-              </h2>
-            </div>
-            {heroActivity.type === "turn" &&
-              heroActivity.data.players.length <
-                heroActivity.data.maxPlayers && (
+      {heroActivity && (() => {
+        const isTurn = heroActivity.type === "turn";
+        const turnData = isTurn ? (heroActivity.data as DashboardTurn) : null;
+        const isIncompleteTurn = Boolean(
+          turnData && turnData.players.length < turnData.maxPlayers,
+        );
+
+        return (
+          <section
+            role="region"
+            aria-label={
+              isIncompleteTurn
+                ? "Próximo turno incompleto"
+                : "Próxima actividad inminente"
+            }
+            className={cn(
+              "space-y-3 rounded-xl border p-4 shadow-xs",
+              isIncompleteTurn
+                ? "border-amber-500 bg-card"
+                : "border-border bg-card",
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {isIncompleteTurn ? (
+                  <AlertTriangle className="h-4 w-4 text-amber-500" aria-hidden="true" />
+                ) : (
+                  <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
+                )}
+                <h2 className="text-sm font-bold text-foreground">
+                  {isIncompleteTurn ? "Turno incompleto" : "Próxima actividad"}
+                </h2>
+              </div>
+              {isIncompleteTurn && turnData && (
                 <span className="text-xs font-bold text-amber-600">
-                  Faltan{" "}
-                  {heroActivity.data.maxPlayers -
-                    heroActivity.data.players.length}
+                  Faltan {turnData.maxPlayers - turnData.players.length}
                 </span>
               )}
-          </div>
-
-          {heroActivity.type === "turn" ? (
-            <div className="flex flex-col gap-3">
-              <TurnCard
-                turn={heroActivity.data}
-                isJoined={true}
-                isCreator={heroActivity.data.creatorId === viewerId}
-                contacts={contacts}
-              />
-              {heroActivity.data.players.length <
-                heroActivity.data.maxPlayers && (
-                <OpenToNetworkButton
-                  turnId={heroActivity.id}
-                  club={heroActivity.data.club}
-                  lastNetworkNotificationAt={heroActivity.data.lastNetworkNotificationAt}
-                  variant="default"
-                  label="Salvar turno: Notificar a mi red"
-                  className="h-10 bg-amber-500 hover:bg-amber-600"
-                />
-              )}
             </div>
-          ) : (
-            <MatchResultCompact
-              match={heroActivity.data as MatchResultCompactMatch}
-              detailUrl={`/match/${heroActivity.id}`}
-              label="Partido inminente"
-              viewerId={viewerId}
-            />
-          )}
-        </section>
-      )}
+
+            {isTurn ? (
+              <div className="flex flex-col gap-3">
+                <TurnCard
+                  turn={heroActivity.data as Parameters<typeof TurnCard>[0]["turn"]}
+                  isJoined={true}
+                  isCreator={(heroActivity.data as { creatorId?: string }).creatorId === viewerId}
+                  contacts={contacts}
+                />
+                {isIncompleteTurn && (
+                  <OpenToNetworkButton
+                    turnId={heroActivity.id}
+                    club={(heroActivity.data as { club: string }).club}
+                    lastNetworkNotificationAt={(heroActivity.data as { lastNetworkNotificationAt?: Date | null }).lastNetworkNotificationAt}
+                    variant="default"
+                    label="Salvar turno: Notificar a mi red"
+                    className="h-10 bg-amber-500 hover:bg-amber-600"
+                  />
+                )}
+              </div>
+            ) : (
+              <MatchResultCompact
+                match={heroActivity.data as MatchResultCompactMatch}
+                detailUrl={`/match/${heroActivity.id}`}
+                label="Partido inminente"
+                viewerId={viewerId}
+              />
+            )}
+          </section>
+        );
+      })()}
 
       {/* Pending actions */}
       {pendingActionMatches.length > 0 && (
-        <section className="space-y-3">
+        <section role="region" aria-label="Acciones pendientes de partidos" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">
                 Acciones pendientes
               </h2>
-              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground shadow-xs">
                 {pendingActionMatches.length}
               </span>
             </div>
@@ -392,9 +391,10 @@ export default async function DashboardContent() {
               <Link
                 href="/notifications"
                 prefetch={true}
-                className="flex items-center text-xs text-muted-foreground hover:text-foreground"
+                className="flex items-center text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
+                aria-label="Ver todas las acciones pendientes"
               >
-                Ver todas <ChevronRight className="h-3 w-3" />
+                Ver todas <ChevronRight className="h-3 w-3" aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -423,12 +423,12 @@ export default async function DashboardContent() {
 
       {/* Pending attendance marking (creator only) */}
       {pendingAttendance.length > 0 && (
-        <section className="space-y-3">
+        <section role="region" aria-label="Marcar asistencia de partidos" className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
               Marcar asistencia
             </h2>
-            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold">
+            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold shadow-xs">
               {pendingAttendance.length}
             </span>
           </div>
@@ -438,7 +438,7 @@ export default async function DashboardContent() {
                 key={match.id}
                 href={`/match/${match.id}/result`}
                 prefetch={true}
-                className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
               >
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="text-sm font-semibold text-foreground truncate">
@@ -453,7 +453,7 @@ export default async function DashboardContent() {
                     · {match.playersWithoutAttendance} sin marcar
                   </span>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
               </Link>
             ))}
           </div>
@@ -461,15 +461,16 @@ export default async function DashboardContent() {
       )}
 
       {/* My Agenda */}
-      <section className="space-y-3">
+      <section role="region" aria-label="Agenda personal de turnos y partidos" className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">Mi Agenda</h2>
           <Link
             href="/turnos"
             prefetch={true}
-            className="flex items-center text-xs text-muted-foreground hover:text-foreground"
+            className="flex items-center text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
+            aria-label="Ver todos los turnos en agenda"
           >
-            Ver todos <ChevronRight className="h-3 w-3" />
+            Ver todos <ChevronRight className="h-3 w-3" aria-hidden="true" />
           </Link>
         </div>
         <div className="space-y-3">
@@ -481,11 +482,11 @@ export default async function DashboardContent() {
                   className="border-l-4 border-l-blue-500/40 rounded-r-xl overflow-hidden"
                 >
                   <TurnCard
-                    turn={item.data}
-                    isJoined={item.data.players.some(
+                    turn={item.data as Parameters<typeof TurnCard>[0]["turn"]}
+                    isJoined={(item.data as DashboardTurn).players.some(
                       (p: { userId: string }) => p.userId === viewerId,
                     )}
-                    isCreator={item.data.creatorId === viewerId}
+                    isCreator={(item.data as { creatorId?: string }).creatorId === viewerId}
                     contacts={contacts}
                   />
                 </div>
@@ -531,10 +532,10 @@ export default async function DashboardContent() {
 
       {/* My substitute turns */}
       {mySubstituteTurns.length > 0 && (
-        <section className="space-y-3">
+        <section role="region" aria-label="Turnos como suplente" className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">Soy suplente</h2>
-            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold">
+            <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold shadow-xs">
               {mySubstituteTurns.length}
             </span>
           </div>
@@ -546,7 +547,7 @@ export default async function DashboardContent() {
                   key={turn.id}
                   href={`/t/${turn.id}`}
                   prefetch={true}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
                 >
                   <div className="flex flex-col gap-0.5 min-w-0">
                     <span className="text-sm font-semibold text-foreground truncate">
@@ -568,7 +569,7 @@ export default async function DashboardContent() {
                     </span>
                   </div>
                   {hasOpenSlot ? (
-                    <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0">
+                    <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0 shadow-xs">
                       Cupo libre
                     </span>
                   ) : (
@@ -583,7 +584,7 @@ export default async function DashboardContent() {
 
       {/* Recommended turns */}
       {recommendedTurns.length > 0 && (
-        <section className="space-y-3">
+        <section role="region" aria-label="Turnos disponibles recomendados" className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">
             Turnos disponibles
           </h2>
@@ -605,7 +606,7 @@ export default async function DashboardContent() {
       )}
 
       {/* Recent results */}
-      <section className="space-y-3">
+      <section role="region" aria-label="Últimos resultados de partidos" className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
