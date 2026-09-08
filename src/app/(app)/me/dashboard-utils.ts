@@ -96,7 +96,7 @@ export function getAgendaItems<TTurn extends DashboardTurn, TMatch extends Dashb
 /**
  * Finds imminent activity occurring within the next 24 hours.
  */
-export function getHeroActivity<TTurn extends DashboardTurn, TMatch extends DashboardMatch>(
+export function getHeroActivity<TTurn = unknown, TMatch = unknown>(
   agendaItems: AgendaItem<TTurn, TMatch>[],
   now: Date = new Date(),
 ): AgendaItem<TTurn, TMatch> | null {

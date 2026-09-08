@@ -131,12 +131,19 @@ describe("dashboard-utils", () => {
     const now = new Date("2026-10-10T12:00:00Z");
 
     it("returns first agenda item if within 24 hours of now", () => {
+      const turnData: DashboardTurn = {
+        id: "t1",
+        date: "2026-10-10T18:00:00Z",
+        players: [],
+        maxPlayers: 4,
+      };
+
       const agenda = [
         {
           id: "t1",
           type: "turn" as const,
           date: new Date("2026-10-10T18:00:00Z"), // +6 hours
-          data: { id: "t1" },
+          data: turnData,
         },
       ];
 
@@ -145,12 +152,19 @@ describe("dashboard-utils", () => {
     });
 
     it("returns null if first agenda item is >24 hours away", () => {
+      const turnData: DashboardTurn = {
+        id: "t1",
+        date: "2026-10-12T18:00:00Z",
+        players: [],
+        maxPlayers: 4,
+      };
+
       const agenda = [
         {
           id: "t1",
           type: "turn" as const,
           date: new Date("2026-10-12T18:00:00Z"), // +54 hours
-          data: { id: "t1" },
+          data: turnData,
         },
       ];
 
