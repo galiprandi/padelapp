@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   formatWhatsAppInviteMessage,
   formatWhatsAppGroupInviteMessage,
+  getWhatsAppInviteUrl,
+  getWhatsAppGroupInviteUrl,
   getTurnSalvageShareMessage,
   getOpenSlotsBadgeText,
   getTurnSalvageBannerText,
@@ -121,6 +123,43 @@ describe("formatWhatsAppGroupInviteMessage", () => {
 
     expect(msg).toContain("⚠️ Faltan 2 jugadores para el turno de pádel en Padel Park");
     expect(msg).toContain("¿Quién se suma? Entren acá para anotarse: https://padelred.app/t/group456");
+  });
+});
+
+describe("getWhatsAppInviteUrl and getWhatsAppGroupInviteUrl", () => {
+  it("generates wa.me URL with encoded individual invite message", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(19, 0, 0, 0);
+
+    const url = getWhatsAppInviteUrl({
+      club: "Central Padel",
+      date: futureDate,
+      contactName: "Mateo",
+      openSlots: 1,
+      shareUrl: "https://padelred.app/t/123",
+    });
+
+    expect(url.startsWith("https://wa.me/?text=")).toBe(true);
+    expect(url).toContain(encodeURIComponent("Hola Mateo"));
+    expect(url).toContain(encodeURIComponent("Central Padel"));
+  });
+
+  it("generates wa.me URL with encoded group salvage invite message", () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(2026, 7, 25);
+    futureDate.setHours(20, 0, 0, 0);
+
+    const url = getWhatsAppGroupInviteUrl({
+      club: "Padel Park",
+      date: futureDate,
+      openSlots: 2,
+      shareUrl: "https://padelred.app/t/group456",
+    });
+
+    expect(url.startsWith("https://wa.me/?text=")).toBe(true);
+    expect(url).toContain(encodeURIComponent("⚠️ Faltan 2 jugadores"));
+    expect(url).toContain(encodeURIComponent("Padel Park"));
   });
 });
 
