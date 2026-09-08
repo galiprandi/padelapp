@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-08 — Extracción de Funciones Helper `getNavItems` y `formatNotificationsAriaLabel` para Navegación Principal y Refactorización de `BottomNav` (PR #tino/ux/navigation-helpers-extraction)
 - [x] 2026-09-07 — Gestión Automática de Atributos ARIA y Accesibilidad en Componente `Skeleton` durante Estados de Carga Streaming (PR #tino/ux/skeleton-aria-accessibility)
 - [x] 2026-09-06 — Configuración de Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos (`/t/*`, `/m/*`, `/j/*`, `/p/*`) (PR #tino/perf/dynamic-document-speculation-rules)
 - [x] 2026-09-05 — Estrategia de Speculation Rules Multinivel para Prerenderizado por Prioridad de Rutas (PR #tino/perf/multi-tier-speculation-rules)
@@ -47,6 +48,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-08 - Extracción de Helpers de Navegación Principal y Accesibilidad de Badge
+**Aprendizaje:** Abstraer los elementos de la navegación principal (`getNavItems`) y la lógica de formato de texto accesible para notificaciones pendientes (`formatNotificationsAriaLabel`) hacia un módulo utilitario dedicado (`src/components/navigation/nav-utils.ts`) desacopla las estructuras de datos de la capa de renderizado de `BottomNav`. Esto facilita las pruebas unitarias aisladas de las etiquetas ARIA y rutas, permitiendo evolucionar la barra de navegación de forma mantenible.
+**Acción:** Reutilizar `nav-utils.ts` si se extienden los ítems de navegación o se agregan menús adicionales.
+
 ### 2026-09-07 - Gestión Automática de Atributos ARIA en Componente Skeleton para Estados de Carga Streaming
 **Aprendizaje:** Al utilizar componentes de marcadores de posición (`Skeleton`) durante la carga por streaming de UI en Next.js, asignar automáticamente `aria-hidden="true"` cuando no se especifican roles o etiquetas de accesibilidad explícitas (`role`, `aria-label`, `aria-labelledby`) evita que los lectores de pantalla anuncien bloques grises o divisores irrelevantes. Asimismo, si el contenedor de esqueleto posee un rol explícito (ej. `role="status"` o `aria-label`), omitir `aria-hidden="true"` preserva la accesibilidad del estado de carga interactivo para la tecnología asistiva.
 **Acción:** Reutilizar el componente `Skeleton` refactorizado en cualquier nueva pantalla o vista con estados de carga por streaming.
