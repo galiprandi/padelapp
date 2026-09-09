@@ -362,7 +362,11 @@ export function ProfileForm({
       )}
 
       {/* Avatar — static display, Google photo or initials */}
-      <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
+      <section
+        role="region"
+        aria-label="Foto de perfil de usuario"
+        className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
+      >
         {image ? (
           <Image
             src={image}
@@ -420,7 +424,7 @@ export function ProfileForm({
             )}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Alias */}
       <div className="space-y-2">
@@ -463,6 +467,9 @@ export function ProfileForm({
               if (isAliasDirty && !aliasError && !isSaving) {
                 saveAlias(alias, image);
               }
+            } else if (event.key === "Escape") {
+              event.preventDefault();
+              setAlias(lastSavedAlias.current);
             }
           }}
           disabled={isSaving}
@@ -482,7 +489,11 @@ export function ProfileForm({
       </div>
 
       {/* Lado preferido en la cancha */}
-      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+      <section
+        role="region"
+        aria-label="Lado preferido en la cancha"
+        className="space-y-3 rounded-xl border border-border bg-card p-4"
+      >
         <div className="flex items-center justify-between">
           <Label className="text-sm font-semibold text-foreground">
             Lado preferido en la cancha
@@ -532,10 +543,14 @@ export function ProfileForm({
             );
           })}
         </div>
-      </div>
+      </section>
 
       {/* Categoría de Juego */}
-      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+      <section
+        role="region"
+        aria-label="Categoría de juego"
+        className="space-y-3 rounded-xl border border-border bg-card p-4"
+      >
         <div className="flex items-center justify-between">
           <Label className="text-sm font-semibold text-foreground">
             Categoría de juego
@@ -596,10 +611,14 @@ export function ProfileForm({
             {getCategoryDefinition(level).description}
           </p>
         </div>
-      </div>
+      </section>
 
       {/* Datos de la cuenta (solo lectura) */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+      <section
+        role="region"
+        aria-label="Información de cuenta de Google"
+        className="rounded-xl border border-border bg-card p-4 space-y-3"
+      >
         <h3 className="text-sm font-bold text-foreground">
           Cuenta de Google
         </h3>
@@ -613,7 +632,7 @@ export function ProfileForm({
             <span className="font-semibold text-foreground">{email}</span>
           </div>
         </div>
-      </div>
+      </section>
 
       {isOnboarding && (
         <Button
@@ -637,7 +656,11 @@ export function ProfileForm({
 
       {/* Avisos de la aplicación / Suggestion & checklist restoration */}
       {((matchesPlayed === 0 && checklistDismissed) || pwaDismissed || pushDismissed) && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <section
+          role="region"
+          aria-label="Avisos y sugerencias de la aplicación"
+          className="rounded-xl border border-border bg-card p-4 space-y-3"
+        >
           <h3 className="text-sm font-bold text-foreground">
             Avisos de la aplicación
           </h3>
@@ -692,7 +715,7 @@ export function ProfileForm({
               </Button>
             )}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

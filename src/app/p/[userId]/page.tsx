@@ -165,7 +165,7 @@ async function PublicProfileContent({
 
   return (
     <>
-      <section className="space-y-6">
+      <section className="space-y-6" role="region" aria-label="Perfil y estadísticas de jugador">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="relative">
             <PlayerAvatar
@@ -270,7 +270,11 @@ async function PublicProfileContent({
         </div>
 
         {/* Network & Position Stats Card */}
-        <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
+        <section
+          role="region"
+          aria-label="Estadísticas de red y posición"
+          className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
+        >
           <h3 className="text-xs font-bold text-muted-foreground">
             Red y Posición
           </h3>
@@ -366,10 +370,14 @@ async function PublicProfileContent({
               )}
             </div>
           )}
-        </div>
+        </section>
 
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
-          <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
+          <section
+            role="region"
+            aria-label="Estadísticas cara a cara"
+            className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
+          >
             <h3 className="text-xs font-bold text-muted-foreground">
               Cara a Cara
             </h3>
@@ -436,11 +444,11 @@ async function PublicProfileContent({
                 </Button>
               </div>
             )}
-          </div>
+          </section>
         )}
       </section>
 
-      <section className="space-y-4">
+      <section className="space-y-4" role="region" aria-label="Historial reciente de partidos">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">
             Historial Reciente
