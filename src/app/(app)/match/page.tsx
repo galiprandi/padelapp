@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPendingActions, getCachedConfirmedMatches } from "@/lib/queries";
 import Link from "next/link";
 import { CalendarOff, Plus, ChevronRight } from "lucide-react";
-import { calculateWinRate, getMatchWinner } from "@/lib/utils";
+import { calculateMatchSummaryStats, groupMatchesByMonth } from "@/lib/match-helpers";
 
 export default function MatchListPage() {
   return (
@@ -89,150 +89,84 @@ async function MatchList() {
     }),
   }));
 
-  const totalMatches = confirmedMatches.length;
-
-  const matchResults = confirmedMatches.map((match: MatchResultCompactMatch) => {
-    const winner = getMatchWinner(match.score ?? null);
-    if (!winner) return "L";
-    const player = match.players.find((p: MatchResultCompactPlayer) => p.user?.id === viewerId);
-    const playerTeam = (player?.position ?? 0) < 2 ? "A" : "B";
-    return winner === playerTeam ? "W" : "L";
-  });
-
-  const wins = matchResults.filter((r) => r === "W").length;
-  const winRate = calculateWinRate(wins, totalMatches);
-
-  let currentStreak = 0;
-  for (let i = 0; i < matchResults.length; i++) {
-    if (matchResults[i] === "W") currentStreak++;
-    else break;
-  }
-
-  const partnersWins: Record<string, { id: string; name: string; wins: number }> = {};
-  const rivalsLosses: Record<string, { id: string; name: string; losses: number }> = {};
-
-  confirmedMatches.forEach((match, idx) => {
-    const viewer = match.players.find((p) => p.user?.id === viewerId);
-    if (!viewer) return;
-    const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
-
-    if (matchResults[idx] === "W") {
-      const partner = match.players.find(
-        (p: MatchResultCompactPlayer) =>
-          p.user?.id !== viewerId &&
-          (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2),
-      );
-      if (partner && partner.user) {
-        const pId = partner.user.id;
-        const pName = partner.user.displayName || "Compañero";
-        if (!partnersWins[pId]) partnersWins[pId] = { id: pId, name: pName, wins: 0 };
-        partnersWins[pId].wins += 1;
-      }
-    } else if (matchResults[idx] === "L") {
-      const rivals = match.players.filter(
-        (p) =>
-          p.user?.id !== viewerId &&
-          (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
-      );
-      rivals.forEach((rival) => {
-        if (rival.user) {
-          const rId = rival.user.id;
-          const rName = rival.user.displayName || "Rival";
-          if (!rivalsLosses[rId]) rivalsLosses[rId] = { id: rId, name: rName, losses: 0 };
-          rivalsLosses[rId].losses += 1;
-        }
-      });
-    }
-  });
-
-  const bestPartner = Object.values(partnersWins).sort(
-    (a, b) => b.wins - a.wins,
-  )[0];
-
-  const nemesis = Object.values(rivalsLosses).sort(
-    (a, b) => b.losses - a.losses,
-  )[0];
-
-  const groupedMatches = confirmedMatches.reduce(
-    (groups: Record<string, MatchResultCompactMatch[]>, match: MatchResultCompactMatch) => {
-      const date = new Date(match.date || match.createdAt);
-      const month = date.toLocaleString("es-AR", { month: "long" });
-      const year = date.getFullYear();
-      const key = `${month} ${year}`;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(match);
-      return groups;
-    },
-    {},
-  );
+  const summaryStats = calculateMatchSummaryStats(confirmedMatches, viewerId);
+  const groupedMatches = groupMatchesByMonth(confirmedMatches);
 
   return (
     <div className="flex flex-col gap-6">
-      {viewerId && totalMatches > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4">
+      {viewerId && summaryStats.totalMatches > 0 && (
+        <section
+          role="region"
+          aria-label="Resumen de estadísticas de partidos"
+          className="rounded-xl border border-border bg-card p-4 shadow-xs"
+        >
           <h2 className="text-sm font-bold text-foreground mb-3">Resumen</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <p className="text-xs text-muted-foreground">Partidos</p>
               <p className="text-xl font-bold text-foreground">
-                {totalMatches}
+                {summaryStats.totalMatches}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Win Rate</p>
-              <p className="text-xl font-bold text-primary">{winRate}%</p>
+              <p className="text-xl font-bold text-primary">{summaryStats.winRate}%</p>
             </div>
-            {currentStreak >= 2 ? (
+            {summaryStats.currentStreak >= 2 ? (
               <div>
                 <p className="text-xs text-muted-foreground">Racha</p>
                 <p className="text-xl font-bold text-primary">
-                  {currentStreak}W
+                  {summaryStats.currentStreak}W
                 </p>
               </div>
             ) : (
               <div>
                 <p className="text-xs text-muted-foreground">Victorias</p>
                 <p className="text-xl font-bold text-foreground">
-                  {wins}
+                  {summaryStats.wins}
                 </p>
               </div>
             )}
           </div>
-          {(bestPartner || nemesis) && (
+          {(summaryStats.bestPartner || summaryStats.nemesis) && (
             <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
-              {bestPartner && (
+              {summaryStats.bestPartner && (
                 <p className="text-xs text-muted-foreground">
                   Mejor socio:{" "}
                   <Link
-                    href={`/p/${bestPartner.id}`}
+                    href={`/p/${summaryStats.bestPartner.id}`}
                     prefetch={true}
-                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm active:scale-[0.98]"
+                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]"
                   >
-                    {bestPartner.name}
+                    {summaryStats.bestPartner.name}
                   </Link>{" "}
-                  ({bestPartner.wins} {bestPartner.wins === 1 ? "victoria" : "victorias"})
+                  ({summaryStats.bestPartner.count} {summaryStats.bestPartner.count === 1 ? "victoria" : "victorias"})
                 </p>
               )}
-              {nemesis && (
+              {summaryStats.nemesis && (
                 <p className="text-xs text-muted-foreground">
                   Némesis ⚔️:{" "}
                   <Link
-                    href={`/p/${nemesis.id}`}
+                    href={`/p/${summaryStats.nemesis.id}`}
                     prefetch={true}
-                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm active:scale-[0.98]"
+                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]"
                   >
-                    {nemesis.name}
+                    {summaryStats.nemesis.name}
                   </Link>{" "}
-                  ({nemesis.losses} {nemesis.losses === 1 ? "derrota" : "derrotas"})
+                  ({summaryStats.nemesis.count} {summaryStats.nemesis.count === 1 ? "derrota" : "derrotas"})
                 </p>
               )}
             </div>
           )}
-        </div>
+        </section>
       )}
 
       {pendingActions.length > 0 && (
-        <section className="flex flex-col gap-3">
+        <section
+          role="region"
+          aria-label="Resultados y acciones de partidos pendientes"
+          className="flex flex-col gap-3"
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">Pendientes</h2>
@@ -244,7 +178,7 @@ async function MatchList() {
               <Link
                 href="/notifications"
                 prefetch={true}
-                className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
               >
                 Ver todas <ChevronRight className="h-3 w-3" />
               </Link>
@@ -271,7 +205,11 @@ async function MatchList() {
         </section>
       )}
 
-      <section className="flex flex-col gap-3">
+      <section
+        role="region"
+        aria-label="Historial de partidos jugados"
+        className="flex flex-col gap-3"
+      >
         <h2 className="text-sm font-bold text-foreground">Historial</h2>
         {viewerId ? (
           confirmedMatches.length > 0 ? (
@@ -309,7 +247,7 @@ async function MatchList() {
             />
           )
         ) : (
-          <div className="rounded-xl border border-border bg-card p-6 text-center">
+          <div className="rounded-xl border border-border bg-card p-6 text-center shadow-xs">
             <p className="text-sm text-muted-foreground mb-3">
               Iniciá sesión para ver tus partidos.
             </p>
