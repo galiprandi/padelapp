@@ -172,7 +172,11 @@ async function JoinSlotContent({
 
   return (
     <>
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
+      <section
+        role="region"
+        aria-label="Mensaje de invitación"
+        className="rounded-xl border border-border bg-card p-4 shadow-xs"
+      >
         <div className="flex items-center gap-3">
           <PlayerAvatar
             name={creatorName ?? "Organizador"}
@@ -189,7 +193,7 @@ async function JoinSlotContent({
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
       <Card
         role="region"
@@ -334,7 +338,11 @@ async function JoinSlotContent({
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+      <footer
+        role="region"
+        aria-label="Confirmación de inscripción"
+        className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50"
+      >
         <div className="max-w-md mx-auto">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
@@ -394,7 +402,7 @@ async function JoinSlotContent({
             </div>
           </div>
         </div>
-      </div>
+      </footer>
     </>
   );
 }
