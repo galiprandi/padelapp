@@ -81,15 +81,32 @@ export function PwaInstallBanner() {
     }
   }, [deferredPrompt]);
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     setIsVisible(false);
     dismissPwaBanner();
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !isVisible) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mounted, isVisible, handleDismiss]);
 
   if (!mounted || !isVisible) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
+    <div
+      role="region"
+      aria-label="Aviso de instalación de Padel Red"
+      className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm"
+    >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         <Smartphone className="h-4 w-4" aria-hidden="true" />
       </div>

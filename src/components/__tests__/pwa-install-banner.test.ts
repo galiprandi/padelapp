@@ -46,4 +46,8 @@ describe("PwaInstallBanner Storage Helpers", () => {
     expect(localStorage.getItem(PWA_BANNER_DISMISS_KEY)).toBeNull();
     expect(isPwaBannerDismissed()).toBe(false);
   });
+
+  it("should export correct PWA_BANNER_DISMISS_KEY constant", () => {
+    expect(PWA_BANNER_DISMISS_KEY).toBe("pwa-banner-dismissed");
+  });
 });
