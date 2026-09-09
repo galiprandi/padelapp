@@ -7,14 +7,12 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { addPlayerAction } from "@/app/(app)/turnos/actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Badge } from "@/components/ui/badge";
-
-interface PlayerOption {
-  id: string;
-  displayName: string;
-  email?: string;
-  image?: string | null;
-  isContact?: boolean;
-}
+import {
+  filterAndSortPlayerOptions,
+  getAddPlayerSuccessToast,
+  getAddPlayerAriaLabel,
+  type PlayerOption,
+} from "@/components/turns/turn-utils";
 
 interface AddPlayerButtonProps {
   turnId: string;
@@ -62,15 +60,7 @@ export function AddPlayerButton({
         );
         const data = await res.json();
         if (active && data.players) {
-          // Filter out players already in the turn and sort contacts to top
-          const filtered = data.players.filter(
-            (p: PlayerOption) => !existingPlayerIds.includes(p.id),
-          );
-          filtered.sort((a: PlayerOption, b: PlayerOption) => {
-            if (a.isContact && !b.isContact) return -1;
-            if (!a.isContact && b.isContact) return 1;
-            return 0;
-          });
+          const filtered = filterAndSortPlayerOptions(data.players, existingPlayerIds);
           setResults(filtered);
         }
       } catch {
@@ -90,7 +80,7 @@ export function AddPlayerButton({
     setAddingId(player.id);
     const result = await addPlayerAction(turnId, player.id);
     if (result.status === "ok") {
-      showToast(`Agregaste a ${player.displayName} al turno.`);
+      showToast(getAddPlayerSuccessToast(player.displayName));
       setExpanded(false);
       setQuery("");
       setResults([]);
@@ -105,10 +95,10 @@ export function AddPlayerButton({
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
         aria-label="Agregar jugador al turno"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
           <UserPlus className="h-5 w-5" />
         </div>
         <div className="flex-1 text-left">
@@ -123,7 +113,9 @@ export function AddPlayerButton({
 
   return (
     <div
-      className="rounded-xl border border-border bg-card overflow-hidden"
+      role="region"
+      aria-label="Agregar jugador al turno"
+      className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
       onKeyDown={(e) => {
         if (e.key === "Escape") {
           setExpanded(false);
@@ -192,7 +184,7 @@ export function AddPlayerButton({
                   disabled={addingId !== null}
                   aria-busy={addingId === player.id}
                   className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                  aria-label={`Agregar a ${player.displayName}`}
+                  aria-label={getAddPlayerAriaLabel(player.displayName)}
                 >
                   <PlayerAvatar
                     name={player.displayName}

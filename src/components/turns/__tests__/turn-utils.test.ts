@@ -16,6 +16,9 @@ import {
   formatContactPlayersSummary,
   getTurnPublicSubtitle,
   isLateLeaveWarningRequired,
+  filterAndSortPlayerOptions,
+  getAddPlayerSuccessToast,
+  getAddPlayerAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -534,5 +537,42 @@ describe("isLateLeaveWarningRequired", () => {
         nowMs: baseTime,
       })
     ).toBe(false);
+  });
+});
+
+describe("filterAndSortPlayerOptions", () => {
+  const players = [
+    { id: "p1", displayName: "Mateo", isContact: false },
+    { id: "p2", displayName: "Agustín", isContact: true },
+    { id: "p3", displayName: "Santiago", isContact: false },
+    { id: "p4", displayName: "Lucas", isContact: true },
+  ];
+
+  it("filters out players already in existingPlayerIds", () => {
+    const existing = ["p1", "p3"];
+    const result = filterAndSortPlayerOptions(players, existing);
+    expect(result.map((p) => p.id)).not.toContain("p1");
+    expect(result.map((p) => p.id)).not.toContain("p3");
+    expect(result.map((p) => p.id)).toEqual(["p2", "p4"]);
+  });
+
+  it("sorts contacts to top of results", () => {
+    const existing: string[] = [];
+    const result = filterAndSortPlayerOptions(players, existing);
+    // p2 and p4 (contacts) should be at index 0 and 1
+    expect(result[0].isContact).toBe(true);
+    expect(result[1].isContact).toBe(true);
+    expect(result[2].isContact).toBe(false);
+    expect(result[3].isContact).toBe(false);
+  });
+});
+
+describe("getAddPlayerSuccessToast and getAddPlayerAriaLabel", () => {
+  it("formats success toast message in Argentine Spanish", () => {
+    expect(getAddPlayerSuccessToast("Mateo")).toBe("Agregaste a Mateo al turno.");
+  });
+
+  it("formats ARIA label for adding player", () => {
+    expect(getAddPlayerAriaLabel("Mateo")).toBe("Agregar a Mateo al turno");
   });
 });

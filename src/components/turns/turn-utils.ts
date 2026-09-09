@@ -367,3 +367,40 @@ export function isLateLeaveWarningRequired({
   const hoursUntilTurn = (d.getTime() - nowMs) / (1000 * 60 * 60);
   return hoursUntilTurn < 2 && hoursUntilTurn >= 0;
 }
+
+export interface PlayerOption {
+  id: string;
+  displayName: string;
+  email?: string;
+  image?: string | null;
+  isContact?: boolean;
+}
+
+/**
+ * Filter out players already enrolled in the turn and sort contact players to top.
+ */
+export function filterAndSortPlayerOptions(
+  players: PlayerOption[],
+  existingPlayerIds: string[]
+): PlayerOption[] {
+  const filtered = players.filter((p) => !existingPlayerIds.includes(p.id));
+  return [...filtered].sort((a, b) => {
+    if (a.isContact && !b.isContact) return -1;
+    if (!a.isContact && b.isContact) return 1;
+    return 0;
+  });
+}
+
+/**
+ * Format toast message when organizer manually adds a player to a turn.
+ */
+export function getAddPlayerSuccessToast(playerName: string): string {
+  return `Agregaste a ${playerName} al turno.`;
+}
+
+/**
+ * Format ARIA label for adding a player manually to a turn.
+ */
+export function getAddPlayerAriaLabel(playerName: string): string {
+  return `Agregar a ${playerName} al turno`;
+}

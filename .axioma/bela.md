@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-09 — Manual Add Player Helpers Extraction, AddPlayerButton Solid MDS Styling, ARIA Region Landmark & Escape Key Dismissal (bela/turnos/add-player-button-mds-a11y)
 - [x] 2026-09-05 — TurnActions & TurnCard ARIA Loading States, Dynamic Labels & Unit Tests (bela/turnos/turn-actions-aria-loading-states)
 - [x] 2026-09-04 — OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests (bela/turnos/open-to-network-a11y-and-tests)
 - [x] 2026-09-03 — Turn Filter Pure Helper Extraction, Keyboard Radiogroup Navigation & Empty State Tactile Accessibility Polish (bela/turnos/filter-by-tab-a11y-and-helper)
@@ -48,6 +49,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-09 - Manual Add Player Helpers Extraction, AddPlayerButton Solid MDS Styling, ARIA Region Landmark & Escape Key Dismissal
+**Learning:** Extracting pure helper functions (`filterAndSortPlayerOptions`, `getAddPlayerSuccessToast`, `getAddPlayerAriaLabel`) into `src/components/turns/turn-utils.ts` simplifies component rendering and makes contact prioritization logic deterministic and unit-testable. Enhancing `AddPlayerButton` with `role="region"`, `aria-label="Agregar jugador al turno"`, `Escape` key (`onKeyDown`) search cancellation, solid MDS container styling (`shadow-xs`), focus ring offsets (`ring-offset-background`), and active tactile press scaling (`active:scale-[0.98] transition-all`) delivers expected accessibility and micro-UX feedback.
+**Action:** Always extract search filtering and contact prioritization logic into pure helper functions backed by unit tests and equip expandable search views with region landmarks, keyboard escape dismissal, and solid MDS container styling.
+
 ## 2026-09-05 - TurnActions & TurnCard ARIA Loading States, Dynamic Labels & Unit Tests
 **Learning:** Adding explicit `aria-busy={isPending}` loading state attributes and dynamic screen reader ARIA labels during pending transitions across turn action forms (`StartMatchForm`, `JoinTurnForm`, `JoinSubstituteForm`, `LeaveSubstituteForm`, `TakeOpenSlotForm`, `ScheduleNextTurnForm`) and quick-join triggers (`TurnCard`) gives instant screen reader feedback when server transitions are in progress. Backing these components with a dedicated unit test suite (`src/components/turns/__tests__/turn-actions.test.ts`) verifies React element creation and accessibility props contract.
 **Action:** Always provide dynamic `aria-label` updates and `aria-busy={isPending}` loading state attributes on server action form submit triggers.
