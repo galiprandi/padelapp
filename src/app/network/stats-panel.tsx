@@ -6,6 +6,7 @@ import { capitalizeName, cn } from "@/lib/utils";
 import {
   calculateCommunityCohesion,
   calculateNetworkRoleInfo,
+  calculatePlayerSimilarityInfo,
   getNetworkActivityTier,
 } from "./graph-utils";
 
@@ -182,48 +183,78 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         </div>
         {playersLikeYou.length > 0 ? (
           <div className="space-y-2.5 pt-1">
-            {playersLikeYou.map((player) => (
-              <div
-                key={player.id}
-                className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
-              >
-                <Link
-                  href={`/p/${player.id}`}
-                  prefetch={true}
-                  className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            {playersLikeYou.map((player) => {
+              const viewerNode = graphData?.nodes.find((n) => n.id === "p-01");
+              const similarity = calculatePlayerSimilarityInfo(
+                player,
+                {
+                  id: viewerNode?.id ?? "p-01",
+                  skillScore: viewerNode?.skillScore ?? 1000,
+                  preferredSide: viewerNode?.preferredSide ?? null,
+                },
+                graphData?.links ?? [],
+              );
+
+              return (
+                <div
+                  key={player.id}
+                  className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
                 >
-                  <PlayerAvatar
-                    name={capitalizeName(player.name ?? player.alias ?? "?")}
-                    image={player.image ?? undefined}
-                    size={36}
-                  />
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-foreground truncate">
-                      {capitalizeName(player.name ?? player.alias ?? "?")}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {player.preferredSide === "RIGHT" ? "Derecha" : player.preferredSide === "LEFT" ? "Revés" : "Lado no definido"}
-                    </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <Link
+                      href={`/p/${player.id}`}
+                      prefetch={true}
+                      className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    >
+                      <PlayerAvatar
+                        name={capitalizeName(player.name ?? player.alias ?? "?")}
+                        image={player.image ?? undefined}
+                        size={36}
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-sm font-bold text-foreground truncate">
+                            {capitalizeName(player.name ?? player.alias ?? "?")}
+                          </p>
+                          <span
+                            className={cn(
+                              "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                              similarity.badgeStyle,
+                            )}
+                            title={`Similitud de juego: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
+                            aria-label={`Similitud de juego de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
+                          >
+                            {similarity.similarityTier}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {player.preferredSide === "RIGHT" ? "Derecha" : player.preferredSide === "LEFT" ? "Revés" : "Lado no definido"}
+                        </p>
+                      </div>
+                    </Link>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
+                        <p className="text-xs font-bold tabular-nums text-foreground">
+                          {player.skillScore}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/p/${player.id}`}
+                        prefetch={true}
+                        aria-label={`Ver perfil público de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}`}
+                        className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                      >
+                        Perfil
+                      </Link>
+                    </div>
                   </div>
-                </Link>
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
-                    <p className="text-xs font-bold tabular-nums text-foreground">
-                      {player.skillScore}
-                    </p>
-                  </div>
-                  <Link
-                    href={`/p/${player.id}`}
-                    prefetch={true}
-                    aria-label={`Ver perfil público de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}`}
-                    className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                  >
-                    Perfil
-                  </Link>
+                  <p className="text-[11px] font-medium text-muted-foreground/90 pl-11 truncate">
+                    {similarity.formattedSummary}
+                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <p className="text-xs text-muted-foreground pt-1 italic">

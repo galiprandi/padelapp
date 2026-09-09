@@ -395,6 +395,143 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface PlayerSimilarityCandidateInput {
+  id: string;
+  skillScore: number | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+}
+
+export interface PlayerSimilarityViewerInput {
+  id: string;
+  skillScore: number | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+}
+
+export interface PlayerSimilarityInfo {
+  similarityPercentage: number;
+  skillDiff: number;
+  isSideComplementary: boolean;
+  mutualConnectionsCount: number;
+  similarityTier:
+    | "Dupla ideal 🎯"
+    | "Alta compatibilidad 👍"
+    | "Jugador compatible 🤝"
+    | "Perfil distante 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates similarity percentage (0-100%) and court/network compatibility
+ * between a candidate player and a viewer.
+ */
+export function calculatePlayerSimilarityInfo(
+  candidate: PlayerSimilarityCandidateInput,
+  viewer: PlayerSimilarityViewerInput,
+  links: GraphLink[] = [],
+): PlayerSimilarityInfo {
+  const candidateScore = candidate.skillScore ?? 1000;
+  const viewerScore = viewer.skillScore ?? 1000;
+  const skillDiff = Math.abs(candidateScore - viewerScore);
+
+  // 1. Skill Score proximity component (up to 50 pts)
+  let skillPoints = 0;
+  if (skillDiff <= 50) {
+    skillPoints = 50;
+  } else if (skillDiff <= 150) {
+    skillPoints = 50 - Math.round(((skillDiff - 50) / 100) * 20);
+  } else if (skillDiff <= 300) {
+    skillPoints = 30 - Math.round(((skillDiff - 150) / 150) * 20);
+  } else {
+    skillPoints = Math.max(0, 10 - Math.round(((skillDiff - 300) / 200) * 10));
+  }
+
+  // 2. Court Side complementarity component (up to 30 pts)
+  const comp = getSideCompatibilityLabel(candidate.preferredSide, viewer.preferredSide);
+  let sidePoints = 15;
+  let isSideComplementary = false;
+
+  if (comp) {
+    if (comp.isComplementary) {
+      sidePoints = 30;
+      isSideComplementary = true;
+    } else {
+      sidePoints = 10;
+    }
+  } else if (
+    candidate.preferredSide === "BOTH" ||
+    viewer.preferredSide === "BOTH"
+  ) {
+    sidePoints = 25;
+    isSideComplementary = true;
+  }
+
+  // 3. Mutual Connections component (up to 20 pts)
+  const mutualConnectionsCount = calculateMutualConnectionsCount(
+    links,
+    candidate.id,
+    viewer.id,
+  );
+  const mutualPoints = Math.min(mutualConnectionsCount * 10, 20);
+
+  const similarityPercentage = Math.min(
+    Math.max(skillPoints + sidePoints + mutualPoints, 0),
+    100,
+  );
+
+  let similarityTier:
+    | "Dupla ideal 🎯"
+    | "Alta compatibilidad 👍"
+    | "Jugador compatible 🤝"
+    | "Perfil distante 📍";
+  let badgeStyle: string;
+
+  if (similarityPercentage >= 80) {
+    similarityTier = "Dupla ideal 🎯";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (similarityPercentage >= 60) {
+    similarityTier = "Alta compatibilidad 👍";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (similarityPercentage >= 40) {
+    similarityTier = "Jugador compatible 🤝";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    similarityTier = "Perfil distante 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [`${similarityPercentage}% similitud`];
+
+  if (skillDiff <= 100) {
+    parts.push(`Score cercano (dif. ${skillDiff})`);
+  } else {
+    parts.push(`Dif. de score ${skillDiff}`);
+  }
+
+  if (isSideComplementary) {
+    parts.push("Posición complementaria 🎯");
+  }
+
+  if (mutualConnectionsCount > 0) {
+    parts.push(
+      `${mutualConnectionsCount} ${mutualConnectionsCount === 1 ? "contacto en común" : "contactos en común"}`,
+    );
+  }
+
+  return {
+    similarityPercentage,
+    skillDiff,
+    isSideComplementary,
+    mutualConnectionsCount,
+    similarityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface CrossRivalryDensity {
   rivalryTier:
     | "Red de rivalidad activa ⚔️"
