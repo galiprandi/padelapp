@@ -1,6 +1,36 @@
-import { getMatchWinner } from "@/lib/utils";
+import { getMatchWinner, calculateWinRate } from "@/lib/utils";
 
 export type TeamKey = "A" | "B";
+
+export interface MinimalMatchPlayer {
+  position: number;
+  user?: {
+    id: string;
+    displayName: string | null;
+  } | null;
+}
+
+export interface MinimalMatchForSummary {
+  date?: Date | string;
+  createdAt?: Date | string;
+  score?: string | null;
+  players: MinimalMatchPlayer[];
+}
+
+export interface PlayerSummaryRelation {
+  id: string;
+  name: string;
+  count: number;
+}
+
+export interface MatchSummaryStats {
+  totalMatches: number;
+  wins: number;
+  winRate: number;
+  currentStreak: number;
+  bestPartner?: PlayerSummaryRelation;
+  nemesis?: PlayerSummaryRelation;
+}
 
 export type MatchFormat = "DOUBLES" | "SINGLES";
 
@@ -176,4 +206,120 @@ export function calculateMatchSetWins(parsedSets: Array<[number, number]>): {
     setWins[0] === setWins[1] ? undefined : setWins[0] > setWins[1] ? 0 : 1;
 
   return { setWins, winnerIndex };
+}
+
+/**
+ * Calculates match statistics (total matches, wins, win rate, active streak, best partner, nemesis) for a user.
+ */
+export function calculateMatchSummaryStats<T extends MinimalMatchForSummary>(
+  matches: T[],
+  viewerId?: string | null,
+): MatchSummaryStats {
+  if (!viewerId || matches.length === 0) {
+    return {
+      totalMatches: 0,
+      wins: 0,
+      winRate: 0,
+      currentStreak: 0,
+    };
+  }
+
+  const totalMatches = matches.length;
+
+  const matchResults = matches.map((match) => {
+    const winner = getMatchWinner(match.score ?? null);
+    if (!winner) return "L";
+    const player = match.players.find((p) => p.user?.id === viewerId);
+    const playerTeam = (player?.position ?? 0) < 2 ? "A" : "B";
+    return winner === playerTeam ? "W" : "L";
+  });
+
+  const wins = matchResults.filter((r) => r === "W").length;
+  const winRate = calculateWinRate(wins, totalMatches);
+
+  let currentStreak = 0;
+  for (let i = 0; i < matchResults.length; i++) {
+    if (matchResults[i] === "W") currentStreak++;
+    else break;
+  }
+
+  const partnersWins: Record<string, { id: string; name: string; wins: number }> = {};
+  const rivalsLosses: Record<string, { id: string; name: string; losses: number }> = {};
+
+  matches.forEach((match, idx) => {
+    const viewer = match.players.find((p) => p.user?.id === viewerId);
+    if (!viewer) return;
+    const viewerTeamIdx = viewer.position < 2 ? 0 : 1;
+
+    if (matchResults[idx] === "W") {
+      const partner = match.players.find(
+        (p) =>
+          p.user?.id !== viewerId &&
+          (viewerTeamIdx === 0 ? p.position < 2 : p.position >= 2),
+      );
+      if (partner && partner.user) {
+        const pId = partner.user.id;
+        const pName = partner.user.displayName || "Compañero";
+        if (!partnersWins[pId]) partnersWins[pId] = { id: pId, name: pName, wins: 0 };
+        partnersWins[pId].wins += 1;
+      }
+    } else if (matchResults[idx] === "L") {
+      const rivals = match.players.filter(
+        (p) =>
+          p.user?.id !== viewerId &&
+          (viewerTeamIdx === 0 ? p.position >= 2 : p.position < 2),
+      );
+      rivals.forEach((rival) => {
+        if (rival.user) {
+          const rId = rival.user.id;
+          const rName = rival.user.displayName || "Rival";
+          if (!rivalsLosses[rId]) rivalsLosses[rId] = { id: rId, name: rName, losses: 0 };
+          rivalsLosses[rId].losses += 1;
+        }
+      });
+    }
+  });
+
+  const bestPartnerRaw = Object.values(partnersWins).sort(
+    (a, b) => b.wins - a.wins,
+  )[0];
+
+  const nemesisRaw = Object.values(rivalsLosses).sort(
+    (a, b) => b.losses - a.losses,
+  )[0];
+
+  const bestPartner = bestPartnerRaw
+    ? { id: bestPartnerRaw.id, name: bestPartnerRaw.name, count: bestPartnerRaw.wins }
+    : undefined;
+
+  const nemesis = nemesisRaw
+    ? { id: nemesisRaw.id, name: nemesisRaw.name, count: nemesisRaw.losses }
+    : undefined;
+
+  return {
+    totalMatches,
+    wins,
+    winRate,
+    currentStreak,
+    bestPartner,
+    nemesis,
+  };
+}
+
+/**
+ * Groups matches by Argentine Spanish month and year ("mes año", e.g. "septiembre 2026").
+ */
+export function groupMatchesByMonth<
+  T extends { date?: Date | string; createdAt?: Date | string },
+>(matches: T[]): Record<string, T[]> {
+  return matches.reduce((groups: Record<string, T[]>, match: T) => {
+    const rawDate = match.date || match.createdAt;
+    const date = rawDate ? new Date(rawDate) : new Date();
+    const month = date.toLocaleString("es-AR", { month: "long" });
+    const year = date.getFullYear();
+    const key = `${month} ${year}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(match);
+    return groups;
+  }, {});
 }

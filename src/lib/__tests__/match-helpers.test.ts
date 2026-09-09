@@ -12,6 +12,8 @@ import {
   getRankingDeltaText,
   parseScoreSets,
   calculateMatchSetWins,
+  calculateMatchSummaryStats,
+  groupMatchesByMonth,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -654,6 +656,95 @@ describe("attendanceMarkerAriaAndStatus", () => {
     expect(getNextRadioIndex(0, 3, "ArrowLeft")).toBe(2);
     expect(getNextRadioIndex(1, 3, "ArrowLeft")).toBe(0);
     expect(getNextRadioIndex(0, 0, "ArrowRight")).toBe(0);
+  });
+});
+
+describe("calculateMatchSummaryStatsAndGroupMatchesByMonth", () => {
+  it("calculateMatchSummaryStats returns default stats for null/empty viewerId or matches", () => {
+    expect(calculateMatchSummaryStats([], "p-1")).toEqual({
+      totalMatches: 0,
+      wins: 0,
+      winRate: 0,
+      currentStreak: 0,
+    });
+
+    expect(calculateMatchSummaryStats([{ score: "6-4, 6-3", players: [] }], null)).toEqual({
+      totalMatches: 0,
+      wins: 0,
+      winRate: 0,
+      currentStreak: 0,
+    });
+  });
+
+  it("calculateMatchSummaryStats computes wins, winRate, streak, bestPartner, and nemesis correctly", () => {
+    const viewerId = "p-01";
+    const matches = [
+      {
+        id: "m-01",
+        score: "6-4, 6-3", // Team A wins
+        date: "2026-09-01T10:00:00Z",
+        players: [
+          { position: 0, user: { id: "p-01", displayName: "Agustín" } },
+          { position: 1, user: { id: "p-02", displayName: "Fernando" } },
+          { position: 2, user: { id: "p-03", displayName: "Ramiro" } },
+          { position: 3, user: { id: "p-04", displayName: "Gero" } },
+        ],
+      },
+      {
+        id: "m-02",
+        score: "6-2, 6-1", // Team A wins
+        date: "2026-09-02T10:00:00Z",
+        players: [
+          { position: 0, user: { id: "p-01", displayName: "Agustín" } },
+          { position: 1, user: { id: "p-02", displayName: "Fernando" } },
+          { position: 2, user: { id: "p-03", displayName: "Ramiro" } },
+          { position: 3, user: { id: "p-04", displayName: "Gero" } },
+        ],
+      },
+      {
+        id: "m-03",
+        score: "3-6, 4-6", // Team B wins -> Viewer lost
+        date: "2026-08-15T10:00:00Z",
+        players: [
+          { position: 0, user: { id: "p-01", displayName: "Agustín" } },
+          { position: 1, user: { id: "p-03", displayName: "Ramiro" } },
+          { position: 2, user: { id: "p-02", displayName: "Fernando" } },
+          { position: 3, user: { id: "p-04", displayName: "Gero" } },
+        ],
+      },
+    ];
+
+    const stats = calculateMatchSummaryStats(matches, viewerId);
+
+    expect(stats.totalMatches).toBe(3);
+    expect(stats.wins).toBe(2);
+    expect(stats.winRate).toBe(67); // 2/3 = ~67%
+    expect(stats.currentStreak).toBe(2);
+
+    expect(stats.bestPartner).toBeDefined();
+    expect(stats.bestPartner?.id).toBe("p-02");
+    expect(stats.bestPartner?.name).toBe("Fernando");
+    expect(stats.bestPartner?.count).toBe(2);
+
+    expect(stats.nemesis).toBeDefined();
+    expect(["p-02", "p-04"]).toContain(stats.nemesis?.id);
+    expect(stats.nemesis?.count).toBe(1);
+  });
+
+  it("groupMatchesByMonth groups matches by Argentine Spanish month and year", () => {
+    const matches = [
+      { id: "m-1", date: "2026-09-05T12:00:00Z" },
+      { id: "m-2", date: "2026-09-01T10:00:00Z" },
+      { id: "m-3", date: "2026-08-20T10:00:00Z" },
+    ];
+
+    const grouped = groupMatchesByMonth(matches);
+
+    const keys = Object.keys(grouped);
+    expect(keys).toContain("septiembre 2026");
+    expect(keys).toContain("agosto 2026");
+    expect(grouped["septiembre 2026"].length).toBe(2);
+    expect(grouped["agosto 2026"].length).toBe(1);
   });
 });
 
