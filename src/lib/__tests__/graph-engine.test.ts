@@ -201,6 +201,7 @@ import {
   calculateCommunityFilterOptions,
   calculateNetworkDiversityScore,
   calculateCrossRivalryDensity,
+  calculatePlayerSimilarityInfo,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1263,6 +1264,44 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculatePlayerSimilarityInfo", () => {
+  it("calculates 'Dupla ideal 🎯' tier for candidate with close skill score, complementary side, and mutual connections", () => {
+    const candidate = { id: "p-04", skillScore: 1020, preferredSide: "LEFT" };
+    const viewer = { id: "p-01", skillScore: 1000, preferredSide: "RIGHT" };
+
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-04", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculatePlayerSimilarityInfo(candidate, viewer, links);
+    expect(res.skillDiff).toBe(20);
+    expect(res.isSideComplementary).toBe(true);
+    expect(res.mutualConnectionsCount).toBe(1);
+    expect(res.similarityPercentage).toBeGreaterThanOrEqual(80);
+    expect(res.similarityTier).toBe("Dupla ideal 🎯");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("% similitud");
+    expect(res.formattedSummary).toContain("Score cercano (dif. 20)");
+    expect(res.formattedSummary).toContain("Posición complementaria 🎯");
+    expect(res.formattedSummary).toContain("1 contacto en común");
+  });
+
+  it("calculates 'Perfil distante 📍' tier for candidates with large skill difference and no complementarity or shared connections", () => {
+    const candidate = { id: "p-99", skillScore: 1600, preferredSide: "RIGHT" };
+    const viewer = { id: "p-01", skillScore: 1000, preferredSide: "RIGHT" };
+
+    const res = calculatePlayerSimilarityInfo(candidate, viewer, []);
+    expect(res.skillDiff).toBe(600);
+    expect(res.isSideComplementary).toBe(false);
+    expect(res.mutualConnectionsCount).toBe(0);
+    expect(res.similarityPercentage).toBeLessThan(40);
+    expect(res.similarityTier).toBe("Perfil distante 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toContain("Dif. de score 600");
   });
 });
 
