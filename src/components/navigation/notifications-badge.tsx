@@ -1,13 +1,15 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getCachedPendingActionsCount } from "@/lib/queries";
+import {
+  formatNotificationsAriaLabel,
+  formatNotificationsDisplayCount,
+} from "./nav-utils";
 
 async function NotificationsCount({ userId }: { userId: string }) {
   const count = await getCachedPendingActionsCount(userId);
 
-  if (count === 0) return null;
-
-  const displayCount = count > 99 ? "99+" : count;
+  if (count <= 0) return null;
 
   return (
     <Link
@@ -15,14 +17,10 @@ async function NotificationsCount({ userId }: { userId: string }) {
       prefetch={true}
       role="status"
       aria-live="polite"
-      aria-label={
-        count === 1
-          ? "1 notificación pendiente"
-          : `${count} notificaciones pendientes`
-      }
+      aria-label={formatNotificationsAriaLabel(count)}
       className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow-md transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
     >
-      {displayCount}
+      {formatNotificationsDisplayCount(count)}
     </Link>
   );
 }

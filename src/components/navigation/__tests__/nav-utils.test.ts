@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { getNavItems, formatNotificationsAriaLabel } from "../nav-utils";
+import {
+  getNavItems,
+  formatNotificationsAriaLabel,
+  formatNotificationsDisplayCount,
+} from "../nav-utils";
 
 describe("nav-utils", () => {
   describe("getNavItems", () => {
@@ -43,6 +47,24 @@ describe("nav-utils", () => {
     it("returns plural label when count is greater than 1", () => {
       expect(formatNotificationsAriaLabel(5)).toBe("5 notificaciones pendientes");
       expect(formatNotificationsAriaLabel(99)).toBe("99 notificaciones pendientes");
+    });
+  });
+
+  describe("formatNotificationsDisplayCount", () => {
+    it("returns empty string when count is 0 or negative", () => {
+      expect(formatNotificationsDisplayCount(0)).toBe("");
+      expect(formatNotificationsDisplayCount(-5)).toBe("");
+    });
+
+    it("returns formatted count string for counts <= 99", () => {
+      expect(formatNotificationsDisplayCount(1)).toBe("1");
+      expect(formatNotificationsDisplayCount(12)).toBe("12");
+      expect(formatNotificationsDisplayCount(99)).toBe("99");
+    });
+
+    it("returns '99+' cap when count exceeds 99", () => {
+      expect(formatNotificationsDisplayCount(100)).toBe("99+");
+      expect(formatNotificationsDisplayCount(250)).toBe("99+");
     });
   });
 });
