@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-09 — Extracción de Función Helper `formatNotificationsDisplayCount` y Estandarización de Badge de Notificaciones en Navegación (PR #tino/perf/notifications-badge-display-formatting)
 - [x] 2026-09-08 — Extracción de Funciones Helper `getNavItems` y `formatNotificationsAriaLabel` para Navegación Principal y Refactorización de `BottomNav` (PR #tino/ux/navigation-helpers-extraction)
 - [x] 2026-09-07 — Gestión Automática de Atributos ARIA y Accesibilidad en Componente `Skeleton` durante Estados de Carga Streaming (PR #tino/ux/skeleton-aria-accessibility)
 - [x] 2026-09-06 — Configuración de Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos (`/t/*`, `/m/*`, `/j/*`, `/p/*`) (PR #tino/perf/dynamic-document-speculation-rules)
@@ -48,6 +49,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-09 - Extracción de Helper de Formato de Conteo para Badge de Notificaciones
+**Aprendizaje:** Abstraer la lógica de formateo del conteo de notificaciones (`formatNotificationsDisplayCount`) hacia el módulo de utilidades de navegación (`src/components/navigation/nav-utils.ts`) centraliza el tope dinámico (`99+`) y el manejo de valores no positivos. Al reutilizar este helper tanto en `NotificationsBadge` como en `BottomNav`, garantizamos consistencia visual y de accesibilidad ARIA en toda la barra de navegación principal.
+**Acción:** Reutilizar `formatNotificationsDisplayCount` en cualquier nuevo indicador de notificaciones o conteo en la aplicación.
+
 ### 2026-09-08 - Extracción de Helpers de Navegación Principal y Accesibilidad de Badge
 **Aprendizaje:** Abstraer los elementos de la navegación principal (`getNavItems`) y la lógica de formato de texto accesible para notificaciones pendientes (`formatNotificationsAriaLabel`) hacia un módulo utilitario dedicado (`src/components/navigation/nav-utils.ts`) desacopla las estructuras de datos de la capa de renderizado de `BottomNav`. Esto facilita las pruebas unitarias aisladas de las etiquetas ARIA y rutas, permitiendo evolucionar la barra de navegación de forma mantenible.
 **Acción:** Reutilizar `nav-utils.ts` si se extienden los ítems de navegación o se agregan menús adicionales.

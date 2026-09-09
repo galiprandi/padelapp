@@ -27,3 +27,11 @@ export function formatNotificationsAriaLabel(count: number): string {
     ? "1 notificación pendiente"
     : `${count} notificaciones pendientes`;
 }
+
+/**
+ * Formatea la cantidad numérica a mostrar en la insignia de notificaciones (máximo "99+").
+ */
+export function formatNotificationsDisplayCount(count: number): string {
+  if (count <= 0) return "";
+  return count > 99 ? "99+" : String(count);
+}

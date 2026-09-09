@@ -4,7 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
 import { cn, isNavItemActive } from "@/lib/utils";
-import { getNavItems, formatNotificationsAriaLabel } from "./nav-utils";
+import {
+  getNavItems,
+  formatNotificationsAriaLabel,
+  formatNotificationsDisplayCount,
+} from "./nav-utils";
 
 interface BottomNavProps {
   position?: "fixed" | "static";
@@ -100,7 +104,7 @@ export function BottomNav({
             aria-label={formatNotificationsAriaLabel(notificationsCount)}
             className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
-            {notificationsCount}
+            {formatNotificationsDisplayCount(notificationsCount)}
           </Link>
         )}
       </div>

@@ -28,7 +28,7 @@ describe("NotificationsBadge Component", () => {
 
     const count = await getCachedPendingActionsCount("user-123");
     expect(count).toBe(120);
-    expect(count > 99 ? "99+" : count).toBe("99+");
+    expect(count > 99 ? "99+" : String(count)).toBe("99+");
   });
 
   it("formats singular vs plural ARIA labels correctly", async () => {
