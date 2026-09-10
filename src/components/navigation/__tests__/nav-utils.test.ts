@@ -3,6 +3,7 @@ import {
   getNavItems,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
+  isNavItemActive,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -65,6 +66,39 @@ describe("nav-utils", () => {
     it("returns '99+' cap when count exceeds 99", () => {
       expect(formatNotificationsDisplayCount(100)).toBe("99+");
       expect(formatNotificationsDisplayCount(250)).toBe("99+");
+    });
+  });
+
+  describe("isNavItemActive", () => {
+    it("returns false if pathname is null or empty", () => {
+      expect(isNavItemActive("/turnos", null)).toBe(false);
+      expect(isNavItemActive("/turnos", "")).toBe(false);
+    });
+
+    it("returns true on exact pathname match", () => {
+      expect(isNavItemActive("/turnos", "/turnos")).toBe(true);
+      expect(isNavItemActive("/ranking", "/ranking")).toBe(true);
+      expect(isNavItemActive("/me", "/me")).toBe(true);
+    });
+
+    it("handles /me route special rules", () => {
+      expect(isNavItemActive("/me", "/me")).toBe(true);
+      expect(isNavItemActive("/me", "/me/profile")).toBe(false);
+      expect(isNavItemActive("/me", "/me/security")).toBe(false);
+    });
+
+    it("handles /me/profile subroutes and security link", () => {
+      expect(isNavItemActive("/me/profile", "/me/profile")).toBe(true);
+      expect(isNavItemActive("/me/profile", "/me/profile/edit")).toBe(true);
+      expect(isNavItemActive("/me/profile", "/me/security")).toBe(true);
+      expect(isNavItemActive("/me/profile", "/me/security/devices")).toBe(true);
+    });
+
+    it("matches standard section prefix subroutes", () => {
+      expect(isNavItemActive("/turnos", "/turnos/nuevo")).toBe(true);
+      expect(isNavItemActive("/turnos", "/turnos/123/editar")).toBe(true);
+      expect(isNavItemActive("/ranking", "/ranking/leaderboard")).toBe(true);
+      expect(isNavItemActive("/turnos", "/match")).toBe(false);
     });
   });
 });

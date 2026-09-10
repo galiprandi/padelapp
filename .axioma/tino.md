@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-10 — Extracción de Función Helper `isNavItemActive` para Coincidencia de Rutas Activas en Navegación Principal (PR #tino/ux/nav-item-active-helper-extraction)
 - [x] 2026-09-09 — Extracción de Función Helper `formatNotificationsDisplayCount` y Estandarización de Badge de Notificaciones en Navegación (PR #tino/perf/notifications-badge-display-formatting)
 - [x] 2026-09-08 — Extracción de Funciones Helper `getNavItems` y `formatNotificationsAriaLabel` para Navegación Principal y Refactorización de `BottomNav` (PR #tino/ux/navigation-helpers-extraction)
 - [x] 2026-09-07 — Gestión Automática de Atributos ARIA y Accesibilidad en Componente `Skeleton` durante Estados de Carga Streaming (PR #tino/ux/skeleton-aria-accessibility)
@@ -49,6 +50,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-10 - Extracción de Helper `isNavItemActive` para Coincidencia de Ruta Activa en Navegación
+**Aprendizaje:** Mover la función pura `isNavItemActive` hacia `src/components/navigation/nav-utils.ts` agrupa toda la lógica utilitaria de navegación (ítems, formateo de notificaciones y resaltado de ruta activa) en una única ubicación coherente. Mantener un re-export en `src/lib/utils.ts` asegura retrocompatibilidad sin romper importaciones preexistentes.
+**Acción:** Importar siempre los helpers de navegación desde `src/components/navigation/nav-utils.ts` al trabajar con elementos de la barra principal.
+
 ### 2026-09-09 - Extracción de Helper de Formato de Conteo para Badge de Notificaciones
 **Aprendizaje:** Abstraer la lógica de formateo del conteo de notificaciones (`formatNotificationsDisplayCount`) hacia el módulo de utilidades de navegación (`src/components/navigation/nav-utils.ts`) centraliza el tope dinámico (`99+`) y el manejo de valores no positivos. Al reutilizar este helper tanto en `NotificationsBadge` como en `BottomNav`, garantizamos consistencia visual y de accesibilidad ARIA en toda la barra de navegación principal.
 **Acción:** Reutilizar `formatNotificationsDisplayCount` en cualquier nuevo indicador de notificaciones o conteo en la aplicación.
