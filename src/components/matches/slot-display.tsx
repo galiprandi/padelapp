@@ -6,6 +6,11 @@ import { UsersRound } from "lucide-react";
 import { avatarFallback, positionFromTeam } from "@/lib/match-utils";
 import type { SlotValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
+import {
+  getSlotDisplayName,
+  getSlotAriaLabel,
+  getManageButtonAriaLabel,
+} from "./slot-display-utils";
 
 interface SlotDisplayProps {
   team: TeamKey;
@@ -29,17 +34,12 @@ export function SlotDisplay({
   onManageClick,
 }: SlotDisplayProps) {
   const position = positionFromTeam(team, index);
-  const placeholderName = `Jugador ${position + 1}`;
   const sideLabel = index === 0 ? "Derecha" : "Revés";
 
-  const displayName =
-    slot?.kind === "user"
-      ? slot.player.displayName
-      : slot?.kind === "placeholder"
-        ? slot.displayName
-        : team === "A" && index === 0
-          ? userDisplayName
-          : placeholderName;
+  const displayName = getSlotDisplayName(slot, team, index, userDisplayName);
+  const slotAriaLabel = getSlotAriaLabel(team, sideLabel, displayName);
+  const manageButtonAriaLabel = getManageButtonAriaLabel(slot?.kind);
+
   const isUser = slot?.kind === "user";
   const isSelf =
     slot?.kind === "user" &&
@@ -48,19 +48,19 @@ export function SlotDisplay({
 
   return (
     <div
+      role="region"
+      aria-label={`Cupo Pareja ${team}, ${sideLabel}: ${displayName}`}
       className={cn(
-        "group relative flex items-center justify-between rounded-xl border p-1 transition-all",
+        "group relative flex items-center justify-between rounded-xl border p-1 shadow-xs transition-all",
         isActive
           ? "border-primary bg-card"
-          : isUser
-            ? "border-border bg-card"
-            : "border-border bg-card",
+          : "border-border bg-card",
       )}
     >
       <button
         type="button"
         onClick={() => onSlotClick(team, index)}
-        aria-label={`Seleccionar Pareja ${team}, ${sideLabel}: ${displayName}`}
+        aria-label={slotAriaLabel}
         aria-pressed={isActive}
         className={cn(
           "flex flex-1 items-center gap-3 rounded-lg px-3 py-2 text-left transition-all active:scale-[0.98]",
@@ -105,7 +105,7 @@ export function SlotDisplay({
 
       <div className="flex items-center gap-1 pr-1">
         {isSelf ? (
-          <div className="flex h-8 items-center px-2.5 rounded-lg bg-muted border border-border">
+          <div className="flex h-8 items-center px-2.5 rounded-lg bg-muted border border-border shadow-xs">
             <span className="text-xs font-bold text-foreground">Vos</span>
           </div>
         ) : null}
@@ -114,13 +114,7 @@ export function SlotDisplay({
           variant="ghost"
           size="icon"
           className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-          aria-label={
-            slot?.kind === "placeholder"
-              ? "Gestionar nombre del cupo"
-              : slot?.kind === "user"
-                ? "Cambiar jugador"
-                : "Asignar jugador"
-          }
+          aria-label={manageButtonAriaLabel}
           onClick={() => onManageClick(team, index)}
         >
           <UsersRound className="h-4 w-4" aria-hidden="true" />
