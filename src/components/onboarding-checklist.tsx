@@ -19,7 +19,22 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const DISMISS_KEY = "onboarding-checklist-dismissed";
+export const ONBOARDING_CHECKLIST_DISMISS_KEY = "onboarding-checklist-dismissed";
+
+export function isOnboardingChecklistDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(ONBOARDING_CHECKLIST_DISMISS_KEY) === "true";
+}
+
+export function dismissOnboardingChecklist(): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ONBOARDING_CHECKLIST_DISMISS_KEY, "true");
+}
+
+export function clearOnboardingChecklistDismissal(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(ONBOARDING_CHECKLIST_DISMISS_KEY);
+}
 
 export interface OnboardingStepsState {
   stepAliasCompleted: boolean;
@@ -67,8 +82,7 @@ export function OnboardingChecklist({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-    const isDismissed = localStorage.getItem(DISMISS_KEY);
-    if (isDismissed === "true") {
+    if (isOnboardingChecklistDismissed()) {
       setDismissed(true);
     }
   }, []);
@@ -103,6 +117,24 @@ export function OnboardingChecklist({
     }
   }, [deferredPrompt]);
 
+  const handleDismiss = useCallback(() => {
+    setDismissed(true);
+    dismissOnboardingChecklist();
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || dismissed) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mounted, dismissed, handleDismiss]);
+
   if (!mounted || dismissed) return null;
 
   // Evaluate each step's completion status
@@ -118,13 +150,12 @@ export function OnboardingChecklist({
     stepNotificationsCompleted,
   });
 
-  const handleDismiss = () => {
-    setDismissed(true);
-    localStorage.setItem(DISMISS_KEY, "true");
-  };
-
   return (
-    <div className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5">
+    <div
+      role="region"
+      aria-label="Guía de bienvenida de Padel Red"
+      className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5"
+    >
       {/* Header section with progress bar */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
