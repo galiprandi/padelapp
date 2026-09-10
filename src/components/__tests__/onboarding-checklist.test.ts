@@ -1,5 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { calculateOnboardingProgress } from "../onboarding-checklist";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import {
+  calculateOnboardingProgress,
+  ONBOARDING_CHECKLIST_DISMISS_KEY,
+  isOnboardingChecklistDismissed,
+  dismissOnboardingChecklist,
+  clearOnboardingChecklistDismissal,
+} from "../onboarding-checklist";
 
 describe("calculateOnboardingProgress", () => {
   it("returns 0 count and 0% progress when no steps are completed", () => {
@@ -66,5 +72,50 @@ describe("calculateOnboardingProgress", () => {
     });
     expect(result.completedCount).toBe(4);
     expect(result.progressPercent).toBe(100);
+  });
+});
+
+describe("OnboardingChecklist storage helpers", () => {
+  let storage: Record<string, string> = {};
+
+  beforeEach(() => {
+    storage = {};
+    const mockLocalStorage = {
+      getItem: (key: string) => storage[key] ?? null,
+      setItem: (key: string, value: string) => {
+        storage[key] = value;
+      },
+      removeItem: (key: string) => {
+        delete storage[key];
+      },
+      clear: () => {
+        storage = {};
+      },
+    };
+
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("localStorage", mockLocalStorage);
+  });
+
+  it("exports the correct storage key constant", () => {
+    expect(ONBOARDING_CHECKLIST_DISMISS_KEY).toBe("onboarding-checklist-dismissed");
+  });
+
+  it("returns false when not dismissed", () => {
+    expect(isOnboardingChecklistDismissed()).toBe(false);
+  });
+
+  it("sets storage key to true when dismissed", () => {
+    dismissOnboardingChecklist();
+    expect(isOnboardingChecklistDismissed()).toBe(true);
+    expect(localStorage.getItem(ONBOARDING_CHECKLIST_DISMISS_KEY)).toBe("true");
+  });
+
+  it("clears dismissal storage key correctly", () => {
+    dismissOnboardingChecklist();
+    expect(isOnboardingChecklistDismissed()).toBe(true);
+    clearOnboardingChecklistDismissal();
+    expect(isOnboardingChecklistDismissed()).toBe(false);
+    expect(localStorage.getItem(ONBOARDING_CHECKLIST_DISMISS_KEY)).toBeNull();
   });
 });

@@ -12,6 +12,18 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, getCategoryDefinition } from "@/lib/constants/categories";
 import {
+  isOnboardingChecklistDismissed,
+  clearOnboardingChecklistDismissal,
+} from "@/components/onboarding-checklist";
+import {
+  isPwaBannerDismissed,
+  clearPwaBannerDismissal,
+} from "@/components/pwa-install-banner";
+import {
+  isPushPromptDismissed,
+  clearPushPromptDismissal,
+} from "@/components/pwa/push-permission-prompt";
+import {
   MAX_ALIAS_LENGTH,
   AUTOSAVE_DEBOUNCE_MS,
   COURT_SIDE_OPTIONS,
@@ -103,15 +115,15 @@ export function ProfileForm({
 
   const [checklistDismissed, setChecklistDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("onboarding-checklist-dismissed") === "true";
+    return isOnboardingChecklistDismissed();
   });
   const [pwaDismissed, setPwaDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("pwa-banner-dismissed") === "true";
+    return isPwaBannerDismissed();
   });
   const [pushDismissed, setPushDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("push-prompt-dismissed") === "true";
+    return isPushPromptDismissed();
   });
 
   const lastSavedAlias = useRef(initialAlias);
@@ -282,7 +294,7 @@ export function ProfileForm({
 
   function handleRestoreChecklist() {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("onboarding-checklist-dismissed");
+      clearOnboardingChecklistDismissal();
       setChecklistDismissed(false);
       showToast("Guía de bienvenida restablecida", {
         duration: 4000,
@@ -684,7 +696,7 @@ export function ProfileForm({
                 variant="outline"
                 onClick={() => {
                   if (typeof window !== "undefined") {
-                    localStorage.removeItem("pwa-banner-dismissed");
+                    clearPwaBannerDismissal();
                     setPwaDismissed(false);
                     showToast("Sugerencia de instalación restablecida", {
                       duration: 4000,
@@ -702,7 +714,7 @@ export function ProfileForm({
                 variant="outline"
                 onClick={() => {
                   if (typeof window !== "undefined") {
-                    localStorage.removeItem("push-prompt-dismissed");
+                    clearPushPromptDismissal();
                     setPushDismissed(false);
                     showToast("Sugerencia de notificaciones restablecida", {
                       duration: 4000,
