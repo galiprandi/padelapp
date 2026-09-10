@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
-import { cn, isNavItemActive } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   getNavItems,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
+  isNavItemActive,
 } from "./nav-utils";
 
 interface BottomNavProps {
