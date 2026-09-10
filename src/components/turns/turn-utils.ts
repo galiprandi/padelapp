@@ -1,4 +1,4 @@
-import { isToday, isTomorrow } from "@/lib/utils";
+import { isToday, isTomorrow, getNaturalShareText } from "@/lib/utils";
 
 export interface WhatsAppInviteMessageOptions {
   club: string;
@@ -403,4 +403,72 @@ export function getAddPlayerSuccessToast(playerName: string): string {
  */
 export function getAddPlayerAriaLabel(playerName: string): string {
   return `Agregar a ${playerName} al turno`;
+}
+
+export interface TurnFormData {
+  club: string;
+  date: string;
+  time: string;
+  duration?: string;
+  maxPlayers?: string;
+  notes?: string;
+}
+
+export interface TurnFormValidationResult {
+  valid: boolean;
+  error?: string;
+  combinedDate?: Date;
+}
+
+/**
+ * Validate turn form data for creation or editing.
+ * Ensures club, date, and time are provided, and that the combined datetime is not in the past.
+ */
+export function validateTurnFormData(
+  formData: TurnFormData,
+  nowMs: number = Date.now()
+): TurnFormValidationResult {
+  if (!formData.club.trim() || !formData.date || !formData.time) {
+    return { valid: false, error: "Completá club, fecha y hora" };
+  }
+
+  const combinedDate = new Date(`${formData.date}T${formData.time}`);
+  if (isNaN(combinedDate.getTime())) {
+    return { valid: false, error: "Fecha u hora inválida" };
+  }
+
+  if (combinedDate.getTime() < nowMs) {
+    return {
+      valid: false,
+      error: "No se puede guardar el turno en el pasado. Elegí una fecha y hora futura.",
+      combinedDate,
+    };
+  }
+
+  return { valid: true, combinedDate };
+}
+
+export interface NewTurnShareUrlOptions {
+  club: string;
+  date: Date;
+  turnId: string;
+  origin: string;
+}
+
+/**
+ * Format WhatsApp share URL when creating a new turn.
+ */
+export function getNewTurnWhatsAppShareUrl({
+  club,
+  date,
+  turnId,
+  origin,
+}: NewTurnShareUrlOptions): string {
+  const turnUrl = `${origin}/t/${turnId}`;
+  const shareText = getNaturalShareText({
+    type: "turn",
+    club,
+    date,
+  });
+  return `https://wa.me/?text=${encodeURIComponent(`${shareText}. Sumate acá: ${turnUrl}`)}`;
 }

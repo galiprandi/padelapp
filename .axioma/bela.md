@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-10 — Turn Form Validation & Share URL Helpers Extraction, ARIA Region Landmarks & Solid MDS Styling Polish in New & Edit Turn Forms (bela/turnos/form-validation-and-share-helpers)
 - [x] 2026-09-09 — Manual Add Player Helpers Extraction, AddPlayerButton Solid MDS Styling, ARIA Region Landmark & Escape Key Dismissal (bela/turnos/add-player-button-mds-a11y)
 - [x] 2026-09-05 — TurnActions & TurnCard ARIA Loading States, Dynamic Labels & Unit Tests (bela/turnos/turn-actions-aria-loading-states)
 - [x] 2026-09-04 — OpenToNetworkButton ARIA Accessibility, Dynamic Labels, Solid MDS Feedback & Unit Tests (bela/turnos/open-to-network-a11y-and-tests)
@@ -49,6 +50,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-10 - Turn Form Validation & Share URL Helpers Extraction, ARIA Region Landmarks & Solid MDS Styling Polish in New & Edit Turn Forms
+**Learning:** Extracting pure helper functions (`validateTurnFormData` and `getNewTurnWhatsAppShareUrl`) into `src/components/turns/turn-utils.ts` decouples form validation logic (required fields and future datetime checks) and WhatsApp share URL creation from React client component render trees. Adding `role="region"` landmark attributes with Argentine Spanish screen reader labels ("Formulario para crear nuevo turno de pádel" and "Formulario para editar turno de pádel"), explicit `aria-busy={isPending}` loading indicators, keyboard focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), and active tactile press scaling (`active:scale-[0.98] transition-all`) delivers responsive accessibility and visual alignment across turn creation and editing viewports.
+**Action:** Always extract form validation and social share URL formatting into pure helper functions backed by unit tests, and equip creation and edit form cards with region landmarks, focus ring offsets, active tactile scaling, and aria-busy loading states.
+
 ## 2026-09-09 - Manual Add Player Helpers Extraction, AddPlayerButton Solid MDS Styling, ARIA Region Landmark & Escape Key Dismissal
 **Learning:** Extracting pure helper functions (`filterAndSortPlayerOptions`, `getAddPlayerSuccessToast`, `getAddPlayerAriaLabel`) into `src/components/turns/turn-utils.ts` simplifies component rendering and makes contact prioritization logic deterministic and unit-testable. Enhancing `AddPlayerButton` with `role="region"`, `aria-label="Agregar jugador al turno"`, `Escape` key (`onKeyDown`) search cancellation, solid MDS container styling (`shadow-xs`), focus ring offsets (`ring-offset-background`), and active tactile press scaling (`active:scale-[0.98] transition-all`) delivers expected accessibility and micro-UX feedback.
 **Action:** Always extract search filtering and contact prioritization logic into pure helper functions backed by unit tests and equip expandable search views with region landmarks, keyboard escape dismissal, and solid MDS container styling.

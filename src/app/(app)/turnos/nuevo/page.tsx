@@ -10,8 +10,12 @@ import { ClubInput } from "@/components/club-input";
 import { createTurnAction } from "../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Check, ChevronLeft, Zap } from "lucide-react";
-import { cn, getNaturalShareText } from "@/lib/utils";
-import { getNextRadioValue } from "@/components/turns/turn-utils";
+import { cn } from "@/lib/utils";
+import {
+  getNextRadioValue,
+  validateTurnFormData,
+  getNewTurnWhatsAppShareUrl,
+} from "@/components/turns/turn-utils";
 import Link from "next/link";
 
 const DURATION_OPTIONS = [
@@ -44,16 +48,15 @@ export default function NewTurnPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.club || !formData.date || !formData.time) {
-      showToast("Completá club, fecha y hora");
+    const validation = validateTurnFormData(formData);
+    if (!validation.valid || !validation.combinedDate) {
+      showToast(validation.error ?? "Completá club, fecha y hora", {
+        type: validation.error?.includes("pasado") ? "error" : undefined,
+      });
       return;
     }
 
-    const combinedDate = new Date(`${formData.date}T${formData.time}`);
-    if (combinedDate.getTime() < Date.now()) {
-      showToast("No se puede crear el turno en el pasado. Elegí una fecha y hora futura.", { type: "error" });
-      return;
-    }
+    const combinedDate = validation.combinedDate;
 
     startTransition(async () => {
       const response = await createTurnAction({
@@ -64,14 +67,13 @@ export default function NewTurnPage() {
         notes: formData.notes,
       });
 
-      if (response.status === "ok") {
-        const turnUrl = `${window.location.origin}/t/${response.turnId}`;
-        const shareText = getNaturalShareText({
-          type: "turn",
+      if (response.status === "ok" && response.turnId) {
+        const whatsappUrl = getNewTurnWhatsAppShareUrl({
           club: formData.club,
           date: combinedDate,
+          turnId: response.turnId,
+          origin: window.location.origin,
         });
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}. Sumate acá: ${turnUrl}`)}`;
         showToast("Creaste el turno. Compartilo por WhatsApp.", {
           action: {
             label: "WhatsApp",
@@ -105,7 +107,11 @@ export default function NewTurnPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="rounded-xl border border-border bg-card">
+        <div
+          role="region"
+          aria-label="Formulario para crear nuevo turno de pádel"
+          className="rounded-xl border border-border bg-card shadow-xs"
+        >
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-primary" />
@@ -294,7 +300,13 @@ export default function NewTurnPage() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full h-12 rounded-lg font-bold text-base" disabled={isPending}>
+        <Button
+          type="submit"
+          className="w-full h-12 rounded-lg font-bold text-base shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          disabled={isPending}
+          aria-busy={isPending}
+          aria-label={isPending ? "Creando turno..." : "Crear turno y compartir link"}
+        >
           {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
