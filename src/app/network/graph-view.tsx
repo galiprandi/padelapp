@@ -26,6 +26,7 @@ import {
   calculateCommunityFilterOptions,
   calculateNetworkDiversityScore,
   calculateCrossRivalryDensity,
+  calculatePlayerGraphReach,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -796,6 +797,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const reach = calculatePlayerGraphReach(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -837,6 +842,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Rivalidad cruzada: ${crossRivalry.rivalryTier}. ${crossRivalry.formattedSummary}`}
                       >
                         {crossRivalry.rivalryTier}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          reach.badgeStyle,
+                        )}
+                        title={`Alcance de red: ${reach.reachTier}. ${reach.formattedSummary}`}
+                        aria-label={`Alcance de red: ${reach.reachTier}. ${reach.formattedSummary}`}
+                      >
+                        {reach.reachTier}
                       </span>
                     </>
                   );

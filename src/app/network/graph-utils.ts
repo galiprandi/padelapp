@@ -395,6 +395,117 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface PlayerGraphReachResult {
+  directConnectionsCount: number;
+  extendedReachCount: number;
+  totalReachCount: number;
+  reachMultiplier: number;
+  reachTier:
+    | "Red expansiva 🌌"
+    | "Red interconectada 🌐"
+    | "Círculo cercano ⭕"
+    | "Red inicial 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates 1st and 2nd-degree extended player reach across the network graph
+ * for a given selected node.
+ */
+export function calculatePlayerGraphReach(
+  links: GraphLink[],
+  selectedNodeId: string,
+): PlayerGraphReachResult {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const directNeighborIds = new Set<string>();
+
+  for (const link of connectedLinks) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    if (src === selectedNodeId) directNeighborIds.add(tgt);
+    else if (tgt === selectedNodeId) directNeighborIds.add(src);
+  }
+
+  const directConnectionsCount = directNeighborIds.size;
+
+  if (directConnectionsCount === 0) {
+    return {
+      directConnectionsCount: 0,
+      extendedReachCount: 0,
+      totalReachCount: 0,
+      reachMultiplier: 1.0,
+      reachTier: "Red inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin contactos directos en la red",
+    };
+  }
+
+  // Find 2nd degree nodes (neighbors of direct neighbors excluding selectedNodeId and directNeighbors)
+  const extendedNeighborIds = new Set<string>();
+
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+
+    if (directNeighborIds.has(src) && tgt !== selectedNodeId && !directNeighborIds.has(tgt)) {
+      extendedNeighborIds.add(tgt);
+    } else if (directNeighborIds.has(tgt) && src !== selectedNodeId && !directNeighborIds.has(src)) {
+      extendedNeighborIds.add(src);
+    }
+  }
+
+  const extendedReachCount = extendedNeighborIds.size;
+  const totalReachCount = directConnectionsCount + extendedReachCount;
+  const reachMultiplier =
+    directConnectionsCount > 0
+      ? Number((totalReachCount / directConnectionsCount).toFixed(1))
+      : 1.0;
+
+  let reachTier:
+    | "Red expansiva 🌌"
+    | "Red interconectada 🌐"
+    | "Círculo cercano ⭕"
+    | "Red inicial 📍";
+  let badgeStyle: string;
+
+  if (extendedReachCount >= 12 || reachMultiplier >= 3.0) {
+    reachTier = "Red expansiva 🌌";
+    badgeStyle =
+      "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-800";
+  } else if (extendedReachCount >= 6) {
+    reachTier = "Red interconectada 🌐";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (extendedReachCount >= 2) {
+    reachTier = "Círculo cercano ⭕";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    reachTier = "Red inicial 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${directConnectionsCount} ${directConnectionsCount === 1 ? "contacto directo" : "contactos directos"}`,
+    `${extendedReachCount} en 2º grado`,
+  ];
+
+  if (extendedReachCount > 0) {
+    parts.push(`${totalReachCount} alcance total`);
+  }
+
+  return {
+    directConnectionsCount,
+    extendedReachCount,
+    totalReachCount,
+    reachMultiplier,
+    reachTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface PlayerSimilarityCandidateInput {
   id: string;
   skillScore: number | null;

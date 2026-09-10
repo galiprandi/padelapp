@@ -202,6 +202,7 @@ import {
   calculateNetworkDiversityScore,
   calculateCrossRivalryDensity,
   calculatePlayerSimilarityInfo,
+  calculatePlayerGraphReach,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1748,6 +1749,92 @@ describe("calculateCrossRivalryDensity", () => {
     expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
     expect(res.badgeStyle).toContain("bg-muted");
     expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
+  });
+});
+
+describe("calculatePlayerGraphReach", () => {
+  it("returns fallback reach info for unconnected node", () => {
+    const res = calculatePlayerGraphReach([], "p-99");
+    expect(res.directConnectionsCount).toBe(0);
+    expect(res.extendedReachCount).toBe(0);
+    expect(res.totalReachCount).toBe(0);
+    expect(res.reachMultiplier).toBe(1.0);
+    expect(res.reachTier).toBe("Red inicial 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin contactos directos en la red");
+  });
+
+  it("calculates star topology reach (1 center node connected to 3 leaf nodes)", () => {
+    const links: GraphLink[] = [
+      { source: "p-center", target: "leaf-1", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-center", target: "leaf-2", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-center", target: "leaf-3", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // For leaf-1: direct = 1 (p-center), 2nd degree = 2 (leaf-2, leaf-3) => total = 3, multiplier = 3.0
+    const leafReach = calculatePlayerGraphReach(links, "leaf-1");
+    expect(leafReach.directConnectionsCount).toBe(1);
+    expect(leafReach.extendedReachCount).toBe(2);
+    expect(leafReach.totalReachCount).toBe(3);
+    expect(leafReach.reachMultiplier).toBe(3.0);
+    expect(leafReach.reachTier).toBe("Red expansiva 🌌");
+    expect(leafReach.badgeStyle).toContain("bg-purple-100");
+    expect(leafReach.formattedSummary).toContain("1 contacto directo");
+    expect(leafReach.formattedSummary).toContain("2 en 2º grado");
+    expect(leafReach.formattedSummary).toContain("3 alcance total");
+  });
+
+  it("calculates extended network reach in multi-hop network for 'Red interconectada 🌐' tier", () => {
+    // A connected directly to B, C, D, E (4 direct connections)
+    // B connected to F, G; C connected to H, I; D connected to J, K (6 2nd-degree extended connections)
+    const links: GraphLink[] = [
+      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "A", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "A", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "A", target: "E", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+
+      { source: "B", target: "F", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "B", target: "G", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "C", target: "H", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "C", target: "I", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "D", target: "J", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "D", target: "K", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // For A: direct = 4 (B, C, D, E), 2nd degree = 6 (F, G, H, I, J, K) => total = 10, multiplier = 2.5
+    const reachA = calculatePlayerGraphReach(links, "A");
+    expect(reachA.directConnectionsCount).toBe(4);
+    expect(reachA.extendedReachCount).toBe(6);
+    expect(reachA.totalReachCount).toBe(10);
+    expect(reachA.reachMultiplier).toBe(2.5);
+    expect(reachA.reachTier).toBe("Red interconectada 🌐");
+    expect(reachA.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("calculates 'Círculo cercano ⭕' tier for moderate 2nd degree reach (2-5 nodes)", () => {
+    const links: GraphLink[] = [
+      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "B", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "B", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // For A: direct = 1 (B), 2nd degree = 2 (C, D) => multiplier = 3.0 (triggers Red expansiva because multiplier >= 3.0)
+    // To test Círculo cercano, give A 2 direct connections and 2 extended:
+    const links2: GraphLink[] = [
+      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "A", target: "E", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "B", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "B", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // For A: direct = 2 (B, E), 2nd degree = 2 (C, D) => total = 4, multiplier = 2.0
+    const reach = calculatePlayerGraphReach(links2, "A");
+    expect(reach.directConnectionsCount).toBe(2);
+    expect(reach.extendedReachCount).toBe(2);
+    expect(reach.totalReachCount).toBe(4);
+    expect(reach.reachMultiplier).toBe(2.0);
+    expect(reach.reachTier).toBe("Círculo cercano ⭕");
+    expect(reach.badgeStyle).toContain("bg-amber-100");
   });
 
   it("calculates 'Red de rivalidad activa ⚔️' tier for high rivalry interaction (>= 65%)", () => {
