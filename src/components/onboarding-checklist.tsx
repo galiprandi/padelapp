@@ -117,21 +117,6 @@ export function OnboardingChecklist({
     }
   }, [deferredPrompt]);
 
-  if (!mounted || dismissed) return null;
-
-  // Evaluate each step's completion status
-  const stepAliasCompleted = Boolean(initialAlias && initialAlias.trim().length > 0);
-  const stepPwaCompleted = isPwaInstalled;
-  const stepNotificationsCompleted = permission === "granted";
-  const stepActivityCompleted = hasActivity;
-
-  const { completedCount, progressPercent } = calculateOnboardingProgress({
-    stepAliasCompleted,
-    stepActivityCompleted,
-    stepPwaCompleted,
-    stepNotificationsCompleted,
-  });
-
   const handleDismiss = useCallback(() => {
     setDismissed(true);
     dismissOnboardingChecklist();
@@ -149,6 +134,21 @@ export function OnboardingChecklist({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [mounted, dismissed, handleDismiss]);
+
+  if (!mounted || dismissed) return null;
+
+  // Evaluate each step's completion status
+  const stepAliasCompleted = Boolean(initialAlias && initialAlias.trim().length > 0);
+  const stepPwaCompleted = isPwaInstalled;
+  const stepNotificationsCompleted = permission === "granted";
+  const stepActivityCompleted = hasActivity;
+
+  const { completedCount, progressPercent } = calculateOnboardingProgress({
+    stepAliasCompleted,
+    stepActivityCompleted,
+    stepPwaCompleted,
+    stepNotificationsCompleted,
+  });
 
   return (
     <div
