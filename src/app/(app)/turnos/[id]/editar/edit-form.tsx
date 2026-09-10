@@ -11,7 +11,10 @@ import { updateTurnAction } from "../../actions";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2, Zap, Info, Clock, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getNextRadioValue } from "@/components/turns/turn-utils";
+import {
+  getNextRadioValue,
+  validateTurnFormData,
+} from "@/components/turns/turn-utils";
 
 const DURATION_OPTIONS = [
   { value: "60", label: "60 min" },
@@ -55,16 +58,15 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.club || !formData.date || !formData.time) {
-      showToast("Completá club, fecha y hora");
+    const validation = validateTurnFormData(formData);
+    if (!validation.valid || !validation.combinedDate) {
+      showToast(validation.error ?? "Completá club, fecha y hora", {
+        type: validation.error?.includes("pasado") ? "error" : undefined,
+      });
       return;
     }
 
-    const combinedDate = new Date(`${formData.date}T${formData.time}`);
-    if (combinedDate.getTime() < Date.now()) {
-      showToast("No se puede guardar el turno en el pasado. Elegí una fecha y hora futura.", { type: "error" });
-      return;
-    }
+    const combinedDate = validation.combinedDate;
 
     startTransition(async () => {
       const response = await updateTurnAction(id, {
@@ -86,7 +88,11 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="rounded-xl border border-border bg-card">
+      <div
+        role="region"
+        aria-label="Formulario para editar turno de pádel"
+        className="rounded-xl border border-border bg-card shadow-xs"
+      >
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
@@ -273,8 +279,10 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
 
       <Button
         type="submit"
-        className="w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98]"
+        className="w-full h-12 text-base font-bold rounded-lg shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         disabled={isPending}
+        aria-busy={isPending}
+        aria-label={isPending ? "Guardando cambios del turno..." : "Guardar cambios del turno"}
       >
         {isPending ? (
           <>

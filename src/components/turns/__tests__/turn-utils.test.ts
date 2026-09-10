@@ -19,6 +19,8 @@ import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
   getAddPlayerAriaLabel,
+  validateTurnFormData,
+  getNewTurnWhatsAppShareUrl,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -574,5 +576,61 @@ describe("getAddPlayerSuccessToast and getAddPlayerAriaLabel", () => {
 
   it("formats ARIA label for adding player", () => {
     expect(getAddPlayerAriaLabel("Mateo")).toBe("Agregar a Mateo al turno");
+  });
+});
+
+describe("validateTurnFormData", () => {
+  const nowMs = new Date("2026-09-10T12:00:00Z").getTime();
+
+  it("returns error when club, date, or time is empty", () => {
+    expect(
+      validateTurnFormData({ club: "", date: "2026-09-10", time: "18:00" }, nowMs)
+    ).toEqual({ valid: false, error: "Completá club, fecha y hora" });
+
+    expect(
+      validateTurnFormData({ club: "  ", date: "2026-09-10", time: "18:00" }, nowMs)
+    ).toEqual({ valid: false, error: "Completá club, fecha y hora" });
+
+    expect(
+      validateTurnFormData({ club: "Club Padel", date: "", time: "18:00" }, nowMs)
+    ).toEqual({ valid: false, error: "Completá club, fecha y hora" });
+
+    expect(
+      validateTurnFormData({ club: "Club Padel", date: "2026-09-10", time: "" }, nowMs)
+    ).toEqual({ valid: false, error: "Completá club, fecha y hora" });
+  });
+
+  it("returns error when combined datetime is in the past", () => {
+    const result = validateTurnFormData(
+      { club: "Central Padel", date: "2026-09-10", time: "10:00" },
+      nowMs
+    );
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain("pasado");
+  });
+
+  it("returns valid true and combinedDate when datetime is in the future", () => {
+    const result = validateTurnFormData(
+      { club: "Central Padel", date: "2026-09-10", time: "19:00" },
+      nowMs
+    );
+    expect(result.valid).toBe(true);
+    expect(result.combinedDate).toBeInstanceOf(Date);
+  });
+});
+
+describe("getNewTurnWhatsAppShareUrl", () => {
+  it("formats WhatsApp share URL with natural share text and turn URL", () => {
+    const date = new Date("2026-09-15T19:00:00Z");
+    const url = getNewTurnWhatsAppShareUrl({
+      club: "Central Padel",
+      date,
+      turnId: "t123",
+      origin: "https://padelred.app",
+    });
+
+    expect(url.startsWith("https://wa.me/?text=")).toBe(true);
+    expect(url).toContain(encodeURIComponent("Central Padel"));
+    expect(url).toContain(encodeURIComponent("https://padelred.app/t/t123"));
   });
 });
