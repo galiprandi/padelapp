@@ -71,9 +71,13 @@ export function PendingConfirmationsAlert({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+    <div
+      role="region"
+      aria-label="Alertas de partidos pendientes de confirmación"
+      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+    >
       <div className="flex items-center gap-2">
-        <AlertCircle className="h-5 w-5 text-primary shrink-0" />
+        <AlertCircle className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-foreground leading-tight">
             Confirmaciones pendientes
@@ -102,11 +106,11 @@ export function PendingConfirmationsAlert({
           return (
             <div
               key={match.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3 shadow-xs"
             >
               <div className="flex flex-col gap-1 min-w-0">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                  <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" aria-hidden="true" />
                   <span className="tabular-nums">{formattedDate}</span>
                 </div>
                 {hasScore ? (
@@ -126,13 +130,14 @@ export function PendingConfirmationsAlert({
                     type="button"
                     onClick={() => handleConfirm(match.id)}
                     disabled={isConfirming}
+                    aria-busy={isThisConfirming}
                     aria-label={`Confirmar resultado ${match.score} para el partido del ${formattedDate}`}
                     className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50"
                   >
                     {isThisConfirming ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                     ) : (
-                      <Check className="h-3.5 w-3.5" />
+                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
                     Confirmar
                   </button>
@@ -144,7 +149,7 @@ export function PendingConfirmationsAlert({
                     className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     Cargar resultado
-                    <ChevronRight className="h-3.5 w-3.5" />
+                    <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
                 )}
                 <Link
@@ -153,7 +158,7 @@ export function PendingConfirmationsAlert({
                   aria-label={`Ver detalle del partido del ${formattedDate}`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
             </div>

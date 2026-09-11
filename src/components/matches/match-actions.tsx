@@ -54,7 +54,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         type="button"
         variant="ghost"
         onClick={() => setConfirming(true)}
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Eliminar este partido"
       >
         <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -65,6 +65,8 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
 
   return (
     <div
+      role="region"
+      aria-label="Confirmación de eliminación del partido"
       className="flex-1 flex items-center gap-1.5"
       onKeyDown={(e) => {
         if (e.key === "Escape") {
@@ -78,7 +80,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         variant="ghost"
         disabled={isPending}
         onClick={() => setConfirming(false)}
-        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Cancelar eliminación del partido"
       >
         <X className="h-4 w-4" aria-hidden="true" />
@@ -89,7 +91,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         onClick={handleCancel}
-        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Confirmar eliminación del partido"
       >
         {isPending ? (
@@ -122,12 +124,17 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
   };
 
   return (
-    <form onSubmit={handleConfirm} className="w-full">
+    <form
+      onSubmit={handleConfirm}
+      role="region"
+      aria-label="Acción para confirmar resultado del partido"
+      className="w-full"
+    >
       <Button
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Confirmar resultado del partido"
       >
         {isPending ? (
@@ -160,13 +167,18 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
   };
 
   return (
-    <form onSubmit={handleFinalize} className="w-full">
+    <form
+      onSubmit={handleFinalize}
+      role="region"
+      aria-label="Acción para finalizar partido como organizador"
+      className="w-full"
+    >
       <Button
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
         variant="outline"
-        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
         aria-label="Finalizar el partido como organizador"
       >
         {isPending ? (
