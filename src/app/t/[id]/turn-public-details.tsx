@@ -31,6 +31,10 @@ import {
   getTurnSalvageBannerText,
   getTurnUrgencyBadgeText,
   getTurnPublicSubtitle,
+  formatTurnSalvageCalloutAriaLabel,
+  formatTurnProgressPercentage,
+  formatTurnProgressAriaLabel,
+  formatSubstituteListAriaLabel,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -269,7 +273,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       </div>
 
       {salvageBannerText && (
-        <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-100 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 shadow-xs">
+        <div
+          role="region"
+          aria-label={formatTurnSalvageCalloutAriaLabel({
+            club: turn.club,
+            openSlots: openSlotsCount,
+          })}
+          className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-100 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 shadow-xs"
+        >
           <Sparkles className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
@@ -300,10 +311,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </div>
       )}
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div
+        role="region"
+        aria-label="Información del turno de pádel"
+        className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
+      >
         <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-primary" />
+            <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
             Información del turno
           </h2>
           <div className="flex items-center gap-1.5">
@@ -329,7 +344,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <div className="grid grid-cols-1 gap-px bg-border">
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="text-xs font-semibold">Horario</span>
             </div>
             <p className="text-lg font-bold">
@@ -339,7 +354,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
           <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
-              <MapPin className="h-5 w-5" />
+              <MapPin className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold truncate">{turn.club}</p>
@@ -362,11 +377,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               aria-valuenow={turn.players.length}
               aria-valuemin={0}
               aria-valuemax={turn.maxPlayers}
-              aria-label="Progreso de inscripción de jugadores"
+              aria-label={formatTurnProgressAriaLabel(turn.players.length, turn.maxPlayers)}
             >
               <div
                 className="bg-primary h-full rounded-full transition-all duration-300"
-                style={{ width: `${(turn.players.length / turn.maxPlayers) * 100}%` }}
+                style={{ width: `${formatTurnProgressPercentage(turn.players.length, turn.maxPlayers)}%` }}
               />
             </div>
           </div>
@@ -394,10 +409,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         )}
       </div>
 
-      <section className="space-y-4">
+      <section
+        role="region"
+        aria-label="Lista de jugadores inscriptos"
+        className="space-y-4"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             Lista de jugadores
           </h2>
           <Badge variant="primary">
@@ -509,10 +528,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       </section>
 
       {suggestedContacts.length > 0 && (
-        <section className="space-y-4">
+        <section
+          role="region"
+          aria-label="Contactos sugeridos para invitar por WhatsApp"
+          className="space-y-4"
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" />
+              <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
               Sugeridos para invitar 🧠
             </h2>
             <span className="text-xs text-muted-foreground">
@@ -551,10 +574,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       )}
 
       {turn.substitutes.length > 0 && (
-        <section className="space-y-4">
+        <section
+          role="region"
+          aria-label="Lista de suplentes en espera"
+          className="space-y-4"
+        >
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               Lista de suplentes
             </h2>
             <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
@@ -564,11 +591,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <div className="grid gap-2">
             {turn.substitutes.map((s, index) => {
               const isContact = contactIds.has(s.userId);
+              const name = s.user.alias ?? s.user.displayName;
               return (
                 <Link
                   key={s.id}
                   href={`/p/${s.userId}`}
                   prefetch={true}
+                  aria-label={formatSubstituteListAriaLabel(index, turn.substitutes.length, name)}
                   className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
@@ -621,9 +650,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       )}
 
       {(isJoined || isCreator || isSubstitute) && (
-        <section className="space-y-4 mb-6">
+        <section
+          role="region"
+          aria-label="Chat de coordinación del turno"
+          className="space-y-4 mb-6"
+        >
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <MessageSquare className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             Chat del turno 💬
           </h2>
           <TurnChat turnId={id} currentUserId={viewerId} />

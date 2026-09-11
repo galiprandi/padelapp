@@ -472,3 +472,55 @@ export function getNewTurnWhatsAppShareUrl({
   });
   return `https://wa.me/?text=${encodeURIComponent(`${shareText}. Sumate acá: ${turnUrl}`)}`;
 }
+
+/**
+ * Format ARIA label for turn salvage warning callout banner in Argentine Spanish voseo.
+ */
+export function formatTurnSalvageCalloutAriaLabel({
+  club,
+  openSlots,
+}: {
+  club: string;
+  openSlots: number;
+}): string {
+  if (openSlots <= 0) return "";
+  const slotsText =
+    openSlots === 1
+      ? "Falta 1 jugador para completar este turno"
+      : `Faltan ${openSlots} jugadores para completar este turno`;
+  return `Aviso de salvataje: ${slotsText} en ${club}.`;
+}
+
+/**
+ * Calculate turn progress percentage (bounded between 0% and 100%).
+ */
+export function formatTurnProgressPercentage(
+  enrolledCount: number,
+  maxPlayers: number
+): number {
+  if (maxPlayers <= 0) return 0;
+  const percentage = (enrolledCount / maxPlayers) * 100;
+  return Math.min(100, Math.max(0, Math.round(percentage)));
+}
+
+/**
+ * Format ARIA label for turn enrollment progress bar.
+ */
+export function formatTurnProgressAriaLabel(
+  enrolledCount: number,
+  maxPlayers: number
+): string {
+  const percentage = formatTurnProgressPercentage(enrolledCount, maxPlayers);
+  return `Progreso de inscripción: ${enrolledCount} de ${maxPlayers} jugadores (${percentage}% completado)`;
+}
+
+/**
+ * Format ARIA label for substitute list items in Argentine Spanish.
+ */
+export function formatSubstituteListAriaLabel(
+  index: number,
+  totalSubstitutes: number,
+  name: string
+): string {
+  return `Suplente #${index + 1} de ${totalSubstitutes}: ${name}`;
+}
