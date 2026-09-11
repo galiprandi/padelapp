@@ -1,5 +1,27 @@
 import { describe, it, expect } from "vitest";
-import { safeCallbackUrl } from "@/lib/auth-utils";
+import {
+  getLoginLoadingAriaLabel,
+  getLoginRegionAriaLabel,
+  getLoginTermsNoticeText,
+  safeCallbackUrl,
+} from "@/lib/auth-utils";
+
+describe("auth-utils login text helpers", () => {
+  it("returns a non-empty localized region ARIA label", () => {
+    const label = getLoginRegionAriaLabel();
+    expect(label).toBe("Opciones de inicio de sesión de Padel Red");
+  });
+
+  it("returns a non-empty localized loading ARIA label", () => {
+    const label = getLoginLoadingAriaLabel();
+    expect(label).toBe("Cargando opciones de inicio de sesión");
+  });
+
+  it("returns a non-empty localized terms notice text", () => {
+    const text = getLoginTermsNoticeText();
+    expect(text).toBe("Al continuar, aceptás nuestros términos de servicio.");
+  });
+});
 
 describe("safeCallbackUrl", () => {
   it("returns fallback when url is undefined", () => {
