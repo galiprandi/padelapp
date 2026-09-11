@@ -203,6 +203,7 @@ import {
   calculateCrossRivalryDensity,
   calculatePlayerSimilarityInfo,
   calculatePlayerGraphReach,
+  calculateCommunityBridgingScore,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1265,6 +1266,73 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculateCommunityBridgingScore", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Bridge Node", alias: "Bridge", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Member Comm 1", alias: "C1", image: null, skillScore: 1050, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: "LEFT" },
+    { id: "p-03", name: "Member Comm 2", alias: "C2", image: null, skillScore: 1020, community: 2, networkSize: 2, matchesPlayed: 4, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Member Comm 3", alias: "C3", image: null, skillScore: 980, community: 3, networkSize: 1, matchesPlayed: 3, preferredSide: "LEFT" },
+    { id: "p-05", name: "Core Node", alias: "Core", image: null, skillScore: 1150, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "RIGHT" },
+  ];
+
+  it("returns fallback bridging score for unconnected or non-existent node", () => {
+    const res = calculateCommunityBridgingScore(nodes, [], "p-99");
+    expect(res.bridgingScore).toBe(0);
+    expect(res.distinctCommunitiesCount).toBe(0);
+    expect(res.bridgingTier).toBe("Conexión local 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin conexiones para evaluación de puente");
+  });
+
+  it("calculates 'Puente de red 🌉' tier for node connecting 3 distinct communities", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // Comm 1 (internal)
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // Comm 2 (external)
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // Comm 3 (external)
+    ];
+
+    const res = calculateCommunityBridgingScore(nodes, links, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(3);
+    expect(res.internalLinksCount).toBe(1);
+    expect(res.externalBridgeLinksCount).toBe(2);
+    expect(res.interCommunityRatio).toBe(67);
+    expect(res.bridgingTier).toBe("Puente de red 🌉");
+    expect(res.badgeStyle).toContain("bg-indigo-100");
+    expect(res.formattedSummary).toContain("3 grupos de la red");
+    expect(res.formattedSummary).toContain("2 enlaces puente (67%)");
+  });
+
+  it("calculates 'Nexo de grupo 🔗' tier for node connecting 2 communities", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateCommunityBridgingScore(nodes, links, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(2);
+    expect(res.bridgingTier).toBe("Nexo de grupo 🔗");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("calculates 'Núcleo de comunidad 🏛️' tier for node with high internal community density", () => {
+    const links: GraphLink[] = [
+      { source: "p-05", target: "p-01", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+      { source: "p-05", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-05", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateCommunityBridgingScore(nodes, links, "p-05");
+    expect(res.distinctCommunitiesCount).toBe(1);
+    expect(res.internalLinksCount).toBe(3);
+    expect(res.externalBridgeLinksCount).toBe(0);
+    expect(res.interCommunityRatio).toBe(0);
+    expect(res.bridgingTier).toBe("Núcleo de comunidad 🏛️");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("1 grupo de la red");
+    expect(res.formattedSummary).toContain("3 conexiones internas");
   });
 });
 

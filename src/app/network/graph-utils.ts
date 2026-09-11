@@ -395,6 +395,140 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface CommunityBridgingScore {
+  bridgingScore: number;
+  distinctCommunitiesCount: number;
+  internalLinksCount: number;
+  externalBridgeLinksCount: number;
+  interCommunityRatio: number;
+  bridgingTier:
+    | "Puente de red 🌉"
+    | "Nexo de grupo 🔗"
+    | "Núcleo de comunidad 🏛️"
+    | "Conexión local 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates community bridging score (0-100%) and multi-cluster reach
+ * evaluating internal vs external inter-community connections for a given selected node.
+ */
+export function calculateCommunityBridgingScore(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  selectedNodeId: string,
+): CommunityBridgingScore {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (!selectedNode || totalConnections === 0) {
+    return {
+      bridgingScore: 0,
+      distinctCommunitiesCount: 0,
+      internalLinksCount: 0,
+      externalBridgeLinksCount: 0,
+      interCommunityRatio: 0,
+      bridgingTier: "Conexión local 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin conexiones para evaluación de puente",
+    };
+  }
+
+  const primaryCommunity = selectedNode.community;
+  const connectedCommunities = new Set<number>();
+  let internalLinksCount = 0;
+  let externalBridgeLinksCount = 0;
+
+  for (const link of connectedLinks) {
+    const otherId =
+      linkNodeId(link.source) === selectedNodeId
+        ? linkNodeId(link.target)
+        : linkNodeId(link.source);
+    const otherNode = nodes.find((n) => n.id === otherId);
+
+    if (otherNode && otherNode.community !== null && otherNode.community !== undefined) {
+      connectedCommunities.add(otherNode.community);
+
+      if (
+        primaryCommunity !== null &&
+        primaryCommunity !== undefined &&
+        otherNode.community === primaryCommunity
+      ) {
+        internalLinksCount++;
+      } else {
+        externalBridgeLinksCount++;
+      }
+    } else {
+      externalBridgeLinksCount++;
+    }
+  }
+
+  const distinctCommunitiesCount = connectedCommunities.size;
+  const interCommunityRatio =
+    totalConnections > 0
+      ? Math.round((externalBridgeLinksCount / totalConnections) * 100)
+      : 0;
+
+  // Composite Bridging Score
+  // Base points for multi-community reach (up to 60 pts)
+  const reachPoints = Math.min(distinctCommunitiesCount * 25, 60);
+  // Points for external inter-community bridge ratio (up to 40 pts)
+  const ratioPoints = Math.round((interCommunityRatio / 100) * 40);
+
+  const bridgingScore = Math.min(Math.max(reachPoints + ratioPoints, 0), 100);
+
+  let bridgingTier:
+    | "Puente de red 🌉"
+    | "Nexo de grupo 🔗"
+    | "Núcleo de comunidad 🏛️"
+    | "Conexión local 📍";
+  let badgeStyle: string;
+
+  if (bridgingScore >= 75 || distinctCommunitiesCount >= 3) {
+    bridgingTier = "Puente de red 🌉";
+    badgeStyle =
+      "bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-950 dark:text-indigo-200 dark:border-indigo-800";
+  } else if (bridgingScore >= 45 || distinctCommunitiesCount >= 2) {
+    bridgingTier = "Nexo de grupo 🔗";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (internalLinksCount >= 3 && interCommunityRatio < 30) {
+    bridgingTier = "Núcleo de comunidad 🏛️";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    bridgingTier = "Conexión local 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${distinctCommunitiesCount} ${distinctCommunitiesCount === 1 ? "grupo de la red" : "grupos de la red"}`,
+  ];
+
+  if (externalBridgeLinksCount > 0) {
+    parts.push(
+      `${externalBridgeLinksCount} ${externalBridgeLinksCount === 1 ? "enlace puente" : "enlaces puente"} (${interCommunityRatio}%)`,
+    );
+  } else if (internalLinksCount > 0) {
+    parts.push(
+      `${internalLinksCount} ${internalLinksCount === 1 ? "conexión interna" : "conexiones internas"}`,
+    );
+  }
+
+  return {
+    bridgingScore,
+    distinctCommunitiesCount,
+    internalLinksCount,
+    externalBridgeLinksCount,
+    interCommunityRatio,
+    bridgingTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface PlayerGraphReachResult {
   directConnectionsCount: number;
   extendedReachCount: number;
