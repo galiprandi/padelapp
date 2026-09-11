@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-11 — Extracción de Funciones Helper `getQueryClientConfig` y `createAppQueryClient` para Configuración Modular de TanStack Query (PR #tino/perf/query-client-config-helper)
 - [x] 2026-09-10 — Extracción de Función Helper `isNavItemActive` para Coincidencia de Rutas Activas en Navegación Principal (PR #tino/ux/nav-item-active-helper-extraction)
 - [x] 2026-09-09 — Extracción de Función Helper `formatNotificationsDisplayCount` y Estandarización de Badge de Notificaciones en Navegación (PR #tino/perf/notifications-badge-display-formatting)
 - [x] 2026-09-08 — Extracción de Funciones Helper `getNavItems` y `formatNotificationsAriaLabel` para Navegación Principal y Refactorización de `BottomNav` (PR #tino/ux/navigation-helpers-extraction)
@@ -50,6 +51,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-11 - Extracción de Helpers `getQueryClientConfig` y `createAppQueryClient` para TanStack Query
+**Aprendizaje:** Abstraer la inicialización y opciones por defecto del `QueryClient` de TanStack Query (`staleTime: 60s`, `refetchOnWindowFocus: false`) hacia un módulo utilitario dedicado (`src/lib/query-client-config.ts`) desacopla las configuraciones de la red de la capa de React Provider (`src/app/providers.tsx`). Esto permite verificar y probar unitariamente las políticas de caché y la instanciación sin necesidad de montar componentes.
+**Acción:** Reutilizar `createAppQueryClient` o `getQueryClientConfig` cuando se requieran QueryClients aislados en entornos de prueba o subproveedores.
+
 ### 2026-09-10 - Extracción de Helper `isNavItemActive` para Coincidencia de Ruta Activa en Navegación
 **Aprendizaje:** Mover la función pura `isNavItemActive` hacia `src/components/navigation/nav-utils.ts` agrupa toda la lógica utilitaria de navegación (ítems, formateo de notificaciones y resaltado de ruta activa) en una única ubicación coherente. Mantener un re-export en `src/lib/utils.ts` asegura retrocompatibilidad sin romper importaciones preexistentes.
 **Acción:** Importar siempre los helpers de navegación desde `src/components/navigation/nav-utils.ts` al trabajar con elementos de la barra principal.
