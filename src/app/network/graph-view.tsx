@@ -27,6 +27,7 @@ import {
   calculateNetworkDiversityScore,
   calculateCrossRivalryDensity,
   calculatePlayerGraphReach,
+  calculateCommunityBridgingScore,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -801,6 +802,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const bridging = calculateCommunityBridgingScore(
+                    graphData.nodes,
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -822,6 +828,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
                       >
                         {roleInfo.roleLabel}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          bridging.badgeStyle,
+                        )}
+                        title={`Nivel de puente comunitario: ${bridging.bridgingTier}. ${bridging.formattedSummary}`}
+                        aria-label={`Nivel de puente comunitario: ${bridging.bridgingTier}. ${bridging.formattedSummary}`}
+                      >
+                        {bridging.bridgingTier}
                       </span>
                       <span
                         className={cn(
