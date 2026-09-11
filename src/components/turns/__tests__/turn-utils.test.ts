@@ -21,6 +21,10 @@ import {
   getAddPlayerAriaLabel,
   validateTurnFormData,
   getNewTurnWhatsAppShareUrl,
+  formatTurnSalvageCalloutAriaLabel,
+  formatTurnProgressPercentage,
+  formatTurnProgressAriaLabel,
+  formatSubstituteListAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -632,5 +636,49 @@ describe("getNewTurnWhatsAppShareUrl", () => {
     expect(url.startsWith("https://wa.me/?text=")).toBe(true);
     expect(url).toContain(encodeURIComponent("Central Padel"));
     expect(url).toContain(encodeURIComponent("https://padelred.app/t/t123"));
+  });
+});
+
+describe("formatTurnSalvageCalloutAriaLabel", () => {
+  it("returns empty string when no slots are open", () => {
+    expect(formatTurnSalvageCalloutAriaLabel({ club: "Central Padel", openSlots: 0 })).toBe("");
+    expect(formatTurnSalvageCalloutAriaLabel({ club: "Central Padel", openSlots: -1 })).toBe("");
+  });
+
+  it("formats callout ARIA label for 1 open slot", () => {
+    const label = formatTurnSalvageCalloutAriaLabel({ club: "Central Padel", openSlots: 1 });
+    expect(label).toBe("Aviso de salvataje: Falta 1 jugador para completar este turno en Central Padel.");
+  });
+
+  it("formats callout ARIA label for multiple open slots", () => {
+    const label = formatTurnSalvageCalloutAriaLabel({ club: "El Balcón", openSlots: 2 });
+    expect(label).toBe("Aviso de salvataje: Faltan 2 jugadores para completar este turno en El Balcón.");
+  });
+});
+
+describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
+  it("calculates progress percentage correctly bounded between 0 and 100", () => {
+    expect(formatTurnProgressPercentage(0, 4)).toBe(0);
+    expect(formatTurnProgressPercentage(2, 4)).toBe(50);
+    expect(formatTurnProgressPercentage(3, 4)).toBe(75);
+    expect(formatTurnProgressPercentage(4, 4)).toBe(100);
+    expect(formatTurnProgressPercentage(5, 4)).toBe(100);
+    expect(formatTurnProgressPercentage(0, 0)).toBe(0);
+  });
+
+  it("formats enrollment progress bar ARIA label", () => {
+    expect(formatTurnProgressAriaLabel(3, 4)).toBe(
+      "Progreso de inscripción: 3 de 4 jugadores (75% completado)"
+    );
+    expect(formatTurnProgressAriaLabel(4, 4)).toBe(
+      "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("formatSubstituteListAriaLabel", () => {
+  it("formats substitute list item ARIA label in Argentine Spanish", () => {
+    expect(formatSubstituteListAriaLabel(0, 2, "Mateo")).toBe("Suplente #1 de 2: Mateo");
+    expect(formatSubstituteListAriaLabel(1, 2, "Gonzalo")).toBe("Suplente #2 de 2: Gonzalo");
   });
 });
