@@ -4,7 +4,12 @@ import { Loader2 } from "lucide-react";
 import { auth, signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
-import { safeCallbackUrl } from "@/lib/auth-utils";
+import {
+  getLoginLoadingAriaLabel,
+  getLoginRegionAriaLabel,
+  getLoginTermsNoticeText,
+  safeCallbackUrl,
+} from "@/lib/auth-utils";
 import Image from "next/image";
 
 interface LoginPageProps {
@@ -14,7 +19,11 @@ interface LoginPageProps {
 export default function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
-      <div className="flex w-full max-w-sm flex-col items-center gap-12">
+      <section
+        role="region"
+        aria-label={getLoginRegionAriaLabel()}
+        className="flex w-full max-w-sm flex-col items-center gap-12"
+      >
         {/* Logo + tagline */}
         <div className="flex flex-col items-center gap-6">
           <Image
@@ -40,8 +49,12 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         {/* CTA wrapped in Suspense */}
         <Suspense
           fallback={
-            <div className="flex h-12 w-full items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm font-semibold">
-              <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" />
+            <div
+              role="status"
+              aria-label={getLoginLoadingAriaLabel()}
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm font-semibold"
+            >
+              <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" aria-hidden="true" />
               Cargando…
             </div>
           }
@@ -50,9 +63,9 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         </Suspense>
 
         <p className="text-center text-xs text-muted-foreground">
-          Al continuar, aceptás nuestros términos de servicio.
+          {getLoginTermsNoticeText()}
         </p>
-      </div>
+      </section>
     </main>
   );
 }
