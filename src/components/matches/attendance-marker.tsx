@@ -12,8 +12,13 @@ import {
 } from "@/app/(app)/match/actions";
 import { cn } from "@/lib/utils";
 import { getNextRadioIndex } from "@/lib/match-helpers";
-
-type AttendanceStatus = "ATTENDED" | "LATE" | "NO_SHOW";
+import {
+  AttendanceStatus,
+  getAttendanceStatusAriaLabel,
+  getPlayerFeedbackAriaLabel,
+  getAttendanceSummaryText,
+  ATTENDANCE_STATUS_LABELS,
+} from "@/components/matches/attendance-utils";
 
 interface AttendancePlayer {
   id: string;
@@ -35,21 +40,21 @@ const STATUS_CONFIG: Record<
   { label: string; icon: typeof Check; color: string; activeColor: string }
 > = {
   ATTENDED: {
-    label: "Presente",
+    label: ATTENDANCE_STATUS_LABELS.ATTENDED,
     icon: Check,
     color: "text-muted-foreground",
     activeColor:
       "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 font-bold",
   },
   LATE: {
-    label: "Tarde",
+    label: ATTENDANCE_STATUS_LABELS.LATE,
     icon: Clock,
     color: "text-muted-foreground",
     activeColor:
       "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold",
   },
   NO_SHOW: {
-    label: "No asistió",
+    label: ATTENDANCE_STATUS_LABELS.NO_SHOW,
     icon: X,
     color: "text-muted-foreground",
     activeColor:
@@ -130,11 +135,15 @@ export function AttendanceMarker({
   };
 
   return (
-    <section className="space-y-4">
+    <section
+      role="region"
+      aria-label="Control de asistencia y feedback de nivel de los jugadores"
+      className="space-y-4"
+    >
       <div>
         <h2 className="text-sm font-bold text-foreground">Asistencia y Feedback de Nivel</h2>
         <p className="text-xs text-muted-foreground">
-          Confirmá la asistencia y calificá sutilmente si algún invitado jugó a un nivel diferente.
+          {getAttendanceSummaryText(players.length)}
         </p>
       </div>
 
@@ -144,7 +153,7 @@ export function AttendanceMarker({
           return (
             <div
               key={player.id}
-              className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-3"
+              className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-3 shadow-xs"
             >
               {/* Row 1: Player Info & Attendance status */}
               <div className="flex items-center gap-3">
@@ -188,7 +197,7 @@ export function AttendanceMarker({
                           aria-checked={isActive}
                           tabIndex={isActive ? 0 : -1}
                           onClick={() => handleStatusChange(player.id, status)}
-                          aria-label={`${config.label} - ${player.name}`}
+                          aria-label={getAttendanceStatusAriaLabel(status, player.name)}
                           className={cn(
                             "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                             isActive
@@ -204,7 +213,7 @@ export function AttendanceMarker({
                 </div>
               </div>
 
-              {/* Row 2: Sutil level feedback (only for other players) */}
+              {/* Row 2: Subtle level feedback (only for other players) */}
               {viewerId && player.userId !== viewerId && (
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
                   <span className="text-xs text-muted-foreground font-medium">
@@ -232,7 +241,7 @@ export function AttendanceMarker({
                     <button
                       type="button"
                       role="radio"
-                      aria-label={`Calificar a ${player.name} como más fuerte`}
+                      aria-label={getPlayerFeedbackAriaLabel("STRONGER", player.name)}
                       aria-checked={feedbacks[player.userId] === "STRONGER"}
                       tabIndex={feedbacks[player.userId] === "WEAKER" ? -1 : 0}
                       onClick={() => {
@@ -256,7 +265,7 @@ export function AttendanceMarker({
                     <button
                       type="button"
                       role="radio"
-                      aria-label={`Calificar a ${player.name} como más flojo`}
+                      aria-label={getPlayerFeedbackAriaLabel("WEAKER", player.name)}
                       aria-checked={feedbacks[player.userId] === "WEAKER"}
                       tabIndex={feedbacks[player.userId] === "WEAKER" ? 0 : -1}
                       onClick={() => {
@@ -286,6 +295,7 @@ export function AttendanceMarker({
       <Button
         onClick={handleSave}
         disabled={pending}
+        aria-busy={pending}
         className="w-full h-12 rounded-lg text-sm font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         {pending ? (
