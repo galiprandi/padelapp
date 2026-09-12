@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   getSpeculationRulesConfig,
+  getSpeculationRulesTag,
   PRIMARY_SPECULATION_URLS,
   SECONDARY_SPECULATION_URLS,
   DYNAMIC_SPECULATION_PATTERNS,
@@ -73,5 +74,24 @@ describe("getSpeculationRulesConfig", () => {
     expect(primaryGroup.urls).toEqual([...PRIMARY_SPECULATION_URLS]);
     expect(secondaryGroup.urls).toEqual([...SECONDARY_SPECULATION_URLS]);
     expect(dynamicGroup.source).toBe("document");
+  });
+
+  describe("getSpeculationRulesTag", () => {
+    it("debe devolver un objeto con __html conteniendo el JSON de la configuración por defecto", () => {
+      const tag = getSpeculationRulesTag();
+      const expectedConfig = getSpeculationRulesConfig();
+      expect(tag).toBeDefined();
+      expect(typeof tag.__html).toBe("string");
+      expect(JSON.parse(tag.__html)).toEqual(expectedConfig);
+    });
+
+    it("debe pasar los argumentos de URLs y eagerness a getSpeculationRulesConfig", () => {
+      const customUrls = ["/ranking"];
+      const tag = getSpeculationRulesTag(customUrls, "eager");
+      const parsed = JSON.parse(tag.__html);
+      expect(parsed.prerender).toHaveLength(1);
+      expect(parsed.prerender[0].urls).toEqual(customUrls);
+      expect(parsed.prerender[0].eagerness).toBe("eager");
+    });
   });
 });

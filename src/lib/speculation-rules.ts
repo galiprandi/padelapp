@@ -94,3 +94,13 @@ export function getSpeculationRulesConfig(
     ],
   };
 }
+
+export function getSpeculationRulesTag(
+  customUrls?: string[],
+  eagerness?: SpeculationEagerness,
+): { __html: string } {
+  const config = getSpeculationRulesConfig(customUrls, eagerness);
+  return {
+    __html: JSON.stringify(config),
+  };
+}
