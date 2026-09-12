@@ -12,8 +12,36 @@ export interface InstallStep {
 }
 
 /**
- * Detects whether the provided user agent string corresponds to an iOS or iPadOS device.
+ * Calculates the next platform selection based on keyboard navigation keys.
  */
+export function getNextPlatformValue(current: PlatformType, key: string): PlatformType {
+  if (key === "ArrowRight" || key === "ArrowDown") {
+    return "ios";
+  }
+  if (key === "ArrowLeft" || key === "ArrowUp") {
+    return "android";
+  }
+  return current;
+}
+
+/**
+ * Returns accessible ARIA label for platform radio buttons.
+ */
+export function getPlatformRadioAriaLabel(platform: PlatformType): string {
+  return platform === "android"
+    ? "Ver instrucciones de instalación para Android o Chrome"
+    : "Ver instrucciones de instalación para iOS o Safari";
+}
+
+/**
+ * Returns localized ARIA status description for PWA installation state.
+ */
+export function getInstallStatusAriaLabel(isInstalled: boolean): string {
+  return isInstalled
+    ? "Padel Red ya está instalada en tu dispositivo"
+    : "Instrucciones de instalación de Padel Red";
+}
+
 export function isIOSDeviceUserAgent(userAgent: string, hasTouchPoints: boolean = false): boolean {
   if (!userAgent) return false;
   const isIOSUA = /iPad|iPhone|iPod/.test(userAgent);

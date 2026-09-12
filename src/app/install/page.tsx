@@ -5,7 +5,11 @@ import Image from "next/image";
 
 export default function InstallPage() {
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+    <main
+      role="region"
+      aria-label="Página de instalación de la aplicación Padel Red"
+      className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+    >
       <div className="flex w-full max-w-sm flex-col items-center gap-8">
         {/* Logo */}
         <Image
@@ -35,7 +39,9 @@ export default function InstallPage() {
           className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           asChild
         >
-          <Link href="/" prefetch={true}>Volver al inicio</Link>
+          <Link href="/" prefetch={true} aria-label="Volver a la página principal">
+            Volver al inicio
+          </Link>
         </Button>
       </div>
     </main>

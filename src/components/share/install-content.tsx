@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import {
   isIOSDeviceUserAgent,
   getPlatformSteps,
+  getNextPlatformValue,
+  getPlatformRadioAriaLabel,
+  getInstallStatusAriaLabel,
   PlatformType,
   InstallStep,
 } from "@/components/share/install-utils";
@@ -38,7 +41,7 @@ export function InstallContent() {
     return (
       <div
         role="region"
-        aria-label="Estado de instalación de Padel Red"
+        aria-label={getInstallStatusAriaLabel(true)}
         className="flex flex-col items-center gap-3 py-6"
       >
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30">
@@ -72,7 +75,7 @@ export function InstallContent() {
   return (
     <div
       role="region"
-      aria-label="Instrucciones de instalación de Padel Red"
+      aria-label={getInstallStatusAriaLabel(false)}
       className="space-y-6"
     >
       {/* Platform Toggle (Custom selection button group standardizing h-12 and active:scale-[0.98]) */}
@@ -88,18 +91,15 @@ export function InstallContent() {
           aria-labelledby="platform-selector-label"
           className="grid grid-cols-2 gap-2"
           onKeyDown={(e) => {
-            const buttons = Array.from(
-              e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-            );
-            if (buttons.length < 2) return;
-            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            const next = getNextPlatformValue(platform, e.key);
+            if (next !== platform) {
               e.preventDefault();
-              setPlatform("ios");
-              buttons[1]?.focus();
-            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-              e.preventDefault();
-              setPlatform("android");
-              buttons[0]?.focus();
+              setPlatform(next);
+              const buttons = Array.from(
+                e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+              );
+              const idx = next === "ios" ? 1 : 0;
+              buttons[idx]?.focus();
             }
           }}
         >
@@ -108,7 +108,7 @@ export function InstallContent() {
             role="radio"
             aria-checked={platform === "android"}
             tabIndex={platform === "android" ? 0 : -1}
-            aria-label="Ver instrucciones de instalación para Android o Chrome"
+            aria-label={getPlatformRadioAriaLabel("android")}
             onClick={() => setPlatform("android")}
             className={cn(
               "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
@@ -124,7 +124,7 @@ export function InstallContent() {
             role="radio"
             aria-checked={platform === "ios"}
             tabIndex={platform === "ios" ? 0 : -1}
-            aria-label="Ver instrucciones de instalación para iOS o Safari"
+            aria-label={getPlatformRadioAriaLabel("ios")}
             onClick={() => setPlatform("ios")}
             className={cn(
               "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
