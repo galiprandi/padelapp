@@ -9,7 +9,7 @@ import {
 } from "@/db/schema";
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
 import { userInMatch } from "./helpers";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 export interface PadelContact {
   id: string;
@@ -487,21 +487,21 @@ export function buildContactsMap(
  * Keyed by userId and monthsBack. Invalidated by revalidateTag("matches").
  * Fallback revalidate: 60s.
  */
-export const getCachedPadelContacts = (userId: string, options?: { monthsBack?: number }) =>
-  unstable_cache(
-    async () => getPadelContacts(userId, options),
-    ["padel-contacts", userId, String(options?.monthsBack ?? "default")],
-    { tags: ["matches"], revalidate: 60 }
-  )();
+export async function getCachedPadelContacts(userId: string, options?: { monthsBack?: number }) {
+  "use cache";
+  cacheTag("matches");
+  cacheLife({ revalidate: 60 });
+  return getPadelContacts(userId, options);
+}
 
 /**
  * Cached version of getTurnNetworkContacts.
  * Keyed by turnId. Invalidated by revalidateTag("turns").
  * Fallback revalidate: 30s.
  */
-export const getCachedTurnNetworkContacts = (turnId: string) =>
-  unstable_cache(
-    async () => getTurnNetworkContacts(turnId),
-    ["turn-network-contacts", turnId],
-    { tags: ["turns"], revalidate: 30 }
-  )();
+export async function getCachedTurnNetworkContacts(turnId: string) {
+  "use cache";
+  cacheTag("turns");
+  cacheLife({ revalidate: 30 });
+  return getTurnNetworkContacts(turnId);
+}

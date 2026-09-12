@@ -3,6 +3,8 @@ import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPa
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
+  cacheTag: vi.fn(),
+  cacheLife: vi.fn(),
   revalidateTag: vi.fn(),
 }));
 
