@@ -1,8 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts, calculatePadelContactAriaLabel, type PadelContact } from "@/lib/queries/contacts";
+import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts, getCachedTurnNetworkContacts, calculatePadelContactAriaLabel, type PadelContact } from "@/lib/queries/contacts";
 
 vi.mock("next/cache", () => ({
-  unstable_cache: (fn: unknown) => fn,
+  // Mirrors the real unstable_cache contract: values crossing the cache
+  // boundary are JSON-serialized. If a query is ever moved back from
+  // "use cache" to unstable_cache, Date fields arrive as strings and the
+  // Date-instance contract tests below fail — that is the regression net.
+  unstable_cache:
+    (fn: (...args: unknown[]) => Promise<unknown>) =>
+    async (...args: unknown[]) =>
+      JSON.parse(JSON.stringify(await fn(...args))),
   cacheTag: vi.fn(),
   cacheLife: vi.fn(),
   revalidateTag: vi.fn(),
@@ -185,6 +192,30 @@ describe("getPadelContacts and getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPAS
   });
 });
 
+describe("cached contact queries preserve Date instances", () => {
+  // Regression: unstable_cache JSON-serializes results, so lastMatchAt came
+  // back as a string and calculatePadelContactAriaLabel crashed on /t/[id].
+  // These assertions fail if the queries ever go back through a
+  // JSON-serializing cache layer.
+  it("getCachedPadelContacts returns lastMatchAt as Date", async () => {
+    process.env.AUTH_BYPASS = "true";
+    const contacts = await getCachedPadelContacts("p-01");
+    expect(contacts.length).toBeGreaterThan(0);
+    for (const c of contacts) {
+      expect(c.lastMatchAt).toBeInstanceOf(Date);
+    }
+  });
+
+  it("getCachedTurnNetworkContacts returns lastMatchAt as Date", async () => {
+    process.env.AUTH_BYPASS = "true";
+    const contacts = await getCachedTurnNetworkContacts("turn-01");
+    expect(contacts.length).toBeGreaterThan(0);
+    for (const c of contacts) {
+      expect(c.lastMatchAt).toBeInstanceOf(Date);
+    }
+  });
+});
+
 describe("calculatePadelContactAriaLabel", () => {
   it("formats accessible ARIA label with alias, plural matches and date", () => {
     const contact: PadelContact = {
@@ -216,6 +247,21 @@ describe("calculatePadelContactAriaLabel", () => {
     expect(label).toContain("Facundo Lopez");
     expect(label).toContain("1 partido compartido");
     expect(label).toContain("Último partido el 10/8/2026");
+  });
+
+  it("accepts an ISO string lastMatchAt without crashing (serialized payloads)", () => {
+    const contact: PadelContact = {
+      id: "p-03",
+      displayName: "Diego Morales",
+      alias: "Gero",
+      image: null,
+      lastMatchAt: "2026-05-15T12:00:00Z" as unknown as Date,
+      matchesTogether: 5,
+    };
+
+    const label = calculatePadelContactAriaLabel(contact);
+    expect(label).toContain("Gero");
+    expect(label).toContain("Último partido el 15/5/2026");
   });
 
   it("handles empty or missing lastMatchAt gracefully", () => {

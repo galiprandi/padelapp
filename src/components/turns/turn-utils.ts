@@ -524,3 +524,49 @@ export function formatSubstituteListAriaLabel(
 ): string {
   return `Suplente #${index + 1} de ${totalSubstitutes}: ${name}`;
 }
+
+export interface TurnConnectionParticipant {
+  userId: string;
+  joinedAt: Date | string;
+  name: string;
+}
+
+export interface TurnConnectionEdge {
+  playerAId: string;
+  playerBId: string;
+}
+
+/**
+ * Maps each participant to the name of an earlier-joined participant they
+ * share a padel contact edge with ("Contacto de X").
+ * joinedAt is coerced via new Date() because cached payloads may deliver
+ * ISO strings instead of Date instances.
+ */
+export function buildTurnConnectionMap(
+  participants: TurnConnectionParticipant[],
+  edges: TurnConnectionEdge[],
+): Record<string, string> {
+  const sorted = [...participants].sort(
+    (a, b) => new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime(),
+  );
+
+  const connectionMap: Record<string, string> = {};
+  for (let i = 0; i < sorted.length; i++) {
+    const current = sorted[i];
+    const connectedTo = sorted
+      .slice(0, i)
+      .find((other) =>
+        edges.some(
+          (edge) =>
+            (edge.playerAId === current.userId &&
+              edge.playerBId === other.userId) ||
+            (edge.playerAId === other.userId &&
+              edge.playerBId === current.userId),
+        ),
+      );
+    if (connectedTo?.name) {
+      connectionMap[current.userId] = connectedTo.name;
+    }
+  }
+  return connectionMap;
+}

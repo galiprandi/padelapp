@@ -31,11 +31,13 @@ export function calculatePadelContactAriaLabel(contact: PadelContact): string {
       ? "1 partido compartido"
       : `${contact.matchesTogether} partidos compartidos`;
 
-  if (!contact.lastMatchAt || contact.lastMatchAt.getTime() === 0) {
+  // Coerce: payloads crossing a serialization boundary may arrive as ISO strings.
+  const lastMatchAt = contact.lastMatchAt ? new Date(contact.lastMatchAt) : null;
+  if (!lastMatchAt || lastMatchAt.getTime() === 0) {
     return `${name}: ${matchText}.`;
   }
 
-  const dateStr = contact.lastMatchAt.toLocaleDateString("es-AR", {
+  const dateStr = lastMatchAt.toLocaleDateString("es-AR", {
     day: "numeric",
     month: "numeric",
     year: "numeric",

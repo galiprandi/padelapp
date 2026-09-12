@@ -35,6 +35,7 @@ import {
   formatTurnProgressPercentage,
   formatTurnProgressAriaLabel,
   formatSubstituteListAriaLabel,
+  buildTurnConnectionMap,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -158,39 +159,24 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         )
       );
 
-    // Build map of userId -> userName
-    const userNamesMap = new Map<string, string>();
-    for (const p of turn.players) {
-      userNamesMap.set(p.userId, p.user.alias ?? p.user.displayName);
-    }
-    for (const s of turn.substitutes) {
-      userNamesMap.set(s.userId, s.user.alias ?? s.user.displayName);
-    }
-
-    // Sort all participants by joinedAt to establish connection direction (who joined first)
-    const sortedParticipants = [
-      ...turn.players.map((p) => ({ userId: p.userId, joinedAt: p.joinedAt })),
-      ...turn.substitutes.map((s) => ({ userId: s.userId, joinedAt: s.joinedAt })),
-    ].sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime());
-
-    for (let i = 0; i < sortedParticipants.length; i++) {
-      const current = sortedParticipants[i];
-      // Check if current has an edge with any participant who joined BEFORE them
-      const connectedTo = sortedParticipants.slice(0, i).find((other) => {
-        return edges.some(
-          (edge) =>
-            (edge.playerAId === current.userId && edge.playerBId === other.userId) ||
-            (edge.playerAId === other.userId && edge.playerBId === current.userId)
-        );
-      });
-
-      if (connectedTo) {
-        const name = userNamesMap.get(connectedTo.userId);
-        if (name) {
-          connectionMap[current.userId] = name;
-        }
-      }
-    }
+    Object.assign(
+      connectionMap,
+      buildTurnConnectionMap(
+        [
+          ...turn.players.map((p) => ({
+            userId: p.userId,
+            joinedAt: p.joinedAt,
+            name: p.user.alias ?? p.user.displayName,
+          })),
+          ...turn.substitutes.map((s) => ({
+            userId: s.userId,
+            joinedAt: s.joinedAt,
+            name: s.user.alias ?? s.user.displayName,
+          })),
+        ],
+        edges,
+      ),
+    );
   }
 
   if (isCancelled) {

@@ -25,6 +25,7 @@ import {
   formatTurnProgressPercentage,
   formatTurnProgressAriaLabel,
   formatSubstituteListAriaLabel,
+  buildTurnConnectionMap,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -680,5 +681,79 @@ describe("formatSubstituteListAriaLabel", () => {
   it("formats substitute list item ARIA label in Argentine Spanish", () => {
     expect(formatSubstituteListAriaLabel(0, 2, "Mateo")).toBe("Suplente #1 de 2: Mateo");
     expect(formatSubstituteListAriaLabel(1, 2, "Gonzalo")).toBe("Suplente #2 de 2: Gonzalo");
+  });
+});
+
+describe("buildTurnConnectionMap", () => {
+  const edge = { playerAId: "u1", playerBId: "u2" };
+
+  it("maps a participant to the name of an earlier-joined contact", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: new Date("2026-09-12T10:00:00Z"), name: "Ana" },
+        { userId: "u2", joinedAt: new Date("2026-09-12T11:00:00Z"), name: "Beto" },
+      ],
+      [edge],
+    );
+    expect(map).toEqual({ u2: "Ana" });
+  });
+
+  // Regression test: the /t/[id] page crashed with
+  // "joinedAt.getTime is not a function" because serialized cache payloads
+  // deliver joinedAt as ISO strings, not Date instances.
+  it("accepts ISO string joinedAt values without crashing", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: "2026-09-12T10:00:00Z", name: "Ana" },
+        { userId: "u2", joinedAt: "2026-09-12T11:00:00Z", name: "Beto" },
+      ],
+      [edge],
+    );
+    expect(map).toEqual({ u2: "Ana" });
+  });
+
+  it("matches edges in both directions", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: new Date("2026-09-12T10:00:00Z"), name: "Ana" },
+        { userId: "u2", joinedAt: new Date("2026-09-12T11:00:00Z"), name: "Beto" },
+      ],
+      [{ playerAId: "u2", playerBId: "u1" }],
+    );
+    expect(map).toEqual({ u2: "Ana" });
+  });
+
+  it("only connects a participant to someone who joined before them", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: new Date("2026-09-12T12:00:00Z"), name: "Ana" },
+        { userId: "u2", joinedAt: new Date("2026-09-12T10:00:00Z"), name: "Beto" },
+      ],
+      [edge],
+    );
+    expect(map).toEqual({ u1: "Beto" });
+  });
+
+  it("returns an empty map when no participant shares an edge", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: new Date("2026-09-12T10:00:00Z"), name: "Ana" },
+        { userId: "u3", joinedAt: new Date("2026-09-12T11:00:00Z"), name: "Caro" },
+      ],
+      [edge],
+    );
+    expect(map).toEqual({});
+  });
+
+  it("prefers the earliest connected participant when several edges match", () => {
+    const map = buildTurnConnectionMap(
+      [
+        { userId: "u1", joinedAt: new Date("2026-09-12T10:00:00Z"), name: "Ana" },
+        { userId: "u3", joinedAt: new Date("2026-09-12T10:30:00Z"), name: "Caro" },
+        { userId: "u2", joinedAt: new Date("2026-09-12T11:00:00Z"), name: "Beto" },
+      ],
+      [edge, { playerAId: "u2", playerBId: "u3" }],
+    );
+    expect(map).toEqual({ u2: "Ana" });
   });
 });
