@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts } from "@/lib/queries/contacts";
+import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts, calculatePadelContactAriaLabel, type PadelContact } from "@/lib/queries/contacts";
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
@@ -180,6 +180,54 @@ describe("getPadelContacts and getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPAS
     expect(contacts).toHaveLength(3);
     expect(contacts[0].id).toBe("p-02");
     expect(contacts[0].matchesTogether).toBe(12);
+  });
+});
+
+describe("calculatePadelContactAriaLabel", () => {
+  it("formats accessible ARIA label with alias, plural matches and date", () => {
+    const contact: PadelContact = {
+      id: "p-03",
+      displayName: "Diego Morales",
+      alias: "Gero",
+      image: null,
+      lastMatchAt: new Date("2026-05-15T12:00:00Z"),
+      matchesTogether: 5,
+    };
+
+    const label = calculatePadelContactAriaLabel(contact);
+    expect(label).toContain("Gero");
+    expect(label).toContain("5 partidos compartidos");
+    expect(label).toContain("Último partido el 15/5/2026");
+  });
+
+  it("uses displayName when alias is null and handles singular match count", () => {
+    const contact: PadelContact = {
+      id: "p-04",
+      displayName: "Facundo Lopez",
+      alias: null,
+      image: null,
+      lastMatchAt: new Date("2026-08-10T12:00:00Z"),
+      matchesTogether: 1,
+    };
+
+    const label = calculatePadelContactAriaLabel(contact);
+    expect(label).toContain("Facundo Lopez");
+    expect(label).toContain("1 partido compartido");
+    expect(label).toContain("Último partido el 10/8/2026");
+  });
+
+  it("handles empty or missing lastMatchAt gracefully", () => {
+    const contact: PadelContact = {
+      id: "p-05",
+      displayName: "Jugador Nuevo",
+      alias: null,
+      image: null,
+      lastMatchAt: new Date(0),
+      matchesTogether: 2,
+    };
+
+    const label = calculatePadelContactAriaLabel(contact);
+    expect(label).toBe("Jugador Nuevo: 2 partidos compartidos.");
   });
 });
 

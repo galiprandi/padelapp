@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
-import { getCachedPadelContacts, type PadelContact } from "@/lib/queries";
+import { getCachedPadelContacts, calculatePadelContactAriaLabel, type PadelContact } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { LocalDate, LocalTime } from "@/components/ui/local-date";
@@ -530,7 +530,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       {suggestedContacts.length > 0 && (
         <section
           role="region"
-          aria-label="Contactos sugeridos para invitar por WhatsApp"
+          aria-label="Contactos sugeridos de tu red de pádel para invitar por WhatsApp"
           className="space-y-4"
         >
           <div className="flex items-center justify-between">
@@ -538,37 +538,57 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
               Sugeridos para invitar 🧠
             </h2>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               De tu red de contactos
             </span>
           </div>
 
           <div className="grid gap-2">
-            {suggestedContacts.slice(0, 4).map((contact) => (
-              <div
-                key={contact.id}
-                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border"
-              >
-                <PlayerAvatar
-                  name={contact.alias ?? contact.displayName}
-                  image={contact.image ?? undefined}
-                  size={40}
-                  aria-hidden="true"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm truncate leading-tight">
-                    {contact.alias ?? contact.displayName}
-                  </p>
+            {suggestedContacts.slice(0, 4).map((contact) => {
+              const contactName = contact.alias ?? contact.displayName;
+              const ariaLabel = calculatePadelContactAriaLabel(contact);
+
+              return (
+                <div
+                  key={contact.id}
+                  role="region"
+                  aria-label={ariaLabel}
+                  title={ariaLabel}
+                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border shadow-xs transition-all hover:bg-muted/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background"
+                >
+                  <Link
+                    href={`/p/${contact.id}`}
+                    prefetch={true}
+                    aria-label={`Ver perfil público de ${contactName}`}
+                    className="flex items-center gap-3 flex-1 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  >
+                    <PlayerAvatar
+                      name={contactName}
+                      image={contact.image ?? undefined}
+                      size={40}
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors">
+                        {contactName}
+                      </p>
+                      {contact.matchesTogether > 0 && (
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                          {contact.matchesTogether} {contact.matchesTogether === 1 ? "partido compartido" : "partidos compartidos"}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                  <WhatsAppInviteButton
+                    club={turn.club}
+                    date={turn.date}
+                    contactName={contactName}
+                    openSlots={turn.maxPlayers - turn.players.length}
+                    shareUrl={shareUrl}
+                  />
                 </div>
-                <WhatsAppInviteButton
-                  club={turn.club}
-                  date={turn.date}
-                  contactName={contact.alias ?? contact.displayName}
-                  openSlots={turn.maxPlayers - turn.players.length}
-                  shareUrl={shareUrl}
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
