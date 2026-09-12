@@ -41,6 +41,7 @@ export {
   getCachedPadelContacts,
   getTurnNetworkContacts,
   getCachedTurnNetworkContacts,
+  calculatePadelContactAriaLabel,
   type PadelContact,
 } from "./contacts";
 

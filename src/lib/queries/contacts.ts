@@ -21,6 +21,31 @@ export interface PadelContact {
 }
 
 /**
+ * Calculates a descriptive, accessible Argentine Spanish ARIA label for a padel contact card,
+ * including name/alias, shared matches count, and formatted date of last match.
+ */
+export function calculatePadelContactAriaLabel(contact: PadelContact): string {
+  const name = contact.alias || contact.displayName || "Jugador";
+  const matchText =
+    contact.matchesTogether === 1
+      ? "1 partido compartido"
+      : `${contact.matchesTogether} partidos compartidos`;
+
+  if (!contact.lastMatchAt || contact.lastMatchAt.getTime() === 0) {
+    return `${name}: ${matchText}.`;
+  }
+
+  const dateStr = contact.lastMatchAt.toLocaleDateString("es-AR", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+
+  return `${name}: ${matchText}. Último partido el ${dateStr}.`;
+}
+
+/**
  * Get a user's padel contacts — players they shared a confirmed match with
  * within the last 12 months. Includes both teammates and opponents.
  */
