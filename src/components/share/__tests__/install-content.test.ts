@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { isIOSDeviceUserAgent, getPlatformSteps } from "../install-utils";
+import {
+  isIOSDeviceUserAgent,
+  getPlatformSteps,
+  getNextPlatformValue,
+  getPlatformRadioAriaLabel,
+  getInstallStatusAriaLabel,
+} from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
   it("detects iOS devices from iPhone user agent strings", () => {
@@ -35,5 +41,23 @@ describe("PWA install guide and platform detection logic", () => {
     expect(androidSteps[0].title).toBe("Instalar con un tap");
     expect(androidSteps[1].title).toBe("Menú del navegador");
     expect(androidSteps[2].title).toBe("Aplicación lista");
+  });
+
+  it("calculates next platform correctly during arrow key navigation", () => {
+    expect(getNextPlatformValue("android", "ArrowRight")).toBe("ios");
+    expect(getNextPlatformValue("android", "ArrowDown")).toBe("ios");
+    expect(getNextPlatformValue("ios", "ArrowLeft")).toBe("android");
+    expect(getNextPlatformValue("ios", "ArrowUp")).toBe("android");
+    expect(getNextPlatformValue("android", "Enter")).toBe("android");
+  });
+
+  it("generates correct accessible ARIA radio labels for platforms", () => {
+    expect(getPlatformRadioAriaLabel("android")).toContain("Android o Chrome");
+    expect(getPlatformRadioAriaLabel("ios")).toContain("iOS o Safari");
+  });
+
+  it("generates correct accessible status ARIA labels for installation state", () => {
+    expect(getInstallStatusAriaLabel(true)).toBe("Padel Red ya está instalada en tu dispositivo");
+    expect(getInstallStatusAriaLabel(false)).toBe("Instrucciones de instalación de Padel Red");
   });
 });
