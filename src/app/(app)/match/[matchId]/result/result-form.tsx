@@ -10,18 +10,18 @@ import { MatchNavigation } from "@/components/matches/match-navigation";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { AttendanceMarker } from "@/components/matches/attendance-marker";
 import { useToast } from "@/components/toast/use-toast";
+import { getNextRadioIndex } from "@/lib/match-helpers";
 import { cn } from "@/lib/utils";
+import {
+  parseInitialScores,
+  buildScoreString,
+  extractMatchTeams,
+  calculateTeammateSide,
+  getMatchResultAriaLabel,
+  MatchPlayerInput,
+} from "./match-result-utils";
 
-interface MatchPlayer {
-  id: string;
-  position: number;
-  userId: string | null;
-  displayName: string | null;
-  teamId: string | null;
-  resultConfirmed: boolean;
-  joinedAt: Date | null;
-  attendance: string | null;
-  side: "RIGHT" | "LEFT" | null;
+interface MatchPlayer extends MatchPlayerInput {
   user?: {
     id: string;
     displayName: string | null;
@@ -53,20 +53,6 @@ interface MatchData {
   players: MatchPlayer[];
 }
 
-interface TeamDisplayPlayer {
-  id: string;
-  name: string;
-  image?: string;
-  isConfirmed: boolean;
-  category?: number;
-}
-
-interface TeamDisplay {
-  id: string;
-  label: string;
-  players: TeamDisplayPlayer[];
-}
-
 interface MatchResultFormProps {
   match: MatchData;
   viewerId?: string;
@@ -78,27 +64,10 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
   const { showToast } = useToast();
   const [pending, startTransition] = useTransition();
 
-  // Initialize scores state
-  const [scores, setScores] = useState<number[][]>(() => {
-    if (match.score) {
-      const parsedScores = match.score
-        .split(",")
-        .map((s) => s.trim().split("-").map(Number));
-
-      while (parsedScores.length < setsCount) {
-        parsedScores.push([0, 0]);
-      }
-
-      return parsedScores.map((set) => {
-        const normalizedSet = [...set];
-        while (normalizedSet.length < 2) {
-          normalizedSet.push(0);
-        }
-        return normalizedSet.slice(0, 2);
-      });
-    }
-    return Array.from({ length: setsCount }, () => [0, 0]);
-  });
+  // Initialize scores state using extracted helper
+  const [scores, setScores] = useState<number[][]>(() =>
+    parseInitialScores(match.score, setsCount),
+  );
 
   // Initialize player sides
   const [playerSides, setPlayerSides] = useState<Record<string, "RIGHT" | "LEFT" | null>>(() => {
@@ -110,30 +79,10 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
   });
 
   const isClosed = Boolean(match.score) || match.status === "CONFIRMED";
-
-  const teamsMap = new Map<string, TeamDisplay>();
-  match.players.forEach((player) => {
-    if (player.teamId) {
-      if (!teamsMap.has(player.teamId)) {
-        teamsMap.set(player.teamId, {
-          id: player.teamId,
-          label: player.team?.label || `Equipo ${player.teamId.slice(-4)}`,
-          players: [],
-        });
-      }
-      teamsMap.get(player.teamId)!.players.push({
-        id: player.id,
-        name:
-          player.displayName ||
-          player.user?.displayName ||
-          `Jugador ${player.position + 1}`,
-        image: player.user?.image ? player.user.image : undefined,
-        isConfirmed: player.resultConfirmed,
-        category: player.user ? 5 : undefined,
-      });
-    }
-  });
-  const teams = Array.from(teamsMap.values());
+  const teams = extractMatchTeams(match.players);
+  const team1Label = teams[0]?.label || "Pareja A";
+  const team2Label = teams[1]?.label || "Pareja B";
+  const regionAriaLabel = getMatchResultAriaLabel(team1Label, team2Label, isClosed, match.score);
 
   const handleSideChange = (playerId: string, side: "RIGHT" | "LEFT") => {
     setPlayerSides((prev) => {
@@ -142,16 +91,12 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
       const newSide = currentSide === side ? null : side;
       next[playerId] = newSide;
 
-      // Find the teammate in the current team
+      // Find teammate in team and apply calculated complementary side
       const team = teams.find((t) => t.players.some((p) => p.id === playerId));
       if (team && team.players.length === 2) {
         const teammate = team.players.find((p) => p.id !== playerId);
         if (teammate) {
-          if (newSide !== null) {
-            next[teammate.id] = newSide === "RIGHT" ? "LEFT" : "RIGHT";
-          } else {
-            next[teammate.id] = null;
-          }
+          next[teammate.id] = calculateTeammateSide(newSide);
         }
       }
       return next;
@@ -159,10 +104,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
   };
 
   const save = () => {
-    const scoreStr = scores
-      .slice(0, setsCount)
-      .map((set) => `${set[0]}-${set[1]}`)
-      .join(", ");
+    const scoreStr = buildScoreString(scores, setsCount);
 
     const sidesPayload = Object.entries(playerSides)
       .filter(([, side]) => side !== null)
@@ -207,10 +149,19 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
     }));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={regionAriaLabel}
+      aria-busy={pending}
+      className="flex flex-col gap-6"
+    >
       <div className="flex flex-col gap-6">
         {isClosed ? (
-          <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
+          <section
+            role="region"
+            aria-label={`Resultado final del partido: ${match.score}`}
+            className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
+          >
             <Trophy className="h-8 w-8 text-primary mb-3" />
             <h2 className="text-3xl font-bold mb-1">{match.score}</h2>
             <p className="text-xs text-muted-foreground mb-6">
@@ -224,7 +175,12 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
           <Fragment>
             <div className="flex flex-col gap-6">
               {Array.from({ length: setsCount }, (_, setIndex) => (
-                <section key={setIndex} className="space-y-3">
+                <section
+                  key={setIndex}
+                  role="region"
+                  aria-label={`Puntajes del Set ${setIndex + 1}`}
+                  className="space-y-3"
+                >
                   <h2 className="text-sm font-bold text-foreground">
                     Set {setIndex + 1}
                   </h2>
@@ -233,7 +189,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                     {teams.map((team, teamIndex) => (
                       <div
                         key={team.id}
-                        className="space-y-3 rounded-xl border border-border bg-card p-4"
+                        className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 min-w-0">
@@ -264,10 +220,29 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                         <div
                           className="grid grid-cols-4 gap-2"
                           role="radiogroup"
-                          aria-labelledby={`team-${team.id}-label`}
+                          aria-labelledby={`team-${team.id}-set-${setIndex}-label`}
+                          onKeyDown={(e) => {
+                            if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
+                              e.preventDefault();
+                              const buttons = Array.from(
+                                e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'),
+                              );
+                              if (buttons.length === 0) return;
+                              const currentIndex = buttons.findIndex(
+                                (btn) => btn === document.activeElement,
+                              );
+                              const safeCurrentIndex = currentIndex >= 0 ? currentIndex : 0;
+                              const nextIdx = getNextRadioIndex(
+                                safeCurrentIndex,
+                                buttons.length,
+                                e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                              );
+                              buttons[nextIdx]?.focus();
+                            }
+                          }}
                         >
-                          <span id={`team-${team.id}-label`} className="sr-only">
-                            Puntaje para {team.label}
+                          <span id={`team-${team.id}-set-${setIndex}-label`} className="sr-only">
+                            Puntaje de {team.label} para Set {setIndex + 1}
                           </span>
                           {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
                             const isSelected =
@@ -278,7 +253,8 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                                 type="button"
                                 role="radio"
                                 aria-checked={isSelected}
-                                aria-label={`${num} juegos`}
+                                tabIndex={isSelected ? 0 : -1}
+                                aria-label={`${num} juegos para ${team.label}`}
                                 onClick={() => {
                                   setScores((prev) => {
                                     const newScores = prev.map((s) => [...s]);
@@ -291,7 +267,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                                 className={cn(
                                   "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                   isSelected
-                                    ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                                    ? "bg-primary border-primary text-primary-foreground shadow-xs"
                                     : "bg-card border-border text-muted-foreground hover:bg-muted",
                                 )}
                               >
@@ -308,11 +284,15 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             </div>
 
             {/* Side selection section */}
-            <section className="space-y-3">
+            <section
+              role="region"
+              aria-label="Selección de posición en cancha por jugador"
+              className="space-y-3"
+            >
               <h2 className="text-sm font-bold text-foreground">
                 Posición en cancha (Derecha / Revés)
               </h2>
-              <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+              <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
                 {teams.map((team) => (
                   <div key={team.id} className="space-y-2">
                     <span className="text-xs font-semibold text-muted-foreground block">
@@ -332,16 +312,18 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                             onKeyDown={(e) => {
                               if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
                                 e.preventDefault();
-                                const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'));
+                                const buttons = Array.from(
+                                  e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'),
+                                );
                                 if (buttons.length === 0) return;
                                 const currentIndex = buttons.findIndex((btn) => btn === document.activeElement);
-                                let nextIndex = 0;
-                                if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                                  nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
-                                } else {
-                                  nextIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
-                                }
-                                buttons[nextIndex]?.focus();
+                                const safeCurrentIndex = currentIndex >= 0 ? currentIndex : 0;
+                                const nextIdx = getNextRadioIndex(
+                                  safeCurrentIndex,
+                                  buttons.length,
+                                  e.key as "ArrowRight" | "ArrowLeft" | "ArrowDown" | "ArrowUp",
+                                );
+                                buttons[nextIdx]?.focus();
                               }
                             }}
                           >
@@ -354,8 +336,8 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               className={cn(
                                 "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                 playerSides[p.id] === "RIGHT"
-                                  ? "bg-background text-foreground shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  ? "bg-background text-foreground shadow-xs"
+                                  : "text-muted-foreground hover:text-foreground",
                               )}
                             >
                               Derecha
@@ -369,8 +351,8 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               className={cn(
                                 "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                                 playerSides[p.id] === "LEFT"
-                                  ? "bg-background text-foreground shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  ? "bg-background text-foreground shadow-xs"
+                                  : "text-muted-foreground hover:text-foreground",
                               )}
                             >
                               Revés
