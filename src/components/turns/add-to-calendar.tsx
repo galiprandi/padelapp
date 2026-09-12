@@ -4,7 +4,12 @@ import { useState } from "react";
 import { CalendarPlus, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
-import { cn, getCalendarTitle } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import {
+  getGoogleCalendarUrl,
+  getIcsCalendarContent,
+  getCalendarOptionsAriaLabel,
+} from "./turn-utils";
 
 interface AddToCalendarButtonProps {
   turnId: string;
@@ -24,66 +29,35 @@ export function AddToCalendarButton({
   const { showToast } = useToast();
   const [open, setOpen] = useState(false);
 
-  const startDate = new Date(date);
-  const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
-
-  // Formats a Date object to UTC string format YYYYMMDDTHHMMSSZ required by calendar providers
-  const formatUTC = (d: Date) => {
-    try {
-      return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    } catch {
-      return "";
-    }
-  };
-
-  const startUTC = formatUTC(startDate);
-  const endUTC = formatUTC(endDate);
-
-  const title = getCalendarTitle(club, startDate);
-  const location = club;
-  const turnUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/t/${turnId}`;
-
   const handleGoogleCalendar = () => {
-    if (!startUTC || !endUTC) return;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const googleUrl = getGoogleCalendarUrl({
+      turnId,
+      club,
+      date,
+      duration,
+      notes,
+      origin,
+    });
 
-    const details = `Turno de pádel en ${club}. Confirmá asistencia: ${turnUrl}${notes ? `\n\nNotas: ${notes}` : ""}`;
-
-    const googleUrl = new URL("https://calendar.google.com/calendar/render");
-    googleUrl.searchParams.set("action", "TEMPLATE");
-    googleUrl.searchParams.set("text", title);
-    googleUrl.searchParams.set("dates", `${startUTC}/${endUTC}`);
-    googleUrl.searchParams.set("details", details);
-    googleUrl.searchParams.set("location", location);
+    if (!googleUrl) return;
 
     showToast("Abriendo Google Calendar...");
-    window.open(googleUrl.toString(), "_blank");
+    window.open(googleUrl, "_blank");
   };
 
   const handleIcsDownload = () => {
-    if (!startUTC || !endUTC) return;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const icsContent = getIcsCalendarContent({
+      turnId,
+      club,
+      date,
+      duration,
+      origin,
+    });
 
-    const nowUTC = formatUTC(new Date());
-    const details = `Turno de pádel en ${club}. Ver más: ${turnUrl}`;
+    if (!icsContent) return;
 
-    const icsLines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//PadelRed//NONSGML Event//EN",
-      "CALSCALE:GREGORIAN",
-      "METHOD:PUBLISH",
-      "BEGIN:VEVENT",
-      `UID:turn-${turnId}@padelred.app`,
-      `DTSTAMP:${nowUTC}`,
-      `DTSTART:${startUTC}`,
-      `DTEND:${endUTC}`,
-      `SUMMARY:${title}`,
-      `DESCRIPTION:${details}`,
-      `LOCATION:${location}`,
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ];
-
-    const icsContent = icsLines.join("\r\n");
     const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -98,6 +72,7 @@ export function AddToCalendarButton({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Escape" && open) {
+      e.preventDefault();
       setOpen(false);
     }
   };
@@ -124,8 +99,8 @@ export function AddToCalendarButton({
         <div
           id={`calendar-options-${turnId}`}
           role="region"
-          aria-label="Opciones para agregar a tu calendario"
-          className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150"
+          aria-label={getCalendarOptionsAriaLabel(club)}
+          className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150 shadow-xs"
         >
           <p className="text-xs font-semibold text-muted-foreground text-center">
             Elegí tu calendario:
@@ -135,7 +110,7 @@ export function AddToCalendarButton({
               onClick={handleGoogleCalendar}
               variant="secondary"
               size="sm"
-              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               aria-label="Agregar a Google Calendar"
             >
               <Calendar className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
@@ -145,7 +120,7 @@ export function AddToCalendarButton({
               onClick={handleIcsDownload}
               variant="secondary"
               size="sm"
-              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               aria-label="Descargar archivo iCal"
             >
               <Download className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />

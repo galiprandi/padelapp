@@ -26,6 +26,10 @@ import {
   formatTurnProgressAriaLabel,
   formatSubstituteListAriaLabel,
   buildTurnConnectionMap,
+  formatCalendarUTC,
+  getGoogleCalendarUrl,
+  getIcsCalendarContent,
+  getCalendarOptionsAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -755,5 +759,93 @@ describe("buildTurnConnectionMap", () => {
       [edge, { playerAId: "u2", playerBId: "u3" }],
     );
     expect(map).toEqual({ u2: "Ana" });
+  });
+});
+
+describe("formatCalendarUTC", () => {
+  it("formats Date instance or valid ISO string into UTC YYYYMMDDTHHMMSSZ format", () => {
+    const d = new Date("2026-09-20T18:30:00.000Z");
+    expect(formatCalendarUTC(d)).toBe("20260920T183000Z");
+    expect(formatCalendarUTC("2026-09-20T18:30:00.000Z")).toBe("20260920T183000Z");
+  });
+
+  it("returns empty string for invalid date values", () => {
+    expect(formatCalendarUTC("invalid-date")).toBe("");
+  });
+});
+
+describe("getGoogleCalendarUrl", () => {
+  it("builds valid Google Calendar URL with encoded title, dates, details, and location", () => {
+    const url = getGoogleCalendarUrl({
+      turnId: "turn-123",
+      club: "Central Padel",
+      date: "2026-09-20T18:00:00.000Z",
+      duration: 90,
+      notes: "Traer tubo nuevo",
+      origin: "https://padelred.app",
+    });
+
+    expect(url.startsWith("https://calendar.google.com/calendar/render?")).toBe(true);
+    expect(url).toContain("action=TEMPLATE");
+    expect(url).toContain("text=");
+    expect(url).toContain("Central+Padel");
+    expect(url).toContain("dates=20260920T180000Z%2F20260920T193000Z");
+    expect(url).toContain("location=Central+Padel");
+    expect(url).toContain(encodeURIComponent("https://padelred.app/t/turn-123"));
+    expect(url).toContain("Traer+tubo+nuevo");
+  });
+
+  it("returns empty string for invalid dates", () => {
+    const url = getGoogleCalendarUrl({
+      turnId: "turn-123",
+      club: "Central Padel",
+      date: "invalid-date",
+      duration: 90,
+    });
+    expect(url).toBe("");
+  });
+});
+
+describe("getIcsCalendarContent", () => {
+  it("generates valid VCALENDAR lines with DTSTART, DTEND, SUMMARY, and LOCATION", () => {
+    const now = new Date("2026-09-15T10:00:00.000Z");
+    const ics = getIcsCalendarContent({
+      turnId: "turn-456",
+      club: "El Balcón",
+      date: "2026-09-20T20:00:00.000Z",
+      duration: 60,
+      origin: "https://padelred.app",
+      now,
+    });
+
+    expect(ics).toContain("BEGIN:VCALENDAR");
+    expect(ics).toContain("VERSION:2.0");
+    expect(ics).toContain("BEGIN:VEVENT");
+    expect(ics).toContain("UID:turn-turn-456@padelred.app");
+    expect(ics).toContain("DTSTAMP:20260915T100000Z");
+    expect(ics).toContain("DTSTART:20260920T200000Z");
+    expect(ics).toContain("DTEND:20260920T210000Z");
+    expect(ics).toContain("SUMMARY:Pádel · El Balcón · 20hs");
+    expect(ics).toContain("LOCATION:El Balcón");
+    expect(ics).toContain("END:VEVENT");
+    expect(ics).toContain("END:VCALENDAR");
+  });
+
+  it("returns empty string for invalid date values", () => {
+    const ics = getIcsCalendarContent({
+      turnId: "turn-456",
+      club: "El Balcón",
+      date: "invalid-date",
+      duration: 60,
+    });
+    expect(ics).toBe("");
+  });
+});
+
+describe("getCalendarOptionsAriaLabel", () => {
+  it("formats accessible ARIA label for calendar options region", () => {
+    expect(getCalendarOptionsAriaLabel("Central Padel")).toBe(
+      "Opciones para agregar el partido en Central Padel a tu calendario"
+    );
   });
 });

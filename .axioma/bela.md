@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-12 — Calendar Helper Extraction & AddToCalendarButton ARIA Accessibility, Escape Key & Solid MDS Polish (bela/turnos/add-to-calendar-helpers-and-a11y)
 - [x] 2026-09-11 — Turn Salvage Callout, Progress Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in Turn Public Details (bela/turnos/salvage-callout-and-progress-a11y)
 - [x] 2026-09-10 — Turn Form Validation & Share URL Helpers Extraction, ARIA Region Landmarks & Solid MDS Styling Polish in New & Edit Turn Forms (bela/turnos/form-validation-and-share-helpers)
 - [x] 2026-09-09 — Manual Add Player Helpers Extraction, AddPlayerButton Solid MDS Styling, ARIA Region Landmark & Escape Key Dismissal (bela/turnos/add-player-button-mds-a11y)
@@ -51,6 +52,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-12 - Calendar Helper Extraction & AddToCalendarButton ARIA Accessibility, Escape Key & Solid MDS Polish
+**Learning:** Extracting pure calendar helper functions (`formatCalendarUTC`, `getGoogleCalendarUrl`, `getIcsCalendarContent`, and `getCalendarOptionsAriaLabel`) into `src/components/turns/turn-utils.ts` decouples Google Calendar template URL generation and iCalendar (.ics) content formatting from React client component handlers, making calendar export logic unit-testable in Vitest. Enhancing `AddToCalendarButton` (`src/components/turns/add-to-calendar.tsx`) with keyboard `Escape` key (`onKeyDown`) container dismissal, explicit `role="region"` landmark with descriptive Argentine Spanish `aria-label`, focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS option container styling (`shadow-xs`) guarantees screen reader accessibility and visual alignment across mobile viewports.
+**Action:** Always extract external provider export templates into pure helper utilities backed by Vitest unit tests and equip expandable option menus with keyboard escape handlers, region landmarks, focus ring offsets, and solid MDS container styling.
+
 ## 2026-09-11 - Turn Salvage Callout, Progress Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in Turn Public Details
 **Learning:** Extracting pure helper functions (`formatTurnSalvageCalloutAriaLabel`, `formatTurnProgressPercentage`, `formatTurnProgressAriaLabel`, and `formatSubstituteListAriaLabel`) into `src/components/turns/turn-utils.ts` simplifies component rendering and makes screen reader feedback for salvage banners, enrollment progress bars, and substitute list items unit-testable. Refactoring `TurnPublicDetails` (`src/app/t/[id]/turn-public-details.tsx`) with explicit `role="region"` landmark attributes, localized Argentine Spanish `aria-label` attributes, `aria-hidden="true"` on decorative icons, and solid MDS container styling (`shadow-xs`) delivers an accessible and responsive detail viewport.
 **Action:** Always extract complex screen reader accessibility formatting into pure helper functions backed by unit tests and equip major card sections on detail pages with explicit region landmarks and solid MDS container styling.

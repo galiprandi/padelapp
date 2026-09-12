@@ -1,4 +1,4 @@
-import { isToday, isTomorrow, getNaturalShareText } from "@/lib/utils";
+import { isToday, isTomorrow, getNaturalShareText, getCalendarTitle } from "@/lib/utils";
 
 export interface WhatsAppInviteMessageOptions {
   club: string;
@@ -569,4 +569,109 @@ export function buildTurnConnectionMap(
     }
   }
   return connectionMap;
+}
+
+export interface CalendarEventOptions {
+  turnId: string;
+  club: string;
+  date: Date | string;
+  duration: number; // minutes
+  notes?: string | null;
+  origin?: string;
+}
+
+/**
+ * Formats a Date object or string to UTC format YYYYMMDDTHHMMSSZ required by calendar providers.
+ */
+export function formatCalendarUTC(date: Date | string): string {
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "";
+    return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Builds Google Calendar render URL template string for a turn.
+ */
+export function getGoogleCalendarUrl({
+  turnId,
+  club,
+  date,
+  duration,
+  notes,
+  origin = "",
+}: CalendarEventOptions): string {
+  const startDate = new Date(date);
+  const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
+  const startUTC = formatCalendarUTC(startDate);
+  const endUTC = formatCalendarUTC(endDate);
+
+  if (!startUTC || !endUTC) return "";
+
+  const title = getCalendarTitle(club, startDate);
+  const turnUrl = `${origin}/t/${turnId}`;
+  const details = `Turno de pádel en ${club}. Confirmá asistencia: ${turnUrl}${notes ? `\n\nNotas: ${notes}` : ""}`;
+
+  const googleUrl = new URL("https://calendar.google.com/calendar/render");
+  googleUrl.searchParams.set("action", "TEMPLATE");
+  googleUrl.searchParams.set("text", title);
+  googleUrl.searchParams.set("dates", `${startUTC}/${endUTC}`);
+  googleUrl.searchParams.set("details", details);
+  googleUrl.searchParams.set("location", club);
+
+  return googleUrl.toString();
+}
+
+/**
+ * Builds iCalendar (.ics) file content lines string for a turn.
+ */
+export function getIcsCalendarContent({
+  turnId,
+  club,
+  date,
+  duration,
+  origin = "",
+  now = new Date(),
+}: CalendarEventOptions & { now?: Date }): string {
+  const startDate = new Date(date);
+  const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
+  const startUTC = formatCalendarUTC(startDate);
+  const endUTC = formatCalendarUTC(endDate);
+  const nowUTC = formatCalendarUTC(now);
+
+  if (!startUTC || !endUTC) return "";
+
+  const title = getCalendarTitle(club, startDate);
+  const turnUrl = `${origin}/t/${turnId}`;
+  const details = `Turno de pádel en ${club}. Ver más: ${turnUrl}`;
+
+  const icsLines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//PadelRed//NONSGML Event//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:turn-${turnId}@padelred.app`,
+    `DTSTAMP:${nowUTC}`,
+    `DTSTART:${startUTC}`,
+    `DTEND:${endUTC}`,
+    `SUMMARY:${title}`,
+    `DESCRIPTION:${details}`,
+    `LOCATION:${club}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+
+  return icsLines.join("\r\n");
+}
+
+/**
+ * Format ARIA label for calendar options menu in Argentine Spanish.
+ */
+export function getCalendarOptionsAriaLabel(club: string): string {
+  return `Opciones para agregar el partido en ${club} a tu calendario`;
 }
