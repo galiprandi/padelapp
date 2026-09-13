@@ -216,13 +216,13 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
           aria-label="Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar."
           className="fixed inset-x-0 top-20 z-50 flex justify-center px-5"
         >
-          <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
+          <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-xs">
             <ArrowUpDown className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="text-xs font-bold">Modo intercambio activo</span>
             <Button
               size="icon"
               variant="ghost"
-              className="h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className="h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
               aria-label="Cancelar intercambio de posición"
               onClick={() => setSwapSourceId(null)}
             >
@@ -232,7 +232,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
         </div>
       )}
 
-      <div className="space-y-4">
+      <div role="region" aria-label="Alineación y parejas del partido" className="space-y-4">
         {teams.map((team) => (
           <PairPreview
             key={team.id}
@@ -243,7 +243,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
               image: player.image || undefined,
               isConfirmed: player.isConfirmed,
               onManageClick: isOrganizer ? () => openManageModal(player) : undefined,
-              manageAriaLabel: isOrganizer ? "Gestionar jugador" : undefined,
+              manageAriaLabel: isOrganizer ? `Gestionar jugador ${player.name}` : undefined,
             }))}
           />
         ))}
