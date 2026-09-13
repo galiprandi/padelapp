@@ -14,7 +14,34 @@ import {
   verifyRegistration,
 } from "@/lib/webauthn/actions";
 
-const DISMISS_KEY = "passkey-onboarding-dismissed";
+export const PASSKEY_ONBOARDING_DISMISS_KEY = "passkey-onboarding-dismissed";
+
+export function isPasskeyOnboardingDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return sessionStorage.getItem(PASSKEY_ONBOARDING_DISMISS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function dismissPasskeyOnboarding(): void {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(PASSKEY_ONBOARDING_DISMISS_KEY, "1");
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+export function clearPasskeyOnboardingDismissal(): void {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(PASSKEY_ONBOARDING_DISMISS_KEY);
+  } catch {
+    // Ignore storage errors
+  }
+}
 
 interface PasskeyOnboardingProps {
   hasPasskeys: boolean;
@@ -28,7 +55,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
 
   useEffect(() => {
     if (hasPasskeys) return;
-    if (sessionStorage.getItem(DISMISS_KEY)) return;
+    if (isPasskeyOnboardingDismissed()) return;
     if (!browserSupportsWebAuthn()) return;
 
     platformAuthenticatorIsAvailable().then((available) => {
@@ -42,7 +69,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
   if (!visible || !supported) return null;
 
   function handleDismiss() {
-    sessionStorage.setItem(DISMISS_KEY, "1");
+    dismissPasskeyOnboarding();
     setVisible(false);
   }
 
@@ -66,7 +93,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         }
 
         showToast("Huella registrada");
-        sessionStorage.setItem(DISMISS_KEY, "1");
+        dismissPasskeyOnboarding();
         setVisible(false);
       } catch (err: unknown) {
         const error = err as { name?: string };
@@ -83,7 +110,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
     <div
       role="region"
       aria-label="Sugerencia de acceso biométrico"
-      className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4"
+      className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
     >
       <Button
         variant="ghost"
@@ -96,8 +123,8 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
       </Button>
 
       <div className="flex items-start gap-3 pr-6">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Fingerprint className="h-5 w-5" aria-hidden="true" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs">
+          <Fingerprint className="h-5 w-5 text-primary" aria-hidden="true" />
         </div>
         <div className="space-y-1">
           <h2 className="text-sm font-bold text-foreground">
