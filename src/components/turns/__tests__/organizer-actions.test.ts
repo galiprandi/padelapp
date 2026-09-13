@@ -1,7 +1,27 @@
 import { describe, it, expect } from "vitest";
-import { getOpenSlotsBadgeText, getTurnUrgencyBadgeText, getTurnSalvageShareMessage } from "../turn-utils";
+import {
+  getOpenSlotsBadgeText,
+  getTurnUrgencyBadgeText,
+  getTurnSalvageShareMessage,
+  getRemovePlayerAriaLabel,
+  getRemovePlayerSuccessToast,
+  getAssignSubstituteAriaLabel,
+  getAssignSubstituteSuccessToast,
+} from "../turn-utils";
 
 describe("Turn Utils & Organizer Helpers", () => {
+  it("formats remove player ARIA label and toast", () => {
+    expect(getRemovePlayerAriaLabel({ playerName: "Lucas" })).toBe("Sacar a Lucas del turno");
+    expect(getRemovePlayerAriaLabel({ playerName: "Lucas", isConfirming: true })).toBe("Confirmar sacar a Lucas del turno");
+    expect(getRemovePlayerAriaLabel({ playerName: "Lucas", isPending: true })).toBe("Sacando a Lucas...");
+    expect(getRemovePlayerSuccessToast("Lucas")).toBe("Sacaste a Lucas del turno.");
+  });
+
+  it("formats assign substitute ARIA label and toast", () => {
+    expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos" })).toBe("Asignar a Marcos como titular");
+    expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos", isPending: true })).toBe("Asignando a Marcos...");
+    expect(getAssignSubstituteSuccessToast("Marcos")).toBe("Promoviste a Marcos a titular.");
+  });
   it("formats open slot badge text correctly", () => {
     expect(getOpenSlotsBadgeText(1)).toBe("Falta 1");
     expect(getOpenSlotsBadgeText(2)).toBe("Faltan 2");

@@ -675,3 +675,54 @@ export function getIcsCalendarContent({
 export function getCalendarOptionsAriaLabel(club: string): string {
   return `Opciones para agregar el partido en ${club} a tu calendario`;
 }
+
+/**
+ * Format ARIA label for removing a player from a turn in Argentine Spanish.
+ */
+export function getRemovePlayerAriaLabel({
+  playerName,
+  isPending = false,
+  isConfirming = false,
+}: {
+  playerName: string;
+  isPending?: boolean;
+  isConfirming?: boolean;
+}): string {
+  if (isPending) {
+    return `Sacando a ${playerName}...`;
+  }
+  if (isConfirming) {
+    return `Confirmar sacar a ${playerName} del turno`;
+  }
+  return `Sacar a ${playerName} del turno`;
+}
+
+/**
+ * Format success toast message when an organizer removes a player from a turn.
+ */
+export function getRemovePlayerSuccessToast(playerName: string): string {
+  return `Sacaste a ${playerName} del turno.`;
+}
+
+/**
+ * Format ARIA label for assigning a substitute to a primary slot in Argentine Spanish.
+ */
+export function getAssignSubstituteAriaLabel({
+  substituteName,
+  isPending = false,
+}: {
+  substituteName: string;
+  isPending?: boolean;
+}): string {
+  if (isPending) {
+    return `Asignando a ${substituteName}...`;
+  }
+  return `Asignar a ${substituteName} como titular`;
+}
+
+/**
+ * Format success toast message when an organizer promotes a substitute to a primary slot.
+ */
+export function getAssignSubstituteSuccessToast(substituteName: string): string {
+  return `Promoviste a ${substituteName} a titular.`;
+}

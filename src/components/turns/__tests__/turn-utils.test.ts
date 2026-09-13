@@ -30,6 +30,10 @@ import {
   getGoogleCalendarUrl,
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
+  getRemovePlayerAriaLabel,
+  getRemovePlayerSuccessToast,
+  getAssignSubstituteAriaLabel,
+  getAssignSubstituteSuccessToast,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -678,6 +682,27 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Organizer Action Helpers", () => {
+  it("formats getRemovePlayerAriaLabel across default, confirming, and pending states", () => {
+    expect(getRemovePlayerAriaLabel({ playerName: "Mateo" })).toBe("Sacar a Mateo del turno");
+    expect(getRemovePlayerAriaLabel({ playerName: "Mateo", isConfirming: true })).toBe("Confirmar sacar a Mateo del turno");
+    expect(getRemovePlayerAriaLabel({ playerName: "Mateo", isPending: true })).toBe("Sacando a Mateo...");
+  });
+
+  it("formats getRemovePlayerSuccessToast in Argentine Spanish", () => {
+    expect(getRemovePlayerSuccessToast("Mateo")).toBe("Sacaste a Mateo del turno.");
+  });
+
+  it("formats getAssignSubstituteAriaLabel across default and pending states", () => {
+    expect(getAssignSubstituteAriaLabel({ substituteName: "Gonzalo" })).toBe("Asignar a Gonzalo como titular");
+    expect(getAssignSubstituteAriaLabel({ substituteName: "Gonzalo", isPending: true })).toBe("Asignando a Gonzalo...");
+  });
+
+  it("formats getAssignSubstituteSuccessToast in Argentine Spanish", () => {
+    expect(getAssignSubstituteSuccessToast("Gonzalo")).toBe("Promoviste a Gonzalo a titular.");
   });
 });
 
