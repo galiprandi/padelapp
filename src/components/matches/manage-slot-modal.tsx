@@ -8,6 +8,13 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName } from "@/lib/utils";
 import type { SlotValue, PlayerOption } from "@/lib/match-types";
 import { getNextRadioIndex } from "@/lib/match-helpers";
+import {
+  getManageSlotInitialValue,
+  validateSlotInputValue,
+  getRecentPlayerAriaLabel,
+  formatSearchPlayerAriaLabel,
+  getSearchResultsStatusAriaLabel,
+} from "./manage-slot-utils";
 
 interface RecentPlayer {
   id: string;
@@ -48,12 +55,7 @@ export function ManageSlotModal({
 
   useEffect(() => {
     if (open) {
-      const initial =
-        slot?.kind === "user"
-          ? slot.player.displayName
-          : slot?.kind === "placeholder"
-            ? slot.displayName
-            : placeholderName;
+      const initial = getManageSlotInitialValue(slot, placeholderName);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputValue(initial);
       setSearchResults([]);
@@ -152,13 +154,13 @@ export function ManageSlotModal({
   }
 
   function handleSave() {
-    const trimmed = inputValue.trim();
-    if (trimmed.length === 0) {
-      setError("Ingresá un nombre");
+    const { isValid, error: validationError } = validateSlotInputValue(inputValue);
+    if (!isValid) {
+      setError(validationError);
       return;
     }
     setError(null);
-    onSave({ kind: "placeholder", displayName: capitalizeName(trimmed) });
+    onSave({ kind: "placeholder", displayName: capitalizeName(inputValue.trim()) });
   }
 
   function handleSelectPlayer(player: PlayerOption) {
@@ -183,12 +185,12 @@ export function ManageSlotModal({
 
   async function handleShare() {
     if (!onShare) return;
-    const trimmed = inputValue.trim();
-    if (trimmed.length === 0) {
+    const { isValid } = validateSlotInputValue(inputValue);
+    if (!isValid) {
       setError("Ingresá un nombre antes de compartir");
       return;
     }
-    onShare(capitalizeName(trimmed));
+    onShare(capitalizeName(inputValue.trim()));
   }
 
   const isUserSlot = slot?.kind === "user";
@@ -214,7 +216,7 @@ export function ManageSlotModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="w-full max-w-sm flex flex-col bg-card shadow-sm sm:rounded-xl sm:border sm:border-border sm:max-h-[90dvh] h-[100dvh] sm:h-auto"
+        className="w-full max-w-sm flex flex-col bg-card shadow-xs sm:rounded-xl sm:border sm:border-border sm:max-h-[90dvh] h-[100dvh] sm:h-auto"
       >
         {/* Header — sticky top */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border/50 shrink-0">
@@ -227,7 +229,7 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-primary hover:bg-primary/10 rounded-lg h-8 font-semibold text-xs px-3"
+                className="text-primary hover:bg-primary/10 rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={onSwap}
               >
                 <ArrowUpDown className="mr-1.5 h-3 w-3" />
@@ -239,7 +241,7 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg h-8 font-semibold text-xs px-3"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={onRelease}
               >
                 <UserMinus className="mr-1.5 h-3 w-3" />
@@ -254,7 +256,7 @@ export function ManageSlotModal({
           {isUserSlot && !canEdit ? (
             /* Confirmed user slot — read-only display */
             <div className="space-y-4">
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-4">
+              <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-4 shadow-xs">
                 <PlayerAvatar
                   name={slot.player.displayName}
                   image={slot.player.image ?? undefined}
@@ -313,7 +315,7 @@ export function ManageSlotModal({
                         aria-checked={false}
                         tabIndex={idx === 0 ? 0 : -1}
                         onClick={() => handleSelectRecentPlayer(player)}
-                        aria-label={`Agregar a ${player.displayName}`}
+                        aria-label={getRecentPlayerAriaLabel(player.displayName)}
                         className="flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg active:scale-[0.98] transition-all"
                       >
                         <PlayerAvatar
@@ -334,13 +336,11 @@ export function ManageSlotModal({
               {/* Single input — search + manual name */}
               <div className="space-y-3">
                 <div className="sr-only" aria-live="polite">
-                  {isSearching
-                    ? "Buscando jugadores..."
-                    : showNoResults
-                      ? "No se encontraron jugadores"
-                      : searchResults.length > 0
-                        ? `${searchResults.length} jugadores encontrados`
-                        : ""}
+                  {getSearchResultsStatusAriaLabel(
+                    isSearching,
+                    showNoResults,
+                    searchResults.length
+                  )}
                 </div>
 
                 <label htmlFor="player-input" className="sr-only">
@@ -366,7 +366,7 @@ export function ManageSlotModal({
                     }}
                     placeholder="Buscar jugador o escribir nombre..."
                     autoCapitalize="words"
-                    className="h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium"
+                    className="h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   />
                   {isSearching && (
                     <Loader2 className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin right-4 pointer-events-none" />
@@ -379,8 +379,8 @@ export function ManageSlotModal({
                         setSearchResults([]);
                         inputRef.current?.focus();
                       }}
-                      aria-label="Limpiar"
-                      className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                      aria-label="Limpiar nombre"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -389,15 +389,15 @@ export function ManageSlotModal({
 
                 {/* Search results */}
                 {showResults && (
-                  <div className="rounded-lg border border-border bg-muted p-2 space-y-1">
+                  <div className="rounded-lg border border-border bg-muted p-2 space-y-1 shadow-xs">
                     {searchResults.map((player) => (
                       <button
                         key={player.id}
                         onClick={() => handleSelectPlayer(player)}
-                        aria-label={`Seleccionar a ${player.displayName}`}
+                        aria-label={formatSearchPlayerAriaLabel(player.displayName)}
                         className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                       >
-                        <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
+                        <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-xs" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-bold truncate">{player.displayName}</p>
@@ -428,15 +428,15 @@ export function ManageSlotModal({
                     <span className="text-xs font-semibold text-muted-foreground px-1">
                       Contactos recientes
                     </span>
-                    <div className="rounded-lg border border-border bg-muted p-2 space-y-1">
+                    <div className="rounded-lg border border-border bg-muted p-2 space-y-1 shadow-xs">
                       {searchResults.map((player) => (
                         <button
                           key={player.id}
                           onClick={() => handleSelectPlayer(player)}
-                          aria-label={`Seleccionar a ${player.displayName}`}
+                          aria-label={formatSearchPlayerAriaLabel(player.displayName)}
                           className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                         >
-                          <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-sm" />
+                          <PlayerAvatar name={player.displayName} image={player.image ?? undefined} size={32} className="rounded-lg shadow-xs" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="text-sm font-bold truncate">{player.displayName}</p>
@@ -466,7 +466,7 @@ export function ManageSlotModal({
             <div className="flex gap-2">
               <Button
                 type="button"
-                className="flex-1 h-12 rounded-lg font-bold text-base"
+                className="flex-1 h-12 rounded-lg font-bold text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={handleSave}
               >
                 Guardar
@@ -476,9 +476,9 @@ export function ManageSlotModal({
                   type="button"
                   size="icon"
                   variant="outline"
-                  aria-label="Compartir enlace"
+                  aria-label="Compartir enlace de invitación"
                   onClick={handleShare}
-                  className="h-12 w-12 rounded-lg border-border text-primary"
+                  className="h-12 w-12 rounded-lg border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>
@@ -488,7 +488,7 @@ export function ManageSlotModal({
           <Button
             type="button"
             variant="ghost"
-            className="w-full h-10 rounded-lg font-medium text-muted-foreground text-sm"
+            className="w-full h-10 rounded-lg font-medium text-muted-foreground text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
             onClick={onClose}
           >
             {isUserSlot && !canEdit ? "Cerrar" : "Cancelar"}
