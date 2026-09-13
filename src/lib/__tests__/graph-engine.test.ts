@@ -206,6 +206,7 @@ import {
   calculatePlayerSimilarityInfo,
   calculatePlayerGraphReach,
   calculateCommunityBridgingScore,
+  calculateNetworkCentralityScore,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1267,6 +1268,78 @@ describe("calculateNetworkRoleInfo", () => {
 
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculateNetworkCentralityScore", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Hub Node", alias: "Hub", image: null, skillScore: 1100, community: 1, networkSize: 4, matchesPlayed: 12, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Leaf 1", alias: "L1", image: null, skillScore: 1050, community: 1, networkSize: 1, matchesPlayed: 3, preferredSide: "LEFT" },
+    { id: "p-03", name: "Leaf 2", alias: "L2", image: null, skillScore: 1020, community: 2, networkSize: 1, matchesPlayed: 4, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Leaf 3", alias: "L3", image: null, skillScore: 980, community: 3, networkSize: 1, matchesPlayed: 2, preferredSide: "LEFT" },
+    { id: "p-05", name: "Leaf 4", alias: "L4", image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 3, preferredSide: "RIGHT" },
+  ];
+
+  it("returns fallback centrality score for unconnected or missing node", () => {
+    const res = calculateNetworkCentralityScore(nodes, [], "p-99");
+    expect(res.centralityScore).toBe(0);
+    expect(res.totalConnections).toBe(0);
+    expect(res.totalInteractions).toBe(0);
+    expect(res.centralityTier).toBe("Periferia de red 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin conexiones para evaluación de centralidad");
+  });
+
+  it("calculates 'Hub principal 👑' tier for high degree node connected to multiple communities with high interaction volume", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 2, partnerMatches: 2, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 1, turnsTogether: 1, strength: 5 },
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-01", target: "p-05", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 1, strength: 3 },
+    ];
+
+    // totalConnections = 4, totalInteractions = 5 + 3 + 2 + 3 = 13
+    const res = calculateNetworkCentralityScore(nodes, links, "p-01");
+    expect(res.totalConnections).toBe(4);
+    expect(res.totalInteractions).toBe(13);
+    expect(res.centralityScore).toBeGreaterThanOrEqual(75);
+    expect(res.centralityTier).toBe("Hub principal 👑");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+    expect(res.formattedSummary).toContain("4 contactos directos");
+    expect(res.formattedSummary).toContain("13 interacciones");
+  });
+
+  it("calculates 'Conector clave ⚡' tier for moderate degree node (3 connections)", () => {
+    const largerNodesList: GraphNode[] = [
+      ...nodes,
+      { id: "p-06", name: "P6", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-07", name: "P7", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-08", name: "P8", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-09", name: "P9", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-10", name: "P10", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+    ];
+
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateNetworkCentralityScore(largerNodesList, links, "p-01");
+    expect(res.totalConnections).toBe(3);
+    expect(res.centralityTier).toBe("Conector clave ⚡");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("calculates 'Jugador integrado 🔗' tier for node with 1 or 2 connections", () => {
+    const links: GraphLink[] = [
+      { source: "p-02", target: "p-01", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateNetworkCentralityScore(nodes, links, "p-02");
+    expect(res.totalConnections).toBe(1);
+    expect(res.centralityTier).toBe("Jugador integrado 🔗");
     expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });

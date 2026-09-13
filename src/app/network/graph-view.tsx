@@ -28,6 +28,7 @@ import {
   calculateCrossRivalryDensity,
   calculatePlayerGraphReach,
   calculateCommunityBridgingScore,
+  calculateNetworkCentralityScore,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -807,6 +808,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const centrality = calculateNetworkCentralityScore(
+                    graphData.nodes,
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -818,6 +824,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Nivel de actividad: ${activityTier.label}`}
                       >
                         {activityTier.label}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          centrality.badgeStyle,
+                        )}
+                        title={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                        aria-label={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                      >
+                        {centrality.centralityTier}
                       </span>
                       <span
                         className={cn(

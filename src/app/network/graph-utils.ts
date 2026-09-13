@@ -395,6 +395,117 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkCentralityScore {
+  centralityScore: number;
+  totalConnections: number;
+  totalInteractions: number;
+  centralityTier:
+    | "Hub principal 👑"
+    | "Conector clave ⚡"
+    | "Jugador integrado 🔗"
+    | "Periferia de red 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates network centrality score (0-100%) evaluating connection degree relative to total graph size,
+ * total interaction volume (matches + turns), and multi-community reach.
+ */
+export function calculateNetworkCentralityScore(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  selectedNodeId: string,
+): NetworkCentralityScore {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+  const totalNodesCount = nodes.length;
+
+  if (!selectedNode || totalConnections === 0) {
+    return {
+      centralityScore: 0,
+      totalConnections: 0,
+      totalInteractions: 0,
+      centralityTier: "Periferia de red 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin conexiones para evaluación de centralidad",
+    };
+  }
+
+  // Calculate total interaction volume across all connected links
+  let totalInteractions = 0;
+  const connectedCommunities = new Set<number>();
+
+  for (const link of connectedLinks) {
+    totalInteractions += link.partnerMatches + link.rivalMatches + link.turnsTogether;
+
+    const otherId =
+      linkNodeId(link.source) === selectedNodeId
+        ? linkNodeId(link.target)
+        : linkNodeId(link.source);
+    const otherNode = nodes.find((n) => n.id === otherId);
+    if (otherNode && otherNode.community !== null && otherNode.community !== undefined) {
+      connectedCommunities.add(otherNode.community);
+    }
+  }
+
+  // 1. Relative degree centrality component (up to 50 pts)
+  // Max possible neighbors is totalNodesCount - 1
+  const maxPossibleNeighbors = Math.max(totalNodesCount - 1, 1);
+  const degreeRatio = totalConnections / maxPossibleNeighbors;
+  const degreePoints = Math.min(Math.round(degreeRatio * 100 * 0.8), 50);
+
+  // 2. Interaction volume component (up to 30 pts)
+  const interactionPoints = Math.min(totalInteractions * 3, 30);
+
+  // 3. Multi-community reach component (up to 20 pts)
+  const communityPoints = Math.min(connectedCommunities.size * 10, 20);
+
+  const centralityScore = Math.min(
+    Math.max(degreePoints + interactionPoints + communityPoints, 0),
+    100,
+  );
+
+  let centralityTier:
+    | "Hub principal 👑"
+    | "Conector clave ⚡"
+    | "Jugador integrado 🔗"
+    | "Periferia de red 📍";
+  let badgeStyle: string;
+
+  if (centralityScore >= 75 || (totalConnections >= 5 && totalInteractions >= 10)) {
+    centralityTier = "Hub principal 👑";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else if (centralityScore >= 45 || totalConnections >= 3) {
+    centralityTier = "Conector clave ⚡";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (totalConnections >= 1) {
+    centralityTier = "Jugador integrado 🔗";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    centralityTier = "Periferia de red 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${totalConnections} ${totalConnections === 1 ? "contacto directo" : "contactos directos"}`,
+    `${totalInteractions} ${totalInteractions === 1 ? "interacción" : "interacciones"}`,
+  ];
+
+  return {
+    centralityScore,
+    totalConnections,
+    totalInteractions,
+    centralityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface CommunityBridgingScore {
   bridgingScore: number;
   distinctCommunitiesCount: number;
