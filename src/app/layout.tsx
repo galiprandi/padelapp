@@ -4,7 +4,7 @@ import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
-import { getSpeculationRulesConfig } from "@/lib/speculation-rules";
+import { getSpeculationRulesTag } from "@/lib/speculation-rules";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,9 +58,7 @@ export default function RootLayout({
         )}
         <script
           type="speculationrules"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getSpeculationRulesConfig()),
-          }}
+          dangerouslySetInnerHTML={getSpeculationRulesTag()}
         />
       </head>
       <body

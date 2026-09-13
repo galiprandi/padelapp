@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   getSpeculationRulesConfig,
+  getSpeculationRulesTag,
   PRIMARY_SPECULATION_URLS,
   SECONDARY_SPECULATION_URLS,
   DYNAMIC_SPECULATION_PATTERNS,
@@ -73,5 +74,25 @@ describe("getSpeculationRulesConfig", () => {
     expect(primaryGroup.urls).toEqual([...PRIMARY_SPECULATION_URLS]);
     expect(secondaryGroup.urls).toEqual([...SECONDARY_SPECULATION_URLS]);
     expect(dynamicGroup.source).toBe("document");
+  });
+});
+
+describe("getSpeculationRulesTag", () => {
+  it("debe retornar un objeto { __html } con el JSON serializado de las reglas por defecto", () => {
+    const tag = getSpeculationRulesTag();
+    expect(tag).toBeDefined();
+    expect(typeof tag.__html).toBe("string");
+
+    const parsed = JSON.parse(tag.__html);
+    expect(parsed.prerender).toHaveLength(3);
+    expect(parsed.prerender[0].urls).toEqual([...PRIMARY_SPECULATION_URLS]);
+  });
+
+  it("debe retornar un objeto { __html } con el JSON serializado para URLs personalizadas", () => {
+    const tag = getSpeculationRulesTag(["/me", "/turnos"], "conservative");
+    const parsed = JSON.parse(tag.__html);
+    expect(parsed.prerender).toHaveLength(1);
+    expect(parsed.prerender[0].eagerness).toBe("conservative");
+    expect(parsed.prerender[0].urls).toEqual(["/me", "/turnos"]);
   });
 });
