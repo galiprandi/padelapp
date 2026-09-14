@@ -6,6 +6,21 @@ export interface NavItem {
   label: string;
 }
 
+export interface FabItemConfig {
+  href: string;
+  label: string;
+}
+
+export interface SplitNavItems {
+  primaryItems: NavItem[];
+  secondaryItems: NavItem[];
+}
+
+export interface NavItemAriaAttributes {
+  "aria-label": string;
+  "aria-current"?: "page";
+}
+
 /**
  * Retorna la lista de ítems principales de navegación de la aplicación.
  */
@@ -68,4 +83,39 @@ export function isNavItemActive(itemHref: string, pathname: string | null): bool
   }
 
   return false;
+}
+
+/**
+ * Retorna los ítems de navegación divididos en dos grupos (primario y secundario)
+ * para ubicarlos a la izquierda y derecha del botón de acción central (FAB).
+ */
+export function getSplitNavItems(): SplitNavItems {
+  const items = getNavItems();
+  return {
+    primaryItems: items.slice(0, 2),
+    secondaryItems: items.slice(2),
+  };
+}
+
+/**
+ * Retorna la configuración del botón de acción flotante central (FAB).
+ */
+export function getFabItemConfig(): FabItemConfig {
+  return {
+    href: "/match/new",
+    label: "Crear partido",
+  };
+}
+
+/**
+ * Genera los atributos ARIA accesibles para un ítem de navegación según su estado activo.
+ */
+export function getNavItemAriaAttributes(
+  item: NavItem,
+  isActive: boolean,
+): NavItemAriaAttributes {
+  return {
+    "aria-label": item.label,
+    "aria-current": isActive ? "page" : undefined,
+  };
 }

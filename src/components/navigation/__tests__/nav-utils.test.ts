@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   getNavItems,
+  getSplitNavItems,
+  getFabItemConfig,
+  getNavItemAriaAttributes,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   isNavItemActive,
@@ -99,6 +102,51 @@ describe("nav-utils", () => {
       expect(isNavItemActive("/turnos", "/turnos/123/editar")).toBe(true);
       expect(isNavItemActive("/ranking", "/ranking/leaderboard")).toBe(true);
       expect(isNavItemActive("/turnos", "/match")).toBe(false);
+    });
+  });
+
+  describe("getSplitNavItems", () => {
+    it("splits navigation items into primary and secondary groups", () => {
+      const { primaryItems, secondaryItems } = getSplitNavItems();
+      expect(primaryItems).toHaveLength(2);
+      expect(secondaryItems).toHaveLength(2);
+
+      expect(primaryItems[0].href).toBe("/me");
+      expect(primaryItems[1].href).toBe("/turnos");
+      expect(secondaryItems[0].href).toBe("/ranking");
+      expect(secondaryItems[1].href).toBe("/me/profile");
+    });
+  });
+
+  describe("getFabItemConfig", () => {
+    it("returns correct FAB CTA metadata", () => {
+      const fab = getFabItemConfig();
+      expect(fab).toEqual({
+        href: "/match/new",
+        label: "Crear partido",
+      });
+    });
+  });
+
+  describe("getNavItemAriaAttributes", () => {
+    it("returns aria-label and aria-current='page' when item is active", () => {
+      const navItem = { href: "/turnos", icon: expect.anything(), label: "Turnos" };
+      const attrs = getNavItemAriaAttributes(navItem, true);
+
+      expect(attrs).toEqual({
+        "aria-label": "Turnos",
+        "aria-current": "page",
+      });
+    });
+
+    it("returns aria-label without aria-current when item is not active", () => {
+      const navItem = { href: "/turnos", icon: expect.anything(), label: "Turnos" };
+      const attrs = getNavItemAriaAttributes(navItem, false);
+
+      expect(attrs).toEqual({
+        "aria-label": "Turnos",
+        "aria-current": undefined,
+      });
     });
   });
 });

@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  getNavItems,
+  getSplitNavItems,
+  getFabItemConfig,
+  getNavItemAriaAttributes,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   isNavItemActive,
@@ -23,7 +25,8 @@ export function BottomNav({
   notificationsHref = "/notifications",
 }: BottomNavProps) {
   const pathname = usePathname();
-  const navItems = getNavItems();
+  const { primaryItems, secondaryItems } = getSplitNavItems();
+  const fabConfig = getFabItemConfig();
 
   return (
     <nav
@@ -36,8 +39,9 @@ export function BottomNav({
       )}
     >
       <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background">
-        {navItems.slice(0, 2).map((item) => {
+        {primaryItems.map((item) => {
           const isActive = isNavItemActive(item.href, pathname);
+          const ariaAttrs = getNavItemAriaAttributes(item, isActive);
           return (
             <Link
               key={item.href}
@@ -51,8 +55,7 @@ export function BottomNav({
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
               )}
-              aria-label={item.label}
-              aria-current={isActive ? "page" : undefined}
+              {...ariaAttrs}
             >
               <item.icon className="h-5 w-5" aria-hidden="true" />
               <span className="mt-1 text-xs font-semibold">
@@ -64,16 +67,17 @@ export function BottomNav({
 
         {/* FAB Central */}
         <Link
-          href="/match/new"
+          href={fabConfig.href}
           prefetch={true}
           className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-          aria-label="Crear partido"
+          aria-label={fabConfig.label}
         >
           <Plus className="h-6 w-6" aria-hidden="true" />
         </Link>
 
-        {navItems.slice(2).map((item) => {
+        {secondaryItems.map((item) => {
           const isActive = isNavItemActive(item.href, pathname);
+          const ariaAttrs = getNavItemAriaAttributes(item, isActive);
           return (
             <Link
               key={item.href}
@@ -87,8 +91,7 @@ export function BottomNav({
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
               )}
-              aria-label={item.label}
-              aria-current={isActive ? "page" : undefined}
+              {...ariaAttrs}
             >
               <item.icon className="h-5 w-5" aria-hidden="true" />
               <span className="mt-1 text-xs font-semibold">
