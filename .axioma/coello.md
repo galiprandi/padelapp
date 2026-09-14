@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 34 (Graph Network Density Metric & Solid MDS Health Badging in Graph View):
+  - [x] 2026-09-11 — Hecho: Creada la función pura `calculateGraphDensityMetric` en `src/app/network/graph-utils.ts` para calcular la densidad de red del grafo ($E / (N(N-1)/2)$), el grado promedio de contactos por jugador, la cantidad total de conexiones y la clasificación en insignias sólidas MDS de salud de la red ('Red altamente conexa 🕸️', 'Red en expansión 🌐', 'Red inicial 📍') con cadenas de resumen en voz argentina.
+  - [x] 2026-09-11 — Hecho: Integrada la insignia sólida MDS de densidad de red en la barra superior de filtros de `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas de accesibilidad ARIA descriptivas (`aria-label` y `title`).
+  - [x] 2026-09-11 — Hecho: Pruebas unitarias en `src/lib/__tests__/graph-engine.test.ts` cubriendo grafos vacíos, un solo nodo, redes densas y redes en expansión.
 - Phase 33 (Network Centrality Score Calculation & Solid MDS Badging in Graph View):
   - [x] 2026-09-10 — Hecho: Creada la función pura `calculateNetworkCentralityScore` en `src/app/network/graph-utils.ts` para evaluar la centralidad de grado de un jugador en relación al tamaño del grafo, el volumen total de interacciones (partidos + turnos) y el alcance entre comunidades (0-100%).
   - [x] 2026-09-10 — Hecho: Clasificación de la centralidad en insignias sólidas MDS ('Hub principal 👑', 'Conector clave ⚡', 'Jugador integrado 🔗', 'Periferia de red 📍') con resúmenes formateados en voz argentina y atributos de accesibilidad ARIA descriptivos (`aria-label` y `title`).

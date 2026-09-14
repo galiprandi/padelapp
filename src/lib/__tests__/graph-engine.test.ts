@@ -207,6 +207,7 @@ import {
   calculatePlayerGraphReach,
   calculateCommunityBridgingScore,
   calculateNetworkCentralityScore,
+  calculateGraphDensityMetric,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1892,6 +1893,71 @@ describe("calculateCrossRivalryDensity", () => {
     expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
     expect(res.badgeStyle).toContain("bg-muted");
     expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
+  });
+});
+
+describe("calculateGraphDensityMetric", () => {
+  it("returns fallback density metric for empty or single-node graphs", () => {
+    const emptyRes = calculateGraphDensityMetric([], []);
+    expect(emptyRes.densityPercentage).toBe(0);
+    expect(emptyRes.avgDegreePerNode).toBe(0);
+    expect(emptyRes.densityTier).toBe("Red inicial 📍");
+    expect(emptyRes.badgeStyle).toContain("bg-muted");
+    expect(emptyRes.formattedSummary).toBe("Sin jugadores registrados");
+
+    const singleNode: GraphNode[] = [
+      { id: "p-01", name: "Solo", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 0, matchesPlayed: 0, preferredSide: null },
+    ];
+    const singleRes = calculateGraphDensityMetric(singleNode, []);
+    expect(singleRes.densityPercentage).toBe(0);
+    expect(singleRes.avgDegreePerNode).toBe(0);
+    expect(singleRes.formattedSummary).toBe("1 jugador sin conexiones suficientes");
+  });
+
+  it("calculates 'Red altamente conexa 🕸️' tier for dense network (4 nodes, 4 links -> 67% density, avg degree 2.0)", () => {
+    const nodes: GraphNode[] = [
+      { id: "p-01", name: "A", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 3, matchesPlayed: 5, preferredSide: null },
+      { id: "p-02", name: "B", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 3, matchesPlayed: 5, preferredSide: null },
+      { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: null },
+      { id: "p-04", name: "D", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: null },
+    ];
+    // Max possible links for 4 nodes is (4 * 3) / 2 = 6 links.
+    // With 4 links, density = 4/6 = 67%
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateGraphDensityMetric(nodes, links);
+    expect(res.densityPercentage).toBe(67);
+    expect(res.avgDegreePerNode).toBe(2.0);
+    expect(res.densityTier).toBe("Red altamente conexa 🕸️");
+    expect(res.badgeStyle).toContain("bg-purple-100");
+    expect(res.formattedSummary).toBe("67% densidad · 2 contactos/jugador prom.");
+  });
+
+  it("calculates 'Red en expansión 🌐' tier for moderate network density", () => {
+    const nodes: GraphNode[] = [
+      { id: "p-01", name: "A", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-02", name: "B", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-04", name: "D", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+      { id: "p-05", name: "E", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
+    ];
+    // Max possible links for 5 nodes is 10.
+    // With 2 links, density = 20%
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-03", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateGraphDensityMetric(nodes, links);
+    expect(res.densityPercentage).toBe(20);
+    expect(res.avgDegreePerNode).toBe(0.8);
+    expect(res.densityTier).toBe("Red en expansión 🌐");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });
 
