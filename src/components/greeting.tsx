@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getGreeting, getLevelBadgeLabel } from "@/lib/utils";
+import { getGreeting } from "@/lib/utils";
+import {
+  getOnboardingProgressCount,
+  getOnboardingProgressAriaLabel,
+  getGreetingAriaLabel,
+  formatCategoryBadgeText,
+} from "@/components/greeting-utils";
+
+export { getOnboardingProgressCount };
 
 /**
  * Renders a time-based greeting that depends on the client's local time.
@@ -9,25 +17,6 @@ import { getGreeting, getLevelBadgeLabel } from "@/lib/utils";
  * runs in UTC (Vercel) while the client uses the device's timezone, so
  * getGreeting() can return different values on server vs client.
  */
-export function getOnboardingProgressCount({
-  hasAlias,
-  hasActivity,
-  isPwaInstalled = false,
-  hasNotifications = false,
-}: {
-  hasAlias: boolean;
-  hasActivity: boolean;
-  isPwaInstalled?: boolean;
-  hasNotifications?: boolean;
-}): number {
-  return (
-    (hasAlias ? 1 : 0) +
-    (hasActivity ? 1 : 0) +
-    (isPwaInstalled ? 1 : 0) +
-    (hasNotifications ? 1 : 0)
-  );
-}
-
 export function Greeting({
   name,
   level,
@@ -72,7 +61,7 @@ export function Greeting({
     );
   }
 
-  const categoryLabel = level !== undefined && level !== null ? getLevelBadgeLabel(level) : null;
+  const categoryLabel = formatCategoryBadgeText(level);
   const onboardingCount = getOnboardingProgressCount({
     hasAlias,
     hasActivity: matchesPlayed > 0,
@@ -80,20 +69,27 @@ export function Greeting({
     hasNotifications,
   });
 
+  const greetingAriaLabel = getGreetingAriaLabel(greeting, name, categoryLabel);
+  const progressAriaLabel = getOnboardingProgressAriaLabel(onboardingCount);
+
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div
+      role="region"
+      aria-label={greetingAriaLabel}
+      className="flex items-center gap-2 flex-wrap"
+    >
       <h1 className="text-xl font-bold text-foreground">
         {greeting}, {name}
       </h1>
       {categoryLabel && (
-        <span className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
+        <span className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground shadow-xs">
           {categoryLabel}
         </span>
       )}
       {onboardingCount < 4 && (
         <span
           className="inline-flex items-center rounded-md border border-border bg-card px-2 py-0.5 text-xs font-semibold text-primary shadow-xs font-mono"
-          aria-label={`Progreso de preparación: ${onboardingCount} de 4 pasos completados`}
+          aria-label={progressAriaLabel}
           title="Pasos completados en la guía de bienvenida"
         >
           {onboardingCount}/4
