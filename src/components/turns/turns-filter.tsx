@@ -8,7 +8,13 @@ import { TurnCard } from "./turn-card";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { type PadelContact } from "@/lib/queries";
-import { filterTurnsByTab, getNextRadioValue } from "./turn-utils";
+import {
+  filterTurnsByTab,
+  getNextRadioValue,
+  getTurnFilterAriaLabel,
+  formatTurnFilterBadgeText,
+  getTurnFilterTabAriaLabel,
+} from "./turn-utils";
 
 interface TurnListItem {
   id: string;
@@ -40,8 +46,13 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
     ? filterTurnsByTab(turns, "mis-turnos", userId).length
     : 0;
 
+  const regionAriaLabel = getTurnFilterAriaLabel({
+    activeTab,
+    count: filteredTurns.length,
+  });
+
   return (
-    <section className="flex flex-col gap-4">
+    <section role="region" aria-label={regionAriaLabel} className="flex flex-col gap-4">
       {userId && (
         <div className="flex flex-col gap-1.5">
           <span id="turns-tabs-label" className="sr-only">
@@ -50,7 +61,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
           <div
             role="radiogroup"
             aria-labelledby="turns-tabs-label"
-            className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl"
+            className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs border border-border"
             onKeyDown={(e) => {
               const nextTab = getNextRadioValue(
                 ["todos", "mis-turnos"] as const,
@@ -76,10 +87,10 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "todos"
-                  ? "bg-card border border-border text-foreground shadow-sm"
+                  ? "bg-card border border-border text-foreground shadow-xs font-bold"
                   : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
-              aria-label="Mostrar todos los turnos disponibles"
+              aria-label={getTurnFilterTabAriaLabel({ tab: "todos", count: totalAllCount })}
             >
               Todos ({totalAllCount})
             </button>
@@ -92,10 +103,10 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "mis-turnos"
-                  ? "bg-card border border-border text-foreground shadow-sm"
+                  ? "bg-card border border-border text-foreground shadow-xs font-bold"
                   : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
-              aria-label="Mostrar mis turnos únicamente"
+              aria-label={getTurnFilterTabAriaLabel({ tab: "mis-turnos", count: totalMyCount })}
             >
               Mis turnos ({totalMyCount})
             </button>
@@ -108,7 +119,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
           {activeTab === "todos" ? "Próximos turnos" : "Mis partidos programados"}
         </h2>
         <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
-          {filteredTurns.length} {filteredTurns.length === 1 ? "disponible" : "disponibles"}
+          {formatTurnFilterBadgeText(filteredTurns.length)}
         </span>
       </div>
 
