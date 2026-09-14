@@ -7,10 +7,16 @@ import { useTeamManagement } from "@/hooks/use-team-management";
 import { useMatchForm } from "@/hooks/use-match-form";
 import { positionFromTeam, createPlaceholderSlot } from "@/lib/match-utils";
 import { loadMatchPreferences } from "@/lib/match-preferences";
-import type { TeamKey, SlotValue, PlayerOption } from "@/lib/match-types";
+import type { TeamKey, SlotValue } from "@/lib/match-types";
 import { useSearchParams } from "next/navigation";
 import { suggestMatchPartnersAction } from "@/app/(app)/match/actions";
 import { useToast } from "@/components/toast/use-toast";
+import {
+  extractUniqueUserIds,
+  buildUserOptionsMap,
+  buildSuggestedTeamState,
+  shouldSwapUserPosition,
+} from "./new-match-utils";
 
 function RegisterMatchInner() {
   const searchParams = useSearchParams();
@@ -36,41 +42,18 @@ function RegisterMatchInner() {
   const [isSuggesting, setIsSuggesting] = useState(false);
 
   const handleSuggestPairings = async () => {
-    const currentUserIds: string[] = [];
-    const userOptionsMap = new Map<string, PlayerOption>();
-
-    (["A", "B"] as const).forEach((team) => {
-      teamState[team].forEach((slot) => {
-        if (slot?.kind === "user") {
-          currentUserIds.push(slot.player.id);
-          userOptionsMap.set(slot.player.id, slot.player);
-        }
-      });
-    });
-
+    const currentUserIds = extractUniqueUserIds(teamState);
     if (currentUserIds.length !== 4) return;
 
+    const userOptionsMap = buildUserOptionsMap(teamState);
     setIsSuggesting(true);
     try {
       const res = await suggestMatchPartnersAction({ userIds: currentUserIds });
       if (res.status === "ok" && res.suggestedPairings) {
-        const { teamA, teamB } = res.suggestedPairings;
-        const slotA0 = userOptionsMap.get(teamA.derecha);
-        const slotA1 = userOptionsMap.get(teamA.reves);
-        const slotB0 = userOptionsMap.get(teamB.derecha);
-        const slotB1 = userOptionsMap.get(teamB.reves);
+        const newState = buildSuggestedTeamState(res.suggestedPairings, userOptionsMap);
 
-        if (slotA0 && slotA1 && slotB0 && slotB1) {
-          setWholeState({
-            A: [
-              { kind: "user", player: slotA0 },
-              { kind: "user", player: slotA1 },
-            ],
-            B: [
-              { kind: "user", player: slotB0 },
-              { kind: "user", player: slotB1 },
-            ],
-          });
+        if (newState) {
+          setWholeState(newState);
           showToast("Acomodamos las parejas según el historial de juego y lado preferido de cada uno.");
         } else {
           showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
@@ -85,6 +68,7 @@ function RegisterMatchInner() {
       setIsSuggesting(false);
     }
   };
+
   const {
     currentStep,
     matchType,
@@ -122,15 +106,12 @@ function RegisterMatchInner() {
     if (!currentUser) return;
     if (turnId && !turnInitialized) return;
 
-    const slotA0 = teamState.A[0];
-    const slotA1 = teamState.A[1];
-    const userAt0 = slotA0?.kind === "user" && slotA0.player.id === currentUser.id;
-    const userAt1 = slotA1?.kind === "user" && slotA1.player.id === currentUser.id;
-    if (!userAt0 && !userAt1) return;
-
     const desired = storedPrefs?.position ?? "derecha";
-    const needsSwap =
-      (desired === "reves" && userAt0) || (desired === "derecha" && userAt1);
+    const needsSwap = shouldSwapUserPosition({
+      currentUser,
+      teamState,
+      desiredPosition: desired,
+    });
 
     if (needsSwap) {
       const a = teamState.A[0];
@@ -225,8 +206,12 @@ function RegisterMatchInner() {
       />
 
       {formError ? (
-        <div className="fixed bottom-32 left-0 right-0 px-6">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 bg-card">
+        <div
+          role="region"
+          aria-label="Aviso de error en formulario"
+          className="fixed bottom-32 left-0 right-0 px-6"
+        >
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 bg-card shadow-xs">
             <p className="text-sm font-bold text-destructive text-center">
               {formError}
             </p>
