@@ -726,3 +726,44 @@ export function getAssignSubstituteAriaLabel({
 export function getAssignSubstituteSuccessToast(substituteName: string): string {
   return `Promoviste a ${substituteName} a titular.`;
 }
+
+/**
+ * Format accessible ARIA label for turn listing region depending on active filter tab.
+ */
+export function getTurnFilterAriaLabel({
+  activeTab,
+  count,
+}: {
+  activeTab: "todos" | "mis-turnos";
+  count: number;
+}): string {
+  const quantityText = count === 1 ? "1 turno" : `${count} turnos`;
+  if (activeTab === "mis-turnos") {
+    return `Sección de tus partidos programados de pádel: mostrando ${quantityText}.`;
+  }
+  return `Sección de turnos abiertos de pádel: mostrando ${quantityText}.`;
+}
+
+/**
+ * Format available turns status badge text in Argentine Spanish.
+ */
+export function formatTurnFilterBadgeText(count: number): string {
+  if (count === 1) return "1 disponible";
+  return `${count} disponibles`;
+}
+
+/**
+ * Format accessible ARIA label for filter tab selection buttons.
+ */
+export function getTurnFilterTabAriaLabel({
+  tab,
+  count,
+}: {
+  tab: "todos" | "mis-turnos";
+  count: number;
+}): string {
+  if (tab === "mis-turnos") {
+    return `Mostrar mis turnos únicamente (${count})`;
+  }
+  return `Mostrar todos los turnos disponibles (${count})`;
+}

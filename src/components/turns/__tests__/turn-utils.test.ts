@@ -34,6 +34,9 @@ import {
   getRemovePlayerSuccessToast,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteSuccessToast,
+  getTurnFilterAriaLabel,
+  formatTurnFilterBadgeText,
+  getTurnFilterTabAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -681,6 +684,34 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("Turn Filter Helpers", () => {
+  it("formats getTurnFilterAriaLabel for 'todos' vs 'mis-turnos' tabs and counts", () => {
+    expect(getTurnFilterAriaLabel({ activeTab: "todos", count: 1 })).toBe(
+      "Sección de turnos abiertos de pádel: mostrando 1 turno."
+    );
+    expect(getTurnFilterAriaLabel({ activeTab: "todos", count: 3 })).toBe(
+      "Sección de turnos abiertos de pádel: mostrando 3 turnos."
+    );
+    expect(getTurnFilterAriaLabel({ activeTab: "mis-turnos", count: 2 })).toBe(
+      "Sección de tus partidos programados de pádel: mostrando 2 turnos."
+    );
+  });
+
+  it("formats formatTurnFilterBadgeText in Argentine Spanish", () => {
+    expect(formatTurnFilterBadgeText(1)).toBe("1 disponible");
+    expect(formatTurnFilterBadgeText(4)).toBe("4 disponibles");
+  });
+
+  it("formats getTurnFilterTabAriaLabel for filter tab selection buttons", () => {
+    expect(getTurnFilterTabAriaLabel({ tab: "todos", count: 5 })).toBe(
+      "Mostrar todos los turnos disponibles (5)"
+    );
+    expect(getTurnFilterTabAriaLabel({ tab: "mis-turnos", count: 2 })).toBe(
+      "Mostrar mis turnos únicamente (2)"
     );
   });
 });
