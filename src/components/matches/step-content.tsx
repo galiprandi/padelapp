@@ -10,6 +10,11 @@ import { MatchNavigation } from "./match-navigation";
 import type { TeamState, MatchTypeValue, TeamKey } from "@/lib/match-types";
 import { cn } from "@/lib/utils";
 import { getNextRadioIndex } from "@/lib/match-helpers";
+import {
+  extractUniqueUserIds,
+  canSuggestPairings,
+  getStepRegionAriaLabel,
+} from "@/app/(app)/match/new/new-match-utils";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
 interface StepContentProps {
@@ -90,10 +95,10 @@ function ScoreSelector({
         </div>
         <div
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-lg text-xl font-bold shrink-0",
+            "flex h-10 w-10 items-center justify-center rounded-lg text-xl font-bold shrink-0 shadow-xs",
             currentValue > 0
               ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground",
+              : "bg-muted text-muted-foreground border border-border",
           )}
           aria-hidden="true"
         >
@@ -118,7 +123,7 @@ function ScoreSelector({
               aria-label={num === 1 ? "1 juego" : `${num} juegos`}
               onClick={() => onValueChange(num)}
               className={cn(
-                "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
                 isSelected
                   ? "bg-primary border-primary text-primary-foreground"
                   : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -220,7 +225,7 @@ function RecentClubs({
                 }
               }}
               className={cn(
-                "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
                 isSelected
                   ? "bg-primary border-primary text-primary-foreground"
                   : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -268,21 +273,18 @@ export function StepContent({
 }: StepContentProps) {
   const baseClass =
     "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
+  const stepAriaLabel = getStepRegionAriaLabel(currentStep);
 
   if (currentStep === 0) {
-    const currentUserIds: string[] = [];
-    (["A", "B"] as const).forEach((team) => {
-      teamState[team].forEach((slot) => {
-        if (slot?.kind === "user") {
-          currentUserIds.push(slot.player.id);
-        }
-      });
-    });
-    const uniqueUserIds = Array.from(new Set(currentUserIds));
-    const canSuggest = uniqueUserIds.length === 4;
+    const uniqueUserIds = extractUniqueUserIds(teamState);
+    const canSuggest = canSuggestPairings(teamState);
 
     return (
-      <section className={baseClass}>
+      <section
+        role="region"
+        aria-label={stepAriaLabel}
+        className={baseClass}
+      >
         <div className="space-y-6">
           <div>
             <h1 className="text-xl font-bold text-foreground">Nuevo Partido</h1>
@@ -292,7 +294,7 @@ export function StepContent({
             </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs">
             <div className="space-y-1">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <span>Sugerencia de Parejas 🧠</span>
@@ -304,9 +306,10 @@ export function StepContent({
             <button
               type="button"
               disabled={!canSuggest || isSuggesting}
+              aria-busy={isSuggesting}
               onClick={onSuggestPairings}
               className={cn(
-                "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
                 canSuggest
                   ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
                   : "bg-muted border-transparent text-muted-foreground cursor-not-allowed"
@@ -414,7 +417,11 @@ export function StepContent({
     };
 
     return (
-      <section className={baseClass}>
+      <section
+        role="region"
+        aria-label={stepAriaLabel}
+        className={baseClass}
+      >
         <div className="space-y-6">
           <div>
             <h1 className="text-xl font-bold text-foreground">
@@ -427,7 +434,7 @@ export function StepContent({
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
               <div className="space-y-1">
                 <Label htmlFor="record-score" className="text-sm font-semibold">
                   Cargar resultado ahora
@@ -465,7 +472,7 @@ export function StepContent({
                       tabIndex={isSelected ? 0 : -1}
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
-                        "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
                           : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -500,7 +507,7 @@ export function StepContent({
                       tabIndex={isSelected ? 0 : -1}
                       onClick={() => onSetsChange(option)}
                       className={cn(
-                        "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+                        "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
                           : "bg-card border-border text-muted-foreground hover:bg-muted",
@@ -513,7 +520,7 @@ export function StepContent({
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
               <div className="space-y-1">
                 <Label
                   htmlFor="counts-ranking"
@@ -548,7 +555,11 @@ export function StepContent({
 
   if (currentStep === 2) {
     return (
-      <section className={baseClass}>
+      <section
+        role="region"
+        aria-label={stepAriaLabel}
+        className={baseClass}
+      >
         <div className="space-y-6">
           <div>
             <h1 className="text-xl font-bold text-foreground">
@@ -622,7 +633,11 @@ export function StepContent({
   ).join(" & ");
 
   return (
-    <section className={baseClass}>
+    <section
+      role="region"
+      aria-label={stepAriaLabel}
+      className={baseClass}
+    >
       <div className="space-y-6">
         <div>
           <h1 className="text-xl font-bold text-foreground">Marcador Final</h1>
@@ -635,7 +650,7 @@ export function StepContent({
           {Array.from({ length: setsCount }, (_, setIndex) => (
             <div
               key={setIndex}
-              className="space-y-4 rounded-xl border border-border bg-card p-4"
+              className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-xs"
             >
               <h2 className="text-sm font-bold text-foreground">
                 Set {setIndex + 1}
