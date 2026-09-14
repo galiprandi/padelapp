@@ -395,6 +395,92 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface GraphDensityMetric {
+  densityPercentage: number;
+  totalNodesCount: number;
+  totalLinksCount: number;
+  avgDegreePerNode: number;
+  densityTier:
+    | "Red altamente conexa 🕸️"
+    | "Red en expansión 🌐"
+    | "Red inicial 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates global or filtered graph density metric E / (N * (N - 1) / 2) (0-100%),
+ * average connection degree per node, and health tier badges.
+ */
+export function calculateGraphDensityMetric(
+  nodes: GraphNode[],
+  links: GraphLink[],
+): GraphDensityMetric {
+  const totalNodesCount = nodes.length;
+  const totalLinksCount = links.length;
+
+  if (totalNodesCount <= 1) {
+    return {
+      densityPercentage: 0,
+      totalNodesCount,
+      totalLinksCount,
+      avgDegreePerNode: 0,
+      densityTier: "Red inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary:
+        totalNodesCount === 0
+          ? "Sin jugadores registrados"
+          : "1 jugador sin conexiones suficientes",
+    };
+  }
+
+  const maxPossibleEdges = (totalNodesCount * (totalNodesCount - 1)) / 2;
+  const densityRatio = totalLinksCount / maxPossibleEdges;
+  const densityPercentage = Math.min(
+    Math.round(densityRatio * 100),
+    100,
+  );
+
+  // Each edge connects 2 nodes, so total degree sum = 2 * totalLinksCount
+  const avgDegreePerNode = Number(
+    ((2 * totalLinksCount) / totalNodesCount).toFixed(1),
+  );
+
+  let densityTier:
+    | "Red altamente conexa 🕸️"
+    | "Red en expansión 🌐"
+    | "Red inicial 📍";
+  let badgeStyle: string;
+
+  if (densityPercentage >= 35 || avgDegreePerNode >= 4.0) {
+    densityTier = "Red altamente conexa 🕸️";
+    badgeStyle =
+      "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-800";
+  } else if (densityPercentage >= 15 || avgDegreePerNode >= 2.0) {
+    densityTier = "Red en expansión 🌐";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    densityTier = "Red inicial 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${densityPercentage}% densidad`,
+    `${avgDegreePerNode} contactos/jugador prom.`,
+  ];
+
+  return {
+    densityPercentage,
+    totalNodesCount,
+    totalLinksCount,
+    avgDegreePerNode,
+    densityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface NetworkCentralityScore {
   centralityScore: number;
   totalConnections: number;

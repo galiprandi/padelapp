@@ -29,6 +29,7 @@ import {
   calculatePlayerGraphReach,
   calculateCommunityBridgingScore,
   calculateNetworkCentralityScore,
+  calculateGraphDensityMetric,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -250,6 +251,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
     return { ...baseGraphData, nodes: filteredNodes, links: filteredLinks };
   }, [baseGraphData, searchQuery, linkFilter, selectedCommunity]);
+
+  const graphDensityMetric = useMemo(() => {
+    return calculateGraphDensityMetric(filteredData.nodes, filteredData.links);
+  }, [filteredData.nodes, filteredData.links]);
 
   const selectedLinks = useMemo(() => {
     if (!selectedNode) return [];
@@ -625,9 +630,21 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             />
           ))}
 
-          <span className="ml-auto text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0">
-            {filteredData.nodes.length} · {filteredData.links.length}
-          </span>
+          <div className="ml-auto flex items-center gap-1.5 shrink-0">
+            <span
+              className={cn(
+                "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                graphDensityMetric.badgeStyle,
+              )}
+              title={`Densidad de red: ${graphDensityMetric.densityTier}. ${graphDensityMetric.formattedSummary}`}
+              aria-label={`Densidad de red: ${graphDensityMetric.densityTier}. ${graphDensityMetric.formattedSummary}`}
+            >
+              {graphDensityMetric.densityTier}
+            </span>
+            <span className="text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0">
+              {filteredData.nodes.length} · {filteredData.links.length}
+            </span>
+          </div>
         </div>
 
         {/* Active community summary banner */}
