@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { Info, ChevronDown, ChevronUp, Trophy, Calendar, AlertTriangle, Scale } from "lucide-react";
+import { getRankingRulesAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
 
 export function RankingInfo() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div
-      className="rounded-xl border border-border bg-card overflow-hidden transition-all"
+      role="region"
+      aria-label={getRankingRegionAriaLabel("rules")}
+      className="rounded-xl border border-border bg-card overflow-hidden transition-all shadow-xs"
       onKeyDown={(e) => {
         if (e.key === "Escape" && isOpen) {
           setIsOpen(false);
@@ -20,7 +23,7 @@ export function RankingInfo() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 text-left hover:bg-muted transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-expanded={isOpen}
-        aria-label={isOpen ? "Ocultar reglas y fórmulas del ranking" : "Mostrar reglas y fórmulas del ranking"}
+        aria-label={getRankingRulesAriaLabel(isOpen)}
         aria-controls="ranking-rules-content"
       >
         <div className="flex items-center gap-2.5">
@@ -41,7 +44,7 @@ export function RankingInfo() {
         <div
           id="ranking-rules-content"
           role="region"
-          aria-label="Reglas y fórmulas del ranking"
+          aria-label="Detalle de reglas y fórmulas del ranking"
           className="border-t border-border p-4 space-y-4 bg-card text-sm"
         >
           {/* Fórmulas */}
