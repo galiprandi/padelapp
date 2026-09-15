@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getRankingFilterTabAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
 
 interface RankingPlayer {
   id: string;
@@ -45,7 +46,11 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
   const listPlayers = !query ? filteredPlayers.slice(3) : filteredPlayers;
 
   return (
-    <div className="space-y-6">
+    <div
+      role="region"
+      aria-label={getRankingRegionAriaLabel("filter")}
+      className="space-y-6"
+    >
       {!query && (
         <div className="flex flex-col gap-1.5">
           <span id="ranking-tabs-label" className="sr-only">
@@ -54,7 +59,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
           <div
             role="radiogroup"
             aria-labelledby="ranking-tabs-label"
-            className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl"
+            className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs"
             onKeyDown={(e) => {
               if (
                 e.key !== "ArrowRight" &&
@@ -84,10 +89,10 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "activos"
-                  ? "bg-card border border-border text-foreground shadow-sm"
+                  ? "bg-card border border-border text-foreground shadow-xs"
                   : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
-              aria-label="Mostrar jugadores activos únicamente"
+              aria-label={getRankingFilterTabAriaLabel("activos", players.filter(p => p.matchesPlayed > 0).length)}
             >
               Activos
             </button>
@@ -100,10 +105,10 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               className={cn(
                 "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
                 activeTab === "todos"
-                  ? "bg-card border border-border text-foreground shadow-sm"
+                  ? "bg-card border border-border text-foreground shadow-xs"
                   : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
               )}
-              aria-label="Mostrar todos los jugadores registrados"
+              aria-label={getRankingFilterTabAriaLabel("todos", players.length)}
             >
               Todos
             </button>

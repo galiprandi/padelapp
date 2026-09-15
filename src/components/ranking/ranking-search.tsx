@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { getRankingSearchStatusAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
 
 export function RankingSearch() {
   const router = useRouter();
@@ -45,7 +46,15 @@ export function RankingSearch() {
   }, [query, router, searchParams]);
 
   return (
-    <div className="relative group">
+    <div
+      role="search"
+      aria-label={getRankingRegionAriaLabel("search")}
+      className="relative group"
+    >
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {getRankingSearchStatusAriaLabel(isPending, query)}
+      </div>
+
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
           "h-4 w-4 transition-colors",
@@ -67,7 +76,7 @@ export function RankingSearch() {
           }
         }}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background transition-colors shadow-sm [&::-webkit-search-cancel-button]:hidden"
+        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background transition-colors shadow-xs [&::-webkit-search-cancel-button]:hidden"
       />
       {query && (
         <button
