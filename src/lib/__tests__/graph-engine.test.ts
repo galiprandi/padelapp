@@ -208,6 +208,7 @@ import {
   calculateCommunityBridgingScore,
   calculateNetworkCentralityScore,
   calculateGraphDensityMetric,
+  calculateCommunityBalanceInfo,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1659,6 +1660,62 @@ describe("calculateCommunityCohesion", () => {
     expect(res.cohesionTier).toBe("En integración 🌱");
     expect(res.badgeStyle).toContain("bg-amber-100");
     expect(res.formattedCohesionSummary).toBe("1 puente externo");
+  });
+});
+
+describe("calculateCommunityBalanceInfo", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "A", alias: null, image: null, skillScore: 1100, community: 1, networkSize: 1, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-02", name: "B", alias: null, image: null, skillScore: 1200, community: 1, networkSize: 1, matchesPlayed: 5, preferredSide: "LEFT" },
+    { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 2, networkSize: 1, matchesPlayed: 5, preferredSide: "BOTH" },
+    { id: "p-04", name: "D", alias: null, image: null, skillScore: 1050, community: 2, networkSize: 1, matchesPlayed: 5, preferredSide: "BOTH" },
+    { id: "p-05", name: "E", alias: null, image: null, skillScore: 1000, community: 3, networkSize: 1, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-06", name: "F", alias: null, image: null, skillScore: 1000, community: 4, networkSize: 1, matchesPlayed: 5, preferredSide: "LEFT" },
+  ];
+
+  it("returns fallback balance info for empty or non-existent community", () => {
+    const res = calculateCommunityBalanceInfo(nodes, 99);
+    expect(res.totalPlayers).toBe(0);
+    expect(res.balanceTier).toBe("Ajuste de posiciones 🎯");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedBalanceSummary).toBe("Sin miembros en el grupo");
+  });
+
+  it("calculates 'Equilibrio Der/Rev ⚖️' tier for community with both RIGHT and LEFT players", () => {
+    const res = calculateCommunityBalanceInfo(nodes, 1);
+    expect(res.totalPlayers).toBe(2);
+    expect(res.rightSideCount).toBe(1);
+    expect(res.leftSideCount).toBe(1);
+    expect(res.balanceTier).toBe("Equilibrio Der/Rev ⚖️");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedBalanceSummary).toBe("1 Der · 1 Rev");
+  });
+
+  it("calculates 'Flexibilidad total 🔄' tier for community where majority play BOTH sides", () => {
+    const res = calculateCommunityBalanceInfo(nodes, 2);
+    expect(res.totalPlayers).toBe(2);
+    expect(res.bothSidesCount).toBe(2);
+    expect(res.balanceTier).toBe("Flexibilidad total 🔄");
+    expect(res.badgeStyle).toContain("bg-teal-100");
+    expect(res.formattedBalanceSummary).toBe("2 Ambos");
+  });
+
+  it("calculates 'Dominio de derecha 🟦' tier for right-heavy community", () => {
+    const res = calculateCommunityBalanceInfo(nodes, 3);
+    expect(res.totalPlayers).toBe(1);
+    expect(res.rightSideCount).toBe(1);
+    expect(res.balanceTier).toBe("Dominio de derecha 🟦");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedBalanceSummary).toBe("1 Der");
+  });
+
+  it("calculates 'Dominio de revés 🟨' tier for left-heavy community", () => {
+    const res = calculateCommunityBalanceInfo(nodes, 4);
+    expect(res.totalPlayers).toBe(1);
+    expect(res.leftSideCount).toBe(1);
+    expect(res.balanceTier).toBe("Dominio de revés 🟨");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+    expect(res.formattedBalanceSummary).toBe("1 Rev");
   });
 });
 

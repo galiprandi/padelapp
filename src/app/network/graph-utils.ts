@@ -395,6 +395,108 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface CommunityBalanceInfo {
+  communityId: number;
+  totalPlayers: number;
+  rightSideCount: number;
+  leftSideCount: number;
+  bothSidesCount: number;
+  undefinedSideCount: number;
+  balanceTier:
+    | "Equilibrio Der/Rev ⚖️"
+    | "Flexibilidad total 🔄"
+    | "Dominio de derecha 🟦"
+    | "Dominio de revés 🟨"
+    | "Ajuste de posiciones 🎯";
+  badgeStyle: string;
+  formattedBalanceSummary: string;
+}
+
+/**
+ * Calculates court side distribution balance and solid MDS badges for a Louvain community group.
+ */
+export function calculateCommunityBalanceInfo(
+  nodes: GraphNode[],
+  communityId: number,
+): CommunityBalanceInfo {
+  const communityNodes = nodes.filter((n) => n.community === communityId);
+  const totalPlayers = communityNodes.length;
+
+  if (totalPlayers === 0) {
+    return {
+      communityId,
+      totalPlayers: 0,
+      rightSideCount: 0,
+      leftSideCount: 0,
+      bothSidesCount: 0,
+      undefinedSideCount: 0,
+      balanceTier: "Ajuste de posiciones 🎯",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedBalanceSummary: "Sin miembros en el grupo",
+    };
+  }
+
+  let rightSideCount = 0;
+  let leftSideCount = 0;
+  let bothSidesCount = 0;
+  let undefinedSideCount = 0;
+
+  for (const n of communityNodes) {
+    if (n.preferredSide === "RIGHT") rightSideCount++;
+    else if (n.preferredSide === "LEFT") leftSideCount++;
+    else if (n.preferredSide === "BOTH") bothSidesCount++;
+    else undefinedSideCount++;
+  }
+
+  let balanceTier:
+    | "Equilibrio Der/Rev ⚖️"
+    | "Flexibilidad total 🔄"
+    | "Dominio de derecha 🟦"
+    | "Dominio de revés 🟨"
+    | "Ajuste de posiciones 🎯";
+  let badgeStyle: string;
+
+  if (bothSidesCount >= Math.ceil(totalPlayers / 2) && totalPlayers > 1) {
+    balanceTier = "Flexibilidad total 🔄";
+    badgeStyle =
+      "bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800";
+  } else if (rightSideCount > 0 && leftSideCount > 0) {
+    balanceTier = "Equilibrio Der/Rev ⚖️";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (rightSideCount > 0 && leftSideCount === 0) {
+    balanceTier = "Dominio de derecha 🟦";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (leftSideCount > 0 && rightSideCount === 0) {
+    balanceTier = "Dominio de revés 🟨";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    balanceTier = "Ajuste de posiciones 🎯";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [];
+  if (rightSideCount > 0) parts.push(`${rightSideCount} Der`);
+  if (leftSideCount > 0) parts.push(`${leftSideCount} Rev`);
+  if (bothSidesCount > 0) parts.push(`${bothSidesCount} Ambos`);
+  if (undefinedSideCount > 0) parts.push(`${undefinedSideCount} sin definir`);
+
+  return {
+    communityId,
+    totalPlayers,
+    rightSideCount,
+    leftSideCount,
+    bothSidesCount,
+    undefinedSideCount,
+    balanceTier,
+    badgeStyle,
+    formattedBalanceSummary:
+      parts.length > 0 ? parts.join(" · ") : "Posiciones abiertas",
+  };
+}
+
 export interface GraphDensityMetric {
   densityPercentage: number;
   totalNodesCount: number;
