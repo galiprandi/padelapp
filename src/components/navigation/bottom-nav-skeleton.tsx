@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { getBottomNavSkeletonAriaLabel } from "./nav-utils";
 
 interface BottomNavSkeletonProps {
   position?: "fixed" | "static";
@@ -11,7 +12,7 @@ export function BottomNavSkeleton({
   return (
     <div
       role="status"
-      aria-label="Cargando barra de navegación"
+      aria-label={getBottomNavSkeletonAriaLabel()}
       className={cn(
         "mx-auto flex w-full justify-center",
         position === "fixed" &&

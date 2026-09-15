@@ -22,6 +22,20 @@ export interface NavItemAriaAttributes {
 }
 
 /**
+ * Retorna la etiqueta de accesibilidad ARIA para el contenedor de navegación principal.
+ */
+export function getBottomNavAriaLabel(): string {
+  return "Navegación principal de Padel Red";
+}
+
+/**
+ * Retorna la etiqueta de accesibilidad ARIA para el esqueleto de carga de la navegación principal.
+ */
+export function getBottomNavSkeletonAriaLabel(): string {
+  return "Cargando navegación principal de Padel Red";
+}
+
+/**
  * Retorna la lista de ítems principales de navegación de la aplicación.
  */
 export function getNavItems(): NavItem[] {
