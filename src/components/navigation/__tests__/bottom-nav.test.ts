@@ -23,7 +23,7 @@ describe("BottomNav Component", () => {
 
     expect(element.type).toBe("nav");
     expect(element.props.role).toBe("navigation");
-    expect(element.props["aria-label"]).toBe("Bottom navigation");
+    expect(element.props["aria-label"]).toBe("Navegación principal de Padel Red");
   });
 
   it("applies fixed positioning by default and static when position prop is set", () => {
@@ -70,7 +70,7 @@ describe("BottomNavSkeleton Component", () => {
     const skeleton = BottomNavSkeleton({});
 
     expect(skeleton.props.role).toBe("status");
-    expect(skeleton.props["aria-label"]).toBe("Cargando barra de navegación");
+    expect(skeleton.props["aria-label"]).toBe("Cargando navegación principal de Padel Red");
   });
 
   it("applies fixed positioning by default and static when position prop is set", () => {

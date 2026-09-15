@@ -4,12 +4,26 @@ import {
   getSplitNavItems,
   getFabItemConfig,
   getNavItemAriaAttributes,
+  getBottomNavAriaLabel,
+  getBottomNavSkeletonAriaLabel,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   isNavItemActive,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
+  describe("getBottomNavAriaLabel", () => {
+    it("returns Spanish screen reader label for main bottom navigation", () => {
+      expect(getBottomNavAriaLabel()).toBe("Navegación principal de Padel Red");
+    });
+  });
+
+  describe("getBottomNavSkeletonAriaLabel", () => {
+    it("returns Spanish screen reader label for loading bottom navigation skeleton", () => {
+      expect(getBottomNavSkeletonAriaLabel()).toBe("Cargando navegación principal de Padel Red");
+    });
+  });
+
   describe("getNavItems", () => {
     it("returns expected navigation items list", () => {
       const items = getNavItems();

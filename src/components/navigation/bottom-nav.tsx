@@ -8,6 +8,7 @@ import {
   getSplitNavItems,
   getFabItemConfig,
   getNavItemAriaAttributes,
+  getBottomNavAriaLabel,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   isNavItemActive,
@@ -31,7 +32,7 @@ export function BottomNav({
   return (
     <nav
       role="navigation"
-      aria-label="Bottom navigation"
+      aria-label={getBottomNavAriaLabel()}
       className={cn(
         "mx-auto flex w-full justify-center",
         position === "fixed" &&
