@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { cn, getMatchWinner, getLevelBadgeLabel } from "@/lib/utils";
+import { cn, getLevelBadgeLabel } from "@/lib/utils";
 import {
   getCachedHeadToHeadStats,
   getCachedPublicProfileUser,
@@ -36,6 +36,10 @@ import {
   calculateWinningStreak,
   formatPartnerWinsText,
   formatRivalMatchesText,
+  calculateRecentForm,
+  getRecentFormAriaLabel,
+  getStreakBadgeText,
+  getWinRateAriaLabel,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -144,18 +148,7 @@ async function PublicProfileContent({
       ? Math.round((user.wins / user.matchesPlayed) * 100)
       : 0;
 
-  const recentForm = matches_result.map((match) => {
-    if (!match.score) return "L";
-    const winner = getMatchWinner(match.score);
-    if (!winner) return "L";
-
-    const playerPosition =
-      match.players.find((p) => p.userId === userId)?.position ?? 0;
-    const playerTeam = playerPosition < 2 ? "A" : "B";
-
-    return winner === playerTeam ? "W" : "L";
-  });
-
+  const recentForm = calculateRecentForm(matches_result, userId);
   const currentStreak = calculateWinningStreak(recentForm);
 
   const h2h =
@@ -202,7 +195,7 @@ async function PublicProfileContent({
                   variant="outline"
                   className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs shadow-xs"
                 >
-                  Racha: {currentStreak} Victorias 🔥
+                  {getStreakBadgeText(currentStreak)}
                 </Badge>
               )}
             </div>
@@ -221,7 +214,10 @@ async function PublicProfileContent({
         />
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs">
+          <div
+            className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs"
+            aria-label={getWinRateAriaLabel(winRate, user.matchesPlayed)}
+          >
             <div className="text-xs font-bold text-muted-foreground">
               Efectividad
             </div>
@@ -242,9 +238,7 @@ async function PublicProfileContent({
             {recentForm.length > 0 ? (
               <div
                 className="flex gap-1.5 pt-1"
-                aria-label={`Forma reciente: ${recentForm
-                  .map((r) => (r === "W" ? "G" : "P"))
-                  .join(", ")}`}
+                aria-label={getRecentFormAriaLabel(recentForm)}
               >
                 {recentForm.map((result, i) => (
                   <div
