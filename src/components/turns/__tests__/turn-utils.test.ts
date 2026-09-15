@@ -37,6 +37,9 @@ import {
   getTurnFilterAriaLabel,
   formatTurnFilterBadgeText,
   getTurnFilterTabAriaLabel,
+  getTurnCardAriaLabel,
+  getQuickJoinAriaLabel,
+  getTurnStatusBadgeAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -685,6 +688,105 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("TurnCard Accessibility Helpers", () => {
+  it("formats getTurnCardAriaLabel across different user states and slot counts", () => {
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 3,
+        maxPlayers: 4,
+        isCreator: true,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 3 de 4 inscriptos (Organizador).");
+
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 3,
+        maxPlayers: 4,
+        isSubstitute: true,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 3 de 4 inscriptos (Suplente).");
+
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 3,
+        maxPlayers: 4,
+        isJoined: true,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 3 de 4 inscriptos (Inscripto).");
+
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 4,
+        maxPlayers: 4,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 4 de 4 inscriptos (Completo).");
+
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 3,
+        maxPlayers: 4,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 3 de 4 inscriptos (Falta 1 jugador).");
+
+    expect(
+      getTurnCardAriaLabel({
+        club: "Central Padel",
+        enrolledCount: 2,
+        maxPlayers: 4,
+      })
+    ).toBe("Tarjeta de turno en Central Padel: 2 de 4 inscriptos (Faltan 2 jugadores).");
+  });
+
+  it("formats getQuickJoinAriaLabel for primary and substitute slots in idle and pending states", () => {
+    expect(
+      getQuickJoinAriaLabel({ club: "Central Padel", isSubstitute: false, isPending: false })
+    ).toBe("Sumarse al turno en Central Padel");
+
+    expect(
+      getQuickJoinAriaLabel({ club: "Central Padel", isSubstitute: true, isPending: false })
+    ).toBe("Sumarse como suplente al turno en Central Padel");
+
+    expect(
+      getQuickJoinAriaLabel({ club: "Central Padel", isSubstitute: false, isPending: true })
+    ).toBe("Sumándome al turno...");
+
+    expect(
+      getQuickJoinAriaLabel({ club: "Central Padel", isSubstitute: true, isPending: true })
+    ).toBe("Sumándome como suplente...");
+  });
+
+  it("formats getTurnStatusBadgeAriaLabel across roles and open slot counts", () => {
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 1, isCreator: true })
+    ).toBe("Rol: Organizador del turno");
+
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 0, isSubstitute: true })
+    ).toBe("Rol: Suplente en lista de espera");
+
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 0, isJoined: true })
+    ).toBe("Estado: Inscripto en el turno");
+
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 0 })
+    ).toBe("Estado: Turno completo");
+
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 1 })
+    ).toBe("Cupos disponibles: Falta 1 jugador");
+
+    expect(
+      getTurnStatusBadgeAriaLabel({ openSlots: 2 })
+    ).toBe("Cupos disponibles: Faltan 2 jugadores");
   });
 });
 

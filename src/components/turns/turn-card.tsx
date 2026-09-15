@@ -22,6 +22,9 @@ import {
   getTurnUrgencyBadgeText,
   getTurnSalvageShareMessage,
   formatContactPlayersSummary,
+  getTurnCardAriaLabel,
+  getQuickJoinAriaLabel,
+  getTurnStatusBadgeAriaLabel,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -118,12 +121,21 @@ export function TurnCard({
     .filter((p) => p.user && contactIds.has(p.user.id))
     .map((p) => p.user?.alias ?? p.user?.displayName ?? "");
 
+  const cardAriaLabel = getTurnCardAriaLabel({
+    club: turn.club,
+    enrolledCount: turn.players.length,
+    maxPlayers: turn.maxPlayers,
+    isCreator,
+    isJoined,
+    isSubstitute,
+  });
+
   return (
     <div
       role="region"
-      aria-label={`Tarjeta de turno en ${turn.club}`}
+      aria-label={cardAriaLabel}
       className={cn(
-        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted active:scale-[0.98]",
+        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs transition-all hover:bg-muted active:scale-[0.98]",
         isRecommended && "border-primary font-semibold shadow-sm",
         isPending && "opacity-70 pointer-events-none",
       )}
@@ -132,7 +144,7 @@ export function TurnCard({
         href={`/t/${turn.id}`}
         prefetch={true}
         className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-        aria-label={`Ver turno en ${turn.club}`}
+        aria-label={`Ver detalles del turno en ${turn.club}`}
       />
         <div className="flex items-center gap-3">
           {/* Date */}
@@ -190,13 +202,33 @@ export function TurnCard({
           {/* Status badge */}
           <div className="shrink-0">
             {isCreator ? (
-              <Badge variant="primary" aria-label="Rol: Organizador del turno">Organizador</Badge>
+              <Badge
+                variant="primary"
+                aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isCreator: true })}
+              >
+                Organizador
+              </Badge>
             ) : isSubstitute ? (
-              <Badge variant="default" aria-label="Rol: Suplente en lista de espera">Suplente</Badge>
+              <Badge
+                variant="default"
+                aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isSubstitute: true })}
+              >
+                Suplente
+              </Badge>
             ) : isJoined ? (
-              <Badge variant="primary" aria-label="Estado: Inscripto en el turno">Inscripto</Badge>
+              <Badge
+                variant="primary"
+                aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isJoined: true })}
+              >
+                Inscripto
+              </Badge>
             ) : turn.status === "FULL" ? (
-              <Badge variant="default" aria-label="Estado: Turno completo">Completo</Badge>
+              <Badge
+                variant="default"
+                aria-label={getTurnStatusBadgeAriaLabel({ openSlots: 0 })}
+              >
+                Completo
+              </Badge>
             ) : openSlots > 0 ? (
               <Badge
                 className={cn(
@@ -204,7 +236,7 @@ export function TurnCard({
                     ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold"
                     : "bg-muted text-foreground border-border"
                 )}
-                aria-label={`Cupos disponibles: ${getOpenSlotsBadgeText(openSlots)}`}
+                aria-label={getTurnStatusBadgeAriaLabel({ openSlots })}
               >
                 {getOpenSlotsBadgeText(openSlots)}
               </Badge>
@@ -262,13 +294,11 @@ export function TurnCard({
                 onClick={handleQuickJoin}
                 disabled={isPending}
                 aria-busy={isPending}
-                aria-label={
-                  isPending
-                    ? (canJoinAsSubstitute ? "Sumándome como suplente..." : "Sumándome al turno...")
-                    : (canJoinAsSubstitute
-                        ? `Sumarse como suplente al turno en ${turn.club}`
-                        : `Sumarse al turno en ${turn.club}`)
-                }
+                aria-label={getQuickJoinAriaLabel({
+                  club: turn.club,
+                  isSubstitute: canJoinAsSubstitute,
+                  isPending,
+                })}
                 className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 {isPending ? (

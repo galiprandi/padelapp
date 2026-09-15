@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-15 — TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring (bela/turnos/turn-card-aria-helpers-and-a11y)
 - [x] 2026-09-13 — Organizer Action Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in RemovePlayerButton & AssignSubstituteButton (bela/turnos/organizer-action-helpers-and-a11y)
 - [x] 2026-09-12 — Calendar Helper Extraction & AddToCalendarButton ARIA Accessibility, Escape Key & Solid MDS Polish (bela/turnos/add-to-calendar-helpers-and-a11y)
 - [x] 2026-09-11 — Turn Salvage Callout, Progress Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in Turn Public Details (bela/turnos/salvage-callout-and-progress-a11y)
@@ -53,6 +54,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-15 - TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring
+**Learning:** Extracting pure helper functions (`getTurnCardAriaLabel`, `getQuickJoinAriaLabel`, `getTurnStatusBadgeAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized screen reader label generation for turn cards, quick-join buttons, and status badges from React component render trees. Equipping `TurnCard` (`src/components/turns/turn-card.tsx`) with explicit `role="region"`, localized Argentine Spanish screen reader `aria-label` attributes, focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) ensures robust accessibility compliance and mobile visual alignment.
+**Action:** Always extract card and status badge ARIA accessibility labels into pure helper utilities backed by Vitest unit tests and equip turn cards with region landmarks, focus ring offsets, tactile press scaling, and solid MDS container styling.
+
 ## 2026-09-13 - Organizer Action Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in RemovePlayerButton & AssignSubstituteButton
 **Learning:** Extracting pure helper functions (`getRemovePlayerAriaLabel`, `getRemovePlayerSuccessToast`, `getAssignSubstituteAriaLabel`, `getAssignSubstituteSuccessToast`) into `src/components/turns/turn-utils.ts` decouples localized screen reader label generation and toast message formatting from React client component handlers in `src/components/turns/organizer-actions.tsx`. Wrapping `RemovePlayerButton` and `AssignSubstituteButton` in semantic `role="region"` landmark containers with localized Argentine Spanish `aria-label` attributes, focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) guarantees robust accessibility and visual alignment across mobile viewports.
 **Action:** Always extract action trigger screen reader labels and toast messages into pure helper utilities backed by Vitest unit tests and equip organizer management controls with region landmarks, focus ring offsets, tactile press scaling, and solid MDS container styling.
