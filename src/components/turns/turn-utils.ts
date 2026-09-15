@@ -767,3 +767,88 @@ export function getTurnFilterTabAriaLabel({
   }
   return `Mostrar todos los turnos disponibles (${count})`;
 }
+
+export interface TurnCardAriaLabelOptions {
+  club: string;
+  enrolledCount: number;
+  maxPlayers: number;
+  isCreator?: boolean;
+  isJoined?: boolean;
+  isSubstitute?: boolean;
+}
+
+/**
+ * Format accessible ARIA label for turn card region container in Argentine Spanish.
+ */
+export function getTurnCardAriaLabel({
+  club,
+  enrolledCount,
+  maxPlayers,
+  isCreator = false,
+  isJoined = false,
+  isSubstitute = false,
+}: TurnCardAriaLabelOptions): string {
+  const openSlots = Math.max(0, maxPlayers - enrolledCount);
+  let statusText = "";
+  if (isCreator) {
+    statusText = "Organizador";
+  } else if (isSubstitute) {
+    statusText = "Suplente";
+  } else if (isJoined) {
+    statusText = "Inscripto";
+  } else if (openSlots === 0) {
+    statusText = "Completo";
+  } else if (openSlots === 1) {
+    statusText = "Falta 1 jugador";
+  } else {
+    statusText = `Faltan ${openSlots} jugadores`;
+  }
+
+  return `Tarjeta de turno en ${club}: ${enrolledCount} de ${maxPlayers} inscriptos (${statusText}).`;
+}
+
+export interface QuickJoinAriaLabelOptions {
+  club: string;
+  isSubstitute?: boolean;
+  isPending?: boolean;
+}
+
+/**
+ * Format dynamic ARIA label for quick-join action triggers during idle and pending server transition states.
+ */
+export function getQuickJoinAriaLabel({
+  club,
+  isSubstitute = false,
+  isPending = false,
+}: QuickJoinAriaLabelOptions): string {
+  if (isPending) {
+    return isSubstitute ? "Sumándome como suplente..." : "Sumándome al turno...";
+  }
+  return isSubstitute
+    ? `Sumarse como suplente al turno en ${club}`
+    : `Sumarse al turno en ${club}`;
+}
+
+export interface TurnStatusBadgeAriaLabelOptions {
+  openSlots: number;
+  isCreator?: boolean;
+  isJoined?: boolean;
+  isSubstitute?: boolean;
+}
+
+/**
+ * Format accessible ARIA label for turn card status badges in Argentine Spanish.
+ */
+export function getTurnStatusBadgeAriaLabel({
+  openSlots,
+  isCreator = false,
+  isJoined = false,
+  isSubstitute = false,
+}: TurnStatusBadgeAriaLabelOptions): string {
+  if (isCreator) return "Rol: Organizador del turno";
+  if (isSubstitute) return "Rol: Suplente en lista de espera";
+  if (isJoined) return "Estado: Inscripto en el turno";
+  if (openSlots <= 0) return "Estado: Turno completo";
+  if (openSlots === 1) return "Cupos disponibles: Falta 1 jugador";
+  return `Cupos disponibles: Faltan ${openSlots} jugadores`;
+}
