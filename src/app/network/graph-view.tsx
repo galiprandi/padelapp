@@ -30,6 +30,7 @@ import {
   calculateCommunityBridgingScore,
   calculateNetworkCentralityScore,
   calculateGraphDensityMetric,
+  calculateCommunityBalanceInfo,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -270,7 +271,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       baseGraphData.links,
       selectedCommunity,
     );
-    return { ...summary, cohesion };
+    const balanceInfo = calculateCommunityBalanceInfo(
+      baseGraphData.nodes,
+      selectedCommunity,
+    );
+    return { ...summary, cohesion, balanceInfo };
   }, [baseGraphData.nodes, baseGraphData.links, selectedCommunity]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -670,6 +675,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 aria-label={`Cohesión de comunidad: ${activeCommunitySummary.cohesion.cohesionTier}. ${activeCommunitySummary.cohesion.formattedCohesionSummary}`}
               >
                 {activeCommunitySummary.cohesion.cohesionTier}
+              </span>
+              <span
+                className={cn(
+                  "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                  activeCommunitySummary.balanceInfo.badgeStyle,
+                )}
+                title={`Balance de posiciones: ${activeCommunitySummary.balanceInfo.balanceTier}. ${activeCommunitySummary.balanceInfo.formattedBalanceSummary}`}
+                aria-label={`Balance de posiciones: ${activeCommunitySummary.balanceInfo.balanceTier}. ${activeCommunitySummary.balanceInfo.formattedBalanceSummary}`}
+              >
+                {activeCommunitySummary.balanceInfo.balanceTier}
               </span>
               <span className="text-muted-foreground truncate">
                 · {activeCommunitySummary.formattedSummary}

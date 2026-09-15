@@ -4,6 +4,7 @@ import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { capitalizeName, cn } from "@/lib/utils";
 import {
+  calculateCommunityBalanceInfo,
   calculateCommunityCohesion,
   calculateNetworkRoleInfo,
   calculatePlayerSimilarityInfo,
@@ -325,11 +326,14 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const cohesion = graphData
                 ? calculateCommunityCohesion(graphData.nodes, graphData.links, c.id)
                 : null;
+              const balanceInfo = graphData
+                ? calculateCommunityBalanceInfo(graphData.nodes, c.id)
+                : null;
 
               return (
                 <div key={c.id} className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs flex-wrap gap-1">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-semibold text-foreground">
                         Grupo {c.id}
                       </span>
@@ -343,6 +347,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Cohesión de Grupo ${c.id}: ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`}
                         >
                           {cohesion.cohesionTier}
+                        </span>
+                      )}
+                      {balanceInfo && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            balanceInfo.badgeStyle,
+                          )}
+                          title={`Balance de posiciones: ${balanceInfo.balanceTier}. ${balanceInfo.formattedBalanceSummary}`}
+                          aria-label={`Balance de posiciones de Grupo ${c.id}: ${balanceInfo.balanceTier}. ${balanceInfo.formattedBalanceSummary}`}
+                        >
+                          {balanceInfo.balanceTier}
                         </span>
                       )}
                     </div>
