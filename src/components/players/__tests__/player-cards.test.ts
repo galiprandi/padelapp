@@ -4,6 +4,8 @@ import {
   getPlayerCardAriaLabel,
   formatPlayerSubtitle,
   handlePlayerCardKeyDown,
+  isSafeAvatarImage,
+  getPlayerAvatarAriaLabel,
 } from "../player-card-utils";
 
 describe("Player Cards Category & Accessibility Utilities", () => {
@@ -98,5 +100,35 @@ describe("Player Cards Category & Accessibility Utilities", () => {
     handlePlayerCardKeyDown(nonInteractiveEnter, false, mockAction);
     expect(nonInteractiveEnter.preventDefault).not.toHaveBeenCalled();
     expect(mockAction).toHaveBeenCalledTimes(2);
+  });
+
+  describe("isSafeAvatarImage", () => {
+    it("returns true for allowed Google image URLs", () => {
+      expect(
+        isSafeAvatarImage("https://lh3.googleusercontent.com/a/default-user-photo")
+      ).toBe(true);
+    });
+
+    it("returns false for non-allowed hosts or empty/null inputs", () => {
+      expect(isSafeAvatarImage("https://malicious.example.com/photo.png")).toBe(false);
+      expect(isSafeAvatarImage("")).toBe(false);
+      expect(isSafeAvatarImage(null)).toBe(false);
+      expect(isSafeAvatarImage(undefined)).toBe(false);
+    });
+  });
+
+  describe("getPlayerAvatarAriaLabel", () => {
+    it("generates correct Argentine Spanish ARIA labels for safe images vs initials fallback", () => {
+      expect(getPlayerAvatarAriaLabel("Agustín Tapia", true)).toBe(
+        "Foto de perfil de Agustín Tapia"
+      );
+      expect(getPlayerAvatarAriaLabel("Agustín Tapia", false)).toBe(
+        "Iniciales de Agustín Tapia"
+      );
+    });
+
+    it("provides fallback for whitespace-only name input", () => {
+      expect(getPlayerAvatarAriaLabel("   ", false)).toBe("Iniciales de Jugador");
+    });
   });
 });
