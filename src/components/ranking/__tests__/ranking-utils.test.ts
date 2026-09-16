@@ -3,6 +3,7 @@ import {
   getRankingRulesAriaLabel,
   getRankingFilterTabAriaLabel,
   getRankingSearchStatusAriaLabel,
+  getPodiumPlayerAriaLabel,
   getRankingRegionAriaLabel,
 } from "../ranking-utils";
 
@@ -65,6 +66,29 @@ describe("Ranking Helpers", () => {
     });
   });
 
+  describe("getPodiumPlayerAriaLabel", () => {
+    it("returns formatted ARIA label for viewer in 1st position with positive delta", () => {
+      expect(getPodiumPlayerAriaLabel(1, "Agustín Tapia", true, 1250, 2)).toBe(
+        "1ra posición: Vos, 1250 puntos. Cambio de posición: subió 2."
+      );
+    });
+
+    it("returns formatted ARIA label for opponent in 2nd position with negative delta", () => {
+      expect(getPodiumPlayerAriaLabel(2, "Arturo Coello", false, 1180.4, -1)).toBe(
+        "2da posición: Arturo Coello, 1180 puntos. Cambio de posición: bajó 1."
+      );
+    });
+
+    it("returns formatted ARIA label for opponent in 3rd position with zero or null delta", () => {
+      expect(getPodiumPlayerAriaLabel(3, "Ale Galán", false, 1120, 0)).toBe(
+        "3ra posición: Ale Galán, 1120 puntos. Cambio de posición: sin cambios."
+      );
+      expect(getPodiumPlayerAriaLabel(3, "Ale Galán", false, 1120, null)).toBe(
+        "3ra posición: Ale Galán, 1120 puntos. Cambio de posición: sin cambios."
+      );
+    });
+  });
+
   describe("getRankingRegionAriaLabel", () => {
     it("returns correct landmark labels", () => {
       expect(getRankingRegionAriaLabel("rules")).toBe(
@@ -75,6 +99,9 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRegionAriaLabel("filter")).toBe(
         "Clasificación general y podio de jugadores"
+      );
+      expect(getRankingRegionAriaLabel("podium")).toBe(
+        "Podio de los 3 mejores jugadores del ranking"
       );
     });
   });
