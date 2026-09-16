@@ -9,6 +9,8 @@ vi.mock("next/navigation", () => ({
 
 interface LinkProps {
   href?: string;
+  role?: string;
+  "aria-live"?: string;
   "aria-label"?: string;
   prefetch?: boolean;
 }
