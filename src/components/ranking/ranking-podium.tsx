@@ -3,6 +3,7 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, capitalizeName } from "@/lib/utils";
 import { calculatePlayerStreak } from "@/lib/match-helpers";
 import { TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
+import { getPodiumPlayerAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
 
 interface PodiumPlayer {
   id: string;
@@ -40,7 +41,11 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
   const thirdStreak = third ? calculatePlayerStreak(third.matchPlayers) : 0;
 
   return (
-    <div className="space-y-3">
+    <section
+      role="region"
+      aria-label={getRankingRegionAriaLabel("podium")}
+      className="space-y-3"
+    >
       <h2 className="text-sm font-bold text-foreground">Podio</h2>
       <div className="grid grid-cols-3 items-end gap-2">
         {/* 2nd Place */}
@@ -48,7 +53,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           <Link
             href={`/p/${second.id}?backUrl=/ranking`}
             prefetch={true}
-            aria-label={`2da posición: ${isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}, ${Math.round(second.rankingScore)} puntos. Cambio de posición: ${second.rankingDelta && second.rankingDelta > 0 ? `subió ${second.rankingDelta}` : second.rankingDelta && second.rankingDelta < 0 ? `bajó ${Math.abs(second.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={getPodiumPlayerAriaLabel(
+              2,
+              capitalizeName(second.displayName ?? second.alias ?? "?"),
+              Boolean(isSecondViewer),
+              second.rankingScore,
+              second.rankingDelta
+            )}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
               isSecondViewer
@@ -114,7 +125,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           <Link
             href={`/p/${first.id}?backUrl=/ranking`}
             prefetch={true}
-            aria-label={`1ra posición: ${isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}, ${Math.round(first.rankingScore)} puntos. Cambio de posición: ${first.rankingDelta && first.rankingDelta > 0 ? `subió ${first.rankingDelta}` : first.rankingDelta && first.rankingDelta < 0 ? `bajó ${Math.abs(first.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={getPodiumPlayerAriaLabel(
+              1,
+              capitalizeName(first.displayName ?? first.alias ?? "?"),
+              Boolean(isFirstViewer),
+              first.rankingScore,
+              first.rankingDelta
+            )}
             className="flex flex-col items-center gap-2 rounded-xl border border-primary font-semibold shadow-xs bg-card p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
             <div className="relative" aria-hidden="true">
@@ -175,7 +192,13 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           <Link
             href={`/p/${third.id}?backUrl=/ranking`}
             prefetch={true}
-            aria-label={`3ra posición: ${isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}, ${Math.round(third.rankingScore)} puntos. Cambio de posición: ${third.rankingDelta && third.rankingDelta > 0 ? `subió ${third.rankingDelta}` : third.rankingDelta && third.rankingDelta < 0 ? `bajó ${Math.abs(third.rankingDelta)}` : "sin cambios"}.`}
+            aria-label={getPodiumPlayerAriaLabel(
+              3,
+              capitalizeName(third.displayName ?? third.alias ?? "?"),
+              Boolean(isThirdViewer),
+              third.rankingScore,
+              third.rankingDelta
+            )}
             className={cn(
               "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
               isThirdViewer
@@ -236,6 +259,6 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
           </Link>
         )}
       </div>
-    </div>
+    </section>
   );
 }

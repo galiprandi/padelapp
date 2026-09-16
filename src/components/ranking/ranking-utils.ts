@@ -51,10 +51,34 @@ export function getRankingSearchStatusAriaLabel(
 }
 
 /**
+ * Returns accessible ARIA label for podium player cards
+ */
+export function getPodiumPlayerAriaLabel(
+  positionRank: 1 | 2 | 3,
+  playerName: string,
+  isViewer: boolean,
+  rankingScore: number,
+  rankingDelta?: number | null
+): string {
+  const ordinal = positionRank === 1 ? "1ra" : positionRank === 2 ? "2da" : "3ra";
+  const nameLabel = isViewer ? "Vos" : playerName;
+  const scoreLabel = `${Math.round(rankingScore)} puntos`;
+
+  let deltaLabel = "sin cambios";
+  if (rankingDelta && rankingDelta > 0) {
+    deltaLabel = `subió ${rankingDelta}`;
+  } else if (rankingDelta && rankingDelta < 0) {
+    deltaLabel = `bajó ${Math.abs(rankingDelta)}`;
+  }
+
+  return `${ordinal} posición: ${nameLabel}, ${scoreLabel}. Cambio de posición: ${deltaLabel}.`;
+}
+
+/**
  * Returns accessible ARIA region landmark label for ranking section
  */
 export function getRankingRegionAriaLabel(
-  section: "rules" | "search" | "filter"
+  section: "rules" | "search" | "filter" | "podium"
 ): string {
   switch (section) {
     case "rules":
@@ -63,5 +87,7 @@ export function getRankingRegionAriaLabel(
       return "Buscador de jugadores por nombre o alias";
     case "filter":
       return "Clasificación general y podio de jugadores";
+    case "podium":
+      return "Podio de los 3 mejores jugadores del ranking";
   }
 }
