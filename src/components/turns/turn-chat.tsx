@@ -11,7 +11,17 @@ import {
   sendMessageAction,
   type ChatMessage,
 } from "@/lib/chat-store";
-import { formatChatTime, CHAT_QUICK_SUGGESTIONS } from "./turn-chat-utils";
+import {
+  formatChatTime,
+  CHAT_QUICK_SUGGESTIONS,
+  validateChatMessage,
+  getChatMessageAriaLabel,
+  getQuickChipAriaLabel,
+  getChatRegionAriaLabel,
+  getChatLogAriaLabel,
+  getChatInputAriaLabel,
+  getChatCharacterCounterAriaLabel,
+} from "./turn-chat-utils";
 
 interface TurnChatProps {
   turnId: string;
@@ -77,13 +87,17 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanText = inputText.trim();
-    if (!cleanText || isSending) return;
+    if (isSending) return;
 
-    if (cleanText.length > 300) {
-      showToast("El mensaje es demasiado largo (máximo 300 caracteres)");
+    const validation = validateChatMessage(inputText);
+    if (!validation.isValid) {
+      if (validation.error) {
+        showToast(validation.error);
+      }
       return;
     }
+
+    const cleanText = validation.cleanText;
 
     // Optimistic UI update: add message locally first
     const tempId = `temp-${Date.now()}`;
@@ -115,9 +129,13 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
 
   if (isLoading) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-xl border border-border bg-card">
-        <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div
+        role="region"
+        aria-label={getChatRegionAriaLabel()}
+        className="flex h-48 items-center justify-center rounded-xl border border-border bg-card shadow-xs"
+      >
+        <div className="flex flex-col items-center gap-2" role="status" aria-live="polite">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
           <p className="text-xs text-muted-foreground font-medium">
             Cargando chat del turno...
           </p>
@@ -127,13 +145,19 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
   }
 
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden">
+    <div
+      role="region"
+      aria-label={getChatRegionAriaLabel()}
+      className="flex flex-col rounded-xl border border-border bg-card overflow-hidden shadow-xs"
+    >
       {/* Messages Window */}
       <div
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto p-4 space-y-3 max-h-72 min-h-[18rem] bg-card"
         role="log"
-        aria-label="Historial del chat del turno"
+        aria-live="polite"
+        aria-atomic="false"
+        aria-label={getChatLogAriaLabel(messages.length)}
       >
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center p-6 my-auto">
@@ -145,17 +169,20 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
           messages.map((msg) => {
             const isMe = msg.userId === currentUserId || msg.alias === "Vos";
             const isSystem = msg.type === "system" || msg.userId === "system-bot";
+            const msgAriaLabel = getChatMessageAriaLabel(msg, currentUserId);
 
             if (isSystem) {
               return (
                 <div
                   key={msg.id}
+                  role="article"
+                  aria-label={msgAriaLabel}
                   className="flex flex-col items-center my-1.5 gap-1"
                 >
-                  <div className="rounded-lg bg-muted px-3 py-1.5 border border-border text-[11px] font-semibold text-muted-foreground text-center max-w-[85%] leading-normal">
+                  <div className="rounded-lg bg-muted px-3 py-1.5 border border-border text-[11px] font-semibold text-muted-foreground text-center max-w-[85%] leading-normal shadow-xs">
                     {msg.text}
                   </div>
-                  <span className="text-[9px] font-medium text-muted-foreground/50">
+                  <span className="text-[9px] font-medium text-muted-foreground/50" aria-hidden="true">
                     {formatChatTime(msg.ts)}
                   </span>
                 </div>
@@ -165,15 +192,17 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             return (
               <div
                 key={msg.id}
+                role="article"
+                aria-label={msgAriaLabel}
                 className={cn("flex flex-col max-w-[75%]", isMe ? "ml-auto items-end" : "mr-auto items-start")}
               >
-                <span className="text-[10px] font-bold text-muted-foreground mb-0.5 px-1 flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-muted-foreground mb-0.5 px-1 flex items-center gap-1.5" aria-hidden="true">
                   <span>{isMe ? "Vos" : msg.alias}</span>
                   <span className="font-normal text-muted-foreground/60">{formatChatTime(msg.ts)}</span>
                 </span>
                 <div
                   className={cn(
-                    "rounded-xl px-3.5 py-2 text-sm leading-relaxed break-words shadow-sm font-medium",
+                    "rounded-xl px-3.5 py-2 text-sm leading-relaxed break-words shadow-xs font-medium",
                     isMe
                       ? "bg-primary text-primary-foreground rounded-tr-none"
                       : "bg-muted text-foreground border border-border rounded-tl-none",
@@ -202,8 +231,8 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             key={chip.id}
             type="button"
             onClick={() => setInputText(chip.text)}
-            className="rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-            aria-label={`Usar atajo ${chip.text}`}
+            className="rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
+            aria-label={getQuickChipAriaLabel(chip.text)}
           >
             {chip.label}
           </button>
@@ -230,7 +259,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             disabled={isSending}
             aria-busy={isSending}
             className="h-10 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background text-sm flex-1"
-            aria-label="Escribir mensaje"
+            aria-label={getChatInputAriaLabel(isSending)}
           />
           <Button
             type="submit"
@@ -241,9 +270,9 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             aria-label={isSending ? "Enviando mensaje..." : "Enviar mensaje"}
           >
             {isSending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
-              <Send className="h-4 w-4" />
+              <Send className="h-4 w-4" aria-hidden="true" />
             )}
           </Button>
         </div>
@@ -258,7 +287,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
                     ? "text-amber-600 dark:text-amber-400"
                     : "text-muted-foreground",
               )}
-              aria-hidden="true"
+              aria-label={getChatCharacterCounterAriaLabel((inputText ?? "").length, 300)}
             >
               {(inputText ?? "").length}/300
             </span>
