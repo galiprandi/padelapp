@@ -395,6 +395,138 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface PlayerInteractionReciprocity {
+  reciprocityScore: number;
+  totalConnections: number;
+  partnerConnectionsCount: number;
+  rivalConnectionsCount: number;
+  mixedConnectionsCount: number;
+  turnsOnlyCount: number;
+  reciprocityTier:
+    | "Red recíproca y equilibrada ⚖️"
+    | "Predominio de duplas 🤝"
+    | "Predominio de rivales ⚔️"
+    | "Conexiones en formación 🌱";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates player interaction reciprocity score (0-100%) and relationship balance tier
+ * evaluating partner, rival, and mixed head-to-head encounters.
+ */
+export function calculatePlayerInteractionReciprocity(
+  links: GraphLink[],
+  selectedNodeId: string,
+): PlayerInteractionReciprocity {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      reciprocityScore: 0,
+      totalConnections: 0,
+      partnerConnectionsCount: 0,
+      rivalConnectionsCount: 0,
+      mixedConnectionsCount: 0,
+      turnsOnlyCount: 0,
+      reciprocityTier: "Conexiones en formación 🌱",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin interacciones registradas en la red",
+    };
+  }
+
+  let partnerConnectionsCount = 0;
+  let rivalConnectionsCount = 0;
+  let mixedConnectionsCount = 0;
+  let turnsOnlyCount = 0;
+
+  for (const link of connectedLinks) {
+    const record = calculateConnectionRecord(link, selectedNodeId);
+    if (record.type === "partner") partnerConnectionsCount++;
+    else if (record.type === "rival") rivalConnectionsCount++;
+    else if (record.type === "mixed") mixedConnectionsCount++;
+    else if (record.type === "turns") turnsOnlyCount++;
+  }
+
+  const matchConnections = partnerConnectionsCount + rivalConnectionsCount + mixedConnectionsCount;
+
+  if (matchConnections === 0) {
+    return {
+      reciprocityScore: 0,
+      totalConnections,
+      partnerConnectionsCount: 0,
+      rivalConnectionsCount: 0,
+      mixedConnectionsCount: 0,
+      turnsOnlyCount,
+      reciprocityTier: "Conexiones en formación 🌱",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: `${turnsOnlyCount} ${turnsOnlyCount === 1 ? "turno compartido" : "turnos compartidos"} sin partidos confirmados`,
+    };
+  }
+
+  // Reciprocity score evaluates the proportion of balanced (mixed) connections
+  // and the balance between partner and rival counts
+  const mixedRatio = mixedConnectionsCount / matchConnections;
+  const balanceFactor =
+    1 - Math.abs(partnerConnectionsCount - rivalConnectionsCount) / matchConnections;
+
+  const reciprocityScore = Math.min(
+    Math.round((mixedRatio * 0.6 + balanceFactor * 0.4) * 100),
+    100,
+  );
+
+  let reciprocityTier:
+    | "Red recíproca y equilibrada ⚖️"
+    | "Predominio de duplas 🤝"
+    | "Predominio de rivales ⚔️"
+    | "Conexiones en formación 🌱";
+  let badgeStyle: string;
+
+  if (reciprocityScore >= 60 || mixedConnectionsCount > 0) {
+    reciprocityTier = "Red recíproca y equilibrada ⚖️";
+    badgeStyle =
+      "bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800";
+  } else if (partnerConnectionsCount >= rivalConnectionsCount) {
+    reciprocityTier = "Predominio de duplas 🤝";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    reciprocityTier = "Predominio de rivales ⚔️";
+    badgeStyle =
+      "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800";
+  }
+
+  const parts: string[] = [];
+  if (mixedConnectionsCount > 0) {
+    parts.push(
+      `${mixedConnectionsCount} ${mixedConnectionsCount === 1 ? "vínculo recíproco" : "vínculos recíprocos"}`,
+    );
+  }
+  if (partnerConnectionsCount > 0) {
+    parts.push(
+      `${partnerConnectionsCount} ${partnerConnectionsCount === 1 ? "dupla" : "duplas"}`,
+    );
+  }
+  if (rivalConnectionsCount > 0) {
+    parts.push(
+      `${rivalConnectionsCount} ${rivalConnectionsCount === 1 ? "rival" : "rivales"}`,
+    );
+  }
+
+  return {
+    reciprocityScore,
+    totalConnections,
+    partnerConnectionsCount,
+    rivalConnectionsCount,
+    mixedConnectionsCount,
+    turnsOnlyCount,
+    reciprocityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface CommunityBalanceInfo {
   communityId: number;
   totalPlayers: number;

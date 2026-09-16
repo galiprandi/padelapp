@@ -31,6 +31,7 @@ import {
   calculateNetworkCentralityScore,
   calculateGraphDensityMetric,
   calculateCommunityBalanceInfo,
+  calculatePlayerInteractionReciprocity,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -845,6 +846,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const reciprocity = calculatePlayerInteractionReciprocity(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -916,6 +921,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Alcance de red: ${reach.reachTier}. ${reach.formattedSummary}`}
                       >
                         {reach.reachTier}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          reciprocity.badgeStyle,
+                        )}
+                        title={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                        aria-label={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                      >
+                        {reciprocity.reciprocityTier}
                       </span>
                     </>
                   );

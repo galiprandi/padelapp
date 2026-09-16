@@ -209,6 +209,7 @@ import {
   calculateNetworkCentralityScore,
   calculateGraphDensityMetric,
   calculateCommunityBalanceInfo,
+  calculatePlayerInteractionReciprocity,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1950,6 +1951,83 @@ describe("calculateCrossRivalryDensity", () => {
     expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
     expect(res.badgeStyle).toContain("bg-muted");
     expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
+  });
+});
+
+describe("calculatePlayerInteractionReciprocity", () => {
+  it("returns fallback reciprocity info for unconnected node", () => {
+    const res = calculatePlayerInteractionReciprocity([], "p-99");
+    expect(res.reciprocityScore).toBe(0);
+    expect(res.totalConnections).toBe(0);
+    expect(res.partnerConnectionsCount).toBe(0);
+    expect(res.rivalConnectionsCount).toBe(0);
+    expect(res.mixedConnectionsCount).toBe(0);
+    expect(res.turnsOnlyCount).toBe(0);
+    expect(res.reciprocityTier).toBe("Conexiones en formación 🌱");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin interacciones registradas en la red");
+  });
+
+  it("returns fallback reciprocity info for node with turn-only co-inscriptions", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 2, strength: 2 },
+    ];
+
+    const res = calculatePlayerInteractionReciprocity(links, "p-01");
+    expect(res.reciprocityScore).toBe(0);
+    expect(res.totalConnections).toBe(1);
+    expect(res.turnsOnlyCount).toBe(1);
+    expect(res.reciprocityTier).toBe("Conexiones en formación 🌱");
+    expect(res.formattedSummary).toBe("1 turno compartido sin partidos confirmados");
+  });
+
+  it("calculates 'Red recíproca y equilibrada ⚖️' tier for network with mixed partner & rival encounters", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 2, partnerMatches: 2, winsA: 1, winsB: 1, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 4 }, // mixed
+      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // partner
+      { source: "p-01", target: "p-04", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // rival
+    ];
+
+    const res = calculatePlayerInteractionReciprocity(links, "p-01");
+    expect(res.totalConnections).toBe(3);
+    expect(res.mixedConnectionsCount).toBe(1);
+    expect(res.partnerConnectionsCount).toBe(1);
+    expect(res.rivalConnectionsCount).toBe(1);
+    expect(res.reciprocityTier).toBe("Red recíproca y equilibrada ⚖️");
+    expect(res.badgeStyle).toContain("bg-teal-100");
+    expect(res.formattedSummary).toContain("1 vínculo recíproco");
+    expect(res.formattedSummary).toContain("1 dupla");
+    expect(res.formattedSummary).toContain("1 rival");
+  });
+
+  it("calculates 'Predominio de duplas 🤝' tier for partner-heavy network without mixed links", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 },
+    ];
+
+    const res = calculatePlayerInteractionReciprocity(links, "p-01");
+    expect(res.partnerConnectionsCount).toBe(2);
+    expect(res.rivalConnectionsCount).toBe(0);
+    expect(res.mixedConnectionsCount).toBe(0);
+    expect(res.reciprocityTier).toBe("Predominio de duplas 🤝");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toBe("2 duplas");
+  });
+
+  it("calculates 'Predominio de rivales ⚔️' tier for rival-heavy network without mixed links", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 3, partnerMatches: 0, winsA: 2, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+    ];
+
+    const res = calculatePlayerInteractionReciprocity(links, "p-01");
+    expect(res.partnerConnectionsCount).toBe(0);
+    expect(res.rivalConnectionsCount).toBe(2);
+    expect(res.mixedConnectionsCount).toBe(0);
+    expect(res.reciprocityTier).toBe("Predominio de rivales ⚔️");
+    expect(res.badgeStyle).toContain("bg-rose-100");
+    expect(res.formattedSummary).toBe("2 rivales");
   });
 });
 
