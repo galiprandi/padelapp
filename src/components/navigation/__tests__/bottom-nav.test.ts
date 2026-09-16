@@ -9,6 +9,8 @@ vi.mock("next/navigation", () => ({
 
 interface LinkProps {
   href?: string;
+  role?: string;
+  "aria-live"?: string;
   "aria-label"?: string;
   prefetch?: boolean;
 }
@@ -46,6 +48,8 @@ describe("BottomNav Component", () => {
     );
 
     expect(badgeLink).toBeDefined();
+    expect(badgeLink?.props.role).toBe("status");
+    expect(badgeLink?.props["aria-live"]).toBe("polite");
     expect(badgeLink?.props["aria-label"]).toBe("3 notificaciones pendientes");
     expect(badgeLink?.props.prefetch).toBe(true);
   });

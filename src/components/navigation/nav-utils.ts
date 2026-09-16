@@ -21,6 +21,16 @@ export interface NavItemAriaAttributes {
   "aria-current"?: "page";
 }
 
+export interface NotificationsBadgeAriaAttributes {
+  role: "status";
+  "aria-live": "polite";
+  "aria-label": string;
+}
+
+export interface FabAriaAttributes {
+  "aria-label": string;
+}
+
 /**
  * Retorna la etiqueta de accesibilidad ARIA para el contenedor de navegación principal.
  */
@@ -131,5 +141,28 @@ export function getNavItemAriaAttributes(
   return {
     "aria-label": item.label,
     "aria-current": isActive ? "page" : undefined,
+  };
+}
+
+/**
+ * Genera los atributos ARIA accesibles para la insignia/badge de notificaciones.
+ */
+export function getNotificationsBadgeAriaAttributes(
+  count: number,
+): NotificationsBadgeAriaAttributes {
+  return {
+    role: "status",
+    "aria-live": "polite",
+    "aria-label": formatNotificationsAriaLabel(count),
+  };
+}
+
+/**
+ * Genera los atributos ARIA accesibles para el botón flotante de acción central (FAB).
+ */
+export function getFabAriaAttributes(): FabAriaAttributes {
+  const fabConfig = getFabItemConfig();
+  return {
+    "aria-label": fabConfig.label,
   };
 }

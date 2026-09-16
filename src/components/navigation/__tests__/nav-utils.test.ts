@@ -3,11 +3,13 @@ import {
   getNavItems,
   getSplitNavItems,
   getFabItemConfig,
+  getFabAriaAttributes,
   getNavItemAriaAttributes,
   getBottomNavAriaLabel,
   getBottomNavSkeletonAriaLabel,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
+  getNotificationsBadgeAriaAttributes,
   isNavItemActive,
 } from "../nav-utils";
 
@@ -160,6 +162,35 @@ describe("nav-utils", () => {
       expect(attrs).toEqual({
         "aria-label": "Turnos",
         "aria-current": undefined,
+      });
+    });
+  });
+
+  describe("getNotificationsBadgeAriaAttributes", () => {
+    it("returns status role, aria-live polite, and formatted aria-label", () => {
+      const attrs = getNotificationsBadgeAriaAttributes(3);
+      expect(attrs).toEqual({
+        role: "status",
+        "aria-live": "polite",
+        "aria-label": "3 notificaciones pendientes",
+      });
+    });
+
+    it("handles count of 1 correctly", () => {
+      const attrs = getNotificationsBadgeAriaAttributes(1);
+      expect(attrs).toEqual({
+        role: "status",
+        "aria-live": "polite",
+        "aria-label": "1 notificación pendiente",
+      });
+    });
+  });
+
+  describe("getFabAriaAttributes", () => {
+    it("returns aria-label matching FAB config label", () => {
+      const attrs = getFabAriaAttributes();
+      expect(attrs).toEqual({
+        "aria-label": "Crear partido",
       });
     });
   });

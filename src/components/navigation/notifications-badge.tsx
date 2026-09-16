@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { getCachedPendingActionsCount } from "@/lib/queries";
 import {
-  formatNotificationsAriaLabel,
+  getNotificationsBadgeAriaAttributes,
   formatNotificationsDisplayCount,
 } from "./nav-utils";
 
@@ -11,13 +11,13 @@ async function NotificationsCount({ userId }: { userId: string }) {
 
   if (count <= 0) return null;
 
+  const ariaAttrs = getNotificationsBadgeAriaAttributes(count);
+
   return (
     <Link
       href="/notifications"
       prefetch={true}
-      role="status"
-      aria-live="polite"
-      aria-label={formatNotificationsAriaLabel(count)}
+      {...ariaAttrs}
       className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow-md transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
     >
       {formatNotificationsDisplayCount(count)}
