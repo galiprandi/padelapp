@@ -59,3 +59,26 @@ export function handlePlayerCardKeyDown(
     action?.();
   }
 }
+
+const ALLOWED_AVATAR_HOSTS = ["lh3.googleusercontent.com"];
+
+/**
+ * Validates if an avatar image URL comes from an allowed remote host pattern.
+ */
+export function isSafeAvatarImage(image?: string | null): boolean {
+  if (!image) return false;
+  return ALLOWED_AVATAR_HOSTS.some((host) => image.includes(host));
+}
+
+/**
+ * Returns localized Argentine Spanish ARIA accessibility label for player avatar image or fallback initials.
+ */
+export function getPlayerAvatarAriaLabel(
+  name: string,
+  hasSafeImage: boolean
+): string {
+  const sanitizedName = name.trim() || "Jugador";
+  return hasSafeImage
+    ? `Foto de perfil de ${sanitizedName}`
+    : `Iniciales de ${sanitizedName}`;
+}

@@ -188,9 +188,9 @@ export function PairPreview({
     <div
       role="region"
       aria-label={label}
-      className="relative rounded-xl border border-border bg-card mt-8 shadow-sm"
+      className="relative rounded-xl border border-border bg-card mt-8 shadow-xs"
     >
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">
         {label}
       </span>
       <div className="relative space-y-3 p-5 pt-6">
@@ -227,9 +227,9 @@ export function PairInline({
     <div
       role="region"
       aria-label={label}
-      className="relative rounded-xl border border-border bg-card shadow-sm"
+      className="relative rounded-xl border border-border bg-card shadow-xs"
     >
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-sm z-10">
+      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">
         {label}
       </span>
 
@@ -241,7 +241,7 @@ export function PairInline({
                 <PlayerAvatar
                   name={player.name}
                   image={player.image}
-                  className="rounded-lg border border-border shadow-sm"
+                  className="rounded-lg border border-border shadow-xs"
                 />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-bold text-foreground">

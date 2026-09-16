@@ -1,6 +1,10 @@
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
+import {
+  isSafeAvatarImage,
+  getPlayerAvatarAriaLabel,
+} from "./player-card-utils";
 
 export interface PlayerAvatarProps {
   name: string;
@@ -32,22 +36,27 @@ export function PlayerAvatar({
   const initials = getPlayerInitials(name);
   const dimension = `${size}px`;
 
-  // Filter out images from hosts not configured in next.config.ts remotePatterns
-  const ALLOWED_HOSTS = ["lh3.googleusercontent.com"];
-  const safeImage =
-    image && ALLOWED_HOSTS.some((h) => image.includes(h)) ? image : null;
+  const hasSafeImage = isSafeAvatarImage(image);
+  const avatarAriaLabel = getPlayerAvatarAriaLabel(name, hasSafeImage);
 
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary",
+        "flex shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary border border-border shadow-xs overflow-hidden",
         className,
       )}
       style={{ width: dimension, height: dimension }}
       aria-hidden={ariaHidden}
+      aria-label={ariaHidden ? undefined : avatarAriaLabel}
     >
-      {safeImage ? (
-        <Image src={safeImage} alt={name} width={size} height={size} className="h-full w-full rounded-lg object-cover" />
+      {hasSafeImage && image ? (
+        <Image
+          src={image}
+          alt={name}
+          width={size}
+          height={size}
+          className="h-full w-full rounded-lg object-cover"
+        />
       ) : (
         initials
       )}
