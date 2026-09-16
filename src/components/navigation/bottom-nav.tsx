@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 import {
   getSplitNavItems,
   getFabItemConfig,
+  getFabAriaAttributes,
   getNavItemAriaAttributes,
   getBottomNavAriaLabel,
-  formatNotificationsAriaLabel,
+  getNotificationsBadgeAriaAttributes,
   formatNotificationsDisplayCount,
   isNavItemActive,
 } from "./nav-utils";
@@ -71,7 +72,7 @@ export function BottomNav({
           href={fabConfig.href}
           prefetch={true}
           className="relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-          aria-label={fabConfig.label}
+          {...getFabAriaAttributes()}
         >
           <Plus className="h-6 w-6" aria-hidden="true" />
         </Link>
@@ -106,7 +107,7 @@ export function BottomNav({
           <Link
             href={notificationsHref}
             prefetch={true}
-            aria-label={formatNotificationsAriaLabel(notificationsCount)}
+            {...getNotificationsBadgeAriaAttributes(notificationsCount)}
             className="absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
             {formatNotificationsDisplayCount(notificationsCount)}
