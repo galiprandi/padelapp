@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-16 — Turn Chat Pure Helpers Extraction, ARIA Region Landmarks, Real-Time Screen Reader Announcer & Solid MDS Polish in TurnChat (bela/turnos/turn-chat-helpers-and-a11y)
 - [x] 2026-09-15 — TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring (bela/turnos/turn-card-aria-helpers-and-a11y)
 - [x] 2026-09-13 — Organizer Action Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in RemovePlayerButton & AssignSubstituteButton (bela/turnos/organizer-action-helpers-and-a11y)
 - [x] 2026-09-12 — Calendar Helper Extraction & AddToCalendarButton ARIA Accessibility, Escape Key & Solid MDS Polish (bela/turnos/add-to-calendar-helpers-and-a11y)
@@ -54,6 +55,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-16 - Turn Chat Pure Helpers Extraction, ARIA Region Landmarks, Real-Time Screen Reader Announcer & Solid MDS Polish in TurnChat
+**Learning:** Extracting message validation (`validateChatMessage`), screen reader ARIA labels (`getChatMessageAriaLabel`, `getQuickChipAriaLabel`, `getChatRegionAriaLabel`, `getChatLogAriaLabel`, `getChatInputAriaLabel`, `getChatCharacterCounterAriaLabel`) into `src/components/turns/turn-chat-utils.ts` decouples chat validation rules and localized screen reader label generation from React render functions. Equipping `TurnChat` (`src/components/turns/turn-chat.tsx`) with explicit `<div role="region" aria-label={getChatRegionAriaLabel()}>`, `role="log"` with `aria-live="polite"` for automatic screen reader announcements of new incoming chat messages, `role="article"` on message items, focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs border border-border bg-card`) ensures mobile accessibility and visual alignment.
+**Action:** Always extract chat validation and screen reader labels into pure helper utilities backed by Vitest unit tests, and equip real-time messaging windows with region landmarks, `role="log"` with `aria-live="polite"`, focus ring offsets, and solid MDS container styling.
+
 ## 2026-09-15 - TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring
 **Learning:** Extracting pure helper functions (`getTurnCardAriaLabel`, `getQuickJoinAriaLabel`, `getTurnStatusBadgeAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized screen reader label generation for turn cards, quick-join buttons, and status badges from React component render trees. Equipping `TurnCard` (`src/components/turns/turn-card.tsx`) with explicit `role="region"`, localized Argentine Spanish screen reader `aria-label` attributes, focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) ensures robust accessibility compliance and mobile visual alignment.
 **Action:** Always extract card and status badge ARIA accessibility labels into pure helper utilities backed by Vitest unit tests and equip turn cards with region landmarks, focus ring offsets, tactile press scaling, and solid MDS container styling.
@@ -220,7 +225,7 @@
 
 ## 2026-07-26 - Filtro Interactivo de Turnos "Todos" vs "Mis Turnos"
 **Learning:** Permitir que los usuarios tengan acceso inmediato a los turnos en los que están anotados (ya sea como organizador, jugador o suplente) a través de una pestaña dedicada evita que tengan que buscar en un tablero lleno. Al mantener el componente principal de la página como un componente estático de Next.js App Router, logramos retener las ventajas del Partial Prerendering (PPR) de Next.js 15, delegando la interactividad y filtrado del lado del cliente de forma fluida e instantánea, usando botones accesibles con roles semánticos y sin necesidad de realizar viajes redondos al servidor.
-**Action:** Emplear filtros interactivos del lado del cliente cuando el conjunto de datos sea acotado para brindar una experiencia libre de latencia, respetando siempre el marcado ARIA para tecnologías de asistencia.
+**Action:** Emplear filtros interactivos del lado del cliente cuando el conjunto de datos sea acotado para brindar una experiencia libre de latencia, respetando siempre el marked ARIA para tecnologías de asistencia.
 
 ## 2026-07-27 - Botones de Acción Interactivos en Detalle de Turno con Estados de Carga
 **Learning:** Los formularios de Server Actions del lado del servidor puros no brindan retroalimentación visual al usuario durante su procesamiento, lo que resulta en una experiencia lenta en conexiones lentas y el riesgo de dobles envíos accidentales. El uso de componentes cliente interactivos impulsados por `useTransition` and un botón estilizado MDS estándar proporciona una transición perfecta a estados de carga dinámicos y deshabilitados, mejorando drásticamente el flujo interactivo de alta fidelidad sin afectar la renderización estática (PPR).
@@ -232,7 +237,7 @@
 
 ## 2026-07-30 - Barra de Progreso de Turnos y CTA Contextual de Invitación para Cupos Vacíos
 **Learning:** Agregar una barra de progreso visual de cupos ocupados vs cupos totales en la tarjeta de información del turno permite a los jugadores comprender instantáneamente el estado de completitud del turno de manera sumamente visual. A su vez, colocar un CTA contextual de invitación (icono de compartir) en los cupos vacíos cuando el espectador es un participant (creador o jugador) facilita increíblemente que ellos mismos tomen la iniciativa de invitar a amigos para salvar el partido, todo con estilos 100% sólidos de acuerdo al Minimal Design System (MDS).
-**Action:** Maximizar siempre el use de indicadores visuales sólidos y claros y CTAs altamente contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
+**Action:** Maximizar siempre el use de indicadores visuales sólidos y claros y CTAs highly contextuales para impulsar la completitud y el salvage de turnos sin sobrecargar la interfaz.
 
 ## 2026-07-31 - Spanish Dynamic Turn Notification Relative Date Formatting
 **Learning:** Los destinatarios de notificaciones de turnos carecían del contexto sobre qué día se jugaría el turno (ej: veían "Cupo abierto en tu red: Club · 19hs"), lo que causaba confusión sobre si era hoy, mañana o un día posterior. La implementación de un helper robusto de fechas relativas adaptado al dialecto argentino (`getTurnLabelWithDate`) brinda un contexto inmediato y de alta fidelidad directamente en la bandeja de notificaciones.
