@@ -6,6 +6,7 @@ import { capitalizeName, cn } from "@/lib/utils";
 import {
   calculateCommunityBalanceInfo,
   calculateCommunityCohesion,
+  calculateNetworkDiversityScore,
   calculateNetworkRoleInfo,
   calculatePlayerSimilarityInfo,
   getNetworkActivityTier,
@@ -391,6 +392,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const roleInfo = graphData
                 ? calculateNetworkRoleInfo(graphData.nodes, graphData.links, p.id)
                 : null;
+              const diversity = graphData
+                ? calculateNetworkDiversityScore(graphData.nodes, graphData.links, p.id)
+                : null;
 
               return (
                 <Link
@@ -433,6 +437,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Nivel de actividad de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${activityTier.label}`}
                         >
                           {activityTier.label}
+                        </span>
+                      )}
+                      {diversity && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            diversity.badgeStyle,
+                          )}
+                          title={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
+                          aria-label={`Diversidad de red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
+                        >
+                          {diversity.diversityTier}
                         </span>
                       )}
                     </div>

@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 36 (Network Diversity Score & Solid MDS Badging Integration in Network Stats Panel):
+  - [x] 2026-09-13 — Hecho: Refactorizada la lista de jugadores 'Más conectados' en `StatsPanel` (`src/app/network/stats-panel.tsx`) para calcular e integrar insignias sólidas MDS de diversidad de red (`calculateNetworkDiversityScore`) con etiquetas descriptivas de accesibilidad ARIA en voz argentina (`aria-label`, `title`) para lectores de pantalla.
+  - [x] 2026-09-13 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` asegurando la correcta clasificación y formato de resumen para todas las categorías de diversidad de red.
 - Phase 35 (Community Court Side Balance Calculation & Solid MDS Badging in Graph View & Network Stats):
   - [x] 2026-09-12 — Hecho: Creada la función pura `calculateCommunityBalanceInfo` en `src/app/network/graph-utils.ts` para evaluar el balance de posiciones de cancha (Derecha, Revés, Ambos, Sin definir) en grupos comunitarios Louvain, clasificándolos en insignias sólidas MDS ('Equilibrio Der/Rev ⚖️', 'Flexibilidad total 🔄', 'Dominio de derecha 🟦', 'Dominio de revés 🟨', 'Ajuste de posiciones 🎯') con resúmenes en voz argentina.
   - [x] 2026-09-12 — Hecho: Integradas las insignias sólidas MDS de balance comunitario en el banner de resumen de grupo activo de `GraphView` (`src/app/network/graph-view.tsx`) y en la lista de comunidades de la red de `StatsPanel` (`src/app/network/stats-panel.tsx`) con atributos de accesibilidad ARIA descriptivos (`aria-label`, `title`).
