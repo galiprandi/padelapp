@@ -28,6 +28,16 @@ import {
   buildTurnConnectionMap,
   formatCalendarUTC,
   getGoogleCalendarUrl,
+  getCancelTurnAriaLabel,
+  getCancelTurnConfirmRegionAriaLabel,
+  getStartMatchAriaLabel,
+  getJoinTurnAriaLabel,
+  getJoinSubstituteAriaLabel,
+  getLeaveSubstituteAriaLabel,
+  getTakeOpenSlotAriaLabel,
+  getScheduleNextTurnAriaLabel,
+  getPlayCasualAriaLabel,
+  getPlayCasualConfirmRegionAriaLabel,
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
   getRemovePlayerAriaLabel,
@@ -687,6 +697,86 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("TurnActions ARIA label helpers", () => {
+  it("getCancelTurnAriaLabel", () => {
+    expect(getCancelTurnAriaLabel({})).toBe("Cancelar y eliminar este turno");
+    expect(getCancelTurnAriaLabel({ isConfirming: true })).toBe(
+      "Confirmar eliminación del turno"
+    );
+    expect(getCancelTurnAriaLabel({ isPending: true })).toBe(
+      "Eliminando el turno..."
+    );
+  });
+
+  it("getCancelTurnConfirmRegionAriaLabel", () => {
+    expect(getCancelTurnConfirmRegionAriaLabel()).toBe(
+      "Confirmación para cancelar y eliminar el turno"
+    );
+  });
+
+  it("getStartMatchAriaLabel", () => {
+    expect(getStartMatchAriaLabel({})).toBe("Iniciar partido ahora");
+    expect(getStartMatchAriaLabel({ isPending: true })).toBe(
+      "Iniciando partido..."
+    );
+  });
+
+  it("getJoinTurnAriaLabel", () => {
+    expect(getJoinTurnAriaLabel({})).toBe("Sumarme al turno");
+    expect(getJoinTurnAriaLabel({ isPending: true })).toBe(
+      "Sumándome al turno..."
+    );
+  });
+
+  it("getJoinSubstituteAriaLabel", () => {
+    expect(getJoinSubstituteAriaLabel({})).toBe("Sumarse como suplente");
+    expect(getJoinSubstituteAriaLabel({ isPending: true })).toBe(
+      "Sumándome como suplente..."
+    );
+  });
+
+  it("getLeaveSubstituteAriaLabel", () => {
+    expect(getLeaveSubstituteAriaLabel({})).toBe("Salir de la lista de suplentes");
+    expect(getLeaveSubstituteAriaLabel({ isPending: true })).toBe(
+      "Saliendo de la lista de suplentes..."
+    );
+  });
+
+  it("getTakeOpenSlotAriaLabel", () => {
+    expect(getTakeOpenSlotAriaLabel({})).toBe("Ocupar el cupo libre disponible");
+    expect(getTakeOpenSlotAriaLabel({ isPending: true })).toBe(
+      "Ocupando cupo disponible..."
+    );
+  });
+
+  it("getScheduleNextTurnAriaLabel", () => {
+    expect(getScheduleNextTurnAriaLabel({})).toBe(
+      "Programar el próximo turno para la siguiente semana"
+    );
+    expect(getScheduleNextTurnAriaLabel({ isPending: true })).toBe(
+      "Programando próximo turno..."
+    );
+  });
+
+  it("getPlayCasualAriaLabel", () => {
+    expect(getPlayCasualAriaLabel({})).toBe(
+      "Marcar turno como jugado sin registrar partido"
+    );
+    expect(getPlayCasualAriaLabel({ isConfirming: true })).toBe(
+      "Confirmar marcar como jugado"
+    );
+    expect(getPlayCasualAriaLabel({ isPending: true })).toBe(
+      "Marcando turno como jugado..."
+    );
+  });
+
+  it("getPlayCasualConfirmRegionAriaLabel", () => {
+    expect(getPlayCasualConfirmRegionAriaLabel()).toBe(
+      "Confirmación para marcar el turno como jugado sin registrar partido"
     );
   });
 });

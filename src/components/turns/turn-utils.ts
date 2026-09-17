@@ -852,3 +852,117 @@ export function getTurnStatusBadgeAriaLabel({
   if (openSlots === 1) return "Cupos disponibles: Falta 1 jugador";
   return `Cupos disponibles: Faltan ${openSlots} jugadores`;
 }
+
+/**
+ * Format accessible ARIA label for cancel turn form trigger/button.
+ */
+export function getCancelTurnAriaLabel({
+  isPending = false,
+  isConfirming = false,
+}: {
+  isPending?: boolean;
+  isConfirming?: boolean;
+}): string {
+  if (isPending) return "Eliminando el turno...";
+  if (isConfirming) return "Confirmar eliminación del turno";
+  return "Cancelar y eliminar este turno";
+}
+
+/**
+ * Format ARIA landmark label for turn cancellation confirmation region.
+ */
+export function getCancelTurnConfirmRegionAriaLabel(): string {
+  return "Confirmación para cancelar y eliminar el turno";
+}
+
+/**
+ * Format accessible ARIA label for starting a match from a turn.
+ */
+export function getStartMatchAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending ? "Iniciando partido..." : "Iniciar partido ahora";
+}
+
+/**
+ * Format accessible ARIA label for joining a turn.
+ */
+export function getJoinTurnAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending ? "Sumándome al turno..." : "Sumarme al turno";
+}
+
+/**
+ * Format accessible ARIA label for joining as a substitute.
+ */
+export function getJoinSubstituteAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending ? "Sumándome como suplente..." : "Sumarse como suplente";
+}
+
+/**
+ * Format accessible ARIA label for leaving the substitute list.
+ */
+export function getLeaveSubstituteAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending
+    ? "Saliendo de la lista de suplentes..."
+    : "Salir de la lista de suplentes";
+}
+
+/**
+ * Format accessible ARIA label for taking an open slot in a turn.
+ */
+export function getTakeOpenSlotAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending ? "Ocupando cupo disponible..." : "Ocupar el cupo libre disponible";
+}
+
+/**
+ * Format accessible ARIA label for scheduling the next turn.
+ */
+export function getScheduleNextTurnAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending
+    ? "Programando próximo turno..."
+    : "Programar el próximo turno para la siguiente semana";
+}
+
+/**
+ * Format accessible ARIA label for casual play action trigger/button.
+ */
+export function getPlayCasualAriaLabel({
+  isPending = false,
+  isConfirming = false,
+}: {
+  isPending?: boolean;
+  isConfirming?: boolean;
+}): string {
+  if (isPending) return "Marcando turno como jugado...";
+  if (isConfirming) return "Confirmar marcar como jugado";
+  return "Marcar turno como jugado sin registrar partido";
+}
+
+/**
+ * Format ARIA landmark label for casual play confirmation region.
+ */
+export function getPlayCasualConfirmRegionAriaLabel(): string {
+  return "Confirmación para marcar el turno como jugado sin registrar partido";
+}
