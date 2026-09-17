@@ -75,10 +75,35 @@ export function getPodiumPlayerAriaLabel(
 }
 
 /**
+ * Returns accessible ARIA label for ranking list items
+ */
+export function getRankingListItemAriaLabel(
+  positionNum: number,
+  playerName: string,
+  isViewer: boolean,
+  rankingScore: number,
+  wins: number,
+  losses: number,
+  rankingDelta?: number | null
+): string {
+  const nameLabel = isViewer ? "Vos" : playerName;
+  const roundedScore = Math.round(rankingScore);
+
+  let deltaText = "sin cambios";
+  if (rankingDelta && rankingDelta > 0) {
+    deltaText = `subió ${rankingDelta}`;
+  } else if (rankingDelta && rankingDelta < 0) {
+    deltaText = `bajó ${Math.abs(rankingDelta)}`;
+  }
+
+  return `Posición ${positionNum}: ${nameLabel}, ${roundedScore} puntos. ${wins} victorias, ${losses} derrotas. Cambio de posición: ${deltaText}.`;
+}
+
+/**
  * Returns accessible ARIA region landmark label for ranking section
  */
 export function getRankingRegionAriaLabel(
-  section: "rules" | "search" | "filter" | "podium"
+  section: "rules" | "search" | "filter" | "podium" | "list"
 ): string {
   switch (section) {
     case "rules":
@@ -89,5 +114,7 @@ export function getRankingRegionAriaLabel(
       return "Clasificación general y podio de jugadores";
     case "podium":
       return "Podio de los 3 mejores jugadores del ranking";
+    case "list":
+      return "Listado de clasificación general de jugadores";
   }
 }

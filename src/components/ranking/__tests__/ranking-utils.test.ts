@@ -4,6 +4,7 @@ import {
   getRankingFilterTabAriaLabel,
   getRankingSearchStatusAriaLabel,
   getPodiumPlayerAriaLabel,
+  getRankingListItemAriaLabel,
   getRankingRegionAriaLabel,
 } from "../ranking-utils";
 
@@ -89,6 +90,37 @@ describe("Ranking Helpers", () => {
     });
   });
 
+  describe("getRankingListItemAriaLabel", () => {
+    it("returns formatted ARIA label for active viewer player with positive delta", () => {
+      expect(
+        getRankingListItemAriaLabel(1, "Agustín Tapia", true, 1050, 10, 2, 2)
+      ).toBe(
+        "Posición 1: Vos, 1050 puntos. 10 victorias, 2 derrotas. Cambio de posición: subió 2."
+      );
+    });
+
+    it("returns formatted ARIA label for another player with negative delta", () => {
+      expect(
+        getRankingListItemAriaLabel(4, "Fernando Belasteguín", false, 980, 5, 3, -1)
+      ).toBe(
+        "Posición 4: Fernando Belasteguín, 980 puntos. 5 victorias, 3 derrotas. Cambio de posición: bajó 1."
+      );
+    });
+
+    it("returns formatted ARIA label for player with zero or null delta", () => {
+      expect(
+        getRankingListItemAriaLabel(2, "Arturo Coello", false, 1020, 8, 2, 0)
+      ).toBe(
+        "Posición 2: Arturo Coello, 1020 puntos. 8 victorias, 2 derrotas. Cambio de posición: sin cambios."
+      );
+      expect(
+        getRankingListItemAriaLabel(2, "Arturo Coello", false, 1020, 8, 2, null)
+      ).toBe(
+        "Posición 2: Arturo Coello, 1020 puntos. 8 victorias, 2 derrotas. Cambio de posición: sin cambios."
+      );
+    });
+  });
+
   describe("getRankingRegionAriaLabel", () => {
     it("returns correct landmark labels", () => {
       expect(getRankingRegionAriaLabel("rules")).toBe(
@@ -102,6 +134,9 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRegionAriaLabel("podium")).toBe(
         "Podio de los 3 mejores jugadores del ranking"
+      );
+      expect(getRankingRegionAriaLabel("list")).toBe(
+        "Listado de clasificación general de jugadores"
       );
     });
   });
