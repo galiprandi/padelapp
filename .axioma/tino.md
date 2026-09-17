@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-12 — Configuración de Recolección de Basura de Caché (`DEFAULT_QUERY_GC_TIME`) y Política de Reintentos Inteligentes (`isQueryRetryable`) en TanStack QueryClient (PR #tino/perf/query-client-gc-time-and-retry-policy)
 - [x] 2026-09-11 — Extracción de Funciones Helper `getQueryClientConfig` y `createAppQueryClient` para Configuración Modular de TanStack Query (PR #tino/perf/query-client-config-helper)
 - [x] 2026-09-10 — Extracción de Función Helper `isNavItemActive` para Coincidencia de Rutas Activas en Navegación Principal (PR #tino/ux/nav-item-active-helper-extraction)
 - [x] 2026-09-09 — Extracción de Función Helper `formatNotificationsDisplayCount` y Estandarización de Badge de Notificaciones en Navegación (PR #tino/perf/notifications-badge-display-formatting)
@@ -51,6 +52,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-12 - Recolección de Basura `DEFAULT_QUERY_GC_TIME` y Política de Reintentos `isQueryRetryable` en TanStack Query
+**Aprendizaje:** Definir un tiempo de recolección de basura explícito (`gcTime: 300.000 ms` / 5 minutos) y una función helper pura de reintentos prudente (`isQueryRetryable` con un máximo de 2 reintentos para errores transitorios y descarte inmediato para errores cliente HTTP 4xx) en `src/lib/query-client-config.ts` evita la acumulación indebida de caché inactiva en memoria y previene tormentas de reintentos infructuosos en conexiones móviles inestables.
+**Acción:** Reutilizar `isQueryRetryable` y la configuración centralizada al instanciar QueryClients específicos o al configurar consultas avanzadas en la aplicación.
+
 ### 2026-09-11 - Extracción de Helpers `getQueryClientConfig` y `createAppQueryClient` para TanStack Query
 **Aprendizaje:** Abstraer la inicialización y opciones por defecto del `QueryClient` de TanStack Query (`staleTime: 60s`, `refetchOnWindowFocus: false`) hacia un módulo utilitario dedicado (`src/lib/query-client-config.ts`) desacopla las configuraciones de la red de la capa de React Provider (`src/app/providers.tsx`). Esto permite verificar y probar unitariamente las políticas de caché y la instanciación sin necesidad de montar componentes.
 **Acción:** Reutilizar `createAppQueryClient` o `getQueryClientConfig` cuando se requieran QueryClients aislados en entornos de prueba o subproveedores.
