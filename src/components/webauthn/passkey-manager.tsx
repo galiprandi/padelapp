@@ -16,6 +16,13 @@ import {
   verifyRegistration,
   deletePasskey,
 } from "@/lib/webauthn/actions";
+import {
+  formatPasskeyDate,
+  getPasskeyDeleteAriaLabel,
+  getPasskeyErrorMessage,
+  getPasskeyRegisterAriaLabel,
+  sanitizePasskeyNickname,
+} from "./passkey-utils";
 
 interface Passkey {
   credentialId: string;
@@ -92,12 +99,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         setNickname("");
         window.location.reload();
       } catch (err: unknown) {
-        const error = err as { name?: string };
-        if (error.name === "NotAllowedError") {
-          showToast("Cancelaste el registro de huella");
-        } else {
-          showToast("No pudimos registrar la huella");
-        }
+        showToast(getPasskeyErrorMessage(err, "No pudimos registrar la huella"));
       }
     });
   }
@@ -146,7 +148,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           type="text"
           placeholder="Ej: Mi Celular, Mi Computadora..."
           value={nickname}
-          onChange={(e) => setNickname(e.target.value.slice(0, 30))}
+          onChange={(e) => setNickname(sanitizePasskeyNickname(e.target.value))}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setNickname("");
@@ -176,18 +178,14 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
                   {passkey.nickname || "Huella registrada"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {new Date(passkey.createdAt).toLocaleDateString("es-AR", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {formatPasskeyDate(passkey.createdAt)}
                 </p>
               </div>
               <button
                 onClick={() => handleDelete(passkey.credentialId)}
                 disabled={isDeleting}
                 aria-busy={isDeleting}
-                aria-label={`Eliminar huella ${passkey.nickname ? `"${passkey.nickname}"` : "registrada"}`}
+                aria-label={getPasskeyDeleteAriaLabel(passkey.nickname)}
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -203,7 +201,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         className="w-full h-10 font-medium active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         disabled={isRegistering || supported === null}
         aria-busy={isRegistering}
-        aria-label={isRegistering ? "Registrando huella biométrica..." : "Registrar nueva huella biométrica"}
+        aria-label={getPasskeyRegisterAriaLabel(isRegistering, "Registrar nueva huella biométrica")}
         onClick={handleRegister}
       >
         {isRegistering ? (

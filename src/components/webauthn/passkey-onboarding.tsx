@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useCallback } from "react";
 import { Fingerprint, Loader2, X } from "lucide-react";
 import {
   startRegistration,
@@ -13,6 +13,10 @@ import {
   getRegistrationOptions,
   verifyRegistration,
 } from "@/lib/webauthn/actions";
+import {
+  getPasskeyErrorMessage,
+  getPasskeyRegisterAriaLabel,
+} from "./passkey-utils";
 
 export const PASSKEY_ONBOARDING_DISMISS_KEY = "passkey-onboarding-dismissed";
 
@@ -66,12 +70,25 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
     });
   }, [hasPasskeys]);
 
-  if (!visible || !supported) return null;
-
-  function handleDismiss() {
+  const handleDismiss = useCallback(() => {
     dismissPasskeyOnboarding();
     setVisible(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!visible || !supported) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [visible, supported, handleDismiss]);
+
+  if (!visible || !supported) return null;
 
   function handleRegister() {
     startRegistering(async () => {
@@ -96,12 +113,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         dismissPasskeyOnboarding();
         setVisible(false);
       } catch (err: unknown) {
-        const error = err as { name?: string };
-        if (error.name === "NotAllowedError") {
-          showToast("Cancelaste el registro de huella");
-        } else {
-          showToast("No pudimos registrar la huella");
-        }
+        showToast(getPasskeyErrorMessage(err, "No pudimos registrar la huella"));
       }
     });
   }
@@ -143,11 +155,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
           className="h-10 flex-1 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           disabled={isRegistering}
           aria-busy={isRegistering}
-          aria-label={
-            isRegistering
-              ? "Registrando huella biométrica..."
-              : "Activar acceso con huella"
-          }
+          aria-label={getPasskeyRegisterAriaLabel(isRegistering, "Activar acceso con huella")}
           onClick={handleRegister}
         >
           {isRegistering ? (

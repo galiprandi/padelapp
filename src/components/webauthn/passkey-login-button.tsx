@@ -11,6 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { getAuthOptions, verifyAuth } from "@/lib/webauthn/actions";
+import {
+  getPasskeyLoginAriaLabel,
+  getPasskeyErrorMessage,
+} from "./passkey-utils";
 
 export function PasskeyLoginButton() {
   const { showToast } = useToast();
@@ -58,9 +62,7 @@ export function PasskeyLoginButton() {
           return;
         }
         if (error.name === "InvalidStateError") {
-          showToast(
-            "No se encontró huella registrada. Entrá con Google y activá la huella desde tu perfil.",
-          );
+          showToast(getPasskeyErrorMessage(err));
           return;
         }
         console.error("[passkey-login] unexpected error:", err);
@@ -75,7 +77,7 @@ export function PasskeyLoginButton() {
       className="h-12 w-full rounded-lg text-base font-semibold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       disabled={isAuthenticating}
       aria-busy={isAuthenticating}
-      aria-label={isAuthenticating ? "Verificando huella biométrica..." : "Entrar con huella o Face ID"}
+      aria-label={getPasskeyLoginAriaLabel(isAuthenticating)}
       onClick={handlePasskeyLogin}
     >
       {isAuthenticating ? (
