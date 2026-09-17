@@ -3,6 +3,7 @@ import { ShieldCheck, TrendingUp, TrendingDown, Minus, Flame } from "lucide-reac
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, capitalizeName } from "@/lib/utils";
 import { getPlayerRecentForm, calculatePlayerStreak } from "@/lib/match-helpers";
+import { getRankingListItemAriaLabel } from "./ranking-utils";
 
 interface RankingListItemProps {
   player: {
@@ -41,14 +42,15 @@ export function RankingListItem({
   const displayName = capitalizeName(player.displayName ?? player.alias ?? "Jugador");
   const positionNum = customPosition ?? player.rankingPosition ?? index + 1;
 
-  const deltaText =
-    player.rankingDelta > 0
-      ? `subió ${player.rankingDelta}`
-      : player.rankingDelta < 0
-      ? `bajó ${Math.abs(player.rankingDelta)}`
-      : "sin cambios";
-
-  const ariaLabel = `Posición ${positionNum}: ${isViewer ? "Vos" : displayName}, ${Math.round(player.rankingScore)} puntos. ${player.wins} victorias, ${player.losses} derrotas. Cambio de posición: ${deltaText}.`;
+  const ariaLabel = getRankingListItemAriaLabel(
+    positionNum,
+    displayName,
+    isViewer,
+    player.rankingScore,
+    player.wins,
+    player.losses,
+    player.rankingDelta
+  );
 
   return (
     <Link
