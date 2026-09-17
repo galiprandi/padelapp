@@ -23,6 +23,18 @@ import {
   scheduleNextTurnAction,
   markTurnAsPlayedAction,
 } from "@/app/(app)/turnos/actions";
+import {
+  getCancelTurnAriaLabel,
+  getCancelTurnConfirmRegionAriaLabel,
+  getStartMatchAriaLabel,
+  getJoinTurnAriaLabel,
+  getJoinSubstituteAriaLabel,
+  getLeaveSubstituteAriaLabel,
+  getTakeOpenSlotAriaLabel,
+  getScheduleNextTurnAriaLabel,
+  getPlayCasualAriaLabel,
+  getPlayCasualConfirmRegionAriaLabel,
+} from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
   const router = useRouter();
@@ -50,7 +62,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         variant="ghost"
         onClick={() => setConfirming(true)}
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Cancelar y eliminar este turno"
+        aria-label={getCancelTurnAriaLabel({})}
       >
         <Trash2 className="mr-2 h-4 w-4" />
         Eliminar
@@ -60,6 +72,8 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
 
   return (
     <div
+      role="region"
+      aria-label={getCancelTurnConfirmRegionAriaLabel()}
       tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape" && !isPending) {
@@ -86,9 +100,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         aria-busy={isPending}
         onClick={handleCancel}
         className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={
-          isPending ? "Eliminando el turno..." : "Confirmar eliminación del turno"
-        }
+        aria-label={getCancelTurnAriaLabel({ isPending, isConfirming: true })}
       >
         {isPending ? (
           <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
@@ -167,7 +179,7 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Iniciando partido..." : "Iniciar partido ahora"}
+        aria-label={getStartMatchAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -215,7 +227,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Sumándome al turno..." : "Sumarme al turno"}
+        aria-label={getJoinTurnAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -252,7 +264,7 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Sumándome como suplente..." : "Sumarse como suplente"}
+        aria-label={getJoinSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -297,7 +309,7 @@ export function LeaveSubstituteForm({
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Saliendo de la lista de suplentes..." : "Salir de la lista de suplentes"}
+        aria-label={getLeaveSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -337,7 +349,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Ocupando cupo disponible..." : "Ocupar el cupo libre disponible"}
+        aria-label={getTakeOpenSlotAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -376,7 +388,7 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         className="w-full h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label={isPending ? "Programando próximo turno..." : "Programar el próximo turno para la siguiente semana"}
+        aria-label={getScheduleNextTurnAriaLabel({ isPending })}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -414,7 +426,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         variant="outline"
         onClick={() => setConfirming(true)}
         className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Marcar turno como jugado sin registrar partido"
+        aria-label={getPlayCasualAriaLabel({})}
       >
         <Play className="mr-2 h-5 w-5" />
         Jugar igual
@@ -424,6 +436,8 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
 
   return (
     <div
+      role="region"
+      aria-label={getPlayCasualConfirmRegionAriaLabel()}
       tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape") {
@@ -432,7 +446,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         }
       }}
       aria-busy={isPending}
-      className="flex flex-col gap-2 rounded-lg border border-border bg-muted p-3 focus-visible:outline-none"
+      className="flex flex-col gap-2 rounded-lg border border-border bg-card shadow-xs p-3 focus-visible:outline-none"
     >
       <p className="text-xs text-muted-foreground text-center">
         ¿Marcar como jugado? <strong className="text-foreground">Se cerrará el turno</strong> sin registrar un partido ni resultados en el ranking.
@@ -456,7 +470,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           disabled={isPending}
           aria-busy={isPending}
           className="flex-1 h-10 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Confirmar marcar como jugado"
+          aria-label={getPlayCasualAriaLabel({ isPending, isConfirming: true })}
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
