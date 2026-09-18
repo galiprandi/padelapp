@@ -348,7 +348,7 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     candidateScores.set(candidateId, currentScore + edgeScore);
 
     // Keep track of total connections (matches + turns) and last interaction date
-    const totalStrength = matchStrength + edge.turnsTogether;
+    const totalStrength = edge.matchesAsRivals + edge.matchesAsPartners + edge.turnsTogether;
     const existingDirect = candidateDirectMatches.get(candidateId);
     const edgeLastDate = lastInteraction ? new Date(lastInteraction) : new Date(0);
     if (existingDirect) {
