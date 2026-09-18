@@ -1,7 +1,42 @@
 import { describe, it, expect } from "vitest";
 import React from "react";
 import { EmptyState } from "../empty-state";
+import {
+  getEmptyStateAriaLabel,
+  getEmptyStateContainerClasses,
+} from "../empty-state-utils";
 import { Calendar } from "lucide-react";
+
+describe("EmptyState Helpers", () => {
+  describe("getEmptyStateAriaLabel", () => {
+    it("formats aria-label with title and description", () => {
+      expect(
+        getEmptyStateAriaLabel("No hay turnos disponibles", "Creá un turno nuevo."),
+      ).toBe("No hay turnos disponibles - Creá un turno nuevo.");
+    });
+
+    it("returns trimmed title when description is missing or whitespace", () => {
+      expect(getEmptyStateAriaLabel("  Sin partidos  ")).toBe("Sin partidos");
+      expect(getEmptyStateAriaLabel("Sin partidos", "   ")).toBe("Sin partidos");
+    });
+  });
+
+  describe("getEmptyStateContainerClasses", () => {
+    it("returns base MDS solid container classes", () => {
+      const classes = getEmptyStateContainerClasses();
+      expect(classes).toContain("bg-card");
+      expect(classes).toContain("border-border");
+      expect(classes).toContain("shadow-xs");
+    });
+
+    it("merges custom className with base classes", () => {
+      const classes = getEmptyStateContainerClasses("my-8 max-w-md");
+      expect(classes).toContain("my-8");
+      expect(classes).toContain("max-w-md");
+      expect(classes).toContain("bg-card");
+    });
+  });
+});
 
 describe("EmptyState Component", () => {
   it("creates valid React element with title and description", () => {

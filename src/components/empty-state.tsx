@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import { type LucideIcon } from "lucide-react";
+import {
+  getEmptyStateAriaLabel,
+  getEmptyStateContainerClasses,
+} from "./empty-state-utils";
 
 export interface EmptyStateProps {
   title: string;
@@ -17,14 +20,13 @@ export function EmptyState({
   action,
   className,
 }: EmptyStateProps) {
+  const ariaLabel = getEmptyStateAriaLabel(title, description);
+
   return (
     <div
       role="region"
-      aria-label={title}
-      className={cn(
-        "flex flex-col items-center justify-center rounded-xl border border-border bg-card px-6 py-12 text-center shadow-xs",
-        className,
-      )}
+      aria-label={ariaLabel}
+      className={getEmptyStateContainerClasses(className)}
     >
       {Icon && (
         <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground border border-border shadow-xs">
