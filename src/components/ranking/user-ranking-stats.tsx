@@ -10,6 +10,11 @@ import {
   getDecayFactorText,
   getRankingDeltaText,
 } from "@/lib/match-helpers";
+import {
+  getRankingBreakdownButtonAriaLabel,
+  getRankingUserSummaryAriaLabel,
+  getRankingRegionAriaLabel,
+} from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
   basePoints: number;
@@ -62,6 +67,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
     setIsOpen(!isOpen);
   };
 
+  const buttonText = getRankingBreakdownButtonAriaLabel(isOpen, isPending);
+
   return (
     <div
       className="mt-3 border-t border-border pt-3"
@@ -82,12 +89,10 @@ function RankingBreakdown({ userId }: { userId: string }) {
         {isPending ? (
           <>
             <RefreshCw className="h-3 w-3 animate-spin" aria-hidden="true" />
-            <span>Cargando desglose...</span>
+            <span>{buttonText}</span>
           </>
-        ) : isOpen ? (
-          "Ocultar desglose de puntos 📊"
         ) : (
-          "Ver desglose de puntos 📊"
+          buttonText
         )}
       </button>
 
@@ -95,7 +100,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
         <div
           id={`ranking-breakdown-${userId}`}
           role="region"
-          aria-label="Desglose detallado de puntos de ranking"
+          aria-label={getRankingRegionAriaLabel("breakdown")}
           className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs"
         >
           {error && (
@@ -204,11 +209,21 @@ export function UserRankingBanner({
   const decayFactor = mounted ? calculateDecayFactor(lastMatchAt) : null;
   const decayText = getDecayFactorText(decayFactor);
   const deltaText = getRankingDeltaText(delta);
+  const summaryAriaLabel = getRankingUserSummaryAriaLabel(
+    true,
+    position,
+    score,
+    winRate,
+    reputationPercent,
+    wins,
+    losses,
+    delta
+  );
 
   return (
     <div
       role="region"
-      aria-label="Resumen de ranking de usuario"
+      aria-label={summaryAriaLabel}
       className={cn("rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs", className)}
     >
       <div className="flex items-center justify-between gap-4">
@@ -301,11 +316,21 @@ export function UserRankingCard({
   const decayFactor = mounted ? calculateDecayFactor(lastMatchAt) : null;
   const decayText = getDecayFactorText(decayFactor);
   const deltaText = getRankingDeltaText(delta);
+  const summaryAriaLabel = getRankingUserSummaryAriaLabel(
+    false,
+    position ?? null,
+    score ?? 1000,
+    winRate,
+    reputationPercent,
+    wins,
+    losses,
+    delta ?? null
+  );
 
   return (
     <div
       role="region"
-      aria-label="Tarjeta de posición y puntos de ranking"
+      aria-label={summaryAriaLabel}
       className={cn(
         "flex flex-col rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs",
         className,
