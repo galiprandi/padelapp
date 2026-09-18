@@ -5,6 +5,8 @@ import {
   getRankingSearchStatusAriaLabel,
   getPodiumPlayerAriaLabel,
   getRankingListItemAriaLabel,
+  getRankingBreakdownButtonAriaLabel,
+  getRankingUserSummaryAriaLabel,
   getRankingRegionAriaLabel,
 } from "../ranking-utils";
 
@@ -121,6 +123,52 @@ describe("Ranking Helpers", () => {
     });
   });
 
+  describe("getRankingBreakdownButtonAriaLabel", () => {
+    it("returns loading text when isPending is true", () => {
+      expect(getRankingBreakdownButtonAriaLabel(false, true)).toBe(
+        "Cargando desglose de puntos..."
+      );
+      expect(getRankingBreakdownButtonAriaLabel(true, true)).toBe(
+        "Cargando desglose de puntos..."
+      );
+    });
+
+    it("returns toggle labels when not pending", () => {
+      expect(getRankingBreakdownButtonAriaLabel(true, false)).toBe(
+        "Ocultar desglose de puntos 📊"
+      );
+      expect(getRankingBreakdownButtonAriaLabel(false, false)).toBe(
+        "Ver desglose de puntos 📊"
+      );
+    });
+  });
+
+  describe("getRankingUserSummaryAriaLabel", () => {
+    it("returns formatted ARIA label for banner with position and positive delta", () => {
+      expect(
+        getRankingUserSummaryAriaLabel(true, 1, 1150, 80, 100, 8, 2, 3)
+      ).toBe(
+        "Resumen de tu ranking: Posición #1, 1150 puntos. 8 victorias, 2 derrotas (80% de victorias). 100% de reputación. Cambio: subió 3 lugares."
+      );
+    });
+
+    it("returns formatted ARIA label for card without position and negative delta", () => {
+      expect(
+        getRankingUserSummaryAriaLabel(false, null, 920, 50, 90, 3, 3, -2)
+      ).toBe(
+        "Tarjeta de mi posición: Sin posición asignada, 920 puntos. 3 victorias, 3 derrotas (50% de victorias). 90% de reputación. Cambio: bajó 2 lugares."
+      );
+    });
+
+    it("returns formatted ARIA label when delta is zero or null", () => {
+      expect(
+        getRankingUserSummaryAriaLabel(false, 5, 1000, 60, 95, 6, 4, 0)
+      ).toBe(
+        "Tarjeta de mi posición: Posición #5, 1000 puntos. 6 victorias, 4 derrotas (60% de victorias). 95% de reputación. Cambio: sin cambios."
+      );
+    });
+  });
+
   describe("getRankingRegionAriaLabel", () => {
     it("returns correct landmark labels", () => {
       expect(getRankingRegionAriaLabel("rules")).toBe(
@@ -137,6 +185,15 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRegionAriaLabel("list")).toBe(
         "Listado de clasificación general de jugadores"
+      );
+      expect(getRankingRegionAriaLabel("breakdown")).toBe(
+        "Desglose detallado de puntos de ranking"
+      );
+      expect(getRankingRegionAriaLabel("banner")).toBe(
+        "Resumen de ranking de usuario"
+      );
+      expect(getRankingRegionAriaLabel("card")).toBe(
+        "Tarjeta de posición y puntos de ranking"
       );
     });
   });

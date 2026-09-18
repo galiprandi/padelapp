@@ -100,10 +100,54 @@ export function getRankingListItemAriaLabel(
 }
 
 /**
+ * Returns text / accessible ARIA label for ranking breakdown toggle button
+ */
+export function getRankingBreakdownButtonAriaLabel(
+  isOpen: boolean,
+  isPending: boolean
+): string {
+  if (isPending) {
+    return "Cargando desglose de puntos...";
+  }
+  return isOpen
+    ? "Ocultar desglose de puntos 📊"
+    : "Ver desglose de puntos 📊";
+}
+
+/**
+ * Returns accessible ARIA label for user ranking summary banner or card
+ */
+export function getRankingUserSummaryAriaLabel(
+  isBanner: boolean,
+  position: number | null,
+  score: number,
+  winRate: number,
+  reputationPercent: number,
+  wins: number,
+  losses: number,
+  delta?: number | null
+): string {
+  const contextLabel = isBanner ? "Resumen de tu ranking" : "Tarjeta de mi posición";
+  const posText = position ? `Posición #${position}` : "Sin posición asignada";
+  const pointsText = `${Math.round(score)} puntos`;
+  const recordText = `${wins} victorias, ${losses} derrotas (${winRate}% de victorias)`;
+  const repText = `${reputationPercent}% de reputación`;
+
+  let deltaText = "sin cambios";
+  if (delta && delta > 0) {
+    deltaText = `subió ${delta} lugares`;
+  } else if (delta && delta < 0) {
+    deltaText = `bajó ${Math.abs(delta)} lugares`;
+  }
+
+  return `${contextLabel}: ${posText}, ${pointsText}. ${recordText}. ${repText}. Cambio: ${deltaText}.`;
+}
+
+/**
  * Returns accessible ARIA region landmark label for ranking section
  */
 export function getRankingRegionAriaLabel(
-  section: "rules" | "search" | "filter" | "podium" | "list"
+  section: "rules" | "search" | "filter" | "podium" | "list" | "breakdown" | "banner" | "card"
 ): string {
   switch (section) {
     case "rules":
@@ -116,5 +160,11 @@ export function getRankingRegionAriaLabel(
       return "Podio de los 3 mejores jugadores del ranking";
     case "list":
       return "Listado de clasificación general de jugadores";
+    case "breakdown":
+      return "Desglose detallado de puntos de ranking";
+    case "banner":
+      return "Resumen de ranking de usuario";
+    case "card":
+      return "Tarjeta de posición y puntos de ranking";
   }
 }
