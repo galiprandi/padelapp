@@ -966,3 +966,106 @@ export function getPlayCasualAriaLabel({
 export function getPlayCasualConfirmRegionAriaLabel(): string {
   return "Confirmación para marcar el turno como jugado sin registrar partido";
 }
+
+/**
+ * Format success toast message when user leaves a turn.
+ */
+export function getLeaveTurnSuccessToast(): string {
+  return "Te bajaste del turno.";
+}
+
+/**
+ * Format error toast message when user fails to leave a turn.
+ */
+export function getLeaveTurnErrorToast(message?: string): string {
+  return message ?? "No se pudo bajar del turno.";
+}
+
+/**
+ * Format accessible ARIA label for initial leave turn trigger button.
+ */
+export function getLeaveTurnTriggerAriaLabel(): string {
+  return "Bajarme del turno";
+}
+
+/**
+ * Format ARIA landmark label for leave turn confirmation region.
+ */
+export function getLeaveTurnRegionAriaLabel(): string {
+  return "Baja del turno";
+}
+
+/**
+ * Format accessible ARIA label for canceling leave turn confirmation.
+ */
+export function getCancelLeaveTurnAriaLabel(): string {
+  return "Cancelar baja del turno";
+}
+
+/**
+ * Format accessible ARIA label for confirming leave turn.
+ */
+export function getConfirmLeaveTurnAriaLabel({
+  isPending = false,
+}: {
+  isPending?: boolean;
+}): string {
+  return isPending
+    ? "Procesando baja del turno..."
+    : "Confirmar baja del turno";
+}
+
+/**
+ * Format success toast message when notifying network.
+ */
+export function getOpenToNetworkSuccessToast(notifiedCount: number): string {
+  return notifiedCount > 0
+    ? `Se notificó a ${notifiedCount} contacto${notifiedCount === 1 ? "" : "s"} de tu red.`
+    : "Se avisó a tu red.";
+}
+
+/**
+ * Format error toast message when failing to notify network.
+ */
+export function getOpenToNetworkErrorToast(message?: string): string {
+  return message ?? "No se pudo notificar a tu red.";
+}
+
+/**
+ * Format ARIA landmark label for network notification region.
+ */
+export function getOpenToNetworkRegionAriaLabel(): string {
+  return "Notificación a red de contactos";
+}
+
+/**
+ * Format result text when network is notified.
+ */
+export function getOpenToNetworkResultText(notified: number): string {
+  return notified > 0
+    ? `Se notificó a ${notified} contacto${notified === 1 ? "" : "s"}`
+    : "Red notificada";
+}
+
+/**
+ * Format dynamic ARIA label for OpenToNetwork button.
+ */
+export function getOpenToNetworkAriaLabel({
+  isPending = false,
+  isOnCooldown = false,
+  minutesRemaining = 0,
+  label = "Abrir a mi red",
+}: {
+  isPending?: boolean;
+  isOnCooldown?: boolean;
+  minutesRemaining?: number;
+  label?: string;
+}): string {
+  if (isPending) {
+    return "Notificando a tu red de pádel...";
+  }
+  if (isOnCooldown) {
+    return `Notificado, en cooldown por ${minutesRemaining} minuto${minutesRemaining === 1 ? "" : "s"}`;
+  }
+  return label;
+}

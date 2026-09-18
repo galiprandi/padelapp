@@ -7,7 +7,14 @@ import { openToNetworkAction } from "@/app/(app)/turnos/actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { cn } from "@/lib/utils";
-import { getCooldownRemainingMinutes } from "@/components/turns/turn-utils";
+import {
+  getCooldownRemainingMinutes,
+  getOpenToNetworkSuccessToast,
+  getOpenToNetworkErrorToast,
+  getOpenToNetworkRegionAriaLabel,
+  getOpenToNetworkResultText,
+  getOpenToNetworkAriaLabel,
+} from "@/components/turns/turn-utils";
 
 interface OpenToNetworkButtonProps {
   turnId: string;
@@ -74,14 +81,10 @@ export function OpenToNetworkButton({
           notified,
           total: res.totalContacts ?? 0,
         });
-        showToast(
-          notified > 0
-            ? `Se notificó a ${notified} contacto${notified === 1 ? "" : "s"} de tu red.`
-            : "Se avisó a tu red."
-        );
+        showToast(getOpenToNetworkSuccessToast(notified));
         router.refresh();
       } else {
-        const errMsg = res.message ?? "No se pudo notificar a tu red.";
+        const errMsg = getOpenToNetworkErrorToast(res.message);
         setError(errMsg);
         showToast(errMsg);
       }
@@ -89,10 +92,7 @@ export function OpenToNetworkButton({
   };
 
   if (result) {
-    const resultText =
-      result.notified > 0
-        ? `Se notificó a ${result.notified} contacto${result.notified === 1 ? "" : "s"}`
-        : "Red notificada";
+    const resultText = getOpenToNetworkResultText(result.notified);
 
     if (iconOnly || size === "icon") {
       return (
@@ -144,15 +144,19 @@ export function OpenToNetworkButton({
   }
 
   const isIconOnly = iconOnly || size === "icon";
-  const cooldownAriaLabel = `Notificado, en cooldown por ${minutesRemaining} minuto${minutesRemaining === 1 ? "" : "s"}`;
-  const computedAriaLabel = isPending
-    ? "Notificando a tu red de pádel..."
-    : isOnCooldown
-    ? cooldownAriaLabel
-    : label;
+  const computedAriaLabel = getOpenToNetworkAriaLabel({
+    isPending,
+    isOnCooldown,
+    minutesRemaining,
+    label,
+  });
 
   return (
-    <div className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}>
+    <div
+      role="region"
+      aria-label={getOpenToNetworkRegionAriaLabel()}
+      className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}
+    >
       <Button
         onClick={handleClick}
         disabled={isPending || isOnCooldown}

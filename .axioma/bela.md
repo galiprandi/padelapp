@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-18 — LeaveTurnButton & OpenToNetworkButton Pure Helpers Extraction & ARIA Region Accessibility Refactoring (bela/turnos/leave-turn-and-open-network-a11y-helpers)
 - [x] 2026-09-16 — Turn Chat Pure Helpers Extraction, ARIA Region Landmarks, Real-Time Screen Reader Announcer & Solid MDS Polish in TurnChat (bela/turnos/turn-chat-helpers-and-a11y)
 - [x] 2026-09-15 — TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring (bela/turnos/turn-card-aria-helpers-and-a11y)
 - [x] 2026-09-13 — Organizer Action Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in RemovePlayerButton & AssignSubstituteButton (bela/turnos/organizer-action-helpers-and-a11y)
@@ -55,6 +56,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-18 - LeaveTurnButton & OpenToNetworkButton Pure Helpers Extraction & ARIA Region Accessibility Refactoring
+**Learning:** Extracting pure helper functions (`getLeaveTurnSuccessToast`, `getLeaveTurnErrorToast`, `getLeaveTurnTriggerAriaLabel`, `getLeaveTurnRegionAriaLabel`, `getCancelLeaveTurnAriaLabel`, `getConfirmLeaveTurnAriaLabel`, `getOpenToNetworkSuccessToast`, `getOpenToNetworkErrorToast`, `getOpenToNetworkRegionAriaLabel`, `getOpenToNetworkResultText`, `getOpenToNetworkAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized toast copy formatting and ARIA screen reader label generation from React render functions in `LeaveTurnButton` (`src/components/turns/leave-turn-button.tsx`) and `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Wrapping action containers in explicit `role="region"` landmark containers with localized Argentine Spanish `aria-label` attributes, focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) guarantees robust mobile accessibility compliance.
+**Action:** Always extract toast copy and ARIA accessibility labels into pure helper utilities backed by Vitest unit tests, and equip interactive action buttons with region landmarks, focus ring offsets, active tactile scaling, and solid MDS container styling.
+
 ## 2026-09-16 - Turn Chat Pure Helpers Extraction, ARIA Region Landmarks, Real-Time Screen Reader Announcer & Solid MDS Polish in TurnChat
 **Learning:** Extracting message validation (`validateChatMessage`), screen reader ARIA labels (`getChatMessageAriaLabel`, `getQuickChipAriaLabel`, `getChatRegionAriaLabel`, `getChatLogAriaLabel`, `getChatInputAriaLabel`, `getChatCharacterCounterAriaLabel`) into `src/components/turns/turn-chat-utils.ts` decouples chat validation rules and localized screen reader label generation from React render functions. Equipping `TurnChat` (`src/components/turns/turn-chat.tsx`) with explicit `<div role="region" aria-label={getChatRegionAriaLabel()}>`, `role="log"` with `aria-live="polite"` for automatic screen reader announcements of new incoming chat messages, `role="article"` on message items, focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs border border-border bg-card`) ensures mobile accessibility and visual alignment.
 **Action:** Always extract chat validation and screen reader labels into pure helper utilities backed by Vitest unit tests, and equip real-time messaging windows with region landmarks, `role="log"` with `aria-live="polite"`, focus ring offsets, and solid MDS container styling.
