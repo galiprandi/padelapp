@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-13 — Extracción de Funciones Helper `getResourceHints` y `getOriginTrialMetaProps` para Pistas de Recursos en Root Layout (`src/lib/resource-hints.ts`) (PR #tino/perf/resource-hints-helper-extraction)
 - [x] 2026-09-12 — Configuración de Recolección de Basura de Caché (`DEFAULT_QUERY_GC_TIME`) y Política de Reintentos Inteligentes (`isQueryRetryable`) en TanStack QueryClient (PR #tino/perf/query-client-gc-time-and-retry-policy)
 - [x] 2026-09-11 — Extracción de Funciones Helper `getQueryClientConfig` y `createAppQueryClient` para Configuración Modular de TanStack Query (PR #tino/perf/query-client-config-helper)
 - [x] 2026-09-10 — Extracción de Función Helper `isNavItemActive` para Coincidencia de Rutas Activas en Navegación Principal (PR #tino/ux/nav-item-active-helper-extraction)
@@ -52,6 +53,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-13 - Extracción de Helpers `getResourceHints` y `getOriginTrialMetaProps` para Pistas de Conexión Temprana
+**Aprendizaje:** Encapsular la generación de etiquetas `<link rel="preconnect">`, `<link rel="dns-prefetch">` y `<meta http-equiv="origin-trial">` en funciones puras y probadas (`src/lib/resource-hints.ts`) evita la duplicación de marcado en `RootLayout` (`src/app/layout.tsx`), asegura la sanitización de cadenas de dominios y tokens, y permite verificar de manera aislada que las pistas de recursos para dominios críticos como Google Avatars (`lh3.googleusercontent.com`) se generen correctamente.
+**Acción:** Reutilizar `getResourceHints` o extender `DEFAULT_RESOURCE_HINT_DOMAINS` al agregar nuevas fuentes estáticas de imágenes o CDNs a la aplicación.
+
 ### 2026-09-12 - Recolección de Basura `DEFAULT_QUERY_GC_TIME` y Política de Reintentos `isQueryRetryable` en TanStack Query
 **Aprendizaje:** Definir un tiempo de recolección de basura explícito (`gcTime: 300.000 ms` / 5 minutos) y una función helper pura de reintentos prudente (`isQueryRetryable` con un máximo de 2 reintentos para errores transitorios y descarte inmediato para errores cliente HTTP 4xx) en `src/lib/query-client-config.ts` evita la acumulación indebida de caché inactiva en memoria y previene tormentas de reintentos infructuosos en conexiones móviles inestables.
 **Acción:** Reutilizar `isQueryRetryable` y la configuración centralizada al instanciar QueryClients específicos o al configurar consultas avanzadas en la aplicación.
