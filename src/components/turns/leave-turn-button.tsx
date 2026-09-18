@@ -8,7 +8,15 @@ import { createMagicLink } from "@/lib/magic-link";
 import { leaveTurnAction } from "@/app/(app)/turnos/actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast/use-toast";
-import { isLateLeaveWarningRequired } from "@/components/turns/turn-utils";
+import {
+  isLateLeaveWarningRequired,
+  getLeaveTurnSuccessToast,
+  getLeaveTurnErrorToast,
+  getLeaveTurnTriggerAriaLabel,
+  getLeaveTurnRegionAriaLabel,
+  getCancelLeaveTurnAriaLabel,
+  getConfirmLeaveTurnAriaLabel,
+} from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
   turnId: string;
@@ -34,9 +42,9 @@ export function LeaveTurnButton({
     startTransition(async () => {
       const result = await leaveTurnAction(turnId);
       if (result.status === "ok") {
-        showToast("Te bajaste del turno.");
+        showToast(getLeaveTurnSuccessToast());
       } else {
-        showToast(result.message ?? "No se pudo bajar del turno.");
+        showToast(getLeaveTurnErrorToast(result.message));
       }
       router.refresh();
     });
@@ -50,7 +58,7 @@ export function LeaveTurnButton({
         onClick={() => setConfirming(true)}
         variant="ghost"
         className="w-full h-10 rounded-lg text-xs font-bold text-destructive hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Bajarme del turno"
+        aria-label={getLeaveTurnTriggerAriaLabel()}
       >
         <LogOut className="mr-2 h-4 w-4" />
         Bajarme del turno
@@ -61,7 +69,7 @@ export function LeaveTurnButton({
   return (
     <div
       role="region"
-      aria-label="Baja del turno"
+      aria-label={getLeaveTurnRegionAriaLabel()}
       className="flex flex-col gap-2"
       tabIndex={-1}
       onKeyDown={(e) => {
@@ -101,7 +109,7 @@ export function LeaveTurnButton({
           variant="outline"
           className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
           disabled={isPending}
-          aria-label="Cancelar baja del turno"
+          aria-label={getCancelLeaveTurnAriaLabel()}
         >
           <X className="mr-2 h-4 w-4" />
           Cancelar
@@ -112,9 +120,7 @@ export function LeaveTurnButton({
           className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
           disabled={isPending}
           aria-busy={isPending}
-          aria-label={
-            isPending ? "Procesando baja del turno..." : "Confirmar baja del turno"
-          }
+          aria-label={getConfirmLeaveTurnAriaLabel({ isPending })}
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

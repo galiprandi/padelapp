@@ -50,6 +50,17 @@ import {
   getTurnCardAriaLabel,
   getQuickJoinAriaLabel,
   getTurnStatusBadgeAriaLabel,
+  getLeaveTurnSuccessToast,
+  getLeaveTurnErrorToast,
+  getLeaveTurnTriggerAriaLabel,
+  getLeaveTurnRegionAriaLabel,
+  getCancelLeaveTurnAriaLabel,
+  getConfirmLeaveTurnAriaLabel,
+  getOpenToNetworkSuccessToast,
+  getOpenToNetworkErrorToast,
+  getOpenToNetworkRegionAriaLabel,
+  getOpenToNetworkResultText,
+  getOpenToNetworkAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -698,6 +709,37 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("LeaveTurnButton and OpenToNetworkButton pure helpers", () => {
+  it("formats leave turn toast messages and ARIA labels", () => {
+    expect(getLeaveTurnSuccessToast()).toBe("Te bajaste del turno.");
+    expect(getLeaveTurnErrorToast()).toBe("No se pudo bajar del turno.");
+    expect(getLeaveTurnErrorToast("Error personalizado")).toBe("Error personalizado");
+    expect(getLeaveTurnTriggerAriaLabel()).toBe("Bajarme del turno");
+    expect(getLeaveTurnRegionAriaLabel()).toBe("Baja del turno");
+    expect(getCancelLeaveTurnAriaLabel()).toBe("Cancelar baja del turno");
+    expect(getConfirmLeaveTurnAriaLabel({})).toBe("Confirmar baja del turno");
+    expect(getConfirmLeaveTurnAriaLabel({ isPending: true })).toBe("Procesando baja del turno...");
+  });
+
+  it("formats open to network toast messages, result text, and ARIA labels", () => {
+    expect(getOpenToNetworkSuccessToast(0)).toBe("Se avisó a tu red.");
+    expect(getOpenToNetworkSuccessToast(1)).toBe("Se notificó a 1 contacto de tu red.");
+    expect(getOpenToNetworkSuccessToast(3)).toBe("Se notificó a 3 contactos de tu red.");
+    expect(getOpenToNetworkErrorToast()).toBe("No se pudo notificar a tu red.");
+    expect(getOpenToNetworkErrorToast("Fallo de red")).toBe("Fallo de red");
+    expect(getOpenToNetworkRegionAriaLabel()).toBe("Notificación a red de contactos");
+    expect(getOpenToNetworkResultText(0)).toBe("Red notificada");
+    expect(getOpenToNetworkResultText(1)).toBe("Se notificó a 1 contacto");
+    expect(getOpenToNetworkResultText(2)).toBe("Se notificó a 2 contactos");
+
+    expect(getOpenToNetworkAriaLabel({})).toBe("Abrir a mi red");
+    expect(getOpenToNetworkAriaLabel({ label: "Notificar red" })).toBe("Notificar red");
+    expect(getOpenToNetworkAriaLabel({ isPending: true })).toBe("Notificando a tu red de pádel...");
+    expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 1 })).toBe("Notificado, en cooldown por 1 minuto");
+    expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 15 })).toBe("Notificado, en cooldown por 15 minutos");
   });
 });
 
