@@ -1,5 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildContactsMap, getTurnNetworkContacts, getPadelContacts, getCachedPadelContacts, getCachedTurnNetworkContacts, calculatePadelContactAriaLabel, type PadelContact } from "@/lib/queries/contacts";
+import {
+  buildContactsMap,
+  getTurnNetworkContacts,
+  getPadelContacts,
+  getCachedPadelContacts,
+  getCachedTurnNetworkContacts,
+  calculatePadelContactAriaLabel,
+  calculateNetworkContactPriorityScore,
+  formatNetworkContactSummary,
+  type PadelContact,
+} from "@/lib/queries/contacts";
 
 vi.mock("next/cache", () => ({
   // Mirrors the real unstable_cache contract: values crossing the cache
@@ -307,5 +317,95 @@ describe("Skill proximity and side preference synergy scoring rules", () => {
     const neededSide = rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
 
     expect(neededSide).toBe("LEFT");
+  });
+});
+
+describe("calculateNetworkContactPriorityScore", () => {
+  it("calculates base match and turn score with recency bonus (<30 days)", () => {
+    const recentDate = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000); // 10 days ago
+    // 2 rivals + 3 partners = 5 matches * 10 = 50. 2 turns * 5 = 10. Recency (<30) = +50 -> total 110.
+    const score = calculateNetworkContactPriorityScore(2, 3, 2, recentDate);
+    expect(score).toBe(110);
+  });
+
+  it("applies recency bonus tiers correctly (<60 days and <120 days)", () => {
+    const date40Days = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000);
+    const date90Days = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const date150Days = new Date(Date.now() - 150 * 24 * 60 * 60 * 1000);
+
+    // Matches: 1 rival + 1 partner = 2 * 10 = 20. Turns: 0.
+    expect(calculateNetworkContactPriorityScore(1, 1, 0, date40Days)).toBe(20 + 30); // 50
+    expect(calculateNetworkContactPriorityScore(1, 1, 0, date90Days)).toBe(20 + 15); // 35
+    expect(calculateNetworkContactPriorityScore(1, 1, 0, date150Days)).toBe(20); // 20
+    expect(calculateNetworkContactPriorityScore(1, 1, 0, null)).toBe(20); // 20
+  });
+});
+
+describe("formatNetworkContactSummary", () => {
+  it("formats summary with habitual pair badge for >=10 matches", () => {
+    const contact: PadelContact = {
+      id: "p-01",
+      displayName: "Fernando Belasteguín",
+      alias: "Bela",
+      image: null,
+      lastMatchAt: new Date("2026-06-15T12:00:00Z"),
+      matchesTogether: 12,
+    };
+
+    const summary = formatNetworkContactSummary(contact);
+    expect(summary.matchCountText).toBe("12 partidos");
+    expect(summary.badgeText).toBe("Dupla habitual 🏆");
+    expect(summary.recencyText).toBe("15/6/2026");
+    expect(summary.ariaLabel).toContain("Bela");
+    expect(summary.ariaLabel).toContain("12 partidos compartidos");
+  });
+
+  it("formats summary with frequent badge for >=5 matches", () => {
+    const contact: PadelContact = {
+      id: "p-02",
+      displayName: "Diego Morales",
+      alias: "Gero",
+      image: null,
+      lastMatchAt: new Date("2026-05-10T12:00:00Z"),
+      matchesTogether: 6,
+    };
+
+    const summary = formatNetworkContactSummary(contact);
+    expect(summary.matchCountText).toBe("6 partidos");
+    expect(summary.badgeText).toBe("Frecuente 🤝");
+    expect(summary.recencyText).toBe("10/5/2026");
+  });
+
+  it("formats summary for singular match count", () => {
+    const contact: PadelContact = {
+      id: "p-03",
+      displayName: "Facundo Lopez",
+      alias: null,
+      image: null,
+      lastMatchAt: new Date("2026-01-20T12:00:00Z"),
+      matchesTogether: 1,
+    };
+
+    const summary = formatNetworkContactSummary(contact);
+    expect(summary.matchCountText).toBe("1 partido");
+    expect(summary.badgeText).toBe("Contacto de red 🎾");
+    expect(summary.recencyText).toBe("20/1/2026");
+  });
+
+  it("handles contact with zero matches and null/empty lastMatchAt", () => {
+    const contact: PadelContact = {
+      id: "p-04",
+      displayName: "Nuevo Jugador",
+      alias: null,
+      image: null,
+      lastMatchAt: new Date(0),
+      matchesTogether: 0,
+    };
+
+    const summary = formatNetworkContactSummary(contact);
+    expect(summary.matchCountText).toBe("0 partidos");
+    expect(summary.badgeText).toBe("Nuevo contacto 🌱");
+    expect(summary.recencyText).toBe("");
+    expect(summary.ariaLabel).toBe("Nuevo Jugador: 0 partidos compartidos.");
   });
 });
