@@ -5,6 +5,10 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { getSpeculationRulesTag } from "@/lib/speculation-rules";
+import {
+  getResourceHints,
+  getOriginTrialMetaProps,
+} from "@/lib/resource-hints";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,17 +49,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const resourceHints = getResourceHints();
+  const originTrialMeta = getOriginTrialMetaProps(
+    process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN,
+  );
+
   return (
     <html lang="es">
       <head>
-        <link rel="preconnect" href="https://lh3.googleusercontent.com" />
-        <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
-        {process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN && (
-          <meta
-            http-equiv="origin-trial"
-            content={process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN}
-          />
-        )}
+        {resourceHints.map((hint, idx) => (
+          <link key={`${hint.rel}-${hint.href}-${idx}`} {...hint} />
+        ))}
+        {originTrialMeta && <meta {...originTrialMeta} />}
         <script
           type="speculationrules"
           dangerouslySetInnerHTML={getSpeculationRulesTag()}
