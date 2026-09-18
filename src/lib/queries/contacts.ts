@@ -21,6 +21,84 @@ export interface PadelContact {
 }
 
 /**
+ * Pure helper: calculates the priority score for a candidate network contact
+ * based on direct matches, turns together, and recency of last interaction.
+ */
+export function calculateNetworkContactPriorityScore(
+  matchesAsRivals: number,
+  matchesAsPartners: number,
+  turnsTogether: number,
+  lastInteraction: Date | null
+): number {
+  const matchStrength = matchesAsRivals + matchesAsPartners;
+  let edgeScore = matchStrength * 10;
+
+  // Add co-inscription signal (turnsTogether)
+  edgeScore += turnsTogether * 5;
+
+  if (lastInteraction) {
+    const daysSince = (Date.now() - lastInteraction.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysSince < 30) edgeScore += 50;
+    else if (daysSince < 60) edgeScore += 30;
+    else if (daysSince < 120) edgeScore += 15;
+  }
+
+  return edgeScore;
+}
+
+export interface NetworkContactSummary {
+  matchCountText: string;
+  recencyText: string;
+  badgeText: string;
+  ariaLabel: string;
+}
+
+/**
+ * Pure helper: formats padel contact information into standardized UI texts
+ * (match count, recency, solid MDS badge text, and accessible ARIA label).
+ */
+export function formatNetworkContactSummary(
+  contact: PadelContact
+): NetworkContactSummary {
+  const count = contact.matchesTogether;
+  const matchCountText = count === 1 ? "1 partido" : `${count} partidos`;
+
+  const lastMatchAt = contact.lastMatchAt ? new Date(contact.lastMatchAt) : null;
+  const isValidDate = lastMatchAt && lastMatchAt.getTime() > 0;
+
+  let recencyText = "";
+  let badgeText = "Contacto de red 🎾";
+
+  if (count >= 10) {
+    badgeText = "Dupla habitual 🏆";
+  } else if (count >= 5) {
+    badgeText = "Frecuente 🤝";
+  } else if (count >= 1) {
+    badgeText = "Contacto de red 🎾";
+  } else {
+    badgeText = "Nuevo contacto 🌱";
+  }
+
+  if (isValidDate) {
+    recencyText = lastMatchAt.toLocaleDateString("es-AR", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+      timeZone: "America/Argentina/Buenos_Aires",
+    });
+  }
+
+  const ariaLabel = calculatePadelContactAriaLabel(contact);
+
+  return {
+    matchCountText,
+    recencyText,
+    badgeText,
+    ariaLabel,
+  };
+}
+
+/**
  * Calculates a descriptive, accessible Argentine Spanish ARIA label for a padel contact card,
  * including name/alias, shared matches count, and formatted date of last match.
  */
@@ -255,32 +333,22 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     }
     validConnectionsForCandidate.get(candidateId)!.add(enrolledId);
 
-    // Calculate score from match-based signal (rivalry + partnership)
-    const matchStrength = edge.matchesAsRivals + edge.matchesAsPartners;
-    let edgeScore = matchStrength * 10;
-
-    // Add co-inscription signal (turnsTogether). Lower weight than match-based
-    // signal (no outcome, no confirmed play) but still a strong proximity hint:
-    // someone shared the turn link with someone else. Weight 5 vs 10.
-    edgeScore += edge.turnsTogether * 5;
-
-    // Recency bonus: use the most recent of lastMatchAt / lastTurnAt so that
-    // a recent co-inscription also boosts the score even without a match.
     const lastInteraction = edge.lastTurnAt && edge.lastMatchAt
       ? (edge.lastTurnAt > edge.lastMatchAt ? edge.lastTurnAt : edge.lastMatchAt)
       : (edge.lastTurnAt ?? edge.lastMatchAt);
-    if (lastInteraction) {
-      const daysSince = (Date.now() - lastInteraction.getTime()) / (1000 * 60 * 60 * 24);
-      if (daysSince < 30) edgeScore += 50;
-      else if (daysSince < 60) edgeScore += 30;
-      else if (daysSince < 120) edgeScore += 15;
-    }
+
+    const edgeScore = calculateNetworkContactPriorityScore(
+      edge.matchesAsRivals,
+      edge.matchesAsPartners,
+      edge.turnsTogether,
+      lastInteraction
+    );
 
     const currentScore = candidateScores.get(candidateId) ?? 0;
     candidateScores.set(candidateId, currentScore + edgeScore);
 
     // Keep track of total connections (matches + turns) and last interaction date
-    const totalStrength = matchStrength + edge.turnsTogether;
+    const totalStrength = edge.matchesAsRivals + edge.matchesAsPartners + edge.turnsTogether;
     const existingDirect = candidateDirectMatches.get(candidateId);
     const edgeLastDate = lastInteraction ? new Date(lastInteraction) : new Date(0);
     if (existingDirect) {

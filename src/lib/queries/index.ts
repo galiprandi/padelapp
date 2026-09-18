@@ -42,7 +42,10 @@ export {
   getTurnNetworkContacts,
   getCachedTurnNetworkContacts,
   calculatePadelContactAriaLabel,
+  calculateNetworkContactPriorityScore,
+  formatNetworkContactSummary,
   type PadelContact,
+  type NetworkContactSummary,
 } from "./contacts";
 
 export { getDashboardUserStats, getCachedDashboardUserStats, type DashboardUserStats } from "./dashboard";
