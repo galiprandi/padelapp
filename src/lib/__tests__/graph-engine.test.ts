@@ -210,6 +210,7 @@ import {
   calculateGraphDensityMetric,
   calculateCommunityBalanceInfo,
   calculatePlayerInteractionReciprocity,
+  calculatePartnershipStabilityInfo,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1951,6 +1952,68 @@ describe("calculateCrossRivalryDensity", () => {
     expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
     expect(res.badgeStyle).toContain("bg-muted");
     expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
+  });
+});
+
+describe("calculatePartnershipStabilityInfo", () => {
+  it("returns fallback stability info for unconnected node", () => {
+    const res = calculatePartnershipStabilityInfo([], "p-99");
+    expect(res.repeatConnectionsCount).toBe(0);
+    expect(res.totalConnections).toBe(0);
+    expect(res.repeatRatioPercentage).toBe(0);
+    expect(res.stabilityTier).toBe("Red inicial 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin interacciones para evaluar estabilidad");
+  });
+
+  it("calculates 'Duplas consolidadas 🏆' tier for player with high repeat connection ratio (>= 60%)", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // repeat (3 interactions)
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // repeat (2 interactions)
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 1, strength: 1 }, // single
+    ];
+
+    // repeatConnectionsCount = 2, totalConnections = 3 => repeatRatioPercentage = 67%
+    const res = calculatePartnershipStabilityInfo(links, "p-01");
+    expect(res.repeatConnectionsCount).toBe(2);
+    expect(res.totalConnections).toBe(3);
+    expect(res.repeatRatioPercentage).toBe(67);
+    expect(res.stabilityTier).toBe("Duplas consolidadas 🏆");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("2 vínculos recurrentes (67%)");
+    expect(res.formattedSummary).toContain("3 contactos totales");
+  });
+
+  it("calculates 'Red de duplas estables 🤝' tier for moderate repeat ratio (30-59%)", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 }, // repeat
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // single
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // single
+    ];
+
+    // repeatConnectionsCount = 1, totalConnections = 3 => repeatRatioPercentage = 33%
+    const res = calculatePartnershipStabilityInfo(links, "p-01");
+    expect(res.repeatConnectionsCount).toBe(1);
+    expect(res.totalConnections).toBe(3);
+    expect(res.repeatRatioPercentage).toBe(33);
+    expect(res.stabilityTier).toBe("Red de duplas estables 🤝");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedSummary).toContain("1 vínculo recurrente (33%)");
+  });
+
+  it("calculates 'En exploración 🌱' tier for single interaction connections only", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculatePartnershipStabilityInfo(links, "p-01");
+    expect(res.repeatConnectionsCount).toBe(0);
+    expect(res.totalConnections).toBe(2);
+    expect(res.repeatRatioPercentage).toBe(0);
+    expect(res.stabilityTier).toBe("En exploración 🌱");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+    expect(res.formattedSummary).toContain("0 vínculos recurrentes (0%)");
   });
 });
 

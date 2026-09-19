@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 37 (Partnership Stability & Repeat Synergy Calculation in Graph View):
+  - [x] 2026-09-14 — Hecho: Creada la función pura `calculatePartnershipStabilityInfo` en `src/app/network/graph-utils.ts` para evaluar la cantidad de vínculos recurrentes (>= 2 partidos o turnos compartidos), el porcentaje de estabilidad de contactos y la clasificación en insignias sólidas MDS ('Duplas consolidadas 🏆', 'Red de duplas estables 🤝', 'En exploración 🌱', 'Red inicial 📍') con cadenas de resumen en voz argentina.
+  - [x] 2026-09-14 — Hecho: Integrada la insignia sólida MDS de estabilidad de duplas en el panel lateral de detalles de nodo de `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).
+  - [x] 2026-09-14 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo nodos sin interacciones, alta estabilidad de contactos recurrentes, estabilidad moderada y etapa de exploración.
 - Phase 36 (Network Diversity Score & Solid MDS Badging Integration in Network Stats Panel):
   - [x] 2026-09-13 — Hecho: Refactorizada la lista de jugadores 'Más conectados' en `StatsPanel` (`src/app/network/stats-panel.tsx`) para calcular e integrar insignias sólidas MDS de diversidad de red (`calculateNetworkDiversityScore`) con etiquetas descriptivas de accesibilidad ARIA en voz argentina (`aria-label`, `title`) para lectores de pantalla.
   - [x] 2026-09-13 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` asegurando la correcta clasificación y formato de resumen para todas las categorías de diversidad de red.
