@@ -61,6 +61,10 @@ import {
   getOpenToNetworkRegionAriaLabel,
   getOpenToNetworkResultText,
   getOpenToNetworkAriaLabel,
+  getWhatsAppInviteSuccessToast,
+  getWhatsAppGroupInviteSuccessToast,
+  getWhatsAppInviteAriaLabel,
+  getWhatsAppGroupInviteAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -710,6 +714,26 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
   });
+});
+
+describe("WhatsApp Invite pure helpers", () => {
+  it("formats getWhatsAppInviteSuccessToast and getWhatsAppGroupInviteSuccessToast in Argentine Spanish", () => {
+    expect(getWhatsAppInviteSuccessToast("Mateo")).toBe("Abriste WhatsApp para invitar a Mateo.");
+    expect(getWhatsAppGroupInviteSuccessToast()).toBe("Abriste WhatsApp para enviar la invitación al grupo.");
+  });
+
+  it("formats getWhatsAppInviteAriaLabel and getWhatsAppGroupInviteAriaLabel", () => {
+    expect(getWhatsAppInviteAriaLabel("Mateo", "Central Padel")).toBe(
+      "Invitar a Mateo por WhatsApp para sumar al turno en Central Padel"
+    );
+    expect(getWhatsAppGroupInviteAriaLabel(1, "Central Padel")).toBe(
+      "Invitar a grupo de WhatsApp para sumar 1 jugador al turno en Central Padel"
+    );
+    expect(getWhatsAppGroupInviteAriaLabel(2, "Central Padel")).toBe(
+      "Invitar a grupo de WhatsApp para sumar 2 jugadores al turno en Central Padel"
+    );
+  });
+
 });
 
 describe("LeaveTurnButton and OpenToNetworkButton pure helpers", () => {

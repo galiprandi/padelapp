@@ -2,7 +2,14 @@
 
 import { useMemo } from "react";
 import { MessageSquare } from "lucide-react";
-import { getWhatsAppInviteUrl, getWhatsAppGroupInviteUrl } from "@/components/turns/turn-utils";
+import {
+  getWhatsAppInviteUrl,
+  getWhatsAppGroupInviteUrl,
+  getWhatsAppInviteSuccessToast,
+  getWhatsAppGroupInviteSuccessToast,
+  getWhatsAppInviteAriaLabel,
+  getWhatsAppGroupInviteAriaLabel,
+} from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
 interface WhatsAppInviteButtonProps {
@@ -37,7 +44,7 @@ export function WhatsAppInviteButton({
       e.preventDefault();
       return;
     }
-    showToast(`Abriste WhatsApp para invitar a ${contactName}.`);
+    showToast(getWhatsAppInviteSuccessToast(contactName));
   };
 
   return (
@@ -46,7 +53,7 @@ export function WhatsAppInviteButton({
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 shadow-xs"
-      aria-label={`Invitar a ${contactName} por WhatsApp para sumar al turno en ${club}`}
+      aria-label={getWhatsAppInviteAriaLabel(contactName, club)}
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
@@ -88,7 +95,7 @@ export function WhatsAppGroupInviteButton({
       e.preventDefault();
       return;
     }
-    showToast("Abriste WhatsApp para enviar la invitación al grupo.");
+    showToast(getWhatsAppGroupInviteSuccessToast());
   };
 
   const variantStyles =
@@ -98,16 +105,13 @@ export function WhatsAppGroupInviteButton({
         ? "border border-border text-foreground bg-card hover:bg-muted shadow-xs"
         : "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent shadow-xs";
 
-  const slotsText =
-    openSlots === 1 ? "1 jugador" : `${openSlots} jugadores`;
-
   return (
     <a
       href={whatsappUrl || "#"}
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 ${variantStyles} ${className ?? ""}`}
-      aria-label={`Invitar a grupo de WhatsApp para sumar ${slotsText} al turno en ${club}`}
+      aria-label={getWhatsAppGroupInviteAriaLabel(openSlots, club)}
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />

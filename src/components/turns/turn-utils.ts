@@ -1069,3 +1069,39 @@ export function getOpenToNetworkAriaLabel({
   }
   return label;
 }
+
+/**
+ * Format toast message when opening WhatsApp to invite an individual contact.
+ */
+export function getWhatsAppInviteSuccessToast(contactName: string): string {
+  return `Abriste WhatsApp para invitar a ${contactName}.`;
+}
+
+/**
+ * Format toast message when opening WhatsApp to send a group invitation.
+ */
+export function getWhatsAppGroupInviteSuccessToast(): string {
+  return "Abriste WhatsApp para enviar la invitación al grupo.";
+}
+
+/**
+ * Format accessible ARIA label for individual WhatsApp invite button.
+ */
+export function getWhatsAppInviteAriaLabel(
+  contactName: string,
+  club: string
+): string {
+  return `Invitar a ${contactName} por WhatsApp para sumar al turno en ${club}`;
+}
+
+/**
+ * Format accessible ARIA label for WhatsApp group invite button.
+ */
+export function getWhatsAppGroupInviteAriaLabel(
+  openSlots: number,
+  club: string
+): string {
+  const slotsText =
+    openSlots === 1 ? "1 jugador" : `${openSlots} jugadores`;
+  return `Invitar a grupo de WhatsApp para sumar ${slotsText} al turno en ${club}`;
+}

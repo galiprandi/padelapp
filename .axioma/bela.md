@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-19 — WhatsApp Invite Helpers Extraction, ARIA Accessibility & Solid MDS Styling Refactoring (bela/turnos/whatsapp-invite-helpers-and-a11y)
 - [x] 2026-09-18 — LeaveTurnButton & OpenToNetworkButton Pure Helpers Extraction & ARIA Region Accessibility Refactoring (bela/turnos/leave-turn-and-open-network-a11y-helpers)
 - [x] 2026-09-16 — Turn Chat Pure Helpers Extraction, ARIA Region Landmarks, Real-Time Screen Reader Announcer & Solid MDS Polish in TurnChat (bela/turnos/turn-chat-helpers-and-a11y)
 - [x] 2026-09-15 — TurnCard Pure ARIA Helpers Extraction & Accessibility Refactoring (bela/turnos/turn-card-aria-helpers-and-a11y)
@@ -56,6 +57,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-19 - WhatsApp Invite Helpers Extraction, ARIA Accessibility & Solid MDS Styling Refactoring
+**Learning:** Extracting pure helper functions (`getWhatsAppInviteSuccessToast`, `getWhatsAppGroupInviteSuccessToast`, `getWhatsAppInviteAriaLabel`, `getWhatsAppGroupInviteAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized toast copy formatting and ARIA screen reader label generation from React render functions in `WhatsAppInviteButton` and `WhatsAppGroupInviteButton` (`src/components/turns/whatsapp-invite-button.tsx`). Preserving direct `aria-label` accessibility on interactive `<a>` link triggers avoids landmark region clutter while focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) ensure robust mobile usability.
+**Action:** Always extract toast copy and link ARIA accessibility labels into pure helper utilities backed by Vitest unit tests, and keep ARIA labels directly on interactive links rather than wrapping inline controls in landmark regions.
+
 ## 2026-09-18 - LeaveTurnButton & OpenToNetworkButton Pure Helpers Extraction & ARIA Region Accessibility Refactoring
 **Learning:** Extracting pure helper functions (`getLeaveTurnSuccessToast`, `getLeaveTurnErrorToast`, `getLeaveTurnTriggerAriaLabel`, `getLeaveTurnRegionAriaLabel`, `getCancelLeaveTurnAriaLabel`, `getConfirmLeaveTurnAriaLabel`, `getOpenToNetworkSuccessToast`, `getOpenToNetworkErrorToast`, `getOpenToNetworkRegionAriaLabel`, `getOpenToNetworkResultText`, `getOpenToNetworkAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized toast copy formatting and ARIA screen reader label generation from React render functions in `LeaveTurnButton` (`src/components/turns/leave-turn-button.tsx`) and `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Wrapping action containers in explicit `role="region"` landmark containers with localized Argentine Spanish `aria-label` attributes, focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) guarantees robust mobile accessibility compliance.
 **Action:** Always extract toast copy and ARIA accessibility labels into pure helper utilities backed by Vitest unit tests, and equip interactive action buttons with region landmarks, focus ring offsets, active tactile scaling, and solid MDS container styling.

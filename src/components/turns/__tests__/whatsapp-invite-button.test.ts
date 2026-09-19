@@ -29,6 +29,8 @@ describe("WhatsAppInviteButton", () => {
     expect(element.type).toBe(WhatsAppInviteButton);
     expect(element.props.club).toBe("Central Padel");
     expect(element.props.contactName).toBe("Mateo");
+    expect(element.props.openSlots).toBe(1);
+    expect(element.props.shareUrl).toBe("https://padelred.app/t/123");
   });
 });
 
@@ -48,6 +50,7 @@ describe("WhatsAppGroupInviteButton", () => {
 
     expect(elementDefault.type).toBe(WhatsAppGroupInviteButton);
     expect(elementDefault.props.variant).toBe("default");
+    expect(elementDefault.props.openSlots).toBe(2);
 
     const elementAmber = React.createElement(WhatsAppGroupInviteButton, {
       club: "Padel Park",
