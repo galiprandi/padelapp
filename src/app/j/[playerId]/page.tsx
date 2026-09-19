@@ -19,6 +19,10 @@ import {
   teamKeyForPosition,
   defaultTeamLabel,
   formatJoinSlotInvitationMessage,
+  getJoinSlotHelperMessage,
+  groupMatchSlotsByTeam,
+  getJoinSlotRegionAriaLabel,
+  getSlotStatusBadgeProps,
 } from "./join-slot-utils";
 
 interface JoinSlotPageProps {
@@ -28,7 +32,11 @@ interface JoinSlotPageProps {
 export default function JoinSlotPage({ params }: JoinSlotPageProps) {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
-      <div className="flex items-center gap-4">
+      <header
+        role="region"
+        aria-label={getJoinSlotRegionAriaLabel("header")}
+        className="flex items-center gap-4"
+      >
         <Link
           href="/me"
           prefetch={true}
@@ -45,7 +53,7 @@ export default function JoinSlotPage({ params }: JoinSlotPageProps) {
             Invitación directa para partido de pádel
           </p>
         </div>
-      </div>
+      </header>
 
       <Suspense fallback={<JoinSlotSkeleton />}>
         <JoinSlotContent params={params} />
@@ -146,20 +154,13 @@ async function JoinSlotContent({
     : false;
   const matchClosed = match.status !== MATCH_STATUS.PENDING;
 
-  const teamGroups: Record<"A" | "B", MatchPlayerSlot[]> = { A: [], B: [] };
-  for (const slot of match.players) {
-    const key = teamKeyForPosition(slot.position, totalPlayers);
-    teamGroups[key].push(slot);
-  }
-
-  let helperMessage: string | null = null;
-  if (slotTaken && !slotTakenByViewer) {
-    helperMessage = "Cupo ocupado, hablá con el organizador del partido.";
-  } else if (matchClosed) {
-    helperMessage = "El partido ya no admite nuevas confirmaciones.";
-  } else if (viewerAlreadyInMatch && !slotTakenByViewer) {
-    helperMessage = "Ya estás inscripto en otro cupo para este partido.";
-  }
+  const teamGroups = groupMatchSlotsByTeam(match.players, totalPlayers);
+  const helperMessage = getJoinSlotHelperMessage({
+    slotTaken,
+    slotTakenByViewer,
+    matchClosed,
+    viewerAlreadyInMatch,
+  });
 
   const joinDisabled = Boolean(helperMessage) || !session?.user;
 
@@ -174,7 +175,7 @@ async function JoinSlotContent({
     <>
       <section
         role="region"
-        aria-label="Mensaje de invitación"
+        aria-label={getJoinSlotRegionAriaLabel("invitation")}
         className="rounded-xl border border-border bg-card p-4 shadow-xs"
       >
         <div className="flex items-center gap-3">
@@ -197,7 +198,7 @@ async function JoinSlotContent({
 
       <Card
         role="region"
-        aria-label="Detalle del partido"
+        aria-label={getJoinSlotRegionAriaLabel("match-detail")}
         className="rounded-xl border-border bg-card overflow-hidden shadow-xs"
       >
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
@@ -247,7 +248,7 @@ async function JoinSlotContent({
 
       <section
         role="region"
-        aria-label="Formación de los equipos"
+        aria-label={getJoinSlotRegionAriaLabel("formation")}
         className="space-y-4"
       >
         <div className="flex items-center justify-between">
@@ -280,6 +281,7 @@ async function JoinSlotContent({
                       `Cupo ${slot.position + 1}`;
                     const isOccupied = Boolean(slot.userId);
                     const isViewer = slot.userId === viewerId;
+                    const badgeProps = getSlotStatusBadgeProps(slot.resultConfirmed);
 
                     return (
                       <div
@@ -320,12 +322,10 @@ async function JoinSlotContent({
                             variant="outline"
                             className={cn(
                               "text-xs font-bold px-2 py-0.5 rounded",
-                              slot.resultConfirmed
-                                ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-                                : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                              badgeProps.className
                             )}
                           >
-                            {slot.resultConfirmed ? "Confirmado" : "Pendiente"}
+                            {badgeProps.text}
                           </Badge>
                         )}
                       </div>
@@ -340,7 +340,7 @@ async function JoinSlotContent({
 
       <footer
         role="region"
-        aria-label="Confirmación de inscripción"
+        aria-label={getJoinSlotRegionAriaLabel("footer")}
         className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50"
       >
         <div className="max-w-md mx-auto">
@@ -395,7 +395,7 @@ async function JoinSlotContent({
               <Link
                 href={`/match/${match.id}`}
                 prefetch={true}
-                className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1"
+                className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-sm"
               >
                 Ver todos los detalles del encuentro
               </Link>

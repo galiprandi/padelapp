@@ -45,3 +45,87 @@ export function formatJoinSlotInvitationMessage(
   }
   return `Te invitaron a sumarte como ${teamLabel}.`;
 }
+
+export interface GetJoinSlotHelperMessageOptions {
+  slotTaken: boolean;
+  slotTakenByViewer: boolean;
+  matchClosed: boolean;
+  viewerAlreadyInMatch: boolean;
+}
+
+/**
+ * Determines helper/warning message text for slot join status.
+ */
+export function getJoinSlotHelperMessage({
+  slotTaken,
+  slotTakenByViewer,
+  matchClosed,
+  viewerAlreadyInMatch,
+}: GetJoinSlotHelperMessageOptions): string | null {
+  if (slotTaken && !slotTakenByViewer) {
+    return "Cupo ocupado, hablá con el organizador del partido.";
+  }
+  if (matchClosed) {
+    return "El partido ya no admite nuevas confirmaciones.";
+  }
+  if (viewerAlreadyInMatch && !slotTakenByViewer) {
+    return "Ya estás inscripto en otro cupo para este partido.";
+  }
+  return null;
+}
+
+export interface MinimalSlotItem {
+  position: number;
+}
+
+/**
+ * Groups match slots into team A and team B groups.
+ */
+export function groupMatchSlotsByTeam<T extends MinimalSlotItem>(
+  slots: T[],
+  totalPlayers: number
+): Record<"A" | "B", T[]> {
+  const teamGroups: Record<"A" | "B", T[]> = { A: [], B: [] };
+  for (const slot of slots) {
+    const key = teamKeyForPosition(slot.position, totalPlayers);
+    teamGroups[key].push(slot);
+  }
+  return teamGroups;
+}
+
+export type JoinSlotRegionKind =
+  | "header"
+  | "invitation"
+  | "match-detail"
+  | "formation"
+  | "footer";
+
+/**
+ * Generates Argentine Spanish ARIA landmark labels for Join Slot sections.
+ */
+export function getJoinSlotRegionAriaLabel(kind: JoinSlotRegionKind): string {
+  switch (kind) {
+    case "header":
+      return "Encabezado de invitación";
+    case "invitation":
+      return "Mensaje de invitación";
+    case "match-detail":
+      return "Detalle del partido";
+    case "formation":
+      return "Formación de los equipos";
+    case "footer":
+      return "Confirmación de inscripción";
+  }
+}
+
+/**
+ * Returns badge text and styling variant classes for player confirmation status.
+ */
+export function getSlotStatusBadgeProps(resultConfirmed: boolean) {
+  return {
+    text: resultConfirmed ? "Confirmado" : "Pendiente",
+    className: resultConfirmed
+      ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+      : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
+  };
+}
