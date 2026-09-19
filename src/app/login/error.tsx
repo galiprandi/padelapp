@@ -4,6 +4,7 @@ import { AlertCircle, RotateCw, Home } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { formatErrorDetails } from "@/lib/error-utils";
 
 export default function LoginError({
   error,
@@ -16,18 +17,27 @@ export default function LoginError({
     console.error("Login page error:", error);
   }, [error]);
 
+  const details = formatErrorDetails(error, {
+    section: "el inicio de sesión",
+    fallbackMessage:
+      "Ocurrió un problema al preparar la pantalla de acceso. Podés reintentar o volver al inicio.",
+    customContainerClassName: "max-w-md mx-auto",
+  });
+
   return (
     <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
-      <div className="flex flex-col items-center justify-center gap-4 text-center max-w-md mx-auto">
+      <div
+        role="region"
+        aria-label={details.regionAriaLabel}
+        className={details.containerClasses}
+      >
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
-          <AlertCircle className="h-6 w-6 text-destructive" />
+          <AlertCircle className="h-6 w-6 text-destructive" aria-hidden="true" />
         </div>
         <div className="space-y-1">
-          <h1 className="text-lg font-bold text-foreground">
-            No pudimos cargar el inicio de sesión
-          </h1>
+          <h1 className="text-lg font-bold text-foreground">{details.title}</h1>
           <p className="text-sm text-muted-foreground max-w-xs">
-            Ocurrió un problema al preparar la pantalla de acceso. Podés reintentar o volver al inicio.
+            {details.message}
           </p>
         </div>
         <div className="flex gap-2 pt-2">
@@ -35,9 +45,10 @@ export default function LoginError({
             onClick={reset}
             variant="default"
             size="sm"
+            aria-label={details.retryAriaLabel}
             className="active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
-            <RotateCw className="mr-1.5 h-4 w-4" />
+            <RotateCw className="mr-1.5 h-4 w-4" aria-hidden="true" />
             Reintentar
           </Button>
           <Button
@@ -46,8 +57,12 @@ export default function LoginError({
             size="sm"
             className="active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
-            <Link href="/" prefetch={true}>
-              <Home className="mr-1.5 h-4 w-4" />
+            <Link
+              href="/"
+              prefetch={true}
+              aria-label={details.homeAriaLabel}
+            >
+              <Home className="mr-1.5 h-4 w-4" aria-hidden="true" />
               Ir al inicio
             </Link>
           </Button>
