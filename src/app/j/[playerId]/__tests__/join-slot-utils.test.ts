@@ -5,6 +5,10 @@ import {
   teamKeyForPosition,
   defaultTeamLabel,
   MATCH_STATUS,
+  getJoinSlotHelperMessage,
+  groupMatchSlotsByTeam,
+  getJoinSlotRegionAriaLabel,
+  getSlotStatusBadgeProps,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -66,6 +70,92 @@ describe("join-slot-utils", () => {
     it("returns Jugador A/B for singles 2-player matches", () => {
       expect(defaultTeamLabel("A", 2)).toBe("Jugador A");
       expect(defaultTeamLabel("B", 2)).toBe("Jugador B");
+    });
+  });
+
+  describe("getJoinSlotHelperMessage", () => {
+    it("returns occupied warning when slot is taken by another user", () => {
+      expect(
+        getJoinSlotHelperMessage({
+          slotTaken: true,
+          slotTakenByViewer: false,
+          matchClosed: false,
+          viewerAlreadyInMatch: false,
+        })
+      ).toBe("Cupo ocupado, hablá con el organizador del partido.");
+    });
+
+    it("returns closed warning when match status is not pending", () => {
+      expect(
+        getJoinSlotHelperMessage({
+          slotTaken: false,
+          slotTakenByViewer: false,
+          matchClosed: true,
+          viewerAlreadyInMatch: false,
+        })
+      ).toBe("El partido ya no admite nuevas confirmaciones.");
+    });
+
+    it("returns already enrolled warning when viewer is in another slot", () => {
+      expect(
+        getJoinSlotHelperMessage({
+          slotTaken: false,
+          slotTakenByViewer: false,
+          matchClosed: false,
+          viewerAlreadyInMatch: true,
+        })
+      ).toBe("Ya estás inscripto en otro cupo para este partido.");
+    });
+
+    it("returns null when slot can be joined", () => {
+      expect(
+        getJoinSlotHelperMessage({
+          slotTaken: false,
+          slotTakenByViewer: false,
+          matchClosed: false,
+          viewerAlreadyInMatch: false,
+        })
+      ).toBeNull();
+    });
+  });
+
+  describe("groupMatchSlotsByTeam", () => {
+    it("groups 4-player slots into Team A and Team B", () => {
+      const slots = [
+        { id: "s1", position: 0 },
+        { id: "s2", position: 1 },
+        { id: "s3", position: 2 },
+        { id: "s4", position: 3 },
+      ];
+      const grouped = groupMatchSlotsByTeam(slots, 4);
+      expect(grouped.A).toHaveLength(2);
+      expect(grouped.B).toHaveLength(2);
+      expect(grouped.A[0].id).toBe("s1");
+      expect(grouped.B[0].id).toBe("s3");
+    });
+  });
+
+  describe("getJoinSlotRegionAriaLabel", () => {
+    it("returns correct Argentine Spanish ARIA region labels", () => {
+      expect(getJoinSlotRegionAriaLabel("header")).toBe("Encabezado de invitación");
+      expect(getJoinSlotRegionAriaLabel("invitation")).toBe("Mensaje de invitación");
+      expect(getJoinSlotRegionAriaLabel("match-detail")).toBe("Detalle del partido");
+      expect(getJoinSlotRegionAriaLabel("formation")).toBe("Formación de los equipos");
+      expect(getJoinSlotRegionAriaLabel("footer")).toBe("Confirmación de inscripción");
+    });
+  });
+
+  describe("getSlotStatusBadgeProps", () => {
+    it("returns confirmed badge properties when true", () => {
+      const props = getSlotStatusBadgeProps(true);
+      expect(props.text).toBe("Confirmado");
+      expect(props.className).toContain("bg-emerald-100");
+    });
+
+    it("returns pending badge properties when false", () => {
+      const props = getSlotStatusBadgeProps(false);
+      expect(props.text).toBe("Pendiente");
+      expect(props.className).toContain("bg-amber-100");
     });
   });
 });
