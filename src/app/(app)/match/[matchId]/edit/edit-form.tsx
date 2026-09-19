@@ -13,6 +13,12 @@ import { useToast } from "@/components/toast/use-toast";
 import { Loader2, MapPin, Zap, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getNextRadioIndex } from "@/lib/match-helpers";
+import {
+  getEditMatchRegionAriaLabel,
+  getEditMatchSuccessToast,
+  getEditMatchErrorToast,
+  getEditMatchSubmitAriaLabel,
+} from "./edit-match-utils";
 
 const MATCH_TYPE_OPTIONS = [
   { value: "FRIENDLY", label: "Amistoso" },
@@ -65,7 +71,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       const response = await updateMatchDetailsAction({
         matchId,
         date: combinedDate.toISOString(),
-        sets: parseInt(formData.sets),
+        sets: parseInt(formData.sets, 10),
         matchType: formData.matchType as "FRIENDLY" | "LOCAL_TOURNAMENT",
         club: formData.club,
         courtNumber: formData.courtNumber,
@@ -73,17 +79,26 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       });
 
       if (response.status === "ok") {
-        showToast("Actualizaste el partido con éxito.");
+        showToast(getEditMatchSuccessToast());
         router.push(`/match/${matchId}`);
       } else {
-        showToast(response.message || "No pudimos actualizar el partido.");
+        showToast(getEditMatchErrorToast(response.message));
       }
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <Card className="rounded-xl border border-border bg-card">
+    <form
+      onSubmit={handleSubmit}
+      role="region"
+      aria-label={getEditMatchRegionAriaLabel("form")}
+      className="flex flex-col gap-6"
+    >
+      <Card
+        role="region"
+        aria-label={getEditMatchRegionAriaLabel("location")}
+        className="rounded-xl border border-border bg-card shadow-xs"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" />
@@ -137,7 +152,11 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
         </CardContent>
       </Card>
 
-      <Card className="rounded-xl border border-border bg-card">
+      <Card
+        role="region"
+        aria-label={getEditMatchRegionAriaLabel("format")}
+        className="rounded-xl border border-border bg-card shadow-xs"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
@@ -257,7 +276,11 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
         </CardContent>
       </Card>
 
-      <Card className="rounded-xl border border-border bg-card">
+      <Card
+        role="region"
+        aria-label={getEditMatchRegionAriaLabel("notes")}
+        className="rounded-xl border border-border bg-card shadow-xs"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
@@ -283,12 +306,14 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       <div className="flex flex-col gap-3">
         <Button
           type="submit"
-          className="w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98]"
+          aria-busy={isPending}
+          aria-label={getEditMatchSubmitAriaLabel(isPending)}
+          className="w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           disabled={isPending}
         >
           {isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
               Guardando...
             </>
           ) : (
