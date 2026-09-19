@@ -395,6 +395,91 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface PartnershipStabilityInfo {
+  repeatConnectionsCount: number;
+  totalConnections: number;
+  repeatRatioPercentage: number;
+  stabilityTier:
+    | "Duplas consolidadas 🏆"
+    | "Red de duplas estables 🤝"
+    | "En exploración 🌱"
+    | "Red inicial 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates player partnership stability and repeat interaction score (0-100%)
+ * evaluating recurring partner/rival connections (>= 2 matches or turns together) vs one-off games.
+ */
+export function calculatePartnershipStabilityInfo(
+  links: GraphLink[],
+  selectedNodeId: string,
+): PartnershipStabilityInfo {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      repeatConnectionsCount: 0,
+      totalConnections: 0,
+      repeatRatioPercentage: 0,
+      stabilityTier: "Red inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin interacciones para evaluar estabilidad",
+    };
+  }
+
+  let repeatConnectionsCount = 0;
+
+  for (const link of connectedLinks) {
+    const totalInteractions =
+      link.partnerMatches + link.rivalMatches + link.turnsTogether;
+    if (totalInteractions >= 2) {
+      repeatConnectionsCount++;
+    }
+  }
+
+  const repeatRatioPercentage = Math.round(
+    (repeatConnectionsCount / totalConnections) * 100,
+  );
+
+  let stabilityTier:
+    | "Duplas consolidadas 🏆"
+    | "Red de duplas estables 🤝"
+    | "En exploración 🌱"
+    | "Red inicial 📍";
+  let badgeStyle: string;
+
+  if (repeatRatioPercentage >= 60 || repeatConnectionsCount >= 3) {
+    stabilityTier = "Duplas consolidadas 🏆";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (repeatRatioPercentage >= 30 || repeatConnectionsCount >= 1) {
+    stabilityTier = "Red de duplas estables 🤝";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else {
+    stabilityTier = "En exploración 🌱";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  }
+
+  const parts: string[] = [
+    `${repeatConnectionsCount} ${repeatConnectionsCount === 1 ? "vínculo recurrente" : "vínculos recurrentes"} (${repeatRatioPercentage}%)`,
+    `${totalConnections} ${totalConnections === 1 ? "contacto total" : "contactos totales"}`,
+  ];
+
+  return {
+    repeatConnectionsCount,
+    totalConnections,
+    repeatRatioPercentage,
+    stabilityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface PlayerInteractionReciprocity {
   reciprocityScore: number;
   totalConnections: number;

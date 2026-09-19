@@ -32,6 +32,7 @@ import {
   calculateGraphDensityMetric,
   calculateCommunityBalanceInfo,
   calculatePlayerInteractionReciprocity,
+  calculatePartnershipStabilityInfo,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -850,8 +851,22 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const stability = calculatePartnershipStabilityInfo(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          stability.badgeStyle,
+                        )}
+                        title={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                        aria-label={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                      >
+                        {stability.stabilityTier}
+                      </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
