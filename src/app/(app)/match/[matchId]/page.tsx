@@ -18,6 +18,10 @@ import {
   FinalizeMatchForm,
   CancelMatchForm,
 } from "@/components/matches/match-actions";
+import {
+  getMatchTypeLabel,
+  getEditMatchRegionAriaLabel,
+} from "./edit/edit-match-utils";
 
 interface MatchPageProps {
   params: Promise<{
@@ -157,7 +161,7 @@ async function MatchContent({ params }: MatchPageProps) {
 
   return (
     <div className={cn("flex flex-col gap-6", userNeedsToConfirm && "pb-32")}>
-      <div>
+      <header role="region" aria-label={getEditMatchRegionAriaLabel("header")}>
         <h1 className="text-xl font-bold text-foreground">
           Partido {getMatchTypeLabel(match.matchType)}
         </h1>
@@ -184,11 +188,15 @@ async function MatchContent({ params }: MatchPageProps) {
             />
           </span>
         </div>
-      </div>
+      </header>
 
-      <div className="space-y-2">
+      <section
+        role="region"
+        aria-label={getEditMatchRegionAriaLabel("details")}
+        className="space-y-2"
+      >
         {match.club && (
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3">
             <span className="text-xs text-muted-foreground">Club:</span>
             <span className="text-sm font-semibold text-foreground truncate">
               {match.club}
@@ -200,7 +208,7 @@ async function MatchContent({ params }: MatchPageProps) {
           <Link
             href={`/p/${match.creatorId}`}
             prefetch={true}
-            className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           >
             <PlayerAvatar
               name={match.creator?.displayName || "U"}
@@ -215,7 +223,7 @@ async function MatchContent({ params }: MatchPageProps) {
             </div>
           </Link>
         ) : (
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3">
             <PlayerAvatar
               name={match.creator?.displayName || "U"}
               image={match.creator?.image ?? undefined}
@@ -229,19 +237,23 @@ async function MatchContent({ params }: MatchPageProps) {
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      <div className="flex flex-col gap-2">
+      <section
+        role="region"
+        aria-label={getEditMatchRegionAriaLabel("actions")}
+        className="flex flex-col gap-2"
+      >
         {!isClosed ? (
           <>
-            <Button asChild className="w-full h-12">
+            <Button asChild className="w-full h-12 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
               <Link href={`/match/${match.id}/result`} prefetch={true}>
                 <FileText className="mr-2 h-4 w-4" />
                 Ingresar Resultado
               </Link>
             </Button>
             <div className="flex gap-2">
-              <Button asChild variant="outline" className="flex-1 h-10">
+              <Button asChild variant="outline" className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
                 <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
@@ -260,7 +272,7 @@ async function MatchContent({ params }: MatchPageProps) {
                 }
                 variant="outline"
                 aria-label="Compartir invitación al partido"
-                className="flex-1 h-10"
+                className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               />
             </div>
             {viewerId === match.creatorId && (
@@ -270,7 +282,7 @@ async function MatchContent({ params }: MatchPageProps) {
         ) : (
           <>
             <div className="flex gap-2">
-              <Button asChild variant="outline" className="flex-1 h-10">
+              <Button asChild variant="outline" className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
                 <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
                   Editar
@@ -290,7 +302,7 @@ async function MatchContent({ params }: MatchPageProps) {
                 }
                 variant="outline"
                 aria-label="Compartir resultado del partido"
-                className="flex-1 h-10"
+                className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               />
             </div>
             {viewerId === match.creatorId && match.status !== "CONFIRMED" && (
@@ -298,11 +310,15 @@ async function MatchContent({ params }: MatchPageProps) {
             )}
           </>
         )}
-      </div>
+      </section>
 
       {isClosed ? (
         <div className="space-y-6">
-          <section className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card">
+          <section
+            role="region"
+            aria-label={getEditMatchRegionAriaLabel("summary")}
+            className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
+          >
             <span className="text-xs font-semibold text-muted-foreground mb-6">
               Resultado Final
             </span>
@@ -362,7 +378,11 @@ async function MatchContent({ params }: MatchPageProps) {
           />
 
           {isPendingConfirmation && (
-            <section className="space-y-4 rounded-xl border border-border bg-card p-4">
+            <section
+              role="region"
+              aria-label={getEditMatchRegionAriaLabel("confirmations")}
+              className="space-y-4 rounded-xl border border-border bg-card shadow-xs p-4"
+            >
               <div className="space-y-1">
                 <h2 className="text-sm font-bold text-foreground">
                   Confirmaciones
@@ -427,9 +447,9 @@ async function MatchContent({ params }: MatchPageProps) {
                       <div
                         key={player.id}
                         className={cn(
-                          "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all",
+                          "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all shadow-xs",
                           isConfirmed
-                            ? "bg-card border-primary shadow-xs font-semibold"
+                            ? "bg-card border-primary font-semibold"
                             : "bg-muted/50 border-border opacity-70",
                         )}
                       >
@@ -494,7 +514,11 @@ async function MatchContent({ params }: MatchPageProps) {
           )}
 
           {match.players.some((p) => p.attendance) && (
-            <section className="space-y-3 rounded-xl border border-border bg-card p-4">
+            <section
+              role="region"
+              aria-label={getEditMatchRegionAriaLabel("attendance")}
+              className="space-y-3 rounded-xl border border-border bg-card shadow-xs p-4"
+            >
               <h2 className="text-sm font-bold text-foreground">Asistencia</h2>
               <div className="space-y-2">
                 {match.players
@@ -514,7 +538,7 @@ async function MatchContent({ params }: MatchPageProps) {
                           <Link
                             href={`/p/${player.userId}`}
                             prefetch={true}
-                            className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+                            className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs"
                           >
                             {displayName}
                           </Link>
@@ -541,7 +565,11 @@ async function MatchContent({ params }: MatchPageProps) {
         </div>
       ) : (
         <div className="space-y-6">
-          <section className="space-y-3">
+          <section
+            role="region"
+            aria-label={getEditMatchRegionAriaLabel("teams")}
+            className="space-y-3"
+          >
             <h2 className="text-sm font-bold text-foreground">
               Formación de equipos
             </h2>
@@ -573,7 +601,11 @@ async function MatchContent({ params }: MatchPageProps) {
           </section>
 
           {match.notes && (
-            <section className="rounded-xl border border-border bg-card p-4">
+            <section
+              role="region"
+              aria-label={getEditMatchRegionAriaLabel("notes")}
+              className="rounded-xl border border-border bg-card shadow-xs p-4"
+            >
               <h3 className="text-sm font-bold text-foreground mb-2">
                 Notas del organizador
               </h3>
@@ -587,14 +619,3 @@ async function MatchContent({ params }: MatchPageProps) {
     </div>
   );
 }
-
-const getMatchTypeLabel = (matchType: string) => {
-  switch (matchType) {
-    case "FRIENDLY":
-      return "amistoso";
-    case "LOCAL_TOURNAMENT":
-      return "torneo";
-    default:
-      return matchType;
-  }
-};
