@@ -3,10 +3,50 @@ import {
   getAttendanceStatusAriaLabel,
   getPlayerFeedbackAriaLabel,
   getAttendanceSummaryText,
+  getAttendanceBadgeLabel,
+  getAttendanceBadgeClasses,
+  getAttendanceBadgeAriaLabel,
   ATTENDANCE_STATUS_LABELS,
+  ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
 
 describe("attendance-utils", () => {
+  describe("getAttendanceBadgeLabel", () => {
+    it("returns empty string when status is null", () => {
+      expect(getAttendanceBadgeLabel(null)).toBe("");
+    });
+
+    it("returns correct status labels for each attendance state", () => {
+      expect(getAttendanceBadgeLabel("ATTENDED")).toBe("Presente");
+      expect(getAttendanceBadgeLabel("LATE")).toBe("Tarde");
+      expect(getAttendanceBadgeLabel("NO_SHOW")).toBe("No asistió");
+    });
+  });
+
+  describe("getAttendanceBadgeClasses", () => {
+    it("returns empty string when status is null", () => {
+      expect(getAttendanceBadgeClasses(null)).toBe("");
+    });
+
+    it("returns solid MDS badge styling classes for each status", () => {
+      expect(getAttendanceBadgeClasses("ATTENDED")).toContain("bg-emerald-100");
+      expect(getAttendanceBadgeClasses("LATE")).toContain("bg-amber-100");
+      expect(getAttendanceBadgeClasses("NO_SHOW")).toContain("bg-rose-100");
+    });
+  });
+
+  describe("getAttendanceBadgeAriaLabel", () => {
+    it("returns empty string when status is null", () => {
+      expect(getAttendanceBadgeAriaLabel(null)).toBe("");
+    });
+
+    it("formats screen reader ARIA label for status badge", () => {
+      expect(getAttendanceBadgeAriaLabel("ATTENDED")).toBe("Asistencia: Presente");
+      expect(getAttendanceBadgeAriaLabel("LATE")).toBe("Asistencia: Tarde");
+      expect(getAttendanceBadgeAriaLabel("NO_SHOW")).toBe("Asistencia: No asistió");
+    });
+  });
+
   describe("getAttendanceStatusAriaLabel", () => {
     it("formats attendance status ARIA labels correctly in Spanish", () => {
       expect(getAttendanceStatusAriaLabel("ATTENDED", "Agustín Tapia")).toBe(
@@ -58,11 +98,12 @@ describe("attendance-utils", () => {
     });
   });
 
-  describe("ATTENDANCE_STATUS_LABELS", () => {
-    it("defines proper status label mappings", () => {
+  describe("ATTENDANCE_STATUS_LABELS & ATTENDANCE_BADGE_CLASSES", () => {
+    it("defines proper status label and badge class mappings", () => {
       expect(ATTENDANCE_STATUS_LABELS.ATTENDED).toBe("Presente");
       expect(ATTENDANCE_STATUS_LABELS.LATE).toBe("Tarde");
       expect(ATTENDANCE_STATUS_LABELS.NO_SHOW).toBe("No asistió");
+      expect(ATTENDANCE_BADGE_CLASSES.ATTENDED).toBeDefined();
     });
   });
 });
