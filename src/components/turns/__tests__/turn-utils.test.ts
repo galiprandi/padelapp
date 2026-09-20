@@ -65,6 +65,8 @@ import {
   getWhatsAppGroupInviteSuccessToast,
   getWhatsAppInviteAriaLabel,
   getWhatsAppGroupInviteAriaLabel,
+  getContactBadgeText,
+  getSuggestedContactSectionAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -712,6 +714,27 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("getContactBadgeText and getSuggestedContactSectionAriaLabel", () => {
+  it("formats contact badge text in Argentine Spanish", () => {
+    expect(getContactBadgeText(false)).toBe("Contacto");
+    expect(getContactBadgeText(true)).toBe("Contacto frecuente");
+  });
+
+  it("formats suggested contacts section ARIA label", () => {
+    expect(
+      getSuggestedContactSectionAriaLabel({ count: 1, openSlots: 1 })
+    ).toBe(
+      "Contactos sugeridos de tu red de pádel para invitar por WhatsApp: 1 contacto sugerido para cubrir 1 cupo disponible."
+    );
+
+    expect(
+      getSuggestedContactSectionAriaLabel({ count: 3, openSlots: 2 })
+    ).toBe(
+      "Contactos sugeridos de tu red de pádel para invitar por WhatsApp: 3 contactos sugeridos para cubrir 2 cupos disponibles."
     );
   });
 });
