@@ -1105,3 +1105,25 @@ export function getWhatsAppGroupInviteAriaLabel(
     openSlots === 1 ? "1 jugador" : `${openSlots} jugadores`;
   return `Invitar a grupo de WhatsApp para sumar ${slotsText} al turno en ${club}`;
 }
+
+/**
+ * Format contact badge label text in Argentine Spanish.
+ */
+export function getContactBadgeText(isFrequent: boolean = false): string {
+  return isFrequent ? "Contacto frecuente" : "Contacto";
+}
+
+/**
+ * Format accessible ARIA label for suggested contacts section in Argentine Spanish.
+ */
+export function getSuggestedContactSectionAriaLabel({
+  count,
+  openSlots,
+}: {
+  count: number;
+  openSlots: number;
+}): string {
+  const contactsText = count === 1 ? "1 contacto sugerido" : `${count} contactos sugeridos`;
+  const slotsText = openSlots === 1 ? "1 cupo disponible" : `${openSlots} cupos disponibles`;
+  return `Contactos sugeridos de tu red de pádel para invitar por WhatsApp: ${contactsText} para cubrir ${slotsText}.`;
+}

@@ -36,6 +36,8 @@ import {
   formatTurnProgressAriaLabel,
   formatSubstituteListAriaLabel,
   buildTurnConnectionMap,
+  getContactBadgeText,
+  getSuggestedContactSectionAriaLabel,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -430,11 +432,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5">
                     {p.user.alias ?? p.user.displayName}
                     {isContact && (
-                      <span
-                        className="h-2 w-2 rounded-full bg-primary"
-                        title="Contacto"
-                        aria-label="Contacto frecuente"
-                      />
+                      <Badge variant="primary" className="text-[10px] px-1.5 py-0 font-normal">
+                        {getContactBadgeText()}
+                      </Badge>
                     )}
                   </p>
                   {connectionMap[p.userId] && (
@@ -516,7 +516,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       {suggestedContacts.length > 0 && (
         <section
           role="region"
-          aria-label="Contactos sugeridos de tu red de pádel para invitar por WhatsApp"
+          aria-label={getSuggestedContactSectionAriaLabel({
+            count: Math.min(suggestedContacts.length, 4),
+            openSlots: openSlotsCount,
+          })}
           className="space-y-4"
         >
           <div className="flex items-center justify-between">
@@ -555,8 +558,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       aria-hidden="true"
                     />
                     <div className="min-w-0">
-                      <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors">
+                      <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors flex items-center gap-1.5">
                         {contactName}
+                        <Badge variant="primary" className="text-[10px] px-1.5 py-0 font-normal">
+                          {getContactBadgeText(contact.matchesTogether > 1)}
+                        </Badge>
                       </p>
                       {contact.matchesTogether > 0 && (
                         <p className="text-xs text-muted-foreground truncate mt-0.5">
