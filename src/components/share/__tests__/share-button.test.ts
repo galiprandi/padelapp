@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import React from "react";
 import { ShareButton } from "../share-button";
+import {
+  getShareToastMessages,
+  getShareButtonLabel,
+  getShareButtonAriaLabel,
+} from "../share-utils";
 
 describe("ShareButton Component", () => {
   it("creates valid React element with required props", () => {
@@ -27,5 +32,16 @@ describe("ShareButton Component", () => {
     expect(element.props.iconOnly).toBe(true);
     expect(element.props.successMessage).toBe("¡Listo!");
     expect(element.props.copyMessage).toBe("Enlace copiado");
+  });
+
+  it("integrates pure share utils for ARIA and labels correctly", () => {
+    const toastMsgs = getShareToastMessages({ successMessage: "¡Éxito!" });
+    expect(toastMsgs.successMessage).toBe("¡Éxito!");
+
+    const label = getShareButtonLabel({ isSharing: true });
+    expect(label).toBe("Compartiendo...");
+
+    const ariaLabel = getShareButtonAriaLabel({ iconOnly: true, isSuccess: true, successMessage: "¡Enviado!" });
+    expect(ariaLabel).toBe("¡Enviado!");
   });
 });

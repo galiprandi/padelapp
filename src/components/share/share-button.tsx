@@ -5,6 +5,12 @@ import { Share2, Check, Loader2 } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { getNaturalShareText, type ShareDataPayload, cn } from "@/lib/utils";
+import {
+  getShareToastMessages,
+  getShareButtonLabel,
+  getShareButtonAriaLabel,
+  formatShareUrl,
+} from "./share-utils";
 
 interface ShareButtonProps extends ButtonProps {
   url: string;
@@ -16,10 +22,6 @@ interface ShareButtonProps extends ButtonProps {
   errorMessage?: string;
   iconOnly?: boolean;
 }
-
-const DEFAULT_SUCCESS = "Compartido";
-const DEFAULT_COPY = "Link copiado al portapapeles";
-const DEFAULT_ERROR = "No pudimos compartir el link";
 
 export function ShareButton({
   url: urlProp,
@@ -40,6 +42,16 @@ export function ShareButton({
   const [url, setUrl] = useState(urlProp);
   const [text, setText] = useState<string | undefined>(textProp);
 
+  const {
+    successMessage: resolvedSuccessMessage,
+    copyMessage: resolvedCopyMessage,
+    errorMessage: resolvedErrorMessage,
+  } = getShareToastMessages({
+    successMessage,
+    copyMessage,
+    errorMessage,
+  });
+
   // If shareData payload is provided, dynamically format the sharing text
   // so that it formats dates/times using the client browser timezone on mount.
   useEffect(() => {
@@ -53,17 +65,14 @@ export function ShareButton({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      try {
-        const parsed = new URL(urlProp, window.location.origin);
-        if (parsed.origin !== window.location.origin) {
-          parsed.protocol = window.location.protocol;
-          parsed.host = window.location.host;
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setUrl(parsed.toString());
-        }
-      } catch {
-        setUrl(urlProp);
-      }
+      const formatted = formatShareUrl(
+        urlProp,
+        window.location.origin,
+        window.location.protocol,
+        window.location.host,
+      );
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setUrl(formatted);
     }
   }, [urlProp]);
 
@@ -97,7 +106,7 @@ export function ShareButton({
         if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
           try {
             await navigator.share({ url, title, text });
-            showToast(successMessage ?? DEFAULT_SUCCESS);
+            showToast(resolvedSuccessMessage);
             shared = true;
           } catch (shareError) {
             if ((shareError as DOMException)?.name === "AbortError") {
@@ -114,7 +123,7 @@ export function ShareButton({
           typeof navigator.clipboard.writeText === "function"
         ) {
           await navigator.clipboard.writeText(url);
-          showToast(copyMessage ?? DEFAULT_COPY);
+          showToast(resolvedCopyMessage);
           shared = true;
         }
 
@@ -128,7 +137,7 @@ export function ShareButton({
           textarea.select();
           document.execCommand("copy");
           document.body.removeChild(textarea);
-          showToast(copyMessage ?? DEFAULT_COPY);
+          showToast(resolvedCopyMessage);
           shared = true;
         }
 
@@ -137,23 +146,27 @@ export function ShareButton({
         }
       } catch (error) {
         console.error("ShareButton failed", error);
-        showToast(errorMessage ?? DEFAULT_ERROR);
+        showToast(resolvedErrorMessage);
       } finally {
         setIsSharing(false);
       }
     },
-    [onClick, url, title, text, successMessage, copyMessage, errorMessage, showToast],
+    [onClick, url, title, text, resolvedSuccessMessage, resolvedCopyMessage, resolvedErrorMessage, showToast],
   );
 
-  const dynamicAriaLabel = buttonProps["aria-label"]
-    ? buttonProps["aria-label"]
-    : iconOnly
-      ? isSharing
-        ? "Compartiendo..."
-        : isSuccess
-          ? (successMessage ?? DEFAULT_SUCCESS)
-          : "Compartir"
-      : undefined;
+  const dynamicAriaLabel = getShareButtonAriaLabel({
+    customAriaLabel: buttonProps["aria-label"],
+    iconOnly,
+    isSharing,
+    isSuccess,
+    successMessage: resolvedSuccessMessage,
+  });
+
+  const buttonLabel = getShareButtonLabel({
+    isSharing,
+    isSuccess,
+    successMessage: resolvedSuccessMessage,
+  });
 
   return (
     <Button
@@ -187,13 +200,7 @@ export function ShareButton({
             ) : (
               <Share2 className="h-4 w-4" aria-hidden="true" />
             )}
-            <span>
-              {isSharing
-                ? "Compartiendo..."
-                : isSuccess
-                  ? (successMessage ?? DEFAULT_SUCCESS)
-                  : "Compartir"}
-            </span>
+            <span>{buttonLabel}</span>
           </span>
         )
       )}
