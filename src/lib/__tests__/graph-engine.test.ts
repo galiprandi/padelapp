@@ -211,6 +211,7 @@ import {
   calculateCommunityBalanceInfo,
   calculatePlayerInteractionReciprocity,
   calculatePartnershipStabilityInfo,
+  calculateLocalClusteringCoefficient,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -2091,6 +2092,82 @@ describe("calculatePlayerInteractionReciprocity", () => {
     expect(res.reciprocityTier).toBe("Predominio de rivales ⚔️");
     expect(res.badgeStyle).toContain("bg-rose-100");
     expect(res.formattedSummary).toBe("2 rivales");
+  });
+});
+
+describe("calculateLocalClusteringCoefficient", () => {
+  it("returns fallback info for nodes with fewer than 2 direct contacts", () => {
+    const res0 = calculateLocalClusteringCoefficient([], "p-99");
+    expect(res0.clusteringCoefficientPercentage).toBe(0);
+    expect(res0.trianglesCount).toBe(0);
+    expect(res0.totalNeighborsCount).toBe(0);
+    expect(res0.clusteringTier).toBe("Red inicial 📍");
+    expect(res0.badgeStyle).toContain("bg-muted");
+    expect(res0.formattedSummary).toBe("Sin contactos directos para calcular cohesión local");
+
+    const singleLink: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+    const res1 = calculateLocalClusteringCoefficient(singleLink, "p-01");
+    expect(res1.clusteringCoefficientPercentage).toBe(0);
+    expect(res1.totalNeighborsCount).toBe(1);
+    expect(res1.clusteringTier).toBe("Red inicial 📍");
+    expect(res1.formattedSummary).toBe("1 contacto directo · Se requieren 2 o más contactos");
+  });
+
+  it("calculates 'Grupo cerrado 👥' tier for fully connected triangle (100% local clustering)", () => {
+    // p-01 connected to p-02 and p-03; p-02 connected to p-03 (1 triangle out of 1 possible)
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateLocalClusteringCoefficient(links, "p-01");
+    expect(res.totalNeighborsCount).toBe(2);
+    expect(res.possibleTrianglesCount).toBe(1);
+    expect(res.trianglesCount).toBe(1);
+    expect(res.clusteringCoefficientPercentage).toBe(100);
+    expect(res.clusteringTier).toBe("Grupo cerrado 👥");
+    expect(res.badgeStyle).toContain("bg-indigo-100");
+    expect(res.formattedSummary).toBe("1 triángulo (100% cohesión local) · 2 contactos");
+  });
+
+  it("calculates 'Círculo integrado 🎾' tier for moderate local clustering (30-59%)", () => {
+    // p-01 connected to p-02, p-03, p-04 (3 neighbors => (3*2)/2 = 3 possible triangles)
+    // p-02 connected to p-03 (1 triangle)
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateLocalClusteringCoefficient(links, "p-01");
+    expect(res.totalNeighborsCount).toBe(3);
+    expect(res.possibleTrianglesCount).toBe(3);
+    expect(res.trianglesCount).toBe(1);
+    expect(res.clusteringCoefficientPercentage).toBe(33);
+    expect(res.clusteringTier).toBe("Círculo integrado 🎾");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toBe("1 triángulo (33% cohesión local) · 3 contactos");
+  });
+
+  it("calculates 'Conector abierto 🌐' tier for star node with disconnected neighbors (0% clustering, >= 2 neighbors)", () => {
+    // p-01 connected to p-02 and p-03, but p-02 and p-03 have no direct link
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    const res = calculateLocalClusteringCoefficient(links, "p-01");
+    expect(res.totalNeighborsCount).toBe(2);
+    expect(res.possibleTrianglesCount).toBe(1);
+    expect(res.trianglesCount).toBe(0);
+    expect(res.clusteringCoefficientPercentage).toBe(0);
+    expect(res.clusteringTier).toBe("Conector abierto 🌐");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedSummary).toBe("0 triángulos (0% cohesión local) · 2 contactos");
   });
 });
 

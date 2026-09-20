@@ -395,6 +395,115 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface LocalClusteringInfo {
+  clusteringCoefficientPercentage: number;
+  trianglesCount: number;
+  possibleTrianglesCount: number;
+  totalNeighborsCount: number;
+  clusteringTier:
+    | "Grupo cerrado 👥"
+    | "Círculo integrado 🎾"
+    | "Conector abierto 🌐"
+    | "Red inicial 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates local network clustering coefficient C_i = 2 * e_i / (k_i * (k_i - 1)) (0-100%)
+ * for a selected node, evaluating how interconnected its direct neighbors are with each other.
+ */
+export function calculateLocalClusteringCoefficient(
+  links: GraphLink[],
+  selectedNodeId: string,
+): LocalClusteringInfo {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const neighborIds = new Set<string>();
+
+  for (const link of connectedLinks) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    if (src === selectedNodeId) neighborIds.add(tgt);
+    else if (tgt === selectedNodeId) neighborIds.add(src);
+  }
+
+  const totalNeighborsCount = neighborIds.size;
+
+  if (totalNeighborsCount < 2) {
+    return {
+      clusteringCoefficientPercentage: 0,
+      trianglesCount: 0,
+      possibleTrianglesCount: 0,
+      totalNeighborsCount,
+      clusteringTier: "Red inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary:
+        totalNeighborsCount === 0
+          ? "Sin contactos directos para calcular cohesión local"
+          : "1 contacto directo · Se requieren 2 o más contactos",
+    };
+  }
+
+  const possibleTrianglesCount = (totalNeighborsCount * (totalNeighborsCount - 1)) / 2;
+
+  // Count links between direct neighbors
+  let trianglesCount = 0;
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    if (src !== selectedNodeId && tgt !== selectedNodeId) {
+      if (neighborIds.has(src) && neighborIds.has(tgt)) {
+        trianglesCount++;
+      }
+    }
+  }
+
+  const clusteringRatio = trianglesCount / possibleTrianglesCount;
+  const clusteringCoefficientPercentage = Math.min(
+    Math.round(clusteringRatio * 100),
+    100,
+  );
+
+  let clusteringTier:
+    | "Grupo cerrado 👥"
+    | "Círculo integrado 🎾"
+    | "Conector abierto 🌐"
+    | "Red inicial 📍";
+  let badgeStyle: string;
+
+  if (clusteringCoefficientPercentage >= 60) {
+    clusteringTier = "Grupo cerrado 👥";
+    badgeStyle =
+      "bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-950 dark:text-indigo-200 dark:border-indigo-800";
+  } else if (clusteringCoefficientPercentage >= 30) {
+    clusteringTier = "Círculo integrado 🎾";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (totalNeighborsCount >= 2) {
+    clusteringTier = "Conector abierto 🌐";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else {
+    clusteringTier = "Red inicial 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${trianglesCount} ${trianglesCount === 1 ? "triángulo" : "triángulos"} (${clusteringCoefficientPercentage}% cohesión local)`,
+    `${totalNeighborsCount} ${totalNeighborsCount === 1 ? "contacto" : "contactos"}`,
+  ];
+
+  return {
+    clusteringCoefficientPercentage,
+    trianglesCount,
+    possibleTrianglesCount,
+    totalNeighborsCount,
+    clusteringTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface PartnershipStabilityInfo {
   repeatConnectionsCount: number;
   totalConnections: number;
