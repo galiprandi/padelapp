@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 38 (Local Network Clustering Coefficient Calculation & Solid MDS Badging in Graph View):
+  - [x] 2026-09-15 — Hecho: Creada la función pura `calculateLocalClusteringCoefficient` en `src/app/network/graph-utils.ts` para evaluar el coeficiente de cohesión local $C_i = 2 e_i / (k_i(k_i-1))$, la cantidad de triángulos de interacción entre contactos directos y la clasificación en insignias sólidas MDS ('Grupo cerrado 👥', 'Círculo integrado 🎾', 'Conector abierto 🌐', 'Red inicial 📍') con cadenas de resumen en voz argentina.
+  - [x] 2026-09-15 — Hecho: Integrada la insignia sólida MDS de cohesión local en el panel lateral de detalles de nodo de `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).
+  - [x] 2026-09-15 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo nodos sin contactos suficientes, triángulos totalmente conectados (100%), cohesión moderada (30-59%) y conectores abiertos (0% de triángulos con múltiples contactos).
 - Phase 37 (Partnership Stability & Repeat Synergy Calculation in Graph View):
   - [x] 2026-09-14 — Hecho: Creada la función pura `calculatePartnershipStabilityInfo` en `src/app/network/graph-utils.ts` para evaluar la cantidad de vínculos recurrentes (>= 2 partidos o turnos compartidos), el porcentaje de estabilidad de contactos y la clasificación en insignias sólidas MDS ('Duplas consolidadas 🏆', 'Red de duplas estables 🤝', 'En exploración 🌱', 'Red inicial 📍') con cadenas de resumen en voz argentina.
   - [x] 2026-09-14 — Hecho: Integrada la insignia sólida MDS de estabilidad de duplas en el panel lateral de detalles de nodo de `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).

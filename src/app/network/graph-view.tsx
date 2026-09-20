@@ -33,6 +33,7 @@ import {
   calculateCommunityBalanceInfo,
   calculatePlayerInteractionReciprocity,
   calculatePartnershipStabilityInfo,
+  calculateLocalClusteringCoefficient,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -855,6 +856,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const localClustering = calculateLocalClusteringCoefficient(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
                       <span
@@ -866,6 +871,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
                       >
                         {stability.stabilityTier}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          localClustering.badgeStyle,
+                        )}
+                        title={`Cohesión local: ${localClustering.clusteringTier}. ${localClustering.formattedSummary}`}
+                        aria-label={`Cohesión local: ${localClustering.clusteringTier}. ${localClustering.formattedSummary}`}
+                      >
+                        {localClustering.clusteringTier}
                       </span>
                       <span
                         className={cn(
