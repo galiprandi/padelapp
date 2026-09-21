@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
+import { getPwaInstallLinkAriaLabel } from "./pwa-install-utils";
 
 export function InstallLinkButton() {
   const isInstalled = usePwaInstalled();
@@ -15,7 +16,7 @@ export function InstallLinkButton() {
       className="h-10 w-full rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       asChild
     >
-      <Link href="/install" prefetch={true} aria-label="Ver instrucciones de instalación de Padel Red">
+      <Link href="/install" prefetch={true} aria-label={getPwaInstallLinkAriaLabel()}>
         Instalar App
       </Link>
     </Button>
