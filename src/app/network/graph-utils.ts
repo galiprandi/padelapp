@@ -395,6 +395,177 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface PlayerMatchComplementarity {
+  complementarityScore: number;
+  totalPartnersCount: number;
+  synergicPartnersCount: number;
+  sameSidePartnersCount: number;
+  avgPartnerWinRatePercentage: number | null;
+  complementarityTier:
+    | "Dupla sinérgica ideal 🎯"
+    | "Sinergia técnica ⚡"
+    | "Sinergia en desarrollo 🌱"
+    | "Ajuste táctico ⚠️";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates player match complementarity score (0-100%) and court side synergy tier across connected partners
+ * evaluating physical court position balance (Right + Left) and partnership win rates.
+ */
+export function calculatePlayerMatchComplementarity(
+  links: GraphLink[],
+  nodes: GraphNode[],
+  selectedNodeId: string,
+): PlayerMatchComplementarity {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const selectedSide = selectedNode?.preferredSide ?? null;
+
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+
+  let totalPartnersCount = 0;
+  let synergicPartnersCount = 0;
+  let sameSidePartnersCount = 0;
+  let totalPartnerWins = 0;
+  let totalPartnerMatches = 0;
+
+  for (const link of connectedLinks) {
+    const record = calculateConnectionRecord(link, selectedNodeId);
+    if (record.type === "partner" || record.type === "mixed") {
+      totalPartnersCount++;
+
+      const otherId =
+        linkNodeId(link.source) === selectedNodeId
+          ? linkNodeId(link.target)
+          : linkNodeId(link.source);
+      const otherNode = nodes.find((n) => n.id === otherId);
+      const partnerSide = otherNode?.preferredSide ?? null;
+
+      const comp = getSideCompatibilityLabel(selectedSide, partnerSide);
+      if (comp) {
+        if (comp.isComplementary) {
+          synergicPartnersCount++;
+        } else {
+          sameSidePartnersCount++;
+        }
+      } else if (selectedSide === "BOTH" || partnerSide === "BOTH") {
+        synergicPartnersCount++;
+      }
+
+      if (record.type === "partner") {
+        totalPartnerWins += link.winsTogether;
+        totalPartnerMatches += link.winsTogether + link.lossesTogether;
+      } else if (record.type === "mixed") {
+        totalPartnerWins += link.winsTogether;
+        totalPartnerMatches += link.winsTogether + link.lossesTogether;
+      }
+    }
+  }
+
+  const avgPartnerWinRatePercentage =
+    totalPartnerMatches > 0
+      ? Math.round((totalPartnerWins / totalPartnerMatches) * 100)
+      : null;
+
+  if (totalPartnersCount === 0) {
+    return {
+      complementarityScore: 0,
+      totalPartnersCount: 0,
+      synergicPartnersCount: 0,
+      sameSidePartnersCount: 0,
+      avgPartnerWinRatePercentage: null,
+      complementarityTier: "Ajuste táctico ⚠️",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin duplas registradas en la red",
+    };
+  }
+
+  // Calculate score components:
+  // 1. Side balance points (up to 40 pts)
+  let sidePoints = 20;
+  if (selectedSide === "BOTH") {
+    sidePoints = 35;
+  } else if (synergicPartnersCount > 0) {
+    const ratio = synergicPartnersCount / totalPartnersCount;
+    sidePoints = Math.round(20 + ratio * 20);
+  } else if (sameSidePartnersCount > 0) {
+    sidePoints = 10;
+  }
+
+  // 2. Win rate points (up to 30 pts)
+  const winRatePoints = avgPartnerWinRatePercentage !== null
+    ? Math.round((avgPartnerWinRatePercentage / 100) * 30)
+    : 15;
+
+  // 3. Repeat synergy volume points (up to 30 pts)
+  const volumePoints = Math.min(synergicPartnersCount * 15, 30);
+
+  const complementarityScore = Math.min(
+    Math.max(sidePoints + winRatePoints + volumePoints, 0),
+    100,
+  );
+
+  let complementarityTier:
+    | "Dupla sinérgica ideal 🎯"
+    | "Sinergia técnica ⚡"
+    | "Sinergia en desarrollo 🌱"
+    | "Ajuste táctico ⚠️";
+  let badgeStyle: string;
+
+  if (
+    complementarityScore >= 80 ||
+    (synergicPartnersCount >= 2 && (avgPartnerWinRatePercentage ?? 0) >= 65)
+  ) {
+    complementarityTier = "Dupla sinérgica ideal 🎯";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else if (
+    complementarityScore >= 50 ||
+    synergicPartnersCount >= 1 ||
+    selectedSide === "BOTH"
+  ) {
+    complementarityTier = "Sinergia técnica ⚡";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (complementarityScore >= 25 || totalPartnersCount > 0) {
+    complementarityTier = "Sinergia en desarrollo 🌱";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    complementarityTier = "Ajuste táctico ⚠️";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [];
+  if (synergicPartnersCount > 0) {
+    parts.push(
+      `${synergicPartnersCount} ${synergicPartnersCount === 1 ? "dupla sinérgica" : "duplas sinérgicas"} (Der + Rev)`,
+    );
+  } else if (sameSidePartnersCount > 0) {
+    parts.push(
+      `${sameSidePartnersCount} ${sameSidePartnersCount === 1 ? "dupla misma posición" : "duplas misma posición"}`,
+    );
+  } else {
+    parts.push(`${totalPartnersCount} ${totalPartnersCount === 1 ? "dupla registrada" : "duplas registradas"}`);
+  }
+
+  if (avgPartnerWinRatePercentage !== null) {
+    parts.push(`${avgPartnerWinRatePercentage}% WR dupla`);
+  }
+
+  return {
+    complementarityScore,
+    totalPartnersCount,
+    synergicPartnersCount,
+    sameSidePartnersCount,
+    avgPartnerWinRatePercentage,
+    complementarityTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface LocalClusteringInfo {
   clusteringCoefficientPercentage: number;
   trianglesCount: number;
