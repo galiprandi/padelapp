@@ -212,10 +212,77 @@ import {
   calculatePlayerInteractionReciprocity,
   calculatePartnershipStabilityInfo,
   calculateLocalClusteringCoefficient,
+  calculatePlayerMatchComplementarity,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
+
+describe("calculatePlayerMatchComplementarity", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "agu", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "LEFT" },
+    { id: "p-03", name: "Gero", alias: "gero", image: null, skillScore: 1050, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Facu", alias: "facu", image: null, skillScore: 1000, community: 1, networkSize: 2, matchesPlayed: 4, preferredSide: "BOTH" },
+  ];
+
+  it("returns fallback complementarity info for isolated node with zero partners", () => {
+    const res = calculatePlayerMatchComplementarity([], nodes, "p-99");
+    expect(res.complementarityScore).toBe(0);
+    expect(res.totalPartnersCount).toBe(0);
+    expect(res.synergicPartnersCount).toBe(0);
+    expect(res.sameSidePartnersCount).toBe(0);
+    expect(res.avgPartnerWinRatePercentage).toBeNull();
+    expect(res.complementarityTier).toBe("Ajuste táctico ⚠️");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin duplas registradas en la red");
+  });
+
+  it("calculates 'Dupla sinérgica ideal 🎯' tier for player with complementary partners and high win rate", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 }, // complementary (RIGHT + LEFT), 75% WR
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // BOTH side partner, 100% WR
+    ];
+
+    const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
+    expect(res.totalPartnersCount).toBe(2);
+    expect(res.synergicPartnersCount).toBe(2);
+    expect(res.avgPartnerWinRatePercentage).toBe(83); // (3+2)/(4+2) = 5/6 = 83%
+    expect(res.complementarityTier).toBe("Dupla sinérgica ideal 🎯");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("2 duplas sinérgicas (Der + Rev)");
+    expect(res.formattedSummary).toContain("83% WR dupla");
+  });
+
+  it("calculates 'Sinergia técnica ⚡' tier for player with at least 1 complementary partner", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 }, // complementary (RIGHT + LEFT), 50% WR
+    ];
+
+    const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
+    expect(res.totalPartnersCount).toBe(1);
+    expect(res.synergicPartnersCount).toBe(1);
+    expect(res.avgPartnerWinRatePercentage).toBe(50);
+    expect(res.complementarityTier).toBe("Sinergia técnica ⚡");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedSummary).toContain("1 dupla sinérgica (Der + Rev)");
+    expect(res.formattedSummary).toContain("50% WR dupla");
+  });
+
+  it("calculates 'Ajuste táctico ⚠️' or 'Sinergia en desarrollo 🌱' tier for partners on the same court side", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 2, turnsTogether: 0, strength: 2 }, // same side (RIGHT + RIGHT), 0% WR
+    ];
+
+    const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
+    expect(res.totalPartnersCount).toBe(1);
+    expect(res.synergicPartnersCount).toBe(0);
+    expect(res.sameSidePartnersCount).toBe(1);
+    expect(res.avgPartnerWinRatePercentage).toBe(0);
+    expect(res.formattedSummary).toContain("1 dupla misma posición");
+    expect(res.formattedSummary).toContain("0% WR dupla");
+  });
+});
 
 describe("normalizeSearchQuery", () => {
   it("trims whitespace, converts to lowercase, and strips diacritics", () => {

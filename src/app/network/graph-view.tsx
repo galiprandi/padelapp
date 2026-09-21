@@ -34,6 +34,7 @@ import {
   calculatePlayerInteractionReciprocity,
   calculatePartnershipStabilityInfo,
   calculateLocalClusteringCoefficient,
+  calculatePlayerMatchComplementarity,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -860,8 +861,23 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const complementarity = calculatePlayerMatchComplementarity(
+                    filteredData.links,
+                    graphData.nodes,
+                    selectedNodeData.id,
+                  );
                   return (
                     <>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          complementarity.badgeStyle,
+                        )}
+                        title={`Complementariedad de duplas: ${complementarity.complementarityTier}. ${complementarity.formattedSummary}`}
+                        aria-label={`Complementariedad de duplas: ${complementarity.complementarityTier}. ${complementarity.formattedSummary}`}
+                      >
+                        {complementarity.complementarityTier}
+                      </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
