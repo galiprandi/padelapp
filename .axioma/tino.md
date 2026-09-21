@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-15 — Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules (`src/lib/speculation-rules.ts`) (PR #tino/perf/speculation-rules-path-matching-helpers)
 - [x] 2026-09-14 — Extracción de Constantes de Etiquetas de Caché Estandarizadas y Helpers Puros para TTL y Claves de Caché (`src/lib/cache-tags.ts`) (PR #tino/perf/cache-tag-constants-and-ttl-helpers)
 - [x] 2026-09-13 — Extracción de Funciones Helper `getResourceHints` y `getOriginTrialMetaProps` para Pistas de Recursos en Root Layout (`src/lib/resource-hints.ts`) (PR #tino/perf/resource-hints-helper-extraction)
 - [x] 2026-09-12 — Configuración de Recolección de Basura de Caché (`DEFAULT_QUERY_GC_TIME`) y Política de Reintentos Inteligentes (`isQueryRetryable`) en TanStack QueryClient (PR #tino/perf/query-client-gc-time-and-retry-policy)
@@ -54,6 +55,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-15 - Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules
+**Aprendizaje:** Encapsular la lógica de coincidencia de rutas (`isSpeculationPath`), formateo de patrones de documento (`formatSpeculationDocumentPattern`) y clasificación del nivel de prefetching/prerenderizado (`getSpeculationEagernessForPath`) en `src/lib/speculation-rules.ts` desinfectando parámetros de consulta (`?query=...`) y fragmentos (`#hash`) permite inspeccionar y auditar dinámicamente qué rutas de la app son elegibles para especulación en el navegador, reduciendo el acoplamiento y facilitando pruebas unitarias directas.
+**Acción:** Reutilizar `getSpeculationEagernessForPath` o `isSpeculationPath` al evaluar prefetch dinámico en gestores de eventos o enlaces.
+
 ### 2026-09-14 - Extracción de Constantes de Etiquetas de Caché Estandarizadas y Helpers Puros para TTL y Claves de Caché
 **Aprendizaje:** Centralizar las cadenas literales de etiquetas de revalidación (`CACHE_TAG_RANKING`, `CACHE_TAG_MATCHES`, `CACHE_TAG_TURNS`, `CACHE_TAG_NETWORK`, `CACHE_TAG_PROFILE`) y abstraer funciones utilitarias puras (`getCacheTagsForDomain`, `getCacheRevalidateTTL`, `formatCacheKey`, `isKnownCacheTag`) en `src/lib/cache-tags.ts` previene inconsistencias tipográficas en la invalidación de caché con `revalidateTag`, simplifica la definición de TTLs de revalidación según el dominio de negocio y asegura la generación de claves de caché estandarizadas en `unstable_cache`.
 **Acción:** Importar siempre las constantes y helpers de `src/lib/cache-tags.ts` al configurar el almacenamiento en caché o invalidar datos en Server Actions y Server Components.

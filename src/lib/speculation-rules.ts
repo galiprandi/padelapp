@@ -85,14 +85,48 @@ export function getSpeculationRulesConfig(
       {
         source: "document",
         where: {
-          or: DYNAMIC_SPECULATION_PATTERNS.map((pattern) => ({
-            href_matches: pattern,
-          })),
+          or: DYNAMIC_SPECULATION_PATTERNS.map(formatSpeculationDocumentPattern),
         },
         eagerness: "moderate",
       },
     ],
   };
+}
+
+export function formatSpeculationDocumentPattern(
+  pattern: string,
+): { href_matches: string } {
+  return { href_matches: pattern };
+}
+
+export function getSpeculationEagernessForPath(
+  path: string,
+): SpeculationEagerness | null {
+  if (!path) return null;
+  const cleanPath = path.trim().split("?")[0].split("#")[0];
+
+  if ((PRIMARY_SPECULATION_URLS as readonly string[]).includes(cleanPath)) {
+    return "eager";
+  }
+
+  if ((SECONDARY_SPECULATION_URLS as readonly string[]).includes(cleanPath)) {
+    return "moderate";
+  }
+
+  const isDynamicMatch = DYNAMIC_SPECULATION_PATTERNS.some((pattern) => {
+    const prefix = pattern.replace(/\/\*$/, "");
+    return cleanPath.startsWith(prefix + "/") || cleanPath === prefix;
+  });
+
+  if (isDynamicMatch) {
+    return "moderate";
+  }
+
+  return null;
+}
+
+export function isSpeculationPath(path: string): boolean {
+  return getSpeculationEagernessForPath(path) !== null;
 }
 
 export function getSpeculationRulesTag(
