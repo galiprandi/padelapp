@@ -1127,3 +1127,85 @@ export function getSuggestedContactSectionAriaLabel({
   const slotsText = openSlots === 1 ? "1 cupo disponible" : `${openSlots} cupos disponibles`;
   return `Contactos sugeridos de tu red de pádel para invitar por WhatsApp: ${contactsText} para cubrir ${slotsText}.`;
 }
+
+export interface TurnActionsRegionAriaLabelOptions {
+  club: string;
+  viewerId?: string;
+  isSubstitute?: boolean;
+  isJoined?: boolean;
+  isCreator?: boolean;
+  isFull?: boolean;
+  isCompleted?: boolean;
+  openSlots?: number;
+}
+
+/**
+ * Format accessible ARIA label for turn actions bottom bar region in Argentine Spanish.
+ */
+export function getTurnActionsRegionAriaLabel({
+  club,
+  viewerId,
+  isSubstitute = false,
+  isJoined = false,
+  isCreator = false,
+  isFull = false,
+  isCompleted = false,
+  openSlots = 0,
+}: TurnActionsRegionAriaLabelOptions): string {
+  if (!viewerId) {
+    return `Acciones del turno en ${club}: Iniciar sesión o compartir enlace`;
+  }
+  if (isCompleted) {
+    return `Acciones del turno en ${club}: Turno finalizado`;
+  }
+  if (isSubstitute) {
+    return openSlots > 0
+      ? `Acciones del turno en ${club}: Ocupar cupo disponible o salir de suplentes`
+      : `Acciones del turno en ${club}: Lista de espera de suplentes`;
+  }
+  if (isCreator) {
+    return `Acciones de organización del turno en ${club}`;
+  }
+  if (isJoined) {
+    return `Acciones del turno en ${club}: Bajarme del turno o compartir`;
+  }
+  if (isFull) {
+    return `Acciones del turno en ${club}: Turno completo, sumarme como suplente`;
+  }
+  return `Acciones del turno en ${club}: Sumarme ahora o compartir`;
+}
+
+/**
+ * Format waitlist explanation message for substitutes when turn is full.
+ */
+export function getSubstituteWaitlistMessage(): string {
+  return "Estás en la lista de espera. Te avisaremos cuando se libere un cupo.";
+}
+
+/**
+ * Format status text for substitutes when no slots are available.
+ */
+export function getSubstituteNoSlotsText(): string {
+  return "No hay cupos libres todavía";
+}
+
+/**
+ * Format button label when turn is completed.
+ */
+export function getTurnCompletedButtonLabel(): string {
+  return "Turno finalizado";
+}
+
+/**
+ * Format button label when user is already joined.
+ */
+export function getAlreadyJoinedButtonLabel(): string {
+  return "Ya te sumaste";
+}
+
+/**
+ * Format sign-in form prompt text with club name.
+ */
+export function getSignInPromptText(club: string): string {
+  return `Iniciá sesión para sumarte a ${club}`;
+}

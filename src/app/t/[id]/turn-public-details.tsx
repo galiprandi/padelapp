@@ -38,6 +38,12 @@ import {
   buildTurnConnectionMap,
   getContactBadgeText,
   getSuggestedContactSectionAriaLabel,
+  getTurnActionsRegionAriaLabel,
+  getSubstituteWaitlistMessage,
+  getSubstituteNoSlotsText,
+  getTurnCompletedButtonLabel,
+  getAlreadyJoinedButtonLabel,
+  getSignInPromptText,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -678,9 +684,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       <div className="h-64" />
 
       <div
-        className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50"
+        className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50 shadow-xs"
         role="region"
-        aria-label="Acciones del turno"
+        aria-label={getTurnActionsRegionAriaLabel({
+          club: turn.club,
+          viewerId,
+          isSubstitute,
+          isJoined,
+          isCreator,
+          isFull,
+          isCompleted,
+          openSlots: turn.maxPlayers - turn.players.length,
+        })}
       >
         <div className="max-w-md mx-auto">
           <TurnActions
@@ -740,8 +755,8 @@ function TurnActions({
       <div className="flex flex-col gap-3">
         <SignInForm
           callbackUrl={`/t/${turnId}`}
-          label={`Iniciá sesión para sumarte a ${club}`}
-          className="w-full h-12 rounded-lg text-base font-bold"
+          label={getSignInPromptText(club)}
+          className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
         />
         <TurnShareButton shareUrl={shareUrl} club={club} date={date} openSlots={openSlots} />
       </div>
@@ -756,11 +771,11 @@ function TurnActions({
           <TakeOpenSlotForm turnId={turnId} />
         ) : (
           <>
-            <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border">
-              No hay cupos libres todavía
+            <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border shadow-xs text-sm">
+              {getSubstituteNoSlotsText()}
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              Estás en la lista de espera. Te avisaremos cuando se libere un cupo.
+              {getSubstituteWaitlistMessage()}
             </p>
           </>
         )}
@@ -784,7 +799,7 @@ function TurnActions({
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 h-10 rounded-lg font-bold text-xs"
+                className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
               >
                 <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
@@ -798,16 +813,16 @@ function TurnActions({
         {isCompleted ? (
           <Button
             disabled
-            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground"
+            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs"
           >
-            Turno finalizado
+            {getTurnCompletedButtonLabel()}
           </Button>
         ) : isJoined ? (
           <Button
             disabled
-            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border"
+            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs"
           >
-            Ya te sumaste
+            {getAlreadyJoinedButtonLabel()}
           </Button>
         ) : (
           <JoinSubstituteForm turnId={turnId} />
@@ -859,7 +874,7 @@ function TurnActions({
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 h-10 rounded-lg font-bold text-xs"
+                className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
               >
                 <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
@@ -915,7 +930,7 @@ function TurnActions({
             <Button
               asChild
               variant="outline"
-              className="flex-1 h-10 rounded-lg font-bold text-xs"
+              className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
             >
               <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
                 <Edit3 className="mr-2 h-4 w-4" />

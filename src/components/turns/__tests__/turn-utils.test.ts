@@ -67,6 +67,12 @@ import {
   getWhatsAppGroupInviteAriaLabel,
   getContactBadgeText,
   getSuggestedContactSectionAriaLabel,
+  getTurnActionsRegionAriaLabel,
+  getSubstituteWaitlistMessage,
+  getSubstituteNoSlotsText,
+  getTurnCompletedButtonLabel,
+  getAlreadyJoinedButtonLabel,
+  getSignInPromptText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -715,6 +721,78 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("TurnActions Region and Copy Helpers", () => {
+  it("formats getTurnActionsRegionAriaLabel across user authentication, role, and turn status states", () => {
+    expect(
+      getTurnActionsRegionAriaLabel({ club: "Central Padel", viewerId: undefined })
+    ).toBe("Acciones del turno en Central Padel: Iniciar sesión o compartir enlace");
+
+    expect(
+      getTurnActionsRegionAriaLabel({ club: "Central Padel", viewerId: "u1", isCompleted: true })
+    ).toBe("Acciones del turno en Central Padel: Turno finalizado");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        isSubstitute: true,
+        openSlots: 1,
+      })
+    ).toBe("Acciones del turno en Central Padel: Ocupar cupo disponible o salir de suplentes");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        isSubstitute: true,
+        openSlots: 0,
+      })
+    ).toBe("Acciones del turno en Central Padel: Lista de espera de suplentes");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        isCreator: true,
+      })
+    ).toBe("Acciones de organización del turno en Central Padel");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        isJoined: true,
+      })
+    ).toBe("Acciones del turno en Central Padel: Bajarme del turno o compartir");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        isFull: true,
+      })
+    ).toBe("Acciones del turno en Central Padel: Turno completo, sumarme como suplente");
+
+    expect(
+      getTurnActionsRegionAriaLabel({
+        club: "Central Padel",
+        viewerId: "u1",
+        openSlots: 2,
+      })
+    ).toBe("Acciones del turno en Central Padel: Sumarme ahora o compartir");
+  });
+
+  it("formats copy helper strings accurately", () => {
+    expect(getSubstituteWaitlistMessage()).toBe(
+      "Estás en la lista de espera. Te avisaremos cuando se libere un cupo."
+    );
+    expect(getSubstituteNoSlotsText()).toBe("No hay cupos libres todavía");
+    expect(getTurnCompletedButtonLabel()).toBe("Turno finalizado");
+    expect(getAlreadyJoinedButtonLabel()).toBe("Ya te sumaste");
+    expect(getSignInPromptText("Central Padel")).toBe("Iniciá sesión para sumarte a Central Padel");
   });
 });
 
