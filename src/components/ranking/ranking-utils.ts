@@ -144,10 +144,75 @@ export function getRankingUserSummaryAriaLabel(
 }
 
 /**
+ * Returns localized count description for pending match confirmations
+ */
+export function getPendingConfirmationsCountText(count: number): string {
+  if (count <= 0) return "No tenés partidos pendientes de confirmación.";
+  const matchText = count === 1 ? "1 partido pendiente" : `${count} partidos pendientes`;
+  return `Tenés ${matchText}. Confirmá para actualizar el ranking.`;
+}
+
+/**
+ * Formats match date for pending confirmations alert
+ */
+export function formatPendingMatchDate(
+  dateValue: Date | string | undefined,
+  mounted: boolean
+): string {
+  if (!mounted || !dateValue) return "";
+  const matchDate = dateValue instanceof Date ? dateValue : new Date(dateValue);
+  if (isNaN(matchDate.getTime())) return "";
+
+  return new Intl.DateTimeFormat("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(matchDate);
+}
+
+/**
+ * Returns accessible ARIA label for confirming match result
+ */
+export function getPendingMatchConfirmAriaLabel(
+  score: string | null | undefined,
+  formattedDate: string
+): string {
+  const dateSuffix = formattedDate ? ` para el partido del ${formattedDate}` : "";
+  const scoreText = score ? ` ${score}` : "";
+  return `Confirmar resultado${scoreText}${dateSuffix}`;
+}
+
+/**
+ * Returns accessible ARIA label for loading match result page
+ */
+export function getPendingMatchResultAriaLabel(formattedDate: string): string {
+  const dateSuffix = formattedDate ? ` para el partido del ${formattedDate}` : "";
+  return `Cargar resultado${dateSuffix}`;
+}
+
+/**
+ * Returns accessible ARIA label for viewing match details
+ */
+export function getPendingMatchDetailAriaLabel(formattedDate: string): string {
+  const dateSuffix = formattedDate ? ` del partido del ${formattedDate}` : " del partido";
+  return `Ver detalle${dateSuffix}`;
+}
+
+/**
  * Returns accessible ARIA region landmark label for ranking section
  */
 export function getRankingRegionAriaLabel(
-  section: "rules" | "search" | "filter" | "podium" | "list" | "breakdown" | "banner" | "card"
+  section:
+    | "rules"
+    | "search"
+    | "filter"
+    | "podium"
+    | "list"
+    | "breakdown"
+    | "banner"
+    | "card"
+    | "pending"
 ): string {
   switch (section) {
     case "rules":
@@ -166,5 +231,7 @@ export function getRankingRegionAriaLabel(
       return "Resumen de ranking de usuario";
     case "card":
       return "Tarjeta de posición y puntos de ranking";
+    case "pending":
+      return "Alertas de partidos pendientes de confirmación";
   }
 }

@@ -7,6 +7,14 @@ import { useToast } from "@/components/toast/use-toast";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import Link from "next/link";
+import {
+  getPendingConfirmationsCountText,
+  formatPendingMatchDate,
+  getPendingMatchConfirmAriaLabel,
+  getPendingMatchResultAriaLabel,
+  getPendingMatchDetailAriaLabel,
+  getRankingRegionAriaLabel,
+} from "./ranking-utils";
 
 interface PendingPlayer {
   id: string;
@@ -73,7 +81,7 @@ export function PendingConfirmationsAlert({
   return (
     <div
       role="region"
-      aria-label="Alertas de partidos pendientes de confirmación"
+      aria-label={getRankingRegionAriaLabel("pending")}
       className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
     >
       <div className="flex items-center gap-2">
@@ -83,7 +91,7 @@ export function PendingConfirmationsAlert({
             Confirmaciones pendientes
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Tenés {pendingActions.length} {pendingActions.length === 1 ? "partido pendiente" : "partidos pendientes"}. Confirmá para actualizar el ranking.
+            {getPendingConfirmationsCountText(pendingActions.length)}
           </p>
         </div>
       </div>
@@ -91,15 +99,8 @@ export function PendingConfirmationsAlert({
       <div className="space-y-2.5">
         {pendingActions.map((match) => {
           const hasScore = !!match.score;
-          const matchDate = match.date ? new Date(match.date) : new Date(match.createdAt);
-          const formattedDate = mounted
-            ? new Intl.DateTimeFormat("es-AR", {
-                day: "2-digit",
-                month: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              }).format(matchDate)
-            : "";
+          const matchDateValue = match.date || match.createdAt;
+          const formattedDate = formatPendingMatchDate(matchDateValue, mounted);
 
           const isThisConfirming = activeConfirmingId === match.id && isConfirming;
 
@@ -131,7 +132,7 @@ export function PendingConfirmationsAlert({
                     onClick={() => handleConfirm(match.id)}
                     disabled={isConfirming}
                     aria-busy={isThisConfirming}
-                    aria-label={`Confirmar resultado ${match.score} para el partido del ${formattedDate}`}
+                    aria-label={getPendingMatchConfirmAriaLabel(match.score, formattedDate)}
                     className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50"
                   >
                     {isThisConfirming ? (
@@ -145,7 +146,7 @@ export function PendingConfirmationsAlert({
                   <Link
                     href={`/match/${match.id}/result`}
                     prefetch={true}
-                    aria-label={`Cargar resultado para el partido del ${formattedDate}`}
+                    aria-label={getPendingMatchResultAriaLabel(formattedDate)}
                     className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     Cargar resultado
@@ -155,7 +156,7 @@ export function PendingConfirmationsAlert({
                 <Link
                   href={`/match/${match.id}`}
                   prefetch={true}
-                  aria-label={`Ver detalle del partido del ${formattedDate}`}
+                  aria-label={getPendingMatchDetailAriaLabel(formattedDate)}
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <ChevronRight className="h-4 w-4" aria-hidden="true" />

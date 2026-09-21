@@ -7,6 +7,11 @@ import {
   getRankingListItemAriaLabel,
   getRankingBreakdownButtonAriaLabel,
   getRankingUserSummaryAriaLabel,
+  getPendingConfirmationsCountText,
+  formatPendingMatchDate,
+  getPendingMatchConfirmAriaLabel,
+  getPendingMatchResultAriaLabel,
+  getPendingMatchDetailAriaLabel,
   getRankingRegionAriaLabel,
 } from "../ranking-utils";
 
@@ -169,6 +174,88 @@ describe("Ranking Helpers", () => {
     });
   });
 
+  describe("getPendingConfirmationsCountText", () => {
+    it("returns zero pending message when count is 0 or negative", () => {
+      expect(getPendingConfirmationsCountText(0)).toBe(
+        "No tenés partidos pendientes de confirmación."
+      );
+      expect(getPendingConfirmationsCountText(-1)).toBe(
+        "No tenés partidos pendientes de confirmación."
+      );
+    });
+
+    it("returns singular message for 1 match", () => {
+      expect(getPendingConfirmationsCountText(1)).toBe(
+        "Tenés 1 partido pendiente. Confirmá para actualizar el ranking."
+      );
+    });
+
+    it("returns plural message for multiple matches", () => {
+      expect(getPendingConfirmationsCountText(3)).toBe(
+        "Tenés 3 partidos pendientes. Confirmá para actualizar el ranking."
+      );
+    });
+  });
+
+  describe("formatPendingMatchDate", () => {
+    it("returns empty string when not mounted or date is missing", () => {
+      expect(formatPendingMatchDate(new Date(), false)).toBe("");
+      expect(formatPendingMatchDate(undefined, true)).toBe("");
+    });
+
+    it("formats valid date string or Date object when mounted", () => {
+      const sampleDate = new Date("2026-09-20T18:30:00Z");
+      const formatted = formatPendingMatchDate(sampleDate, true);
+      expect(formatted).not.toBe("");
+      expect(typeof formatted).toBe("string");
+    });
+
+    it("returns empty string for invalid date", () => {
+      expect(formatPendingMatchDate("invalid-date", true)).toBe("");
+    });
+  });
+
+  describe("getPendingMatchConfirmAriaLabel", () => {
+    it("returns label with score and date suffix", () => {
+      expect(getPendingMatchConfirmAriaLabel("6-4 6-2", "20/09, 15:30")).toBe(
+        "Confirmar resultado 6-4 6-2 para el partido del 20/09, 15:30"
+      );
+    });
+
+    it("handles missing score or date", () => {
+      expect(getPendingMatchConfirmAriaLabel(null, "20/09, 15:30")).toBe(
+        "Confirmar resultado para el partido del 20/09, 15:30"
+      );
+      expect(getPendingMatchConfirmAriaLabel("6-4 6-2", "")).toBe(
+        "Confirmar resultado 6-4 6-2"
+      );
+    });
+  });
+
+  describe("getPendingMatchResultAriaLabel", () => {
+    it("returns label with date suffix when date is provided", () => {
+      expect(getPendingMatchResultAriaLabel("20/09, 15:30")).toBe(
+        "Cargar resultado para el partido del 20/09, 15:30"
+      );
+    });
+
+    it("returns default label when date is empty", () => {
+      expect(getPendingMatchResultAriaLabel("")).toBe("Cargar resultado");
+    });
+  });
+
+  describe("getPendingMatchDetailAriaLabel", () => {
+    it("returns label with date suffix when date is provided", () => {
+      expect(getPendingMatchDetailAriaLabel("20/09, 15:30")).toBe(
+        "Ver detalle del partido del 20/09, 15:30"
+      );
+    });
+
+    it("returns default label when date is empty", () => {
+      expect(getPendingMatchDetailAriaLabel("")).toBe("Ver detalle del partido");
+    });
+  });
+
   describe("getRankingRegionAriaLabel", () => {
     it("returns correct landmark labels", () => {
       expect(getRankingRegionAriaLabel("rules")).toBe(
@@ -194,6 +281,9 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRegionAriaLabel("card")).toBe(
         "Tarjeta de posición y puntos de ranking"
+      );
+      expect(getRankingRegionAriaLabel("pending")).toBe(
+        "Alertas de partidos pendientes de confirmación"
       );
     });
   });
