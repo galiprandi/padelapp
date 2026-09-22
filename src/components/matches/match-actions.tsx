@@ -15,6 +15,22 @@ import {
   confirmMatchResultAction,
   finalizeMatchAction,
 } from "@/app/(app)/match/actions";
+import {
+  getCancelMatchAriaLabel,
+  getCancelMatchConfirmRegionAriaLabel,
+  getCancelMatchCancelAriaLabel,
+  getCancelMatchSubmitAriaLabel,
+  getCancelMatchSuccessToast,
+  getCancelMatchErrorToast,
+  getConfirmResultRegionAriaLabel,
+  getConfirmResultAriaLabel,
+  getConfirmResultSuccessToast,
+  getConfirmResultErrorToast,
+  getFinalizeMatchRegionAriaLabel,
+  getFinalizeMatchAriaLabel,
+  getFinalizeMatchSuccessToast,
+  getFinalizeMatchErrorToast,
+} from "./match-actions-utils";
 
 export function CancelMatchForm({ matchId }: { matchId: string }) {
   const router = useRouter();
@@ -27,10 +43,10 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const result = await cancelMatchAction(matchId);
       if (result.status === "ok") {
-        showToast("Eliminaste el partido.");
+        showToast(getCancelMatchSuccessToast());
         router.push("/match");
       } else {
-        showToast(result.message || "No pudimos eliminar el partido.", { type: "error" });
+        showToast(getCancelMatchErrorToast(result.message), { type: "error" });
       }
     });
   };
@@ -54,8 +70,8 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         type="button"
         variant="ghost"
         onClick={() => setConfirming(true)}
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Eliminar este partido"
+        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        aria-label={getCancelMatchAriaLabel()}
       >
         <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
         Eliminar Partido
@@ -66,7 +82,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
   return (
     <div
       role="region"
-      aria-label="Confirmación de eliminación del partido"
+      aria-label={getCancelMatchConfirmRegionAriaLabel()}
       className="flex-1 flex items-center gap-1.5"
       onKeyDown={(e) => {
         if (e.key === "Escape") {
@@ -80,8 +96,8 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         variant="ghost"
         disabled={isPending}
         onClick={() => setConfirming(false)}
-        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Cancelar eliminación del partido"
+        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        aria-label={getCancelMatchCancelAriaLabel()}
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
@@ -91,8 +107,8 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         onClick={handleCancel}
-        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Confirmar eliminación del partido"
+        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        aria-label={getCancelMatchSubmitAriaLabel(isPending)}
       >
         {isPending ? (
           <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
@@ -115,10 +131,10 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const res = await confirmMatchResultAction(matchId);
       if (res.status === "ok") {
-        showToast("Confirmaste el resultado. 🏆", { type: "success" });
+        showToast(getConfirmResultSuccessToast(), { type: "success" });
         router.refresh();
       } else {
-        showToast(res.message || "No pudimos confirmar el resultado.", { type: "error" });
+        showToast(getConfirmResultErrorToast(res.message), { type: "error" });
       }
     });
   };
@@ -127,15 +143,15 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
     <form
       onSubmit={handleConfirm}
       role="region"
-      aria-label="Acción para confirmar resultado del partido"
+      aria-label={getConfirmResultRegionAriaLabel()}
       className="w-full"
     >
       <Button
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Confirmar resultado del partido"
+        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        aria-label={getConfirmResultAriaLabel(isPending)}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
@@ -158,10 +174,10 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
     startTransition(async () => {
       const res = await finalizeMatchAction(matchId);
       if (res.status === "ok") {
-        showToast("Finalizaste el partido. 🏆", { type: "success" });
+        showToast(getFinalizeMatchSuccessToast(), { type: "success" });
         router.refresh();
       } else {
-        showToast(res.message || "No pudimos finalizar el partido.", { type: "error" });
+        showToast(getFinalizeMatchErrorToast(res.message), { type: "error" });
       }
     });
   };
@@ -170,7 +186,7 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
     <form
       onSubmit={handleFinalize}
       role="region"
-      aria-label="Acción para finalizar partido como organizador"
+      aria-label={getFinalizeMatchRegionAriaLabel()}
       className="w-full"
     >
       <Button
@@ -178,8 +194,8 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         variant="outline"
-        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-        aria-label="Finalizar el partido como organizador"
+        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        aria-label={getFinalizeMatchAriaLabel(isPending)}
       >
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" aria-hidden="true" />
