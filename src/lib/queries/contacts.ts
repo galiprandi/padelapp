@@ -10,6 +10,8 @@ import {
 import { eq, and, gte, desc, inArray, or } from "drizzle-orm";
 import { userInMatch } from "./helpers";
 import { cacheLife, cacheTag } from "next/cache";
+import { calculateTurnRescueProximity } from "@/app/network/graph-utils";
+import type { GraphLink } from "@/app/network/actions";
 
 export interface PadelContact {
   id: string;
@@ -18,6 +20,9 @@ export interface PadelContact {
   image: string | null;
   lastMatchAt: Date;
   matchesTogether: number;
+  proximityTier?: string;
+  proximitySummary?: string;
+  badgeStyle?: string;
 }
 
 /**
@@ -111,18 +116,24 @@ export function calculatePadelContactAriaLabel(contact: PadelContact): string {
 
   // Coerce: payloads crossing a serialization boundary may arrive as ISO strings.
   const lastMatchAt = contact.lastMatchAt ? new Date(contact.lastMatchAt) : null;
-  if (!lastMatchAt || lastMatchAt.getTime() === 0) {
-    return `${name}: ${matchText}.`;
-  }
+  const dateStr =
+    lastMatchAt && lastMatchAt.getTime() > 0
+      ? ` Último partido el ${lastMatchAt.toLocaleDateString("es-AR", {
+          day: "numeric",
+          month: "numeric",
+          year: "numeric",
+          timeZone: "America/Argentina/Buenos_Aires",
+        })}.`
+      : "";
 
-  const dateStr = lastMatchAt.toLocaleDateString("es-AR", {
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-    timeZone: "America/Argentina/Buenos_Aires",
-  });
+  const proximityText =
+    contact.proximityTier && contact.proximitySummary
+      ? ` Compatibilidad de salvataje: ${contact.proximityTier}. ${contact.proximitySummary}.`
+      : contact.proximityTier
+        ? ` Compatibilidad de salvataje: ${contact.proximityTier}.`
+        : "";
 
-  return `${name}: ${matchText}. Último partido el ${dateStr}.`;
+  return `${name}: ${matchText}.${dateStr}${proximityText}`;
 }
 
 /**
@@ -213,6 +224,10 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
         image: null,
         lastMatchAt: new Date(),
         matchesTogether: 5,
+        proximityTier: "Ideal 🎯",
+        proximitySummary: "Score cercano (dif. 50) · Equilibra posición en cancha",
+        badgeStyle:
+          "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
       },
       {
         id: "p-04",
@@ -221,6 +236,10 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
         image: null,
         lastMatchAt: new Date(),
         matchesTogether: 3,
+        proximityTier: "Buena opción 👍",
+        proximitySummary: "Score cercano (dif. 20) · Posición abierta",
+        badgeStyle:
+          "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800",
       },
     ];
   }
@@ -461,6 +480,35 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
 
   if (finalCandidateIds.length === 0) return [];
 
+  // Convert edges to GraphLink structure for proximity calculation
+  const graphLinks: GraphLink[] = edges.map((e) => ({
+    source: e.playerAId,
+    target: e.playerBId,
+    rivalMatches: e.matchesAsRivals,
+    partnerMatches: e.matchesAsPartners,
+    winsA: e.winsA,
+    winsB: e.winsB,
+    winsTogether: e.winsTogether,
+    lossesTogether: e.lossesTogether,
+    turnsTogether: e.turnsTogether,
+    strength: e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether,
+  }));
+
+  const enrolledPlayersInput = enrolledStats.map((s) => ({
+    id: s.userId,
+    skillScore: s.skillScore,
+    preferredSide: s.preferredSide,
+    community: s.community,
+  }));
+
+  // Fetch candidate stats for proximity calculation
+  const candidateStatsRows = await db
+    .select()
+    .from(playerGraphStats)
+    .where(inArray(playerGraphStats.userId, finalCandidateIds));
+
+  const candidateStatsMap = new Map(candidateStatsRows.map((s) => [s.userId, s]));
+
   // 5. Fetch user profile data for all candidates
   const candidatesData = await db
     .select({
@@ -476,6 +524,19 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   const mappedContacts: Array<PadelContact & { score: number }> = candidatesData.map((u) => {
     const directInfo = candidateDirectMatches.get(u.id);
     const score = candidateScores.get(u.id) ?? 0;
+    const stats = candidateStatsMap.get(u.id);
+
+    const proximity = calculateTurnRescueProximity(
+      {
+        id: u.id,
+        skillScore: stats?.skillScore ?? 1000,
+        preferredSide: stats?.preferredSide ?? null,
+        community: stats?.community ?? null,
+      },
+      enrolledPlayersInput,
+      graphLinks,
+    );
+
     return {
       id: u.id,
       displayName: u.displayName,
@@ -483,6 +544,9 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
       image: u.image,
       lastMatchAt: directInfo?.lastMatchAt ?? new Date(0),
       matchesTogether: directInfo?.matchesTogether ?? 0,
+      proximityTier: proximity.proximityTier,
+      proximitySummary: proximity.formattedSummary,
+      badgeStyle: proximity.badgeStyle,
       score,
     };
   });
