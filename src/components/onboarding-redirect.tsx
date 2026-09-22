@@ -2,6 +2,10 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  hasOnboardingBeenRedirected,
+  setOnboardingRedirected,
+} from "@/components/onboarding-checklist-utils";
 
 interface OnboardingRedirectProps {
   hasAlias: boolean;
@@ -14,9 +18,8 @@ export function OnboardingRedirect({ hasAlias }: OnboardingRedirectProps) {
     if (hasAlias) return;
 
     // Check if we have already redirected the user in this session
-    const alreadyRedirected = sessionStorage.getItem("onboarding-redirected");
-    if (!alreadyRedirected) {
-      sessionStorage.setItem("onboarding-redirected", "true");
+    if (!hasOnboardingBeenRedirected()) {
+      setOnboardingRedirected();
       router.push("/me/profile?onboarding=true");
     }
   }, [hasAlias, router]);

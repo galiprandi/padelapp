@@ -13,49 +13,29 @@ import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
+import {
+  ONBOARDING_CHECKLIST_DISMISS_KEY,
+  isOnboardingChecklistDismissed,
+  dismissOnboardingChecklist,
+  clearOnboardingChecklistDismissal,
+  calculateOnboardingProgress,
+  getStepStatusAriaLabel,
+  getOnboardingStepButtonAriaLabel,
+  type OnboardingStepsState,
+} from "@/components/onboarding-checklist-utils";
+
+export {
+  ONBOARDING_CHECKLIST_DISMISS_KEY,
+  isOnboardingChecklistDismissed,
+  dismissOnboardingChecklist,
+  clearOnboardingChecklistDismissal,
+  calculateOnboardingProgress,
+  type OnboardingStepsState,
+};
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
-export const ONBOARDING_CHECKLIST_DISMISS_KEY = "onboarding-checklist-dismissed";
-
-export function isOnboardingChecklistDismissed(): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(ONBOARDING_CHECKLIST_DISMISS_KEY) === "true";
-}
-
-export function dismissOnboardingChecklist(): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(ONBOARDING_CHECKLIST_DISMISS_KEY, "true");
-}
-
-export function clearOnboardingChecklistDismissal(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(ONBOARDING_CHECKLIST_DISMISS_KEY);
-}
-
-export interface OnboardingStepsState {
-  stepAliasCompleted: boolean;
-  stepActivityCompleted: boolean;
-  stepPwaCompleted: boolean;
-  stepNotificationsCompleted: boolean;
-}
-
-export function calculateOnboardingProgress(steps: OnboardingStepsState): {
-  completedCount: number;
-  progressPercent: number;
-} {
-  const completedCount =
-    (steps.stepAliasCompleted ? 1 : 0) +
-    (steps.stepActivityCompleted ? 1 : 0) +
-    (steps.stepPwaCompleted ? 1 : 0) +
-    (steps.stepNotificationsCompleted ? 1 : 0);
-
-  const progressPercent = Math.round((completedCount / 4) * 100);
-
-  return { completedCount, progressPercent };
 }
 
 interface OnboardingChecklistProps {
@@ -201,7 +181,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={`Paso 1: Configurá tu alias en la cancha (${stepAliasCompleted ? "completado" : "pendiente"})`}
+              aria-label={getStepStatusAriaLabel(1, "Configurá tu alias en la cancha", stepAliasCompleted)}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepAliasCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -232,7 +212,7 @@ export function OnboardingChecklist({
                   size="sm"
                   asChild
                   className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                  aria-label="Ir a configurar alias"
+                  aria-label={getOnboardingStepButtonAriaLabel("alias")}
                 >
                   <Link href="/me/profile" prefetch={true}>Configurar alias</Link>
                 </Button>
@@ -245,7 +225,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={`Paso 2: Creá tu primer turno (${stepActivityCompleted ? "completado" : "pendiente"})`}
+              aria-label={getStepStatusAriaLabel(2, "Creá tu primer turno", stepActivityCompleted)}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepActivityCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -276,7 +256,7 @@ export function OnboardingChecklist({
                   size="sm"
                   asChild
                   className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                  aria-label="Crear tu primer turno de pádel"
+                  aria-label={getOnboardingStepButtonAriaLabel("activity")}
                 >
                   <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
                 </Button>
@@ -289,7 +269,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={`Paso 3: Instalá la aplicación (${stepPwaCompleted ? "completado" : "pendiente"})`}
+              aria-label={getStepStatusAriaLabel(3, "Instalá la aplicación", stepPwaCompleted)}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepPwaCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -323,11 +303,7 @@ export function OnboardingChecklist({
                     disabled={isInstalling}
                     aria-busy={isInstalling}
                     className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label={
-                      isInstalling
-                        ? "Instalando aplicación de pádel..."
-                        : "Instalar aplicación de pádel directamente"
-                    }
+                    aria-label={getOnboardingStepButtonAriaLabel("pwa-install", isInstalling)}
                   >
                     {isInstalling ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
@@ -342,7 +318,7 @@ export function OnboardingChecklist({
                     size="sm"
                     asChild
                     className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label="Ver cómo instalar la aplicación"
+                    aria-label={getOnboardingStepButtonAriaLabel("pwa-guide")}
                   >
                     <Link href="/install" prefetch={true}>Ver cómo instalar</Link>
                   </Button>
@@ -356,7 +332,7 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={`Paso 4: Activá las notificaciones (${stepNotificationsCompleted ? "completado" : "pendiente"})`}
+              aria-label={getStepStatusAriaLabel(4, "Activá las notificaciones", stepNotificationsCompleted)}
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
                 stepNotificationsCompleted
                   ? "bg-primary border-primary text-primary-foreground"
@@ -400,11 +376,7 @@ export function OnboardingChecklist({
                     disabled={notificationLoading}
                     aria-busy={notificationLoading}
                     className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label={
-                      notificationLoading
-                        ? "Activando notificaciones de la aplicación..."
-                        : "Solicitar permisos para notificaciones"
-                    }
+                    aria-label={getOnboardingStepButtonAriaLabel("notifications", notificationLoading)}
                   >
                     {notificationLoading ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
