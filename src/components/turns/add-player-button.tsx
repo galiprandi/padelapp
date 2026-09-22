@@ -11,6 +11,11 @@ import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
   getAddPlayerAriaLabel,
+  getAddPlayerSearchStatusAriaLabel,
+  getAddPlayerPromptText,
+  getAddPlayerEmptyResultsText,
+  getAddPlayerClearSearchAriaLabel,
+  getAddPlayerCancelSearchAriaLabel,
   type PlayerOption,
 } from "@/components/turns/turn-utils";
 
@@ -91,6 +96,12 @@ export function AddPlayerButton({
     setAddingId(null);
   }
 
+  const searchStatusAriaLabel = getAddPlayerSearchStatusAriaLabel({
+    isSearching,
+    count: results.length,
+    query,
+  });
+
   if (!expanded) {
     return (
       <button
@@ -124,6 +135,10 @@ export function AddPlayerButton({
         }
       }}
     >
+      <p className="sr-only" role="status" aria-live="polite">
+        {searchStatusAriaLabel}
+      </p>
+
       {/* Search header */}
       <div className="flex items-center gap-2 p-3 border-b border-border">
         <div className="relative flex-1">
@@ -152,7 +167,7 @@ export function AddPlayerButton({
                 setResults([]);
                 inputRef.current?.focus();
               }}
-              aria-label="Limpiar búsqueda de jugador"
+              aria-label={getAddPlayerClearSearchAriaLabel()}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]"
             >
               <X className="h-4 w-4" />
@@ -166,7 +181,7 @@ export function AddPlayerButton({
             setResults([]);
           }}
           className="rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Cancelar búsqueda de jugador"
+          aria-label={getAddPlayerCancelSearchAriaLabel()}
         >
           <X className="h-5 w-5" />
         </button>
@@ -218,7 +233,7 @@ export function AddPlayerButton({
           ) : (
             !isSearching && (
               <p className="text-xs text-muted-foreground italic p-4 text-center">
-                No se encontraron jugadores con ese nombre.
+                {getAddPlayerEmptyResultsText()}
               </p>
             )
           )}
@@ -227,7 +242,7 @@ export function AddPlayerButton({
 
       {query.trim().length < 2 && (
         <p className="text-xs text-muted-foreground p-4 text-center">
-          Escribí al menos 2 caracteres para buscar.
+          {getAddPlayerPromptText()}
         </p>
       )}
     </div>
