@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-16 — Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton` (`src/components/ui/skeleton-utils.ts`) (PR #tino/ux/skeleton-accessibility-and-class-helpers)
 - [x] 2026-09-15 — Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules (`src/lib/speculation-rules.ts`) (PR #tino/perf/speculation-rules-path-matching-helpers)
 - [x] 2026-09-14 — Extracción de Constantes de Etiquetas de Caché Estandarizadas y Helpers Puros para TTL y Claves de Caché (`src/lib/cache-tags.ts`) (PR #tino/perf/cache-tag-constants-and-ttl-helpers)
 - [x] 2026-09-13 — Extracción de Funciones Helper `getResourceHints` y `getOriginTrialMetaProps` para Pistas de Recursos en Root Layout (`src/lib/resource-hints.ts`) (PR #tino/perf/resource-hints-helper-extraction)
@@ -55,6 +56,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-16 - Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton`
+**Aprendizaje:** Encapsular la lógica de evaluación de atributos de accesibilidad (`isAccessibleSkeletonContainer`, `getSkeletonAriaAttributes`), combinación de clases CSS base y personalizadas (`getSkeletonClasses`), y formateo de etiquetas ARIA en español para áreas de carga por streaming (`getSkeletonRegionAriaLabel`) en `src/components/ui/skeleton-utils.ts` permite desacoplar los cálculos de accesibilidad de la renderización del componente UI `Skeleton`, asegurando consistencia y facilitando pruebas unitarias directas.
+**Acción:** Reutilizar `getSkeletonRegionAriaLabel` y `getSkeletonAriaAttributes` en vistas de marcadores de posición o esqueletos de carga streaming en la aplicación.
+
 ### 2026-09-15 - Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules
 **Aprendizaje:** Encapsular la lógica de coincidencia de rutas (`isSpeculationPath`), formateo de patrones de documento (`formatSpeculationDocumentPattern`) y clasificación del nivel de prefetching/prerenderizado (`getSpeculationEagernessForPath`) en `src/lib/speculation-rules.ts` desinfectando parámetros de consulta (`?query=...`) y fragmentos (`#hash`) permite inspeccionar y auditar dinámicamente qué rutas de la app son elegibles para especulación en el navegador, reduciendo el acoplamiento y facilitando pruebas unitarias directas.
 **Acción:** Reutilizar `getSpeculationEagernessForPath` o `isSpeculationPath` al evaluar prefetch dinámico en gestores de eventos o enlaces.
