@@ -175,12 +175,18 @@ describe("buildContactsMap", () => {
 });
 
 describe("getPadelContacts and getTurnNetworkContacts under MOCK_AUTH/AUTH_BYPASS", () => {
-  it("returns mock turn network contacts under mock conditions", async () => {
+  it("returns mock turn network contacts with turn rescue proximity badges under mock conditions", async () => {
     process.env.MOCK_AUTH = "true";
     const contacts = await getTurnNetworkContacts("turn-01");
     expect(contacts).toHaveLength(2);
     expect(contacts[0].id).toBe("p-03");
+    expect(contacts[0].proximityTier).toBe("Ideal 🎯");
+    expect(contacts[0].proximitySummary).toContain("Score cercano");
+    expect(contacts[0].badgeStyle).toContain("bg-emerald-100");
+
     expect(contacts[1].id).toBe("p-04");
+    expect(contacts[1].proximityTier).toBe("Buena opción 👍");
+    expect(contacts[1].badgeStyle).toContain("bg-sky-100");
   });
 
   it("returns mock padel contacts under MOCK_AUTH/AUTH_BYPASS conditions", async () => {
@@ -286,6 +292,24 @@ describe("calculatePadelContactAriaLabel", () => {
 
     const label = calculatePadelContactAriaLabel(contact);
     expect(label).toBe("Jugador Nuevo: 2 partidos compartidos.");
+  });
+
+  it("includes turn rescue proximity tier and summary in ARIA label when available", () => {
+    const contact: PadelContact = {
+      id: "p-03",
+      displayName: "Diego Morales",
+      alias: "Gero",
+      image: null,
+      lastMatchAt: new Date("2026-05-15T12:00:00Z"),
+      matchesTogether: 5,
+      proximityTier: "Ideal 🎯",
+      proximitySummary: "Score cercano (dif. 50) · Equilibra posición en cancha",
+    };
+
+    const label = calculatePadelContactAriaLabel(contact);
+    expect(label).toContain("Gero: 5 partidos compartidos.");
+    expect(label).toContain("Último partido el 15/5/2026.");
+    expect(label).toContain("Compatibilidad de salvataje: Ideal 🎯. Score cercano (dif. 50) · Equilibra posición en cancha.");
   });
 });
 

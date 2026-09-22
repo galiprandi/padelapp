@@ -564,17 +564,34 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       aria-hidden="true"
                     />
                     <div className="min-w-0">
-                      <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors flex items-center gap-1.5">
-                        {contactName}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors">
+                          {contactName}
+                        </p>
+                        {contact.proximityTier && (
+                          <span
+                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${
+                              contact.badgeStyle ?? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+                            }`}
+                            title={`Compatibilidad con el turno: ${contact.proximityTier}. ${contact.proximitySummary ?? ""}`}
+                            aria-label={`Compatibilidad de ${contactName} con el turno: ${contact.proximityTier}. ${contact.proximitySummary ?? ""}`}
+                          >
+                            {contact.proximityTier}
+                          </span>
+                        )}
                         <Badge variant="primary" className="text-[10px] px-1.5 py-0 font-normal">
                           {getContactBadgeText(contact.matchesTogether > 1)}
                         </Badge>
-                      </p>
-                      {contact.matchesTogether > 0 && (
+                      </div>
+                      {contact.proximitySummary ? (
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                          {contact.proximitySummary}
+                        </p>
+                      ) : contact.matchesTogether > 0 ? (
                         <p className="text-xs text-muted-foreground truncate mt-0.5">
                           {contact.matchesTogether} {contact.matchesTogether === 1 ? "partido compartido" : "partidos compartidos"}
                         </p>
-                      )}
+                      ) : null}
                     </div>
                   </Link>
                   <WhatsAppInviteButton
