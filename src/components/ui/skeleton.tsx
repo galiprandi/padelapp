@@ -1,21 +1,30 @@
-import { cn } from "@/lib/utils";
+import {
+  getSkeletonAriaAttributes,
+  getSkeletonClasses,
+} from "./skeleton-utils";
 
 export function Skeleton({
   className,
   "aria-hidden": ariaHidden,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  role,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const isAccessibleContainer =
-    Boolean(props["aria-label"]) ||
-    Boolean(props["aria-labelledby"]) ||
-    Boolean(props.role);
-
-  const defaultAriaHidden = isAccessibleContainer ? undefined : "true";
+  const ariaAttrs = getSkeletonAriaAttributes({
+    "aria-hidden": ariaHidden,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+    role,
+  });
 
   return (
     <div
-      aria-hidden={ariaHidden ?? defaultAriaHidden}
-      className={cn("animate-pulse rounded-md bg-muted", className)}
+      {...ariaAttrs}
+      role={role}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      className={getSkeletonClasses(className)}
       {...props}
     />
   );
