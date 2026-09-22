@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-22 — AddPlayerButton Search Status Helpers Extraction, Real-Time ARIA Announcer & TurnsListSkeleton Accessibility Polish (bela/turnos/add-player-button-search-status-a11y)
 - [x] 2026-09-21 — TurnActions Region ARIA & Status Copy Helpers Extraction & Turn Public Details Refactoring (bela/turnos/turn-actions-region-aria-and-copy-helpers)
 - [x] 2026-09-20 — Contact Badge Helpers Extraction, ARIA Region Landmarks & Solid MDS Polish in Turn Public Details (bela/turnos/contact-badge-and-salvage-a11y)
 - [x] 2026-09-19 — WhatsApp Invite Helpers Extraction, ARIA Accessibility & Solid MDS Styling Refactoring (bela/turnos/whatsapp-invite-helpers-and-a11y)
@@ -59,6 +60,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-22 - AddPlayerButton Search Status Helpers Extraction, Real-Time ARIA Announcer & TurnsListSkeleton Accessibility Polish
+**Learning:** Extracting pure helper functions (`getAddPlayerSearchStatusAriaLabel`, `getAddPlayerPromptText`, `getAddPlayerEmptyResultsText`, `getAddPlayerClearSearchAriaLabel`, and `getAddPlayerCancelSearchAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized search status feedback and screen reader ARIA label generation from React render functions in `AddPlayerButton` (`src/components/turns/add-player-button.tsx`). Equipping `AddPlayerButton` with an `<p className="sr-only" role="status" aria-live="polite">{searchStatusAriaLabel}</p>` announcer delivers instant screen reader announcements as organizers type or receive search results. Additionally, equipping `TurnsListSkeleton` (`src/app/(app)/turnos/page.tsx`) with `role="status"` and `aria-label="Cargando lista de turnos de pádel..."` guarantees clear loading accessibility across turn listings.
+**Action:** Always extract search status and prompt labels into pure helper functions backed by Vitest unit tests, and equip interactive search overlays and loading skeletons with explicit `role="status"` announcer regions.
+
 ## 2026-09-21 - TurnActions Region ARIA & Status Copy Helpers Extraction & Turn Public Details Refactoring
 **Learning:** Extracting pure helper functions (`getTurnActionsRegionAriaLabel`, `getSubstituteWaitlistMessage`, `getSubstituteNoSlotsText`, `getTurnCompletedButtonLabel`, `getAlreadyJoinedButtonLabel`, `getSignInPromptText`) into `src/components/turns/turn-utils.ts` decouples localized status message strings and screen reader landmark accessibility formatting from React render trees in `TurnActions` (`src/app/t/[id]/turn-public-details.tsx`). Equipping the bottom fixed action bar with dynamic `<div role="region" aria-label={getTurnActionsRegionAriaLabel(...)}>` based on viewer authentication, role (substitute vs primary vs creator), and turn status (open vs full vs completed) delivers localized Argentine Spanish screen reader accessibility while focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) ensure seamless mobile usability.
 **Action:** Always extract action bar region ARIA labels and status copy into pure helper functions backed by Vitest unit tests, and equip sticky bottom action bars with explicit region landmarks, focus ring offsets, active tactile scaling, and solid MDS container styling.

@@ -18,6 +18,11 @@ import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
   getAddPlayerAriaLabel,
+  getAddPlayerSearchStatusAriaLabel,
+  getAddPlayerPromptText,
+  getAddPlayerEmptyResultsText,
+  getAddPlayerClearSearchAriaLabel,
+  getAddPlayerCancelSearchAriaLabel,
 } from "../turn-utils";
 
 describe("AddPlayerButton & Manual Add Helpers", () => {
@@ -68,5 +73,17 @@ describe("AddPlayerButton & Manual Add Helpers", () => {
   it("formats ARIA label for player addition action trigger", () => {
     const label = getAddPlayerAriaLabel("Facundo");
     expect(label).toBe("Agregar a Facundo al turno");
+  });
+
+  it("formats search status ARIA announcements for screen readers", () => {
+    expect(getAddPlayerSearchStatusAriaLabel({ isSearching: true })).toBe("Buscando jugadores por nombre o email...");
+    expect(getAddPlayerSearchStatusAriaLabel({ query: "Fa", count: 2 })).toBe("Se encontraron 2 jugadores.");
+  });
+
+  it("formats clear and cancel ARIA labels for search triggers", () => {
+    expect(getAddPlayerClearSearchAriaLabel()).toBe("Limpiar búsqueda de jugador");
+    expect(getAddPlayerCancelSearchAriaLabel()).toBe("Cancelar búsqueda de jugador");
+    expect(getAddPlayerPromptText()).toBe("Escribí al menos 2 caracteres para buscar.");
+    expect(getAddPlayerEmptyResultsText()).toBe("No se encontraron jugadores con ese nombre.");
   });
 });

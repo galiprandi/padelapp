@@ -19,6 +19,11 @@ import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
   getAddPlayerAriaLabel,
+  getAddPlayerSearchStatusAriaLabel,
+  getAddPlayerPromptText,
+  getAddPlayerEmptyResultsText,
+  getAddPlayerClearSearchAriaLabel,
+  getAddPlayerCancelSearchAriaLabel,
   validateTurnFormData,
   getNewTurnWhatsAppShareUrl,
   formatTurnSalvageCalloutAriaLabel,
@@ -628,6 +633,31 @@ describe("getAddPlayerSuccessToast and getAddPlayerAriaLabel", () => {
 
   it("formats ARIA label for adding player", () => {
     expect(getAddPlayerAriaLabel("Mateo")).toBe("Agregar a Mateo al turno");
+  });
+
+  it("formats getAddPlayerSearchStatusAriaLabel across search states", () => {
+    expect(getAddPlayerSearchStatusAriaLabel({ isSearching: true })).toBe(
+      "Buscando jugadores por nombre o email..."
+    );
+    expect(getAddPlayerSearchStatusAriaLabel({ query: "a" })).toBe(
+      "Escribí al menos 2 caracteres para buscar jugadores."
+    );
+    expect(getAddPlayerSearchStatusAriaLabel({ query: "jo", count: 0 })).toBe(
+      "No se encontraron jugadores con ese nombre o email."
+    );
+    expect(getAddPlayerSearchStatusAriaLabel({ query: "jo", count: 1 })).toBe(
+      "Se encontraron 1 jugador."
+    );
+    expect(getAddPlayerSearchStatusAriaLabel({ query: "jo", count: 3 })).toBe(
+      "Se encontraron 3 jugadores."
+    );
+  });
+
+  it("formats prompt, empty result, and button ARIA labels for add player", () => {
+    expect(getAddPlayerPromptText()).toBe("Escribí al menos 2 caracteres para buscar.");
+    expect(getAddPlayerEmptyResultsText()).toBe("No se encontraron jugadores con ese nombre.");
+    expect(getAddPlayerClearSearchAriaLabel()).toBe("Limpiar búsqueda de jugador");
+    expect(getAddPlayerCancelSearchAriaLabel()).toBe("Cancelar búsqueda de jugador");
   });
 });
 

@@ -405,6 +405,61 @@ export function getAddPlayerAriaLabel(playerName: string): string {
   return `Agregar a ${playerName} al turno`;
 }
 
+export interface AddPlayerSearchStatusOptions {
+  isSearching?: boolean;
+  count?: number;
+  query?: string;
+}
+
+/**
+ * Format accessible ARIA screen reader status label for player search state in Argentine Spanish.
+ */
+export function getAddPlayerSearchStatusAriaLabel({
+  isSearching = false,
+  count = 0,
+  query = "",
+}: AddPlayerSearchStatusOptions): string {
+  if (isSearching) {
+    return "Buscando jugadores por nombre o email...";
+  }
+  const trimmed = query.trim();
+  if (trimmed.length < 2) {
+    return "Escribí al menos 2 caracteres para buscar jugadores.";
+  }
+  if (count === 0) {
+    return "No se encontraron jugadores con ese nombre o email.";
+  }
+  return `Se encontraron ${count} jugador${count === 1 ? "" : "es"}.`;
+}
+
+/**
+ * Format prompt text when user types less than 2 search characters.
+ */
+export function getAddPlayerPromptText(): string {
+  return "Escribí al menos 2 caracteres para buscar.";
+}
+
+/**
+ * Format message when no player matches search query.
+ */
+export function getAddPlayerEmptyResultsText(): string {
+  return "No se encontraron jugadores con ese nombre.";
+}
+
+/**
+ * Format ARIA label for clearing player search input.
+ */
+export function getAddPlayerClearSearchAriaLabel(): string {
+  return "Limpiar búsqueda de jugador";
+}
+
+/**
+ * Format ARIA label for canceling player search dialog.
+ */
+export function getAddPlayerCancelSearchAriaLabel(): string {
+  return "Cancelar búsqueda de jugador";
+}
+
 export interface TurnFormData {
   club: string;
   date: string;

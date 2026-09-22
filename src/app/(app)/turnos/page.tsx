@@ -51,7 +51,11 @@ async function TurnsList() {
 
 function TurnsListSkeleton() {
   return (
-    <section className="flex flex-col gap-3">
+    <section
+      role="status"
+      aria-label="Cargando lista de turnos de pádel..."
+      className="flex flex-col gap-3"
+    >
       {/* Skeleton for tab filter bar */}
       <div className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl">
         <Skeleton className="h-10 w-full rounded-lg" />
