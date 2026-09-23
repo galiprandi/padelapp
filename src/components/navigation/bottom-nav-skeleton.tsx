@@ -1,6 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import { getBottomNavSkeletonAriaLabel } from "./nav-utils";
+import {
+  getBottomNavSkeletonAriaLabel,
+  getBottomNavContainerClasses,
+} from "./nav-utils";
 
 interface BottomNavSkeletonProps {
   position?: "fixed" | "static";
@@ -13,11 +15,7 @@ export function BottomNavSkeleton({
     <div
       role="status"
       aria-label={getBottomNavSkeletonAriaLabel()}
-      className={cn(
-        "mx-auto flex w-full justify-center",
-        position === "fixed" &&
-          "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]",
-      )}
+      className={getBottomNavContainerClasses(position)}
     >
       <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background">
         {/* Left tabs skeleton */}

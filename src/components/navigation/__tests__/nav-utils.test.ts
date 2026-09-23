@@ -11,6 +11,10 @@ import {
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
   isNavItemActive,
+  getBottomNavContainerClasses,
+  getNavItemClasses,
+  getFabClasses,
+  getNotificationsBadgeClasses,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -192,6 +196,76 @@ describe("nav-utils", () => {
       expect(attrs).toEqual({
         "aria-label": "Crear partido",
       });
+    });
+  });
+
+  describe("getBottomNavContainerClasses", () => {
+    it("returns fixed positioning and safe-area inset bottom classes by default", () => {
+      const classes = getBottomNavContainerClasses();
+      expect(classes).toContain("mx-auto flex w-full justify-center");
+      expect(classes).toContain("fixed inset-x-0 bottom-0 z-40");
+      expect(classes).toContain("pb-[env(safe-area-inset-bottom,0px)]");
+    });
+
+    it("returns static positioning without fixed classes when position is static", () => {
+      const classes = getBottomNavContainerClasses("static");
+      expect(classes).toContain("mx-auto flex w-full justify-center");
+      expect(classes).not.toContain("fixed inset-x-0");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getBottomNavContainerClasses("fixed", "custom-nav-container");
+      expect(classes).toContain("custom-nav-container");
+    });
+  });
+
+  describe("getNavItemClasses", () => {
+    it("returns active primary styling and touch/focus/scale classes when active", () => {
+      const classes = getNavItemClasses(true);
+      expect(classes).toContain("text-primary");
+      expect(classes).toContain("min-h-[48px]");
+      expect(classes).toContain("focus-visible:ring-2");
+      expect(classes).toContain("active:scale-[0.98]");
+    });
+
+    it("returns muted text styling when inactive", () => {
+      const classes = getNavItemClasses(false);
+      expect(classes).toContain("text-muted-foreground");
+      expect(classes).not.toContain("text-primary");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getNavItemClasses(false, "custom-item-class");
+      expect(classes).toContain("custom-item-class");
+    });
+  });
+
+  describe("getFabClasses", () => {
+    it("returns primary background, rounded styling, focus ring, and tactile scaling", () => {
+      const classes = getFabClasses();
+      expect(classes).toContain("bg-primary text-primary-foreground");
+      expect(classes).toContain("-mt-6 flex h-12 w-12");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("focus-visible:ring-2");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getFabClasses("custom-fab-class");
+      expect(classes).toContain("custom-fab-class");
+    });
+  });
+
+  describe("getNotificationsBadgeClasses", () => {
+    it("returns badge positioning, primary background, rounded-full, and focus ring", () => {
+      const classes = getNotificationsBadgeClasses();
+      expect(classes).toContain("absolute -top-3 right-6");
+      expect(classes).toContain("rounded-full bg-primary");
+      expect(classes).toContain("active:scale-[0.98]");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getNotificationsBadgeClasses("custom-badge-class");
+      expect(classes).toContain("custom-badge-class");
     });
   });
 });
