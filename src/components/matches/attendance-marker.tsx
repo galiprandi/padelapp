@@ -17,6 +17,10 @@ import {
   getAttendanceStatusAriaLabel,
   getPlayerFeedbackAriaLabel,
   getAttendanceSummaryText,
+  getAttendanceSaveSuccessToast,
+  getAttendanceSaveErrorToast,
+  getAttendanceSaveButtonLabel,
+  getAttendanceSaveButtonAriaLabel,
   ATTENDANCE_STATUS_LABELS,
 } from "@/components/matches/attendance-utils";
 
@@ -117,17 +121,17 @@ export function AttendanceMarker({
             feedbacks: feedbackEntries,
           });
           if (fbRes.status !== "ok") {
-            showToast("Guardaste la asistencia, pero no pudimos registrar tu feedback.", {
+            showToast(getAttendanceSaveSuccessToast(false), {
               duration: 4000,
             });
             onSaved?.();
             return;
           }
         }
-        showToast("Guardaste la asistencia y el feedback.");
+        showToast(getAttendanceSaveSuccessToast(true));
         onSaved?.();
       } else {
-        showToast(res.message || "No pudimos guardar la asistencia.", {
+        showToast(getAttendanceSaveErrorToast(res.message), {
           duration: 4000,
         });
       }
@@ -296,12 +300,16 @@ export function AttendanceMarker({
         onClick={handleSave}
         disabled={pending}
         aria-busy={pending}
+        aria-label={getAttendanceSaveButtonAriaLabel(pending)}
         className="w-full h-12 rounded-lg text-sm font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         {pending ? (
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <span className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <span>{getAttendanceSaveButtonLabel(pending)}</span>
+          </span>
         ) : (
-          "Guardar asistencia y feedback"
+          getAttendanceSaveButtonLabel(pending)
         )}
       </Button>
     </section>
