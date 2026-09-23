@@ -5,23 +5,24 @@ import { Bell, Loader2 } from "lucide-react";
 import { usePushNotifications } from "@/lib/hooks/use-push-notifications";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
+import {
+  PUSH_PROMPT_DISMISS_KEY,
+  isPushPromptDismissed,
+  dismissPushPrompt,
+  clearPushPromptDismissal,
+  getPushPermissionRegionAriaLabel,
+  getPushPermissionActionButtonLabel,
+  getPushPermissionActionButtonAriaLabel,
+  getPushPermissionDismissButtonAriaLabel,
+  getPushPermissionLiveStatus,
+} from "./push-permission-utils";
 
-export const PUSH_PROMPT_DISMISS_KEY = "push-prompt-dismissed";
-
-export function isPushPromptDismissed(): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(PUSH_PROMPT_DISMISS_KEY) === "true";
-}
-
-export function dismissPushPrompt(): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(PUSH_PROMPT_DISMISS_KEY, "true");
-}
-
-export function clearPushPromptDismissal(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(PUSH_PROMPT_DISMISS_KEY);
-}
+export {
+  PUSH_PROMPT_DISMISS_KEY,
+  isPushPromptDismissed,
+  dismissPushPrompt,
+  clearPushPromptDismissal,
+};
 
 export function PushPermissionPrompt() {
   const { showToast } = useToast();
@@ -69,12 +70,12 @@ export function PushPermissionPrompt() {
   return (
     <div
       role="region"
-      aria-label="Aviso de notificaciones del sistema"
+      aria-label={getPushPermissionRegionAriaLabel()}
       aria-busy={loading}
-      className="rounded-xl border border-border bg-card p-4 shadow-sm"
+      className="rounded-xl border border-border bg-card p-4 shadow-xs"
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs shrink-0">
           <Bell className="h-5 w-5" aria-hidden="true" />
         </div>
         <div className="flex-1 min-w-0">
@@ -95,11 +96,7 @@ export function PushPermissionPrompt() {
               }}
               disabled={loading}
               size="sm"
-              aria-label={
-                loading
-                  ? "Solicitando permisos de notificación"
-                  : "Activar notificaciones de la aplicación"
-              }
+              aria-label={getPushPermissionActionButtonAriaLabel(loading)}
               className="h-9 font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
               {loading ? (
@@ -107,14 +104,14 @@ export function PushPermissionPrompt() {
               ) : (
                 <Bell className="h-3.5 w-3.5" aria-hidden="true" />
               )}
-              {loading ? "Activando..." : "Activar"}
+              {getPushPermissionActionButtonLabel(loading)}
             </Button>
             <Button
               variant="ghost"
               onClick={handleDismiss}
               disabled={loading}
               size="sm"
-              aria-label="Descartar solicitud de notificaciones por ahora"
+              aria-label={getPushPermissionDismissButtonAriaLabel()}
               className="h-9 font-semibold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
               Ahora no
@@ -123,9 +120,7 @@ export function PushPermissionPrompt() {
         </div>
       </div>
       <div className="sr-only" aria-live="polite">
-        {loading
-          ? "Solicitando activación de notificaciones de la aplicación..."
-          : ""}
+        {getPushPermissionLiveStatus(loading)}
       </div>
     </div>
   );
