@@ -1264,3 +1264,43 @@ export function getAlreadyJoinedButtonLabel(): string {
 export function getSignInPromptText(club: string): string {
   return `Iniciá sesión para sumarte a ${club}`;
 }
+
+/**
+ * Format success toast message when a new turn is created.
+ */
+export function getCreateTurnSuccessToast(): string {
+  return "Creaste el turno. Compartilo por WhatsApp.";
+}
+
+/**
+ * Format success toast message when an existing turn is updated.
+ */
+export function getUpdateTurnSuccessToast(): string {
+  return "Actualizaste el turno.";
+}
+
+/**
+ * Format ARIA label for turn creation or edit form region landmark in Argentine Spanish.
+ */
+export function getTurnFormRegionAriaLabel(mode: "create" | "edit"): string {
+  if (mode === "create") {
+    return "Formulario para crear nuevo turno de pádel";
+  }
+  return "Formulario para editar turno de pádel";
+}
+
+/**
+ * Format ARIA label for turn creation or edit form submit button in Argentine Spanish.
+ */
+export function getTurnFormSubmitButtonAriaLabel({
+  mode,
+  isPending = false,
+}: {
+  mode: "create" | "edit";
+  isPending?: boolean;
+}): string {
+  if (mode === "create") {
+    return isPending ? "Creando turno..." : "Crear turno y compartir link";
+  }
+  return isPending ? "Guardando cambios del turno..." : "Guardar cambios del turno";
+}
