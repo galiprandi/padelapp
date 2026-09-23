@@ -14,6 +14,9 @@ import { cn } from "@/lib/utils";
 import {
   getNextRadioValue,
   validateTurnFormData,
+  getUpdateTurnSuccessToast,
+  getTurnFormRegionAriaLabel,
+  getTurnFormSubmitButtonAriaLabel,
 } from "@/components/turns/turn-utils";
 
 const DURATION_OPTIONS = [
@@ -78,7 +81,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
       });
 
       if (response.status === "ok") {
-        showToast("Actualizaste el turno.");
+        showToast(getUpdateTurnSuccessToast());
         router.push(`/t/${id}`);
       } else {
         showToast(response.message || "No se pudo actualizar el turno.");
@@ -90,7 +93,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div
         role="region"
-        aria-label="Formulario para editar turno de pádel"
+        aria-label={getTurnFormRegionAriaLabel("edit")}
         className="rounded-xl border border-border bg-card shadow-xs"
       >
         <div className="p-4 border-b border-border">
@@ -282,7 +285,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
         className="w-full h-12 text-base font-bold rounded-lg shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         disabled={isPending}
         aria-busy={isPending}
-        aria-label={isPending ? "Guardando cambios del turno..." : "Guardar cambios del turno"}
+        aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "edit", isPending })}
       >
         {isPending ? (
           <>

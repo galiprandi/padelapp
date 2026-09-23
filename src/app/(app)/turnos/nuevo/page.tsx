@@ -15,6 +15,9 @@ import {
   getNextRadioValue,
   validateTurnFormData,
   getNewTurnWhatsAppShareUrl,
+  getCreateTurnSuccessToast,
+  getTurnFormRegionAriaLabel,
+  getTurnFormSubmitButtonAriaLabel,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
@@ -74,7 +77,7 @@ export default function NewTurnPage() {
           turnId: response.turnId,
           origin: window.location.origin,
         });
-        showToast("Creaste el turno. Compartilo por WhatsApp.", {
+        showToast(getCreateTurnSuccessToast(), {
           action: {
             label: "WhatsApp",
             onClick: () => window.open(whatsappUrl, "_blank"),
@@ -109,7 +112,7 @@ export default function NewTurnPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div
           role="region"
-          aria-label="Formulario para crear nuevo turno de pádel"
+          aria-label={getTurnFormRegionAriaLabel("create")}
           className="rounded-xl border border-border bg-card shadow-xs"
         >
           <div className="p-4 border-b border-border">
@@ -305,7 +308,7 @@ export default function NewTurnPage() {
           className="w-full h-12 rounded-lg font-bold text-base shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           disabled={isPending}
           aria-busy={isPending}
-          aria-label={isPending ? "Creando turno..." : "Crear turno y compartir link"}
+          aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "create", isPending })}
         >
           {isPending ? (
             <>

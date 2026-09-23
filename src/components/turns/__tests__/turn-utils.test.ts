@@ -78,6 +78,10 @@ import {
   getTurnCompletedButtonLabel,
   getAlreadyJoinedButtonLabel,
   getSignInPromptText,
+  getCreateTurnSuccessToast,
+  getUpdateTurnSuccessToast,
+  getTurnFormRegionAriaLabel,
+  getTurnFormSubmitButtonAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -750,6 +754,33 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("Turn Form pure helpers", () => {
+  it("formats getCreateTurnSuccessToast and getUpdateTurnSuccessToast in Argentine Spanish", () => {
+    expect(getCreateTurnSuccessToast()).toBe("Creaste el turno. Compartilo por WhatsApp.");
+    expect(getUpdateTurnSuccessToast()).toBe("Actualizaste el turno.");
+  });
+
+  it("formats getTurnFormRegionAriaLabel for create and edit modes", () => {
+    expect(getTurnFormRegionAriaLabel("create")).toBe("Formulario para crear nuevo turno de pádel");
+    expect(getTurnFormRegionAriaLabel("edit")).toBe("Formulario para editar turno de pádel");
+  });
+
+  it("formats getTurnFormSubmitButtonAriaLabel across create/edit modes and idle/pending states", () => {
+    expect(getTurnFormSubmitButtonAriaLabel({ mode: "create", isPending: false })).toBe(
+      "Crear turno y compartir link"
+    );
+    expect(getTurnFormSubmitButtonAriaLabel({ mode: "create", isPending: true })).toBe(
+      "Creando turno..."
+    );
+    expect(getTurnFormSubmitButtonAriaLabel({ mode: "edit", isPending: false })).toBe(
+      "Guardar cambios del turno"
+    );
+    expect(getTurnFormSubmitButtonAriaLabel({ mode: "edit", isPending: true })).toBe(
+      "Guardando cambios del turno..."
     );
   });
 });
