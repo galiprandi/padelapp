@@ -6,6 +6,10 @@ import {
   getAttendanceBadgeLabel,
   getAttendanceBadgeClasses,
   getAttendanceBadgeAriaLabel,
+  getAttendanceSaveSuccessToast,
+  getAttendanceSaveErrorToast,
+  getAttendanceSaveButtonLabel,
+  getAttendanceSaveButtonAriaLabel,
   ATTENDANCE_STATUS_LABELS,
   ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
@@ -104,6 +108,55 @@ describe("attendance-utils", () => {
       expect(ATTENDANCE_STATUS_LABELS.LATE).toBe("Tarde");
       expect(ATTENDANCE_STATUS_LABELS.NO_SHOW).toBe("No asistió");
       expect(ATTENDANCE_BADGE_CLASSES.ATTENDED).toBeDefined();
+    });
+  });
+
+  describe("getAttendanceSaveSuccessToast", () => {
+    it("returns toast message when feedback was saved successfully", () => {
+      expect(getAttendanceSaveSuccessToast(true)).toBe(
+        "Guardaste la asistencia y el feedback.",
+      );
+    });
+
+    it("returns partial toast message when feedback could not be saved", () => {
+      expect(getAttendanceSaveSuccessToast(false)).toBe(
+        "Guardaste la asistencia, pero no pudimos registrar tu feedback.",
+      );
+    });
+  });
+
+  describe("getAttendanceSaveErrorToast", () => {
+    it("returns fallback message when provided", () => {
+      expect(getAttendanceSaveErrorToast("Error en servidor")).toBe("Error en servidor");
+    });
+
+    it("returns default message when fallbackMessage is missing or empty", () => {
+      expect(getAttendanceSaveErrorToast()).toBe("No pudimos guardar la asistencia.");
+      expect(getAttendanceSaveErrorToast("   ")).toBe("No pudimos guardar la asistencia.");
+    });
+  });
+
+  describe("getAttendanceSaveButtonLabel", () => {
+    it("returns pending state label when pending", () => {
+      expect(getAttendanceSaveButtonLabel(true)).toBe("Guardando asistencia...");
+    });
+
+    it("returns default action label when not pending", () => {
+      expect(getAttendanceSaveButtonLabel(false)).toBe("Guardar asistencia y feedback");
+    });
+  });
+
+  describe("getAttendanceSaveButtonAriaLabel", () => {
+    it("returns accessible ARIA label for pending state", () => {
+      expect(getAttendanceSaveButtonAriaLabel(true)).toBe(
+        "Guardando asistencia y feedback de nivel de los jugadores",
+      );
+    });
+
+    it("returns accessible ARIA label for idle state", () => {
+      expect(getAttendanceSaveButtonAriaLabel(false)).toBe(
+        "Guardar asistencia y feedback de nivel de los jugadores",
+      );
     });
   });
 });

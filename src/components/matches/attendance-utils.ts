@@ -74,3 +74,43 @@ export function getAttendanceSummaryText(totalPlayers: number): string {
   const playersText = totalPlayers === 1 ? "1 jugador" : `${totalPlayers} jugadores`;
   return `Confirmá la asistencia de ${playersText} y calificá sutilmente su nivel.`;
 }
+
+/**
+ * Formats a localized Argentine Spanish toast message for successful attendance save.
+ */
+export function getAttendanceSaveSuccessToast(hasFeedback: boolean): string {
+  if (hasFeedback) {
+    return "Guardaste la asistencia y el feedback.";
+  }
+  return "Guardaste la asistencia, pero no pudimos registrar tu feedback.";
+}
+
+/**
+ * Formats a localized Argentine Spanish toast message for attendance save error.
+ */
+export function getAttendanceSaveErrorToast(fallbackMessage?: string): string {
+  if (fallbackMessage && fallbackMessage.trim().length > 0) {
+    return fallbackMessage;
+  }
+  return "No pudimos guardar la asistencia.";
+}
+
+/**
+ * Returns the human-readable label for the attendance save button.
+ */
+export function getAttendanceSaveButtonLabel(isPending: boolean): string {
+  if (isPending) {
+    return "Guardando asistencia...";
+  }
+  return "Guardar asistencia y feedback";
+}
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for the attendance save button.
+ */
+export function getAttendanceSaveButtonAriaLabel(isPending: boolean): string {
+  if (isPending) {
+    return "Guardando asistencia y feedback de nivel de los jugadores";
+  }
+  return "Guardar asistencia y feedback de nivel de los jugadores";
+}
