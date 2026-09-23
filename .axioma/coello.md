@@ -5,6 +5,9 @@
 ## Estado actual
 
 ### Completado
+- Phase 40 (Player Similarity & Compatibility Badge Integration in Graph View Selected Node Details):
+  - [x] 2026-09-17 — Hecho: Integrada la función `calculatePlayerSimilarityInfo` en `GraphView` (`src/app/network/graph-view.tsx`) para comparar la compatibilidad del jugador seleccionado con el usuario visor (`viewerId`), renderizando insignias sólidas MDS de nivel de similitud ('Dupla ideal 🎯', 'Alta compatibilidad 👍', 'Jugador compatible 🤝', 'Perfil distante 📍') con atributos de accesibilidad ARIA descriptivos en voz argentina (`aria-label`, `title`).
+  - [x] 2026-09-17 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo candidatos ideales, perfil distante y formateo de cadenas de resumen de similitud.
 - Phase 39 (Player Match Complementarity & Synergy Index Calculation in Graph View):
   - [x] 2026-09-16 — Hecho: Creada la función pura `calculatePlayerMatchComplementarity` en `src/app/network/graph-utils.ts` para evaluar la complementariedad de posiciones físicas en cancha (Derecha + Revés), porcentaje de victorias en duplas y sinergia repetida con compañeros de la red, clasificándolos en insignias sólidas MDS ('Dupla sinérgica ideal 🎯', 'Sinergia técnica ⚡', 'Sinergia en desarrollo 🌱', 'Ajuste táctico ⚠️') con resúmenes formateados en voz argentina.
   - [x] 2026-09-16 — Hecho: Integrada la insignia sólida MDS de complementariedad de duplas en el panel lateral de detalles de nodo de `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).
