@@ -1,4 +1,5 @@
 import { Home, CalendarDays, Trophy, User, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface NavItem {
   href: string;
@@ -165,4 +166,59 @@ export function getFabAriaAttributes(): FabAriaAttributes {
   return {
     "aria-label": fabConfig.label,
   };
+}
+
+/**
+ * Genera las clases CSS para el contenedor exterior de la barra de navegación o su esqueleto.
+ * Maneja posicionamiento fijo en la parte inferior con margen seguro para iOS/Android (safe area) o estático.
+ */
+export function getBottomNavContainerClasses(
+  position: "fixed" | "static" = "fixed",
+  customClassName?: string,
+): string {
+  return cn(
+    "mx-auto flex w-full justify-center",
+    position === "fixed" &&
+      "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para los enlaces de navegación principales.
+ * Aplica tamaño táctil óptimo (mínimo 48px), foco por teclado accesible, respuesta táctil (active:scale) y resaltado activo.
+ */
+export function getNavItemClasses(
+  isActive: boolean,
+  customClassName?: string,
+): string {
+  return cn(
+    "group relative flex flex-1 flex-col items-center justify-center transition-all duration-100 min-h-[48px]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg",
+    "active:scale-[0.98]",
+    isActive
+      ? "text-primary"
+      : "text-muted-foreground hover:text-foreground",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para el botón de acción flotante central (FAB).
+ */
+export function getFabClasses(customClassName?: string): string {
+  return cn(
+    "relative -mt-6 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para la insignia/badge flotante de notificaciones pendientes.
+ */
+export function getNotificationsBadgeClasses(customClassName?: string): string {
+  return cn(
+    "absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
 }

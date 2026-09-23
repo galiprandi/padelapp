@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-17 — Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton` (`src/components/navigation/nav-utils.ts`) (PR #tino/ux/navigation-container-and-tactile-class-helpers)
 - [x] 2026-09-16 — Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton` (`src/components/ui/skeleton-utils.ts`) (PR #tino/ux/skeleton-accessibility-and-class-helpers)
 - [x] 2026-09-15 — Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules (`src/lib/speculation-rules.ts`) (PR #tino/perf/speculation-rules-path-matching-helpers)
 - [x] 2026-09-14 — Extracción de Constantes de Etiquetas de Caché Estandarizadas y Helpers Puros para TTL y Claves de Caché (`src/lib/cache-tags.ts`) (PR #tino/perf/cache-tag-constants-and-ttl-helpers)
@@ -56,6 +57,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-17 - Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton`
+**Aprendizaje:** Encapsular la lógica de clases CSS para el contenedor exterior de la barra de navegación principal (`getBottomNavContainerClasses`), ítems de enlace con área táctil accesible de 48px y estado activo (`getNavItemClasses`), el botón de acción flotante central (`getFabClasses`), y el indicador de notificaciones pendientes (`getNotificationsBadgeClasses`) en `src/components/navigation/nav-utils.ts` estandariza el estilo visual, los anillos de foco accesibles y la respuesta al toque (`active:scale-[0.98] transition-all`) en toda la navegación, reduciendo código duplicado y facilitando verificaciones aisladas mediante tests unitarios.
+**Acción:** Reutilizar siempre los helpers de clases de navegación de `src/components/navigation/nav-utils.ts` al modificar o extender la barra de navegación o sus esqueletos.
+
 ### 2026-09-16 - Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton`
 **Aprendizaje:** Encapsular la lógica de evaluación de atributos de accesibilidad (`isAccessibleSkeletonContainer`, `getSkeletonAriaAttributes`), combinación de clases CSS base y personalizadas (`getSkeletonClasses`), y formateo de etiquetas ARIA en español para áreas de carga por streaming (`getSkeletonRegionAriaLabel`) en `src/components/ui/skeleton-utils.ts` permite desacoplar los cálculos de accesibilidad de la renderización del componente UI `Skeleton`, asegurando consistencia y facilitando pruebas unitarias directas.
 **Acción:** Reutilizar `getSkeletonRegionAriaLabel` y `getSkeletonAriaAttributes` en vistas de marcadores de posición o esqueletos de carga streaming en la aplicación.
