@@ -35,6 +35,7 @@ import {
   calculatePartnershipStabilityInfo,
   calculateLocalClusteringCoefficient,
   calculatePlayerMatchComplementarity,
+  calculatePlayerSimilarityInfo,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -866,8 +867,39 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     graphData.nodes,
                     selectedNodeData.id,
                   );
+                  const viewerNode = viewerId
+                    ? graphData.nodes.find((n) => n.id === viewerId)
+                    : null;
+                  const similarityInfo =
+                    viewerNode && selectedNodeData.id !== viewerId
+                      ? calculatePlayerSimilarityInfo(
+                          {
+                            id: selectedNodeData.id,
+                            skillScore: selectedNodeData.skillScore,
+                            preferredSide: selectedNodeData.preferredSide,
+                          },
+                          {
+                            id: viewerNode.id,
+                            skillScore: viewerNode.skillScore,
+                            preferredSide: viewerNode.preferredSide,
+                          },
+                          filteredData.links,
+                        )
+                      : null;
                   return (
                     <>
+                      {similarityInfo && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            similarityInfo.badgeStyle,
+                          )}
+                          title={`Similitud con vos: ${similarityInfo.similarityTier}. ${similarityInfo.formattedSummary}`}
+                          aria-label={`Similitud con vos: ${similarityInfo.similarityTier}. ${similarityInfo.formattedSummary}`}
+                        >
+                          {similarityInfo.similarityTier}
+                        </span>
+                      )}
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
