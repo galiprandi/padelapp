@@ -205,6 +205,7 @@ export function getPendingMatchDetailAriaLabel(formattedDate: string): string {
 export function getRankingRegionAriaLabel(
   section:
     | "rules"
+    | "rules-detail"
     | "search"
     | "filter"
     | "podium"
@@ -217,6 +218,8 @@ export function getRankingRegionAriaLabel(
   switch (section) {
     case "rules":
       return "Reglas y fórmulas del ranking de Padel Red";
+    case "rules-detail":
+      return "Detalle de reglas y fórmulas del ranking";
     case "search":
       return "Buscador de jugadores por nombre o alias";
     case "filter":

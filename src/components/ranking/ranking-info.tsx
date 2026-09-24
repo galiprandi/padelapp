@@ -44,7 +44,7 @@ export function RankingInfo() {
         <div
           id="ranking-rules-content"
           role="region"
-          aria-label="Detalle de reglas y fórmulas del ranking"
+          aria-label={getRankingRegionAriaLabel("rules-detail")}
           className="border-t border-border p-4 space-y-4 bg-card text-sm"
         >
           {/* Fórmulas */}
