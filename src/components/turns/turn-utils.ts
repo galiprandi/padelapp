@@ -1304,3 +1304,46 @@ export function getTurnFormSubmitButtonAriaLabel({
   }
   return isPending ? "Guardando cambios del turno..." : "Guardar cambios del turno";
 }
+
+/**
+ * Format section heading title for turn list based on active filter tab.
+ */
+export function getTurnFilterHeadingTitle(
+  activeTab: "todos" | "mis-turnos"
+): string {
+  if (activeTab === "mis-turnos") {
+    return "Mis partidos programados";
+  }
+  return "Próximos turnos";
+}
+
+export interface TurnFilterEmptyStateProps {
+  title: string;
+  description: string;
+  exploreButtonLabel?: string;
+  createButtonLabel: string;
+  exploreButtonAriaLabel?: string;
+}
+
+/**
+ * Format title, description, and button properties for empty state in turn list based on active filter tab.
+ */
+export function getTurnFilterEmptyStateProps(
+  activeTab: "todos" | "mis-turnos"
+): TurnFilterEmptyStateProps {
+  if (activeTab === "mis-turnos") {
+    return {
+      title: "No estás anotado en ningún turno",
+      description:
+        "Explorá los turnos abiertos para sumarte a un partido o creá tu propio turno.",
+      exploreButtonLabel: "Explorar turnos abiertos",
+      createButtonLabel: "Crear un turno",
+      exploreButtonAriaLabel: "Explorar todos los turnos abiertos disponibles",
+    };
+  }
+  return {
+    title: "Sin turnos abiertos",
+    description: "No hay turnos disponibles. Sé el primero en crear uno.",
+    createButtonLabel: "Crear turno",
+  };
+}

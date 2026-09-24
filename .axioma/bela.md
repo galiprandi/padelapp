@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-24 — TurnsFilter Pure Helpers Extraction & Empty State Polish (bela/turnos/turns-filter-pure-helpers-and-empty-state-polish)
 - [x] 2026-09-23 — Turn Form Pure Helpers Extraction & Form Accessibility Polish in NewTurnPage and EditTurnForm (bela/turnos/turn-form-pure-helpers-and-a11y)
 - [x] 2026-09-22 — AddPlayerButton Search Status Helpers Extraction, Real-Time ARIA Announcer & TurnsListSkeleton Accessibility Polish (bela/turnos/add-player-button-search-status-a11y)
 - [x] 2026-09-21 — TurnActions Region ARIA & Status Copy Helpers Extraction & Turn Public Details Refactoring (bela/turnos/turn-actions-region-aria-and-copy-helpers)
@@ -61,6 +62,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-24 - TurnsFilter Pure Helpers Extraction & Empty State Polish
+**Learning:** Extracting pure helper functions (`getTurnFilterHeadingTitle` and `getTurnFilterEmptyStateProps`) into `src/components/turns/turn-utils.ts` decouples localized section title copy and empty state action button properties from React render components in `TurnsFilter` (`src/components/turns/turns-filter.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract list filter section headings and empty state action properties into pure helper utilities backed by Vitest unit tests, and maintain active tactile scaling and focus ring offsets across filter controls.
+
 ## 2026-09-23 - Turn Form Pure Helpers Extraction & Form Accessibility Polish in NewTurnPage and EditTurnForm
 **Learning:** Extracting pure helper functions (`getCreateTurnSuccessToast`, `getUpdateTurnSuccessToast`, `getTurnFormRegionAriaLabel`, and `getTurnFormSubmitButtonAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized toast message formatting and screen reader region/button ARIA label generation from React render components in `NewTurnPage` (`src/app/(app)/turnos/nuevo/page.tsx`) and `EditTurnForm` (`src/app/(app)/turnos/[id]/editar/edit-form.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract form submit toast copy and region ARIA accessibility labels into pure helper utilities backed by Vitest unit tests, and maintain active tactile scaling and focus ring offsets across turn form controls.

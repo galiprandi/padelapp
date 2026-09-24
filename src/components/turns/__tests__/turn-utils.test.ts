@@ -82,6 +82,8 @@ import {
   getUpdateTurnSuccessToast,
   getTurnFormRegionAriaLabel,
   getTurnFormSubmitButtonAriaLabel,
+  getTurnFilterHeadingTitle,
+  getTurnFilterEmptyStateProps,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1133,6 +1135,27 @@ describe("Turn Filter Helpers", () => {
     expect(getTurnFilterTabAriaLabel({ tab: "mis-turnos", count: 2 })).toBe(
       "Mostrar mis turnos únicamente (2)"
     );
+  });
+
+  it("formats getTurnFilterHeadingTitle for 'todos' vs 'mis-turnos'", () => {
+    expect(getTurnFilterHeadingTitle("todos")).toBe("Próximos turnos");
+    expect(getTurnFilterHeadingTitle("mis-turnos")).toBe("Mis partidos programados");
+  });
+
+  it("formats getTurnFilterEmptyStateProps for 'todos' vs 'mis-turnos'", () => {
+    const todosEmpty = getTurnFilterEmptyStateProps("todos");
+    expect(todosEmpty.title).toBe("Sin turnos abiertos");
+    expect(todosEmpty.description).toBe("No hay turnos disponibles. Sé el primero en crear uno.");
+    expect(todosEmpty.createButtonLabel).toBe("Crear turno");
+
+    const misTurnosEmpty = getTurnFilterEmptyStateProps("mis-turnos");
+    expect(misTurnosEmpty.title).toBe("No estás anotado en ningún turno");
+    expect(misTurnosEmpty.description).toBe(
+      "Explorá los turnos abiertos para sumarte a un partido o creá tu propio turno."
+    );
+    expect(misTurnosEmpty.exploreButtonLabel).toBe("Explorar turnos abiertos");
+    expect(misTurnosEmpty.createButtonLabel).toBe("Crear un turno");
+    expect(misTurnosEmpty.exploreButtonAriaLabel).toBe("Explorar todos los turnos abiertos disponibles");
   });
 });
 
