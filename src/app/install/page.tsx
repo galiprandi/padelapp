@@ -1,13 +1,19 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { InstallContent } from "@/components/share/install-content";
+import {
+  getInstallPageAriaLabel,
+  getInstallPageTitle,
+  getInstallPageDescription,
+  getInstallPageBackAriaLabel,
+} from "@/components/share/install-utils";
 import Image from "next/image";
 
 export default function InstallPage() {
   return (
     <main
       role="region"
-      aria-label="Página de instalación de la aplicación Padel Red"
+      aria-label={getInstallPageAriaLabel()}
       className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
     >
       <div className="flex w-full max-w-sm flex-col items-center gap-8">
@@ -23,10 +29,10 @@ export default function InstallPage() {
 
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold text-foreground">
-            Instalar Padel Red
+            {getInstallPageTitle()}
           </h1>
           <p className="text-sm text-muted-foreground max-w-[260px]">
-            Agregá la app a tu pantalla de inicio para acceder más rápido.
+            {getInstallPageDescription()}
           </p>
         </div>
 
@@ -39,7 +45,7 @@ export default function InstallPage() {
           className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           asChild
         >
-          <Link href="/" prefetch={true} aria-label="Volver a la página principal">
+          <Link href="/" prefetch={true} aria-label={getInstallPageBackAriaLabel()}>
             Volver al inicio
           </Link>
         </Button>

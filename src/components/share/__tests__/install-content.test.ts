@@ -5,6 +5,10 @@ import {
   getNextPlatformValue,
   getPlatformRadioAriaLabel,
   getInstallStatusAriaLabel,
+  getInstallPageAriaLabel,
+  getInstallPageTitle,
+  getInstallPageDescription,
+  getInstallPageBackAriaLabel,
 } from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
@@ -59,5 +63,12 @@ describe("PWA install guide and platform detection logic", () => {
   it("generates correct accessible status ARIA labels for installation state", () => {
     expect(getInstallStatusAriaLabel(true)).toBe("Padel Red ya está instalada en tu dispositivo");
     expect(getInstallStatusAriaLabel(false)).toBe("Instrucciones de instalación de Padel Red");
+  });
+
+  it("returns correct localized ARIA labels and copy strings for InstallPage", () => {
+    expect(getInstallPageAriaLabel()).toBe("Página de instalación de la aplicación Padel Red");
+    expect(getInstallPageTitle()).toBe("Instalar Padel Red");
+    expect(getInstallPageDescription()).toBe("Agregá la app a tu pantalla de inicio para acceder más rápido.");
+    expect(getInstallPageBackAriaLabel()).toBe("Volver a la página principal");
   });
 });
