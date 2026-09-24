@@ -4,24 +4,20 @@ import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { ToastAction, ToastItem, ToastOptions } from "./toast-utils";
+import {
+  createToastItem,
+  formatToastAriaLabel,
+  getToastActionClasses,
+  getToastAriaAttributes,
+  getToastClasses,
+  getToastContainerClasses,
+  getToastDuration,
+  getToastIconClasses,
+  isErrorToast,
+} from "./toast-utils";
 
-interface ToastAction {
-  label: string;
-  onClick: () => void;
-}
-
-interface ToastOptions {
-  duration?: number;
-  type?: "success" | "error";
-  action?: ToastAction;
-}
-
-interface ToastItem {
-  id: number;
-  message: string;
-  options: ToastOptions;
-}
+export type { ToastAction, ToastItem, ToastOptions };
 
 interface ToastContextValue {
   showToast: (message: string, options?: ToastOptions) => void;
@@ -42,15 +38,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((previous) => previous.filter((toast) => toast.id !== id));
   }, []);
 
-  const showToast = useCallback((message: string, options?: ToastOptions) => {
-    const id = Date.now();
-    setToasts((previous) => [...previous, { id, message, options: options ?? {} }]);
+  const showToast = useCallback(
+    (message: string, options?: ToastOptions) => {
+      const id = Date.now();
+      const newToast = createToastItem(id, message, options);
+      setToasts((previous) => [...previous, newToast]);
 
-    const duration = options?.duration ?? 2500;
-    window.setTimeout(() => {
-      removeToast(id);
-    }, duration);
-  }, [removeToast]);
+      const duration = getToastDuration(options);
+      window.setTimeout(() => {
+        removeToast(id);
+      }, duration);
+    },
+    [removeToast]
+  );
 
   const value = useMemo<ToastContextValue>(() => ({ showToast }), [showToast]);
 
@@ -60,28 +60,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {mounted
         ? createPortal(
             <div
-              className="pointer-events-none fixed top-6 right-6 z-[60] flex flex-col items-end gap-3"
-              role="status"
-              aria-live="polite"
+              className={getToastContainerClasses()}
+              {...getToastAriaAttributes()}
             >
               {toasts.map((toast) => {
-                const isError = toast.options.type === "error";
+                const isError = isErrorToast(toast.options.type);
                 return (
                   <div
                     key={toast.id}
-                    className={cn(
-                      "pointer-events-auto flex items-center gap-3 rounded-xl border bg-card px-4 py-3 shadow-sm transition-opacity",
-                      isError
-                        ? "border-destructive text-destructive"
-                        : "border-primary text-primary"
-                    )}
+                    className={getToastClasses(toast.options.type)}
+                    aria-label={formatToastAriaLabel(toast.message, toast.options.type)}
                   >
-                    <div
-                      className={cn(
-                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm",
-                        isError ? "bg-destructive/10" : "bg-primary/10"
-                      )}
-                    >
+                    <div className={getToastIconClasses(toast.options.type)}>
                       {isError ? (
                         <AlertCircle className="h-4 w-4" />
                       ) : (
@@ -97,7 +87,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                           toast.options.action!.onClick();
                           removeToast(toast.id);
                         }}
-                        className="text-xs font-bold underline underline-offset-2 hover:no-underline rounded px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+                        className={getToastActionClasses()}
                       >
                         {toast.options.action.label}
                       </button>
@@ -106,7 +96,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 );
               })}
             </div>,
-            document.body,
+            document.body
           )
         : null}
     </ToastContext.Provider>
