@@ -261,6 +261,9 @@ describe("Ranking Helpers", () => {
       expect(getRankingRegionAriaLabel("rules")).toBe(
         "Reglas y fórmulas del ranking de Padel Red"
       );
+      expect(getRankingRegionAriaLabel("rules-detail")).toBe(
+        "Detalle de reglas y fórmulas del ranking"
+      );
       expect(getRankingRegionAriaLabel("search")).toBe(
         "Buscador de jugadores por nombre o alias"
       );
