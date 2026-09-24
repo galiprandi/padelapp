@@ -42,6 +42,34 @@ export function getInstallStatusAriaLabel(isInstalled: boolean): string {
     : "Instrucciones de instalación de Padel Red";
 }
 
+/**
+ * Returns localized ARIA accessibility label for the main install page landmark region.
+ */
+export function getInstallPageAriaLabel(): string {
+  return "Página de instalación de la aplicación Padel Red";
+}
+
+/**
+ * Returns localized title text for the install page header.
+ */
+export function getInstallPageTitle(): string {
+  return "Instalar Padel Red";
+}
+
+/**
+ * Returns localized subtitle description for the install page.
+ */
+export function getInstallPageDescription(): string {
+  return "Agregá la app a tu pantalla de inicio para acceder más rápido.";
+}
+
+/**
+ * Returns localized ARIA label for the return to home button.
+ */
+export function getInstallPageBackAriaLabel(): string {
+  return "Volver a la página principal";
+}
+
 export function isIOSDeviceUserAgent(userAgent: string, hasTouchPoints: boolean = false): boolean {
   if (!userAgent) return false;
   const isIOSUA = /iPad|iPhone|iPod/.test(userAgent);
