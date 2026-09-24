@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-18 — Extracción de Funciones Helper Puras de Configuración, Clases CSS y Accesibilidad ARIA para Notificaciones Toast (`src/components/toast/toast-utils.ts`) y Refactorización de `ToastProvider` (`src/components/toast/toast-provider.tsx`)
 - [x] 2026-09-17 — Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton` (`src/components/navigation/nav-utils.ts`) (PR #tino/ux/navigation-container-and-tactile-class-helpers)
 - [x] 2026-09-16 — Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton` (`src/components/ui/skeleton-utils.ts`) (PR #tino/ux/skeleton-accessibility-and-class-helpers)
 - [x] 2026-09-15 — Extracción de Funciones Helper Puras para Evaluación de Rutas y Nivel de Eagerness en Speculation Rules (`src/lib/speculation-rules.ts`) (PR #tino/perf/speculation-rules-path-matching-helpers)
@@ -57,6 +58,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-18 - Extracción de Funciones Helper Puras de Configuración, Clases CSS y Accesibilidad ARIA para Notificaciones Toast
+**Aprendizaje:** Extraer las funciones utilitarias puras de duraciones predeterminadas (`getToastDuration`), clasificación de tipo de error (`isErrorToast`), clases CSS para contenedor, ícono y acción con retroalimentación táctil (`getToastClasses`, `getToastIconClasses`, `getToastActionClasses`), atributos ARIA (`getToastAriaAttributes`), y etiquetas de accesibilidad localizadas en español argentino (`formatToastAriaLabel`) hacia `src/components/toast/toast-utils.ts` desacopla la lógica de presentación del ciclo de vida de React en `ToastProvider`. Esto permite probar exhaustivamente los comportamientos de estilo y accesibilidad mediante pruebas unitarias rápidas e independientes.
+**Acción:** Reutilizar siempre las utilidades de `src/components/toast/toast-utils.ts` al extender el sistema de notificaciones toast o construir componentes de alerta visual.
+
 ### 2026-09-17 - Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton`
 **Aprendizaje:** Encapsular la lógica de clases CSS para el contenedor exterior de la barra de navegación principal (`getBottomNavContainerClasses`), ítems de enlace con área táctil accesible de 48px y estado activo (`getNavItemClasses`), el botón de acción flotante central (`getFabClasses`), y el indicador de notificaciones pendientes (`getNotificationsBadgeClasses`) en `src/components/navigation/nav-utils.ts` estandariza el estilo visual, los anillos de foco accesibles y la respuesta al toque (`active:scale-[0.98] transition-all`) en toda la navegación, reduciendo código duplicado y facilitando verificaciones aisladas mediante tests unitarios.
 **Acción:** Reutilizar siempre los helpers de clases de navegación de `src/components/navigation/nav-utils.ts` al modificar o extender la barra de navegación o sus esqueletos.
