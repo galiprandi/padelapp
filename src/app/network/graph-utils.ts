@@ -395,6 +395,125 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkConcentrationIndex {
+  concentrationPercentage: number;
+  topConnectionSharePercentage: number;
+  totalConnections: number;
+  totalInteractions: number;
+  concentrationTier:
+    | "Dupla exclusiva 🔒"
+    | "Red concentrada 🎯"
+    | "Red distribuida 🌐"
+    | "Red abierta 👐";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates network interaction concentration index (0-100%) evaluating
+ * the Herfindahl-Hirschman index and top-partner interaction share for a selected node.
+ */
+export function calculateNetworkConcentrationIndex(
+  links: GraphLink[],
+  selectedNodeId: string,
+): NetworkConcentrationIndex {
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (totalConnections === 0) {
+    return {
+      concentrationPercentage: 0,
+      topConnectionSharePercentage: 0,
+      totalConnections: 0,
+      totalInteractions: 0,
+      concentrationTier: "Red abierta 👐",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin interacciones para evaluar concentración",
+    };
+  }
+
+  const linkInteractions: number[] = [];
+  let totalInteractions = 0;
+  let maxSingleInteractions = 0;
+
+  for (const link of connectedLinks) {
+    const interactions =
+      link.partnerMatches + link.rivalMatches + link.turnsTogether;
+    linkInteractions.push(interactions);
+    totalInteractions += interactions;
+    if (interactions > maxSingleInteractions) {
+      maxSingleInteractions = interactions;
+    }
+  }
+
+  if (totalInteractions === 0) {
+    return {
+      concentrationPercentage: 0,
+      topConnectionSharePercentage: 0,
+      totalConnections,
+      totalInteractions: 0,
+      concentrationTier: "Red abierta 👐",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: `${totalConnections} ${totalConnections === 1 ? "contacto" : "contactos"} sin partidos confirmados`,
+    };
+  }
+
+  // Calculate Herfindahl-Hirschman Index sum(s_i^2)
+  let hhiSum = 0;
+  for (const interactions of linkInteractions) {
+    const share = interactions / totalInteractions;
+    hhiSum += share * share;
+  }
+
+  const concentrationPercentage = Math.min(
+    Math.max(Math.round(hhiSum * 100), 0),
+    100,
+  );
+  const topConnectionSharePercentage = Math.round(
+    (maxSingleInteractions / totalInteractions) * 100,
+  );
+
+  let concentrationTier:
+    | "Dupla exclusiva 🔒"
+    | "Red concentrada 🎯"
+    | "Red distribuida 🌐"
+    | "Red abierta 👐";
+  let badgeStyle: string;
+
+  if (concentrationPercentage >= 80 || (totalConnections === 1 && totalInteractions > 0)) {
+    concentrationTier = "Dupla exclusiva 🔒";
+    badgeStyle =
+      "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950 dark:text-purple-200 dark:border-purple-800";
+  } else if (concentrationPercentage >= 45 || topConnectionSharePercentage >= 60) {
+    concentrationTier = "Red concentrada 🎯";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else if (concentrationPercentage >= 25 || (totalConnections >= 2 && topConnectionSharePercentage >= 40)) {
+    concentrationTier = "Red distribuida 🌐";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else {
+    concentrationTier = "Red abierta 👐";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  }
+
+  const parts: string[] = [
+    `${topConnectionSharePercentage}% concentración en contacto principal`,
+    `${totalConnections} ${totalConnections === 1 ? "contacto total" : "contactos totales"}`,
+  ];
+
+  return {
+    concentrationPercentage,
+    topConnectionSharePercentage,
+    totalConnections,
+    totalInteractions,
+    concentrationTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface PlayerMatchComplementarity {
   complementarityScore: number;
   totalPartnersCount: number;

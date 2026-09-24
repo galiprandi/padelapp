@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 41 (Network Interaction Concentration Index Calculation & Solid MDS Badging in Graph View & Stats Panel):
+  - [x] 2026-09-18 — Hecho: Creada la función pura `calculateNetworkConcentrationIndex` en `src/app/network/graph-utils.ts` para evaluar la concentración de interacciones de un jugador (índice Herfindahl-Hirschman $HHI = \sum s_i^2$ y porcentaje de interacción con el contacto principal), clasificándola en insignias sólidas MDS ('Dupla exclusiva 🔒', 'Red concentrada 🎯', 'Red distribuida 🌐', 'Red abierta 👐') con resúmenes formateados en voz argentina.
+  - [x] 2026-09-18 — Hecho: Integrada la insignia sólida MDS de concentración de red en el panel de detalles del nodo seleccionado en `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas de accesibilidad ARIA descriptivas (`aria-label`, `title`). Habilitado el soporte del prop `viewerId` en `StatsPanel` (`src/app/network/stats-panel.tsx`) para emparejar adecuadamente al usuario visor en las recomendaciones de jugadores.
+  - [x] 2026-09-18 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo nodos aislados, duplas exclusivas (100%), redes concentradas, redes distribuidas y redes abiertas.
 - Phase 40 (Player Similarity & Compatibility Badge Integration in Graph View Selected Node Details):
   - [x] 2026-09-17 — Hecho: Integrada la función `calculatePlayerSimilarityInfo` en `GraphView` (`src/app/network/graph-view.tsx`) para comparar la compatibilidad del jugador seleccionado con el usuario visor (`viewerId`), renderizando insignias sólidas MDS de nivel de similitud ('Dupla ideal 🎯', 'Alta compatibilidad 👍', 'Jugador compatible 🤝', 'Perfil distante 📍') con atributos de accesibilidad ARIA descriptivos en voz argentina (`aria-label`, `title`).
   - [x] 2026-09-17 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo candidatos ideales, perfil distante y formateo de cadenas de resumen de similitud.
