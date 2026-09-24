@@ -213,6 +213,7 @@ import {
   calculatePartnershipStabilityInfo,
   calculateLocalClusteringCoefficient,
   calculatePlayerMatchComplementarity,
+  calculateNetworkConcentrationIndex,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1340,6 +1341,101 @@ describe("calculateNetworkRoleInfo", () => {
 
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculateNetworkConcentrationIndex", () => {
+  it("returns fallback concentration index for unconnected node", () => {
+    const res = calculateNetworkConcentrationIndex([], "p-99");
+    expect(res.concentrationPercentage).toBe(0);
+    expect(res.topConnectionSharePercentage).toBe(0);
+    expect(res.totalConnections).toBe(0);
+    expect(res.totalInteractions).toBe(0);
+    expect(res.concentrationTier).toBe("Red abierta 👐");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin interacciones para evaluar concentración");
+  });
+
+  it("returns fallback concentration index for node with turn-only unconfirmed connections", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 0 },
+    ];
+
+    const res = calculateNetworkConcentrationIndex(links, "p-01");
+    expect(res.concentrationPercentage).toBe(0);
+    expect(res.topConnectionSharePercentage).toBe(0);
+    expect(res.totalConnections).toBe(1);
+    expect(res.totalInteractions).toBe(0);
+    expect(res.concentrationTier).toBe("Red abierta 👐");
+    expect(res.formattedSummary).toBe("1 contacto sin partidos confirmados");
+  });
+
+  it("calculates 'Dupla exclusiva 🔒' tier for single exclusive connection (100% share)", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 5, winsA: 0, winsB: 0, winsTogether: 4, lossesTogether: 1, turnsTogether: 0, strength: 5 },
+    ];
+
+    const res = calculateNetworkConcentrationIndex(links, "p-01");
+    expect(res.concentrationPercentage).toBe(100);
+    expect(res.topConnectionSharePercentage).toBe(100);
+    expect(res.totalConnections).toBe(1);
+    expect(res.totalInteractions).toBe(5);
+    expect(res.concentrationTier).toBe("Dupla exclusiva 🔒");
+    expect(res.badgeStyle).toContain("bg-purple-100");
+    expect(res.formattedSummary).toBe("100% concentración en contacto principal · 1 contacto total");
+  });
+
+  it("calculates 'Red concentrada 🎯' tier for player with heavy top-partner concentration (>= 60%)", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 8, winsA: 0, winsB: 0, winsTogether: 6, lossesTogether: 2, turnsTogether: 0, strength: 8 }, // 8 interactions
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // 1 interaction
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // 1 interaction
+    ];
+
+    // totalInteractions = 10; maxSingle = 8 => topConnectionShare = 80%; HHI = (0.8^2 + 0.1^2 + 0.1^2) = 0.64 + 0.01 + 0.01 = 0.66 (66%)
+    const res = calculateNetworkConcentrationIndex(links, "p-01");
+    expect(res.totalConnections).toBe(3);
+    expect(res.totalInteractions).toBe(10);
+    expect(res.topConnectionSharePercentage).toBe(80);
+    expect(res.concentrationPercentage).toBe(66);
+    expect(res.concentrationTier).toBe("Red concentrada 🎯");
+    expect(res.badgeStyle).toContain("bg-amber-100");
+    expect(res.formattedSummary).toBe("80% concentración en contacto principal · 3 contactos totales");
+  });
+
+  it("calculates 'Red distribuida 🌐' tier for evenly distributed interactions across 3 or more contacts", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 2, winsA: 1, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+    ];
+
+    // totalInteractions = 9; shares = 3/9 = 33.3% each; HHI = 3 * (0.333^2) = 0.33 (33%)
+    const res = calculateNetworkConcentrationIndex(links, "p-01");
+    expect(res.totalConnections).toBe(3);
+    expect(res.totalInteractions).toBe(9);
+    expect(res.topConnectionSharePercentage).toBe(33);
+    expect(res.concentrationPercentage).toBe(33);
+    expect(res.concentrationTier).toBe("Red distribuida 🌐");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+  });
+
+  it("calculates 'Red abierta 👐' tier for highly dispersed contacts", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // 5 contacts with 1 interaction each => HHI = 5 * (0.2^2) = 0.20 (20%)
+    const res = calculateNetworkConcentrationIndex(links, "p-01");
+    expect(res.totalConnections).toBe(5);
+    expect(res.topConnectionSharePercentage).toBe(20);
+    expect(res.concentrationPercentage).toBe(20);
+    expect(res.concentrationTier).toBe("Red abierta 👐");
     expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });

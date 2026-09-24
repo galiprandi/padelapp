@@ -36,6 +36,7 @@ import {
   calculateLocalClusteringCoefficient,
   calculatePlayerMatchComplementarity,
   calculatePlayerSimilarityInfo,
+  calculateNetworkConcentrationIndex,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -862,6 +863,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     filteredData.links,
                     selectedNodeData.id,
                   );
+                  const concentration = calculateNetworkConcentrationIndex(
+                    filteredData.links,
+                    selectedNodeData.id,
+                  );
                   const complementarity = calculatePlayerMatchComplementarity(
                     filteredData.links,
                     graphData.nodes,
@@ -900,6 +905,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           {similarityInfo.similarityTier}
                         </span>
                       )}
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          concentration.badgeStyle,
+                        )}
+                        title={`Concentración de interacciones: ${concentration.concentrationTier}. ${concentration.formattedSummary}`}
+                        aria-label={`Concentración de interacciones: ${concentration.concentrationTier}. ${concentration.formattedSummary}`}
+                      >
+                        {concentration.concentrationTier}
+                      </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",

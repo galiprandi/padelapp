@@ -34,6 +34,7 @@ interface StatsPanelProps {
   graphLinks: number;
   playersLikeYou: RecommendedPlayer[];
   graphData?: GraphData;
+  viewerId?: string;
 }
 
 function GrowthBadge({ rate }: { rate: number }) {
@@ -82,7 +83,7 @@ function StatCard({
   );
 }
 
-export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, graphData }: StatsPanelProps) {
+export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, graphData, viewerId }: StatsPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -186,11 +187,12 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         {playersLikeYou.length > 0 ? (
           <div className="space-y-2.5 pt-1">
             {playersLikeYou.map((player) => {
-              const viewerNode = graphData?.nodes.find((n) => n.id === "p-01");
+              const effectiveViewerId = viewerId ?? "p-01";
+              const viewerNode = graphData?.nodes.find((n) => n.id === effectiveViewerId);
               const similarity = calculatePlayerSimilarityInfo(
                 player,
                 {
-                  id: viewerNode?.id ?? "p-01",
+                  id: viewerNode?.id ?? effectiveViewerId,
                   skillScore: viewerNode?.skillScore ?? 1000,
                   preferredSide: viewerNode?.preferredSide ?? null,
                 },
