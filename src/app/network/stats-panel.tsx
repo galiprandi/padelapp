@@ -7,6 +7,7 @@ import {
   calculateCommunityBalanceInfo,
   calculateCommunityCohesion,
   calculateNetworkDiversityScore,
+  calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
   calculatePlayerSimilarityInfo,
   getNetworkActivityTier,
@@ -397,6 +398,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const diversity = graphData
                 ? calculateNetworkDiversityScore(graphData.nodes, graphData.links, p.id)
                 : null;
+              const multiBelonging = graphData
+                ? calculateNetworkMultiBelonging(graphData.links, graphData.nodes, p.id)
+                : null;
 
               return (
                 <Link
@@ -451,6 +455,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Diversidad de red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
                         >
                           {diversity.diversityTier}
+                        </span>
+                      )}
+                      {multiBelonging && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            multiBelonging.badgeStyle,
+                          )}
+                          title={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                          aria-label={`Multipertenencia comunitaria de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                        >
+                          {multiBelonging.multiBelongingTier}
                         </span>
                       )}
                     </div>

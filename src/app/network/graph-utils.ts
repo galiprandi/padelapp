@@ -395,6 +395,154 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkMultiBelonging {
+  multiBelongingScore: number;
+  distinctCommunitiesCount: number;
+  primaryCommunitySharePercentage: number;
+  externalCommunitiesSharePercentage: number;
+  multiBelongingTier:
+    | "Multicomunitario 🌐"
+    | "Bicomunitario 🔗"
+    | "Focalizado en grupo 🏛️"
+    | "Comunidad inicial 📍";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates network multi-belonging index (0-100%) and multi-community interaction breakdown for a player,
+ * evaluating interactions across distinct Louvain clusters.
+ */
+export function calculateNetworkMultiBelonging(
+  links: GraphLink[],
+  nodes: GraphNode[],
+  selectedNodeId: string,
+): NetworkMultiBelonging {
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+  const totalConnections = connectedLinks.length;
+
+  if (!selectedNode || totalConnections === 0) {
+    return {
+      multiBelongingScore: 0,
+      distinctCommunitiesCount: 0,
+      primaryCommunitySharePercentage: 0,
+      externalCommunitiesSharePercentage: 0,
+      multiBelongingTier: "Comunidad inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: "Sin interacciones registradas en la red",
+    };
+  }
+
+  const primaryCommunity = selectedNode.community;
+  const communityInteractionsMap = new Map<number, number>();
+  let totalInteractions = 0;
+  let primaryInteractions = 0;
+
+  for (const link of connectedLinks) {
+    const interactions =
+      link.partnerMatches + link.rivalMatches + link.turnsTogether;
+    totalInteractions += interactions;
+
+    const otherId =
+      linkNodeId(link.source) === selectedNodeId
+        ? linkNodeId(link.target)
+        : linkNodeId(link.source);
+    const otherNode = nodes.find((n) => n.id === otherId);
+
+    if (otherNode && otherNode.community !== null && otherNode.community !== undefined) {
+      const commId = otherNode.community;
+      communityInteractionsMap.set(
+        commId,
+        (communityInteractionsMap.get(commId) ?? 0) + interactions,
+      );
+
+      if (primaryCommunity !== null && primaryCommunity !== undefined && commId === primaryCommunity) {
+        primaryInteractions += interactions;
+      }
+    }
+  }
+
+  const distinctCommunitiesCount = communityInteractionsMap.size;
+
+  if (totalInteractions === 0 || distinctCommunitiesCount === 0) {
+    return {
+      multiBelongingScore: 0,
+      distinctCommunitiesCount,
+      primaryCommunitySharePercentage: 100,
+      externalCommunitiesSharePercentage: 0,
+      multiBelongingTier: "Comunidad inicial 📍",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary: `${totalConnections} ${totalConnections === 1 ? "contacto" : "contactos"} sin partidos confirmados`,
+    };
+  }
+
+  const primaryCommunitySharePercentage = Math.round(
+    (primaryInteractions / totalInteractions) * 100,
+  );
+  const externalCommunitiesSharePercentage = Math.max(
+    0,
+    100 - primaryCommunitySharePercentage,
+  );
+
+  // Multi-belonging score: up to 100
+  // Base points for distinct communities count
+  let score = 0;
+  if (distinctCommunitiesCount >= 3) {
+    score = 75 + Math.min(distinctCommunitiesCount * 5, 25);
+  } else if (distinctCommunitiesCount === 2) {
+    score = 45 + Math.round((externalCommunitiesSharePercentage / 100) * 25);
+  } else {
+    score = 20;
+  }
+
+  const multiBelongingScore = Math.min(Math.max(score, 0), 100);
+
+  let multiBelongingTier:
+    | "Multicomunitario 🌐"
+    | "Bicomunitario 🔗"
+    | "Focalizado en grupo 🏛️"
+    | "Comunidad inicial 📍";
+  let badgeStyle: string;
+
+  if (multiBelongingScore >= 75 || distinctCommunitiesCount >= 3) {
+    multiBelongingTier = "Multicomunitario 🌐";
+    badgeStyle =
+      "bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800";
+  } else if (multiBelongingScore >= 45 || distinctCommunitiesCount === 2) {
+    multiBelongingTier = "Bicomunitario 🔗";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (distinctCommunitiesCount === 1) {
+    multiBelongingTier = "Focalizado en grupo 🏛️";
+    badgeStyle =
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  } else {
+    multiBelongingTier = "Comunidad inicial 📍";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${distinctCommunitiesCount} ${distinctCommunitiesCount === 1 ? "grupo de la red" : "grupos de la red"}`,
+  ];
+
+  if (externalCommunitiesSharePercentage > 0) {
+    parts.push(`${externalCommunitiesSharePercentage}% interacción externa`);
+  } else {
+    parts.push(`${primaryCommunitySharePercentage}% interacción interna`);
+  }
+
+  return {
+    multiBelongingScore,
+    distinctCommunitiesCount,
+    primaryCommunitySharePercentage,
+    externalCommunitiesSharePercentage,
+    multiBelongingTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface NetworkConcentrationIndex {
   concentrationPercentage: number;
   topConnectionSharePercentage: number;
