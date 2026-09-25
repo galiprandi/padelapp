@@ -7,6 +7,14 @@ import {
   getInitials,
   MIN_ALIAS_LENGTH,
   MAX_ALIAS_LENGTH,
+  getProfileRegionAriaLabel,
+  getAliasCharacterCountText,
+  getProfileSaveSuccessToast,
+  getProfileSaveErrorToast,
+  getPhotoDeleteSuccessToast,
+  getPhotoRestoreSuccessToast,
+  getCategoryUpdateSuccessToast,
+  getPreferredSideUpdateSuccessToast,
 } from "../profile-utils";
 
 describe("validateAlias", () => {
@@ -99,5 +107,38 @@ describe("getInitials", () => {
   it("returns empty string for null or empty input", () => {
     expect(getInitials(null)).toBe("");
     expect(getInitials("")).toBe("");
+  });
+});
+
+describe("profile region landmark and toast helpers", () => {
+  it("returns correct region landmark ARIA labels", () => {
+    expect(getProfileRegionAriaLabel("welcome")).toBe("Bienvenida a Padel Red");
+    expect(getProfileRegionAriaLabel("avatar")).toBe("Foto de perfil de usuario");
+    expect(getProfileRegionAriaLabel("side")).toBe("Lado preferido en la cancha");
+    expect(getProfileRegionAriaLabel("category")).toBe("Categoría de juego");
+    expect(getProfileRegionAriaLabel("account")).toBe("Información de cuenta de Google");
+    expect(getProfileRegionAriaLabel("notices")).toBe("Avisos y sugerencias de la aplicación");
+  });
+
+  it("formats character count text", () => {
+    expect(getAliasCharacterCountText(7, 30)).toBe("7/30");
+  });
+
+  it("returns structured profile save and photo deletion toasts", () => {
+    expect(getProfileSaveSuccessToast()).toEqual({
+      title: "Perfil actualizado",
+      label: "Deshacer",
+    });
+    expect(getProfileSaveErrorToast()).toBe("No pudimos guardar. Probá de nuevo.");
+    expect(getPhotoDeleteSuccessToast()).toEqual({
+      title: "Foto eliminada",
+      label: "Deshacer",
+    });
+    expect(getPhotoRestoreSuccessToast()).toBe("Foto restablecida");
+  });
+
+  it("formats category and preferred side update success toasts", () => {
+    expect(getCategoryUpdateSuccessToast("6ª Cat.")).toBe("Categoría actualizada a 6ª Cat.");
+    expect(getPreferredSideUpdateSuccessToast("Revés")).toBe("Lado preferido actualizado a Revés");
   });
 });

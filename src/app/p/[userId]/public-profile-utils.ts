@@ -103,3 +103,47 @@ export function formatRivalMatchesText(matches: number): string {
   const label = matches === 1 ? "partido" : "partidos";
   return `${matches} ${label} ⚔️`;
 }
+
+export function getPublicProfileBackAriaLabel(): string {
+  return "Volver atrás";
+}
+
+export function getPublicProfileHeaderAriaLabel(displayName?: string | null): string {
+  const name = displayName?.trim() || "Jugador";
+  return `Perfil y estadísticas de ${name}`;
+}
+
+export function getPublicProfileShareTitle(displayName?: string | null): string {
+  const name = displayName?.trim() || "Jugador";
+  return `Perfil de ${name}`;
+}
+
+export function getPublicProfileShareText(displayName?: string | null): string {
+  const name = displayName?.trim() || "Jugador";
+  return `Mirá las estadísticas de ${name} en Padel Red.`;
+}
+
+export function getNetworkPositionRegionAriaLabel(): string {
+  return "Estadísticas de red y posición";
+}
+
+export function formatNetworkContactsCountText(count: number): string {
+  const label = count === 1 ? "jugador" : "jugadores";
+  return `${count} ${label}`;
+}
+
+export function getHeadToHeadRegionAriaLabel(): string {
+  return "Estadísticas cara a cara";
+}
+
+export function formatH2HLastMatchResultText(
+  isViewerWinner: boolean,
+  score: string | null,
+): string {
+  const outcome = isViewerWinner ? "Victoria" : "Derrota";
+  return score ? `${outcome} • ${score}` : outcome;
+}
+
+export function getMatchHistoryRegionAriaLabel(): string {
+  return "Historial reciente de partidos";
+}

@@ -40,6 +40,14 @@ import {
   getRecentFormAriaLabel,
   getStreakBadgeText,
   getWinRateAriaLabel,
+  getPublicProfileBackAriaLabel,
+  getPublicProfileHeaderAriaLabel,
+  getPublicProfileShareTitle,
+  getPublicProfileShareText,
+  getNetworkPositionRegionAriaLabel,
+  getHeadToHeadRegionAriaLabel,
+  formatH2HLastMatchResultText,
+  getMatchHistoryRegionAriaLabel,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -87,7 +95,7 @@ async function DynamicBackButton({
     <Link
       href={backUrl}
       prefetch={true}
-      aria-label="Volver atrás"
+      aria-label={getPublicProfileBackAriaLabel()}
       className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
     >
       <ChevronLeft className="h-5 w-5" />
@@ -158,7 +166,7 @@ async function PublicProfileContent({
 
   return (
     <>
-      <section className="space-y-6" role="region" aria-label="Perfil y estadísticas de jugador">
+      <section className="space-y-6" role="region" aria-label={getPublicProfileHeaderAriaLabel(displayName)}>
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="relative">
             <PlayerAvatar
@@ -177,8 +185,8 @@ async function PublicProfileContent({
               <div className="absolute right-0">
                 <ShareButton
                   url={`/p/${userId}`}
-                  title={`Perfil de ${displayName}`}
-                  text={`Mirá las estadísticas de ${displayName} en Padel Red.`}
+                  title={getPublicProfileShareTitle(displayName)}
+                  text={getPublicProfileShareText(displayName)}
                   variant="ghost"
                   size="sm"
                   iconOnly
@@ -266,7 +274,7 @@ async function PublicProfileContent({
         {/* Network & Position Stats Card */}
         <section
           role="region"
-          aria-label="Estadísticas de red y posición"
+          aria-label={getNetworkPositionRegionAriaLabel()}
           className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
         >
           <h3 className="text-xs font-bold text-muted-foreground">
@@ -369,7 +377,7 @@ async function PublicProfileContent({
         {h2h && (h2h.together.total > 0 || h2h.against.total > 0) && (
           <section
             role="region"
-            aria-label="Estadísticas cara a cara"
+            aria-label={getHeadToHeadRegionAriaLabel()}
             className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
           >
             <h3 className="text-xs font-bold text-muted-foreground">
@@ -422,10 +430,10 @@ async function PublicProfileContent({
                         : "text-rose-600 dark:text-rose-400",
                     )}
                   >
-                    {h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
-                      ? "Victoria"
-                      : "Derrota"}{" "}
-                    • {h2h.lastMatch.score}
+                    {formatH2HLastMatchResultText(
+                      h2h.lastMatch.winner === h2h.lastMatch.viewerTeam,
+                      h2h.lastMatch.score,
+                    )}
                   </span>
                 </div>
                 <Button
@@ -442,7 +450,7 @@ async function PublicProfileContent({
         )}
       </section>
 
-      <section className="space-y-4" role="region" aria-label="Historial reciente de partidos">
+      <section className="space-y-4" role="region" aria-label={getMatchHistoryRegionAriaLabel()}>
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">
             Historial Reciente

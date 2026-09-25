@@ -104,3 +104,65 @@ export function getInitials(name: string | null | undefined): string {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
+
+export type ProfileRegionKind =
+  | "welcome"
+  | "avatar"
+  | "side"
+  | "category"
+  | "account"
+  | "notices";
+
+export function getProfileRegionAriaLabel(kind: ProfileRegionKind): string {
+  switch (kind) {
+    case "welcome":
+      return "Bienvenida a Padel Red";
+    case "avatar":
+      return "Foto de perfil de usuario";
+    case "side":
+      return "Lado preferido en la cancha";
+    case "category":
+      return "Categoría de juego";
+    case "account":
+      return "Información de cuenta de Google";
+    case "notices":
+      return "Avisos y sugerencias de la aplicación";
+  }
+}
+
+export function getAliasCharacterCountText(
+  currentLength: number,
+  maxLength: number = MAX_ALIAS_LENGTH,
+): string {
+  return `${currentLength}/${maxLength}`;
+}
+
+export function getProfileSaveSuccessToast(): { title: string; label: string } {
+  return {
+    title: "Perfil actualizado",
+    label: "Deshacer",
+  };
+}
+
+export function getProfileSaveErrorToast(): string {
+  return "No pudimos guardar. Probá de nuevo.";
+}
+
+export function getPhotoDeleteSuccessToast(): { title: string; label: string } {
+  return {
+    title: "Foto eliminada",
+    label: "Deshacer",
+  };
+}
+
+export function getPhotoRestoreSuccessToast(): string {
+  return "Foto restablecida";
+}
+
+export function getCategoryUpdateSuccessToast(categoryName: string): string {
+  return `Categoría actualizada a ${categoryName}`;
+}
+
+export function getPreferredSideUpdateSuccessToast(sideLabel: string): string {
+  return `Lado preferido actualizado a ${sideLabel}`;
+}
