@@ -9,6 +9,15 @@ import {
   getRecentFormAriaLabel,
   getStreakBadgeText,
   getWinRateAriaLabel,
+  getPublicProfileBackAriaLabel,
+  getPublicProfileHeaderAriaLabel,
+  getPublicProfileShareTitle,
+  getPublicProfileShareText,
+  getNetworkPositionRegionAriaLabel,
+  formatNetworkContactsCountText,
+  getHeadToHeadRegionAriaLabel,
+  formatH2HLastMatchResultText,
+  getMatchHistoryRegionAriaLabel,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -131,6 +140,41 @@ describe("public-profile-utils", () => {
     it("formats singular and plural matches played win rate label", () => {
       expect(getWinRateAriaLabel(100, 1)).toBe("Efectividad: 100% en 1 partido");
       expect(getWinRateAriaLabel(75, 8)).toBe("Efectividad: 75% en 8 partidos");
+    });
+  });
+
+  describe("new public profile pure helpers", () => {
+    it("returns static back button ARIA label", () => {
+      expect(getPublicProfileBackAriaLabel()).toBe("Volver atrás");
+    });
+
+    it("formats header ARIA label with fallback and custom display name", () => {
+      expect(getPublicProfileHeaderAriaLabel(null)).toBe("Perfil y estadísticas de Jugador");
+      expect(getPublicProfileHeaderAriaLabel("Agustín Tapia")).toBe("Perfil y estadísticas de Agustín Tapia");
+    });
+
+    it("formats share title and share text", () => {
+      expect(getPublicProfileShareTitle("Fernando Belasteguín")).toBe("Perfil de Fernando Belasteguín");
+      expect(getPublicProfileShareText("Fernando Belasteguín")).toBe(
+        "Mirá las estadísticas de Fernando Belasteguín en Padel Red."
+      );
+    });
+
+    it("returns region landmark labels for network, h2h, and history sections", () => {
+      expect(getNetworkPositionRegionAriaLabel()).toBe("Estadísticas de red y posición");
+      expect(getHeadToHeadRegionAriaLabel()).toBe("Estadísticas cara a cara");
+      expect(getMatchHistoryRegionAriaLabel()).toBe("Historial reciente de partidos");
+    });
+
+    it("formats singular and plural network contact count text", () => {
+      expect(formatNetworkContactsCountText(1)).toBe("1 jugador");
+      expect(formatNetworkContactsCountText(12)).toBe("12 jugadores");
+    });
+
+    it("formats last match result text for H2H section", () => {
+      expect(formatH2HLastMatchResultText(true, "6-4 6-2")).toBe("Victoria • 6-4 6-2");
+      expect(formatH2HLastMatchResultText(false, "3-6 4-6")).toBe("Derrota • 3-6 4-6");
+      expect(formatH2HLastMatchResultText(true, null)).toBe("Victoria");
     });
   });
 });

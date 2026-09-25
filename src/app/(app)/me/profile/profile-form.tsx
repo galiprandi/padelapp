@@ -33,6 +33,14 @@ import {
   getNextCategoryLevel,
   getSideOptionLabel,
   getInitials,
+  getProfileRegionAriaLabel,
+  getAliasCharacterCountText,
+  getProfileSaveSuccessToast,
+  getProfileSaveErrorToast,
+  getPhotoDeleteSuccessToast,
+  getPhotoRestoreSuccessToast,
+  getCategoryUpdateSuccessToast,
+  getPreferredSideUpdateSuccessToast,
 } from "./profile-utils";
 
 interface ProfileFormProps {
@@ -147,10 +155,11 @@ export function ProfileForm({
           const savedAlias = response.alias ?? "";
           lastSavedAlias.current = savedAlias;
           setAlias(savedAlias);
-          showToast("Perfil actualizado", {
+          const toastInfo = getProfileSaveSuccessToast();
+          showToast(toastInfo.title, {
             duration: 4000,
             action: {
-              label: "Deshacer",
+              label: toastInfo.label,
               onClick: () => {
                 setAlias(previousAliasRef.current);
               },
@@ -158,7 +167,7 @@ export function ProfileForm({
           });
           resolve(true);
         } else {
-          showToast("No pudimos guardar. Probá de nuevo.", { type: "error" });
+          showToast(getProfileSaveErrorToast(), { type: "error" });
           resolve(false);
         }
       });
@@ -182,10 +191,11 @@ export function ProfileForm({
         preferredSideRef.current
       );
       if (response.status === "ok") {
-        showToast("Foto eliminada", {
+        const toastInfo = getPhotoDeleteSuccessToast();
+        showToast(toastInfo.title, {
           duration: 4000,
           action: {
-            label: "Deshacer",
+            label: toastInfo.label,
             onClick: () => {
               setImage(previousImage);
               startSaving(async () => {
@@ -196,7 +206,7 @@ export function ProfileForm({
                   preferredSideRef.current
                 );
                 if (undoResponse.status === "ok") {
-                  showToast("Foto restablecida", { duration: 2000 });
+                  showToast(getPhotoRestoreSuccessToast(), { duration: 2000 });
                 } else {
                   showToast("No pudimos restablecer la foto.", { type: "error" });
                   setImage(null);
@@ -225,7 +235,7 @@ export function ProfileForm({
       );
       if (response.status === "ok") {
         const cat = getCategoryDefinition(newLevel);
-        showToast(`Categoría actualizada a ${cat.shortLabel}`, { duration: 3000 });
+        showToast(getCategoryUpdateSuccessToast(cat.shortLabel), { duration: 3000 });
       } else {
         showToast(response.message || "No pudimos guardar la categoría.", { type: "error" });
         setLevel(previousLevel);
@@ -314,7 +324,7 @@ export function ProfileForm({
         newSide
       );
       if (response.status === "ok") {
-        showToast(`Lado preferido actualizado a ${getSideOptionLabel(newSide)}`, { duration: 3000 });
+        showToast(getPreferredSideUpdateSuccessToast(getSideOptionLabel(newSide)), { duration: 3000 });
       } else {
         showToast(response.message || "No pudimos guardar el lado preferido.", { type: "error" });
         setPreferredSide(previousSide);
@@ -359,7 +369,7 @@ export function ProfileForm({
         <div
           className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm"
           role="region"
-          aria-label="Bienvenida a Padel Red"
+          aria-label={getProfileRegionAriaLabel("welcome")}
         >
           <div className="flex items-center gap-2">
             <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
@@ -376,7 +386,7 @@ export function ProfileForm({
       {/* Avatar — static display, Google photo or initials */}
       <section
         role="region"
-        aria-label="Foto de perfil de usuario"
+        aria-label={getProfileRegionAriaLabel("avatar")}
         className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
       >
         {image ? (
@@ -446,7 +456,7 @@ export function ProfileForm({
           </Label>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground" aria-live="polite">
-              {alias.length}/{MAX_ALIAS_LENGTH}
+              {getAliasCharacterCountText(alias.length, MAX_ALIAS_LENGTH)}
             </span>
             {(isPendingSave || isSaving) && (
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -503,7 +513,7 @@ export function ProfileForm({
       {/* Lado preferido en la cancha */}
       <section
         role="region"
-        aria-label="Lado preferido en la cancha"
+        aria-label={getProfileRegionAriaLabel("side")}
         className="space-y-3 rounded-xl border border-border bg-card p-4"
       >
         <div className="flex items-center justify-between">
@@ -560,7 +570,7 @@ export function ProfileForm({
       {/* Categoría de Juego */}
       <section
         role="region"
-        aria-label="Categoría de juego"
+        aria-label={getProfileRegionAriaLabel("category")}
         className="space-y-3 rounded-xl border border-border bg-card p-4"
       >
         <div className="flex items-center justify-between">
@@ -628,7 +638,7 @@ export function ProfileForm({
       {/* Datos de la cuenta (solo lectura) */}
       <section
         role="region"
-        aria-label="Información de cuenta de Google"
+        aria-label={getProfileRegionAriaLabel("account")}
         className="rounded-xl border border-border bg-card p-4 space-y-3"
       >
         <h3 className="text-sm font-bold text-foreground">
@@ -670,7 +680,7 @@ export function ProfileForm({
       {((matchesPlayed === 0 && checklistDismissed) || pwaDismissed || pushDismissed) && (
         <section
           role="region"
-          aria-label="Avisos y sugerencias de la aplicación"
+          aria-label={getProfileRegionAriaLabel("notices")}
           className="rounded-xl border border-border bg-card p-4 space-y-3"
         >
           <h3 className="text-sm font-bold text-foreground">
