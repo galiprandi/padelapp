@@ -84,6 +84,20 @@ import {
   getTurnFormSubmitButtonAriaLabel,
   getTurnFilterHeadingTitle,
   getTurnFilterEmptyStateProps,
+  getCancelTurnSuccessToast,
+  getCancelTurnErrorToast,
+  getJoinTurnSuccessToast,
+  getJoinTurnErrorToast,
+  getJoinSubstituteSuccessToast,
+  getLeaveSubstituteSuccessToast,
+  getLeaveSubstituteErrorToast,
+  getTakeOpenSlotSuccessToast,
+  getStartMatchSuccessToast,
+  getStartMatchErrorToast,
+  getScheduleNextTurnSuccessToast,
+  getScheduleNextTurnErrorToast,
+  getPlayCasualSuccessToast,
+  getPlayCasualErrorToast,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -757,6 +771,54 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Turn Action Toast pure helpers", () => {
+  it("formats cancel turn success and error toasts", () => {
+    expect(getCancelTurnSuccessToast()).toBe("Cancelaste el turno.");
+    expect(getCancelTurnErrorToast()).toBe("No se pudo cancelar el turno.");
+    expect(getCancelTurnErrorToast("Error al cancelar")).toBe("Error al cancelar");
+  });
+
+  it("formats join turn success and error toasts", () => {
+    expect(getJoinTurnSuccessToast()).toBe("Te sumaste al turno.");
+    expect(getJoinTurnErrorToast()).toBe("No se pudo sumar al turno.");
+    expect(getJoinTurnErrorToast("Cupo ocupado")).toBe("Cupo ocupado");
+  });
+
+  it("formats join substitute success toast", () => {
+    expect(getJoinSubstituteSuccessToast()).toBe(
+      "Te sumaste como suplente. Te avisaremos cuando se libere un cupo."
+    );
+  });
+
+  it("formats leave substitute success and error toasts", () => {
+    expect(getLeaveSubstituteSuccessToast()).toBe("Saliste de la lista de suplentes.");
+    expect(getLeaveSubstituteErrorToast()).toBe("No se pudo salir de suplentes.");
+    expect(getLeaveSubstituteErrorToast("Error de salida")).toBe("Error de salida");
+  });
+
+  it("formats take open slot success toast", () => {
+    expect(getTakeOpenSlotSuccessToast()).toBe("Ocupaste el cupo.");
+  });
+
+  it("formats start match success and error toasts", () => {
+    expect(getStartMatchSuccessToast()).toBe("Iniciaste el partido.");
+    expect(getStartMatchErrorToast()).toBe("No se pudo iniciar el partido.");
+    expect(getStartMatchErrorToast("Insuficientes jugadores")).toBe("Insuficientes jugadores");
+  });
+
+  it("formats schedule next turn success and error toasts", () => {
+    expect(getScheduleNextTurnSuccessToast()).toBe("Programaste el próximo turno.");
+    expect(getScheduleNextTurnErrorToast()).toBe("No se pudo programar el próximo turno.");
+    expect(getScheduleNextTurnErrorToast("Error al crear")).toBe("Error al crear");
+  });
+
+  it("formats play casual success and error toasts", () => {
+    expect(getPlayCasualSuccessToast()).toBe("Marcaste el turno como jugado.");
+    expect(getPlayCasualErrorToast()).toBe("No se pudo marcar el turno como jugado.");
+    expect(getPlayCasualErrorToast("No autorizado")).toBe("No autorizado");
   });
 });
 

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-25 — Turn Action Toast Pure Helpers Extraction in TurnActions & TurnCard (bela/turnos/turn-action-toast-pure-helpers)
 - [x] 2026-09-24 — TurnsFilter Pure Helpers Extraction & Empty State Polish (bela/turnos/turns-filter-pure-helpers-and-empty-state-polish)
 - [x] 2026-09-23 — Turn Form Pure Helpers Extraction & Form Accessibility Polish in NewTurnPage and EditTurnForm (bela/turnos/turn-form-pure-helpers-and-a11y)
 - [x] 2026-09-22 — AddPlayerButton Search Status Helpers Extraction, Real-Time ARIA Announcer & TurnsListSkeleton Accessibility Polish (bela/turnos/add-player-button-search-status-a11y)
@@ -62,6 +63,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-25 - Turn Action Toast Pure Helpers Extraction in TurnActions & TurnCard
+**Learning:** Extracting pure helper functions (`getCancelTurnSuccessToast`, `getCancelTurnErrorToast`, `getJoinTurnSuccessToast`, `getJoinTurnErrorToast`, `getJoinSubstituteSuccessToast`, `getLeaveSubstituteSuccessToast`, `getLeaveSubstituteErrorToast`, `getTakeOpenSlotSuccessToast`, `getStartMatchSuccessToast`, `getStartMatchErrorToast`, `getScheduleNextTurnSuccessToast`, `getScheduleNextTurnErrorToast`, `getPlayCasualSuccessToast`, and `getPlayCasualErrorToast`) into `src/components/turns/turn-utils.ts` decouples localized toast notification strings from React render components in `TurnActions` (`src/components/turns/turn-actions.tsx`) and `TurnCard` (`src/components/turns/turn-card.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo copy conventions without exclamation marks, providing clear user feedback across turn lifecycle actions while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract action result toast message formatting into pure helper utilities backed by Vitest unit tests, and ensure all server action transition callbacks dispatch localized Argentine Spanish toast feedback for both success and error outcomes.
+
 ## 2026-09-24 - TurnsFilter Pure Helpers Extraction & Empty State Polish
 **Learning:** Extracting pure helper functions (`getTurnFilterHeadingTitle` and `getTurnFilterEmptyStateProps`) into `src/components/turns/turn-utils.ts` decouples localized section title copy and empty state action button properties from React render components in `TurnsFilter` (`src/components/turns/turns-filter.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract list filter section headings and empty state action properties into pure helper utilities backed by Vitest unit tests, and maintain active tactile scaling and focus ring offsets across filter controls.
