@@ -214,10 +214,79 @@ import {
   calculateLocalClusteringCoefficient,
   calculatePlayerMatchComplementarity,
   calculateNetworkConcentrationIndex,
+  calculateNetworkMultiBelonging,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
+
+describe("calculateNetworkMultiBelonging", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "agu", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "LEFT" },
+    { id: "p-03", name: "Gero", alias: "gero", image: null, skillScore: 1050, community: 2, networkSize: 2, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Facu", alias: "facu", image: null, skillScore: 1000, community: 3, networkSize: 2, matchesPlayed: 4, preferredSide: "BOTH" },
+  ];
+
+  it("returns fallback multi-belonging info for isolated node with zero connections", () => {
+    const res = calculateNetworkMultiBelonging([], nodes, "p-99");
+    expect(res.multiBelongingScore).toBe(0);
+    expect(res.distinctCommunitiesCount).toBe(0);
+    expect(res.primaryCommunitySharePercentage).toBe(0);
+    expect(res.externalCommunitiesSharePercentage).toBe(0);
+    expect(res.multiBelongingTier).toBe("Comunidad inicial 📍");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("Sin interacciones registradas en la red");
+  });
+
+  it("calculates 'Multicomunitario 🌐' tier for player active across 3 distinct communities", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 1 (internal)
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 2 (external)
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 3 (external)
+    ];
+
+    const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(3);
+    expect(res.primaryCommunitySharePercentage).toBe(33); // 2/6 = 33%
+    expect(res.externalCommunitiesSharePercentage).toBe(67);
+    expect(res.multiBelongingTier).toBe("Multicomunitario 🌐");
+    expect(res.badgeStyle).toContain("bg-teal-100");
+    expect(res.formattedSummary).toContain("3 grupos de la red");
+    expect(res.formattedSummary).toContain("67% interacción externa");
+  });
+
+  it("calculates 'Bicomunitario 🔗' tier for player active in 2 distinct communities", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // comm 1 (internal 60%)
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 2 (external 40%)
+    ];
+
+    const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(2);
+    expect(res.primaryCommunitySharePercentage).toBe(60); // 3/5 = 60%
+    expect(res.externalCommunitiesSharePercentage).toBe(40);
+    expect(res.multiBelongingTier).toBe("Bicomunitario 🔗");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedSummary).toContain("2 grupos de la red");
+    expect(res.formattedSummary).toContain("40% interacción externa");
+  });
+
+  it("calculates 'Focalizado en grupo 🏛️' tier for single community concentration", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 }, // comm 1 (internal 100%)
+    ];
+
+    const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
+    expect(res.distinctCommunitiesCount).toBe(1);
+    expect(res.primaryCommunitySharePercentage).toBe(100);
+    expect(res.externalCommunitiesSharePercentage).toBe(0);
+    expect(res.multiBelongingTier).toBe("Focalizado en grupo 🏛️");
+    expect(res.badgeStyle).toContain("bg-emerald-100");
+    expect(res.formattedSummary).toContain("1 grupo de la red");
+    expect(res.formattedSummary).toContain("100% interacción interna");
+  });
+});
 
 describe("calculatePlayerMatchComplementarity", () => {
   const nodes: GraphNode[] = [

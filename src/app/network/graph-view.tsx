@@ -37,6 +37,7 @@ import {
   calculatePlayerMatchComplementarity,
   calculatePlayerSimilarityInfo,
   calculateNetworkConcentrationIndex,
+  calculateNetworkMultiBelonging,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -872,6 +873,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     graphData.nodes,
                     selectedNodeData.id,
                   );
+                  const multiBelonging = calculateNetworkMultiBelonging(
+                    filteredData.links,
+                    graphData.nodes,
+                    selectedNodeData.id,
+                  );
                   const viewerNode = viewerId
                     ? graphData.nodes.find((n) => n.id === viewerId)
                     : null;
@@ -914,6 +920,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         aria-label={`Concentración de interacciones: ${concentration.concentrationTier}. ${concentration.formattedSummary}`}
                       >
                         {concentration.concentrationTier}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          multiBelonging.badgeStyle,
+                        )}
+                        title={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                        aria-label={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                      >
+                        {multiBelonging.multiBelongingTier}
                       </span>
                       <span
                         className={cn(
