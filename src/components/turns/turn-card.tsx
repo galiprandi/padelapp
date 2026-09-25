@@ -25,6 +25,9 @@ import {
   getTurnCardAriaLabel,
   getQuickJoinAriaLabel,
   getTurnStatusBadgeAriaLabel,
+  getJoinTurnSuccessToast,
+  getJoinSubstituteSuccessToast,
+  getJoinTurnErrorToast,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -105,12 +108,12 @@ export function TurnCard({
       if (res.status === "ok") {
         showToast(
           isSub
-            ? "Te sumaste como suplente."
-            : "Te sumaste al turno."
+            ? getJoinSubstituteSuccessToast()
+            : getJoinTurnSuccessToast()
         );
         router.refresh();
       } else {
-        showToast(res.message ?? "No se pudo sumar al turno.");
+        showToast(getJoinTurnErrorToast(res.message));
       }
     });
   };

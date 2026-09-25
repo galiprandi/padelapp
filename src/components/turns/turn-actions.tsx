@@ -34,6 +34,20 @@ import {
   getScheduleNextTurnAriaLabel,
   getPlayCasualAriaLabel,
   getPlayCasualConfirmRegionAriaLabel,
+  getCancelTurnSuccessToast,
+  getCancelTurnErrorToast,
+  getJoinTurnSuccessToast,
+  getJoinTurnErrorToast,
+  getJoinSubstituteSuccessToast,
+  getLeaveSubstituteSuccessToast,
+  getLeaveSubstituteErrorToast,
+  getTakeOpenSlotSuccessToast,
+  getStartMatchSuccessToast,
+  getStartMatchErrorToast,
+  getScheduleNextTurnSuccessToast,
+  getScheduleNextTurnErrorToast,
+  getPlayCasualSuccessToast,
+  getPlayCasualErrorToast,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -47,10 +61,10 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await cancelTurnAction(turnId);
       if (result.status === "ok") {
-        showToast("Cancelaste el turno.");
+        showToast(getCancelTurnSuccessToast());
         router.push("/turnos");
       } else {
-        showToast(result.message ?? "No se pudo cancelar el turno.");
+        showToast(getCancelTurnErrorToast(result.message));
       }
     });
   };
@@ -124,10 +138,10 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinTurnAction(turnId);
       if (result.status === "ok") {
-        showToast("Te sumaste al turno.");
+        showToast(getJoinTurnSuccessToast());
         router.refresh();
       } else {
-        showToast(result.message ?? "No se pudo sumar al turno.");
+        showToast(getJoinTurnErrorToast(result.message));
       }
     });
   };
@@ -164,10 +178,10 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await convertTurnToMatchAction(turnId);
       if (result.status === "ok" && result.matchId) {
-        showToast("Iniciaste el partido.");
+        showToast(getStartMatchSuccessToast());
         router.push(`/match/${result.matchId}`);
       } else {
-        showToast(result.message ?? "No se pudo iniciar el partido.");
+        showToast(getStartMatchErrorToast(result.message));
       }
     });
   };
@@ -204,8 +218,10 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinTurnAction(turnId);
       if (result.status === "ok") {
-        showToast("Te sumaste al turno.");
+        showToast(getJoinTurnSuccessToast());
         router.refresh();
+      } else {
+        showToast(getJoinTurnErrorToast(result.message));
       }
     });
   };
@@ -250,8 +266,10 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await joinSubstituteAction(turnId);
       if (result.status === "ok") {
-        showToast("Te sumaste como suplente. Te avisaremos cuando se libere un cupo.");
+        showToast(getJoinSubstituteSuccessToast());
         router.refresh();
+      } else {
+        showToast(getJoinTurnErrorToast(result.message));
       }
     });
   };
@@ -293,10 +311,10 @@ export function LeaveSubstituteForm({
     startTransition(async () => {
       const result = await leaveSubstituteAction(turnId);
       if (result.status === "ok") {
-        showToast("Saliste de la lista de suplentes.");
+        showToast(getLeaveSubstituteSuccessToast());
         router.refresh();
       } else {
-        showToast(result.message ?? "No se pudo salir de suplentes.");
+        showToast(getLeaveSubstituteErrorToast(result.message));
       }
     });
   };
@@ -336,8 +354,10 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await takeOpenSlotAction(turnId);
       if (result.status === "ok") {
-        showToast("Ocupaste el cupo.");
+        showToast(getTakeOpenSlotSuccessToast());
         router.refresh();
+      } else {
+        showToast(getJoinTurnErrorToast(result.message));
       }
     });
   };
@@ -372,10 +392,10 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await scheduleNextTurnAction(turnId);
       if (result.status === "ok" && result.turnId) {
-        showToast("Programaste el próximo turno.");
+        showToast(getScheduleNextTurnSuccessToast());
         router.push(`/t/${result.turnId}`);
       } else {
-        showToast(result.message ?? "No se pudo programar el próximo turno.");
+        showToast(getScheduleNextTurnErrorToast(result.message));
       }
     });
   };
@@ -411,10 +431,10 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
     startTransition(async () => {
       const result = await markTurnAsPlayedAction(turnId);
       if (result.status === "ok") {
-        showToast("Marcaste el turno como jugado.");
+        showToast(getPlayCasualSuccessToast());
         router.push("/turnos");
       } else {
-        showToast(result.message ?? "No se pudo marcar el turno como jugado.");
+        showToast(getPlayCasualErrorToast(result.message));
       }
     });
   };

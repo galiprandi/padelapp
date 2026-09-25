@@ -1347,3 +1347,101 @@ export function getTurnFilterEmptyStateProps(
     createButtonLabel: "Crear turno",
   };
 }
+
+/**
+ * Format success toast message when an organizer cancels a turn.
+ */
+export function getCancelTurnSuccessToast(): string {
+  return "Cancelaste el turno.";
+}
+
+/**
+ * Format error toast message when canceling a turn fails.
+ */
+export function getCancelTurnErrorToast(message?: string): string {
+  return message ?? "No se pudo cancelar el turno.";
+}
+
+/**
+ * Format success toast message when a player joins a turn.
+ */
+export function getJoinTurnSuccessToast(): string {
+  return "Te sumaste al turno.";
+}
+
+/**
+ * Format error toast message when joining a turn fails.
+ */
+export function getJoinTurnErrorToast(message?: string): string {
+  return message ?? "No se pudo sumar al turno.";
+}
+
+/**
+ * Format success toast message when a player joins as a substitute.
+ */
+export function getJoinSubstituteSuccessToast(): string {
+  return "Te sumaste como suplente. Te avisaremos cuando se libere un cupo.";
+}
+
+/**
+ * Format success toast message when a substitute leaves the substitute list.
+ */
+export function getLeaveSubstituteSuccessToast(): string {
+  return "Saliste de la lista de suplentes.";
+}
+
+/**
+ * Format error toast message when leaving the substitute list fails.
+ */
+export function getLeaveSubstituteErrorToast(message?: string): string {
+  return message ?? "No se pudo salir de suplentes.";
+}
+
+/**
+ * Format success toast message when a player takes an open slot.
+ */
+export function getTakeOpenSlotSuccessToast(): string {
+  return "Ocupaste el cupo.";
+}
+
+/**
+ * Format success toast message when converting a turn to a match.
+ */
+export function getStartMatchSuccessToast(): string {
+  return "Iniciaste el partido.";
+}
+
+/**
+ * Format error toast message when converting a turn to a match fails.
+ */
+export function getStartMatchErrorToast(message?: string): string {
+  return message ?? "No se pudo iniciar el partido.";
+}
+
+/**
+ * Format success toast message when scheduling the next turn.
+ */
+export function getScheduleNextTurnSuccessToast(): string {
+  return "Programaste el próximo turno.";
+}
+
+/**
+ * Format error toast message when scheduling the next turn fails.
+ */
+export function getScheduleNextTurnErrorToast(message?: string): string {
+  return message ?? "No se pudo programar el próximo turno.";
+}
+
+/**
+ * Format success toast message when marking a turn as played casually.
+ */
+export function getPlayCasualSuccessToast(): string {
+  return "Marcaste el turno como jugado.";
+}
+
+/**
+ * Format error toast message when marking a turn as played casually fails.
+ */
+export function getPlayCasualErrorToast(message?: string): string {
+  return message ?? "No se pudo marcar el turno como jugado.";
+}
