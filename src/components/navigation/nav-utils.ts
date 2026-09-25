@@ -214,11 +214,22 @@ export function getFabClasses(customClassName?: string): string {
 }
 
 /**
- * Genera las clases CSS para la insignia/badge flotante de notificaciones pendientes.
+ * Genera las clases CSS para la insignia/badge flotante de notificaciones pendientes (relativo al elemento padre).
  */
 export function getNotificationsBadgeClasses(customClassName?: string): string {
   return cn(
     "absolute -top-3 right-6 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para la insignia/badge flotante fija de notificaciones pendientes (posicionamiento 'fixed').
+ * Aplica elevación por encima de la barra inferior con margen seguro para dispositivos móviles (safe-area-inset-bottom).
+ */
+export function getFloatingNotificationsBadgeClasses(customClassName?: string): string {
+  return cn(
+    "fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-primary-foreground shadow-md transition-all duration-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
     customClassName,
   );
 }

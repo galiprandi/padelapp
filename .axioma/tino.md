@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-19 — Extracción de Función Helper Pura `getFloatingNotificationsBadgeClasses` para Badge Flotante de Notificaciones Pendientes (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`)
 - [x] 2026-09-18 — Extracción de Funciones Helper Puras de Configuración, Clases CSS y Accesibilidad ARIA para Notificaciones Toast (`src/components/toast/toast-utils.ts`) y Refactorización de `ToastProvider` (`src/components/toast/toast-provider.tsx`)
 - [x] 2026-09-17 — Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton` (`src/components/navigation/nav-utils.ts`) (PR #tino/ux/navigation-container-and-tactile-class-helpers)
 - [x] 2026-09-16 — Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton` (`src/components/ui/skeleton-utils.ts`) (PR #tino/ux/skeleton-accessibility-and-class-helpers)
@@ -58,6 +59,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-19 - Extracción de Función Helper Pura `getFloatingNotificationsBadgeClasses` para Badge Flotante de Notificaciones Pendientes
+**Aprendizaje:** Encapsular las clases CSS de posicionamiento fijo (`fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50`), respuesta táctil (`active:scale-[0.98]`), anillos de foco por teclado (`ring-offset-background`) y elevación visual (`shadow-md`) en la función pura `getFloatingNotificationsBadgeClasses` dentro de `src/components/navigation/nav-utils.ts` estandariza el estilo del badge flotante de notificaciones en `NotificationsBadge`. Esto previene la duplicación de cadenas de clases CSS extensas en componentes de interfaz y permite verificar exhaustivamente el estilo mediante tests unitarios aislados.
+**Acción:** Reutilizar `getFloatingNotificationsBadgeClasses` o extender `nav-utils.ts` al diseñar elementos flotantes o de badge sobre la navegación principal.
+
 ### 2026-09-18 - Extracción de Funciones Helper Puras de Configuración, Clases CSS y Accesibilidad ARIA para Notificaciones Toast
 **Aprendizaje:** Extraer las funciones utilitarias puras de duraciones predeterminadas (`getToastDuration`), clasificación de tipo de error (`isErrorToast`), clases CSS para contenedor, ícono y acción con retroalimentación táctil (`getToastClasses`, `getToastIconClasses`, `getToastActionClasses`), atributos ARIA (`getToastAriaAttributes`), y etiquetas de accesibilidad localizadas en español argentino (`formatToastAriaLabel`) hacia `src/components/toast/toast-utils.ts` desacopla la lógica de presentación del ciclo de vida de React en `ToastProvider`. Esto permite probar exhaustivamente los comportamientos de estilo y accesibilidad mediante pruebas unitarias rápidas e independientes.
 **Acción:** Reutilizar siempre las utilidades de `src/components/toast/toast-utils.ts` al extender el sistema de notificaciones toast o construir componentes de alerta visual.

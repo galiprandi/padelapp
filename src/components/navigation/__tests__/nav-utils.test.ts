@@ -15,6 +15,7 @@ import {
   getNavItemClasses,
   getFabClasses,
   getNotificationsBadgeClasses,
+  getFloatingNotificationsBadgeClasses,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -266,6 +267,22 @@ describe("nav-utils", () => {
     it("applies custom class overrides", () => {
       const classes = getNotificationsBadgeClasses("custom-badge-class");
       expect(classes).toContain("custom-badge-class");
+    });
+  });
+
+  describe("getFloatingNotificationsBadgeClasses", () => {
+    it("returns fixed positioning, safe area inset bottom elevation, z-50, shadow-md, and active tactile scale", () => {
+      const classes = getFloatingNotificationsBadgeClasses();
+      expect(classes).toContain("fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)] right-6 z-50");
+      expect(classes).toContain("rounded-full bg-primary");
+      expect(classes).toContain("shadow-md");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("focus-visible:ring-2");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getFloatingNotificationsBadgeClasses("custom-floating-badge");
+      expect(classes).toContain("custom-floating-badge");
     });
   });
 });
