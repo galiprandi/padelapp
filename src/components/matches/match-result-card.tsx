@@ -9,13 +9,23 @@ import { cn, isToday, capitalizeName } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Trophy, ChevronRight, Check, Loader2 } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
-import { Badge, type badgeVariants } from "@/components/ui/badge";
-import { VariantProps } from "class-variance-authority";
+import { Badge } from "@/components/ui/badge";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import { createMagicLink } from "@/lib/magic-link";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { useToast } from "@/components/toast/use-toast";
 import { parseScoreSets, calculateMatchSetWins } from "@/lib/match-helpers";
+import {
+  getMatchQuickConfirmSuccessToast,
+  getMatchQuickConfirmErrorToast,
+  getMatchQuickConfirmButtonAriaLabel,
+  getMatchStatusBadgeText,
+  getMatchStatusBadgeVariant,
+  getMatchDetailLinkAriaLabel,
+  getMatchPlayerSideLabel,
+  getMatchPlayerAvatarAriaLabel,
+  getMatchResultCardRegionAriaLabel,
+} from "./match-result-card-utils";
 
 export interface MatchResultCardProps {
   label?: string;
@@ -31,7 +41,7 @@ export function MatchResultCard({
   return (
     <div
       role="region"
-      aria-label={`Tarjeta de resultado: ${label}`}
+      aria-label={getMatchResultCardRegionAriaLabel(label)}
       className="rounded-xl border border-border bg-card shadow-xs overflow-hidden"
     >
       <div className="border-b border-border px-4 py-2">
@@ -169,23 +179,15 @@ export const MatchResultCompact = memo(function MatchResultCompact({
   const statusLabel = (match.status ?? "PENDING").toString();
   const isConfirmed = statusLabel === "CONFIRMED";
 
-  const needsConfirmation =
+  const needsConfirmation = Boolean(
     viewerId &&
     match.status !== "CONFIRMED" &&
     match.score &&
-    match.players.some((p) => p.user?.id === viewerId && !p.resultConfirmed);
+    match.players.some((p) => p.user?.id === viewerId && !p.resultConfirmed)
+  );
 
-  const statusVariant = ((): VariantProps<typeof badgeVariants>["variant"] => {
-    if (needsConfirmation) return "primary";
-    switch (statusLabel.toUpperCase()) {
-      case "CONFIRMED":
-        return "success";
-      case "DISPUTED":
-        return "warning";
-      default:
-        return "default";
-    }
-  })();
+  const statusVariant = getMatchStatusBadgeVariant(statusLabel, needsConfirmation);
+  const statusText = getMatchStatusBadgeText(statusLabel, needsConfirmation);
 
   const handleQuickConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -194,10 +196,10 @@ export const MatchResultCompact = memo(function MatchResultCompact({
     startTransition(async () => {
       const res = await confirmMatchResultAction(match.id);
       if (res.status === "ok") {
-        showToast("Confirmaste el resultado. 🏆", { type: "success" });
+        showToast(getMatchQuickConfirmSuccessToast(), { type: "success" });
         router.refresh();
       } else {
-        showToast(res.message || "No pudimos confirmar el resultado.", { type: "error" });
+        showToast(getMatchQuickConfirmErrorToast(res.message), { type: "error" });
       }
     });
   };
@@ -210,15 +212,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Badge variant={statusVariant}>
-                {needsConfirmation
-                  ? "Confirmar"
-                  : statusLabel === "PENDING"
-                    ? "Pendiente"
-                    : statusLabel === "CONFIRMED"
-                      ? "Confirmado"
-                      : statusLabel === "DISPUTED"
-                        ? "Disputa"
-                        : statusLabel}
+                {statusText}
               </Badge>
               <span className="text-xs text-muted-foreground">
                 {formattedDate ?? "—"}
@@ -230,7 +224,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   onClick={handleQuickConfirm}
                   disabled={isConfirming}
                   aria-busy={isConfirming}
-                  aria-label={`Confirmar resultado ${match.score ? `(${match.score})` : ""} del partido`}
+                  aria-label={getMatchQuickConfirmButtonAriaLabel(match.score)}
                   className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 h-8 rounded-lg text-xs font-semibold transition-all hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
                 >
                   {isConfirming ? (
@@ -266,7 +260,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   href={matchDetailUrl}
                   prefetch={true}
                   className="flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
-                  aria-label={formattedDate ? `Ver detalle del partido del ${formattedDate}` : "Ver detalle del partido"}
+                  aria-label={getMatchDetailLinkAriaLabel(formattedDate)}
                 >
                   Detalle
                   <ChevronRight className="h-3 w-3" aria-hidden="true" />
@@ -316,7 +310,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                         href={`/p/${player.userId}`}
                         prefetch={true}
                         className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
-                        aria-label={`Ver perfil de ${player.name}`}
+                        aria-label={getMatchPlayerAvatarAriaLabel(player.name)}
                       >
                         {avatarElement}
                       </Link>
@@ -331,6 +325,8 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <div className="flex flex-col text-sm font-semibold text-foreground min-w-0 leading-tight">
                   {team.players.map((player) => {
                     const isViewer = player.userId === viewerId;
+                    const sideInfo = player.side ? getMatchPlayerSideLabel(player.side) : null;
+
                     return (
                       <div
                         key={`team-${team.id}-name-${player.id}`}
@@ -350,13 +346,13 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                         ) : (
                           <span className="truncate">{player.name}</span>
                         )}
-                        {player.side && (
+                        {sideInfo && (
                           <span
                             className="inline-flex items-center shrink-0 text-xs font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none"
-                            title={player.side === "RIGHT" ? "Lado derecho" : "Lado revés"}
-                            aria-label={player.side === "RIGHT" ? "Lado derecho" : "Lado revés"}
+                            title={sideInfo.title}
+                            aria-label={sideInfo.title}
                           >
-                            {player.side === "RIGHT" ? "Der" : "Rev"}
+                            {sideInfo.label}
                           </span>
                         )}
                         {team.isWinner && (
