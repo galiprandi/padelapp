@@ -26,6 +26,27 @@ export function getLoginTermsNoticeText(): string {
   return "Al continuar, aceptás nuestros términos de servicio.";
 }
 
+/**
+ * Returns the localized login page title text.
+ */
+export function getLoginTitleText(): string {
+  return "Padel Red";
+}
+
+/**
+ * Returns the localized login page tagline text.
+ */
+export function getLoginTaglineText(): string {
+  return "Turnos que no se cancelan.\nTu comunidad de pádel en un solo lugar.";
+}
+
+/**
+ * Returns the localized loading text for login fallback states.
+ */
+export function getLoginLoadingText(): string {
+  return "Cargando…";
+}
+
 export function safeCallbackUrl(url: string | undefined, fallback = "/me"): string {
   if (!url) return fallback;
   if (!url.startsWith("/")) return fallback;
