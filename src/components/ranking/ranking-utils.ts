@@ -51,6 +51,50 @@ export function getRankingSearchStatusAriaLabel(
 }
 
 /**
+ * Returns accessible ARIA label for ranking search input field
+ */
+export function getRankingSearchInputAriaLabel(): string {
+  return "Buscar jugadores por nombre o alias";
+}
+
+/**
+ * Returns accessible ARIA label for clearing ranking search query
+ */
+export function getRankingSearchClearAriaLabel(): string {
+  return "Limpiar búsqueda";
+}
+
+/**
+ * Returns placeholder text for ranking search input
+ */
+export function getRankingSearchPlaceholder(): string {
+  return "Buscar jugador o alias...";
+}
+
+/**
+ * Returns title text for ranking filter empty state
+ */
+export function getRankingFilterEmptyTitle(query?: string): string {
+  return query ? "No se encontraron jugadores" : "Sin jugadores";
+}
+
+/**
+ * Returns description text for ranking filter empty state
+ */
+export function getRankingFilterEmptyDescription(query?: string): string {
+  return query
+    ? `No hay resultados para "${query}".`
+    : "Aún no hay jugadores registrados.";
+}
+
+/**
+ * Returns accessible ARIA label for clearing search from empty state action
+ */
+export function getRankingFilterClearAriaLabel(): string {
+  return "Limpiar búsqueda y volver a la clasificación general";
+}
+
+/**
  * Returns accessible ARIA label for podium player cards
  */
 export function getPodiumPlayerAriaLabel(

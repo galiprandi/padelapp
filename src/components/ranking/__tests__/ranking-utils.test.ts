@@ -3,6 +3,12 @@ import {
   getRankingRulesAriaLabel,
   getRankingFilterTabAriaLabel,
   getRankingSearchStatusAriaLabel,
+  getRankingSearchInputAriaLabel,
+  getRankingSearchClearAriaLabel,
+  getRankingSearchPlaceholder,
+  getRankingFilterEmptyTitle,
+  getRankingFilterEmptyDescription,
+  getRankingFilterClearAriaLabel,
   getPodiumPlayerAriaLabel,
   getRankingListItemAriaLabel,
   getRankingBreakdownButtonAriaLabel,
@@ -43,6 +49,54 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingFilterTabAriaLabel("todos", 25)).toBe(
         "Mostrar todos los jugadores registrados (25 en total)"
+      );
+    });
+  });
+
+  describe("getRankingSearchInputAriaLabel", () => {
+    it("returns correct ARIA label for search input", () => {
+      expect(getRankingSearchInputAriaLabel()).toBe("Buscar jugadores por nombre o alias");
+    });
+  });
+
+  describe("getRankingSearchClearAriaLabel", () => {
+    it("returns correct ARIA label for clearing search button", () => {
+      expect(getRankingSearchClearAriaLabel()).toBe("Limpiar búsqueda");
+    });
+  });
+
+  describe("getRankingSearchPlaceholder", () => {
+    it("returns correct placeholder text for search input", () => {
+      expect(getRankingSearchPlaceholder()).toBe("Buscar jugador o alias...");
+    });
+  });
+
+  describe("getRankingFilterEmptyTitle", () => {
+    it("returns search query specific title when query is present", () => {
+      expect(getRankingFilterEmptyTitle("Tapia")).toBe("No se encontraron jugadores");
+    });
+
+    it("returns default title when query is empty or undefined", () => {
+      expect(getRankingFilterEmptyTitle()).toBe("Sin jugadores");
+      expect(getRankingFilterEmptyTitle("")).toBe("Sin jugadores");
+    });
+  });
+
+  describe("getRankingFilterEmptyDescription", () => {
+    it("returns query specific description when query is present", () => {
+      expect(getRankingFilterEmptyDescription("Coello")).toBe('No hay resultados para "Coello".');
+    });
+
+    it("returns default description when query is empty or undefined", () => {
+      expect(getRankingFilterEmptyDescription()).toBe("Aún no hay jugadores registrados.");
+      expect(getRankingFilterEmptyDescription("")).toBe("Aún no hay jugadores registrados.");
+    });
+  });
+
+  describe("getRankingFilterClearAriaLabel", () => {
+    it("returns correct ARIA label for clearing search from empty state", () => {
+      expect(getRankingFilterClearAriaLabel()).toBe(
+        "Limpiar búsqueda y volver a la clasificación general"
       );
     });
   });
