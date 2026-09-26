@@ -38,6 +38,7 @@ import {
   calculatePlayerSimilarityInfo,
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
+  calculateNetworkExpansionPotential,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -878,6 +879,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     graphData.nodes,
                     selectedNodeData.id,
                   );
+                  const expansionPotential = calculateNetworkExpansionPotential(
+                    filteredData.links,
+                    graphData.nodes,
+                    selectedNodeData.id,
+                  );
                   const viewerNode = viewerId
                     ? graphData.nodes.find((n) => n.id === viewerId)
                     : null;
@@ -911,6 +917,16 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           {similarityInfo.similarityTier}
                         </span>
                       )}
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          expansionPotential.badgeStyle,
+                        )}
+                        title={`Potencial de expansión de red: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
+                        aria-label={`Potencial de expansión de red: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
+                      >
+                        {expansionPotential.expansionTier}
+                      </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
