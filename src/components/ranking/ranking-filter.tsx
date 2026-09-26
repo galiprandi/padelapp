@@ -9,7 +9,13 @@ import { EmptyState } from "@/components/empty-state";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getRankingFilterTabAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
+import {
+  getRankingFilterTabAriaLabel,
+  getRankingRegionAriaLabel,
+  getRankingFilterEmptyTitle,
+  getRankingFilterEmptyDescription,
+  getRankingFilterClearAriaLabel,
+} from "./ranking-utils";
 
 interface RankingPlayer {
   id: string;
@@ -148,16 +154,18 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
         ) : (
           <EmptyState
             icon={Users}
-            title={query ? "No se encontraron jugadores" : "Sin jugadores"}
-            description={
-              query
-                ? `No hay resultados para "${query}".`
-                : "Aún no hay jugadores registrados."
-            }
+            title={getRankingFilterEmptyTitle(query)}
+            description={getRankingFilterEmptyDescription(query)}
             action={
               query ? (
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/ranking" prefetch={true}>Limpiar búsqueda</Link>
+                  <Link
+                    href="/ranking"
+                    prefetch={true}
+                    aria-label={getRankingFilterClearAriaLabel()}
+                  >
+                    Limpiar búsqueda
+                  </Link>
                 </Button>
               ) : null
             }

@@ -5,7 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { getRankingSearchStatusAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
+import {
+  getRankingSearchStatusAriaLabel,
+  getRankingRegionAriaLabel,
+  getRankingSearchInputAriaLabel,
+  getRankingSearchClearAriaLabel,
+  getRankingSearchPlaceholder,
+} from "./ranking-utils";
 
 export function RankingSearch() {
   const router = useRouter();
@@ -65,8 +71,8 @@ export function RankingSearch() {
       <Input
         ref={inputRef}
         type="search"
-        placeholder="Buscar jugador o alias..."
-        aria-label="Buscar jugadores por nombre o alias"
+        placeholder={getRankingSearchPlaceholder()}
+        aria-label={getRankingSearchInputAriaLabel()}
         aria-busy={isPending}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -82,7 +88,7 @@ export function RankingSearch() {
         <button
           type="button"
           onClick={handleClear}
-          aria-label="Limpiar búsqueda"
+          aria-label={getRankingSearchClearAriaLabel()}
           className="absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-all active:scale-[0.95] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         >
           <X className="h-4 w-4" />
