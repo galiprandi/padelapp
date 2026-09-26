@@ -28,6 +28,9 @@ import {
   getJoinTurnSuccessToast,
   getJoinSubstituteSuccessToast,
   getJoinTurnErrorToast,
+  getTurnCardSubstitutesText,
+  getTurnCardContactPlayersAriaLabel,
+  getTurnCardDetailLinkAriaLabel,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -147,7 +150,7 @@ export function TurnCard({
         href={`/t/${turn.id}`}
         prefetch={true}
         className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-        aria-label={`Ver detalles del turno en ${turn.club}`}
+        aria-label={getTurnCardDetailLinkAriaLabel(turn.club)}
       />
         <div className="flex items-center gap-3">
           {/* Date */}
@@ -185,16 +188,18 @@ export function TurnCard({
                 {turn.players.length}/{turn.maxPlayers}
                 {turn.substitutes && turn.substitutes.length > 0 && (
                   <span className="text-muted-foreground/70">
-                    (+{turn.substitutes.length} supl
-                    {turn.substitutes.length === 1 ? "" : "es"})
+                    {getTurnCardSubstitutesText(turn.substitutes.length)}
                   </span>
                 )}
               </span>
             </div>
 
             {mounted && contactPlayers.length > 0 && (
-              <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              <p
+                className="mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none"
+                aria-label={getTurnCardContactPlayersAriaLabel(contactPlayers)}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
                 <span className="truncate">
                   {formatContactPlayersSummary(contactPlayers)}
                 </span>
@@ -248,9 +253,9 @@ export function TurnCard({
         </div>
 
         {/* Actions row */}
-        {(isJoined || isSubstitute || canJoin) && (
+        {(isJoined || isCreator || isSubstitute || canJoin) && (
           <div className="relative z-10 flex items-stretch gap-2">
-            {isJoined && turn.players.length < turn.maxPlayers && (
+            {(isJoined || isCreator) && openSlots > 0 && (
               <div className="flex-1">
                 <OpenToNetworkButton
                   turnId={turn.id}

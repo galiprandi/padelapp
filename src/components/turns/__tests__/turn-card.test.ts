@@ -52,4 +52,15 @@ describe("TurnCard Component", () => {
     expect(element.props.turn.maxPlayers).toBe(4);
     expect(element.props.turn.players).toHaveLength(3);
   });
+
+  it("constructs a React element for organizer with open slots", () => {
+    const element = React.createElement(TurnCard, {
+      turn: sampleTurn,
+      isJoined: false,
+      isCreator: true,
+    });
+
+    expect(element).toBeDefined();
+    expect(element.props.isCreator).toBe(true);
+  });
 });

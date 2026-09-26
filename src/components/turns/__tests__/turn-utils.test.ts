@@ -98,6 +98,9 @@ import {
   getScheduleNextTurnErrorToast,
   getPlayCasualSuccessToast,
   getPlayCasualErrorToast,
+  getTurnCardSubstitutesText,
+  getTurnCardContactPlayersAriaLabel,
+  getTurnCardDetailLinkAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -770,6 +773,29 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("TurnCard new pure helpers", () => {
+  it("formats getTurnCardSubstitutesText in Argentine Spanish", () => {
+    expect(getTurnCardSubstitutesText(0)).toBe("");
+    expect(getTurnCardSubstitutesText(1)).toBe("(+1 supl)");
+    expect(getTurnCardSubstitutesText(2)).toBe("(+2 suples)");
+    expect(getTurnCardSubstitutesText(3)).toBe("(+3 suples)");
+  });
+
+  it("formats getTurnCardContactPlayersAriaLabel for 1 and multiple contacts", () => {
+    expect(getTurnCardContactPlayersAriaLabel([])).toBe("");
+    expect(getTurnCardContactPlayersAriaLabel(["Juan"])).toBe("Juega tu contacto: Juan");
+    expect(getTurnCardContactPlayersAriaLabel(["Juan", "Pedro"])).toBe(
+      "Juegan tus contactos: Juan y Pedro"
+    );
+  });
+
+  it("formats getTurnCardDetailLinkAriaLabel in Argentine Spanish", () => {
+    expect(getTurnCardDetailLinkAriaLabel("Central Padel")).toBe(
+      "Ver detalles del turno de pádel en Central Padel"
     );
   });
 });

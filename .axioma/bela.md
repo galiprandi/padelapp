@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-26 — TurnCard Pure Helpers Extraction & Organizer 1-Tap Salvage Action Integration (bela/turnos/turn-card-pure-helpers-and-organizer-salvage)
 - [x] 2026-09-25 — Turn Action Toast Pure Helpers Extraction in TurnActions & TurnCard (bela/turnos/turn-action-toast-pure-helpers)
 - [x] 2026-09-24 — TurnsFilter Pure Helpers Extraction & Empty State Polish (bela/turnos/turns-filter-pure-helpers-and-empty-state-polish)
 - [x] 2026-09-23 — Turn Form Pure Helpers Extraction & Form Accessibility Polish in NewTurnPage and EditTurnForm (bela/turnos/turn-form-pure-helpers-and-a11y)
@@ -63,6 +64,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-26 - TurnCard Pure Helpers Extraction & Organizer 1-Tap Salvage Action Integration
+**Learning:** Extracting pure helper functions (`getTurnCardSubstitutesText`, `getTurnCardContactPlayersAriaLabel`, and `getTurnCardDetailLinkAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized string formatting and screen reader ARIA labels from React component render trees. Enabling the 1-tap network salvage action button (`OpenToNetworkButton`) for organizers (`(isJoined || isCreator) && openSlots > 0`) directly on `TurnCard` allows turn creators to notify their padel network directly from the high-level `/turnos` listing without navigating into detail screens, driving faster turn completion. Preserving focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) guarantees robust accessibility and visual alignment across mobile devices.
+**Action:** Always extract card sub-element text and ARIA labels into pure helper utilities backed by Vitest unit tests, and surface key 1-tap salvage action triggers on high-level listing cards whenever open slots are detected for organizers or enrolled players.
+
 ## 2026-09-25 - Turn Action Toast Pure Helpers Extraction in TurnActions & TurnCard
 **Learning:** Extracting pure helper functions (`getCancelTurnSuccessToast`, `getCancelTurnErrorToast`, `getJoinTurnSuccessToast`, `getJoinTurnErrorToast`, `getJoinSubstituteSuccessToast`, `getLeaveSubstituteSuccessToast`, `getLeaveSubstituteErrorToast`, `getTakeOpenSlotSuccessToast`, `getStartMatchSuccessToast`, `getStartMatchErrorToast`, `getScheduleNextTurnSuccessToast`, `getScheduleNextTurnErrorToast`, `getPlayCasualSuccessToast`, and `getPlayCasualErrorToast`) into `src/components/turns/turn-utils.ts` decouples localized toast notification strings from React render components in `TurnActions` (`src/components/turns/turn-actions.tsx`) and `TurnCard` (`src/components/turns/turn-card.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo copy conventions without exclamation marks, providing clear user feedback across turn lifecycle actions while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract action result toast message formatting into pure helper utilities backed by Vitest unit tests, and ensure all server action transition callbacks dispatch localized Argentine Spanish toast feedback for both success and error outcomes.
