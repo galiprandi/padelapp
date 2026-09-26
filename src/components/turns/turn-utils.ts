@@ -1445,3 +1445,30 @@ export function getPlayCasualSuccessToast(): string {
 export function getPlayCasualErrorToast(message?: string): string {
   return message ?? "No se pudo marcar el turno como jugado.";
 }
+
+/**
+ * Format substitute count indicator text for turn listing cards.
+ */
+export function getTurnCardSubstitutesText(count: number): string {
+  if (count <= 0) return "";
+  if (count === 1) return "(+1 supl)";
+  return `(+${count} suples)`;
+}
+
+/**
+ * Format ARIA label for enrolled contact players summary on turn listing cards in Argentine Spanish.
+ */
+export function getTurnCardContactPlayersAriaLabel(names: string[]): string {
+  if (names.length === 0) return "";
+  if (names.length === 1) {
+    return `Juega tu contacto: ${names[0]}`;
+  }
+  return `Juegan tus contactos: ${formatSpanishNamesList(names)}`;
+}
+
+/**
+ * Format ARIA label for turn card detail overlay link in Argentine Spanish.
+ */
+export function getTurnCardDetailLinkAriaLabel(club: string): string {
+  return `Ver detalles del turno de pádel en ${club}`;
+}
