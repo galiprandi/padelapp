@@ -1,8 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   getLoginLoadingAriaLabel,
+  getLoginLoadingText,
   getLoginRegionAriaLabel,
+  getLoginTaglineText,
   getLoginTermsNoticeText,
+  getLoginTitleText,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 
@@ -20,6 +23,22 @@ describe("auth-utils login text helpers", () => {
   it("returns a non-empty localized terms notice text", () => {
     const text = getLoginTermsNoticeText();
     expect(text).toBe("Al continuar, aceptás nuestros términos de servicio.");
+  });
+
+  it("returns a non-empty localized login title text", () => {
+    const title = getLoginTitleText();
+    expect(title).toBe("Padel Red");
+  });
+
+  it("returns a non-empty localized login tagline text", () => {
+    const tagline = getLoginTaglineText();
+    expect(tagline).toContain("Turnos que no se cancelan.");
+    expect(tagline).toContain("Tu comunidad de pádel en un solo lugar.");
+  });
+
+  it("returns a non-empty localized login loading text", () => {
+    const loadingText = getLoginLoadingText();
+    expect(loadingText).toBe("Cargando…");
   });
 });
 

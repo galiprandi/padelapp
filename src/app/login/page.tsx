@@ -6,8 +6,11 @@ import { SignInButton } from "@/components/auth/sign-in-button";
 import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
 import {
   getLoginLoadingAriaLabel,
+  getLoginLoadingText,
   getLoginRegionAriaLabel,
+  getLoginTaglineText,
   getLoginTermsNoticeText,
+  getLoginTitleText,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 import Image from "next/image";
@@ -36,12 +39,10 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
           />
           <div className="space-y-3 text-center">
             <h1 className="text-3xl font-bold text-foreground">
-              Padel Red
+              {getLoginTitleText()}
             </h1>
-            <p className="text-sm text-muted-foreground max-w-[240px]">
-              Turnos que no se cancelan.
-              <br />
-              Tu comunidad de pádel en un solo lugar.
+            <p className="text-sm text-muted-foreground max-w-[240px] whitespace-pre-line">
+              {getLoginTaglineText()}
             </p>
           </div>
         </div>
@@ -55,7 +56,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
               className="flex h-12 w-full items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm font-semibold"
             >
               <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" aria-hidden="true" />
-              Cargando…
+              {getLoginLoadingText()}
             </div>
           }
         >
