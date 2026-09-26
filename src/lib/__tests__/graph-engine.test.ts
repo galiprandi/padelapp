@@ -215,10 +215,67 @@ import {
   calculatePlayerMatchComplementarity,
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
+  calculateNetworkExpansionPotential,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
+
+describe("calculateNetworkExpansionPotential", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "agu", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "LEFT" },
+    { id: "p-03", name: "Gero", alias: "gero", image: null, skillScore: 1050, community: 2, networkSize: 2, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Facu", alias: "facu", image: null, skillScore: 1000, community: 3, networkSize: 2, matchesPlayed: 4, preferredSide: "BOTH" },
+    { id: "p-05", name: "Diego", alias: "diego", image: null, skillScore: 980, community: 4, networkSize: 1, matchesPlayed: 2, preferredSide: "LEFT" },
+    { id: "p-06", name: "Lucas", alias: "lucas", image: null, skillScore: 1020, community: 2, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
+  ];
+
+  it("returns fallback expansion potential info for isolated node with zero links", () => {
+    const res = calculateNetworkExpansionPotential([], nodes, "p-99");
+    expect(res.expansionScore).toBe(0);
+    expect(res.unexploredReachCount).toBe(0);
+    expect(res.unconnectedCommunitiesCount).toBe(4); // communities 1, 2, 3, 4
+    expect(res.expansionTier).toBe("Círculo exclusivo 🔒");
+    expect(res.badgeStyle).toContain("bg-muted");
+    expect(res.formattedSummary).toBe("4 grupos no conectados en la red");
+  });
+
+  it("calculates 'Red en expansión activa 🚀' tier for node with high 2nd-degree reach and unconnected communities", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // p-01 direct = p-02 (comm 1); p-02 connected to p-03, p-04, p-05, p-06 (4 unexplored 2nd-degree contacts)
+    // connected communities = {1}; unconnected = {2, 3, 4} (3 unconnected communities)
+    const res = calculateNetworkExpansionPotential(links, nodes, "p-01");
+    expect(res.unexploredReachCount).toBe(4);
+    expect(res.unconnectedCommunitiesCount).toBe(3);
+    expect(res.expansionTier).toBe("Red en expansión activa 🚀");
+    expect(res.badgeStyle).toContain("bg-teal-100");
+    expect(res.formattedSummary).toContain("4 contactos de 2º grado");
+    expect(res.formattedSummary).toContain("3 grupos no conectados");
+  });
+
+  it("calculates 'Potencial de conexión 🌐' tier for moderate 2nd-degree reach", () => {
+    const links: GraphLink[] = [
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+      { source: "p-02", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
+    ];
+
+    // p-01 direct = p-02; unexplored 2nd degree = p-03, p-04 (2 contacts)
+    const res = calculateNetworkExpansionPotential(links, nodes, "p-01");
+    expect(res.unexploredReachCount).toBe(2);
+    expect(res.expansionTier).toBe("Potencial de conexión 🌐");
+    expect(res.badgeStyle).toContain("bg-sky-100");
+    expect(res.formattedSummary).toContain("2 contactos de 2º grado");
+  });
+});
 
 describe("calculateNetworkMultiBelonging", () => {
   const nodes: GraphNode[] = [

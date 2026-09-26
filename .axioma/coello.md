@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 43 (Network Expansion Potential Calculation & Solid MDS Badging in Graph View):
+  - [x] 2026-09-20 — Hecho: Creada la función pura `calculateNetworkExpansionPotential` en `src/app/network/graph-utils.ts` para evaluar el alcance no explorado de contactos a 2.º grado, la cantidad de grupos comunitarios no conectados en el grafo y la clasificación en insignias sólidas MDS ('Red en expansión activa 🚀', 'Potencial de conexión 🌐', 'Red consolidada 🏛️', 'Círculo exclusivo 🔒') con resúmenes formateados en voz argentina.
+  - [x] 2026-09-20 — Hecho: Integrada la insignia sólida MDS de potencial de expansión de red en el panel lateral de detalles del nodo seleccionado en `GraphView` (`src/app/network/graph-view.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).
+  - [x] 2026-09-20 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo nodos aislados sin conexiones, redes con alto alcance de 2.º grado, grupos comunitarios no conectados y formato de cadenas de resumen.
 - Phase 42 (Network Multi-Belonging Index Calculation & Solid MDS Badging in Graph View & Network Stats):
   - [x] 2026-09-19 — Hecho: Creada la función pura `calculateNetworkMultiBelonging` en `src/app/network/graph-utils.ts` para evaluar la distribución de interacciones entre distintas comunidades/clusters Louvain de un jugador, clasificándola en insignias sólidas MDS ('Multicomunitario 🌐', 'Bicomunitario 🔗', 'Focalizado en grupo 🏛️', 'Comunidad inicial 📍') con cadenas de resumen en voz argentina.
   - [x] 2026-09-19 — Hecho: Integradas las insignias sólidas MDS de multipertenencia comunitaria en el panel lateral de detalles de nodo en `GraphView` (`src/app/network/graph-view.tsx`) y en la lista de jugadores 'Más conectados' en `StatsPanel` (`src/app/network/stats-panel.tsx`) con etiquetas descriptivas de accesibilidad ARIA (`aria-label`, `title`).

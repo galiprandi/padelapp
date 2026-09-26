@@ -395,6 +395,159 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface NetworkExpansionPotential {
+  expansionScore: number;
+  unexploredReachCount: number;
+  unconnectedCommunitiesCount: number;
+  totalGraphNodesCount: number;
+  expansionTier:
+    | "Red en expansión activa 🚀"
+    | "Potencial de conexión 🌐"
+    | "Red consolidada 🏛️"
+    | "Círculo exclusivo 🔒";
+  badgeStyle: string;
+  formattedSummary: string;
+}
+
+/**
+ * Calculates network expansion potential score (0-100%), evaluating 2nd-degree unexplored contacts
+ * and unconnected Louvain communities across the graph for a selected node.
+ */
+export function calculateNetworkExpansionPotential(
+  links: GraphLink[],
+  nodes: GraphNode[],
+  selectedNodeId: string,
+): NetworkExpansionPotential {
+  const totalGraphNodesCount = nodes.length;
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const connectedLinks = filterLinksBySelectedNode(links, selectedNodeId);
+
+  const directNeighborIds = new Set<string>();
+  for (const link of connectedLinks) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+    if (src === selectedNodeId) directNeighborIds.add(tgt);
+    else if (tgt === selectedNodeId) directNeighborIds.add(src);
+  }
+
+  // Find 2nd-degree extended neighbors (unexplored contacts)
+  const extendedNeighborIds = new Set<string>();
+  for (const link of links) {
+    const src = linkNodeId(link.source);
+    const tgt = linkNodeId(link.target);
+
+    if (directNeighborIds.has(src) && tgt !== selectedNodeId && !directNeighborIds.has(tgt)) {
+      extendedNeighborIds.add(tgt);
+    } else if (directNeighborIds.has(tgt) && src !== selectedNodeId && !directNeighborIds.has(src)) {
+      extendedNeighborIds.add(src);
+    }
+  }
+
+  const unexploredReachCount = extendedNeighborIds.size;
+
+  // Identify connected communities (selected node + direct neighbors)
+  const connectedCommunities = new Set<number>();
+  if (selectedNode?.community !== null && selectedNode?.community !== undefined) {
+    connectedCommunities.add(selectedNode.community);
+  }
+  for (const nId of directNeighborIds) {
+    const neighborNode = nodes.find((n) => n.id === nId);
+    if (neighborNode?.community !== null && neighborNode?.community !== undefined) {
+      connectedCommunities.add(neighborNode.community);
+    }
+  }
+
+  // All distinct communities in the graph
+  const allGraphCommunities = new Set<number>();
+  for (const node of nodes) {
+    if (node.community !== null && node.community !== undefined) {
+      allGraphCommunities.add(node.community);
+    }
+  }
+
+  let unconnectedCommunitiesCount = 0;
+  for (const commId of allGraphCommunities) {
+    if (!connectedCommunities.has(commId)) {
+      unconnectedCommunitiesCount++;
+    }
+  }
+
+  if (totalGraphNodesCount <= 1 || (directNeighborIds.size === 0 && unexploredReachCount === 0)) {
+    return {
+      expansionScore: 0,
+      unexploredReachCount: 0,
+      unconnectedCommunitiesCount,
+      totalGraphNodesCount,
+      expansionTier: "Círculo exclusivo 🔒",
+      badgeStyle: "bg-muted text-muted-foreground border-border",
+      formattedSummary:
+        unconnectedCommunitiesCount > 0
+          ? `${unconnectedCommunitiesCount} ${unconnectedCommunitiesCount === 1 ? "grupo no conectado" : "grupos no conectados"} en la red`
+          : "Sin potencial de expansión registrado",
+    };
+  }
+
+  // Calculate composite score (0-100)
+  const reachPoints = Math.min(unexploredReachCount * 10, 60);
+  const communityPoints = Math.min(unconnectedCommunitiesCount * 15, 30);
+  const multiplierBonus =
+    directNeighborIds.size > 0 && unexploredReachCount / directNeighborIds.size >= 2
+      ? 10
+      : 0;
+
+  const expansionScore = Math.min(
+    Math.max(reachPoints + communityPoints + multiplierBonus, 0),
+    100,
+  );
+
+  let expansionTier:
+    | "Red en expansión activa 🚀"
+    | "Potencial de conexión 🌐"
+    | "Red consolidada 🏛️"
+    | "Círculo exclusivo 🔒";
+  let badgeStyle: string;
+
+  if (
+    expansionScore >= 75 ||
+    (unexploredReachCount >= 10 && unconnectedCommunitiesCount >= 1)
+  ) {
+    expansionTier = "Red en expansión activa 🚀";
+    badgeStyle =
+      "bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950 dark:text-teal-200 dark:border-teal-800";
+  } else if (expansionScore >= 45 || unexploredReachCount >= 5) {
+    expansionTier = "Potencial de conexión 🌐";
+    badgeStyle =
+      "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  } else if (expansionScore >= 20 || unexploredReachCount >= 1) {
+    expansionTier = "Red consolidada 🏛️";
+    badgeStyle =
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  } else {
+    expansionTier = "Círculo exclusivo 🔒";
+    badgeStyle = "bg-muted text-muted-foreground border-border";
+  }
+
+  const parts: string[] = [
+    `${unexploredReachCount} ${unexploredReachCount === 1 ? "contacto de 2º grado" : "contactos de 2º grado"}`,
+  ];
+
+  if (unconnectedCommunitiesCount > 0) {
+    parts.push(
+      `${unconnectedCommunitiesCount} ${unconnectedCommunitiesCount === 1 ? "grupo no conectado" : "grupos no conectados"}`,
+    );
+  }
+
+  return {
+    expansionScore,
+    unexploredReachCount,
+    unconnectedCommunitiesCount,
+    totalGraphNodesCount,
+    expansionTier,
+    badgeStyle,
+    formattedSummary: parts.join(" · "),
+  };
+}
+
 export interface NetworkMultiBelonging {
   multiBelongingScore: number;
   distinctCommunitiesCount: number;
