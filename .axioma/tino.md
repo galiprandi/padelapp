@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-21 — Extracción de Funciones Helper Puras de Accesibilidad ARIA y Clases CSS en `AppLayout` (`src/components/navigation/nav-utils.ts`) y Refactorización de `src/app/(app)/layout.tsx`
 - [x] 2026-09-20 — Extracción de Funciones Helper Puras de Cabeceras de Seguridad y Refactorización de SecurityHeaders en `next.config.ts` (`src/lib/security-headers.ts`)
 - [x] 2026-09-19 — Extracción de Función Helper Pura `getFloatingNotificationsBadgeClasses` para Badge Flotante de Notificaciones Pendientes (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`)
 - [x] 2026-09-18 — Extracción de Funciones Helper Puras de Configuración, Clases CSS y Accesibilidad ARIA para Notificaciones Toast (`src/components/toast/toast-utils.ts`) y Refactorización de `ToastProvider` (`src/components/toast/toast-provider.tsx`)
@@ -60,6 +61,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-21 - Extracción de Funciones Helper Puras de Accesibilidad ARIA y Clases CSS en AppLayout
+**Aprendizaje:** Encapsular la generación de clases CSS (`getAppLayoutClasses`, `getAppMainClasses`) y atributos de accesibilidad ARIA (`getAppLayoutAriaAttributes`, `getAppMainAriaAttributes`) en `src/components/navigation/nav-utils.ts` estandariza la estructura del contenedor principal de la aplicación y la región de contenido `<main>` en `AppLayout`. Esto simplifica la mantención del layout base, asegura que las regiones de navegación y contenido principal posean identificadores claros para lectores de pantalla en español y facilita la verificación mediante tests unitarios aislados.
+**Acción:** Reutilizar siempre los helpers de `nav-utils.ts` al modificar el layout de la app o sus esqueletos de carga streaming.
+
 ### 2026-09-20 - Extracción de Funciones Helper Puras de Cabeceras de Seguridad y Refactorización de SecurityHeaders en `next.config.ts`
 **Aprendizaje:** Encapsular la generación de cabeceras HTTP de seguridad (`getContentSecurityPolicy`, `getPermissionsPolicy`, `getSecurityHeaders`) en un módulo independiente (`src/lib/security-headers.ts`) desacopla las políticas de seguridad de la configuración de Next.js (`next.config.ts`). Esto simplifica la mantención y auditoría de la Content Security Policy (CSP) e instanciamiento de flags como `'unsafe-eval'` en desarrollo, permitiendo verificar mediante pruebas unitarias que las políticas de seguridad permanezcan intactas y sin regresiones.
 **Acción:** Reutilizar `getContentSecurityPolicy` y `getSecurityHeaders` al agregar nuevas directivas CSP o dominios autorizados de Google o servicios externos.

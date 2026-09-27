@@ -4,11 +4,20 @@ import { auth } from "@/auth";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { BottomNavSkeleton } from "@/components/navigation/bottom-nav-skeleton";
 import { NotificationsBadge } from "@/components/navigation/notifications-badge";
+import {
+  getAppLayoutClasses,
+  getAppMainClasses,
+  getAppLayoutAriaAttributes,
+  getAppMainAriaAttributes,
+} from "@/components/navigation/nav-utils";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
+  const layoutAria = getAppLayoutAriaAttributes();
+  const mainAria = getAppMainAriaAttributes();
+
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <Suspense fallback={<main className="flex-1 px-5 pt-4 pb-20" />}>
+    <div className={getAppLayoutClasses()} {...layoutAria}>
+      <Suspense fallback={<main className={getAppMainClasses()} {...mainAria} />}>
         <AppLayoutContent>{children}</AppLayoutContent>
       </Suspense>
       <Suspense fallback={<BottomNavSkeleton />}>
@@ -26,9 +35,13 @@ async function AppLayoutContent({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
+  const mainAria = getAppMainAriaAttributes();
+
   return (
     <>
-      <main className="flex-1 px-5 pt-4 pb-20">{children}</main>
+      <main className={getAppMainClasses()} {...mainAria}>
+        {children}
+      </main>
       <NotificationsBadge userId={userId} />
     </>
   );
