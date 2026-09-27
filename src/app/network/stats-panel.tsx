@@ -9,6 +9,7 @@ import {
   calculateNetworkDiversityScore,
   calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
+  calculatePlayerInteractionReciprocity,
   calculatePlayerSimilarityInfo,
   getNetworkActivityTier,
 } from "./graph-utils";
@@ -401,6 +402,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const multiBelonging = graphData
                 ? calculateNetworkMultiBelonging(graphData.links, graphData.nodes, p.id)
                 : null;
+              const reciprocity = graphData
+                ? calculatePlayerInteractionReciprocity(graphData.links, p.id)
+                : null;
 
               return (
                 <Link
@@ -467,6 +471,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Multipertenencia comunitaria de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
                         >
                           {multiBelonging.multiBelongingTier}
+                        </span>
+                      )}
+                      {reciprocity && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            reciprocity.badgeStyle,
+                          )}
+                          title={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                          aria-label={`Reciprocidad de interacción de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                        >
+                          {reciprocity.reciprocityTier}
                         </span>
                       )}
                     </div>
