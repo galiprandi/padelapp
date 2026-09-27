@@ -6,6 +6,9 @@ import {
   getRankingSearchInputAriaLabel,
   getRankingSearchClearAriaLabel,
   getRankingSearchPlaceholder,
+  getRankingHeadingTitle,
+  getRankingHeadingDescription,
+  getRankingSkeletonAriaLabel,
   getRankingFilterEmptyTitle,
   getRankingFilterEmptyDescription,
   getRankingFilterClearAriaLabel,
@@ -68,6 +71,24 @@ describe("Ranking Helpers", () => {
   describe("getRankingSearchPlaceholder", () => {
     it("returns correct placeholder text for search input", () => {
       expect(getRankingSearchPlaceholder()).toBe("Buscar jugador o alias...");
+    });
+  });
+
+  describe("getRankingHeadingTitle", () => {
+    it("returns correct heading title text for ranking page", () => {
+      expect(getRankingHeadingTitle()).toBe("Ranking");
+    });
+  });
+
+  describe("getRankingHeadingDescription", () => {
+    it("returns correct heading description text for ranking page", () => {
+      expect(getRankingHeadingDescription()).toBe("Posiciones según resultados confirmados.");
+    });
+  });
+
+  describe("getRankingSkeletonAriaLabel", () => {
+    it("returns correct ARIA label for ranking loading skeleton", () => {
+      expect(getRankingSkeletonAriaLabel()).toBe("Cargando clasificación y estadísticas de ranking...");
     });
   });
 
@@ -341,6 +362,9 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRegionAriaLabel("pending")).toBe(
         "Alertas de partidos pendientes de confirmación"
+      );
+      expect(getRankingRegionAriaLabel("skeleton")).toBe(
+        "Cargando clasificación y estadísticas de ranking..."
       );
     });
   });
