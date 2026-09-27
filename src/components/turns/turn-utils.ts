@@ -753,6 +753,32 @@ export function getRemovePlayerAriaLabel({
 }
 
 /**
+ * Format ARIA label for canceling player removal in Argentine Spanish.
+ */
+export function getRemovePlayerCancelAriaLabel(playerName?: string): string {
+  if (playerName) {
+    return `Cancelar sacar a ${playerName} del turno`;
+  }
+  return "Cancelar sacar jugador";
+}
+
+/**
+ * Format ARIA region label for player removal component in Argentine Spanish.
+ */
+export function getRemovePlayerRegionAriaLabel({
+  playerName,
+  isConfirming = false,
+}: {
+  playerName: string;
+  isConfirming?: boolean;
+}): string {
+  if (isConfirming) {
+    return `Confirmación para sacar a ${playerName}`;
+  }
+  return `Gestión de jugador ${playerName}`;
+}
+
+/**
  * Format success toast message when an organizer removes a player from a turn.
  */
 export function getRemovePlayerSuccessToast(playerName: string): string {
@@ -773,6 +799,13 @@ export function getAssignSubstituteAriaLabel({
     return `Asignando a ${substituteName}...`;
   }
   return `Asignar a ${substituteName} como titular`;
+}
+
+/**
+ * Format ARIA region label for substitute assignment component in Argentine Spanish.
+ */
+export function getAssignSubstituteRegionAriaLabel(substituteName: string): string {
+  return `Asignación de suplente ${substituteName}`;
 }
 
 /**
