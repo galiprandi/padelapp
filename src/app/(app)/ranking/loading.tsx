@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getRankingSkeletonAriaLabel } from "@/components/ranking/ranking-utils";
 
 export default function RankingLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getRankingSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       <div>
         <Skeleton className="h-5 w-24" />
         <Skeleton className="mt-1 h-4 w-56" />

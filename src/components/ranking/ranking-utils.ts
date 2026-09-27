@@ -72,6 +72,27 @@ export function getRankingSearchPlaceholder(): string {
 }
 
 /**
+ * Returns heading title text for ranking page
+ */
+export function getRankingHeadingTitle(): string {
+  return "Ranking";
+}
+
+/**
+ * Returns heading description text for ranking page
+ */
+export function getRankingHeadingDescription(): string {
+  return "Posiciones según resultados confirmados.";
+}
+
+/**
+ * Returns accessible ARIA label for ranking loading skeleton state
+ */
+export function getRankingSkeletonAriaLabel(): string {
+  return "Cargando clasificación y estadísticas de ranking...";
+}
+
+/**
  * Returns title text for ranking filter empty state
  */
 export function getRankingFilterEmptyTitle(query?: string): string {
@@ -258,6 +279,7 @@ export function getRankingRegionAriaLabel(
     | "banner"
     | "card"
     | "pending"
+    | "skeleton"
 ): string {
   switch (section) {
     case "rules":
@@ -280,5 +302,7 @@ export function getRankingRegionAriaLabel(
       return "Tarjeta de posición y puntos de ranking";
     case "pending":
       return "Alertas de partidos pendientes de confirmación";
+    case "skeleton":
+      return "Cargando clasificación y estadísticas de ranking...";
   }
 }

@@ -12,6 +12,11 @@ import { auth } from "@/auth";
 import { RankingFilter } from "@/components/ranking/ranking-filter";
 import { RankingInfo } from "@/components/ranking/ranking-info";
 import { PendingConfirmationsAlert } from "@/components/ranking/pending-confirmations-alert";
+import {
+  getRankingHeadingTitle,
+  getRankingHeadingDescription,
+  getRankingSkeletonAriaLabel,
+} from "@/components/ranking/ranking-utils";
 
 interface RankingPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -21,13 +26,13 @@ export default function RankingPage({ searchParams }: RankingPageProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-bold text-foreground">Ranking</h1>
+        <h1 className="text-xl font-bold text-foreground">{getRankingHeadingTitle()}</h1>
         <p className="text-sm text-muted-foreground">
-          Posiciones según resultados confirmados.
+          {getRankingHeadingDescription()}
         </p>
       </div>
 
-      <Suspense fallback={<Skeleton className="h-12 w-full rounded-xl" />}>
+      <Suspense fallback={<Skeleton className="h-12 w-full rounded-xl" aria-label="Cargando buscador de ranking..." />}>
         <RankingSearch />
       </Suspense>
 
@@ -89,7 +94,12 @@ async function RankingContent({ searchParams }: RankingPageProps) {
 
 function RankingContentSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getRankingSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       {/* User banner skeleton */}
       <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
         <Skeleton className="h-12 w-12 rounded-full shrink-0" />
