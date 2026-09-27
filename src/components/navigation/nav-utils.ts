@@ -185,6 +185,40 @@ export function getBottomNavContainerClasses(
 }
 
 /**
+ * Retorna las clases CSS para el contenedor principal de la aplicación en el AppLayout.
+ */
+export function getAppLayoutClasses(customClassName?: string): string {
+  return cn("relative flex min-h-screen flex-col bg-background", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para la etiqueta <main> del contenido principal en el AppLayout.
+ */
+export function getAppMainClasses(customClassName?: string): string {
+  return cn("flex-1 px-5 pt-4 pb-20", customClassName);
+}
+
+/**
+ * Genera los atributos de accesibilidad ARIA para el contenedor principal de la aplicación.
+ */
+export function getAppLayoutAriaAttributes(): { role: string; "aria-label": string } {
+  return {
+    role: "region",
+    "aria-label": "Aplicación Padel Red",
+  };
+}
+
+/**
+ * Genera los atributos de accesibilidad ARIA para el área principal de contenido (<main>).
+ */
+export function getAppMainAriaAttributes(): { role: string; "aria-label": string } {
+  return {
+    role: "main",
+    "aria-label": "Contenido principal",
+  };
+}
+
+/**
  * Genera las clases CSS para los enlaces de navegación principales.
  * Aplica tamaño táctil óptimo (mínimo 48px), foco por teclado accesible, respuesta táctil (active:scale) y resaltado activo.
  */

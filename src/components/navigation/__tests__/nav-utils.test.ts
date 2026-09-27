@@ -16,6 +16,10 @@ import {
   getFabClasses,
   getNotificationsBadgeClasses,
   getFloatingNotificationsBadgeClasses,
+  getAppLayoutClasses,
+  getAppMainClasses,
+  getAppLayoutAriaAttributes,
+  getAppMainAriaAttributes,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -283,6 +287,50 @@ describe("nav-utils", () => {
     it("applies custom class overrides", () => {
       const classes = getFloatingNotificationsBadgeClasses("custom-floating-badge");
       expect(classes).toContain("custom-floating-badge");
+    });
+  });
+
+  describe("getAppLayoutClasses", () => {
+    it("returns layout container base classes", () => {
+      const classes = getAppLayoutClasses();
+      expect(classes).toContain("relative flex min-h-screen flex-col bg-background");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getAppLayoutClasses("custom-layout");
+      expect(classes).toContain("custom-layout");
+    });
+  });
+
+  describe("getAppMainClasses", () => {
+    it("returns main container classes with padding bottom for bottom nav space", () => {
+      const classes = getAppMainClasses();
+      expect(classes).toContain("flex-1 px-5 pt-4 pb-20");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getAppMainClasses("custom-main");
+      expect(classes).toContain("custom-main");
+    });
+  });
+
+  describe("getAppLayoutAriaAttributes", () => {
+    it("returns region role and localized screen reader aria-label", () => {
+      const attrs = getAppLayoutAriaAttributes();
+      expect(attrs).toEqual({
+        role: "region",
+        "aria-label": "Aplicación Padel Red",
+      });
+    });
+  });
+
+  describe("getAppMainAriaAttributes", () => {
+    it("returns main role and localized screen reader aria-label", () => {
+      const attrs = getAppMainAriaAttributes();
+      expect(attrs).toEqual({
+        role: "main",
+        "aria-label": "Contenido principal",
+      });
     });
   });
 });
