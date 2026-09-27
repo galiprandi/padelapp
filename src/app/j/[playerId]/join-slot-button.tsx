@@ -6,6 +6,12 @@ import { joinMatchPlayerAction } from "@/app/(app)/match/actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { Loader2 } from "lucide-react";
+import {
+  getJoinSlotButtonAriaLabel,
+  getJoinSlotButtonText,
+  getJoinSlotSuccessToast,
+  getJoinSlotErrorToast,
+} from "./join-slot-utils";
 
 interface JoinSlotButtonProps {
   playerId: string;
@@ -23,11 +29,11 @@ export function JoinSlotButton({ playerId, matchId, disabled, redirectOnSuccess 
     startTransition(async () => {
       const response = await joinMatchPlayerAction(playerId);
       if (response.status === "ok") {
-        showToast("Te sumaste al partido.");
+        showToast(getJoinSlotSuccessToast());
         router.push(redirectOnSuccess ?? `/match/${matchId}`);
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos sumarte al partido.");
+        showToast(getJoinSlotErrorToast(response.message));
       }
     });
   }
@@ -38,20 +44,16 @@ export function JoinSlotButton({ playerId, matchId, disabled, redirectOnSuccess 
       disabled={disabled || isPending}
       aria-busy={isPending}
       onClick={handleJoin}
-      aria-label={
-        isPending
-          ? "Confirmando lugar en el partido..."
-          : "Confirmar mi lugar en el partido"
-      }
+      aria-label={getJoinSlotButtonAriaLabel(isPending)}
       className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
     >
       {isPending ? (
         <>
           <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
-          Confirmando...
+          {getJoinSlotButtonText(true)}
         </>
       ) : (
-        "Confirmar mi lugar"
+        getJoinSlotButtonText(false)
       )}
     </Button>
   );

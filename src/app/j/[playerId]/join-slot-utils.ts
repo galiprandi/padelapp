@@ -129,3 +129,33 @@ export function getSlotStatusBadgeProps(resultConfirmed: boolean) {
       : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
   };
 }
+
+/**
+ * Returns accessible ARIA label for JoinSlotButton during pending and default states.
+ */
+export function getJoinSlotButtonAriaLabel(isPending: boolean): string {
+  return isPending
+    ? "Confirmando lugar en el partido..."
+    : "Confirmar mi lugar en el partido";
+}
+
+/**
+ * Returns button text label for JoinSlotButton.
+ */
+export function getJoinSlotButtonText(isPending: boolean): string {
+  return isPending ? "Confirmando..." : "Confirmar mi lugar";
+}
+
+/**
+ * Returns toast message when joining a match slot succeeds.
+ */
+export function getJoinSlotSuccessToast(): string {
+  return "Te sumaste al partido.";
+}
+
+/**
+ * Returns toast error message when joining a match slot fails.
+ */
+export function getJoinSlotErrorToast(message?: string): string {
+  return message ?? "No pudimos sumarte al partido.";
+}
