@@ -1778,6 +1778,13 @@ describe("Top connected players role and activity badging in StatsPanel", () => 
     expect(role.roleLabel).toBe("Nexo comunitario 🌉");
     expect(role.badgeStyle).toContain("bg-indigo-100");
   });
+
+  it("calculates interaction reciprocity 'Red recíproca y equilibrada ⚖️' for top connected player with mixed encounters", () => {
+    const reciprocity = calculatePlayerInteractionReciprocity(graphLinks, "p-01");
+    expect(reciprocity.reciprocityTier).toBe("Red recíproca y equilibrada ⚖️");
+    expect(reciprocity.badgeStyle).toContain("bg-teal-100");
+    expect(reciprocity.formattedSummary).toContain("1 vínculo recíproco");
+  });
 });
 
 describe("calculateTurnRescueProximity", () => {
