@@ -9,6 +9,10 @@ import {
   groupMatchSlotsByTeam,
   getJoinSlotRegionAriaLabel,
   getSlotStatusBadgeProps,
+  getJoinSlotButtonAriaLabel,
+  getJoinSlotButtonText,
+  getJoinSlotSuccessToast,
+  getJoinSlotErrorToast,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -156,6 +160,49 @@ describe("join-slot-utils", () => {
       const props = getSlotStatusBadgeProps(false);
       expect(props.text).toBe("Pendiente");
       expect(props.className).toContain("bg-amber-100");
+    });
+  });
+
+  describe("getJoinSlotButtonAriaLabel", () => {
+    it("returns pending ARIA label when isPending is true", () => {
+      expect(getJoinSlotButtonAriaLabel(true)).toBe(
+        "Confirmando lugar en el partido..."
+      );
+    });
+
+    it("returns default ARIA label when isPending is false", () => {
+      expect(getJoinSlotButtonAriaLabel(false)).toBe(
+        "Confirmar mi lugar en el partido"
+      );
+    });
+  });
+
+  describe("getJoinSlotButtonText", () => {
+    it("returns pending button text when isPending is true", () => {
+      expect(getJoinSlotButtonText(true)).toBe("Confirmando...");
+    });
+
+    it("returns default button text when isPending is false", () => {
+      expect(getJoinSlotButtonText(false)).toBe("Confirmar mi lugar");
+    });
+  });
+
+  describe("getJoinSlotSuccessToast", () => {
+    it("returns localized success toast message", () => {
+      expect(getJoinSlotSuccessToast()).toBe("Te sumaste al partido.");
+    });
+  });
+
+  describe("getJoinSlotErrorToast", () => {
+    it("returns custom server error message when provided", () => {
+      expect(getJoinSlotErrorToast("No hay cupo disponible.")).toBe(
+        "No hay cupo disponible."
+      );
+    });
+
+    it("returns default error fallback toast message when message is missing", () => {
+      expect(getJoinSlotErrorToast()).toBe("No pudimos sumarte al partido.");
+      expect(getJoinSlotErrorToast(undefined)).toBe("No pudimos sumarte al partido.");
     });
   });
 });
