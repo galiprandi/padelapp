@@ -4,22 +4,30 @@ import {
   getTurnUrgencyBadgeText,
   getTurnSalvageShareMessage,
   getRemovePlayerAriaLabel,
+  getRemovePlayerCancelAriaLabel,
+  getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
   getAssignSubstituteAriaLabel,
+  getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
 } from "../turn-utils";
 
 describe("Turn Utils & Organizer Helpers", () => {
-  it("formats remove player ARIA label and toast", () => {
+  it("formats remove player ARIA label, cancel label, region label and toast", () => {
     expect(getRemovePlayerAriaLabel({ playerName: "Lucas" })).toBe("Sacar a Lucas del turno");
     expect(getRemovePlayerAriaLabel({ playerName: "Lucas", isConfirming: true })).toBe("Confirmar sacar a Lucas del turno");
     expect(getRemovePlayerAriaLabel({ playerName: "Lucas", isPending: true })).toBe("Sacando a Lucas...");
+    expect(getRemovePlayerCancelAriaLabel("Lucas")).toBe("Cancelar sacar a Lucas del turno");
+    expect(getRemovePlayerCancelAriaLabel()).toBe("Cancelar sacar jugador");
+    expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: false })).toBe("Gestión de jugador Lucas");
+    expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: true })).toBe("Confirmación para sacar a Lucas");
     expect(getRemovePlayerSuccessToast("Lucas")).toBe("Sacaste a Lucas del turno.");
   });
 
-  it("formats assign substitute ARIA label and toast", () => {
+  it("formats assign substitute ARIA label, region label and toast", () => {
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos" })).toBe("Asignar a Marcos como titular");
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos", isPending: true })).toBe("Asignando a Marcos...");
+    expect(getAssignSubstituteRegionAriaLabel("Marcos")).toBe("Asignación de suplente Marcos");
     expect(getAssignSubstituteSuccessToast("Marcos")).toBe("Promoviste a Marcos a titular.");
   });
   it("formats open slot badge text correctly", () => {

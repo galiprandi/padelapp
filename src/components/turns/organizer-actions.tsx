@@ -10,8 +10,11 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast/use-toast";
 import {
   getRemovePlayerAriaLabel,
+  getRemovePlayerCancelAriaLabel,
+  getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
   getAssignSubstituteAriaLabel,
+  getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
 } from "@/components/turns/turn-utils";
 
@@ -45,7 +48,7 @@ export function RemovePlayerButton({
     return (
       <div
         role="region"
-        aria-label={`Gestión de jugador ${playerName}`}
+        aria-label={getRemovePlayerRegionAriaLabel({ playerName, isConfirming: false })}
         className="inline-flex items-center"
       >
         <button
@@ -66,7 +69,7 @@ export function RemovePlayerButton({
   return (
     <div
       role="region"
-      aria-label={`Confirmación para sacar a ${playerName}`}
+      aria-label={getRemovePlayerRegionAriaLabel({ playerName, isConfirming: true })}
       tabIndex={-1}
       className="inline-flex items-center gap-1.5 focus-visible:outline-none"
       onKeyDown={(e) => {
@@ -106,7 +109,7 @@ export function RemovePlayerButton({
         }}
         disabled={isPending}
         className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Cancelar sacar jugador"
+        aria-label={getRemovePlayerCancelAriaLabel(playerName)}
       >
         <X className="h-3.5 w-3.5" />
       </button>
@@ -142,7 +145,7 @@ export function AssignSubstituteButton({
   return (
     <div
       role="region"
-      aria-label={`Asignación de suplente ${substituteName}`}
+      aria-label={getAssignSubstituteRegionAriaLabel(substituteName)}
       className="inline-flex items-center"
     >
       <button
