@@ -1785,6 +1785,13 @@ describe("Top connected players role and activity badging in StatsPanel", () => 
     expect(reciprocity.badgeStyle).toContain("bg-teal-100");
     expect(reciprocity.formattedSummary).toContain("1 vínculo recíproco");
   });
+
+  it("calculates partnership stability 'Duplas consolidadas 🏆' for top connected player with recurring partner links in StatsPanel", () => {
+    const stability = calculatePartnershipStabilityInfo(graphLinks, "p-01");
+    expect(stability.stabilityTier).toBe("Duplas consolidadas 🏆");
+    expect(stability.badgeStyle).toContain("bg-emerald-100");
+    expect(stability.formattedSummary).toContain("vínculos recurrentes");
+  });
 });
 
 describe("calculateTurnRescueProximity", () => {

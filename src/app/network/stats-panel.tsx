@@ -9,6 +9,7 @@ import {
   calculateNetworkDiversityScore,
   calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
+  calculatePartnershipStabilityInfo,
   calculatePlayerInteractionReciprocity,
   calculatePlayerSimilarityInfo,
   getNetworkActivityTier,
@@ -405,6 +406,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const reciprocity = graphData
                 ? calculatePlayerInteractionReciprocity(graphData.links, p.id)
                 : null;
+              const stability = graphData
+                ? calculatePartnershipStabilityInfo(graphData.links, p.id)
+                : null;
 
               return (
                 <Link
@@ -483,6 +487,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Reciprocidad de interacción de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
                         >
                           {reciprocity.reciprocityTier}
+                        </span>
+                      )}
+                      {stability && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            stability.badgeStyle,
+                          )}
+                          title={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                          aria-label={`Estabilidad de duplas de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                        >
+                          {stability.stabilityTier}
                         </span>
                       )}
                     </div>
