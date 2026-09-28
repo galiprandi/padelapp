@@ -323,3 +323,64 @@ export function groupMatchesByMonth<
     return groups;
   }, {});
 }
+
+/**
+ * Returns heading title text for match list page
+ */
+export function getMatchListHeadingTitle(): string {
+  return "Partidos";
+}
+
+/**
+ * Returns heading description text for match list page
+ */
+export function getMatchListHeadingDescription(): string {
+  return "Tus partidos y resultados pendientes.";
+}
+
+/**
+ * Returns accessible ARIA label for match list loading skeleton state
+ */
+export function getMatchListSkeletonAriaLabel(): string {
+  return "Cargando partidos y resultados pendientes...";
+}
+
+/**
+ * Returns accessible ARIA region landmark label for match list sections
+ */
+export function getMatchListSectionAriaLabel(
+  section: "summary" | "pending" | "history" | "skeleton"
+): string {
+  switch (section) {
+    case "summary":
+      return "Resumen de estadísticas de partidos";
+    case "pending":
+      return "Resultados y acciones de partidos pendientes";
+    case "history":
+      return "Historial de partidos jugados";
+    case "skeleton":
+      return "Cargando partidos y resultados pendientes...";
+  }
+}
+
+/**
+ * Returns properties for match list empty state
+ */
+export function getMatchListEmptyStateProps(): {
+  title: string;
+  description: string;
+  actionText: string;
+} {
+  return {
+    title: "Sin partidos",
+    description: "Todavía no participaste en ningún partido.",
+    actionText: "Crear primer partido",
+  };
+}
+
+/**
+ * Returns prompt text when user is unauthenticated on match list page
+ */
+export function getMatchListAuthPromptText(): string {
+  return "Iniciá sesión para ver tus partidos.";
+}

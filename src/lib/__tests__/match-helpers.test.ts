@@ -14,6 +14,12 @@ import {
   calculateMatchSetWins,
   calculateMatchSummaryStats,
   groupMatchesByMonth,
+  getMatchListHeadingTitle,
+  getMatchListHeadingDescription,
+  getMatchListSkeletonAriaLabel,
+  getMatchListSectionAriaLabel,
+  getMatchListEmptyStateProps,
+  getMatchListAuthPromptText,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -316,6 +322,36 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("matchListAccessibilityHelpers", () => {
+  it("returns correct heading title and description for match list", () => {
+    expect(getMatchListHeadingTitle()).toBe("Partidos");
+    expect(getMatchListHeadingDescription()).toBe("Tus partidos y resultados pendientes.");
+  });
+
+  it("returns correct loading skeleton ARIA label for match list", () => {
+    expect(getMatchListSkeletonAriaLabel()).toBe("Cargando partidos y resultados pendientes...");
+  });
+
+  it("returns correct section landmark ARIA labels for all match list sections", () => {
+    expect(getMatchListSectionAriaLabel("summary")).toBe("Resumen de estadísticas de partidos");
+    expect(getMatchListSectionAriaLabel("pending")).toBe("Resultados y acciones de partidos pendientes");
+    expect(getMatchListSectionAriaLabel("history")).toBe("Historial de partidos jugados");
+    expect(getMatchListSectionAriaLabel("skeleton")).toBe("Cargando partidos y resultados pendientes...");
+  });
+
+  it("returns correct empty state properties for match list", () => {
+    expect(getMatchListEmptyStateProps()).toEqual({
+      title: "Sin partidos",
+      description: "Todavía no participaste en ningún partido.",
+      actionText: "Crear primer partido",
+    });
+  });
+
+  it("returns correct auth prompt text for unauthenticated match list viewers", () => {
+    expect(getMatchListAuthPromptText()).toBe("Iniciá sesión para ver tus partidos.");
   });
 });
 

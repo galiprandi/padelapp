@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getMatchListSkeletonAriaLabel } from "@/lib/match-helpers";
 
 export default function MatchListLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getMatchListSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       <div className="flex items-center justify-between">
         <div>
           <Skeleton className="h-5 w-32" />
@@ -14,7 +20,7 @@ export default function MatchListLoading() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4">
+          <div key={i} className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-xs">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-5 w-12" />
           </div>
