@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-27 — Turn Public Details & Skeleton Pure Helpers Extraction, Status Badge Styling & ARIA Accessibility Polish (bela/turnos/turn-public-details-pure-helpers-and-a11y)
 - [x] 2026-09-26 — TurnCard Pure Helpers Extraction & Organizer 1-Tap Salvage Action Integration (bela/turnos/turn-card-pure-helpers-and-organizer-salvage)
 - [x] 2026-09-25 — Turn Action Toast Pure Helpers Extraction in TurnActions & TurnCard (bela/turnos/turn-action-toast-pure-helpers)
 - [x] 2026-09-24 — TurnsFilter Pure Helpers Extraction & Empty State Polish (bela/turnos/turns-filter-pure-helpers-and-empty-state-polish)
@@ -64,6 +65,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-27 - Turn Public Details & Skeleton Pure Helpers Extraction, Status Badge Styling & ARIA Accessibility Polish
+**Learning:** Extracting pure helper functions (`getTurnCancelledTitle`, `getTurnCancelledDescription`, `getTurnCancelledButtonLabel`, `getTurnDetailsHeading`, `getTurnInfoSectionTitle`, `getTurnInfoRegionAriaLabel`, `getTurnStatusBadgeText`, `getTurnStatusBadgeClasses`, `getTurnEnrolledSectionTitle`, `getTurnEnrolledRegionAriaLabel`, `getEmptySlotText`, `getTurnSuggestedContactsTitle`, `getTurnSuggestedContactsSubtitle`, `getTurnSubstitutesSectionTitle`, `getTurnSubstitutesRegionAriaLabel`, `getTurnSubstitutesCountText`, `getTurnChatSectionTitle`, `getTurnChatRegionAriaLabel`, `getTurnConnectionText`, `getTurnConnectionAriaLabel`, `getTurnBackAriaLabel`, `getTurnSkeletonAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized string formatting, status badge styling, and screen reader ARIA accessibility labels from React render components in `TurnPublicDetails` (`src/app/t/[id]/turn-public-details.tsx`) and `TurnSkeleton` (`src/app/t/[id]/turn-skeleton.tsx`). Wrapping `TurnSkeleton` in `<div role="region" aria-label={getTurnSkeletonAriaLabel()} aria-busy="true">` ensures immediate loading state announcements for screen reader users while maintaining solid MDS theme container styling (`bg-card border border-border shadow-xs`).
+**Action:** Always extract page heading titles, section titles, status badge styling, and screen reader ARIA landmark labels into pure helper functions backed by Vitest unit tests, and wrap loading skeletons in explicit `role="region"` containers with `aria-busy="true"`.
+
 ## 2026-09-26 - TurnCard Pure Helpers Extraction & Organizer 1-Tap Salvage Action Integration
 **Learning:** Extracting pure helper functions (`getTurnCardSubstitutesText`, `getTurnCardContactPlayersAriaLabel`, and `getTurnCardDetailLinkAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized string formatting and screen reader ARIA labels from React component render trees. Enabling the 1-tap network salvage action button (`OpenToNetworkButton`) for organizers (`(isJoined || isCreator) && openSlots > 0`) directly on `TurnCard` allows turn creators to notify their padel network directly from the high-level `/turnos` listing without navigating into detail screens, driving faster turn completion. Preserving focus ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`) guarantees robust accessibility and visual alignment across mobile devices.
 **Action:** Always extract card sub-element text and ARIA labels into pure helper utilities backed by Vitest unit tests, and surface key 1-tap salvage action triggers on high-level listing cards whenever open slots are detected for organizers or enrolled players.

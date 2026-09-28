@@ -101,6 +101,28 @@ import {
   getTurnCardSubstitutesText,
   getTurnCardContactPlayersAriaLabel,
   getTurnCardDetailLinkAriaLabel,
+  getTurnCancelledTitle,
+  getTurnCancelledDescription,
+  getTurnCancelledButtonLabel,
+  getTurnDetailsHeading,
+  getTurnInfoSectionTitle,
+  getTurnInfoRegionAriaLabel,
+  getTurnStatusBadgeText,
+  getTurnStatusBadgeClasses,
+  getTurnEnrolledSectionTitle,
+  getTurnEnrolledRegionAriaLabel,
+  getEmptySlotText,
+  getTurnSuggestedContactsTitle,
+  getTurnSuggestedContactsSubtitle,
+  getTurnSubstitutesSectionTitle,
+  getTurnSubstitutesRegionAriaLabel,
+  getTurnSubstitutesCountText,
+  getTurnChatSectionTitle,
+  getTurnChatRegionAriaLabel,
+  getTurnConnectionText,
+  getTurnConnectionAriaLabel,
+  getTurnBackAriaLabel,
+  getTurnSkeletonAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -774,6 +796,54 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Turn Public Details pure helpers", () => {
+  it("formats cancelled turn screen titles, descriptions, and button labels", () => {
+    expect(getTurnCancelledTitle()).toBe("Turno cancelado");
+    expect(getTurnCancelledDescription()).toBe("Este turno ha sido cancelado por el organizador.");
+    expect(getTurnCancelledButtonLabel()).toBe("Ver otros turnos");
+  });
+
+  it("formats page heading, info section, and ARIA region labels", () => {
+    expect(getTurnDetailsHeading()).toBe("Detalle del Turno");
+    expect(getTurnInfoSectionTitle()).toBe("Información del turno");
+    expect(getTurnInfoRegionAriaLabel()).toBe("Información del turno de pádel");
+    expect(getTurnBackAriaLabel()).toBe("Volver");
+    expect(getTurnSkeletonAriaLabel()).toBe("Cargando detalles del turno de pádel...");
+  });
+
+  it("formats turn status badge text and solid MDS CSS classes across completed, full, and open states", () => {
+    expect(getTurnStatusBadgeText({ isCompleted: true })).toBe("Finalizado");
+    expect(getTurnStatusBadgeText({ isFull: true })).toBe("Completo");
+    expect(getTurnStatusBadgeText({})).toBe("Abierto");
+
+    expect(getTurnStatusBadgeClasses({ isCompleted: true })).toContain("bg-muted");
+    expect(getTurnStatusBadgeClasses({ isFull: true })).toContain("bg-amber-100");
+    expect(getTurnStatusBadgeClasses({})).toContain("bg-emerald-100");
+  });
+
+  it("formats enrolled, suggested, substitutes, and chat section titles and ARIA labels", () => {
+    expect(getTurnEnrolledSectionTitle()).toBe("Lista de jugadores");
+    expect(getTurnEnrolledRegionAriaLabel()).toBe("Lista de jugadores inscriptos");
+    expect(getEmptySlotText()).toBe("Cupo disponible");
+
+    expect(getTurnSuggestedContactsTitle()).toBe("Sugeridos para invitar 🧠");
+    expect(getTurnSuggestedContactsSubtitle()).toBe("De tu red de contactos");
+
+    expect(getTurnSubstitutesSectionTitle()).toBe("Lista de suplentes");
+    expect(getTurnSubstitutesRegionAriaLabel()).toBe("Lista de suplentes en espera");
+    expect(getTurnSubstitutesCountText(1)).toBe("1 suplente");
+    expect(getTurnSubstitutesCountText(3)).toBe("3 suplentes");
+
+    expect(getTurnChatSectionTitle()).toBe("Chat del turno 💬");
+    expect(getTurnChatRegionAriaLabel()).toBe("Chat de coordinación del turno");
+  });
+
+  it("formats contact connection text and ARIA labels", () => {
+    expect(getTurnConnectionText("Mateo")).toBe("Contacto de Mateo");
+    expect(getTurnConnectionAriaLabel("Mateo")).toBe("Contacto de Mateo");
   });
 });
 
