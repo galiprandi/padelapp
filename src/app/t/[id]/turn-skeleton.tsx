@@ -1,9 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
+import { getTurnSkeletonAriaLabel } from "@/components/turns/turn-utils";
 
 export function TurnSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getTurnSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       {/* Header Skeleton */}
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">

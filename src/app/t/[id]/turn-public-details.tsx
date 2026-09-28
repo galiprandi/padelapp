@@ -44,6 +44,27 @@ import {
   getTurnCompletedButtonLabel,
   getAlreadyJoinedButtonLabel,
   getSignInPromptText,
+  getTurnCancelledTitle,
+  getTurnCancelledDescription,
+  getTurnCancelledButtonLabel,
+  getTurnDetailsHeading,
+  getTurnInfoSectionTitle,
+  getTurnInfoRegionAriaLabel,
+  getTurnStatusBadgeText,
+  getTurnStatusBadgeClasses,
+  getTurnEnrolledSectionTitle,
+  getTurnEnrolledRegionAriaLabel,
+  getEmptySlotText,
+  getTurnSuggestedContactsTitle,
+  getTurnSuggestedContactsSubtitle,
+  getTurnSubstitutesSectionTitle,
+  getTurnSubstitutesRegionAriaLabel,
+  getTurnSubstitutesCountText,
+  getTurnChatSectionTitle,
+  getTurnChatRegionAriaLabel,
+  getTurnConnectionText,
+  getTurnConnectionAriaLabel,
+  getTurnBackAriaLabel,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -194,22 +215,22 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <Link
             href={viewerId ? "/me" : "/"}
             prefetch={true}
-            aria-label="Volver"
+            aria-label={getTurnBackAriaLabel()}
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
           >
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-foreground">
-              Turno cancelado
+              {getTurnCancelledTitle()}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Este turno ha sido cancelado por el organizador.
+              {getTurnCancelledDescription()}
             </p>
           </div>
         </div>
         <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
-          <Link href="/turnos" prefetch={true}>Ver otros turnos</Link>
+          <Link href="/turnos" prefetch={true}>{getTurnCancelledButtonLabel()}</Link>
         </Button>
       </div>
     );
@@ -253,14 +274,14 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <Link
           href={viewerId ? "/me" : "/"}
           prefetch={true}
-          aria-label="Volver"
+          aria-label={getTurnBackAriaLabel()}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">
-            Detalle del Turno
+            {getTurnDetailsHeading()}
           </h1>
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         </div>
@@ -307,13 +328,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
       <div
         role="region"
-        aria-label="Información del turno de pádel"
+        aria-label={getTurnInfoRegionAriaLabel()}
         className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
       >
         <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
-            Información del turno
+            {getTurnInfoSectionTitle()}
           </h2>
           <div className="flex items-center gap-1.5">
             {urgencyText && (
@@ -322,15 +343,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               </Badge>
             )}
             <span
-              className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${
-                isCompleted
-                  ? "bg-muted text-muted-foreground border-border"
-                  : isFull
-                    ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
-                    : "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-              }`}
+              className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${getTurnStatusBadgeClasses({ isCompleted, isFull })}`}
             >
-              {isCompleted ? "Finalizado" : isFull ? "Completo" : "Abierto"}
+              {getTurnStatusBadgeText({ isCompleted, isFull })}
             </span>
           </div>
         </div>
@@ -405,13 +420,13 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
       <section
         role="region"
-        aria-label="Lista de jugadores inscriptos"
+        aria-label={getTurnEnrolledRegionAriaLabel()}
         className="space-y-4"
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            Lista de jugadores
+            {getTurnEnrolledSectionTitle()}
           </h2>
           <Badge variant="primary">
             {turn.maxPlayers - turn.players.length} cupos libres
@@ -444,9 +459,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     )}
                   </p>
                   {connectionMap[p.userId] && (
-                    <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={`Contacto de ${connectionMap[p.userId]}`}>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={getTurnConnectionAriaLabel(connectionMap[p.userId])}>
                       <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
-                      <span>Contacto de {connectionMap[p.userId]}</span>
+                      <span>{getTurnConnectionText(connectionMap[p.userId])}</span>
                     </p>
                   )}
                 </div>
@@ -481,7 +496,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 </div>
                 <div className="flex-1 flex items-center justify-between min-w-0 gap-2">
                   <p className="text-xs font-semibold italic opacity-60 truncate">
-                    Cupo disponible
+                    {getEmptySlotText()}
                   </p>
                   {isJoined || isCreator ? (
                     <TurnShareButton
@@ -531,10 +546,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
-              Sugeridos para invitar 🧠
+              {getTurnSuggestedContactsTitle()}
             </h2>
             <span className="text-xs font-medium text-muted-foreground">
-              De tu red de contactos
+              {getTurnSuggestedContactsSubtitle()}
             </span>
           </div>
 
@@ -611,16 +626,16 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       {turn.substitutes.length > 0 && (
         <section
           role="region"
-          aria-label="Lista de suplentes en espera"
+          aria-label={getTurnSubstitutesRegionAriaLabel()}
           className="space-y-4"
         >
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              Lista de suplentes
+              {getTurnSubstitutesSectionTitle()}
             </h2>
             <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
-              {turn.substitutes.length} {turn.substitutes.length === 1 ? "suplente" : "suplentes"}
+              {getTurnSubstitutesCountText(turn.substitutes.length)}
             </span>
           </div>
           <div className="grid gap-2">
@@ -656,9 +671,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       )}
                     </p>
                     {connectionMap[s.userId] && (
-                      <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={`Contacto de ${connectionMap[s.userId]}`}>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={getTurnConnectionAriaLabel(connectionMap[s.userId])}>
                         <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
-                        <span>Contacto de {connectionMap[s.userId]}</span>
+                        <span>{getTurnConnectionText(connectionMap[s.userId])}</span>
                       </p>
                     )}
                   </div>
@@ -687,12 +702,12 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       {(isJoined || isCreator || isSubstitute) && (
         <section
           role="region"
-          aria-label="Chat de coordinación del turno"
+          aria-label={getTurnChatRegionAriaLabel()}
           className="space-y-4 mb-6"
         >
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            Chat del turno 💬
+            {getTurnChatSectionTitle()}
           </h2>
           <TurnChat turnId={id} currentUserId={viewerId} />
         </section>

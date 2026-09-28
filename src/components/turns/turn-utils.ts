@@ -1505,3 +1505,178 @@ export function getTurnCardContactPlayersAriaLabel(names: string[]): string {
 export function getTurnCardDetailLinkAriaLabel(club: string): string {
   return `Ver detalles del turno de pádel en ${club}`;
 }
+
+/**
+ * Format title for cancelled turn screen.
+ */
+export function getTurnCancelledTitle(): string {
+  return "Turno cancelado";
+}
+
+/**
+ * Format description text for cancelled turn screen.
+ */
+export function getTurnCancelledDescription(): string {
+  return "Este turno ha sido cancelado por el organizador.";
+}
+
+/**
+ * Format button label for navigating away from cancelled turn screen.
+ */
+export function getTurnCancelledButtonLabel(): string {
+  return "Ver otros turnos";
+}
+
+/**
+ * Format page heading title for turn details view.
+ */
+export function getTurnDetailsHeading(): string {
+  return "Detalle del Turno";
+}
+
+/**
+ * Format section title for turn information card.
+ */
+export function getTurnInfoSectionTitle(): string {
+  return "Información del turno";
+}
+
+/**
+ * Format accessible ARIA region label for turn information card.
+ */
+export function getTurnInfoRegionAriaLabel(): string {
+  return "Información del turno de pádel";
+}
+
+/**
+ * Format status badge label text for turn details.
+ */
+export function getTurnStatusBadgeText({
+  isCompleted = false,
+  isFull = false,
+}: {
+  isCompleted?: boolean;
+  isFull?: boolean;
+}): string {
+  if (isCompleted) return "Finalizado";
+  if (isFull) return "Completo";
+  return "Abierto";
+}
+
+/**
+ * Format solid MDS CSS classes for turn status badge.
+ */
+export function getTurnStatusBadgeClasses({
+  isCompleted = false,
+  isFull = false,
+}: {
+  isCompleted?: boolean;
+  isFull?: boolean;
+}): string {
+  if (isCompleted) {
+    return "bg-muted text-muted-foreground border-border";
+  }
+  if (isFull) {
+    return "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+  }
+  return "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+}
+
+/**
+ * Format section title for enrolled players list.
+ */
+export function getTurnEnrolledSectionTitle(): string {
+  return "Lista de jugadores";
+}
+
+/**
+ * Format accessible ARIA region label for enrolled players list.
+ */
+export function getTurnEnrolledRegionAriaLabel(): string {
+  return "Lista de jugadores inscriptos";
+}
+
+/**
+ * Format label for an empty player slot in turn details.
+ */
+export function getEmptySlotText(): string {
+  return "Cupo disponible";
+}
+
+/**
+ * Format section title for suggested contacts section.
+ */
+export function getTurnSuggestedContactsTitle(): string {
+  return "Sugeridos para invitar 🧠";
+}
+
+/**
+ * Format subtitle for suggested contacts section.
+ */
+export function getTurnSuggestedContactsSubtitle(): string {
+  return "De tu red de contactos";
+}
+
+/**
+ * Format section title for substitutes waitlist.
+ */
+export function getTurnSubstitutesSectionTitle(): string {
+  return "Lista de suplentes";
+}
+
+/**
+ * Format accessible ARIA region label for substitutes section.
+ */
+export function getTurnSubstitutesRegionAriaLabel(): string {
+  return "Lista de suplentes en espera";
+}
+
+/**
+ * Format count badge text for substitutes list.
+ */
+export function getTurnSubstitutesCountText(count: number): string {
+  if (count === 1) return "1 suplente";
+  return `${count} suplentes`;
+}
+
+/**
+ * Format section title for turn chat coordination.
+ */
+export function getTurnChatSectionTitle(): string {
+  return "Chat del turno 💬";
+}
+
+/**
+ * Format accessible ARIA region label for turn chat section.
+ */
+export function getTurnChatRegionAriaLabel(): string {
+  return "Chat de coordinación del turno";
+}
+
+/**
+ * Format contact connection text.
+ */
+export function getTurnConnectionText(contactName: string): string {
+  return `Contacto de ${contactName}`;
+}
+
+/**
+ * Format accessible ARIA label for contact connection text.
+ */
+export function getTurnConnectionAriaLabel(contactName: string): string {
+  return `Contacto de ${contactName}`;
+}
+
+/**
+ * Format accessible ARIA label for back button.
+ */
+export function getTurnBackAriaLabel(): string {
+  return "Volver";
+}
+
+/**
+ * Format accessible ARIA label for turn public detail loading skeleton.
+ */
+export function getTurnSkeletonAriaLabel(): string {
+  return "Cargando detalles del turno de pádel...";
+}
