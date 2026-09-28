@@ -1,11 +1,14 @@
 import { Fragment } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, getLevelBadgeLabel } from "@/lib/utils";
+import { getLevelBadgeLabel } from "@/lib/utils";
 import {
   getPlayerCardAriaLabel,
   formatPlayerSubtitle,
   handlePlayerCardKeyDown,
+  getPlayerCardContainerClasses,
+  getPairRegionAriaLabel,
+  getRankingBadgeAriaLabel,
 } from "./player-card-utils";
 
 export interface PlayerPreviewProps {
@@ -49,11 +52,7 @@ export function PlayerPreview({
       onClick={mainAction}
       onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, mainAction)}
       aria-label={ariaLabel}
-      className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive &&
-          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
-      )}
+      className={getPlayerCardContainerClasses(isInteractive)}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
@@ -104,11 +103,7 @@ export function PlayerWithRanking({
       onClick={onClick}
       onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, onClick)}
       aria-label={ariaLabel}
-      className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive &&
-          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
-      )}
+      className={getPlayerCardContainerClasses(isInteractive)}
     >
       <PlayerAvatar name={name} image={image} className="rounded-lg" />
 
@@ -122,7 +117,10 @@ export function PlayerWithRanking({
       </div>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2 text-xs font-bold text-foreground border border-border shadow-xs">
+        <span
+          className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2 text-xs font-bold text-foreground border border-border shadow-xs"
+          aria-label={getRankingBadgeAriaLabel(ranking)}
+        >
           #{ranking}
         </span>
       ) : null}
@@ -149,11 +147,7 @@ export function PlayerCompact({
       onClick={onClick}
       onKeyDown={(e) => handlePlayerCardKeyDown(e, isInteractive, onClick)}
       aria-label={ariaLabel}
-      className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
-        isInteractive &&
-          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
-      )}
+      className={getPlayerCardContainerClasses(isInteractive)}
     >
       <PlayerAvatar
         name={name}
@@ -167,7 +161,10 @@ export function PlayerCompact({
       </p>
 
       {typeof ranking === "number" ? (
-        <span className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs">
+        <span
+          className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs"
+          aria-label={getRankingBadgeAriaLabel(ranking)}
+        >
           #{ranking}
         </span>
       ) : null}
@@ -183,11 +180,12 @@ export function PairPreview({
   label: string;
 }) {
   const hasConnector = players.length > 1;
+  const regionAriaLabel = getPairRegionAriaLabel(label);
 
   return (
     <div
       role="region"
-      aria-label={label}
+      aria-label={regionAriaLabel}
       className="relative rounded-xl border border-border bg-card mt-8 shadow-xs"
     >
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">
@@ -223,10 +221,12 @@ export function PairInline({
   players: PlayerPreviewProps[];
   label: string;
 }) {
+  const regionAriaLabel = getPairRegionAriaLabel(label);
+
   return (
     <div
       role="region"
-      aria-label={label}
+      aria-label={regionAriaLabel}
       className="relative rounded-xl border border-border bg-card shadow-xs"
     >
       <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">

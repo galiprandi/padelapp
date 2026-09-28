@@ -1,4 +1,4 @@
-import { getLevelBadgeLabel } from "@/lib/utils";
+import { cn, getLevelBadgeLabel } from "@/lib/utils";
 
 export interface GetPlayerCardAriaLabelOptions {
   name: string;
@@ -81,4 +81,34 @@ export function getPlayerAvatarAriaLabel(
   return hasSafeImage
     ? `Foto de perfil de ${sanitizedName}`
     : `Iniciales de ${sanitizedName}`;
+}
+
+/**
+ * Returns standardized CSS container classes for player cards including hover, focus-visible ring offset, and active tactile scaling.
+ */
+export function getPlayerCardContainerClasses(
+  isInteractive: boolean,
+  className?: string
+): string {
+  return cn(
+    "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-left transition-colors",
+    isInteractive &&
+      "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all cursor-pointer",
+    className
+  );
+}
+
+/**
+ * Returns localized Argentine Spanish ARIA region landmark label for pair groupings.
+ */
+export function getPairRegionAriaLabel(label: string): string {
+  const trimmed = label.trim() || "Pareja";
+  return `Grupo de pareja: ${trimmed}`;
+}
+
+/**
+ * Returns localized Argentine Spanish ARIA label for ranking position badges.
+ */
+export function getRankingBadgeAriaLabel(ranking: number): string {
+  return `Puesto número ${ranking} en el ranking`;
 }
