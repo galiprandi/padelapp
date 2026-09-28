@@ -7,16 +7,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPendingActions, getCachedConfirmedMatches } from "@/lib/queries";
 import Link from "next/link";
 import { CalendarOff, Plus, ChevronRight } from "lucide-react";
-import { calculateMatchSummaryStats, groupMatchesByMonth } from "@/lib/match-helpers";
+import {
+  calculateMatchSummaryStats,
+  groupMatchesByMonth,
+  getMatchListHeadingTitle,
+  getMatchListHeadingDescription,
+  getMatchListSkeletonAriaLabel,
+  getMatchListSectionAriaLabel,
+  getMatchListEmptyStateProps,
+  getMatchListAuthPromptText,
+} from "@/lib/match-helpers";
 
 export default function MatchListPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Partidos</h1>
+          <h1 className="text-xl font-bold text-foreground">{getMatchListHeadingTitle()}</h1>
           <p className="text-sm text-muted-foreground">
-            Tus partidos y resultados pendientes.
+            {getMatchListHeadingDescription()}
           </p>
         </div>
         <Button asChild size="sm">
@@ -97,7 +106,7 @@ async function MatchList() {
       {viewerId && summaryStats.totalMatches > 0 && (
         <section
           role="region"
-          aria-label="Resumen de estadísticas de partidos"
+          aria-label={getMatchListSectionAriaLabel("summary")}
           className="rounded-xl border border-border bg-card p-4 shadow-xs"
         >
           <h2 className="text-sm font-bold text-foreground mb-3">Resumen</h2>
@@ -164,7 +173,7 @@ async function MatchList() {
       {pendingActions.length > 0 && (
         <section
           role="region"
-          aria-label="Resultados y acciones de partidos pendientes"
+          aria-label={getMatchListSectionAriaLabel("pending")}
           className="flex flex-col gap-3"
         >
           <div className="flex items-center justify-between">
@@ -207,7 +216,7 @@ async function MatchList() {
 
       <section
         role="region"
-        aria-label="Historial de partidos jugados"
+        aria-label={getMatchListSectionAriaLabel("history")}
         className="flex flex-col gap-3"
       >
         <h2 className="text-sm font-bold text-foreground">Historial</h2>
@@ -234,22 +243,25 @@ async function MatchList() {
                 ),
               )}
             </div>
-          ) : (
-            <EmptyState
-              title="Sin partidos"
-              description="Todavía no participaste en ningún partido."
-              icon={CalendarOff}
-              action={
-                <Button asChild className="w-full">
-                  <Link href="/match/new" prefetch={true}>Crear primer partido</Link>
-                </Button>
-              }
-            />
-          )
+          ) : (() => {
+            const emptyProps = getMatchListEmptyStateProps();
+            return (
+              <EmptyState
+                title={emptyProps.title}
+                description={emptyProps.description}
+                icon={CalendarOff}
+                action={
+                  <Button asChild className="w-full">
+                    <Link href="/match/new" prefetch={true}>{emptyProps.actionText}</Link>
+                  </Button>
+                }
+              />
+            );
+          })()
         ) : (
           <div className="rounded-xl border border-border bg-card p-6 text-center shadow-xs">
             <p className="text-sm text-muted-foreground mb-3">
-              Iniciá sesión para ver tus partidos.
+              {getMatchListAuthPromptText()}
             </p>
             <Button asChild className="w-full">
               <Link href="/login" prefetch={true}>Ir al login</Link>
@@ -263,9 +275,14 @@ async function MatchList() {
 
 function MatchListSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getMatchListSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       {/* Resumen skeleton */}
-      <div className="rounded-xl border border-border bg-card p-4">
+      <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
         <Skeleton className="h-4 w-20 mb-3" />
         <div className="grid grid-cols-3 gap-4">
           <div>
