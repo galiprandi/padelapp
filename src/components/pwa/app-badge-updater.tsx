@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { updateAppBadge } from "./pwa-utils";
 
 /**
  * Sets the app icon badge (Badging API) to the given count.
@@ -13,22 +14,7 @@ import { useEffect } from "react";
  */
 export function AppBadgeUpdater({ count }: { count: number }) {
   useEffect(() => {
-    if (typeof navigator === "undefined") return;
-    if (!("setAppBadge" in navigator)) return;
-
-    const updateBadge = async () => {
-      try {
-        if (count > 0) {
-          await navigator.setAppBadge(count);
-        } else {
-          await navigator.clearAppBadge();
-        }
-      } catch {
-        // Badge API can fail if app is not installed — silently ignore
-      }
-    };
-
-    void updateBadge();
+    void updateAppBadge(count);
   }, [count]);
 
   return null;

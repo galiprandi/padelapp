@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-22 — Extracción de Funciones Helper Puras de PWA, Badging API, Service Worker y Accesibilidad ARIA (`src/components/pwa/pwa-utils.ts`) y Refactorización de `AppBadgeUpdater`, `PwaRegistrar` y `useAppBadge`
 - [x] 2026-09-21 — Extracción de Funciones Helper Puras de Accesibilidad ARIA y Clases CSS en `AppLayout` (`src/components/navigation/nav-utils.ts`) y Refactorización de `src/app/(app)/layout.tsx`
 - [x] 2026-09-20 — Extracción de Funciones Helper Puras de Cabeceras de Seguridad y Refactorización de SecurityHeaders en `next.config.ts` (`src/lib/security-headers.ts`)
 - [x] 2026-09-19 — Extracción de Función Helper Pura `getFloatingNotificationsBadgeClasses` para Badge Flotante de Notificaciones Pendientes (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`)
@@ -61,6 +62,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-22 - Extracción de Funciones Helper Puras de PWA, Badging API, Service Worker y Accesibilidad ARIA
+**Aprendizaje:** Encapsular la detección de soporte (`isBadgingSupported`, `isServiceWorkerSupported`), la sanitización del contador del badge (`sanitizeBadgeCount`), las operaciones asíncronas seguras con manejo de excepciones (`updateAppBadge`, `clearAppBadge`), la ruta de registro del Service Worker (`getServiceWorkerRegistrationUrl`), y el formateo de etiquetas accesibles ARIA en español argentino (`formatAppBadgeAriaLabel`) en `src/components/pwa/pwa-utils.ts` desacopla la lógica de la API web del ciclo de vida de React en `AppBadgeUpdater`, `PwaRegistrar` y `useAppBadge`. Esto previene duplicaciones, garantiza tolerancia a fallos en navegadores no compatibles y permite pruebas unitarias aisladas sin necesidad de simular el DOM o montar componentes de React.
+**Acción:** Reutilizar siempre las utilidades de `src/components/pwa/pwa-utils.ts` al extender la integración de Service Worker, la Badging API o las notificaciones del PWA.
+
 ### 2026-09-21 - Extracción de Funciones Helper Puras de Accesibilidad ARIA y Clases CSS en AppLayout
 **Aprendizaje:** Encapsular la generación de clases CSS (`getAppLayoutClasses`, `getAppMainClasses`) y atributos de accesibilidad ARIA (`getAppLayoutAriaAttributes`, `getAppMainAriaAttributes`) en `src/components/navigation/nav-utils.ts` estandariza la estructura del contenedor principal de la aplicación y la región de contenido `<main>` en `AppLayout`. Esto simplifica la mantención del layout base, asegura que las regiones de navegación y contenido principal posean identificadores claros para lectores de pantalla en español y facilita la verificación mediante tests unitarios aislados.
 **Acción:** Reutilizar siempre los helpers de `nav-utils.ts` al modificar el layout de la app o sus esqueletos de carga streaming.
