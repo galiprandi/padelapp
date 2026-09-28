@@ -6,6 +6,9 @@ import {
   handlePlayerCardKeyDown,
   isSafeAvatarImage,
   getPlayerAvatarAriaLabel,
+  getPlayerCardContainerClasses,
+  getPairRegionAriaLabel,
+  getRankingBadgeAriaLabel,
 } from "../player-card-utils";
 
 describe("Player Cards Category & Accessibility Utilities", () => {
@@ -129,6 +132,37 @@ describe("Player Cards Category & Accessibility Utilities", () => {
 
     it("provides fallback for whitespace-only name input", () => {
       expect(getPlayerAvatarAriaLabel("   ", false)).toBe("Iniciales de Jugador");
+    });
+  });
+
+  describe("getPlayerCardContainerClasses", () => {
+    it("includes base layout and interactive classes when interactive", () => {
+      const classes = getPlayerCardContainerClasses(true, "custom-class");
+      expect(classes).toContain("flex items-center gap-3");
+      expect(classes).toContain("hover:bg-muted");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("custom-class");
+    });
+
+    it("omits interactive hover/active classes when not interactive", () => {
+      const classes = getPlayerCardContainerClasses(false);
+      expect(classes).toContain("flex items-center gap-3");
+      expect(classes).not.toContain("hover:bg-muted");
+      expect(classes).not.toContain("active:scale-[0.98]");
+    });
+  });
+
+  describe("getPairRegionAriaLabel", () => {
+    it("returns formatted ARIA landmark label for pair groupings", () => {
+      expect(getPairRegionAriaLabel("Pareja A")).toBe("Grupo de pareja: Pareja A");
+      expect(getPairRegionAriaLabel("   ")).toBe("Grupo de pareja: Pareja");
+    });
+  });
+
+  describe("getRankingBadgeAriaLabel", () => {
+    it("returns formatted ARIA label for ranking position badges", () => {
+      expect(getRankingBadgeAriaLabel(1)).toBe("Puesto número 1 en el ranking");
+      expect(getRankingBadgeAriaLabel(12)).toBe("Puesto número 12 en el ranking");
     });
   });
 });
