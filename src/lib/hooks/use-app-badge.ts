@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  isBadgingSupported,
+  updateAppBadge,
+  clearAppBadge as clearAppBadgeHelper,
+} from "@/components/pwa/pwa-utils";
 
 interface UseAppBadgeResult {
   setBadge: (count: number) => Promise<void>;
@@ -23,31 +28,17 @@ export function useAppBadge(): UseAppBadgeResult {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- detects Badging API support on mount
-    setSupported(
-      typeof navigator !== "undefined" && "setAppBadge" in navigator,
-    );
+    setSupported(isBadgingSupported());
   }, []);
 
   const setBadge = async (count: number) => {
-    if (!supported || !navigator.setAppBadge) return;
-    try {
-      if (count > 0) {
-        await navigator.setAppBadge(count);
-      } else {
-        await navigator.clearAppBadge();
-      }
-    } catch {
-      // Badge API can fail if the app is not installed or permission is denied
-    }
+    if (!supported) return;
+    await updateAppBadge(count);
   };
 
   const clearBadge = async () => {
-    if (!supported || !navigator.clearAppBadge) return;
-    try {
-      await navigator.clearAppBadge();
-    } catch {
-      // Silently ignore
-    }
+    if (!supported) return;
+    await clearAppBadgeHelper();
   };
 
   return { setBadge, clearBadge, supported };
