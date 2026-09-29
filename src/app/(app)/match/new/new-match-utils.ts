@@ -110,3 +110,122 @@ export function getStepRegionAriaLabel(currentStep: 0 | 1 | 2 | 3): string {
       return "Formulario de creación de nuevo partido";
   }
 }
+
+/**
+ * Returns accessible screen reader ARIA label for set score options.
+ */
+export function getScoreOptionAriaLabel(num: number): string {
+  return num === 1 ? "1 juego" : `${num} juegos`;
+}
+
+/**
+ * Returns the text for the suggest pairings button based on loading status.
+ */
+export function getSuggestPairingsButtonText(isSuggesting?: boolean): string {
+  return isSuggesting ? "Sugiriendo..." : "Sugerir Parejas 🧠";
+}
+
+/**
+ * Returns help text when suggest pairings is disabled.
+ */
+export function getSuggestPairingsHelpText(assignedCount: number): string {
+  return `Completá los 4 cupos con jugadores reales para activar. (Asignados: ${assignedCount}/4)`;
+}
+
+/**
+ * Returns the success toast message when pairings are suggested.
+ */
+export function getSuggestPairingsSuccessToast(): string {
+  return "Acomodamos las parejas según el historial de juego y lado preferido de cada uno.";
+}
+
+/**
+ * Returns the error toast message when suggest pairings fails.
+ */
+export function getSuggestPairingsErrorToast(customMessage?: string): string {
+  return customMessage || "No pudimos obtener la sugerencia de parejas.";
+}
+
+/**
+ * Returns accessible ARIA label for swapping team court positions.
+ */
+export function getSwapSidesButtonAriaLabel(team: "A" | "B"): string {
+  return `Intercambiar derecha y revés de Pareja ${team}`;
+}
+
+/**
+ * Returns the display label for set count options (e.g. "1 Set", "3 Sets").
+ */
+export function getSetOptionLabel(option: string): string {
+  const parsed = parseInt(option, 10);
+  return `${option} ${parsed === 1 ? "Set" : "Sets"}`;
+}
+
+/**
+ * Returns accessible ARIA label for the new match loading skeleton screen.
+ */
+export function getNewMatchLoadingAriaLabel(): string {
+  return "Cargando formulario de creación de partido";
+}
+
+/**
+ * Returns display label for a recent club option.
+ */
+export function getRecentClubLabel(club: string, courtNumber?: string | null): string {
+  return courtNumber ? `${club} · ${courtNumber}` : club;
+}
+
+/**
+ * Checks if a recent club is currently selected.
+ */
+export function isRecentClubSelected(
+  currentClub: string,
+  currentCourt: string,
+  itemClub: string,
+  itemCourtNumber?: string | null
+): boolean {
+  return (
+    currentClub === itemClub &&
+    (!itemCourtNumber || currentCourt === itemCourtNumber)
+  );
+}
+
+/**
+ * Returns accessible ARIA label for a recent club option radio button.
+ */
+export function getRecentClubRadioAriaLabel(
+  club: string,
+  courtNumber?: string | null,
+  isSelected?: boolean
+): string {
+  const label = getRecentClubLabel(club, courtNumber);
+  return isSelected ? `${label}, club seleccionado` : `Seleccionar club ${label}`;
+}
+
+/**
+ * Returns dynamic primary action button text across step navigation.
+ */
+export function getNewMatchPrimaryButtonText(params: {
+  currentStep: number;
+  recordScore?: boolean;
+  isSubmitting?: boolean;
+}): string {
+  const { currentStep, recordScore, isSubmitting } = params;
+
+  if (currentStep === 0) {
+    return "Siguiente";
+  }
+
+  if (currentStep === 1) {
+    return "Continuar";
+  }
+
+  if (currentStep === 2) {
+    if (recordScore) return "Continuar";
+    if (isSubmitting) return "Creando...";
+    return "Crear partido";
+  }
+
+  if (isSubmitting) return "Creando...";
+  return "Crear y finalizar";
+}

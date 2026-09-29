@@ -16,6 +16,8 @@ import {
   buildUserOptionsMap,
   buildSuggestedTeamState,
   shouldSwapUserPosition,
+  getSuggestPairingsSuccessToast,
+  getSuggestPairingsErrorToast,
 } from "./new-match-utils";
 
 function RegisterMatchInner() {
@@ -54,16 +56,16 @@ function RegisterMatchInner() {
 
         if (newState) {
           setWholeState(newState);
-          showToast("Acomodamos las parejas según el historial de juego y lado preferido de cada uno.");
+          showToast(getSuggestPairingsSuccessToast());
         } else {
-          showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
+          showToast(getSuggestPairingsErrorToast(), { type: "error" });
         }
       } else {
-        showToast(res.message || "No pudimos obtener la sugerencia de parejas.", { type: "error" });
+        showToast(getSuggestPairingsErrorToast(res.message), { type: "error" });
       }
     } catch (err) {
       console.error("Failed to suggest pairings:", err);
-      showToast("No pudimos obtener la sugerencia de parejas.", { type: "error" });
+      showToast(getSuggestPairingsErrorToast(), { type: "error" });
     } finally {
       setIsSuggesting(false);
     }
