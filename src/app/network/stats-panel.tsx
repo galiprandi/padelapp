@@ -6,6 +6,7 @@ import { capitalizeName, cn } from "@/lib/utils";
 import {
   calculateCommunityBalanceInfo,
   calculateCommunityCohesion,
+  calculateNetworkCentralityScore,
   calculateNetworkDiversityScore,
   calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
@@ -397,6 +398,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const roleInfo = graphData
                 ? calculateNetworkRoleInfo(graphData.nodes, graphData.links, p.id)
                 : null;
+              const centrality = graphData
+                ? calculateNetworkCentralityScore(graphData.nodes, graphData.links, p.id)
+                : null;
               const diversity = graphData
                 ? calculateNetworkDiversityScore(graphData.nodes, graphData.links, p.id)
                 : null;
@@ -451,6 +455,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Nivel de actividad de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${activityTier.label}`}
                         >
                           {activityTier.label}
+                        </span>
+                      )}
+                      {centrality && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            centrality.badgeStyle,
+                          )}
+                          title={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                          aria-label={`Centralidad en la red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                        >
+                          {centrality.centralityTier}
                         </span>
                       )}
                       {diversity && (

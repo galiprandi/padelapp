@@ -1792,6 +1792,14 @@ describe("Top connected players role and activity badging in StatsPanel", () => 
     expect(stability.badgeStyle).toContain("bg-emerald-100");
     expect(stability.formattedSummary).toContain("vínculos recurrentes");
   });
+
+  it("calculates network centrality 'Hub principal 👑' for top connected player with high connections and interaction volume in StatsPanel", () => {
+    const centrality = calculateNetworkCentralityScore(graphNodes, graphLinks, "p-01");
+    expect(centrality.centralityTier).toBe("Hub principal 👑");
+    expect(centrality.badgeStyle).toContain("bg-amber-100");
+    expect(centrality.formattedSummary).toContain("contactos directos");
+    expect(centrality.formattedSummary).toContain("interacciones");
+  });
 });
 
 describe("calculateTurnRescueProximity", () => {
