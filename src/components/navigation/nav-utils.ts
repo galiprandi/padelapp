@@ -184,6 +184,77 @@ export function getBottomNavContainerClasses(
   );
 }
 
+export interface NotificationsEmptyStateProps {
+  title: string;
+  description: string;
+  actionText: string;
+  actionHref: string;
+}
+
+/**
+ * Retorna la etiqueta ARIA de accesibilidad para el contenedor de esqueleto de carga de notificaciones.
+ */
+export function getNotificationsSkeletonAriaLabel(): string {
+  return "Cargando notificaciones y acciones pendientes";
+}
+
+/**
+ * Retorna la etiqueta ARIA de accesibilidad para la región/sección principal de notificaciones.
+ */
+export function getNotificationsRegionAriaLabel(): string {
+  return "Sección de notificaciones y acciones pendientes";
+}
+
+/**
+ * Retorna el título principal para la vista de notificaciones.
+ */
+export function getNotificationsHeadingTitle(): string {
+  return "Notificaciones";
+}
+
+/**
+ * Retorna la descripción secundaria para la vista de notificaciones.
+ */
+export function getNotificationsHeadingDescription(): string {
+  return "Confirmaciones y resultados pendientes.";
+}
+
+/**
+ * Retorna el título de la sección de acciones pendientes.
+ */
+export function getNotificationsActionsTitle(): string {
+  return "Acciones requeridas";
+}
+
+/**
+ * Formatea la etiqueta ARIA para la insignia con la cantidad de acciones pendientes.
+ */
+export function getNotificationsActionsBadgeAriaLabel(count: number): string {
+  if (count <= 0) return "";
+  return count === 1
+    ? "1 acción pendiente"
+    : `${count} acciones pendientes`;
+}
+
+/**
+ * Retorna las propiedades para el estado vacío (sin notificaciones ni acciones pendientes).
+ */
+export function getNotificationsEmptyStateProps(): NotificationsEmptyStateProps {
+  return {
+    title: "Todo al día",
+    description: "No tenés acciones pendientes por ahora.",
+    actionText: "Volver al inicio",
+    actionHref: "/me",
+  };
+}
+
+/**
+ * Determina si la insignia/badge de notificaciones debe renderizarse.
+ */
+export function shouldRenderNotificationsBadge(count: number): boolean {
+  return count > 0;
+}
+
 /**
  * Retorna las clases CSS para el contenedor principal de la aplicación en el AppLayout.
  */
