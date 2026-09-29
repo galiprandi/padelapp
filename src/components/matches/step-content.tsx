@@ -14,6 +14,15 @@ import {
   extractUniqueUserIds,
   canSuggestPairings,
   getStepRegionAriaLabel,
+  getScoreOptionAriaLabel,
+  getSuggestPairingsButtonText,
+  getSuggestPairingsHelpText,
+  getSwapSidesButtonAriaLabel,
+  getSetOptionLabel,
+  getRecentClubLabel,
+  isRecentClubSelected,
+  getRecentClubRadioAriaLabel,
+  getNewMatchPrimaryButtonText,
 } from "@/app/(app)/match/new/new-match-utils";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
@@ -120,7 +129,7 @@ function ScoreSelector({
               type="button"
               role="radio"
               aria-checked={isSelected}
-              aria-label={num === 1 ? "1 juego" : `${num} juegos`}
+              aria-label={getScoreOptionAriaLabel(num)}
               onClick={() => onValueChange(num)}
               className={cn(
                 "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
@@ -203,18 +212,24 @@ function RecentClubs({
         className="flex gap-2 overflow-x-auto pb-1"
       >
         {recentClubs.map((item) => {
-          const label = item.courtNumber
-            ? `${item.club} · ${item.courtNumber}`
-            : item.club;
-          const isSelected =
-            currentClub === item.club &&
-            (!item.courtNumber || currentCourt === item.courtNumber);
+          const label = getRecentClubLabel(item.club, item.courtNumber);
+          const isSelected = isRecentClubSelected(
+            currentClub,
+            currentCourt,
+            item.club,
+            item.courtNumber
+          );
           return (
             <button
               key={label}
               type="button"
               role="radio"
               aria-checked={isSelected}
+              aria-label={getRecentClubRadioAriaLabel(
+                item.club,
+                item.courtNumber,
+                isSelected
+              )}
               onClick={() => {
                 if (isSelected) {
                   onClubChange("");
@@ -315,11 +330,11 @@ export function StepContent({
                   : "bg-muted border-transparent text-muted-foreground cursor-not-allowed"
               )}
             >
-              {isSuggesting ? "Sugiriendo..." : "Sugerir Parejas 🧠"}
+              {getSuggestPairingsButtonText(isSuggesting)}
             </button>
             {!canSuggest && (
               <p className="text-xs text-muted-foreground text-center">
-                Completá los 4 cupos con jugadores reales para activar. (Asignados: {uniqueUserIds.length}/4)
+                {getSuggestPairingsHelpText(uniqueUserIds.length)}
               </p>
             )}
           </div>
@@ -333,7 +348,7 @@ export function StepContent({
                     type="button"
                     onClick={() => onSwapSides(team)}
                     className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-all active:scale-[0.98] rounded-lg px-2 py-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-                    aria-label={`Intercambiar derecha y revés de Pareja ${team}`}
+                    aria-label={getSwapSidesButtonAriaLabel(team)}
                   >
                     <ArrowUpDown className="h-3.5 w-3.5" />
                     Cambiar lados
@@ -362,7 +377,7 @@ export function StepContent({
         </div>
 
         <MatchNavigation
-          primaryButtonText="Siguiente"
+          primaryButtonText={getNewMatchPrimaryButtonText({ currentStep: 0 })}
           onPrimaryClick={onNextStep}
           secondaryButtonText="Cancelar"
           onSecondaryClick={() => {}}
@@ -513,7 +528,7 @@ export function StepContent({
                           : "bg-card border-border text-muted-foreground hover:bg-muted",
                       )}
                     >
-                      {option} {parseInt(option) === 1 ? "Set" : "Sets"}
+                      {getSetOptionLabel(option)}
                     </button>
                   );
                 })}
@@ -543,7 +558,7 @@ export function StepContent({
         </div>
 
         <MatchNavigation
-          primaryButtonText="Continuar"
+          primaryButtonText={getNewMatchPrimaryButtonText({ currentStep: 1 })}
           onPrimaryClick={onNextStep}
           primaryDisabled={!setsValid}
           secondaryButtonText="Atrás"
@@ -606,13 +621,11 @@ export function StepContent({
         </div>
 
         <MatchNavigation
-          primaryButtonText={
-            recordScore
-              ? "Continuar"
-              : isSubmitting
-                ? "Creando..."
-                : "Crear partido"
-          }
+          primaryButtonText={getNewMatchPrimaryButtonText({
+            currentStep: 2,
+            recordScore,
+            isSubmitting,
+          })}
           onPrimaryClick={recordScore ? onNextStep : onCreateMatch}
           primaryDisabled={isSubmitting}
           primaryLoading={!recordScore && isSubmitting}
@@ -690,7 +703,10 @@ export function StepContent({
       </div>
 
       <MatchNavigation
-        primaryButtonText={isSubmitting ? "Creando..." : "Crear y finalizar"}
+        primaryButtonText={getNewMatchPrimaryButtonText({
+          currentStep: 3,
+          isSubmitting,
+        })}
         onPrimaryClick={onCreateMatch}
         primaryDisabled={isSubmitting}
         primaryLoading={isSubmitting}

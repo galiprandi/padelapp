@@ -6,6 +6,18 @@ import {
   buildSuggestedTeamState,
   shouldSwapUserPosition,
   getStepRegionAriaLabel,
+  getScoreOptionAriaLabel,
+  getSuggestPairingsButtonText,
+  getSuggestPairingsHelpText,
+  getSuggestPairingsSuccessToast,
+  getSuggestPairingsErrorToast,
+  getSwapSidesButtonAriaLabel,
+  getSetOptionLabel,
+  getNewMatchLoadingAriaLabel,
+  getRecentClubLabel,
+  isRecentClubSelected,
+  getRecentClubRadioAriaLabel,
+  getNewMatchPrimaryButtonText,
 } from "../new-match-utils";
 import type { TeamState, PlayerOption } from "@/lib/match-types";
 
@@ -163,6 +175,130 @@ describe("new-match-utils", () => {
       expect(getStepRegionAriaLabel(1)).toContain("Paso 2: Selección de formato");
       expect(getStepRegionAriaLabel(2)).toContain("Paso 3: Sede, club");
       expect(getStepRegionAriaLabel(3)).toContain("Paso 4: Carga e ingreso de marcador");
+    });
+  });
+
+  describe("getScoreOptionAriaLabel", () => {
+    it("returns singular label for 1 game and plural for other numbers", () => {
+      expect(getScoreOptionAriaLabel(1)).toBe("1 juego");
+      expect(getScoreOptionAriaLabel(0)).toBe("0 juegos");
+      expect(getScoreOptionAriaLabel(6)).toBe("6 juegos");
+    });
+  });
+
+  describe("suggest pairings helpers", () => {
+    it("returns correct button text based on loading state", () => {
+      expect(getSuggestPairingsButtonText(false)).toBe("Sugerir Parejas 🧠");
+      expect(getSuggestPairingsButtonText(true)).toBe("Sugiriendo...");
+    });
+
+    it("returns correct help text with assigned count", () => {
+      expect(getSuggestPairingsHelpText(2)).toBe(
+        "Completá los 4 cupos con jugadores reales para activar. (Asignados: 2/4)"
+      );
+    });
+
+    it("returns success and error toast messages", () => {
+      expect(getSuggestPairingsSuccessToast()).toBe(
+        "Acomodamos las parejas según el historial de juego y lado preferido de cada uno."
+      );
+      expect(getSuggestPairingsErrorToast()).toBe(
+        "No pudimos obtener la sugerencia de parejas."
+      );
+      expect(getSuggestPairingsErrorToast("Error personalizado")).toBe(
+        "Error personalizado"
+      );
+    });
+  });
+
+  describe("getSwapSidesButtonAriaLabel", () => {
+    it("returns descriptive ARIA label for team sides swap", () => {
+      expect(getSwapSidesButtonAriaLabel("A")).toBe(
+        "Intercambiar derecha y revés de Pareja A"
+      );
+      expect(getSwapSidesButtonAriaLabel("B")).toBe(
+        "Intercambiar derecha y revés de Pareja B"
+      );
+    });
+  });
+
+  describe("getSetOptionLabel", () => {
+    it("returns singular Set for 1 and plural Sets for others", () => {
+      expect(getSetOptionLabel("1")).toBe("1 Set");
+      expect(getSetOptionLabel("3")).toBe("3 Sets");
+      expect(getSetOptionLabel("5")).toBe("5 Sets");
+    });
+  });
+
+  describe("getNewMatchLoadingAriaLabel", () => {
+    it("returns accessible loading screen region label", () => {
+      expect(getNewMatchLoadingAriaLabel()).toBe(
+        "Cargando formulario de creación de partido"
+      );
+    });
+  });
+
+  describe("recent clubs helpers", () => {
+    it("formats recent club label with or without court number", () => {
+      expect(getRecentClubLabel("Padel City", "2")).toBe("Padel City · 2");
+      expect(getRecentClubLabel("Padel City", null)).toBe("Padel City");
+      expect(getRecentClubLabel("Padel City")).toBe("Padel City");
+    });
+
+    it("determines if a recent club is selected", () => {
+      expect(
+        isRecentClubSelected("Padel City", "2", "Padel City", "2")
+      ).toBe(true);
+      expect(
+        isRecentClubSelected("Padel City", "1", "Padel City", "2")
+      ).toBe(false);
+      expect(
+        isRecentClubSelected("Tie Break", "1", "Padel City", "1")
+      ).toBe(false);
+      expect(
+        isRecentClubSelected("Padel City", "2", "Padel City", null)
+      ).toBe(true);
+    });
+
+    it("returns radio option ARIA label based on selection status", () => {
+      expect(
+        getRecentClubRadioAriaLabel("Padel City", "2", true)
+      ).toBe("Padel City · 2, club seleccionado");
+      expect(
+        getRecentClubRadioAriaLabel("Padel City", "2", false)
+      ).toBe("Seleccionar club Padel City · 2");
+    });
+  });
+
+  describe("getNewMatchPrimaryButtonText", () => {
+    it("returns correct primary button text for each step and state", () => {
+      expect(getNewMatchPrimaryButtonText({ currentStep: 0 })).toBe("Siguiente");
+      expect(getNewMatchPrimaryButtonText({ currentStep: 1 })).toBe("Continuar");
+
+      expect(
+        getNewMatchPrimaryButtonText({ currentStep: 2, recordScore: true })
+      ).toBe("Continuar");
+      expect(
+        getNewMatchPrimaryButtonText({
+          currentStep: 2,
+          recordScore: false,
+          isSubmitting: false,
+        })
+      ).toBe("Crear partido");
+      expect(
+        getNewMatchPrimaryButtonText({
+          currentStep: 2,
+          recordScore: false,
+          isSubmitting: true,
+        })
+      ).toBe("Creando...");
+
+      expect(
+        getNewMatchPrimaryButtonText({ currentStep: 3, isSubmitting: false })
+      ).toBe("Crear y finalizar");
+      expect(
+        getNewMatchPrimaryButtonText({ currentStep: 3, isSubmitting: true })
+      ).toBe("Creando...");
     });
   });
 });
