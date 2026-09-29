@@ -6,6 +6,8 @@ import {
   handlePlayerCardKeyDown,
   isSafeAvatarImage,
   getPlayerAvatarAriaLabel,
+  getPlayerAvatarClasses,
+  getPlayerAvatarDimensionStyle,
   getPlayerCardContainerClasses,
   getPairRegionAriaLabel,
   getRankingBadgeAriaLabel,
@@ -132,6 +134,33 @@ describe("Player Cards Category & Accessibility Utilities", () => {
 
     it("provides fallback for whitespace-only name input", () => {
       expect(getPlayerAvatarAriaLabel("   ", false)).toBe("Iniciales de Jugador");
+    });
+  });
+
+  describe("getPlayerAvatarClasses", () => {
+    it("returns base container classes and merges optional custom className", () => {
+      const classes = getPlayerAvatarClasses("rounded-full border-primary");
+      expect(classes).toContain("flex shrink-0 items-center justify-center");
+      expect(classes).toContain("bg-muted");
+      expect(classes).toContain("rounded-full");
+      expect(classes).toContain("border-primary");
+    });
+  });
+
+  describe("getPlayerAvatarDimensionStyle", () => {
+    it("generates width and height style properties based on size", () => {
+      expect(getPlayerAvatarDimensionStyle(40)).toEqual({
+        width: "40px",
+        height: "40px",
+      });
+      expect(getPlayerAvatarDimensionStyle(32)).toEqual({
+        width: "32px",
+        height: "32px",
+      });
+      expect(getPlayerAvatarDimensionStyle()).toEqual({
+        width: "40px",
+        height: "40px",
+      });
     });
   });
 
