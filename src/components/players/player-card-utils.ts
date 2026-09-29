@@ -84,6 +84,27 @@ export function getPlayerAvatarAriaLabel(
 }
 
 /**
+ * Returns standardized CSS container classes for player avatars.
+ */
+export function getPlayerAvatarClasses(className?: string): string {
+  return cn(
+    "flex shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary border border-border shadow-xs overflow-hidden",
+    className
+  );
+}
+
+/**
+ * Returns explicit width and height style properties based on avatar size in pixels.
+ */
+export function getPlayerAvatarDimensionStyle(size = 40): {
+  width: string;
+  height: string;
+} {
+  const dimension = `${size}px`;
+  return { width: dimension, height: dimension };
+}
+
+/**
  * Returns standardized CSS container classes for player cards including hover, focus-visible ring offset, and active tactile scaling.
  */
 export function getPlayerCardContainerClasses(

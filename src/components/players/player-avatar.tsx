@@ -1,9 +1,10 @@
 import Image from "next/image";
 
-import { cn } from "@/lib/utils";
 import {
   isSafeAvatarImage,
   getPlayerAvatarAriaLabel,
+  getPlayerAvatarClasses,
+  getPlayerAvatarDimensionStyle,
 } from "./player-card-utils";
 
 export interface PlayerAvatarProps {
@@ -34,18 +35,15 @@ export function PlayerAvatar({
   "aria-hidden": ariaHidden,
 }: PlayerAvatarProps) {
   const initials = getPlayerInitials(name);
-  const dimension = `${size}px`;
+  const style = getPlayerAvatarDimensionStyle(size);
 
   const hasSafeImage = isSafeAvatarImage(image);
   const avatarAriaLabel = getPlayerAvatarAriaLabel(name, hasSafeImage);
 
   return (
     <div
-      className={cn(
-        "flex shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary border border-border shadow-xs overflow-hidden",
-        className,
-      )}
-      style={{ width: dimension, height: dimension }}
+      className={getPlayerAvatarClasses(className)}
+      style={style}
       aria-hidden={ariaHidden}
       aria-label={ariaHidden ? undefined : avatarAriaLabel}
     >
