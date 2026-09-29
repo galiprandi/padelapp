@@ -20,6 +20,14 @@ import {
   getAppMainClasses,
   getAppLayoutAriaAttributes,
   getAppMainAriaAttributes,
+  getNotificationsSkeletonAriaLabel,
+  getNotificationsRegionAriaLabel,
+  getNotificationsHeadingTitle,
+  getNotificationsHeadingDescription,
+  getNotificationsActionsTitle,
+  getNotificationsActionsBadgeAriaLabel,
+  getNotificationsEmptyStateProps,
+  shouldRenderNotificationsBadge,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -331,6 +339,51 @@ describe("nav-utils", () => {
         role: "main",
         "aria-label": "Contenido principal",
       });
+    });
+  });
+
+  describe("Notifications Page Helpers", () => {
+    it("getNotificationsSkeletonAriaLabel returns Spanish screen reader label for skeleton loading", () => {
+      expect(getNotificationsSkeletonAriaLabel()).toBe("Cargando notificaciones y acciones pendientes");
+    });
+
+    it("getNotificationsRegionAriaLabel returns Spanish screen reader label for main section", () => {
+      expect(getNotificationsRegionAriaLabel()).toBe("Sección de notificaciones y acciones pendientes");
+    });
+
+    it("getNotificationsHeadingTitle returns heading title", () => {
+      expect(getNotificationsHeadingTitle()).toBe("Notificaciones");
+    });
+
+    it("getNotificationsHeadingDescription returns heading description", () => {
+      expect(getNotificationsHeadingDescription()).toBe("Confirmaciones y resultados pendientes.");
+    });
+
+    it("getNotificationsActionsTitle returns actions section title", () => {
+      expect(getNotificationsActionsTitle()).toBe("Acciones requeridas");
+    });
+
+    it("getNotificationsActionsBadgeAriaLabel formats singular and plural actions badge label", () => {
+      expect(getNotificationsActionsBadgeAriaLabel(0)).toBe("");
+      expect(getNotificationsActionsBadgeAriaLabel(1)).toBe("1 acción pendiente");
+      expect(getNotificationsActionsBadgeAriaLabel(3)).toBe("3 acciones pendientes");
+    });
+
+    it("getNotificationsEmptyStateProps returns empty state metadata and action href", () => {
+      const props = getNotificationsEmptyStateProps();
+      expect(props).toEqual({
+        title: "Todo al día",
+        description: "No tenés acciones pendientes por ahora.",
+        actionText: "Volver al inicio",
+        actionHref: "/me",
+      });
+    });
+
+    it("shouldRenderNotificationsBadge returns true if count > 0", () => {
+      expect(shouldRenderNotificationsBadge(0)).toBe(false);
+      expect(shouldRenderNotificationsBadge(-1)).toBe(false);
+      expect(shouldRenderNotificationsBadge(1)).toBe(true);
+      expect(shouldRenderNotificationsBadge(5)).toBe(true);
     });
   });
 });

@@ -7,14 +7,29 @@ import { BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import {
+  getNotificationsRegionAriaLabel,
+  getNotificationsHeadingTitle,
+  getNotificationsHeadingDescription,
+  getNotificationsActionsTitle,
+  getNotificationsActionsBadgeAriaLabel,
+  getNotificationsEmptyStateProps,
+  getNotificationsSkeletonAriaLabel,
+} from "@/components/navigation/nav-utils";
 
 export default function NotificationsPage() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getNotificationsRegionAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div>
-        <h1 className="text-xl font-bold text-foreground">Notificaciones</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {getNotificationsHeadingTitle()}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Confirmaciones y resultados pendientes.
+          {getNotificationsHeadingDescription()}
         </p>
       </div>
 
@@ -32,21 +47,20 @@ async function NotificationsList() {
   if (!userId) return null;
 
   const pendingActions = await getPendingActions(userId);
+  const emptyStateProps = getNotificationsEmptyStateProps();
 
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <h2 className="text-sm font-bold text-foreground">
-          Acciones requeridas
+          {getNotificationsActionsTitle()}
         </h2>
         {pendingActions.length > 0 && (
           <span
             className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground"
-            aria-label={
-              pendingActions.length === 1
-                ? "1 acción pendiente"
-                : `${pendingActions.length} acciones pendientes`
-            }
+            aria-label={getNotificationsActionsBadgeAriaLabel(
+              pendingActions.length,
+            )}
           >
             {pendingActions.length}
           </span>
@@ -75,11 +89,13 @@ async function NotificationsList() {
       ) : (
         <EmptyState
           icon={BellOff}
-          title="Todo al día"
-          description="No tenés acciones pendientes por ahora."
+          title={emptyStateProps.title}
+          description={emptyStateProps.description}
           action={
             <Button asChild className="w-full">
-              <Link href="/me" prefetch={true}>Volver al inicio</Link>
+              <Link href={emptyStateProps.actionHref} prefetch={true}>
+                {emptyStateProps.actionText}
+              </Link>
             </Button>
           }
         />
@@ -90,7 +106,12 @@ async function NotificationsList() {
 
 function NotificationsListSkeleton() {
   return (
-    <div className="space-y-3">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getNotificationsSkeletonAriaLabel()}
+      className="space-y-3"
+    >
       <div className="flex items-center gap-2">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-5 w-8 rounded-md" />

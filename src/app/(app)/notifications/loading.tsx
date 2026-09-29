@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getNotificationsSkeletonAriaLabel } from "@/components/navigation/nav-utils";
 
 export default function NotificationsLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getNotificationsSkeletonAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div>
         <Skeleton className="h-5 w-32" />
         <Skeleton className="mt-1 h-4 w-48" />
