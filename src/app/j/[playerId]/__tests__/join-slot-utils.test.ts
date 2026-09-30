@@ -13,6 +13,7 @@ import {
   getJoinSlotButtonText,
   getJoinSlotSuccessToast,
   getJoinSlotErrorToast,
+  getJoinSlotSkeletonAriaLabel,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -203,6 +204,14 @@ describe("join-slot-utils", () => {
     it("returns default error fallback toast message when message is missing", () => {
       expect(getJoinSlotErrorToast()).toBe("No pudimos sumarte al partido.");
       expect(getJoinSlotErrorToast(undefined)).toBe("No pudimos sumarte al partido.");
+    });
+  });
+
+  describe("getJoinSlotSkeletonAriaLabel", () => {
+    it("returns localized ARIA region label for loading skeleton", () => {
+      expect(getJoinSlotSkeletonAriaLabel()).toBe(
+        "Cargando detalles de la invitación al partido..."
+      );
     });
   });
 });

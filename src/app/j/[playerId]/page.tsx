@@ -23,6 +23,7 @@ import {
   groupMatchSlotsByTeam,
   getJoinSlotRegionAriaLabel,
   getSlotStatusBadgeProps,
+  getJoinSlotSkeletonAriaLabel,
 } from "./join-slot-utils";
 
 interface JoinSlotPageProps {
@@ -409,7 +410,12 @@ async function JoinSlotContent({
 
 export function JoinSlotSkeleton() {
   return (
-    <div className="space-y-6">
+    <section
+      role="region"
+      aria-busy="true"
+      aria-label={getJoinSlotSkeletonAriaLabel()}
+      className="space-y-6"
+    >
       {/* Detail card skeleton */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="h-10 bg-muted border-b border-border flex items-center px-4">
@@ -445,6 +451,6 @@ export function JoinSlotSkeleton() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

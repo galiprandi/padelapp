@@ -159,3 +159,10 @@ export function getJoinSlotSuccessToast(): string {
 export function getJoinSlotErrorToast(message?: string): string {
   return message ?? "No pudimos sumarte al partido.";
 }
+
+/**
+ * Returns accessible ARIA region label for the join slot skeleton loading container.
+ */
+export function getJoinSlotSkeletonAriaLabel(): string {
+  return "Cargando detalles de la invitación al partido...";
+}
