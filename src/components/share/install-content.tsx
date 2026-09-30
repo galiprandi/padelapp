@@ -11,6 +11,11 @@ import {
   getNextPlatformValue,
   getPlatformRadioAriaLabel,
   getInstallStatusAriaLabel,
+  getAlreadyInstalledTitleText,
+  getAlreadyInstalledDescriptionText,
+  getPlatformSelectorHeaderText,
+  getPlatformOptionLabelText,
+  getManualInstallDividerText,
   PlatformType,
   InstallStep,
 } from "@/components/share/install-utils";
@@ -48,10 +53,10 @@ export function InstallContent() {
           <Check className="h-6 w-6 text-emerald-500" aria-hidden="true" />
         </div>
         <p className="text-sm font-semibold text-foreground">
-          Padel Red ya está instalada
+          {getAlreadyInstalledTitleText()}
         </p>
         <p className="text-xs text-muted-foreground text-center max-w-[240px]">
-          Buscala en tu pantalla de inicio para jugar con un solo toque.
+          {getAlreadyInstalledDescriptionText()}
         </p>
       </div>
     );
@@ -84,7 +89,7 @@ export function InstallContent() {
           id="platform-selector-label"
           className="text-xs font-bold text-muted-foreground"
         >
-          Elegí tu sistema operativo:
+          {getPlatformSelectorHeaderText()}
         </span>
         <div
           role="radiogroup"
@@ -117,7 +122,7 @@ export function InstallContent() {
                 : "bg-card border-border text-muted-foreground hover:bg-muted"
             )}
           >
-            Android / Chrome
+            {getPlatformOptionLabelText("android")}
           </button>
           <button
             type="button"
@@ -133,7 +138,7 @@ export function InstallContent() {
                 : "bg-card border-border text-muted-foreground hover:bg-muted"
             )}
           >
-            iOS / Safari
+            {getPlatformOptionLabelText("ios")}
           </button>
         </div>
       </div>
@@ -149,7 +154,7 @@ export function InstallContent() {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-card px-2 text-muted-foreground font-bold">
-                  O instalá manualmente
+                  {getManualInstallDividerText()}
                 </span>
               </div>
             </div>

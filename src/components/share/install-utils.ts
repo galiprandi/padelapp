@@ -70,6 +70,97 @@ export function getInstallPageBackAriaLabel(): string {
   return "Volver a la página principal";
 }
 
+/**
+ * Returns accessible ARIA label for the install application action button.
+ */
+export function getInstallActionAriaLabel(): string {
+  return "Instalar app de Padel Red";
+}
+
+/**
+ * Returns localized text for the install button depending on pending installation state.
+ */
+export function getInstallButtonLabel(isInstalling: boolean): string {
+  return isInstalling ? "Instalando..." : "Instalar app";
+}
+
+/**
+ * Returns standardized CSS classes for the primary PWA install button.
+ */
+export function getInstallButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns standardized CSS classes for the installed status badge container.
+ */
+export function getInstallStatusInstalledClasses(): string {
+  return "flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500";
+}
+
+/**
+ * Returns localized text label when PWA application is already installed.
+ */
+export function getInstallInstalledLabel(): string {
+  return "Instalada";
+}
+
+/**
+ * Returns localized toast notification message when app installation succeeds.
+ */
+export function getInstallSuccessToast(): string {
+  return "App instalada";
+}
+
+/**
+ * Returns localized toast notification message when native install prompt fails to launch.
+ */
+export function getInstallInitErrorToast(): string {
+  return "No se pudo iniciar la instalación";
+}
+
+/**
+ * Returns localized toast notification message when installation data validation fails.
+ */
+export function getInstallValidationErrorToast(): string {
+  return "No se pudo validar la instalación";
+}
+
+/**
+ * Returns localized divider text for manual installation instructions option.
+ */
+export function getManualInstallDividerText(): string {
+  return "O instalá manualmente";
+}
+
+/**
+ * Returns localized header label for selecting platform operating system.
+ */
+export function getPlatformSelectorHeaderText(): string {
+  return "Elegí tu sistema operativo:";
+}
+
+/**
+ * Returns localized platform option label string for Android/Chrome or iOS/Safari.
+ */
+export function getPlatformOptionLabelText(platform: PlatformType): string {
+  return platform === "android" ? "Android / Chrome" : "iOS / Safari";
+}
+
+/**
+ * Returns localized title text when app is already installed in user device.
+ */
+export function getAlreadyInstalledTitleText(): string {
+  return "Padel Red ya está instalada";
+}
+
+/**
+ * Returns localized description text when app is already installed in user device.
+ */
+export function getAlreadyInstalledDescriptionText(): string {
+  return "Buscala en tu pantalla de inicio para jugar con un solo toque.";
+}
+
 export function isIOSDeviceUserAgent(userAgent: string, hasTouchPoints: boolean = false): boolean {
   if (!userAgent) return false;
   const isIOSUA = /iPad|iPhone|iPod/.test(userAgent);

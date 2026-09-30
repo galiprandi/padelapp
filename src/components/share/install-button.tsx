@@ -5,6 +5,16 @@ import { Download, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
+import {
+  getInstallActionAriaLabel,
+  getInstallButtonLabel,
+  getInstallButtonClasses,
+  getInstallStatusInstalledClasses,
+  getInstallInstalledLabel,
+  getInstallSuccessToast,
+  getInstallInitErrorToast,
+  getInstallValidationErrorToast,
+} from "@/components/share/install-utils";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -68,7 +78,7 @@ export function InstallButton({
     const handleAction = () => {
       setIsInstalling(false);
       setHasInstalled(true);
-      showToast("App instalada");
+      showToast(getInstallSuccessToast());
     };
     const handleDismiss = () => {
       setIsInstalling(false);
@@ -77,7 +87,7 @@ export function InstallButton({
       const target = e.target as HTMLInstallElement;
       if (target.invalidReason === "install_data_invalid") {
         setIsInstalling(false);
-        showToast("No se pudo validar la instalación");
+        showToast(getInstallValidationErrorToast());
       }
     };
 
@@ -100,10 +110,10 @@ export function InstallButton({
       const choice = await deferredPrompt.userChoice;
       if (choice.outcome === "accepted") {
         setHasInstalled(true);
-        showToast("App instalada");
+        showToast(getInstallSuccessToast());
       }
     } catch {
-      showToast("No se pudo iniciar la instalación");
+      showToast(getInstallInitErrorToast());
     } finally {
       setIsInstalling(false);
       setDeferredPrompt(null);
@@ -112,9 +122,9 @@ export function InstallButton({
 
   if (isInstalled || hasInstalled) {
     return (
-      <div className="flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500">
+      <div className={getInstallStatusInstalledClasses()}>
         <Check className="h-4 w-4" aria-hidden="true" />
-        Instalada
+        {getInstallInstalledLabel()}
       </div>
     );
   }
@@ -128,18 +138,18 @@ export function InstallButton({
   if (method === "beforeinstallprompt" || deferredPrompt) {
     return (
       <Button
-        className="w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getInstallButtonClasses()}
         onClick={handleNativePrompt}
         disabled={isInstalling}
         aria-busy={isInstalling}
-        aria-label="Instalar app de Padel Red"
+        aria-label={getInstallActionAriaLabel()}
       >
         {isInstalling ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
           <Download className="h-4 w-4" aria-hidden="true" />
         )}
-        {isInstalling ? "Instalando..." : "Instalar app"}
+        {getInstallButtonLabel(isInstalling)}
       </Button>
     );
   }
@@ -150,7 +160,7 @@ export function InstallButton({
       {isInstalling && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          Instalando…
+          {getInstallButtonLabel(true)}
         </div>
       )}
       <install
@@ -160,13 +170,13 @@ export function InstallButton({
         className="w-full"
       >
         <Button
-          className="w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getInstallButtonClasses()}
           onClick={() => setIsInstalling(true)}
           aria-busy={isInstalling}
-          aria-label="Instalar app de Padel Red"
+          aria-label={getInstallActionAriaLabel()}
         >
           <Download className="h-4 w-4" aria-hidden="true" />
-          Instalar app
+          {getInstallButtonLabel(isInstalling)}
         </Button>
       </install>
     </div>

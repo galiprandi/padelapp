@@ -9,6 +9,19 @@ import {
   getInstallPageTitle,
   getInstallPageDescription,
   getInstallPageBackAriaLabel,
+  getInstallActionAriaLabel,
+  getInstallButtonLabel,
+  getInstallButtonClasses,
+  getInstallStatusInstalledClasses,
+  getInstallInstalledLabel,
+  getInstallSuccessToast,
+  getInstallInitErrorToast,
+  getInstallValidationErrorToast,
+  getManualInstallDividerText,
+  getPlatformSelectorHeaderText,
+  getPlatformOptionLabelText,
+  getAlreadyInstalledTitleText,
+  getAlreadyInstalledDescriptionText,
 } from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
@@ -70,5 +83,33 @@ describe("PWA install guide and platform detection logic", () => {
     expect(getInstallPageTitle()).toBe("Instalar Padel Red");
     expect(getInstallPageDescription()).toBe("Agregá la app a tu pantalla de inicio para acceder más rápido.");
     expect(getInstallPageBackAriaLabel()).toBe("Volver a la página principal");
+  });
+
+  it("returns correct install button action ARIA labels and button state text", () => {
+    expect(getInstallActionAriaLabel()).toBe("Instalar app de Padel Red");
+    expect(getInstallButtonLabel(true)).toBe("Instalando...");
+    expect(getInstallButtonLabel(false)).toBe("Instalar app");
+  });
+
+  it("returns standardized CSS classes for install button and installed badge", () => {
+    expect(getInstallButtonClasses()).toContain("w-full h-12 rounded-lg font-semibold");
+    expect(getInstallButtonClasses()).toContain("active:scale-[0.98]");
+    expect(getInstallStatusInstalledClasses()).toContain("text-emerald-500");
+    expect(getInstallInstalledLabel()).toBe("Instalada");
+  });
+
+  it("returns correct toast notification messages for install events", () => {
+    expect(getInstallSuccessToast()).toBe("App instalada");
+    expect(getInstallInitErrorToast()).toBe("No se pudo iniciar la instalación");
+    expect(getInstallValidationErrorToast()).toBe("No se pudo validar la instalación");
+  });
+
+  it("returns correct platform and manual install copy strings", () => {
+    expect(getManualInstallDividerText()).toBe("O instalá manualmente");
+    expect(getPlatformSelectorHeaderText()).toBe("Elegí tu sistema operativo:");
+    expect(getPlatformOptionLabelText("android")).toBe("Android / Chrome");
+    expect(getPlatformOptionLabelText("ios")).toBe("iOS / Safari");
+    expect(getAlreadyInstalledTitleText()).toBe("Padel Red ya está instalada");
+    expect(getAlreadyInstalledDescriptionText()).toBe("Buscala en tu pantalla de inicio para jugar con un solo toque.");
   });
 });
