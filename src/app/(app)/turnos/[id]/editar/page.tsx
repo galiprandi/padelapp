@@ -4,6 +4,11 @@ import { getTurnByIdAction } from "../../actions";
 import { EditTurnForm } from "./edit-form";
 import { Suspense } from "react";
 import { ChevronLeft } from "lucide-react";
+import {
+  getEditTurnHeadingTitle,
+  getEditTurnHeadingDescription,
+  getEditTurnLoadingAriaLabel,
+} from "@/components/turns/turn-utils";
 import Link from "next/link";
 
 interface EditTurnPageProps {
@@ -22,7 +27,12 @@ export default function EditTurnPage({ params }: EditTurnPageProps) {
 
 function TurnEditSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getEditTurnLoadingAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div className="flex items-center gap-4">
         <div className="h-10 w-10 bg-muted/60 animate-pulse rounded-lg" />
         <div className="space-y-2">
@@ -102,8 +112,12 @@ async function TurnEditContent({ params }: EditTurnPageProps) {
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Editar turno</h1>
-          <p className="text-sm text-muted-foreground">Modificá los detalles de tu turno.</p>
+          <h1 className="text-xl font-bold text-foreground">
+            {getEditTurnHeadingTitle()}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {getEditTurnHeadingDescription()}
+          </p>
         </div>
       </div>
 

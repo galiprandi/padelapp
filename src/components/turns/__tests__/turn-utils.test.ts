@@ -123,6 +123,15 @@ import {
   getTurnConnectionAriaLabel,
   getTurnBackAriaLabel,
   getTurnSkeletonAriaLabel,
+  getTurnosHeadingTitle,
+  getTurnosHeadingDescription,
+  getNewTurnHeadingTitle,
+  getNewTurnHeadingDescription,
+  getEditTurnHeadingTitle,
+  getEditTurnHeadingDescription,
+  getTurnosLoadingAriaLabel,
+  getNewTurnLoadingAriaLabel,
+  getEditTurnLoadingAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -812,6 +821,19 @@ describe("Turn Public Details pure helpers", () => {
     expect(getTurnInfoRegionAriaLabel()).toBe("Información del turno de pádel");
     expect(getTurnBackAriaLabel()).toBe("Volver");
     expect(getTurnSkeletonAriaLabel()).toBe("Cargando detalles del turno de pádel...");
+  });
+
+  it("formats turn headings and loading skeleton ARIA labels", () => {
+    expect(getTurnosHeadingTitle()).toBe("Turnos abiertos");
+    expect(getTurnosHeadingDescription()).toBe("Unite a partidos de tu nivel.");
+    expect(getNewTurnHeadingTitle()).toBe("Nuevo turno");
+    expect(getNewTurnHeadingDescription()).toBe("Configurá cancha y cupos.");
+    expect(getEditTurnHeadingTitle()).toBe("Editar turno");
+    expect(getEditTurnHeadingDescription()).toBe("Modificá los detalles de tu turno.");
+
+    expect(getTurnosLoadingAriaLabel()).toBe("Cargando lista de turnos abiertos de pádel...");
+    expect(getNewTurnLoadingAriaLabel()).toBe("Cargando formulario de nuevo turno de pádel...");
+    expect(getEditTurnLoadingAriaLabel()).toBe("Cargando formulario de edición de turno de pádel...");
   });
 
   it("formats turn status badge text and solid MDS CSS classes across completed, full, and open states", () => {

@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCachedOpenTurns, getCachedPadelContacts, type PadelContact } from "@/lib/queries";
 import { TurnsFilter } from "@/components/turns/turns-filter";
+import {
+  getTurnosHeadingTitle,
+  getTurnosHeadingDescription,
+  getTurnosLoadingAriaLabel,
+} from "@/components/turns/turn-utils";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { auth } from "@/auth";
@@ -12,9 +17,11 @@ export default function TurnsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Turnos abiertos</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {getTurnosHeadingTitle()}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Unite a partidos de tu nivel.
+            {getTurnosHeadingDescription()}
           </p>
         </div>
         <Button asChild size="sm">
@@ -51,9 +58,10 @@ async function TurnsList() {
 
 function TurnsListSkeleton() {
   return (
-    <section
-      role="status"
-      aria-label="Cargando lista de turnos de pádel..."
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getTurnosLoadingAriaLabel()}
       className="flex flex-col gap-3"
     >
       {/* Skeleton for tab filter bar */}
@@ -71,6 +79,6 @@ function TurnsListSkeleton() {
           <Skeleton key={i} className="h-24 w-full rounded-xl" />
         ))}
       </div>
-    </section>
+    </div>
   );
 }
