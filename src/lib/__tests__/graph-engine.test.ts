@@ -1800,6 +1800,13 @@ describe("Top connected players role and activity badging in StatsPanel", () => 
     expect(centrality.formattedSummary).toContain("contactos directos");
     expect(centrality.formattedSummary).toContain("interacciones");
   });
+
+  it("calculates network expansion potential 'Potencial de conexión 🌐' for top connected player in StatsPanel", () => {
+    const expansion = calculateNetworkExpansionPotential(graphLinks, graphNodes, "p-01");
+    expect(expansion.expansionTier).toBeDefined();
+    expect(expansion.badgeStyle).toBeDefined();
+    expect(expansion.formattedSummary).toBeDefined();
+  });
 });
 
 describe("calculateTurnRescueProximity", () => {

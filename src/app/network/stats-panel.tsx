@@ -8,6 +8,7 @@ import {
   calculateCommunityCohesion,
   calculateNetworkCentralityScore,
   calculateNetworkDiversityScore,
+  calculateNetworkExpansionPotential,
   calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
   calculatePartnershipStabilityInfo,
@@ -413,6 +414,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const stability = graphData
                 ? calculatePartnershipStabilityInfo(graphData.links, p.id)
                 : null;
+              const expansionPotential = graphData
+                ? calculateNetworkExpansionPotential(graphData.links, graphData.nodes, p.id)
+                : null;
 
               return (
                 <Link
@@ -515,6 +519,18 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           aria-label={`Estabilidad de duplas de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${stability.stabilityTier}. ${stability.formattedSummary}`}
                         >
                           {stability.stabilityTier}
+                        </span>
+                      )}
+                      {expansionPotential && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            expansionPotential.badgeStyle,
+                          )}
+                          title={`Potencial de expansión de red: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
+                          aria-label={`Potencial de expansión de red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
+                        >
+                          {expansionPotential.expansionTier}
                         </span>
                       )}
                     </div>
