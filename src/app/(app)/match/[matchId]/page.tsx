@@ -18,10 +18,20 @@ import {
   FinalizeMatchForm,
   CancelMatchForm,
 } from "@/components/matches/match-actions";
+import { getMatchTypeLabel } from "./edit/edit-match-utils";
 import {
-  getMatchTypeLabel,
-  getEditMatchRegionAriaLabel,
-} from "./edit/edit-match-utils";
+  getMatchDetailSkeletonAriaLabel,
+  getMatchStatusBadgeText,
+  getMatchDetailRegionAriaLabel,
+  getMatchNotFoundTitle,
+  getMatchNotFoundButtonText,
+  getMatchCancelledTitle,
+  getMatchCancelledButtonText,
+  getMatchScoreSets,
+  getMatchShareButtonAriaLabel,
+  getPlayerProfileLinkAriaLabel,
+  formatMatchClubCourtText,
+} from "./match-detail-utils";
 
 interface MatchPageProps {
   params: Promise<{
@@ -39,7 +49,12 @@ export default function MatchPage({ params }: MatchPageProps) {
 
 function MatchSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-label={getMatchDetailSkeletonAriaLabel()}
+      aria-busy="true"
+      className="flex flex-col gap-6"
+    >
       <div className="space-y-2">
         <Skeleton className="h-6 w-48" />
         <div className="flex gap-2">
@@ -79,12 +94,18 @@ async function MatchContent({ params }: MatchPageProps) {
 
   if (!result.match) {
     return (
-      <div className="flex flex-col gap-4">
+      <div
+        role="region"
+        aria-label={getMatchDetailRegionAriaLabel("not_found")}
+        className="flex flex-col gap-4"
+      >
         <h1 className="text-xl font-bold text-foreground">
-          Partido no encontrado
+          {getMatchNotFoundTitle()}
         </h1>
-        <Button asChild>
-          <Link href="/match/new" prefetch={true}>Crear partido</Link>
+        <Button asChild className="active:scale-[0.98] transition-all">
+          <Link href="/match/new" prefetch={true}>
+            {getMatchNotFoundButtonText()}
+          </Link>
         </Button>
       </div>
     );
@@ -96,10 +117,18 @@ async function MatchContent({ params }: MatchPageProps) {
 
   if (isCancelled) {
     return (
-      <div className="flex flex-col gap-4">
-        <h1 className="text-xl font-bold text-foreground">Partido cancelado</h1>
-        <Button asChild variant="ghost">
-          <Link href="/match" prefetch={true}>Volver a mis partidos</Link>
+      <div
+        role="region"
+        aria-label={getMatchDetailRegionAriaLabel("cancelled")}
+        className="flex flex-col gap-4"
+      >
+        <h1 className="text-xl font-bold text-foreground">
+          {getMatchCancelledTitle()}
+        </h1>
+        <Button asChild variant="ghost" className="active:scale-[0.98] transition-all">
+          <Link href="/match" prefetch={true}>
+            {getMatchCancelledButtonText()}
+          </Link>
         </Button>
       </div>
     );
@@ -126,7 +155,7 @@ async function MatchContent({ params }: MatchPageProps) {
         name: displayName,
         image: player.user?.image,
         isConfirmed: player.resultConfirmed,
-        category: player.user ? 5 : undefined, // Placeholder para categoría
+        category: player.user ? 5 : undefined,
         placeholderName: player.displayName || displayName,
       });
     }
@@ -159,9 +188,11 @@ async function MatchContent({ params }: MatchPageProps) {
     viewerId &&
     match.players.some((p) => p.userId === viewerId && !p.resultConfirmed);
 
+  const parsedScoreSets = getMatchScoreSets(match.score);
+
   return (
     <div className={cn("flex flex-col gap-6", userNeedsToConfirm && "pb-32")}>
-      <header role="region" aria-label={getEditMatchRegionAriaLabel("header")}>
+      <header role="region" aria-label={getMatchDetailRegionAriaLabel("header")}>
         <h1 className="text-xl font-bold text-foreground">
           Partido {getMatchTypeLabel(match.matchType)}
         </h1>
@@ -174,11 +205,7 @@ async function MatchContent({ params }: MatchPageProps) {
                 : "bg-muted text-muted-foreground border border-border",
             )}
           >
-            {match.status === "PENDING"
-              ? "Pendiente"
-              : match.status === "CONFIRMED"
-                ? "Confirmado"
-                : "En disputa"}
+            {getMatchStatusBadgeText(match.status)}
           </span>
           <span className="text-xs text-muted-foreground">
             <LocalDate
@@ -192,15 +219,14 @@ async function MatchContent({ params }: MatchPageProps) {
 
       <section
         role="region"
-        aria-label={getEditMatchRegionAriaLabel("details")}
+        aria-label={getMatchDetailRegionAriaLabel("details")}
         className="space-y-2"
       >
         {match.club && (
           <div className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3">
             <span className="text-xs text-muted-foreground">Club:</span>
             <span className="text-sm font-semibold text-foreground truncate">
-              {match.club}
-              {match.courtNumber ? ` · Cancha ${match.courtNumber}` : ""}
+              {formatMatchClubCourtText(match.club, match.courtNumber)}
             </span>
           </div>
         )}
@@ -209,6 +235,7 @@ async function MatchContent({ params }: MatchPageProps) {
             href={`/p/${match.creatorId}`}
             prefetch={true}
             className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            aria-label={getPlayerProfileLinkAriaLabel(match.creator?.displayName)}
           >
             <PlayerAvatar
               name={match.creator?.displayName || "U"}
@@ -241,7 +268,7 @@ async function MatchContent({ params }: MatchPageProps) {
 
       <section
         role="region"
-        aria-label={getEditMatchRegionAriaLabel("actions")}
+        aria-label={getMatchDetailRegionAriaLabel("actions")}
         className="flex flex-col gap-2"
       >
         {!isClosed ? (
@@ -271,7 +298,7 @@ async function MatchContent({ params }: MatchPageProps) {
                     .url
                 }
                 variant="outline"
-                aria-label="Compartir invitación al partido"
+                aria-label={getMatchShareButtonAriaLabel(false)}
                 className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               />
             </div>
@@ -301,7 +328,7 @@ async function MatchContent({ params }: MatchPageProps) {
                     .url
                 }
                 variant="outline"
-                aria-label="Compartir resultado del partido"
+                aria-label={getMatchShareButtonAriaLabel(true)}
                 className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
               />
             </div>
@@ -316,19 +343,19 @@ async function MatchContent({ params }: MatchPageProps) {
         <div className="space-y-6">
           <section
             role="region"
-            aria-label={getEditMatchRegionAriaLabel("summary")}
+            aria-label={getMatchDetailRegionAriaLabel("summary")}
             className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
           >
             <span className="text-xs font-semibold text-muted-foreground mb-6">
               Resultado Final
             </span>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4">
-              {match.score?.split(",").map((set, idx) => (
+              {parsedScoreSets.map((set, idx) => (
                 <div
                   key={idx}
                   className="text-5xl font-bold text-foreground leading-none"
                 >
-                  {set.trim()}
+                  {set}
                 </div>
               ))}
             </div>
@@ -337,9 +364,10 @@ async function MatchContent({ params }: MatchPageProps) {
                 {match.players
                   .sort((a, b) => a.position - b.position)
                   .map((p) => {
+                    const displayName = p.displayName || p.user?.displayName || "";
                     const avatarElement = (
                       <PlayerAvatar
-                        name={p.displayName || p.user?.displayName || ""}
+                        name={displayName}
                         image={p.user?.image ?? undefined}
                         className="border-2 border-card transition-all hover:opacity-80 active:scale-[0.95]"
                         size={40}
@@ -352,7 +380,7 @@ async function MatchContent({ params }: MatchPageProps) {
                         href={`/p/${p.userId}`}
                         prefetch={true}
                         className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-full z-10 hover:z-20 relative"
-                        aria-label={`Ver perfil de ${p.displayName || p.user?.displayName || ""}`}
+                        aria-label={getPlayerProfileLinkAriaLabel(displayName)}
                       >
                         {avatarElement}
                       </Link>
@@ -380,7 +408,7 @@ async function MatchContent({ params }: MatchPageProps) {
           {isPendingConfirmation && (
             <section
               role="region"
-              aria-label={getEditMatchRegionAriaLabel("confirmations")}
+              aria-label={getMatchDetailRegionAriaLabel("confirmations")}
               className="space-y-4 rounded-xl border border-border bg-card shadow-xs p-4"
             >
               <div className="space-y-1">
@@ -458,7 +486,7 @@ async function MatchContent({ params }: MatchPageProps) {
                             href={`/p/${player.userId}`}
                             prefetch={true}
                             className="flex flex-col items-center gap-2 w-full transition-all active:scale-[0.98] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
-                            aria-label={`Ver perfil de ${displayName}`}
+                            aria-label={getPlayerProfileLinkAriaLabel(displayName)}
                           >
                             {content}
                           </Link>
@@ -516,7 +544,7 @@ async function MatchContent({ params }: MatchPageProps) {
           {match.players.some((p) => p.attendance) && (
             <section
               role="region"
-              aria-label={getEditMatchRegionAriaLabel("attendance")}
+              aria-label={getMatchDetailRegionAriaLabel("attendance")}
               className="space-y-3 rounded-xl border border-border bg-card shadow-xs p-4"
             >
               <h2 className="text-sm font-bold text-foreground">Asistencia</h2>
@@ -539,6 +567,7 @@ async function MatchContent({ params }: MatchPageProps) {
                             href={`/p/${player.userId}`}
                             prefetch={true}
                             className="text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs"
+                            aria-label={getPlayerProfileLinkAriaLabel(displayName)}
                           >
                             {displayName}
                           </Link>
@@ -567,7 +596,7 @@ async function MatchContent({ params }: MatchPageProps) {
         <div className="space-y-6">
           <section
             role="region"
-            aria-label={getEditMatchRegionAriaLabel("teams")}
+            aria-label={getMatchDetailRegionAriaLabel("teams")}
             className="space-y-3"
           >
             <h2 className="text-sm font-bold text-foreground">
@@ -603,7 +632,7 @@ async function MatchContent({ params }: MatchPageProps) {
           {match.notes && (
             <section
               role="region"
-              aria-label={getEditMatchRegionAriaLabel("notes")}
+              aria-label={getMatchDetailRegionAriaLabel("notes")}
               className="rounded-xl border border-border bg-card shadow-xs p-4"
             >
               <h3 className="text-sm font-bold text-foreground mb-2">
