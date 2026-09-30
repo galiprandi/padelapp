@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-23 — Refactorización de Fronteras de Error en Subrutas con `formatErrorDetails` y Atributos ARIA de Accesibilidad (PR #tino/perf/error-details-helper-extraction)
 - [x] 2026-09-22 — Extracción de Funciones Helper Puras de PWA, Badging API, Service Worker y Accesibilidad ARIA (`src/components/pwa/pwa-utils.ts`) y Refactorización de `AppBadgeUpdater`, `PwaRegistrar` y `useAppBadge`
 - [x] 2026-09-21 — Extracción de Funciones Helper Puras de Accesibilidad ARIA y Clases CSS en `AppLayout` (`src/components/navigation/nav-utils.ts`) y Refactorización de `src/app/(app)/layout.tsx`
 - [x] 2026-09-20 — Extracción de Funciones Helper Puras de Cabeceras de Seguridad y Refactorización de SecurityHeaders en `next.config.ts` (`src/lib/security-headers.ts`)
