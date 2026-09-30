@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getEditTurnLoadingAriaLabel } from "@/components/turns/turn-utils";
 
 export default function TurnEditLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getEditTurnLoadingAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div className="flex items-center gap-4">
         <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
         <div className="space-y-1">

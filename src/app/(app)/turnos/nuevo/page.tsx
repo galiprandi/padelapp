@@ -18,6 +18,8 @@ import {
   getCreateTurnSuccessToast,
   getTurnFormRegionAriaLabel,
   getTurnFormSubmitButtonAriaLabel,
+  getNewTurnHeadingTitle,
+  getNewTurnHeadingDescription,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
@@ -102,9 +104,11 @@ export default function NewTurnPage() {
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Nuevo turno</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {getNewTurnHeadingTitle()}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Configurá cancha y cupos.
+            {getNewTurnHeadingDescription()}
           </p>
         </div>
       </div>

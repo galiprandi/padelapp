@@ -1680,3 +1680,66 @@ export function getTurnBackAriaLabel(): string {
 export function getTurnSkeletonAriaLabel(): string {
   return "Cargando detalles del turno de pádel...";
 }
+
+/**
+ * Format page heading title for turn list view.
+ */
+export function getTurnosHeadingTitle(): string {
+  return "Turnos abiertos";
+}
+
+/**
+ * Format page heading description for turn list view.
+ */
+export function getTurnosHeadingDescription(): string {
+  return "Unite a partidos de tu nivel.";
+}
+
+/**
+ * Format page heading title for new turn creation view.
+ */
+export function getNewTurnHeadingTitle(): string {
+  return "Nuevo turno";
+}
+
+/**
+ * Format page heading description for new turn creation view.
+ */
+export function getNewTurnHeadingDescription(): string {
+  return "Configurá cancha y cupos.";
+}
+
+/**
+ * Format page heading title for turn edit view.
+ */
+export function getEditTurnHeadingTitle(): string {
+  return "Editar turno";
+}
+
+/**
+ * Format page heading description for turn edit view.
+ */
+export function getEditTurnHeadingDescription(): string {
+  return "Modificá los detalles de tu turno.";
+}
+
+/**
+ * Format ARIA label for turn list loading skeleton region in Argentine Spanish.
+ */
+export function getTurnosLoadingAriaLabel(): string {
+  return "Cargando lista de turnos abiertos de pádel...";
+}
+
+/**
+ * Format ARIA label for new turn creation loading skeleton region in Argentine Spanish.
+ */
+export function getNewTurnLoadingAriaLabel(): string {
+  return "Cargando formulario de nuevo turno de pádel...";
+}
+
+/**
+ * Format ARIA label for turn edit loading skeleton region in Argentine Spanish.
+ */
+export function getEditTurnLoadingAriaLabel(): string {
+  return "Cargando formulario de edición de turno de pádel...";
+}
