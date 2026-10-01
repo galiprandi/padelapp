@@ -216,6 +216,10 @@ import {
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
   calculateNetworkExpansionPotential,
+  formatTimeAgo,
+  getNetworkSkeletonAriaLabel,
+  getStatsPanelRegionAriaLabel,
+  getTopPlayerExpansionAriaLabel,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1468,6 +1472,80 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("StatsPanel and NetworkSkeleton pure helpers", () => {
+  describe("formatTimeAgo", () => {
+    it("formats relative time strings correctly in Argentine Spanish", () => {
+      const now = Date.now();
+      expect(formatTimeAgo(now - 1000 * 30)).toBe("recién");
+      expect(formatTimeAgo(now - 1000 * 60 * 15)).toBe("hace 15 min");
+      expect(formatTimeAgo(now - 1000 * 60 * 60)).toBe("hace 1 hora");
+      expect(formatTimeAgo(now - 1000 * 60 * 60 * 5)).toBe("hace 5 horas");
+      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24)).toBe("hace 1 día");
+      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 4)).toBe("hace 4 días");
+      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 35)).toBe("hace 1 mes");
+      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 90)).toBe("hace 3 meses");
+    });
+
+    it("handles invalid or future dates gracefully", () => {
+      expect(formatTimeAgo("invalid-date")).toBe("recién");
+      expect(formatTimeAgo(Date.now() + 10000)).toBe("recién");
+    });
+  });
+
+  describe("getNetworkSkeletonAriaLabel", () => {
+    it("returns expected accessible screen reader label", () => {
+      expect(getNetworkSkeletonAriaLabel()).toBe(
+        "Cargando métricas y visualización del grafo de la red de contactos"
+      );
+    });
+  });
+
+  describe("getStatsPanelRegionAriaLabel", () => {
+    it("returns localized region landmark labels for each section", () => {
+      expect(getStatsPanelRegionAriaLabel("header")).toBe(
+        "Encabezado de métricas y red de contactos"
+      );
+      expect(getStatsPanelRegionAriaLabel("overview")).toBe(
+        "Resumen general de usuarios, turnos, partidos e inscripciones"
+      );
+      expect(getStatsPanelRegionAriaLabel("network")).toBe(
+        "Estadísticas de la red de contactos y densidad de conexiones"
+      );
+      expect(getStatsPanelRegionAriaLabel("recommender")).toBe(
+        "Recomendaciones de jugadores con nivel y comunidad similar"
+      );
+      expect(getStatsPanelRegionAriaLabel("users")).toBe(
+        "Estadísticas de usuarios activos y notificaciones push"
+      );
+      expect(getStatsPanelRegionAriaLabel("communities")).toBe(
+        "Comunidades y grupos de la red de contactos"
+      );
+      expect(getStatsPanelRegionAriaLabel("top-players")).toBe(
+        "Lista de jugadores más conectados en la red de contactos"
+      );
+      expect(getStatsPanelRegionAriaLabel("recent")).toBe(
+        "Resumen de actividad reciente de los últimos 30 días"
+      );
+      expect(getStatsPanelRegionAriaLabel("clubs")).toBe(
+        "Clubes con mayor actividad de turnos y partidos"
+      );
+    });
+  });
+
+  describe("getTopPlayerExpansionAriaLabel", () => {
+    it("formats expansion potential badge accessibility aria label", () => {
+      const label = getTopPlayerExpansionAriaLabel(
+        "Agustín",
+        "Red en expansión activa 🚀",
+        "Reach de 5 contactos no explorados"
+      );
+      expect(label).toBe(
+        "Potencial de expansión de red de Agustín: Red en expansión activa 🚀. Reach de 5 contactos no explorados"
+      );
+    });
   });
 });
 

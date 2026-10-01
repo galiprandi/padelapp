@@ -8,29 +8,17 @@ import {
   calculateCommunityCohesion,
   calculateNetworkCentralityScore,
   calculateNetworkDiversityScore,
+  calculateNetworkExpansionPotential,
   calculateNetworkMultiBelonging,
   calculateNetworkRoleInfo,
   calculatePartnershipStabilityInfo,
   calculatePlayerInteractionReciprocity,
   calculatePlayerSimilarityInfo,
+  formatTimeAgo,
   getNetworkActivityTier,
+  getStatsPanelRegionAriaLabel,
+  getTopPlayerExpansionAriaLabel,
 } from "./graph-utils";
-
-function timeAgo(date: Date): string {
-  const now = Date.now();
-  const diff = now - new Date(date).getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days >= 30) {
-    const months = Math.floor(days / 30);
-    return months === 1 ? "hace 1 mes" : `hace ${months} meses`;
-  }
-  if (days >= 1) return days === 1 ? "hace 1 día" : `hace ${days} días`;
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  if (hours >= 1) return hours === 1 ? "hace 1 hora" : `hace ${hours} horas`;
-  const minutes = Math.floor(diff / (1000 * 60));
-  if (minutes >= 1) return `hace ${minutes} min`;
-  return "recién";
-}
 
 interface StatsPanelProps {
   metrics: AdoptionMetrics;
@@ -91,7 +79,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("header")}
+        className="flex items-center gap-3"
+      >
         <Link
           href="/me"
           prefetch={true}
@@ -111,7 +103,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       </div>
 
       {/* Adoption stats grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("overview")}
+        className="grid grid-cols-2 gap-3"
+      >
         <StatCard
           label="Usuarios"
           value={metrics.totalUsers}
@@ -142,7 +138,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       </div>
 
       {/* Network stats */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("network")}
+        className="rounded-xl border border-border bg-card p-4 space-y-3"
+      >
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary" aria-hidden="true" />
           <h2 className="text-sm font-bold text-foreground">Red de contactos</h2>
@@ -178,7 +178,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       </div>
 
       {/* Jugadores como vos 🧠 */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("recommender")}
+        className="rounded-xl border border-border bg-card p-4 space-y-3"
+      >
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
           <div className="space-y-0.5">
@@ -272,7 +276,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       </div>
 
       {/* Engagement stats */}
-      <div className="grid grid-cols-2 gap-3">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("users")}
+        className="grid grid-cols-2 gap-3"
+      >
         <StatCard
           label="Sesiones activas"
           value={metrics.activeSessions}
@@ -288,7 +296,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
 
       {/* Latest registered users */}
       {metrics.recentUsers.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div
+          role="region"
+          aria-label={getStatsPanelRegionAriaLabel("users")}
+          className="rounded-xl border border-border bg-card p-4 space-y-3"
+        >
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
             <h2 className="text-sm font-bold text-foreground">
@@ -313,7 +325,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                     {capitalizeName(u.name ?? u.alias ?? "?")}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {timeAgo(u.createdAt)}
+                    {formatTimeAgo(u.createdAt)}
                   </p>
                 </div>
               </Link>
@@ -324,7 +336,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
 
       {/* Top communities */}
       {metrics.communities.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div
+          role="region"
+          aria-label={getStatsPanelRegionAriaLabel("communities")}
+          className="rounded-xl border border-border bg-card p-4 space-y-3"
+        >
           <h2 className="text-sm font-bold text-foreground">Comunidades de la red</h2>
           <div className="space-y-2.5">
             {metrics.communities.map((c) => {
@@ -388,7 +404,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
 
       {/* Top connected players */}
       {metrics.topPlayers.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div
+          role="region"
+          aria-label={getStatsPanelRegionAriaLabel("top-players")}
+          className="rounded-xl border border-border bg-card p-4 space-y-3"
+        >
           <h2 className="text-sm font-bold text-foreground">
             Más conectados
           </h2>
@@ -412,6 +432,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                 : null;
               const stability = graphData
                 ? calculatePartnershipStabilityInfo(graphData.links, p.id)
+                : null;
+              const expansion = graphData
+                ? calculateNetworkExpansionPotential(graphData.links, graphData.nodes, p.id)
                 : null;
 
               return (
@@ -517,6 +540,22 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           {stability.stabilityTier}
                         </span>
                       )}
+                      {expansion && (
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            expansion.badgeStyle,
+                          )}
+                          title={`Potencial de expansión de red: ${expansion.expansionTier}. ${expansion.formattedSummary}`}
+                          aria-label={getTopPlayerExpansionAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            expansion.expansionTier,
+                            expansion.formattedSummary,
+                          )}
+                        >
+                          {expansion.expansionTier}
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {p.matchesPlayed} {p.matchesPlayed === 1 ? "partido" : "partidos"}
@@ -535,7 +574,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       )}
 
       {/* 30-day summary */}
-      <div className="rounded-xl border border-border bg-muted p-4 space-y-2">
+      <div
+        role="region"
+        aria-label={getStatsPanelRegionAriaLabel("recent")}
+        className="rounded-xl border border-border bg-muted p-4 space-y-2"
+      >
         <h2 className="text-sm font-bold text-foreground">Últimos 30 días</h2>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
@@ -561,7 +604,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
 
       {/* Top clubs by activity */}
       {metrics.topClubs.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div
+          role="region"
+          aria-label={getStatsPanelRegionAriaLabel("clubs")}
+          className="rounded-xl border border-border bg-card p-4 space-y-3"
+        >
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
             <h2 className="text-sm font-bold text-foreground">

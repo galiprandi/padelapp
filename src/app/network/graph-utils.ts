@@ -395,6 +395,73 @@ export function calculateCommunitySummary(
   };
 }
 
+export function formatTimeAgo(date: Date | string | number): string {
+  const d = date instanceof Date ? date : new Date(date);
+  const now = Date.now();
+  const diff = now - d.getTime();
+  if (isNaN(diff) || diff < 0) return "recién";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days >= 30) {
+    const months = Math.floor(days / 30);
+    return months === 1 ? "hace 1 mes" : `hace ${months} meses`;
+  }
+  if (days >= 1) return days === 1 ? "hace 1 día" : `hace ${days} días`;
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (hours >= 1) return hours === 1 ? "hace 1 hora" : `hace ${hours} horas`;
+  const minutes = Math.floor(diff / (1000 * 60));
+  if (minutes >= 1) return `hace ${minutes} min`;
+  return "recién";
+}
+
+export function getNetworkSkeletonAriaLabel(): string {
+  return "Cargando métricas y visualización del grafo de la red de contactos";
+}
+
+export function getStatsPanelRegionAriaLabel(
+  section:
+    | "header"
+    | "overview"
+    | "network"
+    | "recommender"
+    | "users"
+    | "communities"
+    | "top-players"
+    | "recent"
+    | "clubs"
+): string {
+  switch (section) {
+    case "header":
+      return "Encabezado de métricas y red de contactos";
+    case "overview":
+      return "Resumen general de usuarios, turnos, partidos e inscripciones";
+    case "network":
+      return "Estadísticas de la red de contactos y densidad de conexiones";
+    case "recommender":
+      return "Recomendaciones de jugadores con nivel y comunidad similar";
+    case "users":
+      return "Estadísticas de usuarios activos y notificaciones push";
+    case "communities":
+      return "Comunidades y grupos de la red de contactos";
+    case "top-players":
+      return "Lista de jugadores más conectados en la red de contactos";
+    case "recent":
+      return "Resumen de actividad reciente de los últimos 30 días";
+    case "clubs":
+      return "Clubes con mayor actividad de turnos y partidos";
+    default:
+      return "Métricas de la red de contactos";
+  }
+}
+
+export function getTopPlayerExpansionAriaLabel(
+  playerName: string,
+  expansionTier: string,
+  summary: string
+): string {
+  return `Potencial de expansión de red de ${playerName}: ${expansionTier}. ${summary}`;
+}
+
 export interface NetworkExpansionPotential {
   expansionScore: number;
   unexploredReachCount: number;

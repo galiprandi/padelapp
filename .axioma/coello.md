@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 45 (Network Expansion Potential Solid MDS Badging, Skeleton ARIA Landmarks & Stats Panel Helpers Extraction):
+  - [x] 2026-09-22 — Hecho: Extraídas las funciones puras `formatTimeAgo`, `getNetworkSkeletonAriaLabel`, `getStatsPanelRegionAriaLabel` y `getTopPlayerExpansionAriaLabel` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-22 — Hecho: Refactorizados `StatsPanel` (`src/app/network/stats-panel.tsx`) y `NetworkSkeleton` (`src/app/network/network-skeleton.tsx`) para consumir los helpers extraídos, envolver secciones en contenedores de referencia `role="region"` (`aria-busy="true"`) y desplegar insignias sólidas MDS de potencial de expansión de red ('Red en expansión activa 🚀', 'Potencial de conexión 🌐', 'Red consolidada 🏛️', 'Círculo exclusivo 🔒') para la lista de jugadores 'Más conectados'.
+  - [x] 2026-09-22 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 44 (Player Interaction Reciprocity Solid MDS Badging in Network Stats Panel):
   - [x] 2026-09-21 — Hecho: Integrada la función `calculatePlayerInteractionReciprocity` en `StatsPanel` (`src/app/network/stats-panel.tsx`) para la lista de jugadores 'Más conectados' cuando `graphData` está disponible, desplegando insignias sólidas MDS de reciprocidad de interacción ('Red recíproca y equilibrada ⚖️', 'Predominio de duplas 🤝', 'Predominio de rivales ⚔️') con atributos descriptivos de accesibilidad ARIA (`aria-label`, `title`).
   - [x] 2026-09-21 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts` cubriendo la asignación de insignias de reciprocidad de interacción y atributos de accesibilidad en `StatsPanel`.
