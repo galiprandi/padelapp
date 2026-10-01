@@ -9,6 +9,10 @@ import {
   getResourceHints,
   getOriginTrialMetaProps,
 } from "@/lib/resource-hints";
+import {
+  getRootBodyClasses,
+  getRootHtmlAttributes,
+} from "@/lib/root-layout-utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,7 +59,7 @@ export default function RootLayout({
   );
 
   return (
-    <html lang="es">
+    <html {...getRootHtmlAttributes()}>
       <head>
         {resourceHints.map((hint, idx) => (
           <link key={`${hint.rel}-${hint.href}-${idx}`} {...hint} />
@@ -66,9 +70,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={getSpeculationRulesTag()}
         />
       </head>
-      <body
-        className={`${geistSans.variable} min-h-screen bg-background font-sans text-foreground`}
-      >
+      <body className={getRootBodyClasses(geistSans.variable)}>
         <Providers>{children}</Providers>
         <Analytics />
       </body>

@@ -1,11 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  getRootLoadingAriaLabel,
+  getRootLoadingClasses,
+} from "@/lib/root-layout-utils";
 
 export default function RootLoading() {
   return (
     <main
-      className="relative flex min-h-dvh flex-col bg-background px-6 py-10"
+      className={getRootLoadingClasses()}
       aria-busy="true"
-      aria-label="Cargando Padel Red"
+      aria-label={getRootLoadingAriaLabel()}
     >
       <div className="flex w-full max-w-sm mx-auto flex-col gap-6">
         {/* Hero Skeleton */}
