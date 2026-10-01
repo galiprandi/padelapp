@@ -11,6 +11,24 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { X, ArrowUpDown } from "lucide-react";
 import appSettings from "@/config/app-settings.json";
+import {
+  getAssignUserSuccessToast,
+  getAssignUserErrorToast,
+  getRenamePlaceholderSuccessToast,
+  getRenamePlaceholderErrorToast,
+  getShareInviteText,
+  getCopyInviteSuccessToast,
+  getCopyInviteErrorToast,
+  getReleaseSlotSuccessToast,
+  getReleaseSlotErrorToast,
+  getSwapSelectPromptToast,
+  getSwapSuccessToast,
+  getSwapErrorToast,
+  getSwapModeStatusAriaLabel,
+  getSwapModeCancelAriaLabel,
+  getMatchTeamsRegionAriaLabel,
+  getPlayerManageAriaLabel,
+} from "@/components/matches/match-players-manager-utils";
 
 export interface MatchTeamPlayer {
   matchPlayerId: string;
@@ -102,11 +120,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
         });
 
         if (response.status === "ok") {
-          showToast(`Asignaste a ${value.player.displayName} al partido.`);
+          showToast(getAssignUserSuccessToast(value.player.displayName));
           closeManageModal();
           router.refresh();
         } else {
-          showToast(response.message ?? "No pudimos asignar al jugador.");
+          showToast(getAssignUserErrorToast(response.message));
         }
       });
       return;
@@ -119,11 +137,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       });
 
       if (response.status === "ok") {
-        showToast("Actualizaste el jugador.");
+        showToast(getRenamePlaceholderSuccessToast());
         closeManageModal();
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos actualizar el jugador.");
+        showToast(getRenamePlaceholderErrorToast(response.message));
       }
     });
   }
@@ -132,7 +150,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (!manageModal.playerId) return;
 
     const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/j/${manageModal.playerId}`;
-    const shareText = `Sumate al partido como ${nameToShare}`;
+    const shareText = getShareInviteText(nameToShare);
 
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
@@ -152,10 +170,10 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       try {
         await navigator.clipboard.writeText(`${appSettings.share.inviteTitle}\n${shareText}\n${shareUrl}`);
-        showToast("Copiaste el enlace.");
+        showToast(getCopyInviteSuccessToast());
       } catch (error) {
         console.error("navigator.clipboard.writeText failed", error);
-        showToast("No pudimos copiar el enlace.");
+        showToast(getCopyInviteErrorToast());
       }
     }
   }
@@ -167,11 +185,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       const response = await releaseMatchSlotAction({ playerId: manageModal.playerId! });
 
       if (response.status === "ok") {
-        showToast("Liberaste el cupo.");
+        showToast(getReleaseSlotSuccessToast());
         closeManageModal();
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos liberar el cupo.");
+        showToast(getReleaseSlotErrorToast(response.message));
       }
     });
   }
@@ -180,7 +198,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
     if (!manageModal.playerId) return;
     setSwapSourceId(manageModal.playerId);
     closeManageModal();
-    showToast("Seleccioná el otro jugador para intercambiar.");
+    showToast(getSwapSelectPromptToast());
   }
 
   async function handleSwap(targetId: string) {
@@ -197,11 +215,11 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
       });
 
       if (response.status === "ok") {
-        showToast("Intercambiaste las posiciones.");
+        showToast(getSwapSuccessToast());
         setSwapSourceId(null);
         router.refresh();
       } else {
-        showToast(response.message ?? "No pudimos realizar el cambio.");
+        showToast(getSwapErrorToast(response.message));
         setSwapSourceId(null);
       }
     });
@@ -213,7 +231,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
         <div
           role="status"
           aria-live="polite"
-          aria-label="Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar."
+          aria-label={getSwapModeStatusAriaLabel()}
           className="fixed inset-x-0 top-20 z-50 flex justify-center px-5"
         >
           <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-xs">
@@ -223,7 +241,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
               size="icon"
               variant="ghost"
               className="h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-              aria-label="Cancelar intercambio de posición"
+              aria-label={getSwapModeCancelAriaLabel()}
               onClick={() => setSwapSourceId(null)}
             >
               <X className="h-4 w-4" aria-hidden="true" />
@@ -232,7 +250,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
         </div>
       )}
 
-      <div role="region" aria-label="Alineación y parejas del partido" className="space-y-4">
+      <div role="region" aria-label={getMatchTeamsRegionAriaLabel()} className="space-y-4">
         {teams.map((team) => (
           <PairPreview
             key={team.id}
@@ -243,7 +261,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
               image: player.image || undefined,
               isConfirmed: player.isConfirmed,
               onManageClick: isOrganizer ? () => openManageModal(player) : undefined,
-              manageAriaLabel: isOrganizer ? `Gestionar jugador ${player.name}` : undefined,
+              manageAriaLabel: isOrganizer ? getPlayerManageAriaLabel(player.name) : undefined,
             }))}
           />
         ))}
