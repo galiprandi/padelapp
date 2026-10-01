@@ -1743,3 +1743,40 @@ export function getNewTurnLoadingAriaLabel(): string {
 export function getEditTurnLoadingAriaLabel(): string {
   return "Cargando formulario de edición de turno de pádel...";
 }
+
+/**
+ * Format button text when open-to-network action is on cooldown.
+ */
+export function getOpenToNetworkCooldownText(minutesRemaining: number): string {
+  return `Red notificada (esperá ${minutesRemaining} min)`;
+}
+
+/**
+ * Format helper text shown below OpenToNetworkButton depending on cooldown state.
+ */
+export function getOpenToNetworkHelperText(
+  isOnCooldown: boolean,
+  minutesRemaining: number = 0
+): string {
+  if (isOnCooldown) {
+    return `Ya se notificó a la red. Podés volver a enviar en ${minutesRemaining} min.`;
+  }
+  return "Notifica a contactos de los últimos 12 meses";
+}
+
+/**
+ * Format result subtitle text when network notification is completed.
+ */
+export function getOpenToNetworkResultSubtitle(notified: number): string {
+  if (notified > 0) {
+    return `Se notificó a ${notified} contacto${notified === 1 ? "" : "s"}`;
+  }
+  return "Sin contactos";
+}
+
+/**
+ * Format result description text when network notification is completed.
+ */
+export function getOpenToNetworkResultDescription(): string {
+  return "Recibirán una push para sumarse.";
+}
