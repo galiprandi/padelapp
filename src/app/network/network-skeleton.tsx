@@ -1,9 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, Network, ChevronLeft } from "lucide-react";
+import { getNetworkSkeletonAriaLabel } from "./graph-utils";
 
 export function NetworkSkeleton() {
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-background">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getNetworkSkeletonAriaLabel()}
+      className="flex flex-col h-[100dvh] overflow-hidden bg-background"
+    >
       {/* Tab bar skeleton */}
       <div className="flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0">
         <button
