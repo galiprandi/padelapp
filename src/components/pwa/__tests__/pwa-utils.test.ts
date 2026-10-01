@@ -8,6 +8,10 @@ import {
   clearAppBadge,
   getServiceWorkerRegistrationUrl,
   formatAppBadgeAriaLabel,
+  getAppBadgeAriaAttributes,
+  getPwaRegistrarAriaLabel,
+  getPwaRegistrarSuccessLogMessage,
+  getPwaRegistrarErrorWarnMessage,
 } from "../pwa-utils";
 
 describe("pwa-utils", () => {
@@ -163,6 +167,49 @@ describe("pwa-utils", () => {
     it("formats counts greater than 1 in plural", () => {
       expect(formatAppBadgeAriaLabel(2)).toBe("2 acciones pendientes");
       expect(formatAppBadgeAriaLabel(5)).toBe("5 acciones pendientes");
+    });
+  });
+
+  describe("getAppBadgeAriaAttributes", () => {
+    it("returns region role, polite live state, and formatted ARIA label", () => {
+      const attrs = getAppBadgeAriaAttributes(3);
+      expect(attrs).toEqual({
+        role: "region",
+        "aria-label": "3 acciones pendientes",
+        "aria-live": "polite",
+      });
+    });
+  });
+
+  describe("getPwaRegistrarAriaLabel", () => {
+    it("returns expected region landmark ARIA label for Service Worker registrar", () => {
+      expect(getPwaRegistrarAriaLabel()).toBe("Registro de Service Worker PWA");
+    });
+  });
+
+  describe("getPwaRegistrarSuccessLogMessage", () => {
+    it("returns general success message when scope is omitted", () => {
+      expect(getPwaRegistrarSuccessLogMessage()).toBe("Service Worker registrado exitosamente");
+    });
+
+    it("includes scope in success message when scope is provided", () => {
+      expect(getPwaRegistrarSuccessLogMessage("/app/")).toBe(
+        "Service Worker registrado exitosamente en el scope: /app/"
+      );
+    });
+  });
+
+  describe("getPwaRegistrarErrorWarnMessage", () => {
+    it("returns generic warning message when error is undefined or non-Error", () => {
+      expect(getPwaRegistrarErrorWarnMessage()).toBe("Omitida la registración proactiva de Service Worker");
+      expect(getPwaRegistrarErrorWarnMessage("Network error")).toBe("Omitida la registración proactiva de Service Worker");
+    });
+
+    it("formats warning message with Error message detail when Error object is passed", () => {
+      const err = new Error("Failed to register");
+      expect(getPwaRegistrarErrorWarnMessage(err)).toBe(
+        "Omitida la registración proactiva de Service Worker: Failed to register"
+      );
     });
   });
 });
