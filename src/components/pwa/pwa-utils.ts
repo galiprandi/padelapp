@@ -91,3 +91,40 @@ export function formatAppBadgeAriaLabel(count: number): string {
   }
   return `${sanitized} acciones pendientes`;
 }
+
+/**
+ * Returns ARIA landmark and live region attributes for the AppBadgeUpdater component.
+ */
+export function getAppBadgeAriaAttributes(count: number) {
+  return {
+    role: "region" as const,
+    "aria-label": formatAppBadgeAriaLabel(count),
+    "aria-live": "polite" as const,
+  };
+}
+
+/**
+ * Returns localized ARIA label describing the background Service Worker registrar component.
+ */
+export function getPwaRegistrarAriaLabel(): string {
+  return "Registro de Service Worker PWA";
+}
+
+/**
+ * Formats a debug log message when Service Worker registration succeeds.
+ */
+export function getPwaRegistrarSuccessLogMessage(scope?: string): string {
+  return scope
+    ? `Service Worker registrado exitosamente en el scope: ${scope}`
+    : "Service Worker registrado exitosamente";
+}
+
+/**
+ * Formats a warning log message when Service Worker registration is skipped or fails.
+ */
+export function getPwaRegistrarErrorWarnMessage(error?: unknown): string {
+  if (error instanceof Error) {
+    return `Omitida la registración proactiva de Service Worker: ${error.message}`;
+  }
+  return "Omitida la registración proactiva de Service Worker";
+}

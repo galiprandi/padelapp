@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import {
   isServiceWorkerSupported,
   getServiceWorkerRegistrationUrl,
+  getPwaRegistrarAriaLabel,
+  getPwaRegistrarErrorWarnMessage,
 } from "./pwa-utils";
 
 export function PwaRegistrar() {
@@ -15,9 +17,15 @@ export function PwaRegistrar() {
     navigator.serviceWorker
       .register(getServiceWorkerRegistrationUrl())
       .catch((err) => {
-        console.warn("Service worker proactive registration skipped:", err);
+        console.warn(getPwaRegistrarErrorWarnMessage(err));
       });
   }, []);
 
-  return null;
+  return (
+    <div
+      className="sr-only"
+      role="region"
+      aria-label={getPwaRegistrarAriaLabel()}
+    />
+  );
 }
