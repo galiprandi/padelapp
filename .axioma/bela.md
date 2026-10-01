@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-29 — OpenToNetworkButton Cooldown & Result Pure Helpers Extraction & Refactoring (bela/turnos/open-to-network-cooldown-pure-helpers)
 - [x] 2026-09-28 — Turn Page Headings & Loading Skeletons Pure Helpers Extraction, ARIA Landmarks & Unit Tests (bela/turnos/headings-and-loading-skeletons-pure-helpers)
 - [x] 2026-09-27 — Turn Public Details & Skeleton Pure Helpers Extraction, Status Badge Styling & ARIA Accessibility Polish (bela/turnos/turn-public-details-pure-helpers-and-a11y)
 - [x] 2026-09-26 — TurnCard Pure Helpers Extraction & Organizer 1-Tap Salvage Action Integration (bela/turnos/turn-card-pure-helpers-and-organizer-salvage)
@@ -66,6 +67,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-09-29 - OpenToNetworkButton Cooldown & Result Pure Helpers Extraction & Refactoring
+**Learning:** Extracting pure helper functions (`getOpenToNetworkCooldownText`, `getOpenToNetworkHelperText`, `getOpenToNetworkResultSubtitle`, and `getOpenToNetworkResultDescription`) into `src/components/turns/turn-utils.ts` decouples localized cooldown status formatting, helper strings, and result subtitles from React render components in `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining semantic accessibility attributes (`role="region"`, `role="status"`, `aria-busy`, `aria-live`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), and solid MDS button styling with active tactile scaling (`active:scale-[0.98] transition-all`).
+**Action:** Always extract interactive salvage trigger status copy and result messages into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-09-28 - Turn Page Headings & Loading Skeletons Pure Helpers Extraction, ARIA Landmarks & Unit Tests
 **Learning:** Extracting pure helper functions (`getTurnosHeadingTitle`, `getTurnosHeadingDescription`, `getNewTurnHeadingTitle`, `getNewTurnHeadingDescription`, `getEditTurnHeadingTitle`, `getEditTurnHeadingDescription`, `getTurnosLoadingAriaLabel`, `getNewTurnLoadingAriaLabel`, and `getEditTurnLoadingAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized page headings, descriptions, and screen reader loading ARIA accessibility labels from React render components across turn listings (`TurnsPage`), creation (`NewTurnPage`), and edit views (`EditTurnPage`). Wrapping loading skeleton components (`TurnosLoading`, `NewTurnLoading`, `TurnEditSkeleton`, `TurnEditLoading`, `TurnsListSkeleton`) in explicit `<div role="region" aria-busy="true" aria-label="...">` landmark containers ensures immediate loading state announcements for screen reader users while maintaining solid MDS theme container styling (`bg-card border border-border shadow-xs`).
 **Action:** Always extract route page titles, descriptions, and skeleton ARIA region labels into pure helper utilities backed by Vitest unit tests, and wrap all loading skeletons in explicit `role="region"` containers with `aria-busy="true"`.

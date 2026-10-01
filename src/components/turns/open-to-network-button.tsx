@@ -14,6 +14,10 @@ import {
   getOpenToNetworkRegionAriaLabel,
   getOpenToNetworkResultText,
   getOpenToNetworkAriaLabel,
+  getOpenToNetworkCooldownText,
+  getOpenToNetworkHelperText,
+  getOpenToNetworkResultSubtitle,
+  getOpenToNetworkResultDescription,
 } from "@/components/turns/turn-utils";
 
 interface OpenToNetworkButtonProps {
@@ -129,14 +133,12 @@ export function OpenToNetworkButton({
         <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
           <Check className="h-4 w-4" />
           <span>
-            {result.notified > 0
-              ? `Se notificó a ${result.notified} contacto${result.notified === 1 ? "" : "s"}`
-              : "Sin contactos"}
+            {getOpenToNetworkResultSubtitle(result.notified)}
           </span>
         </div>
         {showText && (
           <p className="mt-1 text-xs text-muted-foreground">
-            Recibirán una push para sumarse.
+            {getOpenToNetworkResultDescription()}
           </p>
         )}
       </div>
@@ -179,7 +181,7 @@ export function OpenToNetworkButton({
         ) : (
           <Bell className={cn("h-4 w-4", !isIconOnly && "mr-2")} />
         )}
-        {!isIconOnly && (isPending ? "Enviando..." : isOnCooldown ? `Red notificada (esperá ${minutesRemaining} min)` : label)}
+        {!isIconOnly && (isPending ? "Enviando..." : isOnCooldown ? getOpenToNetworkCooldownText(minutesRemaining) : label)}
       </Button>
 
       {error && !isIconOnly && (
@@ -188,10 +190,7 @@ export function OpenToNetworkButton({
 
       {showText && !isIconOnly && (
         <p className="text-xs text-muted-foreground text-center font-medium">
-          {isOnCooldown
-            ? `Ya se notificó a la red. Podés volver a enviar en ${minutesRemaining} min.`
-            : "Notifica a contactos de los últimos 12 meses"
-          }
+          {getOpenToNetworkHelperText(isOnCooldown, minutesRemaining)}
         </p>
       )}
     </div>

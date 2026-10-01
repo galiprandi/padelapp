@@ -66,6 +66,10 @@ import {
   getOpenToNetworkRegionAriaLabel,
   getOpenToNetworkResultText,
   getOpenToNetworkAriaLabel,
+  getOpenToNetworkCooldownText,
+  getOpenToNetworkHelperText,
+  getOpenToNetworkResultSubtitle,
+  getOpenToNetworkResultDescription,
   getWhatsAppInviteSuccessToast,
   getWhatsAppGroupInviteSuccessToast,
   getWhatsAppInviteAriaLabel,
@@ -1108,6 +1112,16 @@ describe("LeaveTurnButton and OpenToNetworkButton pure helpers", () => {
     expect(getOpenToNetworkAriaLabel({ isPending: true })).toBe("Notificando a tu red de pádel...");
     expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 1 })).toBe("Notificado, en cooldown por 1 minuto");
     expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 15 })).toBe("Notificado, en cooldown por 15 minutos");
+  });
+
+  it("formats open to network cooldown text, helper text, and result subtitles", () => {
+    expect(getOpenToNetworkCooldownText(15)).toBe("Red notificada (esperá 15 min)");
+    expect(getOpenToNetworkHelperText(true, 15)).toBe("Ya se notificó a la red. Podés volver a enviar en 15 min.");
+    expect(getOpenToNetworkHelperText(false)).toBe("Notifica a contactos de los últimos 12 meses");
+    expect(getOpenToNetworkResultSubtitle(1)).toBe("Se notificó a 1 contacto");
+    expect(getOpenToNetworkResultSubtitle(3)).toBe("Se notificó a 3 contactos");
+    expect(getOpenToNetworkResultSubtitle(0)).toBe("Sin contactos");
+    expect(getOpenToNetworkResultDescription()).toBe("Recibirán una push para sumarse.");
   });
 });
 
