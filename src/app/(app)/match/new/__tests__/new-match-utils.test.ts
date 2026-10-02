@@ -18,6 +18,8 @@ import {
   isRecentClubSelected,
   getRecentClubRadioAriaLabel,
   getNewMatchPrimaryButtonText,
+  getFormErrorAlertAriaLabel,
+  formatFormErrorMessage,
 } from "../new-match-utils";
 import type { TeamState, PlayerOption } from "@/lib/match-types";
 
@@ -299,6 +301,18 @@ describe("new-match-utils", () => {
       expect(
         getNewMatchPrimaryButtonText({ currentStep: 3, isSubmitting: true })
       ).toBe("Creando...");
+    });
+  });
+
+  describe("form error alert helpers", () => {
+    it("returns accessible ARIA label for form error alert banner", () => {
+      expect(getFormErrorAlertAriaLabel()).toBe("Aviso de error en formulario");
+    });
+
+    it("formats form error message correctly", () => {
+      expect(formatFormErrorMessage("  Falta seleccionar jugadores  ")).toBe("Falta seleccionar jugadores");
+      expect(formatFormErrorMessage(null)).toBe("");
+      expect(formatFormErrorMessage(undefined)).toBe("");
     });
   });
 });
