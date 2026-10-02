@@ -220,6 +220,13 @@ import {
   getNetworkSkeletonAriaLabel,
   getStatsPanelRegionAriaLabel,
   getTopPlayerExpansionAriaLabel,
+  getGraphViewLoadingText,
+  getGraphViewEmptyDataProps,
+  getGraphViewScopeAriaLabel,
+  getGraphViewSearchAriaLabel,
+  getGraphViewEmptySearchProps,
+  getGraphViewNodeName,
+  getGraphViewLegendAriaLabel,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1472,6 +1479,90 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("GraphView pure helper functions", () => {
+  describe("getGraphViewLoadingText", () => {
+    it("returns expected loading string", () => {
+      expect(getGraphViewLoadingText()).toBe("Cargando grafo...");
+    });
+  });
+
+  describe("getGraphViewEmptyDataProps", () => {
+    it("returns title, description, buttonText and buttonHref for empty graph state", () => {
+      const props = getGraphViewEmptyDataProps();
+      expect(props.title).toBe("Sin datos aún");
+      expect(props.description).toContain("La red se construye automáticamente");
+      expect(props.buttonText).toBe("Crear partido");
+      expect(props.buttonHref).toBe("/match/new");
+    });
+  });
+
+  describe("getGraphViewScopeAriaLabel", () => {
+    it("returns ARIA label for personal scope toggle", () => {
+      expect(getGraphViewScopeAriaLabel("personal")).toBe(
+        "Ver mi red de contactos únicamente",
+      );
+    });
+
+    it("returns ARIA label for global scope toggle", () => {
+      expect(getGraphViewScopeAriaLabel("global")).toBe(
+        "Ver la red completa de jugadores",
+      );
+    });
+  });
+
+  describe("getGraphViewSearchAriaLabel", () => {
+    it("returns expected search input ARIA label", () => {
+      expect(getGraphViewSearchAriaLabel()).toBe("Buscar jugador en el grafo");
+    });
+  });
+
+  describe("getGraphViewEmptySearchProps", () => {
+    it("returns formatted message with search query when query is non-empty", () => {
+      const props = getGraphViewEmptySearchProps("Facundo");
+      expect(props.message).toBe(
+        'No se encontraron jugadores que coincidan con "Facundo"',
+      );
+      expect(props.buttonText).toBe("Restablecer filtros");
+    });
+
+    it("returns default message when searchQuery is empty", () => {
+      const props = getGraphViewEmptySearchProps("   ");
+      expect(props.message).toBe(
+        "No hay conexiones que coincidan con los filtros seleccionados",
+      );
+      expect(props.buttonText).toBe("Restablecer filtros");
+    });
+  });
+
+  describe("getGraphViewNodeName", () => {
+    it("returns 'Vos' when isViewer is true", () => {
+      expect(getGraphViewNodeName("Agustín", "Agu", true)).toBe("Vos");
+    });
+
+    it("returns capitalized name when isViewer is false and name is present", () => {
+      expect(getGraphViewNodeName("agustín aliprandi", "agu", false)).toBe(
+        "Agustín Aliprandi",
+      );
+    });
+
+    it("returns capitalized alias when name is missing or empty", () => {
+      expect(getGraphViewNodeName(null, "bela", false)).toBe("Bela");
+    });
+
+    it("returns fallback '?' when name and alias are missing", () => {
+      expect(getGraphViewNodeName(null, null, false)).toBe("?");
+    });
+  });
+
+  describe("getGraphViewLegendAriaLabel", () => {
+    it("returns expected screen reader ARIA label for graph legend", () => {
+      expect(getGraphViewLegendAriaLabel()).toBe(
+        "Leyenda de conexiones del grafo: Pareja (verde), Rival (rojo), Mixto (amarillo), Turnos (gris)",
+      );
+    });
   });
 });
 
