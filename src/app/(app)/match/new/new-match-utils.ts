@@ -229,3 +229,17 @@ export function getNewMatchPrimaryButtonText(params: {
   if (isSubmitting) return "Creando...";
   return "Crear y finalizar";
 }
+
+/**
+ * Returns accessible ARIA region label for form error alert banner.
+ */
+export function getFormErrorAlertAriaLabel(): string {
+  return "Aviso de error en formulario";
+}
+
+/**
+ * Formats error message for display in form error alert banner.
+ */
+export function formatFormErrorMessage(error: string | null | undefined): string {
+  return error?.trim() || "";
+}
