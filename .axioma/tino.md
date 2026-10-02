@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-25 — Extracción de Funciones Helper Puras de Atributos ARIA, Habilitación de PWA y Clases CSS en Providers (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (PR #tino/perf/providers-helpers-extraction)
 - [x] 2026-09-24 — Extracción de Funciones Helper Puras para RootLayout y RootLoading (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLayout` y `RootLoading` (PR #tino/perf/root-layout-helpers-extraction)
 - [x] 2026-09-23 — Refactorización de Fronteras de Error en Subrutas con `formatErrorDetails` y Atributos ARIA de Accesibilidad (PR #tino/perf/error-details-helper-extraction)
 - [x] 2026-09-22 — Extracción de Funciones Helper Puras de PWA, Badging API, Service Worker y Accesibilidad ARIA (`src/components/pwa/pwa-utils.ts`) y Refactorización de `AppBadgeUpdater`, `PwaRegistrar` y `useAppBadge`
@@ -64,6 +65,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-25 - Extracción de Funciones Helper Puras para Providers y Accesibilidad ARIA
+**Aprendizaje:** Encapsular la etiqueta accesible ARIA para la región de contexto (`getProvidersRegionAriaLabel`), los atributos ARIA de accesibilidad (`getProvidersRegionAriaAttributes`), la condición de activación del registrador de PWA (`isPwaRegistrarEnabled`) y la composición de clases CSS del contenedor (`getProvidersContainerClasses`) en `src/lib/providers-utils.ts` desacopla la configuración del entorno de la maquetación en `Providers` (`src/app/providers.tsx`). Esto simplifica la mantención del proveedor global y permite verificar el comportamiento de habilitación de PWA y accesibilidad mediante pruebas unitarias rápidas e independientes.
+**Acción:** Reutilizar siempre `src/lib/providers-utils.ts` al extender proveedores globales de contexto o ajustar banderas de entorno de PWA.
+
 ### 2026-09-24 - Extracción de Funciones Helper Puras para RootLayout y RootLoading
 **Aprendizaje:** Encapsular la composición de clases CSS del tag body (`getRootBodyClasses`), las propiedades HTML del elemento raíz (`getRootHtmlAttributes`), la etiqueta accesible ARIA de carga global (`getRootLoadingAriaLabel`) y el estilo del contenedor principal del esqueleto de carga streaming (`getRootLoadingClasses`) en `src/lib/root-layout-utils.ts` desacopla los atributos de maquetación e idioma de la renderización en `RootLayout` (`src/app/layout.tsx`) y `RootLoading` (`src/app/loading.tsx`). Esto simplifica la mantención del layout raíz y facilita la verificación directa mediante unit tests sin requerir renderizado DOM.
 **Acción:** Reutilizar siempre las utilidades de `src/lib/root-layout-utils.ts` al extender la configuración HTML o estilos globales del layout raíz.
