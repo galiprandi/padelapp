@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-09-10
+## Última actualización: 2026-09-23
 
 ## Estado actual
 
 ### Completado
+- Phase 46 (GraphView Pure Helpers Extraction, ARIA Region Landmarks & Unit Tests):
+  - [x] 2026-09-23 — Hecho: Extraídas las funciones puras `getGraphViewLoadingText`, `getGraphViewEmptyDataProps`, `getGraphViewScopeAriaLabel`, `getGraphViewSearchAriaLabel`, `getGraphViewEmptySearchProps`, `getGraphViewNodeName` y `getGraphViewLegendAriaLabel` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-23 — Hecho: Refactorizado `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para estados de carga, mensajes cuando no hay datos, etiquetas de alcance ARIA, búsqueda, estado sin resultados, formateo de nombres de nodo y leyenda del grafo.
+  - [x] 2026-09-23 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 45 (Network Expansion Potential Solid MDS Badging, Skeleton ARIA Landmarks & Stats Panel Helpers Extraction):
   - [x] 2026-09-22 — Hecho: Extraídas las funciones puras `formatTimeAgo`, `getNetworkSkeletonAriaLabel`, `getStatsPanelRegionAriaLabel` y `getTopPlayerExpansionAriaLabel` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-22 — Hecho: Refactorizados `StatsPanel` (`src/app/network/stats-panel.tsx`) y `NetworkSkeleton` (`src/app/network/network-skeleton.tsx`) para consumir los helpers extraídos, envolver secciones en contenedores de referencia `role="region"` (`aria-busy="true"`) y desplegar insignias sólidas MDS de potencial de expansión de red ('Red en expansión activa 🚀', 'Potencial de conexión 🌐', 'Red consolidada 🏛️', 'Círculo exclusivo 🔒') para la lista de jugadores 'Más conectados'.
@@ -230,3 +234,4 @@
 - **Opciones de Filtro de Comunidad con Conteo de Miembros**: Enriquecer los chips de filtro de comunidades Louvain en el visor del grafo (`calculateCommunityFilterOptions`) agregando la cantidad de jugadores por grupo (ej. 'Grupo 1 (3)') y proporcionando atributos de accesibilidad ARIA con resúmenes en voz argentina ayuda a los usuarios a anticipar el tamaño y relevancia de cada cluster comunitario antes de aplicar el filtro.
 - **Balance de Posiciones en Cancha por Comunidad Louvain**: Evaluar la distribución táctica de lados de cancha (Derecha/Revés/Ambos) dentro de un cluster comunitario (`calculateCommunityBalanceInfo`) permite predecir la facilidad para organizar partidos dentro del grupo. Categorizar este balance en insignias sólidas MDS ("Equilibrio Der/Rev ⚖️", "Flexibilidad total 🔄") con descripciones ARIA en voz argentina tanto en el visor interactivo del grafo como en el panel de métricas brinda información inmediata sobre la complementariedad del grupo.
 - **Complementariedad y Sinergia de Duplas en Grafos de Pádel**: Evaluar matemáticamente la sinergia posicional en cancha (Der + Rev) combinada con el porcentaje de victorias en duplas (`calculatePlayerMatchComplementarity`) permite identificar instantáneamente parejas óptimas ("Dupla sinérgica ideal 🎯", "Sinergia técnica ⚡") frente a combinaciones que requieren ajustes tácticos ("Ajuste táctico ⚠️"). Presentar estas insignias sólidas MDS con etiquetas de accesibilidad ARIA descriptivas en voz argentina eleva la experiencia de descubrimiento social y emparejamiento táctico.
+- **Extracción de Helpers Puros y Accesibilidad ARIA en GraphView**: Aislar la lógica de formateo de nombres de usuario (`getGraphViewNodeName`), etiquetas descriptivas de accesibilidad para lectores de pantalla (`getGraphViewScopeAriaLabel`, `getGraphViewSearchAriaLabel`, `getGraphViewLegendAriaLabel`) y estructuras de estados vacíos (`getGraphViewEmptyDataProps`, `getGraphViewEmptySearchProps`) en `graph-utils.ts` descalcula la vista interactiva de canvas (`GraphView`), garantizando coherencia en la interfaz y facilitando una cobertura completa de pruebas unitarias sin acoplamiento a renderizado client-side.

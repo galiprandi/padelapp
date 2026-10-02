@@ -39,13 +39,20 @@ import {
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
   calculateNetworkExpansionPotential,
+  getGraphViewLoadingText,
+  getGraphViewEmptyDataProps,
+  getGraphViewScopeAriaLabel,
+  getGraphViewSearchAriaLabel,
+  getGraphViewEmptySearchProps,
+  getGraphViewNodeName,
+  getGraphViewLegendAriaLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-[60vh] text-sm text-muted-foreground">
-      Cargando grafo...
+      {getGraphViewLoadingText()}
     </div>
   ),
 });
@@ -341,7 +348,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       const isViewer = viewerId === node.id;
       const radius = isHovered || isSelected ? baseSize * 1.2 : baseSize;
       const color = nodeColor(node);
-      const label = isViewer ? "Vos" : capitalizeName(node.name || node.alias || "?");
+      const label = getGraphViewNodeName(node.name, node.alias, isViewer);
       const fontSize = Math.max(11 / globalScale, 3.5);
 
       ctx.beginPath();
@@ -484,22 +491,22 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   }, []);
 
   if (graphData.nodes.length === 0) {
+    const emptyDataProps = getGraphViewEmptyDataProps();
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] gap-3 text-center px-6">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
           <CalendarDays className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
-        <p className="text-lg font-bold text-foreground">Sin datos aún</p>
+        <p className="text-lg font-bold text-foreground">{emptyDataProps.title}</p>
         <p className="text-sm text-muted-foreground max-w-xs">
-          La red se construye automáticamente cuando se confirman partidos.
-          Aún no hay partidos confirmados.
+          {emptyDataProps.description}
         </p>
         <Link
-          href="/match/new"
+          href={emptyDataProps.buttonHref}
           prefetch={true}
           className="mt-2 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.98]"
         >
-          Crear partido
+          {emptyDataProps.buttonText}
         </Link>
       </div>
     );
@@ -538,7 +545,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
-                aria-label="Ver mi red de contactos únicamente"
+                aria-label={getGraphViewScopeAriaLabel("personal")}
               >
                 <Users2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Mi red
@@ -554,7 +561,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
-                aria-label="Ver la red global de jugadores"
+                aria-label={getGraphViewScopeAriaLabel("global")}
               >
                 <Globe2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Red completa
@@ -573,7 +580,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
-              aria-label="Buscar jugador en el grafo"
+              aria-label={getGraphViewSearchAriaLabel()}
             />
             {searchQuery && (
               <button
@@ -742,23 +749,26 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
       {/* Empty search or filter results notice */}
       {filteredData.nodes.length === 0 && (searchQuery.trim() || linkFilter !== "all" || selectedCommunity !== null) && (
-        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
-          <p className="text-sm font-semibold text-muted-foreground">
-            {searchQuery.trim()
-              ? `No se encontraron jugadores que coincidan con "${searchQuery.trim()}"`
-              : "No hay conexiones que coincidan con los filtros seleccionados"}
-          </p>
-          <button
-            onClick={() => {
-              setSearchQuery("");
-              setLinkFilter("all");
-              setSelectedCommunity(null);
-            }}
-            className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
-          >
-            Restablecer filtros
-          </button>
-        </div>
+        (() => {
+          const emptySearchProps = getGraphViewEmptySearchProps(searchQuery);
+          return (
+            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
+              <p className="text-sm font-semibold text-muted-foreground">
+                {emptySearchProps.message}
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setLinkFilter("all");
+                  setSelectedCommunity(null);
+                }}
+                className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
+              >
+                {emptySearchProps.buttonText}
+              </button>
+            </div>
+          );
+        })()
       )}
 
       <ForceGraph2D
@@ -813,7 +823,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">
-                {selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?")}
+                {getGraphViewNodeName(selectedNodeData.name, selectedNodeData.alias, selectedNodeData.id === viewerId)}
               </p>
               <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                 <p className="text-xs text-muted-foreground">
@@ -1289,7 +1299,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2.5 border border-border shadow-sm">
+      <div
+        className="absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2.5 border border-border shadow-sm"
+        aria-label={getGraphViewLegendAriaLabel()}
+      >
         <p className="text-xs text-muted-foreground mb-1.5 font-medium">
           Leyenda
         </p>

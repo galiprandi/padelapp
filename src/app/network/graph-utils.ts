@@ -1,4 +1,5 @@
 import type { GraphLink, GraphNode } from "./actions";
+import { capitalizeName } from "@/lib/utils";
 
 export function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
@@ -393,6 +394,67 @@ export function calculateCommunitySummary(
     undefinedSideCount,
     formattedSummary: parts.join(" · "),
   };
+}
+
+export function getGraphViewLoadingText(): string {
+  return "Cargando grafo...";
+}
+
+export interface GraphViewEmptyDataProps {
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonHref: string;
+}
+
+export function getGraphViewEmptyDataProps(): GraphViewEmptyDataProps {
+  return {
+    title: "Sin datos aún",
+    description:
+      "La red se construye automáticamente cuando se confirman partidos. Aún no hay partidos confirmados.",
+    buttonText: "Crear partido",
+    buttonHref: "/match/new",
+  };
+}
+
+export function getGraphViewScopeAriaLabel(scope: "personal" | "global"): string {
+  return scope === "personal"
+    ? "Ver mi red de contactos únicamente"
+    : "Ver la red completa de jugadores";
+}
+
+export function getGraphViewSearchAriaLabel(): string {
+  return "Buscar jugador en el grafo";
+}
+
+export interface GraphViewEmptySearchProps {
+  message: string;
+  buttonText: string;
+}
+
+export function getGraphViewEmptySearchProps(
+  searchQuery: string,
+): GraphViewEmptySearchProps {
+  const trimmed = searchQuery.trim();
+  return {
+    message: trimmed
+      ? `No se encontraron jugadores que coincidan con "${trimmed}"`
+      : "No hay conexiones que coincidan con los filtros seleccionados",
+    buttonText: "Restablecer filtros",
+  };
+}
+
+export function getGraphViewNodeName(
+  nodeName: string | null | undefined,
+  nodeAlias: string | null | undefined,
+  isViewer: boolean,
+): string {
+  if (isViewer) return "Vos";
+  return capitalizeName(nodeName || nodeAlias || "?");
+}
+
+export function getGraphViewLegendAriaLabel(): string {
+  return "Leyenda de conexiones del grafo: Pareja (verde), Rival (rojo), Mixto (amarillo), Turnos (gris)";
 }
 
 export function formatTimeAgo(date: Date | string | number): string {
