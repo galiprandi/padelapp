@@ -16,6 +16,9 @@ import {
   getLeaveTurnRegionAriaLabel,
   getCancelLeaveTurnAriaLabel,
   getConfirmLeaveTurnAriaLabel,
+  getLateLeaveWarningTitle,
+  getLateLeaveWarningDescription,
+  getWasFullSharePromptText,
 } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
@@ -82,17 +85,17 @@ export function LeaveTurnButton({
         <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left shadow-xs">
           <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
             <span className="inline-block h-2 w-2 rounded-full bg-destructive" />
-            Baja tardía detectada
+            {getLateLeaveWarningTitle()}
           </p>
           <p className="text-xs text-muted-foreground">
-            Falta menos de 2 horas para el turno. Si te bajás ahora, tu <strong className="text-foreground">reputación de asistencia bajará un 5%</strong>.
+            {getLateLeaveWarningDescription()}
           </p>
         </div>
       )}
       {wasFull && (
         <div className="rounded-lg border border-border bg-card p-3 flex flex-col gap-2 shadow-xs">
           <p className="text-xs text-muted-foreground text-center">
-            ¿No podés venir? Compartí el link para que alguien ocupe tu lugar:
+            {getWasFullSharePromptText()}
           </p>
           <ShareButton
             title="Sumate al Turno"

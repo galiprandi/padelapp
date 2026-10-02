@@ -1780,3 +1780,59 @@ export function getOpenToNetworkResultSubtitle(notified: number): string {
 export function getOpenToNetworkResultDescription(): string {
   return "Recibirán una push para sumarse.";
 }
+
+/**
+ * Format title for late leave penalty warning.
+ */
+export function getLateLeaveWarningTitle(): string {
+  return "Baja tardía detectada";
+}
+
+/**
+ * Format description text for late leave penalty warning.
+ */
+export function getLateLeaveWarningDescription(): string {
+  return "Falta menos de 2 horas para el turno. Si te bajás ahora, tu reputación de asistencia bajará un 5%.";
+}
+
+/**
+ * Format prompt text for sharing link when leaving a full turn.
+ */
+export function getWasFullSharePromptText(): string {
+  return "¿No podés venir? Compartí el link para que alguien ocupe tu lugar:";
+}
+
+/**
+ * Format confirmation explanation text when marking a turn as casual/played.
+ */
+export function getPlayCasualConfirmText(): string {
+  return "Se cerrará el turno sin registrar un partido ni resultados en el ranking.";
+}
+
+/**
+ * Format ARIA label for dismissing cancel turn confirmation.
+ */
+export function getCancelTurnDismissAriaLabel(): string {
+  return "Cancelar eliminación del turno";
+}
+
+/**
+ * Format ARIA label for dismissing play casual confirmation.
+ */
+export function getPlayCasualDismissAriaLabel(): string {
+  return "Cancelar confirmación de marcar como jugado";
+}
+
+/**
+ * Format accessible ARIA label for quick join empty slot button.
+ */
+export function getQuickJoinEmptySlotAriaLabel(isPending: boolean = false): string {
+  return isPending ? "Sumándome al turno..." : "Sumarse en este cupo disponible";
+}
+
+/**
+ * Format button text for quick join empty slot button.
+ */
+export function getQuickJoinEmptySlotText(isPending: boolean = false): string {
+  return isPending ? "Sumando..." : "Sumarme";
+}

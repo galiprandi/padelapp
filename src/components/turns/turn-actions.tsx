@@ -48,6 +48,11 @@ import {
   getScheduleNextTurnErrorToast,
   getPlayCasualSuccessToast,
   getPlayCasualErrorToast,
+  getCancelTurnDismissAriaLabel,
+  getPlayCasualDismissAriaLabel,
+  getPlayCasualConfirmText,
+  getQuickJoinEmptySlotAriaLabel,
+  getQuickJoinEmptySlotText,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -103,7 +108,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         onClick={() => setConfirming(false)}
         className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-        aria-label="Cancelar eliminación del turno"
+        aria-label={getCancelTurnDismissAriaLabel()}
       >
         <X className="h-4 w-4" />
       </Button>
@@ -153,16 +158,16 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
       size="sm"
       variant="outline"
       className="h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-      aria-label={isPending ? "Sumándome al turno..." : "Sumarse en este cupo disponible"}
+      aria-label={getQuickJoinEmptySlotAriaLabel(isPending)}
       aria-busy={isPending}
     >
       {isPending ? (
         <>
           <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-          <span>Sumando...</span>
+          <span>{getQuickJoinEmptySlotText(true)}</span>
         </>
       ) : (
-        "Sumarme"
+        getQuickJoinEmptySlotText(false)
       )}
     </Button>
   );
@@ -469,7 +474,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
       className="flex flex-col gap-2 rounded-lg border border-border bg-card shadow-xs p-3 focus-visible:outline-none"
     >
       <p className="text-xs text-muted-foreground text-center">
-        ¿Marcar como jugado? <strong className="text-foreground">Se cerrará el turno</strong> sin registrar un partido ni resultados en el ranking.
+        ¿Marcar como jugado? <strong className="text-foreground">{getPlayCasualConfirmText()}</strong>
       </p>
       <div className="flex gap-2">
         <Button
@@ -478,7 +483,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           variant="outline"
           disabled={isPending}
           className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Cancelar confirmación de marcar como jugado"
+          aria-label={getPlayCasualDismissAriaLabel()}
         >
           <X className="mr-2 h-4 w-4" />
           Cancelar
