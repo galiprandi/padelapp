@@ -5,6 +5,7 @@ import {
   getAgendaItems,
   getHeroActivity,
   formatDashboardWelcomeSubtitle,
+  getDashboardSkeletonAriaLabel,
   type DashboardMatch,
   type DashboardTurn,
 } from "../dashboard-utils";
@@ -188,6 +189,12 @@ describe("dashboard-utils", () => {
       expect(formatDashboardWelcomeSubtitle(false)).toBe(
         "Tu actividad de pádel en un solo lugar.",
       );
+    });
+  });
+
+  describe("getDashboardSkeletonAriaLabel", () => {
+    it("returns dashboard loading skeleton ARIA label string", () => {
+      expect(getDashboardSkeletonAriaLabel()).toBe("Cargando mi perfil y panel principal de pádel");
     });
   });
 });

@@ -48,6 +48,7 @@ import {
   getHeadToHeadRegionAriaLabel,
   formatH2HLastMatchResultText,
   getMatchHistoryRegionAriaLabel,
+  getPublicProfileSkeletonAriaLabel,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -518,7 +519,12 @@ function MiniCourtIndicator({
 
 function PublicProfileSkeleton() {
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      role="region"
+      aria-busy="true"
+      aria-label={getPublicProfileSkeletonAriaLabel()}
+    >
       {/* Profile summary skeleton */}
       <div className="flex flex-col items-center gap-4 text-center">
         <Skeleton className="h-24 w-24 rounded-full" />

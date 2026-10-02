@@ -18,6 +18,7 @@ import {
   getHeadToHeadRegionAriaLabel,
   formatH2HLastMatchResultText,
   getMatchHistoryRegionAriaLabel,
+  getPublicProfileSkeletonAriaLabel,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -175,6 +176,10 @@ describe("public-profile-utils", () => {
       expect(formatH2HLastMatchResultText(true, "6-4 6-2")).toBe("Victoria • 6-4 6-2");
       expect(formatH2HLastMatchResultText(false, "3-6 4-6")).toBe("Derrota • 3-6 4-6");
       expect(formatH2HLastMatchResultText(true, null)).toBe("Victoria");
+    });
+
+    it("returns public profile skeleton ARIA label", () => {
+      expect(getPublicProfileSkeletonAriaLabel()).toBe("Cargando perfil público y estadísticas de jugador");
     });
   });
 });

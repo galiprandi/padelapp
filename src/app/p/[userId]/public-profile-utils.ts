@@ -147,3 +147,7 @@ export function formatH2HLastMatchResultText(
 export function getMatchHistoryRegionAriaLabel(): string {
   return "Historial reciente de partidos";
 }
+
+export function getPublicProfileSkeletonAriaLabel(): string {
+  return "Cargando perfil público y estadísticas de jugador";
+}
