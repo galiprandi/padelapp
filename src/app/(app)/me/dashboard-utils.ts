@@ -121,3 +121,7 @@ export function formatDashboardWelcomeSubtitle(isNewUser: boolean): string {
     ? "Bienvenido. Empezá creando tu primer turno."
     : "Tu actividad de pádel en un solo lugar.";
 }
+
+export function getDashboardSkeletonAriaLabel(): string {
+  return "Cargando mi perfil y panel principal de pádel";
+}

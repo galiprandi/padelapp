@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDashboardSkeletonAriaLabel } from "./dashboard-utils";
 
 export default function DashboardLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      className="flex flex-col gap-6"
+      role="region"
+      aria-busy="true"
+      aria-label={getDashboardSkeletonAriaLabel()}
+    >
       {/* Greeting */}
       <div className="flex items-center gap-4">
         <Skeleton className="h-11 w-11 rounded-full" />

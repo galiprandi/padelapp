@@ -1,9 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft } from "lucide-react";
+import { getPublicProfileSkeletonAriaLabel } from "./public-profile-utils";
 
 export default function PublicProfileLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
+    <div
+      className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen"
+      role="region"
+      aria-busy="true"
+      aria-label={getPublicProfileSkeletonAriaLabel()}
+    >
       {/* Header with back button */}
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
