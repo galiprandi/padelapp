@@ -136,6 +136,14 @@ import {
   getTurnosLoadingAriaLabel,
   getNewTurnLoadingAriaLabel,
   getEditTurnLoadingAriaLabel,
+  getLateLeaveWarningTitle,
+  getLateLeaveWarningDescription,
+  getWasFullSharePromptText,
+  getPlayCasualConfirmText,
+  getCancelTurnDismissAriaLabel,
+  getPlayCasualDismissAriaLabel,
+  getQuickJoinEmptySlotAriaLabel,
+  getQuickJoinEmptySlotText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -809,6 +817,40 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("New turn action and late leave warning pure helpers", () => {
+  it("formats getLateLeaveWarningTitle and getLateLeaveWarningDescription in Argentine Spanish", () => {
+    expect(getLateLeaveWarningTitle()).toBe("Baja tardía detectada");
+    expect(getLateLeaveWarningDescription()).toBe(
+      "Falta menos de 2 horas para el turno. Si te bajás ahora, tu reputación de asistencia bajará un 5%."
+    );
+  });
+
+  it("formats getWasFullSharePromptText", () => {
+    expect(getWasFullSharePromptText()).toBe(
+      "¿No podés venir? Compartí el link para que alguien ocupe tu lugar:"
+    );
+  });
+
+  it("formats getPlayCasualConfirmText", () => {
+    expect(getPlayCasualConfirmText()).toBe(
+      "Se cerrará el turno sin registrar un partido ni resultados en el ranking."
+    );
+  });
+
+  it("formats dismiss ARIA labels for cancel turn and play casual forms", () => {
+    expect(getCancelTurnDismissAriaLabel()).toBe("Cancelar eliminación del turno");
+    expect(getPlayCasualDismissAriaLabel()).toBe("Cancelar confirmación de marcar como jugado");
+  });
+
+  it("formats getQuickJoinEmptySlotAriaLabel and getQuickJoinEmptySlotText for idle and pending states", () => {
+    expect(getQuickJoinEmptySlotAriaLabel(false)).toBe("Sumarse en este cupo disponible");
+    expect(getQuickJoinEmptySlotAriaLabel(true)).toBe("Sumándome al turno...");
+
+    expect(getQuickJoinEmptySlotText(false)).toBe("Sumarme");
+    expect(getQuickJoinEmptySlotText(true)).toBe("Sumando...");
   });
 });
 
