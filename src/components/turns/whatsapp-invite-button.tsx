@@ -9,6 +9,9 @@ import {
   getWhatsAppGroupInviteSuccessToast,
   getWhatsAppInviteAriaLabel,
   getWhatsAppGroupInviteAriaLabel,
+  getWhatsAppInviteButtonText,
+  getWhatsAppGroupInviteButtonText,
+  getFallbackWhatsAppShareUrl,
 } from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -49,7 +52,7 @@ export function WhatsAppInviteButton({
 
   return (
     <a
-      href={whatsappUrl || "#"}
+      href={whatsappUrl || getFallbackWhatsAppShareUrl()}
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 shadow-xs"
@@ -57,7 +60,7 @@ export function WhatsAppInviteButton({
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
-      <span>Invitar</span>
+      <span>{getWhatsAppInviteButtonText()}</span>
     </a>
   );
 }
@@ -107,7 +110,7 @@ export function WhatsAppGroupInviteButton({
 
   return (
     <a
-      href={whatsappUrl || "#"}
+      href={whatsappUrl || getFallbackWhatsAppShareUrl()}
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 ${variantStyles} ${className ?? ""}`}
@@ -115,7 +118,7 @@ export function WhatsAppGroupInviteButton({
       onClick={handleClick}
     >
       <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
-      <span>Grupo WhatsApp</span>
+      <span>{getWhatsAppGroupInviteButtonText()}</span>
     </a>
   );
 }

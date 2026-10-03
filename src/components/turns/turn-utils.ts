@@ -1195,6 +1195,27 @@ export function getWhatsAppGroupInviteAriaLabel(
 }
 
 /**
+ * Format button label text for individual WhatsApp invite trigger.
+ */
+export function getWhatsAppInviteButtonText(): string {
+  return "Invitar";
+}
+
+/**
+ * Format button label text for WhatsApp group invite trigger.
+ */
+export function getWhatsAppGroupInviteButtonText(): string {
+  return "Grupo WhatsApp";
+}
+
+/**
+ * Format fallback anchor URL for WhatsApp sharing when no dynamic link is generated.
+ */
+export function getFallbackWhatsAppShareUrl(): string {
+  return "https://wa.me/";
+}
+
+/**
  * Format contact badge label text in Argentine Spanish.
  */
 export function getContactBadgeText(isFrequent: boolean = false): string {
