@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getInstallSkeletonAriaLabel } from "@/components/share/install-utils";
 
 export default function InstallLoading() {
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+    <main
+      role="region"
+      aria-busy="true"
+      aria-label={getInstallSkeletonAriaLabel()}
+      className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+    >
       <div className="flex w-full max-w-sm flex-col items-center gap-8">
         {/* Logo skeleton */}
         <Skeleton className="h-20 w-20 rounded-2xl" />

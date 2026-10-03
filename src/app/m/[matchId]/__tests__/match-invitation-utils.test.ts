@@ -5,6 +5,7 @@ import {
   defaultTeamLabel,
   getMatchInvitationTitle,
   getMatchInvitationMetadata,
+  getMatchInvitationSkeletonAriaLabel,
   MATCH_STATUS,
 } from "../match-invitation-utils";
 
@@ -65,6 +66,12 @@ describe("match-invitation-utils", () => {
     it("returns 'Torneo Local' for non-FRIENDLY matchType", () => {
       expect(getMatchInvitationTitle("COMPETITIVE")).toBe("Torneo Local");
       expect(getMatchInvitationTitle("TOURNAMENT")).toBe("Torneo Local");
+    });
+  });
+
+  describe("getMatchInvitationSkeletonAriaLabel", () => {
+    it("returns localized ARIA label for match invitation loading skeleton", () => {
+      expect(getMatchInvitationSkeletonAriaLabel()).toBe("Cargando invitación al partido...");
     });
   });
 

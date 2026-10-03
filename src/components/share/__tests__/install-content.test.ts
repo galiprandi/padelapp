@@ -6,6 +6,7 @@ import {
   getPlatformRadioAriaLabel,
   getInstallStatusAriaLabel,
   getInstallPageAriaLabel,
+  getInstallSkeletonAriaLabel,
   getInstallPageTitle,
   getInstallPageDescription,
   getInstallPageBackAriaLabel,
@@ -80,6 +81,7 @@ describe("PWA install guide and platform detection logic", () => {
 
   it("returns correct localized ARIA labels and copy strings for InstallPage", () => {
     expect(getInstallPageAriaLabel()).toBe("Página de instalación de la aplicación Padel Red");
+    expect(getInstallSkeletonAriaLabel()).toBe("Cargando guía de instalación de Padel Red");
     expect(getInstallPageTitle()).toBe("Instalar Padel Red");
     expect(getInstallPageDescription()).toBe("Agregá la app a tu pantalla de inicio para acceder más rápido.");
     expect(getInstallPageBackAriaLabel()).toBe("Volver a la página principal");

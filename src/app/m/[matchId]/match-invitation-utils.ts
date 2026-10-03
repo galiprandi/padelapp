@@ -65,3 +65,10 @@ export function getMatchInvitationMetadata(match: {
     description: `Sumate al partido en ${clubName} el ${formattedDate}.`,
   };
 }
+
+/**
+ * Returns accessible ARIA region label for match invitation skeleton loading container.
+ */
+export function getMatchInvitationSkeletonAriaLabel(): string {
+  return "Cargando invitación al partido...";
+}

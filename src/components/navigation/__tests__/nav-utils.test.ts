@@ -7,6 +7,7 @@ import {
   getNavItemAriaAttributes,
   getBottomNavAriaLabel,
   getBottomNavSkeletonAriaLabel,
+  getCatalogSkeletonAriaLabel,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
@@ -40,6 +41,12 @@ describe("nav-utils", () => {
   describe("getBottomNavSkeletonAriaLabel", () => {
     it("returns Spanish screen reader label for loading bottom navigation skeleton", () => {
       expect(getBottomNavSkeletonAriaLabel()).toBe("Cargando navegación principal de Padel Red");
+    });
+  });
+
+  describe("getCatalogSkeletonAriaLabel", () => {
+    it("returns Spanish screen reader label for loading catalog skeleton", () => {
+      expect(getCatalogSkeletonAriaLabel()).toBe("Cargando catálogo de componentes de Padel Red");
     });
   });
 

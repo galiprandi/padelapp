@@ -50,6 +50,13 @@ export function getInstallPageAriaLabel(): string {
 }
 
 /**
+ * Returns localized ARIA accessibility label for the install guide skeleton loading state.
+ */
+export function getInstallSkeletonAriaLabel(): string {
+  return "Cargando guía de instalación de Padel Red";
+}
+
+/**
  * Returns localized title text for the install page header.
  */
 export function getInstallPageTitle(): string {

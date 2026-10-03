@@ -47,6 +47,13 @@ export function getBottomNavSkeletonAriaLabel(): string {
 }
 
 /**
+ * Retorna la etiqueta ARIA de accesibilidad para el esqueleto de carga del catálogo de componentes.
+ */
+export function getCatalogSkeletonAriaLabel(): string {
+  return "Cargando catálogo de componentes de Padel Red";
+}
+
+/**
  * Retorna la lista de ítems principales de navegación de la aplicación.
  */
 export function getNavItems(): NavItem[] {
