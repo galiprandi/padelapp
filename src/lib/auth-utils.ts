@@ -47,6 +47,20 @@ export function getLoginLoadingText(): string {
   return "Cargando…";
 }
 
+/**
+ * Returns the localized ARIA accessibility label for the Google sign-in form landmark.
+ */
+export function getSignInFormAriaLabel(): string {
+  return "Formulario de inicio de sesión con Google";
+}
+
+/**
+ * Returns container CSS classes for the sign-in form element.
+ */
+export function getSignInFormClasses(className?: string): string {
+  return className ? `w-full ${className}` : "w-full";
+}
+
 export function safeCallbackUrl(url: string | undefined, fallback = "/me"): string {
   if (!url) return fallback;
   if (!url.startsWith("/")) return fallback;
