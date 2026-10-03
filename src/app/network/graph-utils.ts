@@ -1,5 +1,5 @@
 import type { GraphLink, GraphNode } from "./actions";
-import { capitalizeName } from "@/lib/utils";
+import { capitalizeName, cn } from "@/lib/utils";
 
 export function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
@@ -455,6 +455,43 @@ export function getGraphViewNodeName(
 
 export function getGraphViewLegendAriaLabel(): string {
   return "Leyenda de conexiones del grafo: Pareja (verde), Rival (rojo), Mixto (amarillo), Turnos (gris)";
+}
+
+export function getNetworkPageContainerClasses(): string {
+  return "flex flex-col h-[100dvh] overflow-hidden bg-background";
+}
+
+export function getNetworkPageTabBarClasses(): string {
+  return "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0";
+}
+
+export function getNetworkPageContentClasses(): string {
+  return "flex-1 overflow-y-auto";
+}
+
+export function getNetworkPageStatsContentClasses(): string {
+  return "p-4 pb-24";
+}
+
+export function getNetworkPageTabButtonClasses(active: boolean): string {
+  return cn(
+    "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    active
+      ? "bg-primary text-primary-foreground shadow-xs"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+  );
+}
+
+export function getNetworkPageTabAriaLabel(tab: "stats" | "graph"): string {
+  return tab === "stats"
+    ? "Ver panel de métricas de la red de contactos"
+    : "Ver mapa interactivo del grafo de la red";
+}
+
+export function getNetworkPageRegionAriaLabel(tab: "stats" | "graph"): string {
+  return tab === "stats"
+    ? "Sección de métricas de la red de contactos"
+    : "Sección del grafo interactivo de la red";
 }
 
 export function formatTimeAgo(date: Date | string | number): string {

@@ -2,9 +2,17 @@
 
 import { useState } from "react";
 import { BarChart3, Network as NetworkIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { StatsPanel } from "./stats-panel";
 import { GraphView } from "./graph-view";
+import {
+  getNetworkPageContainerClasses,
+  getNetworkPageTabBarClasses,
+  getNetworkPageContentClasses,
+  getNetworkPageStatsContentClasses,
+  getNetworkPageTabButtonClasses,
+  getNetworkPageTabAriaLabel,
+  getNetworkPageRegionAriaLabel,
+} from "./graph-utils";
 import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 
 interface NetworkPageClientProps {
@@ -20,27 +28,37 @@ export function NetworkPageClient({ metrics, graphData, viewerId, playersLikeYou
   const [tab, setTab] = useState<Tab>("stats");
 
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-background">
+    <div
+      role="region"
+      aria-label={getNetworkPageRegionAriaLabel(tab)}
+      className={getNetworkPageContainerClasses()}
+    >
       {/* Tab bar */}
-      <div className="flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0">
+      <div
+        role="tablist"
+        aria-label="Pestañas de la red de contactos"
+        className={getNetworkPageTabBarClasses()}
+      >
         <TabButton
           active={tab === "stats"}
           onClick={() => setTab("stats")}
           icon={BarChart3}
           label="Métricas"
+          tab="stats"
         />
         <TabButton
           active={tab === "graph"}
           onClick={() => setTab("graph")}
           icon={NetworkIcon}
           label="Grafo"
+          tab="graph"
         />
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className={getNetworkPageContentClasses()}>
         {tab === "stats" ? (
-          <div className="p-4 pb-24">
+          <div className={getNetworkPageStatsContentClasses()}>
             <StatsPanel
               metrics={metrics}
               graphNodes={graphData.nodes.length}
@@ -62,22 +80,22 @@ function TabButton({
   onClick,
   icon: Icon,
   label,
+  tab,
 }: {
   active: boolean;
   onClick: () => void;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  tab: Tab;
 }) {
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-        active
-          ? "bg-primary text-primary-foreground shadow-xs"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-      )}
+      role="tab"
+      aria-selected={active}
       aria-pressed={active}
+      aria-label={getNetworkPageTabAriaLabel(tab)}
+      className={getNetworkPageTabButtonClasses(active)}
     >
       <Icon className="h-4 w-4" aria-hidden="true" />
       {label}

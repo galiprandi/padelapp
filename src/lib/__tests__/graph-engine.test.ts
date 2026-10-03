@@ -227,6 +227,13 @@ import {
   getGraphViewEmptySearchProps,
   getGraphViewNodeName,
   getGraphViewLegendAriaLabel,
+  getNetworkPageContainerClasses,
+  getNetworkPageTabBarClasses,
+  getNetworkPageContentClasses,
+  getNetworkPageStatsContentClasses,
+  getNetworkPageTabButtonClasses,
+  getNetworkPageTabAriaLabel,
+  getNetworkPageRegionAriaLabel,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1479,6 +1486,80 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("NetworkPageClient pure helpers", () => {
+  describe("getNetworkPageContainerClasses", () => {
+    it("returns expected container layout CSS classes", () => {
+      expect(getNetworkPageContainerClasses()).toBe(
+        "flex flex-col h-[100dvh] overflow-hidden bg-background",
+      );
+    });
+  });
+
+  describe("getNetworkPageTabBarClasses", () => {
+    it("returns expected tab bar CSS classes", () => {
+      expect(getNetworkPageTabBarClasses()).toBe(
+        "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0",
+      );
+    });
+  });
+
+  describe("getNetworkPageContentClasses", () => {
+    it("returns expected scrollable content CSS classes", () => {
+      expect(getNetworkPageContentClasses()).toBe("flex-1 overflow-y-auto");
+    });
+  });
+
+  describe("getNetworkPageStatsContentClasses", () => {
+    it("returns expected padding CSS classes for stats tab", () => {
+      expect(getNetworkPageStatsContentClasses()).toBe("p-4 pb-24");
+    });
+  });
+
+  describe("getNetworkPageTabButtonClasses", () => {
+    it("returns active primary button styling when active is true", () => {
+      const activeClasses = getNetworkPageTabButtonClasses(true);
+      expect(activeClasses).toContain("bg-primary");
+      expect(activeClasses).toContain("text-primary-foreground");
+      expect(activeClasses).toContain("active:scale-[0.98]");
+      expect(activeClasses).toContain("ring-offset-background");
+    });
+
+    it("returns muted button styling when active is false", () => {
+      const inactiveClasses = getNetworkPageTabButtonClasses(false);
+      expect(inactiveClasses).toContain("text-muted-foreground");
+      expect(inactiveClasses).toContain("hover:bg-muted");
+    });
+  });
+
+  describe("getNetworkPageTabAriaLabel", () => {
+    it("returns expected ARIA label for stats tab button", () => {
+      expect(getNetworkPageTabAriaLabel("stats")).toBe(
+        "Ver panel de métricas de la red de contactos",
+      );
+    });
+
+    it("returns expected ARIA label for graph tab button", () => {
+      expect(getNetworkPageTabAriaLabel("graph")).toBe(
+        "Ver mapa interactivo del grafo de la red",
+      );
+    });
+  });
+
+  describe("getNetworkPageRegionAriaLabel", () => {
+    it("returns expected region landmark ARIA label for stats view", () => {
+      expect(getNetworkPageRegionAriaLabel("stats")).toBe(
+        "Sección de métricas de la red de contactos",
+      );
+    });
+
+    it("returns expected region landmark ARIA label for graph view", () => {
+      expect(getNetworkPageRegionAriaLabel("graph")).toBe(
+        "Sección del grafo interactivo de la red",
+      );
+    });
   });
 });
 
