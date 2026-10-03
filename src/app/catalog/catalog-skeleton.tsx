@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCatalogSkeletonAriaLabel } from "@/components/navigation/nav-utils";
 
 export function CatalogSkeleton() {
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getCatalogSkeletonAriaLabel()}
+      className="min-h-screen bg-background p-6"
+    >
       <div className="mx-auto flex gap-12 max-w-none">
         {/* Sidebar skeleton (desktop) */}
         <aside className="w-64 shrink-0 hidden lg:block">

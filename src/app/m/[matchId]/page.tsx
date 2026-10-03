@@ -25,6 +25,7 @@ import {
   defaultTeamLabel,
   getMatchInvitationTitle,
   getMatchInvitationMetadata,
+  getMatchInvitationSkeletonAriaLabel,
 } from "./match-invitation-utils";
 
 interface InvitationPageProps {
@@ -59,7 +60,12 @@ export default function InvitationPage({ params }: InvitationPageProps) {
 
 export function InvitationSkeleton() {
   return (
-    <>
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getMatchInvitationSkeletonAriaLabel()}
+      className="space-y-6"
+    >
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
           <ChevronLeft className="h-5 w-5" />
@@ -133,7 +139,7 @@ export function InvitationSkeleton() {
           <Skeleton className="w-full h-12 rounded-lg" />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

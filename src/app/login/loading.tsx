@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getLoginLoadingAriaLabel } from "@/lib/auth-utils";
 
 export default function LoginLoading() {
   return (
-    <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+    <main
+      role="region"
+      aria-busy="true"
+      aria-label={getLoginLoadingAriaLabel()}
+      className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+    >
       <div className="flex w-full max-w-sm flex-col items-center gap-12">
         {/* Logo + tagline skeleton */}
         <div className="flex flex-col items-center gap-6">
