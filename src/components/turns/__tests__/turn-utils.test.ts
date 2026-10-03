@@ -74,6 +74,9 @@ import {
   getWhatsAppGroupInviteSuccessToast,
   getWhatsAppInviteAriaLabel,
   getWhatsAppGroupInviteAriaLabel,
+  getWhatsAppInviteButtonText,
+  getWhatsAppGroupInviteButtonText,
+  getFallbackWhatsAppShareUrl,
   getContactBadgeText,
   getSuggestedContactSectionAriaLabel,
   getTurnActionsRegionAriaLabel,
@@ -1124,6 +1127,11 @@ describe("WhatsApp Invite pure helpers", () => {
     );
   });
 
+  it("formats getWhatsAppInviteButtonText, getWhatsAppGroupInviteButtonText, and getFallbackWhatsAppShareUrl", () => {
+    expect(getWhatsAppInviteButtonText()).toBe("Invitar");
+    expect(getWhatsAppGroupInviteButtonText()).toBe("Grupo WhatsApp");
+    expect(getFallbackWhatsAppShareUrl()).toBe("https://wa.me/");
+  });
 });
 
 describe("LeaveTurnButton and OpenToNetworkButton pure helpers", () => {
