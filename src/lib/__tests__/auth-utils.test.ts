@@ -6,6 +6,8 @@ import {
   getLoginTaglineText,
   getLoginTermsNoticeText,
   getLoginTitleText,
+  getSignInFormAriaLabel,
+  getSignInFormClasses,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 
@@ -39,6 +41,15 @@ describe("auth-utils login text helpers", () => {
   it("returns a non-empty localized login loading text", () => {
     const loadingText = getLoginLoadingText();
     expect(loadingText).toBe("Cargando…");
+  });
+
+  it("returns localized ARIA label for Google sign-in form", () => {
+    expect(getSignInFormAriaLabel()).toBe("Formulario de inicio de sesión con Google");
+  });
+
+  it("generates sign-in form classes with optional custom className", () => {
+    expect(getSignInFormClasses()).toBe("w-full");
+    expect(getSignInFormClasses("mt-4 flex-col")).toBe("w-full mt-4 flex-col");
   });
 });
 

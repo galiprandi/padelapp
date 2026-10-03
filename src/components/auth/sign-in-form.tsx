@@ -1,6 +1,10 @@
 import { signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
-import { safeCallbackUrl } from "@/lib/auth-utils";
+import {
+  getSignInFormAriaLabel,
+  getSignInFormClasses,
+  safeCallbackUrl,
+} from "@/lib/auth-utils";
 
 interface SignInFormProps {
   callbackUrl: string;
@@ -21,7 +25,12 @@ export function SignInForm({
   }
 
   return (
-    <form action={handleSignIn}>
+    <form
+      action={handleSignIn}
+      role="region"
+      aria-label={getSignInFormAriaLabel()}
+      className={getSignInFormClasses(className)}
+    >
       <SignInButton label={label} className={className} />
     </form>
   );
