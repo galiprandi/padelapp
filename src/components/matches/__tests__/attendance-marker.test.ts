@@ -10,6 +10,11 @@ import {
   getAttendanceSaveErrorToast,
   getAttendanceSaveButtonLabel,
   getAttendanceSaveButtonAriaLabel,
+  getAttendanceSectionRegionAriaLabel,
+  getPlayerFeedbackHeadingText,
+  getPlayerFeedbackSectionAriaLabel,
+  getFeedbackOptionButtonLabel,
+  getFeedbackOptionClasses,
   ATTENDANCE_STATUS_LABELS,
   ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
@@ -157,6 +162,44 @@ describe("attendance-utils", () => {
       expect(getAttendanceSaveButtonAriaLabel(false)).toBe(
         "Guardar asistencia y feedback de nivel de los jugadores",
       );
+    });
+  });
+
+  describe("newly extracted attendance helper functions", () => {
+    it("returns correct region landmark ARIA label", () => {
+      expect(getAttendanceSectionRegionAriaLabel()).toBe(
+        "Control de asistencia y feedback de nivel de los jugadores",
+      );
+    });
+
+    it("returns correct player feedback heading text", () => {
+      expect(getPlayerFeedbackHeadingText()).toBe("Nivel vs. el grupo (opcional):");
+    });
+
+    it("returns correct player feedback section ARIA label", () => {
+      expect(getPlayerFeedbackSectionAriaLabel("Agustín Tapia")).toBe(
+        "Nivel de Agustín Tapia comparado con el grupo",
+      );
+    });
+
+    it("returns correct feedback option button labels", () => {
+      expect(getFeedbackOptionButtonLabel("STRONGER")).toBe("Más fuerte 💪");
+      expect(getFeedbackOptionButtonLabel("WEAKER")).toBe("Más flojo 📉");
+    });
+
+    it("generates correct MDS button CSS classes for unselected state", () => {
+      const classes = getFeedbackOptionClasses(false, "STRONGER");
+      expect(classes).toContain("border-border bg-card text-muted-foreground");
+    });
+
+    it("generates correct MDS button CSS classes for selected STRONGER state", () => {
+      const classes = getFeedbackOptionClasses(true, "STRONGER");
+      expect(classes).toContain("bg-emerald-100 text-emerald-800");
+    });
+
+    it("generates correct MDS button CSS classes for selected WEAKER state", () => {
+      const classes = getFeedbackOptionClasses(true, "WEAKER");
+      expect(classes).toContain("bg-amber-100 text-amber-800");
     });
   });
 });

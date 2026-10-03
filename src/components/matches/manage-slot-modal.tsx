@@ -14,6 +14,10 @@ import {
   getRecentPlayerAriaLabel,
   formatSearchPlayerAriaLabel,
   getSearchResultsStatusAriaLabel,
+  getManageSlotRegionAriaLabel,
+  getManageSlotHeaderTitle,
+  getManageSlotSwapButtonAriaLabel,
+  getManageSlotReleaseButtonAriaLabel,
 } from "./manage-slot-utils";
 
 interface RecentPlayer {
@@ -207,6 +211,8 @@ export function ManageSlotModal({
     }
   };
 
+  const modalAriaLabel = getManageSlotRegionAriaLabel(inputValue || placeholderName);
+
   return (
     <div
       onClick={handleBackdropClick}
@@ -215,13 +221,14 @@ export function ManageSlotModal({
       <div
         role="dialog"
         aria-modal="true"
+        aria-label={modalAriaLabel}
         aria-labelledby="modal-title"
         className="w-full max-w-sm flex flex-col bg-card shadow-xs sm:rounded-xl sm:border sm:border-border sm:max-h-[90dvh] h-[100dvh] sm:h-auto"
       >
         {/* Header — sticky top */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border/50 shrink-0">
           <h2 id="modal-title" className="text-xl font-bold text-foreground">
-            Gestionar jugador
+            {getManageSlotHeaderTitle()}
           </h2>
           <div className="flex gap-2">
             {onSwap && (
@@ -229,6 +236,7 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
+                aria-label={getManageSlotSwapButtonAriaLabel()}
                 className="text-primary hover:bg-primary/10 rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={onSwap}
               >
@@ -241,6 +249,7 @@ export function ManageSlotModal({
                 type="button"
                 variant="ghost"
                 size="sm"
+                aria-label={getManageSlotReleaseButtonAriaLabel()}
                 className="text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={onRelease}
               >

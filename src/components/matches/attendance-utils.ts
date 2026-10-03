@@ -114,3 +114,57 @@ export function getAttendanceSaveButtonAriaLabel(isPending: boolean): string {
   }
   return "Guardar asistencia y feedback de nivel de los jugadores";
 }
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for the attendance section region landmark.
+ */
+export function getAttendanceSectionRegionAriaLabel(): string {
+  return "Control de asistencia y feedback de nivel de los jugadores";
+}
+
+/**
+ * Returns localized Argentine Spanish text for player level feedback heading label.
+ */
+export function getPlayerFeedbackHeadingText(): string {
+  return "Nivel vs. el grupo (opcional):";
+}
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for a player's level feedback radio group.
+ */
+export function getPlayerFeedbackSectionAriaLabel(playerName: string): string {
+  return `Nivel de ${playerName} comparado con el grupo`;
+}
+
+/**
+ * Returns localized Argentine Spanish button text for level feedback options.
+ */
+export function getFeedbackOptionButtonLabel(
+  feedbackType: "STRONGER" | "WEAKER",
+): string {
+  if (feedbackType === "STRONGER") {
+    return "Más fuerte 💪";
+  }
+  return "Más flojo 📉";
+}
+
+/**
+ * Generates solid MDS CSS classes for player level feedback option buttons.
+ */
+export function getFeedbackOptionClasses(
+  isSelected: boolean,
+  feedbackType: "STRONGER" | "WEAKER",
+): string {
+  const baseClasses =
+    "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+
+  if (!isSelected) {
+    return `${baseClasses} border-border bg-card text-muted-foreground hover:bg-muted`;
+  }
+
+  if (feedbackType === "STRONGER") {
+    return `${baseClasses} bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800`;
+  }
+
+  return `${baseClasses} bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800`;
+}
