@@ -63,3 +63,34 @@ export function getSearchResultsStatusAriaLabel(
   }
   return "";
 }
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for the slot management dialog region.
+ */
+export function getManageSlotRegionAriaLabel(titleName?: string): string {
+  if (titleName && titleName.trim().length > 0) {
+    return `Gestionar cupo de ${titleName}`;
+  }
+  return "Gestionar jugador del partido";
+}
+
+/**
+ * Returns localized Argentine Spanish title text for ManageSlotModal header.
+ */
+export function getManageSlotHeaderTitle(): string {
+  return "Gestionar jugador";
+}
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for the slot swap action button.
+ */
+export function getManageSlotSwapButtonAriaLabel(): string {
+  return "Mover o intercambiar posición del jugador";
+}
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for the slot release action button.
+ */
+export function getManageSlotReleaseButtonAriaLabel(): string {
+  return "Quitar o liberar cupo del jugador";
+}

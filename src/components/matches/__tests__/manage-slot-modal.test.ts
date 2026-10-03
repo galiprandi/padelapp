@@ -5,6 +5,10 @@ import {
   getRecentPlayerAriaLabel,
   formatSearchPlayerAriaLabel,
   getSearchResultsStatusAriaLabel,
+  getManageSlotRegionAriaLabel,
+  getManageSlotHeaderTitle,
+  getManageSlotSwapButtonAriaLabel,
+  getManageSlotReleaseButtonAriaLabel,
 } from "../manage-slot-utils";
 
 describe("manage-slot-utils", () => {
@@ -101,6 +105,35 @@ describe("manage-slot-utils", () => {
 
     it("returns empty string when no search query active", () => {
       expect(getSearchResultsStatusAriaLabel(false, false, 0)).toBe("");
+    });
+  });
+
+  describe("newly extracted slot management helper functions", () => {
+    it("returns correct region landmark ARIA label when title name is supplied", () => {
+      expect(getManageSlotRegionAriaLabel("Agustín Tapia")).toBe(
+        "Gestionar cupo de Agustín Tapia",
+      );
+    });
+
+    it("returns default region landmark ARIA label when title name is empty or missing", () => {
+      expect(getManageSlotRegionAriaLabel()).toBe("Gestionar jugador del partido");
+      expect(getManageSlotRegionAriaLabel("  ")).toBe("Gestionar jugador del partido");
+    });
+
+    it("returns correct header title text", () => {
+      expect(getManageSlotHeaderTitle()).toBe("Gestionar jugador");
+    });
+
+    it("returns correct swap button ARIA label", () => {
+      expect(getManageSlotSwapButtonAriaLabel()).toBe(
+        "Mover o intercambiar posición del jugador",
+      );
+    });
+
+    it("returns correct release button ARIA label", () => {
+      expect(getManageSlotReleaseButtonAriaLabel()).toBe(
+        "Quitar o liberar cupo del jugador",
+      );
     });
   });
 });

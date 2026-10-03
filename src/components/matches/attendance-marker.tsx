@@ -21,6 +21,11 @@ import {
   getAttendanceSaveErrorToast,
   getAttendanceSaveButtonLabel,
   getAttendanceSaveButtonAriaLabel,
+  getAttendanceSectionRegionAriaLabel,
+  getPlayerFeedbackHeadingText,
+  getPlayerFeedbackSectionAriaLabel,
+  getFeedbackOptionButtonLabel,
+  getFeedbackOptionClasses,
   ATTENDANCE_STATUS_LABELS,
 } from "@/components/matches/attendance-utils";
 
@@ -141,7 +146,7 @@ export function AttendanceMarker({
   return (
     <section
       role="region"
-      aria-label="Control de asistencia y feedback de nivel de los jugadores"
+      aria-label={getAttendanceSectionRegionAriaLabel()}
       className="space-y-4"
     >
       <div>
@@ -221,12 +226,12 @@ export function AttendanceMarker({
               {viewerId && player.userId !== viewerId && (
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
                   <span className="text-xs text-muted-foreground font-medium">
-                    Nivel vs. el grupo (opcional):
+                    {getPlayerFeedbackHeadingText()}
                   </span>
                   <div
                     className="flex gap-1.5 shrink-0"
                     role="radiogroup"
-                    aria-label={`Nivel de ${player.name} comparado con el grupo`}
+                    aria-label={getPlayerFeedbackSectionAriaLabel(player.name)}
                     onKeyDown={(e) => {
                       if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
                         e.preventDefault();
@@ -257,14 +262,12 @@ export function AttendanceMarker({
                               : "STRONGER",
                         }));
                       }}
-                      className={cn(
-                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                        feedbacks[player.userId] === "STRONGER"
-                          ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-                          : "border-border bg-card text-muted-foreground hover:bg-muted",
+                      className={getFeedbackOptionClasses(
+                        feedbacks[player.userId] === "STRONGER",
+                        "STRONGER",
                       )}
                     >
-                      Más fuerte 💪
+                      {getFeedbackOptionButtonLabel("STRONGER")}
                     </button>
                     <button
                       type="button"
@@ -279,14 +282,12 @@ export function AttendanceMarker({
                             prev[player.userId] === "WEAKER" ? null : "WEAKER",
                         }));
                       }}
-                      className={cn(
-                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                        feedbacks[player.userId] === "WEAKER"
-                          ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
-                          : "border-border bg-card text-muted-foreground hover:bg-muted",
+                      className={getFeedbackOptionClasses(
+                        feedbacks[player.userId] === "WEAKER",
+                        "WEAKER",
                       )}
                     >
-                      Más flojo 📉
+                      {getFeedbackOptionButtonLabel("WEAKER")}
                     </button>
                   </div>
                 </div>
