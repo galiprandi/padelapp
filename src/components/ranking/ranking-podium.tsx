@@ -3,7 +3,12 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, capitalizeName } from "@/lib/utils";
 import { calculatePlayerStreak } from "@/lib/match-helpers";
 import { TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
-import { getPodiumPlayerAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
+import {
+  getPodiumPlayerAriaLabel,
+  getRankingRegionAriaLabel,
+  getWinStreakTitle,
+  getDeltaChangeTitle,
+} from "./ranking-utils";
 
 interface PodiumPlayer {
   id: string;
@@ -85,8 +90,8 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 {secondStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
-                    title={`Racha de ${secondStreak} victorias`}
-                    aria-label={`Racha de ${secondStreak} victorias`}
+                    title={getWinStreakTitle(secondStreak)}
+                    aria-label={getWinStreakTitle(secondStreak)}
                   >
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
                     <span className="text-[11px] leading-none">{secondStreak}</span>
@@ -99,20 +104,20 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               {second.rankingDelta !== undefined && second.rankingDelta !== null && second.rankingDelta !== 0 ? (
                 <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
                   {second.rankingDelta > 0 ? (
-                    <div className="flex items-center gap-0.5 text-primary" title={`Subió ${second.rankingDelta} posiciones`}>
-                      <TrendingUp className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(second.rankingDelta)}>
+                      <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>+{second.rankingDelta}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-0.5 text-muted-foreground" title={`Bajó ${Math.abs(second.rankingDelta)} posiciones`}>
-                      <TrendingDown className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(second.rankingDelta)}>
+                      <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>{second.rankingDelta}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5">
-                  <Minus className="h-2.5 w-2.5" />
+                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                  <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>
               )}
@@ -152,8 +157,8 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 {firstStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
-                    title={`Racha de ${firstStreak} victorias`}
-                    aria-label={`Racha de ${firstStreak} victorias`}
+                    title={getWinStreakTitle(firstStreak)}
+                    aria-label={getWinStreakTitle(firstStreak)}
                   >
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
                     <span className="text-[11px] leading-none">{firstStreak}</span>
@@ -166,20 +171,20 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               {first.rankingDelta !== undefined && first.rankingDelta !== null && first.rankingDelta !== 0 ? (
                 <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
                   {first.rankingDelta > 0 ? (
-                    <div className="flex items-center gap-0.5 text-primary" title={`Subió ${first.rankingDelta} posiciones`}>
-                      <TrendingUp className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(first.rankingDelta)}>
+                      <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>+{first.rankingDelta}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-0.5 text-muted-foreground" title={`Bajó ${Math.abs(first.rankingDelta)} posiciones`}>
-                      <TrendingDown className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(first.rankingDelta)}>
+                      <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>{first.rankingDelta}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5">
-                  <Minus className="h-2.5 w-2.5" />
+                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                  <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>
               )}
@@ -224,8 +229,8 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 {thirdStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
-                    title={`Racha de ${thirdStreak} victorias`}
-                    aria-label={`Racha de ${thirdStreak} victorias`}
+                    title={getWinStreakTitle(thirdStreak)}
+                    aria-label={getWinStreakTitle(thirdStreak)}
                   >
                     <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
                     <span className="text-[11px] leading-none">{thirdStreak}</span>
@@ -238,20 +243,20 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
               {third.rankingDelta !== undefined && third.rankingDelta !== null && third.rankingDelta !== 0 ? (
                 <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
                   {third.rankingDelta > 0 ? (
-                    <div className="flex items-center gap-0.5 text-primary" title={`Subió ${third.rankingDelta} posiciones`}>
-                      <TrendingUp className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(third.rankingDelta)}>
+                      <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>+{third.rankingDelta}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-0.5 text-muted-foreground" title={`Bajó ${Math.abs(third.rankingDelta)} posiciones`}>
-                      <TrendingDown className="h-2.5 w-2.5" />
+                    <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(third.rankingDelta)}>
+                      <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
                       <span>{third.rankingDelta}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5">
-                  <Minus className="h-2.5 w-2.5" />
+                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                  <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>
               )}

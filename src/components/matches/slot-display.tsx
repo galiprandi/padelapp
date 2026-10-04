@@ -10,6 +10,7 @@ import {
   getSlotDisplayName,
   getSlotAriaLabel,
   getManageButtonAriaLabel,
+  getSlotRegionAriaLabel,
 } from "./slot-display-utils";
 
 interface SlotDisplayProps {
@@ -39,6 +40,7 @@ export function SlotDisplay({
   const displayName = getSlotDisplayName(slot, team, index, userDisplayName);
   const slotAriaLabel = getSlotAriaLabel(team, sideLabel, displayName);
   const manageButtonAriaLabel = getManageButtonAriaLabel(slot?.kind);
+  const slotRegionAriaLabel = getSlotRegionAriaLabel(team, sideLabel, displayName);
 
   const isUser = slot?.kind === "user";
   const isSelf =
@@ -49,7 +51,7 @@ export function SlotDisplay({
   return (
     <div
       role="region"
-      aria-label={`Cupo Pareja ${team}, ${sideLabel}: ${displayName}`}
+      aria-label={slotRegionAriaLabel}
       className={cn(
         "group relative flex items-center justify-between rounded-xl border p-1 shadow-xs transition-all",
         isActive

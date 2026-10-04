@@ -14,6 +14,8 @@ import {
   getRankingBreakdownButtonAriaLabel,
   getRankingUserSummaryAriaLabel,
   getRankingRegionAriaLabel,
+  getRankingBreakdownItemLabel,
+  getRankingStatLabel,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -119,14 +121,14 @@ function RankingBreakdown({ userId }: { userId: string }) {
             <>
               <div className="flex justify-between items-center text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Award className="h-3.5 w-3.5" /> Puntos base iniciales
+                  <Award className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("base")}
                 </span>
                 <span className="font-bold text-foreground">+{breakdown.basePoints} pts</span>
               </div>
 
               <div className="flex justify-between items-center text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Trophy className="h-3.5 w-3.5" /> Victorias ({breakdown.wins})
+                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("wins", breakdown.wins)}
                 </span>
                 <span className="font-bold text-foreground">
                   {breakdown.winPoints > 0 ? `+${breakdown.winPoints}` : "0"} pts
@@ -135,7 +137,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
               <div className="flex justify-between items-center text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Flame className="h-3.5 w-3.5 text-orange-500" /> Racha actual ({breakdown.streak} 🔥)
+                  <Flame className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" /> {getRankingBreakdownItemLabel("streak", breakdown.streak)}
                 </span>
                 <span className="font-bold text-foreground">
                   {breakdown.streakPoints > 0 ? `+${breakdown.streakPoints}` : "0"} pts
@@ -144,7 +146,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
               <div className="flex justify-between items-center text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" /> Bonus por sets ganados
+                  <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" /> {getRankingBreakdownItemLabel("sets")}
                 </span>
                 <span className="font-bold text-foreground">
                   {breakdown.setsWonBonus > 0 ? `+${breakdown.setsWonBonus}` : "0"} pts
@@ -154,7 +156,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
               {breakdown.lateCount > 0 && (
                 <div className="flex justify-between items-center text-muted-foreground">
                   <span className="flex items-center gap-1 text-amber-600">
-                    <AlertTriangle className="h-3.5 w-3.5" /> Llegadas tarde ({breakdown.lateCount})
+                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("late", breakdown.lateCount)}
                   </span>
                   <span className="font-bold text-amber-600">-{breakdown.latePenalty} pts</span>
                 </div>
@@ -163,7 +165,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
               {breakdown.noShowCount > 0 && (
                 <div className="flex justify-between items-center text-muted-foreground">
                   <span className="flex items-center gap-1 text-rose-600">
-                    <AlertTriangle className="h-3.5 w-3.5" /> Ausencias sin aviso ({breakdown.noShowCount})
+                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("noShow", breakdown.noShowCount)}
                   </span>
                   <span className="font-bold text-rose-600">-{breakdown.noShowPenalty} pts</span>
                 </div>
@@ -172,14 +174,14 @@ function RankingBreakdown({ userId }: { userId: string }) {
               {breakdown.decayFactor < 1.0 && (
                 <div className="flex justify-between items-center text-amber-600 font-semibold">
                   <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" /> Decay por inactividad
+                    <Calendar className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("decay")}
                   </span>
                   <span>x{breakdown.decayFactor}</span>
                 </div>
               )}
 
               <div className="pt-2 border-t border-border flex justify-between items-center font-bold text-sm text-foreground">
-                <span>Puntaje recalculado</span>
+                <span>{getRankingBreakdownItemLabel("final")}</span>
                 <span className="text-primary">{Math.round(breakdown.finalScore)} pts</span>
               </div>
             </>
@@ -229,13 +231,13 @@ export function UserRankingBanner({
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">Tu posición</span>
+            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("position")}</span>
             <span className="text-2xl font-bold text-foreground">
               {position ? `#${position}` : "S/P"}
             </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">Puntos</span>
+            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("points")}</span>
             <span className="text-2xl font-bold text-foreground">
               {Math.round(score)}
             </span>
@@ -339,7 +341,7 @@ export function UserRankingCard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">Mi posición</span>
+            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("myPosition")}</span>
             <span className="text-2xl font-bold text-foreground">
               {position ? `#${position}` : "--"}
             </span>

@@ -306,3 +306,72 @@ export function getRankingRegionAriaLabel(
       return "Cargando clasificación y estadísticas de ranking...";
   }
 }
+
+/**
+ * Returns accessible title text for win streak badges
+ */
+export function getWinStreakTitle(streak: number): string {
+  if (streak <= 0) return "";
+  return streak === 1 ? "Racha de 1 victoria" : `Racha de ${streak} victorias`;
+}
+
+/**
+ * Returns accessible title text for ranking delta changes
+ */
+export function getDeltaChangeTitle(delta: number): string {
+  if (delta > 0) {
+    return delta === 1 ? "Subió 1 posición" : `Subió ${delta} posiciones`;
+  }
+  if (delta < 0) {
+    const absDelta = Math.abs(delta);
+    return absDelta === 1 ? "Bajó 1 posición" : `Bajó ${absDelta} posiciones`;
+  }
+  return "Sin cambios de posición";
+}
+
+/**
+ * Returns formatted descriptive text for ranking score breakdown items
+ */
+export function getRankingBreakdownItemLabel(
+  item: "base" | "wins" | "streak" | "sets" | "late" | "noShow" | "decay" | "final",
+  value?: number
+): string {
+  switch (item) {
+    case "base":
+      return "Puntos base iniciales";
+    case "wins":
+      return value !== undefined ? `Victorias (${value})` : "Victorias";
+    case "streak":
+      return value !== undefined ? `Racha actual (${value} 🔥)` : "Racha actual";
+    case "sets":
+      return "Bonus por sets ganados";
+    case "late":
+      return value !== undefined ? `Llegadas tarde (${value})` : "Llegadas tarde";
+    case "noShow":
+      return value !== undefined ? `Ausencias sin aviso (${value})` : "Ausencias sin aviso";
+    case "decay":
+      return "Decay por inactividad";
+    case "final":
+      return "Puntaje recalculado";
+  }
+}
+
+/**
+ * Returns heading label text for user ranking stat cards and banners
+ */
+export function getRankingStatLabel(
+  stat: "position" | "myPosition" | "points" | "winRate" | "reputation"
+): string {
+  switch (stat) {
+    case "position":
+      return "Tu posición";
+    case "myPosition":
+      return "Mi posición";
+    case "points":
+      return "Puntos";
+    case "winRate":
+      return "WR";
+    case "reputation":
+      return "Rep";
+  }
+}

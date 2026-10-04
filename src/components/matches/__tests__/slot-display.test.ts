@@ -3,6 +3,7 @@ import {
   getSlotDisplayName,
   getSlotAriaLabel,
   getManageButtonAriaLabel,
+  getSlotRegionAriaLabel,
 } from "../slot-display-utils";
 import type { SlotValue } from "@/lib/match-types";
 
@@ -70,6 +71,13 @@ describe("SlotDisplay Pure Helpers", () => {
 
     it("returns assignment label for unassigned slots", () => {
       expect(getManageButtonAriaLabel(undefined)).toBe("Asignar jugador");
+    });
+  });
+
+  describe("getSlotRegionAriaLabel", () => {
+    it("formats slot region landmark ARIA label correctly", () => {
+      const regionLabel = getSlotRegionAriaLabel("A", "Revés", "Arturo Coello");
+      expect(regionLabel).toBe("Cupo Pareja A, Revés: Arturo Coello");
     });
   });
 });
