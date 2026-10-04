@@ -5,6 +5,11 @@ import {
   formatSpeculationDocumentPattern,
   getSpeculationEagernessForPath,
   isSpeculationPath,
+  isValidSpeculationEagerness,
+  getSpeculationUrlsByPriority,
+  getSpeculationRuleGroupsCount,
+  getSpeculationRuleGroupSummary,
+  formatSpeculationRulesScript,
   PRIMARY_SPECULATION_URLS,
   SECONDARY_SPECULATION_URLS,
   DYNAMIC_SPECULATION_PATTERNS,
@@ -80,6 +85,87 @@ describe("getSpeculationRulesConfig", () => {
   });
 });
 
+describe("isValidSpeculationEagerness", () => {
+  it("debe retornar true para niveles válidos de eagerness", () => {
+    expect(isValidSpeculationEagerness("eager")).toBe(true);
+    expect(isValidSpeculationEagerness("moderate")).toBe(true);
+    expect(isValidSpeculationEagerness("conservative")).toBe(true);
+    expect(isValidSpeculationEagerness("  eager  ")).toBe(true);
+  });
+
+  it("debe retornar false para valores nulos, no válidos o tipos incorrectos", () => {
+    expect(isValidSpeculationEagerness("invalid")).toBe(false);
+    expect(isValidSpeculationEagerness("")).toBe(false);
+    expect(isValidSpeculationEagerness(null)).toBe(false);
+    expect(isValidSpeculationEagerness(undefined)).toBe(false);
+    expect(isValidSpeculationEagerness(123)).toBe(false);
+  });
+});
+
+describe("getSpeculationUrlsByPriority", () => {
+  it("debe retornar URLs primarias cuando se solicita la prioridad 'primary'", () => {
+    expect(getSpeculationUrlsByPriority("primary")).toEqual([...PRIMARY_SPECULATION_URLS]);
+  });
+
+  it("debe retornar URLs secundarias cuando se solicita la prioridad 'secondary'", () => {
+    expect(getSpeculationUrlsByPriority("secondary")).toEqual([...SECONDARY_SPECULATION_URLS]);
+  });
+
+  it("debe retornar todas las URLs por defecto o cuando se solicita 'all'", () => {
+    expect(getSpeculationUrlsByPriority("all")).toEqual([...DEFAULT_SPECULATION_URLS]);
+    expect(getSpeculationUrlsByPriority()).toEqual([...DEFAULT_SPECULATION_URLS]);
+  });
+});
+
+describe("getSpeculationRuleGroupsCount", () => {
+  it("debe retornar la cantidad de grupos de reglas configurados", () => {
+    const defaultConfig = getSpeculationRulesConfig();
+    expect(getSpeculationRuleGroupsCount(defaultConfig)).toBe(3);
+
+    const customConfig = getSpeculationRulesConfig(["/me"], "eager");
+    expect(getSpeculationRuleGroupsCount(customConfig)).toBe(1);
+  });
+
+  it("debe retornar 0 si la configuración o el arreglo de prerender no es válido", () => {
+    expect(getSpeculationRuleGroupsCount(undefined)).toBe(0);
+    expect(getSpeculationRuleGroupsCount({ prerender: [] })).toBe(0);
+  });
+});
+
+describe("getSpeculationRuleGroupSummary", () => {
+  it("debe retornar un resumen de grupo para fuentes de tipo 'list'", () => {
+    const listGroup: SpeculationListRuleGroup = {
+      source: "list",
+      urls: ["/me", "/turnos", "/ranking"],
+      eagerness: "eager",
+    };
+
+    const summary = getSpeculationRuleGroupSummary(listGroup);
+    expect(summary).toEqual({
+      type: "list",
+      eagerness: "eager",
+      count: 3,
+    });
+  });
+
+  it("debe retornar un resumen de grupo para fuentes de tipo 'document'", () => {
+    const documentGroup: SpeculationDocumentRuleGroup = {
+      source: "document",
+      where: {
+        or: [{ href_matches: "/t/*" }, { href_matches: "/m/*" }],
+      },
+      eagerness: "moderate",
+    };
+
+    const summary = getSpeculationRuleGroupSummary(documentGroup);
+    expect(summary).toEqual({
+      type: "document",
+      eagerness: "moderate",
+      count: 2,
+    });
+  });
+});
+
 describe("getSpeculationRulesTag", () => {
   it("debe retornar un objeto { __html } con el JSON serializado de las reglas por defecto", () => {
     const tag = getSpeculationRulesTag();
@@ -97,6 +183,26 @@ describe("getSpeculationRulesTag", () => {
     expect(parsed.prerender).toHaveLength(1);
     expect(parsed.prerender[0].eagerness).toBe("conservative");
     expect(parsed.prerender[0].urls).toEqual(["/me", "/turnos"]);
+  });
+});
+
+describe("formatSpeculationRulesScript", () => {
+  it("debe retornar props de script de especulación con type='speculationrules' y dangerouslySetInnerHTML", () => {
+    const scriptProps = formatSpeculationRulesScript();
+    expect(scriptProps.type).toBe("speculationrules");
+    expect(typeof scriptProps.dangerouslySetInnerHTML.__html).toBe("string");
+
+    const parsed = JSON.parse(scriptProps.dangerouslySetInnerHTML.__html);
+    expect(parsed.prerender).toHaveLength(3);
+  });
+
+  it("debe soportar URLs personalizadas en formatSpeculationRulesScript", () => {
+    const scriptProps = formatSpeculationRulesScript(["/me"], "eager");
+    expect(scriptProps.type).toBe("speculationrules");
+
+    const parsed = JSON.parse(scriptProps.dangerouslySetInnerHTML.__html);
+    expect(parsed.prerender).toHaveLength(1);
+    expect(parsed.prerender[0].urls).toEqual(["/me"]);
   });
 });
 
