@@ -1772,6 +1772,37 @@ export function getOpenToNetworkCooldownText(minutesRemaining: number): string {
   return `Red notificada (esperá ${minutesRemaining} min)`;
 }
 
+export interface OpenToNetworkButtonTextOptions {
+  isPending?: boolean;
+  isOnCooldown?: boolean;
+  minutesRemaining?: number;
+  label?: string;
+}
+
+/**
+ * Format button label text for OpenToNetworkButton depending on pending or cooldown state.
+ */
+export function getOpenToNetworkButtonText({
+  isPending = false,
+  isOnCooldown = false,
+  minutesRemaining = 0,
+  label = "Abrir a mi red",
+}: OpenToNetworkButtonTextOptions): string {
+  if (isPending) return "Enviando...";
+  if (isOnCooldown) return getOpenToNetworkCooldownText(minutesRemaining);
+  return label;
+}
+
+/**
+ * Format accessible screen reader ARIA label for OpenToNetwork result container.
+ */
+export function getOpenToNetworkResultAriaLabel(notified: number): string {
+  if (notified > 0) {
+    return `Notificación enviada: se notificó a ${notified} contacto${notified === 1 ? "" : "s"} de tu red.`;
+  }
+  return "Notificación enviada: no se encontraron contactos para notificar.";
+}
+
 /**
  * Format helper text shown below OpenToNetworkButton depending on cooldown state.
  */

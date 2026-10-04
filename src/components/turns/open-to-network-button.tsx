@@ -14,7 +14,8 @@ import {
   getOpenToNetworkRegionAriaLabel,
   getOpenToNetworkResultText,
   getOpenToNetworkAriaLabel,
-  getOpenToNetworkCooldownText,
+  getOpenToNetworkButtonText,
+  getOpenToNetworkResultAriaLabel,
   getOpenToNetworkHelperText,
   getOpenToNetworkResultSubtitle,
   getOpenToNetworkResultDescription,
@@ -97,14 +98,15 @@ export function OpenToNetworkButton({
 
   if (result) {
     const resultText = getOpenToNetworkResultText(result.notified);
+    const resultAriaLabel = getOpenToNetworkResultAriaLabel(result.notified);
 
     if (iconOnly || size === "icon") {
       return (
         <div
           role="status"
           aria-live="polite"
-          aria-label={resultText}
-          className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-sm", className)}
+          aria-label={resultAriaLabel}
+          className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-xs", className)}
         >
           <Check className="h-5 w-5" />
         </div>
@@ -115,7 +117,8 @@ export function OpenToNetworkButton({
         <div
           role="status"
           aria-live="polite"
-          className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200", className)}
+          aria-label={resultAriaLabel}
+          className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 shadow-xs", className)}
         >
           <Check className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate">
@@ -128,7 +131,8 @@ export function OpenToNetworkButton({
       <div
         role="status"
         aria-live="polite"
-        className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm", className)}
+        aria-label={resultAriaLabel}
+        className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm shadow-xs", className)}
       >
         <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
           <Check className="h-4 w-4" />
@@ -144,6 +148,13 @@ export function OpenToNetworkButton({
       </div>
     );
   }
+
+  const buttonText = getOpenToNetworkButtonText({
+    isPending,
+    isOnCooldown,
+    minutesRemaining,
+    label,
+  });
 
   const isIconOnly = iconOnly || size === "icon";
   const computedAriaLabel = getOpenToNetworkAriaLabel({
@@ -181,7 +192,7 @@ export function OpenToNetworkButton({
         ) : (
           <Bell className={cn("h-4 w-4", !isIconOnly && "mr-2")} />
         )}
-        {!isIconOnly && (isPending ? "Enviando..." : isOnCooldown ? getOpenToNetworkCooldownText(minutesRemaining) : label)}
+        {!isIconOnly && buttonText}
       </Button>
 
       {error && !isIconOnly && (
