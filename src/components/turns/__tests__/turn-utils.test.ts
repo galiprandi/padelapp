@@ -67,6 +67,8 @@ import {
   getOpenToNetworkResultText,
   getOpenToNetworkAriaLabel,
   getOpenToNetworkCooldownText,
+  getOpenToNetworkButtonText,
+  getOpenToNetworkResultAriaLabel,
   getOpenToNetworkHelperText,
   getOpenToNetworkResultSubtitle,
   getOpenToNetworkResultDescription,
@@ -1162,6 +1164,24 @@ describe("LeaveTurnButton and OpenToNetworkButton pure helpers", () => {
     expect(getOpenToNetworkAriaLabel({ isPending: true })).toBe("Notificando a tu red de pádel...");
     expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 1 })).toBe("Notificado, en cooldown por 1 minuto");
     expect(getOpenToNetworkAriaLabel({ isOnCooldown: true, minutesRemaining: 15 })).toBe("Notificado, en cooldown por 15 minutos");
+  });
+
+  it("formats open to network button text and result ARIA label", () => {
+    expect(getOpenToNetworkButtonText({ isPending: true })).toBe("Enviando...");
+    expect(getOpenToNetworkButtonText({ isOnCooldown: true, minutesRemaining: 10 })).toBe(
+      "Red notificada (esperá 10 min)"
+    );
+    expect(getOpenToNetworkButtonText({ label: "Salvar turno" })).toBe("Salvar turno");
+
+    expect(getOpenToNetworkResultAriaLabel(1)).toBe(
+      "Notificación enviada: se notificó a 1 contacto de tu red."
+    );
+    expect(getOpenToNetworkResultAriaLabel(3)).toBe(
+      "Notificación enviada: se notificó a 3 contactos de tu red."
+    );
+    expect(getOpenToNetworkResultAriaLabel(0)).toBe(
+      "Notificación enviada: no se encontraron contactos para notificar."
+    );
   });
 
   it("formats open to network cooldown text, helper text, and result subtitles", () => {

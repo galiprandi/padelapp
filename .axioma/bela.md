@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-04 — OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring (bela/turnos/open-to-network-button-text-helpers)
 - [x] 2026-09-30 — Late Leave Warning & Turn Actions Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/late-leave-and-actions-pure-helpers)
 - [x] 2026-09-29 — OpenToNetworkButton Cooldown & Result Pure Helpers Extraction & Refactoring (bela/turnos/open-to-network-cooldown-pure-helpers)
 - [x] 2026-09-28 — Turn Page Headings & Loading Skeletons Pure Helpers Extraction, ARIA Landmarks & Unit Tests (bela/turnos/headings-and-loading-skeletons-pure-helpers)
@@ -68,6 +69,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-04 - OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring
+**Learning:** Extracting pure helper functions (`getOpenToNetworkButtonText` and `getOpenToNetworkResultAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized button status formatting ("Enviando...", cooldown label, or base label) and accessible screen reader result announcements from React render components in `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining semantic accessibility attributes (`role="status"`, `aria-live="polite"`, `aria-label`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), and solid MDS button styling with active tactile scaling (`active:scale-[0.98] transition-all`).
+**Action:** Always extract button label state formatting and screen reader result feedback labels into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-09-30 - Late Leave Warning & Turn Actions Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getLateLeaveWarningTitle`, `getLateLeaveWarningDescription`, `getWasFullSharePromptText`, `getPlayCasualConfirmText`, `getCancelTurnDismissAriaLabel`, `getPlayCasualDismissAriaLabel`, `getQuickJoinEmptySlotAriaLabel`, and `getQuickJoinEmptySlotText`) into `src/components/turns/turn-utils.ts` decouples localized copy, late-leave penalty warning copy, share prompts, and confirmation action ARIA labels from React render components in `LeaveTurnButton` (`src/components/turns/leave-turn-button.tsx`) and `TurnActions` (`src/components/turns/turn-actions.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract late leave warning copy, confirmation prompt text, and dismiss ARIA labels into pure helper utilities backed by Vitest unit tests.
