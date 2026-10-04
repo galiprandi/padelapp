@@ -46,3 +46,14 @@ export function getManageButtonAriaLabel(slotKind?: "user" | "placeholder"): str
   }
   return "Asignar jugador";
 }
+
+/**
+ * Generates an accessible screen reader ARIA landmark label for a match slot region container.
+ */
+export function getSlotRegionAriaLabel(
+  team: TeamKey,
+  sideLabel: string,
+  displayName: string,
+): string {
+  return `Cupo Pareja ${team}, ${sideLabel}: ${displayName}`;
+}

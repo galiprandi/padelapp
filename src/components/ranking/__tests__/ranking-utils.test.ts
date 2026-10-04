@@ -22,6 +22,10 @@ import {
   getPendingMatchResultAriaLabel,
   getPendingMatchDetailAriaLabel,
   getRankingRegionAriaLabel,
+  getWinStreakTitle,
+  getDeltaChangeTitle,
+  getRankingBreakdownItemLabel,
+  getRankingStatLabel,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -366,6 +370,68 @@ describe("Ranking Helpers", () => {
       expect(getRankingRegionAriaLabel("skeleton")).toBe(
         "Cargando clasificación y estadísticas de ranking..."
       );
+    });
+  });
+
+  describe("getWinStreakTitle", () => {
+    it("returns empty string when streak is 0 or negative", () => {
+      expect(getWinStreakTitle(0)).toBe("");
+      expect(getWinStreakTitle(-1)).toBe("");
+    });
+
+    it("returns singular title for streak of 1", () => {
+      expect(getWinStreakTitle(1)).toBe("Racha de 1 victoria");
+    });
+
+    it("returns plural title for streak greater than 1", () => {
+      expect(getWinStreakTitle(3)).toBe("Racha de 3 victorias");
+      expect(getWinStreakTitle(5)).toBe("Racha de 5 victorias");
+    });
+  });
+
+  describe("getDeltaChangeTitle", () => {
+    it("returns positive delta change text", () => {
+      expect(getDeltaChangeTitle(1)).toBe("Subió 1 posición");
+      expect(getDeltaChangeTitle(4)).toBe("Subió 4 posiciones");
+    });
+
+    it("returns negative delta change text", () => {
+      expect(getDeltaChangeTitle(-1)).toBe("Bajó 1 posición");
+      expect(getDeltaChangeTitle(-3)).toBe("Bajó 3 posiciones");
+    });
+
+    it("returns zero delta change text", () => {
+      expect(getDeltaChangeTitle(0)).toBe("Sin cambios de posición");
+    });
+  });
+
+  describe("getRankingBreakdownItemLabel", () => {
+    it("returns item labels without value", () => {
+      expect(getRankingBreakdownItemLabel("base")).toBe("Puntos base iniciales");
+      expect(getRankingBreakdownItemLabel("wins")).toBe("Victorias");
+      expect(getRankingBreakdownItemLabel("streak")).toBe("Racha actual");
+      expect(getRankingBreakdownItemLabel("sets")).toBe("Bonus por sets ganados");
+      expect(getRankingBreakdownItemLabel("late")).toBe("Llegadas tarde");
+      expect(getRankingBreakdownItemLabel("noShow")).toBe("Ausencias sin aviso");
+      expect(getRankingBreakdownItemLabel("decay")).toBe("Decay por inactividad");
+      expect(getRankingBreakdownItemLabel("final")).toBe("Puntaje recalculado");
+    });
+
+    it("returns item labels with formatted values", () => {
+      expect(getRankingBreakdownItemLabel("wins", 5)).toBe("Victorias (5)");
+      expect(getRankingBreakdownItemLabel("streak", 3)).toBe("Racha actual (3 🔥)");
+      expect(getRankingBreakdownItemLabel("late", 1)).toBe("Llegadas tarde (1)");
+      expect(getRankingBreakdownItemLabel("noShow", 2)).toBe("Ausencias sin aviso (2)");
+    });
+  });
+
+  describe("getRankingStatLabel", () => {
+    it("returns heading stat labels", () => {
+      expect(getRankingStatLabel("position")).toBe("Tu posición");
+      expect(getRankingStatLabel("myPosition")).toBe("Mi posición");
+      expect(getRankingStatLabel("points")).toBe("Puntos");
+      expect(getRankingStatLabel("winRate")).toBe("WR");
+      expect(getRankingStatLabel("reputation")).toBe("Rep");
     });
   });
 });

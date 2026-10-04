@@ -3,7 +3,11 @@ import { ShieldCheck, TrendingUp, TrendingDown, Minus, Flame } from "lucide-reac
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { cn, capitalizeName } from "@/lib/utils";
 import { getPlayerRecentForm, calculatePlayerStreak } from "@/lib/match-helpers";
-import { getRankingListItemAriaLabel } from "./ranking-utils";
+import {
+  getRankingListItemAriaLabel,
+  getWinStreakTitle,
+  getDeltaChangeTitle,
+} from "./ranking-utils";
 
 interface RankingListItemProps {
   player: {
@@ -95,7 +99,7 @@ export function RankingListItem({
             {winStreak >= 2 && (
               <div
                 className="flex items-center gap-0.5 text-xs font-extrabold text-orange-500"
-                title={`Racha de ${winStreak} victorias`}
+                title={getWinStreakTitle(winStreak)}
               >
                 <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
                 <span>{winStreak}</span>
@@ -140,17 +144,17 @@ export function RankingListItem({
         </span>
         <div className="flex items-center gap-0.5">
           {player.rankingDelta > 0 ? (
-            <div className="flex items-center gap-0.5 text-xs text-primary">
+            <div className="flex items-center gap-0.5 text-xs text-primary" title={getDeltaChangeTitle(player.rankingDelta)}>
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
               <span>+{player.rankingDelta}</span>
             </div>
           ) : player.rankingDelta < 0 ? (
-            <div className="flex items-center gap-0.5 text-xs text-muted-foreground">
+            <div className="flex items-center gap-0.5 text-xs text-muted-foreground" title={getDeltaChangeTitle(player.rankingDelta)}>
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
               <span>{player.rankingDelta}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-0.5 text-xs text-muted-foreground/50">
+            <div className="flex items-center gap-0.5 text-xs text-muted-foreground/50" title={getDeltaChangeTitle(0)}>
               <Minus className="h-3 w-3" aria-hidden="true" />
               <span>0</span>
             </div>
