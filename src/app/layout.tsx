@@ -4,7 +4,7 @@ import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
-import { getSpeculationRulesTag } from "@/lib/speculation-rules";
+import { formatSpeculationRulesScript } from "@/lib/speculation-rules";
 import {
   getResourceHints,
   getOriginTrialMetaProps,
@@ -65,10 +65,7 @@ export default function RootLayout({
           <link key={`${hint.rel}-${hint.href}-${idx}`} {...hint} />
         ))}
         {originTrialMeta && <meta {...originTrialMeta} />}
-        <script
-          type="speculationrules"
-          dangerouslySetInnerHTML={getSpeculationRulesTag()}
-        />
+        <script {...formatSpeculationRulesScript()} />
       </head>
       <body className={getRootBodyClasses(geistSans.variable)}>
         <Providers>{children}</Providers>
