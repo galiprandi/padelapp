@@ -6,6 +6,12 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import {
+  getSecurityPageBackAriaLabel,
+  getSecurityPageHeadingDescription,
+  getSecurityPageHeadingTitle,
+  getSecuritySkeletonAriaLabel,
+} from "@/components/webauthn/passkey-utils";
 
 export default function SecurityPage() {
   return (
@@ -19,14 +25,16 @@ export default function SecurityPage() {
           href="/me/profile"
           prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Volver a mi perfil"
+          aria-label={getSecurityPageBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Seguridad</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {getSecurityPageHeadingTitle()}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Iniciá sesión sin contraseña usando tu huella o Face ID.
+            {getSecurityPageHeadingDescription()}
           </p>
         </div>
       </div>
@@ -50,7 +58,12 @@ async function PasskeySection() {
 
 function SecuritySkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getSecuritySkeletonAriaLabel()}
+      className="rounded-xl border border-border bg-card p-4 shadow-xs"
+    >
       <div className="flex items-start gap-3 mb-4">
         <Skeleton className="h-10 w-10 rounded-lg" />
         <div className="flex-1 space-y-1">

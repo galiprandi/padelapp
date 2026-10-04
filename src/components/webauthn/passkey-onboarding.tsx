@@ -15,7 +15,14 @@ import {
 } from "@/lib/webauthn/actions";
 import {
   getPasskeyErrorMessage,
+  getPasskeyOnboardingDescription,
+  getPasskeyOnboardingDismissAriaLabel,
+  getPasskeyOnboardingLaterAriaLabel,
+  getPasskeyOnboardingLaterLabel,
+  getPasskeyOnboardingRegionAriaLabel,
+  getPasskeyOnboardingTitle,
   getPasskeyRegisterAriaLabel,
+  getPasskeyRegisterSuccessToast,
 } from "./passkey-utils";
 
 export const PASSKEY_ONBOARDING_DISMISS_KEY = "passkey-onboarding-dismissed";
@@ -109,7 +116,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
           return;
         }
 
-        showToast("Huella registrada");
+        showToast(getPasskeyRegisterSuccessToast());
         dismissPasskeyOnboarding();
         setVisible(false);
       } catch (err: unknown) {
@@ -121,14 +128,14 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
   return (
     <div
       role="region"
-      aria-label="Sugerencia de acceso biométrico"
+      aria-label={getPasskeyOnboardingRegionAriaLabel()}
       className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
     >
       <Button
         variant="ghost"
         size="sm"
         onClick={handleDismiss}
-        aria-label="Cerrar sugerencia de acceso biométrico"
+        aria-label={getPasskeyOnboardingDismissAriaLabel()}
         className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
       >
         <X className="h-4 w-4" aria-hidden="true" />
@@ -140,11 +147,10 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         </div>
         <div className="space-y-1">
           <h2 className="text-sm font-bold text-foreground">
-            Entrá más rápido con huella
+            {getPasskeyOnboardingTitle()}
           </h2>
           <p className="text-xs text-muted-foreground">
-            Activá el acceso biométrico y no vuelvas a escribir tu email. Tocá
-            una vez para registrar tu huella o Face ID.
+            {getPasskeyOnboardingDescription()}
           </p>
         </div>
       </div>
@@ -174,10 +180,10 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
           type="button"
           variant="outline"
           className="h-10 text-xs font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-          aria-label="Descartar sugerencia por ahora"
+          aria-label={getPasskeyOnboardingLaterAriaLabel()}
           onClick={handleDismiss}
         >
-          Ahora no
+          {getPasskeyOnboardingLaterLabel()}
         </Button>
       </div>
     </div>
