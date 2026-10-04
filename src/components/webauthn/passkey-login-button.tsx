@@ -13,6 +13,7 @@ import { useToast } from "@/components/toast/use-toast";
 import { getAuthOptions, verifyAuth } from "@/lib/webauthn/actions";
 import {
   getPasskeyLoginAriaLabel,
+  getPasskeyLoginButtonText,
   getPasskeyErrorMessage,
 } from "./passkey-utils";
 
@@ -83,12 +84,12 @@ export function PasskeyLoginButton() {
       {isAuthenticating ? (
         <>
           <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
-          Verificando…
+          {getPasskeyLoginButtonText(true)}
         </>
       ) : (
         <>
           <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
-          Entrar con huella
+          {getPasskeyLoginButtonText(false)}
         </>
       )}
     </Button>

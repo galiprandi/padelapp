@@ -18,9 +18,19 @@ import {
 } from "@/lib/webauthn/actions";
 import {
   formatPasskeyDate,
+  getPasskeyDefaultNickname,
   getPasskeyDeleteAriaLabel,
+  getPasskeyDeleteSuccessToast,
   getPasskeyErrorMessage,
+  getPasskeyManagerDescription,
+  getPasskeyManagerRegionAriaLabel,
+  getPasskeyManagerTitle,
+  getPasskeyNicknameAriaLabel,
+  getPasskeyNicknameLabel,
+  getPasskeyNicknamePlaceholder,
   getPasskeyRegisterAriaLabel,
+  getPasskeyRegisterSuccessToast,
+  getPasskeyUnsupportedDescription,
   sanitizePasskeyNickname,
 } from "./passkey-utils";
 
@@ -56,7 +66,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
     return (
       <div
         role="region"
-        aria-label="Gestor de acceso biométrico con huella"
+        aria-label={getPasskeyManagerRegionAriaLabel()}
         className="rounded-xl border border-border bg-card p-4 shadow-xs"
       >
         <div className="flex items-start gap-3">
@@ -65,10 +75,10 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           </div>
           <div className="space-y-1">
             <h2 className="text-sm font-bold text-foreground">
-              Acceso con huella
+              {getPasskeyManagerTitle()}
             </h2>
             <p className="text-xs text-muted-foreground">
-              Tu dispositivo no soporta autenticación biométrica web.
+              {getPasskeyUnsupportedDescription()}
             </p>
           </div>
         </div>
@@ -95,7 +105,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           return;
         }
 
-        showToast("Huella registrada");
+        showToast(getPasskeyRegisterSuccessToast());
         setNickname("");
         window.location.reload();
       } catch (err: unknown) {
@@ -114,14 +124,14 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
       setPasskeys((prev) =>
         prev.filter((p) => p.credentialId !== credentialId),
       );
-      showToast("Huella eliminada");
+      showToast(getPasskeyDeleteSuccessToast());
     });
   }
 
   return (
     <div
       role="region"
-      aria-label="Gestor de acceso biométrico con huella"
+      aria-label={getPasskeyManagerRegionAriaLabel()}
       className="rounded-xl border border-border bg-card p-4 shadow-xs"
     >
       <div className="flex items-start gap-3 mb-4">
@@ -130,23 +140,22 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         </div>
         <div className="flex-1 space-y-1">
           <h2 className="text-sm font-bold text-foreground">
-            Acceso con huella
+            {getPasskeyManagerTitle()}
           </h2>
           <p className="text-xs text-muted-foreground">
-            Entrá más rápido con huella o Face ID. Sin escribir tu email cada
-            vez.
+            {getPasskeyManagerDescription()}
           </p>
         </div>
       </div>
 
       <div className="space-y-2 mb-4">
         <Label htmlFor="passkey-nickname" className="text-xs font-semibold text-foreground">
-          Nombre del dispositivo (opcional)
+          {getPasskeyNicknameLabel()}
         </Label>
         <Input
           id="passkey-nickname"
           type="text"
-          placeholder="Ej: Mi Celular, Mi Computadora..."
+          placeholder={getPasskeyNicknamePlaceholder()}
           value={nickname}
           onChange={(e) => setNickname(sanitizePasskeyNickname(e.target.value))}
           onKeyDown={(e) => {
@@ -157,7 +166,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           }}
           maxLength={30}
           disabled={isRegistering}
-          aria-label="Nombre del dispositivo para la huella"
+          aria-label={getPasskeyNicknameAriaLabel()}
           className="h-10 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         />
       </div>
@@ -175,7 +184,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
               />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground truncate">
-                  {passkey.nickname || "Huella registrada"}
+                  {getPasskeyDefaultNickname(passkey.nickname)}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {formatPasskeyDate(passkey.createdAt)}

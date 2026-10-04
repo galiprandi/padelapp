@@ -1,11 +1,32 @@
 import { describe, it, expect } from "vitest";
 import {
   getPasskeyLoginAriaLabel,
+  getPasskeyLoginButtonText,
   getPasskeyRegisterAriaLabel,
   getPasskeyDeleteAriaLabel,
   formatPasskeyDate,
   sanitizePasskeyNickname,
   getPasskeyErrorMessage,
+  getPasskeyManagerRegionAriaLabel,
+  getPasskeyManagerTitle,
+  getPasskeyManagerDescription,
+  getPasskeyUnsupportedDescription,
+  getPasskeyNicknameLabel,
+  getPasskeyNicknamePlaceholder,
+  getPasskeyNicknameAriaLabel,
+  getPasskeyRegisterSuccessToast,
+  getPasskeyDeleteSuccessToast,
+  getPasskeyDefaultNickname,
+  getPasskeyOnboardingTitle,
+  getPasskeyOnboardingDescription,
+  getPasskeyOnboardingRegionAriaLabel,
+  getPasskeyOnboardingDismissAriaLabel,
+  getPasskeyOnboardingLaterAriaLabel,
+  getPasskeyOnboardingLaterLabel,
+  getSecurityPageHeadingTitle,
+  getSecurityPageHeadingDescription,
+  getSecurityPageBackAriaLabel,
+  getSecuritySkeletonAriaLabel,
 } from "../passkey-utils";
 
 describe("passkey-utils", () => {
@@ -16,6 +37,16 @@ describe("passkey-utils", () => {
 
     it("returns default passkey login ARIA label when idle", () => {
       expect(getPasskeyLoginAriaLabel(false)).toBe("Entrar con huella o Face ID");
+    });
+  });
+
+  describe("getPasskeyLoginButtonText", () => {
+    it("returns verifying status text when authenticating", () => {
+      expect(getPasskeyLoginButtonText(true)).toBe("Verificando…");
+    });
+
+    it("returns default button text when idle", () => {
+      expect(getPasskeyLoginButtonText(false)).toBe("Entrar con huella");
     });
   });
 
@@ -96,6 +127,55 @@ describe("passkey-utils", () => {
     it("returns default message for unknown error types or empty input", () => {
       expect(getPasskeyErrorMessage(null)).toBe("No pudimos registrar la huella");
       expect(getPasskeyErrorMessage(undefined, "Error genérico")).toBe("Error genérico");
+    });
+  });
+
+  describe("PasskeyManager pure helpers", () => {
+    it("returns passkey manager region ARIA label", () => {
+      expect(getPasskeyManagerRegionAriaLabel()).toBe("Gestor de acceso biométrico con huella");
+    });
+
+    it("returns passkey manager section title and descriptions", () => {
+      expect(getPasskeyManagerTitle()).toBe("Acceso con huella");
+      expect(getPasskeyManagerDescription()).toBe("Entrá más rápido con huella o Face ID. Sin escribir tu email cada vez.");
+      expect(getPasskeyUnsupportedDescription()).toBe("Tu dispositivo no soporta autenticación biométrica web.");
+    });
+
+    it("returns device nickname field labels and placeholders", () => {
+      expect(getPasskeyNicknameLabel()).toBe("Nombre del dispositivo (opcional)");
+      expect(getPasskeyNicknamePlaceholder()).toBe("Ej: Mi Celular, Mi Computadora...");
+      expect(getPasskeyNicknameAriaLabel()).toBe("Nombre del dispositivo para la huella");
+    });
+
+    it("returns toast success messages", () => {
+      expect(getPasskeyRegisterSuccessToast()).toBe("Huella registrada");
+      expect(getPasskeyDeleteSuccessToast()).toBe("Huella eliminada");
+    });
+
+    it("returns default nickname fallback when nickname is missing or whitespace", () => {
+      expect(getPasskeyDefaultNickname("  Mi iPad  ")).toBe("Mi iPad");
+      expect(getPasskeyDefaultNickname(null)).toBe("Huella registrada");
+      expect(getPasskeyDefaultNickname("   ")).toBe("Huella registrada");
+    });
+  });
+
+  describe("PasskeyOnboarding pure helpers", () => {
+    it("returns passkey onboarding copy and region ARIA labels", () => {
+      expect(getPasskeyOnboardingTitle()).toBe("Entrá más rápido con huella");
+      expect(getPasskeyOnboardingDescription()).toBe("Activá el acceso biométrico y no vuelvas a escribir tu email. Tocá una vez para registrar tu huella o Face ID.");
+      expect(getPasskeyOnboardingRegionAriaLabel()).toBe("Sugerencia de acceso biométrico");
+      expect(getPasskeyOnboardingDismissAriaLabel()).toBe("Cerrar sugerencia de acceso biométrico");
+      expect(getPasskeyOnboardingLaterAriaLabel()).toBe("Descartar sugerencia por ahora");
+      expect(getPasskeyOnboardingLaterLabel()).toBe("Ahora no");
+    });
+  });
+
+  describe("Security page pure helpers", () => {
+    it("returns security page heading and navigation ARIA labels", () => {
+      expect(getSecurityPageHeadingTitle()).toBe("Seguridad");
+      expect(getSecurityPageHeadingDescription()).toBe("Iniciá sesión sin contraseña usando tu huella o Face ID.");
+      expect(getSecurityPageBackAriaLabel()).toBe("Volver a mi perfil");
+      expect(getSecuritySkeletonAriaLabel()).toBe("Cargando opciones de seguridad y acceso biométrico");
     });
   });
 });
