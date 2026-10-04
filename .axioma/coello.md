@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 48 (Turn Rescue Proximity Summary Pure Helper Extraction & Network Contacts Refactoring):
+  - [x] 2026-09-25 — Hecho: Extraída la función pura `calculateTurnRescueProximitySummary` en `src/app/network/graph-utils.ts` para construir resúmenes de proximidad de rescate de candidatos a turnos abiertos basándose en diferencia de habilidad, complementariedad de posición, contactos directos en el turno y grupo comunitario compartido.
+  - [x] 2026-09-25 — Hecho: Verificadas y refactorizadas las funciones puras de contactos de red `calculateNetworkContactPriorityScore`, `formatNetworkContactSummary` y `calculatePadelContactAriaLabel` en `src/lib/queries/contacts.ts`.
+  - [x] 2026-09-25 — Hecho: Pruebas unitarias verificadas en `src/lib/queries/__tests__/contacts.test.ts` y `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 47 (NetworkPageClient Pure Helpers Extraction, ARIA Region Landmarks & Unit Tests):
   - [x] 2026-09-24 — Hecho: Extraídas las funciones puras `getNetworkPageContainerClasses`, `getNetworkPageTabBarClasses`, `getNetworkPageContentClasses`, `getNetworkPageStatsContentClasses`, `getNetworkPageTabButtonClasses`, `getNetworkPageTabAriaLabel` y `getNetworkPageRegionAriaLabel` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-24 — Hecho: Refactorizado `NetworkPageClient` (`src/app/network/network-page-client.tsx`) para consumir los helpers extraídos para estandarizar estilos de pestañas, marcas de referencia ARIA de región (`role="region"`), navegación de pestañas accesibles (`role="tablist"` / `role="tab"`) y etiquetas para lectores de pantalla.

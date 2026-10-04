@@ -2391,6 +2391,42 @@ export interface TurnRescueCandidateInput {
   community: number | null;
 }
 
+/**
+ * Pure helper: formats turn rescue proximity summary string based on skill diff, side compatibility,
+ * direct connections count, and same community count.
+ */
+export function calculateTurnRescueProximitySummary(
+  skillDiff: number,
+  isSideComplementary: boolean,
+  directConnectionsCount: number,
+  sameCommunityCount: number,
+): string {
+  const parts: string[] = [];
+  parts.push(
+    skillDiff <= 100
+      ? `Score cercano (dif. ${skillDiff})`
+      : `Dif. de score ${skillDiff}`,
+  );
+
+  if (isSideComplementary) {
+    parts.push("Equilibra posición en cancha");
+  }
+
+  if (directConnectionsCount > 0) {
+    parts.push(
+      `${directConnectionsCount} ${directConnectionsCount === 1 ? "contacto en el turno" : "contactos en el turno"}`,
+    );
+  }
+
+  if (sameCommunityCount > 0) {
+    parts.push(
+      `${sameCommunityCount} ${sameCommunityCount === 1 ? "del mismo grupo" : "del mismo grupo"}`,
+    );
+  }
+
+  return parts.join(" · ");
+}
+
 export interface EnrolledTurnPlayerInput {
   id: string;
   skillScore: number | null;
@@ -2512,28 +2548,12 @@ export function calculateTurnRescueProximity(
     badgeStyle = "bg-muted text-muted-foreground border-border";
   }
 
-  const parts: string[] = [];
-  parts.push(
-    skillDiff <= 100
-      ? `Score cercano (dif. ${skillDiff})`
-      : `Dif. de score ${skillDiff}`,
+  const formattedSummary = calculateTurnRescueProximitySummary(
+    skillDiff,
+    isSideComplementary,
+    directConnectionsCount,
+    sameCommunityCount,
   );
-
-  if (isSideComplementary) {
-    parts.push("Equilibra posición en cancha");
-  }
-
-  if (directConnectionsCount > 0) {
-    parts.push(
-      `${directConnectionsCount} ${directConnectionsCount === 1 ? "contacto en el turno" : "contactos en el turno"}`,
-    );
-  }
-
-  if (sameCommunityCount > 0) {
-    parts.push(
-      `${sameCommunityCount} ${sameCommunityCount === 1 ? "del mismo grupo" : "del mismo grupo"}`,
-    );
-  }
 
   return {
     score,
@@ -2544,7 +2564,7 @@ export function calculateTurnRescueProximity(
     sameCommunityCount,
     proximityTier,
     badgeStyle,
-    formattedSummary: parts.join(" · "),
+    formattedSummary,
   };
 }
 
