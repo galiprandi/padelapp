@@ -5,6 +5,15 @@ import {
   extractMatchTeams,
   calculateTeammateSide,
   getMatchResultAriaLabel,
+  getMatchResultSaveSuccessToast,
+  getMatchResultSaveErrorToast,
+  getMatchResultSubmitButtonText,
+  getSetScoresSectionAriaLabel,
+  getTeamSetScoreRadioGroupAriaLabel,
+  getTeamSetScoreRadioAriaLabel,
+  getPlayerSidesSectionAriaLabel,
+  getPlayerSideRadioGroupAriaLabel,
+  mapAttendancePlayers,
   MatchPlayerInput,
 } from "../match-result-utils";
 
@@ -139,6 +148,91 @@ describe("match-result-utils", () => {
     it("returns closed match ARIA label with score when closed", () => {
       const label = getMatchResultAriaLabel("Pareja A", "Pareja B", true, "6-4, 6-3");
       expect(label).toBe("Resultado confirmado del partido entre Pareja A y Pareja B: 6-4, 6-3");
+    });
+  });
+
+  describe("toast and button text helpers", () => {
+    it("getMatchResultSaveSuccessToast returns correct message", () => {
+      expect(getMatchResultSaveSuccessToast()).toBe("Guardaste el resultado.");
+    });
+
+    it("getMatchResultSaveErrorToast returns provided message or default fallback", () => {
+      expect(getMatchResultSaveErrorToast("Error personalizado")).toBe("Error personalizado");
+      expect(getMatchResultSaveErrorToast()).toBe("No pudimos guardar el resultado.");
+    });
+
+    it("getMatchResultSubmitButtonText returns proper text based on pending state", () => {
+      expect(getMatchResultSubmitButtonText(true)).toBe("Guardando...");
+      expect(getMatchResultSubmitButtonText(false)).toBe("Registrar Resultado");
+    });
+  });
+
+  describe("ARIA label helpers", () => {
+    it("getSetScoresSectionAriaLabel formats set section label", () => {
+      expect(getSetScoresSectionAriaLabel(0)).toBe("Puntajes del Set 1");
+      expect(getSetScoresSectionAriaLabel(2)).toBe("Puntajes del Set 3");
+    });
+
+    it("getTeamSetScoreRadioGroupAriaLabel formats radio group label", () => {
+      expect(getTeamSetScoreRadioGroupAriaLabel("Pareja Tapia", 0)).toBe(
+        "Puntaje de Pareja Tapia para Set 1",
+      );
+    });
+
+    it("getTeamSetScoreRadioAriaLabel handles singular and plural games correctly", () => {
+      expect(getTeamSetScoreRadioAriaLabel(1, "Pareja Tapia")).toBe(
+        "1 juego para Pareja Tapia",
+      );
+      expect(getTeamSetScoreRadioAriaLabel(6, "Pareja Tapia")).toBe(
+        "6 juegos para Pareja Tapia",
+      );
+    });
+
+    it("getPlayerSidesSectionAriaLabel returns player side section label", () => {
+      expect(getPlayerSidesSectionAriaLabel()).toBe(
+        "Selección de posición en cancha por jugador",
+      );
+    });
+
+    it("getPlayerSideRadioGroupAriaLabel formats player side radio group label", () => {
+      expect(getPlayerSideRadioGroupAriaLabel("Agustín Tapia")).toBe(
+        "Lado para Agustín Tapia",
+      );
+    });
+  });
+
+  describe("mapAttendancePlayers", () => {
+    it("filters players without userId and maps valid players correctly", () => {
+      const players: MatchPlayerInput[] = [
+        {
+          id: "p1",
+          position: 0,
+          userId: "u1",
+          displayName: "Agustín Tapia",
+          teamId: "team-a",
+          resultConfirmed: true,
+          attendance: "ATTENDED",
+          user: { id: "u1", displayName: "Agustín Tapia", image: "/tapia.jpg" },
+        },
+        {
+          id: "p2",
+          position: 1,
+          userId: null,
+          displayName: "Placeholder Jugador 2",
+          teamId: "team-a",
+          resultConfirmed: false,
+        },
+      ];
+
+      const mapped = mapAttendancePlayers(players);
+      expect(mapped).toHaveLength(1);
+      expect(mapped[0]).toEqual({
+        id: "p1",
+        userId: "u1",
+        name: "Agustín Tapia",
+        image: "/tapia.jpg",
+        currentStatus: "ATTENDED",
+      });
     });
   });
 });
