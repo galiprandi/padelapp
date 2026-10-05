@@ -18,6 +18,15 @@ import {
   extractMatchTeams,
   calculateTeammateSide,
   getMatchResultAriaLabel,
+  getMatchResultSaveSuccessToast,
+  getMatchResultSaveErrorToast,
+  getMatchResultSubmitButtonText,
+  getSetScoresSectionAriaLabel,
+  getTeamSetScoreRadioGroupAriaLabel,
+  getTeamSetScoreRadioAriaLabel,
+  getPlayerSidesSectionAriaLabel,
+  getPlayerSideRadioGroupAriaLabel,
+  mapAttendancePlayers,
   MatchPlayerInput,
 } from "./match-result-utils";
 
@@ -117,11 +126,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
         sides: sidesPayload,
       });
       if (res.status === "ok") {
-        showToast("Guardaste el resultado.");
+        showToast(getMatchResultSaveSuccessToast());
         router.push(`/match/${match.id}`);
         router.refresh();
       } else {
-        showToast(res.message || "No pudimos guardar el resultado.", {
+        showToast(getMatchResultSaveErrorToast(res.message), {
           duration: 4000,
         });
       }
@@ -135,18 +144,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
   const canMarkAttendance =
     isCreator && new Date() > oneHourAfterMatch;
 
-  const attendancePlayers = match.players
-    .filter((p) => p.userId !== null)
-    .map((p) => ({
-      id: p.id,
-      userId: p.userId!,
-      name:
-        p.displayName ||
-        p.user?.displayName ||
-        `Jugador ${p.position + 1}`,
-      image: p.user?.image ?? undefined,
-      currentStatus: (p.attendance as "ATTENDED" | "LATE" | "NO_SHOW" | null) ?? null,
-    }));
+  const attendancePlayers = mapAttendancePlayers(match.players);
 
   return (
     <div
@@ -178,7 +176,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                 <section
                   key={setIndex}
                   role="region"
-                  aria-label={`Puntajes del Set ${setIndex + 1}`}
+                  aria-label={getSetScoresSectionAriaLabel(setIndex)}
                   className="space-y-3"
                 >
                   <h2 className="text-sm font-bold text-foreground">
@@ -242,7 +240,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                           }}
                         >
                           <span id={`team-${team.id}-set-${setIndex}-label`} className="sr-only">
-                            Puntaje de {team.label} para Set {setIndex + 1}
+                            {getTeamSetScoreRadioGroupAriaLabel(team.label, setIndex)}
                           </span>
                           {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
                             const isSelected =
@@ -254,7 +252,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                                 role="radio"
                                 aria-checked={isSelected}
                                 tabIndex={isSelected ? 0 : -1}
-                                aria-label={`${num} juegos para ${team.label}`}
+                                aria-label={getTeamSetScoreRadioAriaLabel(num, team.label)}
                                 onClick={() => {
                                   setScores((prev) => {
                                     const newScores = prev.map((s) => [...s]);
@@ -286,7 +284,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             {/* Side selection section */}
             <section
               role="region"
-              aria-label="Selección de posición en cancha por jugador"
+              aria-label={getPlayerSidesSectionAriaLabel()}
               className="space-y-3"
             >
               <h2 className="text-sm font-bold text-foreground">
@@ -308,7 +306,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                           <div
                             className="flex items-center gap-1 bg-muted p-1 rounded-lg"
                             role="radiogroup"
-                            aria-label={`Lado para ${p.name}`}
+                            aria-label={getPlayerSideRadioGroupAriaLabel(p.name)}
                             onKeyDown={(e) => {
                               if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
                                 e.preventDefault();
@@ -367,9 +365,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             </section>
 
             <MatchNavigation
-              primaryButtonText={
-                pending ? "Guardando..." : "Registrar Resultado"
-              }
+              primaryButtonText={getMatchResultSubmitButtonText(pending)}
               onPrimaryClick={save}
               primaryDisabled={pending || isClosed}
               primaryLoading={pending}
