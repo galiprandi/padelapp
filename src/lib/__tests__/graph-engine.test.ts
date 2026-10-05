@@ -186,6 +186,11 @@ describe("applyFeedbackToScore", () => {
 import {
   calculateConnectionRecord,
   normalizeSearchQuery,
+  getRecommendedPlayerContainerClasses,
+  getRecommendedPlayerAvatarAriaLabel,
+  getRecommendedPlayerSkillText,
+  getRecommendedPlayerSideText,
+  getRecommendedPlayerAriaLabel,
   filterLinksBySelectedNode,
   getSideCompatibilityLabel,
   filterNodesAndLinksByCommunity,
@@ -1558,6 +1563,75 @@ describe("NetworkPageClient pure helpers", () => {
     it("returns expected region landmark ARIA label for graph view", () => {
       expect(getNetworkPageRegionAriaLabel("graph")).toBe(
         "Sección del grafo interactivo de la red",
+      );
+    });
+  });
+});
+
+describe("RecommendedPlayer pure helper functions", () => {
+  describe("getRecommendedPlayerContainerClasses", () => {
+    it("returns expected container CSS classes with border, bg and hover transitions", () => {
+      const classes = getRecommendedPlayerContainerClasses();
+      expect(classes).toBe(
+        "flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
+      );
+    });
+  });
+
+  describe("getRecommendedPlayerAvatarAriaLabel", () => {
+    it("formats avatar screen reader label with player name", () => {
+      expect(getRecommendedPlayerAvatarAriaLabel("Agustín Aliprandi")).toBe(
+        "Avatar de Agustín Aliprandi"
+      );
+    });
+  });
+
+  describe("getRecommendedPlayerSkillText", () => {
+    it("formats skill score as tabular string", () => {
+      expect(getRecommendedPlayerSkillText(1150)).toBe("1150");
+      expect(getRecommendedPlayerSkillText(1000)).toBe("1000");
+    });
+  });
+
+  describe("getRecommendedPlayerSideText", () => {
+    it("returns 'Derecha' for RIGHT court side preference", () => {
+      expect(getRecommendedPlayerSideText("RIGHT")).toBe("Derecha");
+    });
+
+    it("returns 'Revés' for LEFT court side preference", () => {
+      expect(getRecommendedPlayerSideText("LEFT")).toBe("Revés");
+    });
+
+    it("returns 'Ambos lados' for BOTH court side preference", () => {
+      expect(getRecommendedPlayerSideText("BOTH")).toBe("Ambos lados");
+    });
+
+    it("returns 'Lado no definido' for null, undefined, or unassigned court side", () => {
+      expect(getRecommendedPlayerSideText(null)).toBe("Lado no definido");
+      expect(getRecommendedPlayerSideText(undefined)).toBe("Lado no definido");
+      expect(getRecommendedPlayerSideText("")).toBe("Lado no definido");
+    });
+  });
+
+  describe("getRecommendedPlayerAriaLabel", () => {
+    it("formats full accessible ARIA label for recommended player card with singular match", () => {
+      const label = getRecommendedPlayerAriaLabel("Facundo Lopez", 1, "LEFT", 1020);
+      expect(label).toBe(
+        "Facundo Lopez: 1 partido disputado, posición Revés, score 1020."
+      );
+    });
+
+    it("formats full accessible ARIA label for recommended player card with plural matches and RIGHT side", () => {
+      const label = getRecommendedPlayerAriaLabel("Agustín Aliprandi", 6, "RIGHT", 1150);
+      expect(label).toBe(
+        "Agustín Aliprandi: 6 partidos disputados, posición Derecha, score 1150."
+      );
+    });
+
+    it("formats full accessible ARIA label for recommended player card with unassigned side", () => {
+      const label = getRecommendedPlayerAriaLabel("Diego Morales", 0, null, 1080);
+      expect(label).toBe(
+        "Diego Morales: 0 partidos disputados, posición Lado no definido, score 1080."
       );
     });
   });

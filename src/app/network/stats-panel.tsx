@@ -16,6 +16,11 @@ import {
   calculatePlayerSimilarityInfo,
   formatTimeAgo,
   getNetworkActivityTier,
+  getRecommendedPlayerAriaLabel,
+  getRecommendedPlayerAvatarAriaLabel,
+  getRecommendedPlayerContainerClasses,
+  getRecommendedPlayerSideText,
+  getRecommendedPlayerSkillText,
   getStatsPanelRegionAriaLabel,
   getTopPlayerExpansionAriaLabel,
 } from "./graph-utils";
@@ -207,26 +212,40 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                 graphData?.links ?? [],
               );
 
+              const name = capitalizeName(player.name ?? player.alias ?? "Jugador");
+              const avatarName = capitalizeName(player.name ?? player.alias ?? "?");
+              const sideText = getRecommendedPlayerSideText(player.preferredSide);
+              const skillText = getRecommendedPlayerSkillText(player.skillScore);
+              const recommendedAriaLabel = getRecommendedPlayerAriaLabel(
+                name,
+                player.matchesPlayed,
+                player.preferredSide,
+                player.skillScore,
+              );
+
               return (
                 <div
                   key={player.id}
-                  className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
+                  className={getRecommendedPlayerContainerClasses()}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <Link
                       href={`/p/${player.id}`}
                       prefetch={true}
+                      aria-label={recommendedAriaLabel}
                       className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                     >
-                      <PlayerAvatar
-                        name={capitalizeName(player.name ?? player.alias ?? "?")}
-                        image={player.image ?? undefined}
-                        size={36}
-                      />
+                      <div aria-label={getRecommendedPlayerAvatarAriaLabel(name)}>
+                        <PlayerAvatar
+                          name={avatarName}
+                          image={player.image ?? undefined}
+                          size={36}
+                        />
+                      </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <p className="text-sm font-bold text-foreground truncate">
-                            {capitalizeName(player.name ?? player.alias ?? "?")}
+                            {name}
                           </p>
                           <span
                             className={cn(
@@ -234,13 +253,13 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                               similarity.badgeStyle,
                             )}
                             title={`Similitud de juego: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
-                            aria-label={`Similitud de juego de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
+                            aria-label={`Similitud de juego de ${name}: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
                           >
                             {similarity.similarityTier}
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground truncate">
-                          {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {player.preferredSide === "RIGHT" ? "Derecha" : player.preferredSide === "LEFT" ? "Revés" : "Lado no definido"}
+                          {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {sideText}
                         </p>
                       </div>
                     </Link>
@@ -248,13 +267,13 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
                         <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
                         <p className="text-xs font-bold tabular-nums text-foreground">
-                          {player.skillScore}
+                          {skillText}
                         </p>
                       </div>
                       <Link
                         href={`/p/${player.id}`}
                         prefetch={true}
-                        aria-label={`Ver perfil público de ${capitalizeName(player.name ?? player.alias ?? "Jugador")}`}
+                        aria-label={`Ver perfil público de ${name}`}
                         className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                       >
                         Perfil
