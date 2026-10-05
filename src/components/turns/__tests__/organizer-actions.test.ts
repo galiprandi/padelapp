@@ -7,9 +7,13 @@ import {
   getRemovePlayerCancelAriaLabel,
   getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
+  getRemovePlayerErrorToast,
+  getRemovePlayerConfirmText,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
+  getAssignSubstituteErrorToast,
+  getAssignSubstituteButtonText,
 } from "../turn-utils";
 
 describe("Turn Utils & Organizer Helpers", () => {
@@ -22,13 +26,20 @@ describe("Turn Utils & Organizer Helpers", () => {
     expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: false })).toBe("Gestión de jugador Lucas");
     expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: true })).toBe("Confirmación para sacar a Lucas");
     expect(getRemovePlayerSuccessToast("Lucas")).toBe("Sacaste a Lucas del turno.");
+    expect(getRemovePlayerErrorToast("Error al remover")).toBe("Error al remover");
+    expect(getRemovePlayerErrorToast()).toBe("No se pudo sacar al jugador.");
+    expect(getRemovePlayerConfirmText()).toBe("Sacar");
   });
 
-  it("formats assign substitute ARIA label, region label and toast", () => {
+  it("formats assign substitute ARIA label, region label, button text and toast", () => {
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos" })).toBe("Asignar a Marcos como titular");
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos", isPending: true })).toBe("Asignando a Marcos...");
     expect(getAssignSubstituteRegionAriaLabel("Marcos")).toBe("Asignación de suplente Marcos");
     expect(getAssignSubstituteSuccessToast("Marcos")).toBe("Promoviste a Marcos a titular.");
+    expect(getAssignSubstituteErrorToast("Error al asignar")).toBe("Error al asignar");
+    expect(getAssignSubstituteErrorToast()).toBe("No se pudo asignar al suplente.");
+    expect(getAssignSubstituteButtonText(false)).toBe("Asignar");
+    expect(getAssignSubstituteButtonText(true)).toBe("Asignando...");
   });
   it("formats open slot badge text correctly", () => {
     expect(getOpenSlotsBadgeText(1)).toBe("Falta 1");

@@ -10,12 +10,18 @@ import { Badge } from "@/components/ui/badge";
 import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
+  getAddPlayerErrorToast,
   getAddPlayerAriaLabel,
   getAddPlayerSearchStatusAriaLabel,
   getAddPlayerPromptText,
   getAddPlayerEmptyResultsText,
   getAddPlayerClearSearchAriaLabel,
   getAddPlayerCancelSearchAriaLabel,
+  getAddPlayerButtonTitle,
+  getAddPlayerButtonSubtitle,
+  getAddPlayerSearchPlaceholder,
+  getAddPlayerSearchResultsRegionAriaLabel,
+  getAddPlayerRegionAriaLabel,
   type PlayerOption,
 } from "@/components/turns/turn-utils";
 
@@ -91,7 +97,7 @@ export function AddPlayerButton({
       setResults([]);
       router.refresh();
     } else {
-      showToast(result.message ?? "No se pudo agregar al jugador.");
+      showToast(getAddPlayerErrorToast(result.message));
     }
     setAddingId(null);
   }
@@ -107,15 +113,15 @@ export function AddPlayerButton({
       <button
         onClick={() => setExpanded(true)}
         className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
-        aria-label="Agregar jugador al turno"
+        aria-label={getAddPlayerRegionAriaLabel()}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
           <UserPlus className="h-5 w-5" />
         </div>
         <div className="flex-1 text-left">
-          <p className="text-sm font-bold">Agregar jugador</p>
+          <p className="text-sm font-bold">{getAddPlayerButtonTitle()}</p>
           <p className="text-xs text-muted-foreground">
-            Para confirmaciones fuera de la app
+            {getAddPlayerButtonSubtitle()}
           </p>
         </div>
       </button>
@@ -125,7 +131,7 @@ export function AddPlayerButton({
   return (
     <div
       role="region"
-      aria-label="Agregar jugador al turno"
+      aria-label={getAddPlayerRegionAriaLabel()}
       className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
       onKeyDown={(e) => {
         if (e.key === "Escape") {
@@ -153,7 +159,7 @@ export function AddPlayerButton({
             value={query}
             aria-busy={isSearching}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar jugador..."
+            placeholder={getAddPlayerSearchPlaceholder()}
             autoCapitalize="words"
             className="h-10 w-full pl-9 pr-9 rounded-lg bg-background border border-border text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
           />
@@ -189,7 +195,7 @@ export function AddPlayerButton({
 
       {/* Results */}
       {query.trim().length >= 2 && (
-        <div className="max-h-64 overflow-y-auto" role="region" aria-label="Resultados de búsqueda de jugadores">
+        <div className="max-h-64 overflow-y-auto" role="region" aria-label={getAddPlayerSearchResultsRegionAriaLabel()}>
           {results.length > 0 ? (
             <div className="p-2 space-y-1">
               {results.map((player) => (

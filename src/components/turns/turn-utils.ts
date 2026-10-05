@@ -1888,3 +1888,73 @@ export function getQuickJoinEmptySlotAriaLabel(isPending: boolean = false): stri
 export function getQuickJoinEmptySlotText(isPending: boolean = false): string {
   return isPending ? "Sumando..." : "Sumarme";
 }
+
+/**
+ * Format error toast message when an organizer fails to remove a player from a turn.
+ */
+export function getRemovePlayerErrorToast(message?: string): string {
+  return message ?? "No se pudo sacar al jugador.";
+}
+
+/**
+ * Format error toast message when an organizer fails to promote a substitute.
+ */
+export function getAssignSubstituteErrorToast(message?: string): string {
+  return message ?? "No se pudo asignar al suplente.";
+}
+
+/**
+ * Format confirmation button label text for removing a player.
+ */
+export function getRemovePlayerConfirmText(): string {
+  return "Sacar";
+}
+
+/**
+ * Format button label text for assigning a substitute.
+ */
+export function getAssignSubstituteButtonText(isPending: boolean = false): string {
+  return isPending ? "Asignando..." : "Asignar";
+}
+
+/**
+ * Format error toast message when an organizer fails to manually add a player.
+ */
+export function getAddPlayerErrorToast(message?: string): string {
+  return message ?? "No se pudo agregar al jugador.";
+}
+
+/**
+ * Format title text for manual add player action card.
+ */
+export function getAddPlayerButtonTitle(): string {
+  return "Agregar jugador";
+}
+
+/**
+ * Format subtitle description text for manual add player action card.
+ */
+export function getAddPlayerButtonSubtitle(): string {
+  return "Para confirmaciones fuera de la app";
+}
+
+/**
+ * Format search input placeholder text for manual add player action.
+ */
+export function getAddPlayerSearchPlaceholder(): string {
+  return "Buscar jugador...";
+}
+
+/**
+ * Format ARIA region label for search results container in manual add player action.
+ */
+export function getAddPlayerSearchResultsRegionAriaLabel(): string {
+  return "Resultados de búsqueda de jugadores";
+}
+
+/**
+ * Format ARIA region label for manual add player component container.
+ */
+export function getAddPlayerRegionAriaLabel(): string {
+  return "Agregar jugador al turno";
+}

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-06 — Organizer Actions & Add Player Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/organizer-and-add-player-pure-helpers)
 - [x] 2026-10-04 — OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring (bela/turnos/open-to-network-button-text-helpers)
 - [x] 2026-09-30 — Late Leave Warning & Turn Actions Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/late-leave-and-actions-pure-helpers)
 - [x] 2026-09-29 — OpenToNetworkButton Cooldown & Result Pure Helpers Extraction & Refactoring (bela/turnos/open-to-network-cooldown-pure-helpers)
@@ -69,6 +70,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-06 - Organizer Actions & Add Player Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getRemovePlayerErrorToast`, `getAssignSubstituteErrorToast`, `getRemovePlayerConfirmText`, `getAssignSubstituteButtonText`, `getAddPlayerErrorToast`, `getAddPlayerButtonTitle`, `getAddPlayerButtonSubtitle`, `getAddPlayerSearchPlaceholder`, `getAddPlayerSearchResultsRegionAriaLabel`, and `getAddPlayerRegionAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized error toast copy, confirm texts, input placeholders, titles, subtitles, and screen reader ARIA region landmark labels from React render components in `RemovePlayerButton`, `AssignSubstituteButton` (`src/components/turns/organizer-actions.tsx`), and `AddPlayerButton` (`src/components/turns/add-player-button.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract organizer action error toast copy, confirm button text, search placeholders, and ARIA landmark region labels into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-04 - OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring
 **Learning:** Extracting pure helper functions (`getOpenToNetworkButtonText` and `getOpenToNetworkResultAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized button status formatting ("Enviando...", cooldown label, or base label) and accessible screen reader result announcements from React render components in `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining semantic accessibility attributes (`role="status"`, `aria-live="polite"`, `aria-label`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), and solid MDS button styling with active tactile scaling (`active:scale-[0.98] transition-all`).
 **Action:** Always extract button label state formatting and screen reader result feedback labels into pure helper utilities backed by Vitest unit tests.

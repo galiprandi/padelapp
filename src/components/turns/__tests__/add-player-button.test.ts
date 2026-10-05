@@ -17,12 +17,18 @@ import { AddPlayerButton } from "../add-player-button";
 import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
+  getAddPlayerErrorToast,
   getAddPlayerAriaLabel,
   getAddPlayerSearchStatusAriaLabel,
   getAddPlayerPromptText,
   getAddPlayerEmptyResultsText,
   getAddPlayerClearSearchAriaLabel,
   getAddPlayerCancelSearchAriaLabel,
+  getAddPlayerButtonTitle,
+  getAddPlayerButtonSubtitle,
+  getAddPlayerSearchPlaceholder,
+  getAddPlayerSearchResultsRegionAriaLabel,
+  getAddPlayerRegionAriaLabel,
 } from "../turn-utils";
 
 describe("AddPlayerButton & Manual Add Helpers", () => {
@@ -63,11 +69,22 @@ describe("AddPlayerButton & Manual Add Helpers", () => {
     expect(result[3].isContact).toBe(false);
   });
 
-  it("formats success toast message for manually adding player in Argentine Spanish voseo", () => {
+  it("formats success and error toast messages for manually adding player in Argentine Spanish voseo", () => {
     const toast = getAddPlayerSuccessToast("Facundo");
     expect(toast).toBe("Agregaste a Facundo al turno.");
     expect(toast).not.toContain("!");
     expect(toast).not.toContain("¡");
+
+    expect(getAddPlayerErrorToast("Error personalizado")).toBe("Error personalizado");
+    expect(getAddPlayerErrorToast()).toBe("No se pudo agregar al jugador.");
+  });
+
+  it("formats title, subtitle, placeholders and region ARIA labels", () => {
+    expect(getAddPlayerButtonTitle()).toBe("Agregar jugador");
+    expect(getAddPlayerButtonSubtitle()).toBe("Para confirmaciones fuera de la app");
+    expect(getAddPlayerSearchPlaceholder()).toBe("Buscar jugador...");
+    expect(getAddPlayerSearchResultsRegionAriaLabel()).toBe("Resultados de búsqueda de jugadores");
+    expect(getAddPlayerRegionAriaLabel()).toBe("Agregar jugador al turno");
   });
 
   it("formats ARIA label for player addition action trigger", () => {
