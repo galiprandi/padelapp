@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-26 — Extracción de Funciones Helper Puras de Clases CSS para Contenedor Flex Interior, Pestañas y FAB del Esqueleto de Navegación (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` y `BottomNavSkeleton` (PR #tino/ux/bottom-nav-inner-and-skeleton-helpers)
 - [x] 2026-09-25 — Extracción de Funciones Helper Puras de Atributos ARIA, Habilitación de PWA y Clases CSS en Providers (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (PR #tino/perf/providers-helpers-extraction)
 - [x] 2026-09-24 — Extracción de Funciones Helper Puras para RootLayout y RootLoading (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLayout` y `RootLoading` (PR #tino/perf/root-layout-helpers-extraction)
 - [x] 2026-09-23 — Refactorización de Fronteras de Error en Subrutas con `formatErrorDetails` y Atributos ARIA de Accesibilidad (PR #tino/perf/error-details-helper-extraction)
@@ -65,6 +66,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-26 - Extracción de Funciones Helper Puras de Clases CSS para Contenedor Interior y Esqueletos de Navegación
+**Aprendizaje:** Encapsular la composición de clases CSS para el contenedor flex interior (`getBottomNavInnerContainerClasses`), las columnas de pestañas (`getBottomNavTabSkeletonClasses`) y la estructura del botón central FAB (`getBottomNavFabSkeletonClasses`) dentro de `src/components/navigation/nav-utils.ts` desacopla el diseño de maquetación visual de la renderización en `BottomNav` y `BottomNavSkeleton`. Esto simplifica la mantención de la barra de navegación principal, evita la duplicación de clases extensas de Tailwind y permite verificar las reglas de estilo mediante unit tests aislados.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al extender la navegación principal o diseñar marcadores de posición para el menú inferior.
+
 ### 2026-09-25 - Extracción de Funciones Helper Puras para Providers y Accesibilidad ARIA
 **Aprendizaje:** Encapsular la etiqueta accesible ARIA para la región de contexto (`getProvidersRegionAriaLabel`), los atributos ARIA de accesibilidad (`getProvidersRegionAriaAttributes`), la condición de activación del registrador de PWA (`isPwaRegistrarEnabled`) y la composición de clases CSS del contenedor (`getProvidersContainerClasses`) en `src/lib/providers-utils.ts` desacopla la configuración del entorno de la maquetación en `Providers` (`src/app/providers.tsx`). Esto simplifica la mantención del proveedor global y permite verificar el comportamiento de habilitación de PWA y accesibilidad mediante pruebas unitarias rápidas e independientes.
 **Acción:** Reutilizar siempre `src/lib/providers-utils.ts` al extender proveedores globales de contexto o ajustar banderas de entorno de PWA.

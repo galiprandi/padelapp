@@ -13,6 +13,7 @@ import {
   formatNotificationsDisplayCount,
   isNavItemActive,
   getBottomNavContainerClasses,
+  getBottomNavInnerContainerClasses,
   getNavItemClasses,
   getFabClasses,
   getNotificationsBadgeClasses,
@@ -39,7 +40,7 @@ export function BottomNav({
       aria-label={getBottomNavAriaLabel()}
       className={getBottomNavContainerClasses(position)}
     >
-      <div className="relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background">
+      <div className={getBottomNavInnerContainerClasses()}>
         {primaryItems.map((item) => {
           const isActive = isNavItemActive(item.href, pathname);
           const ariaAttrs = getNavItemAriaAttributes(item, isActive);
