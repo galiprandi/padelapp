@@ -13,9 +13,13 @@ import {
   getRemovePlayerCancelAriaLabel,
   getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
+  getRemovePlayerErrorToast,
+  getRemovePlayerConfirmText,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
+  getAssignSubstituteErrorToast,
+  getAssignSubstituteButtonText,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -38,7 +42,7 @@ export function RemovePlayerButton({
       if (result.status === "ok") {
         showToast(getRemovePlayerSuccessToast(playerName));
       } else {
-        showToast(result.message ?? "No se pudo sacar al jugador.");
+        showToast(getRemovePlayerErrorToast(result.message));
       }
       router.refresh();
     });
@@ -98,7 +102,7 @@ export function RemovePlayerButton({
         {isPending ? (
           <Loader2 className="h-3 w-3 animate-spin" />
         ) : (
-          "Sacar"
+          getRemovePlayerConfirmText()
         )}
       </button>
       <button
@@ -136,7 +140,7 @@ export function AssignSubstituteButton({
       if (result.status === "ok") {
         showToast(getAssignSubstituteSuccessToast(substituteName));
       } else {
-        showToast(result.message ?? "No se pudo asignar al suplente.");
+        showToast(getAssignSubstituteErrorToast(result.message));
       }
       router.refresh();
     });
@@ -167,7 +171,7 @@ export function AssignSubstituteButton({
         ) : (
           <UserCheck className="h-3.5 w-3.5" />
         )}
-        {isPending ? "Asignando..." : "Asignar"}
+        {getAssignSubstituteButtonText(isPending)}
       </button>
     </div>
   );
