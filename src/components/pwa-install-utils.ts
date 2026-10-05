@@ -36,3 +36,19 @@ export function getPwaInstallLinkAriaLabel(): string {
 export function getDismissBannerAriaLabel(): string {
   return "Cerrar aviso de instalación";
 }
+
+export function getPwaBannerTitleText(): string {
+  return "Instalá la App";
+}
+
+export function getPwaBannerDescriptionText(): string {
+  return "Accedé más rápido desde tu inicio.";
+}
+
+export function getPwaBannerIconAriaLabel(): string {
+  return "Icono de aplicación móvil";
+}
+
+export function getPwaBannerInstallButtonText(isInstalling: boolean): string {
+  return isInstalling ? "Instalando..." : "Instalar";
+}
