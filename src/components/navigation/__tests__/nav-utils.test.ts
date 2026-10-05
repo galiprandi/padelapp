@@ -13,6 +13,9 @@ import {
   getNotificationsBadgeAriaAttributes,
   isNavItemActive,
   getBottomNavContainerClasses,
+  getBottomNavInnerContainerClasses,
+  getBottomNavTabSkeletonClasses,
+  getBottomNavFabSkeletonClasses,
   getNavItemClasses,
   getFabClasses,
   getNotificationsBadgeClasses,
@@ -236,6 +239,42 @@ describe("nav-utils", () => {
     it("applies custom class overrides", () => {
       const classes = getBottomNavContainerClasses("fixed", "custom-nav-container");
       expect(classes).toContain("custom-nav-container");
+    });
+  });
+
+  describe("getBottomNavInnerContainerClasses", () => {
+    it("returns inner container layout styling", () => {
+      const classes = getBottomNavInnerContainerClasses();
+      expect(classes).toContain("relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getBottomNavInnerContainerClasses("custom-inner-nav");
+      expect(classes).toContain("custom-inner-nav");
+    });
+  });
+
+  describe("getBottomNavTabSkeletonClasses", () => {
+    it("returns flex column alignment classes for tab skeleton", () => {
+      const classes = getBottomNavTabSkeletonClasses();
+      expect(classes).toContain("flex flex-1 flex-col items-center justify-center gap-1");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getBottomNavTabSkeletonClasses("custom-tab-skeleton");
+      expect(classes).toContain("custom-tab-skeleton");
+    });
+  });
+
+  describe("getBottomNavFabSkeletonClasses", () => {
+    it("returns FAB skeleton container alignment and styling", () => {
+      const classes = getBottomNavFabSkeletonClasses();
+      expect(classes).toContain("relative -mt-6 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted shadow-xs");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getBottomNavFabSkeletonClasses("custom-fab-skeleton");
+      expect(classes).toContain("custom-fab-skeleton");
     });
   });
 

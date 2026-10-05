@@ -191,6 +191,36 @@ export function getBottomNavContainerClasses(
   );
 }
 
+/**
+ * Genera las clases CSS para el contenedor flex interior de la barra de navegación o su esqueleto.
+ */
+export function getBottomNavInnerContainerClasses(customClassName?: string): string {
+  return cn(
+    "relative flex h-16 w-full items-stretch justify-evenly border-t border-border bg-background",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para las columnas de pestañas en el esqueleto de carga de la barra de navegación.
+ */
+export function getBottomNavTabSkeletonClasses(customClassName?: string): string {
+  return cn(
+    "flex flex-1 flex-col items-center justify-center gap-1",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para el contenedor del botón de acción central (FAB) en el esqueleto de carga.
+ */
+export function getBottomNavFabSkeletonClasses(customClassName?: string): string {
+  return cn(
+    "relative -mt-6 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted shadow-xs",
+    customClassName,
+  );
+}
+
 export interface NotificationsEmptyStateProps {
   title: string;
   description: string;
