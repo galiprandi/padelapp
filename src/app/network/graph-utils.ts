@@ -2988,6 +2988,41 @@ export interface NodeConnectionSummary {
  * Calculates aggregate connection summary (breakdown of partner, rival, mixed, turn relationships
  * and overall partnership win rate) for a given selected node.
  */
+export function getRecommendedPlayerContainerClasses(): string {
+  return "flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors";
+}
+
+export function getRecommendedPlayerAvatarAriaLabel(
+  playerName: string
+): string {
+  return `Avatar de ${playerName}`;
+}
+
+export function getRecommendedPlayerSkillText(skillScore: number): string {
+  return `${skillScore}`;
+}
+
+export function getRecommendedPlayerSideText(
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | undefined | string
+): string {
+  if (preferredSide === "RIGHT") return "Derecha";
+  if (preferredSide === "LEFT") return "Revés";
+  if (preferredSide === "BOTH") return "Ambos lados";
+  return "Lado no definido";
+}
+
+export function getRecommendedPlayerAriaLabel(
+  playerName: string,
+  matchesPlayed: number,
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | undefined | string,
+  skillScore: number
+): string {
+  const matchesText =
+    matchesPlayed === 1 ? "1 partido disputado" : `${matchesPlayed} partidos disputados`;
+  const sideText = getRecommendedPlayerSideText(preferredSide);
+  return `${playerName}: ${matchesText}, posición ${sideText}, score ${skillScore}.`;
+}
+
 export function calculateNodeConnectionSummary(
   links: GraphLink[],
   selectedNodeId: string,
