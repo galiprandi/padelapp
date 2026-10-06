@@ -12,6 +12,45 @@ export function getRankingRulesAriaLabel(isOpen: boolean): string {
 }
 
 /**
+ * Returns heading title text for ranking rules section
+ */
+export function getRankingRulesHeaderTitle(): string {
+  return "Reglas y Fórmulas del Ranking";
+}
+
+/**
+ * Returns heading subtitle text for ranking rules section
+ */
+export function getRankingRulesHeaderSubtitle(): string {
+  return "¿Cómo se calculan los puntos y posiciones?";
+}
+
+/**
+ * Returns section title text for ranking rules breakdown items
+ */
+export function getRankingRulesSectionTitle(
+  section: "points" | "penalties" | "decay" | "tiebreak"
+): string {
+  switch (section) {
+    case "points":
+      return "Cálculo de Puntos";
+    case "penalties":
+      return "Penalizaciones por Asistencia";
+    case "decay":
+      return "Decay por Inactividad";
+    case "tiebreak":
+      return "Criterios de Desempate";
+  }
+}
+
+/**
+ * Returns mathematical formula display text for ranking score
+ */
+export function getRankingFormulaText(): string {
+  return "Puntos = 1000 + (Victorias × 15) + (Racha × 5) + (Bonus de Sets) - Penalizaciones";
+}
+
+/**
  * Returns accessible ARIA label for ranking filter tabs
  */
 export function getRankingFilterTabAriaLabel(
