@@ -13,9 +13,11 @@ import {
   getRemovePlayerCancelAriaLabel,
   getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
+  getRemovePlayerErrorToast,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
+  getAssignSubstituteErrorToast,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -38,7 +40,7 @@ export function RemovePlayerButton({
       if (result.status === "ok") {
         showToast(getRemovePlayerSuccessToast(playerName));
       } else {
-        showToast(result.message ?? "No se pudo sacar al jugador.");
+        showToast(getRemovePlayerErrorToast(result.message));
       }
       router.refresh();
     });
@@ -136,7 +138,7 @@ export function AssignSubstituteButton({
       if (result.status === "ok") {
         showToast(getAssignSubstituteSuccessToast(substituteName));
       } else {
-        showToast(result.message ?? "No se pudo asignar al suplente.");
+        showToast(getAssignSubstituteErrorToast(result.message));
       }
       router.refresh();
     });

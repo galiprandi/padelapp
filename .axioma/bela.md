@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-05 — Calendar Export UI & Error Toast Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-and-error-toast-pure-helpers)
 - [x] 2026-10-04 — OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring (bela/turnos/open-to-network-button-text-helpers)
 - [x] 2026-09-30 — Late Leave Warning & Turn Actions Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/late-leave-and-actions-pure-helpers)
 - [x] 2026-09-29 — OpenToNetworkButton Cooldown & Result Pure Helpers Extraction & Refactoring (bela/turnos/open-to-network-cooldown-pure-helpers)
@@ -69,6 +70,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-05 - Calendar Export UI & Error Toast Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getCalendarButtonText`, `getCalendarButtonAriaLabel`, `getCalendarHeaderPromptText`, `getGoogleButtonText`, `getGoogleButtonAriaLabel`, `getIcsButtonText`, `getIcsButtonAriaLabel`, `getGoogleCalendarToast`, `getIcsCalendarToast`, `getRemovePlayerErrorToast`, `getAssignSubstituteErrorToast`, `getAddPlayerErrorToast`, `getSendChatMessageErrorToast`) into `src/components/turns/turn-utils.ts` decouples calendar export UI copy, screen reader ARIA labels, and fallback error toast messages from React render components in `AddToCalendarButton` (`src/components/turns/add-to-calendar.tsx`), `RemovePlayerButton`, `AssignSubstituteButton` (`src/components/turns/organizer-actions.tsx`), `AddPlayerButton` (`src/components/turns/add-player-button.tsx`), and `TurnChat` (`src/components/turns/turn-chat.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract calendar button labels, prompt headers, export toast feedback messages, and fallback error toasts into pure helper functions backed by Vitest unit tests.
+
 ## 2026-10-04 - OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring
 **Learning:** Extracting pure helper functions (`getOpenToNetworkButtonText` and `getOpenToNetworkResultAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized button status formatting ("Enviando...", cooldown label, or base label) and accessible screen reader result announcements from React render components in `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining semantic accessibility attributes (`role="status"`, `aria-live="polite"`, `aria-label`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), and solid MDS button styling with active tactile scaling (`active:scale-[0.98] transition-all`).
 **Action:** Always extract button label state formatting and screen reader result feedback labels into pure helper utilities backed by Vitest unit tests.

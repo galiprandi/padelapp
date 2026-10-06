@@ -1888,3 +1888,94 @@ export function getQuickJoinEmptySlotAriaLabel(isPending: boolean = false): stri
 export function getQuickJoinEmptySlotText(isPending: boolean = false): string {
   return isPending ? "Sumando..." : "Sumarme";
 }
+
+/**
+ * Format calendar action button text.
+ */
+export function getCalendarButtonText(): string {
+  return "Agregar al calendario";
+}
+
+/**
+ * Format calendar action button ARIA label.
+ */
+export function getCalendarButtonAriaLabel(): string {
+  return "Agregar el partido a mi calendario";
+}
+
+/**
+ * Format calendar header prompt text.
+ */
+export function getCalendarHeaderPromptText(): string {
+  return "Elegí tu calendario:";
+}
+
+/**
+ * Format Google Calendar button text.
+ */
+export function getGoogleButtonText(): string {
+  return "Google";
+}
+
+/**
+ * Format Google Calendar button ARIA label.
+ */
+export function getGoogleButtonAriaLabel(): string {
+  return "Agregar a Google Calendar";
+}
+
+/**
+ * Format iCal / Apple / Outlook calendar button text.
+ */
+export function getIcsButtonText(): string {
+  return "Apple / Outlook";
+}
+
+/**
+ * Format iCal / Apple / Outlook calendar button ARIA label.
+ */
+export function getIcsButtonAriaLabel(): string {
+  return "Descargar archivo iCal";
+}
+
+/**
+ * Format Google Calendar toast feedback message.
+ */
+export function getGoogleCalendarToast(): string {
+  return "Abriendo Google Calendar...";
+}
+
+/**
+ * Format iCal calendar download toast feedback message.
+ */
+export function getIcsCalendarToast(): string {
+  return "Archivo de calendario descargado.";
+}
+
+/**
+ * Format error toast message when removing a player fails.
+ */
+export function getRemovePlayerErrorToast(message?: string | null): string {
+  return message ?? "No se pudo sacar al jugador.";
+}
+
+/**
+ * Format error toast message when assigning a substitute fails.
+ */
+export function getAssignSubstituteErrorToast(message?: string | null): string {
+  return message ?? "No se pudo asignar al suplente.";
+}
+
+/**
+ * Format error toast message when adding a player fails.
+ */
+export function getAddPlayerErrorToast(message?: string | null): string {
+  return message ?? "No se pudo agregar al jugador.";
+}
+
+/**
+ * Format error toast message when sending a chat message fails.
+ */
+export function getSendChatMessageErrorToast(message?: string | null): string {
+  return message ?? "No se pudo enviar el mensaje.";
+}
