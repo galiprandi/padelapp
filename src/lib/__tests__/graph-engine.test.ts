@@ -232,6 +232,13 @@ import {
   getGraphViewEmptySearchProps,
   getGraphViewNodeName,
   getGraphViewLegendAriaLabel,
+  getConnectionBadgeClasses,
+  getConnectionTypeSymbol,
+  getGraphViewSelectedNodeAriaLabel,
+  getGraphViewFocusNodeAriaLabel,
+  getGraphViewConnectionWinRateAriaLabel,
+  getGraphViewConnectionMutualAriaLabel,
+  getGraphViewNodeGroupAriaLabel,
   getNetworkPageContainerClasses,
   getNetworkPageTabBarClasses,
   getNetworkPageContentClasses,
@@ -1563,6 +1570,104 @@ describe("NetworkPageClient pure helpers", () => {
     it("returns expected region landmark ARIA label for graph view", () => {
       expect(getNetworkPageRegionAriaLabel("graph")).toBe(
         "Sección del grafo interactivo de la red",
+      );
+    });
+  });
+
+  describe("getConnectionBadgeClasses", () => {
+    it("returns emerald styling for partner connection type", () => {
+      expect(getConnectionBadgeClasses("partner")).toContain("bg-emerald-100");
+    });
+
+    it("returns rose styling for rival connection type", () => {
+      expect(getConnectionBadgeClasses("rival")).toContain("bg-rose-100");
+    });
+
+    it("returns amber styling for mixed connection type", () => {
+      expect(getConnectionBadgeClasses("mixed")).toContain("bg-amber-100");
+    });
+
+    it("returns slate styling for turns connection type", () => {
+      expect(getConnectionBadgeClasses("turns")).toContain("bg-slate-100");
+    });
+  });
+
+  describe("getConnectionTypeSymbol", () => {
+    it("returns 'P' for partner connection type", () => {
+      expect(getConnectionTypeSymbol("partner")).toBe("P");
+    });
+
+    it("returns 'R' for rival connection type", () => {
+      expect(getConnectionTypeSymbol("rival")).toBe("R");
+    });
+
+    it("returns 'M' for mixed connection type", () => {
+      expect(getConnectionTypeSymbol("mixed")).toBe("M");
+    });
+
+    it("returns 'T' for turns connection type", () => {
+      expect(getConnectionTypeSymbol("turns")).toBe("T");
+    });
+  });
+
+  describe("getGraphViewSelectedNodeAriaLabel", () => {
+    it("formats singular match and contact text", () => {
+      expect(getGraphViewSelectedNodeAriaLabel("Agustín", 1, 1)).toBe(
+        "Detalles de Agustín: 1 partido, 1 contacto"
+      );
+    });
+
+    it("formats plural matches and contacts text", () => {
+      expect(getGraphViewSelectedNodeAriaLabel("Bela", 5, 8)).toBe(
+        "Detalles de Bela: 5 partidos, 8 contactos"
+      );
+    });
+  });
+
+  describe("getGraphViewFocusNodeAriaLabel", () => {
+    it("formats focus ARIA label with target player name", () => {
+      expect(getGraphViewFocusNodeAriaLabel("Facundo")).toBe(
+        "Enfocar a Facundo en el grafo"
+      );
+    });
+  });
+
+  describe("getGraphViewConnectionWinRateAriaLabel", () => {
+    it("formats win rate percentage ARIA label", () => {
+      expect(getGraphViewConnectionWinRateAriaLabel(75)).toBe(
+        "Porcentaje de victorias: 75%"
+      );
+    });
+  });
+
+  describe("getGraphViewConnectionMutualAriaLabel", () => {
+    it("formats singular mutual contact label", () => {
+      expect(getGraphViewConnectionMutualAriaLabel("Gero", 1)).toBe(
+        "1 contacto en común con Gero"
+      );
+    });
+
+    it("formats plural mutual contacts label", () => {
+      expect(getGraphViewConnectionMutualAriaLabel("Gero", 3)).toBe(
+        "3 contactos en común con Gero"
+      );
+    });
+  });
+
+  describe("getGraphViewNodeGroupAriaLabel", () => {
+    it("formats deselect group prompt when community is selected", () => {
+      expect(
+        getGraphViewNodeGroupAriaLabel(1, "3 jugadores · Score prom. 1100", true)
+      ).toBe(
+        "Mostrar todas las comunidades. Grupo 1: 3 jugadores · Score prom. 1100"
+      );
+    });
+
+    it("formats select group filter prompt when community is not selected", () => {
+      expect(
+        getGraphViewNodeGroupAriaLabel(1, "3 jugadores · Score prom. 1100", false)
+      ).toBe(
+        "Filtrar el grafo por Grupo 1: 3 jugadores · Score prom. 1100"
       );
     });
   });
