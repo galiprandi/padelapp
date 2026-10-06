@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { Info, ChevronDown, ChevronUp, Trophy, Calendar, AlertTriangle, Scale } from "lucide-react";
-import { getRankingRulesAriaLabel, getRankingRegionAriaLabel } from "./ranking-utils";
+import {
+  getRankingRulesAriaLabel,
+  getRankingRegionAriaLabel,
+  getRankingRulesHeaderTitle,
+  getRankingRulesHeaderSubtitle,
+  getRankingRulesSectionTitle,
+  getRankingFormulaText,
+} from "./ranking-utils";
 
 export function RankingInfo() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,16 +34,16 @@ export function RankingInfo() {
         aria-controls="ranking-rules-content"
       >
         <div className="flex items-center gap-2.5">
-          <Info className="h-4 w-4 text-primary" />
+          <Info className="h-4 w-4 text-primary" aria-hidden="true" />
           <div>
-            <h3 className="text-sm font-bold text-foreground">Reglas y Fórmulas del Ranking</h3>
-            <p className="text-xs text-muted-foreground">¿Cómo se calculan los puntos y posiciones?</p>
+            <h3 className="text-sm font-bold text-foreground">{getRankingRulesHeaderTitle()}</h3>
+            <p className="text-xs text-muted-foreground">{getRankingRulesHeaderSubtitle()}</p>
           </div>
         </div>
         {isOpen ? (
-          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         )}
       </button>
 
@@ -50,14 +57,14 @@ export function RankingInfo() {
           {/* Fórmulas */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <Trophy className="h-4 w-4 text-primary" />
-              <span>Cálculo de Puntos</span>
+              <Trophy className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>{getRankingRulesSectionTitle("points")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Todos los jugadores inician con <strong>1000 puntos base</strong>. Tu puntaje se actualiza con cada partido confirmado bajo la siguiente fórmula:
             </p>
             <div className="rounded-lg bg-muted border border-border p-2.5 text-xs font-mono text-foreground space-y-1">
-              <div>Puntos = 1000 + (Victorias × 15) + (Racha × 5) + (Bonus de Sets) - Penalizaciones</div>
+              <div>{getRankingFormulaText()}</div>
             </div>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">
               <li><strong className="text-foreground">Victorias:</strong> +15 puntos por cada partido ganado.</li>
@@ -69,8 +76,8 @@ export function RankingInfo() {
           {/* Penalizaciones de asistencia */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <AlertTriangle className="h-4 w-4 text-primary" />
-              <span>Penalizaciones por Asistencia</span>
+              <AlertTriangle className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>{getRankingRulesSectionTitle("penalties")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               La asistencia y puntualidad son clave. No cumplir con el compromiso aplica penalizaciones directas a tu puntaje total:
@@ -84,8 +91,8 @@ export function RankingInfo() {
           {/* Inactividad */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span>Decay por Inactividad</span>
+              <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>{getRankingRulesSectionTitle("decay")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Para mantener el ranking activo, se aplica un decay (reducción) temporal a los jugadores inactivos:
@@ -99,8 +106,8 @@ export function RankingInfo() {
           {/* Criterios de Desempate */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <Scale className="h-4 w-4 text-primary" />
-              <span>Criterios de Desempate</span>
+              <Scale className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>{getRankingRulesSectionTitle("tiebreak")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Si dos o más jugadores tienen los mismos puntos, sus posiciones se definen aplicando en orden el siguiente criterio jerárquico:

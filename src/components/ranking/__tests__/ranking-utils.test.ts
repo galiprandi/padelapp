@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import {
   getRankingRulesAriaLabel,
+  getRankingRulesHeaderTitle,
+  getRankingRulesHeaderSubtitle,
+  getRankingRulesSectionTitle,
+  getRankingFormulaText,
   getRankingFilterTabAriaLabel,
   getRankingSearchStatusAriaLabel,
   getRankingSearchInputAriaLabel,
@@ -36,6 +40,39 @@ describe("Ranking Helpers", () => {
       );
       expect(getRankingRulesAriaLabel(false)).toBe(
         "Mostrar reglas y fórmulas del ranking de Padel Red"
+      );
+    });
+  });
+
+  describe("getRankingRulesHeaderTitle", () => {
+    it("returns correct rules header title text", () => {
+      expect(getRankingRulesHeaderTitle()).toBe("Reglas y Fórmulas del Ranking");
+    });
+  });
+
+  describe("getRankingRulesHeaderSubtitle", () => {
+    it("returns correct rules header subtitle text", () => {
+      expect(getRankingRulesHeaderSubtitle()).toBe(
+        "¿Cómo se calculan los puntos y posiciones?"
+      );
+    });
+  });
+
+  describe("getRankingRulesSectionTitle", () => {
+    it("returns correct rules section title texts", () => {
+      expect(getRankingRulesSectionTitle("points")).toBe("Cálculo de Puntos");
+      expect(getRankingRulesSectionTitle("penalties")).toBe(
+        "Penalizaciones por Asistencia"
+      );
+      expect(getRankingRulesSectionTitle("decay")).toBe("Decay por Inactividad");
+      expect(getRankingRulesSectionTitle("tiebreak")).toBe("Criterios de Desempate");
+    });
+  });
+
+  describe("getRankingFormulaText", () => {
+    it("returns correct mathematical formula text", () => {
+      expect(getRankingFormulaText()).toBe(
+        "Puntos = 1000 + (Victorias × 15) + (Racha × 5) + (Bonus de Sets) - Penalizaciones"
       );
     });
   });
