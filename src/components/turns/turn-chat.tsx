@@ -22,6 +22,7 @@ import {
   getChatInputAriaLabel,
   getChatCharacterCounterAriaLabel,
 } from "./turn-chat-utils";
+import { getSendChatMessageErrorToast } from "./turn-utils";
 
 interface TurnChatProps {
   turnId: string;
@@ -116,7 +117,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
     startSendingTransition(async () => {
       const res = await sendMessageAction(turnId, cleanText);
       if (res.status === "error") {
-        showToast(res.message ?? "No se pudo enviar el mensaje");
+        showToast(getSendChatMessageErrorToast(res.message));
         // Remove optimistic message if failed
         setMessages((prev) => prev.filter((m) => m.id !== tempId));
       } else {

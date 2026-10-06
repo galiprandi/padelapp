@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   filterAndSortPlayerOptions,
   getAddPlayerSuccessToast,
+  getAddPlayerErrorToast,
   getAddPlayerAriaLabel,
   getAddPlayerSearchStatusAriaLabel,
   getAddPlayerPromptText,
@@ -91,7 +92,7 @@ export function AddPlayerButton({
       setResults([]);
       router.refresh();
     } else {
-      showToast(result.message ?? "No se pudo agregar al jugador.");
+      showToast(getAddPlayerErrorToast(result.message));
     }
     setAddingId(null);
   }

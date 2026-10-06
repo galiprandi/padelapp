@@ -45,6 +45,19 @@ import {
   getPlayCasualConfirmRegionAriaLabel,
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
+  getCalendarButtonText,
+  getCalendarButtonAriaLabel,
+  getCalendarHeaderPromptText,
+  getGoogleButtonText,
+  getGoogleButtonAriaLabel,
+  getIcsButtonText,
+  getIcsButtonAriaLabel,
+  getGoogleCalendarToast,
+  getIcsCalendarToast,
+  getRemovePlayerErrorToast,
+  getAssignSubstituteErrorToast,
+  getAddPlayerErrorToast,
+  getSendChatMessageErrorToast,
   getRemovePlayerAriaLabel,
   getRemovePlayerSuccessToast,
   getAssignSubstituteAriaLabel,
@@ -822,6 +835,45 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Calendar UI pure helpers", () => {
+  it("formats calendar button and header copy", () => {
+    expect(getCalendarButtonText()).toBe("Agregar al calendario");
+    expect(getCalendarButtonAriaLabel()).toBe("Agregar el partido a mi calendario");
+    expect(getCalendarHeaderPromptText()).toBe("Elegí tu calendario:");
+    expect(getGoogleButtonText()).toBe("Google");
+    expect(getGoogleButtonAriaLabel()).toBe("Agregar a Google Calendar");
+    expect(getIcsButtonText()).toBe("Apple / Outlook");
+    expect(getIcsButtonAriaLabel()).toBe("Descargar archivo iCal");
+  });
+
+  it("formats calendar export toast messages in Argentine Spanish", () => {
+    expect(getGoogleCalendarToast()).toBe("Abriendo Google Calendar...");
+    expect(getIcsCalendarToast()).toBe("Archivo de calendario descargado.");
+  });
+});
+
+describe("Fallback error toast pure helpers", () => {
+  it("formats getRemovePlayerErrorToast", () => {
+    expect(getRemovePlayerErrorToast()).toBe("No se pudo sacar al jugador.");
+    expect(getRemovePlayerErrorToast("Error personalizado")).toBe("Error personalizado");
+  });
+
+  it("formats getAssignSubstituteErrorToast", () => {
+    expect(getAssignSubstituteErrorToast()).toBe("No se pudo asignar al suplente.");
+    expect(getAssignSubstituteErrorToast("Error personalizado")).toBe("Error personalizado");
+  });
+
+  it("formats getAddPlayerErrorToast", () => {
+    expect(getAddPlayerErrorToast()).toBe("No se pudo agregar al jugador.");
+    expect(getAddPlayerErrorToast("Error personalizado")).toBe("Error personalizado");
+  });
+
+  it("formats getSendChatMessageErrorToast", () => {
+    expect(getSendChatMessageErrorToast()).toBe("No se pudo enviar el mensaje.");
+    expect(getSendChatMessageErrorToast("Error personalizado")).toBe("Error personalizado");
   });
 });
 

@@ -9,6 +9,15 @@ import {
   getGoogleCalendarUrl,
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
+  getGoogleCalendarToast,
+  getIcsCalendarToast,
+  getCalendarButtonText,
+  getCalendarButtonAriaLabel,
+  getCalendarHeaderPromptText,
+  getGoogleButtonText,
+  getGoogleButtonAriaLabel,
+  getIcsButtonText,
+  getIcsButtonAriaLabel,
 } from "./turn-utils";
 
 interface AddToCalendarButtonProps {
@@ -42,7 +51,7 @@ export function AddToCalendarButton({
 
     if (!googleUrl) return;
 
-    showToast("Abriendo Google Calendar...");
+    showToast(getGoogleCalendarToast());
     window.open(googleUrl, "_blank");
   };
 
@@ -67,7 +76,7 @@ export function AddToCalendarButton({
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    showToast("Archivo de calendario descargado.");
+    showToast(getIcsCalendarToast());
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -87,12 +96,12 @@ export function AddToCalendarButton({
           "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
           open && "border-primary text-primary bg-muted",
         )}
-        aria-label="Agregar el partido a mi calendario"
+        aria-label={getCalendarButtonAriaLabel()}
         aria-expanded={open}
         aria-controls={`calendar-options-${turnId}`}
       >
         <CalendarPlus className="mr-2 h-4 w-4" aria-hidden="true" />
-        Agregar al calendario
+        {getCalendarButtonText()}
       </Button>
 
       {open && (
@@ -103,7 +112,7 @@ export function AddToCalendarButton({
           className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150 shadow-xs"
         >
           <p className="text-xs font-semibold text-muted-foreground text-center">
-            Elegí tu calendario:
+            {getCalendarHeaderPromptText()}
           </p>
           <div className="grid grid-cols-2 gap-2">
             <Button
@@ -111,20 +120,20 @@ export function AddToCalendarButton({
               variant="secondary"
               size="sm"
               className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-              aria-label="Agregar a Google Calendar"
+              aria-label={getGoogleButtonAriaLabel()}
             >
               <Calendar className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-              <span>Google</span>
+              <span>{getGoogleButtonText()}</span>
             </Button>
             <Button
               onClick={handleIcsDownload}
               variant="secondary"
               size="sm"
               className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-              aria-label="Descargar archivo iCal"
+              aria-label={getIcsButtonAriaLabel()}
             >
               <Download className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-              <span>Apple / Outlook</span>
+              <span>{getIcsButtonText()}</span>
             </Button>
           </div>
         </div>
