@@ -1,10 +1,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  getBottomNavSkeletonAriaLabel,
+  getBottomNavSkeletonAriaAttributes,
   getBottomNavContainerClasses,
   getBottomNavInnerContainerClasses,
   getBottomNavTabSkeletonClasses,
   getBottomNavFabSkeletonClasses,
+  getBottomNavTabIconSkeletonClasses,
+  getBottomNavTabLabelSkeletonClasses,
+  getBottomNavFabIconSkeletonClasses,
 } from "./nav-utils";
 
 interface BottomNavSkeletonProps {
@@ -14,36 +17,37 @@ interface BottomNavSkeletonProps {
 export function BottomNavSkeleton({
   position = "fixed",
 }: BottomNavSkeletonProps) {
+  const ariaAttrs = getBottomNavSkeletonAriaAttributes();
+
   return (
     <div
-      role="status"
-      aria-label={getBottomNavSkeletonAriaLabel()}
+      {...ariaAttrs}
       className={getBottomNavContainerClasses(position)}
     >
       <div className={getBottomNavInnerContainerClasses()}>
         {/* Left tabs skeleton */}
         <div className={getBottomNavTabSkeletonClasses()}>
-          <Skeleton className="h-5 w-5 rounded-md" />
-          <Skeleton className="h-3 w-10 rounded-sm" />
+          <Skeleton className={getBottomNavTabIconSkeletonClasses()} />
+          <Skeleton className={getBottomNavTabLabelSkeletonClasses()} />
         </div>
         <div className={getBottomNavTabSkeletonClasses()}>
-          <Skeleton className="h-5 w-5 rounded-md" />
-          <Skeleton className="h-3 w-10 rounded-sm" />
+          <Skeleton className={getBottomNavTabIconSkeletonClasses()} />
+          <Skeleton className={getBottomNavTabLabelSkeletonClasses()} />
         </div>
 
         {/* Central FAB skeleton */}
         <div className={getBottomNavFabSkeletonClasses()}>
-          <Skeleton className="h-6 w-6 rounded-md" />
+          <Skeleton className={getBottomNavFabIconSkeletonClasses()} />
         </div>
 
         {/* Right tabs skeleton */}
         <div className={getBottomNavTabSkeletonClasses()}>
-          <Skeleton className="h-5 w-5 rounded-md" />
-          <Skeleton className="h-3 w-10 rounded-sm" />
+          <Skeleton className={getBottomNavTabIconSkeletonClasses()} />
+          <Skeleton className={getBottomNavTabLabelSkeletonClasses()} />
         </div>
         <div className={getBottomNavTabSkeletonClasses()}>
-          <Skeleton className="h-5 w-5 rounded-md" />
-          <Skeleton className="h-3 w-10 rounded-sm" />
+          <Skeleton className={getBottomNavTabIconSkeletonClasses()} />
+          <Skeleton className={getBottomNavTabLabelSkeletonClasses()} />
         </div>
       </div>
     </div>

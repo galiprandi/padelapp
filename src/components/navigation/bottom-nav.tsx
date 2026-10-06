@@ -17,6 +17,9 @@ import {
   getNavItemClasses,
   getFabClasses,
   getNotificationsBadgeClasses,
+  getBottomNavIconClasses,
+  getBottomNavLabelClasses,
+  getFabIconClasses,
 } from "./nav-utils";
 
 interface BottomNavProps {
@@ -52,8 +55,8 @@ export function BottomNav({
               className={getNavItemClasses(isActive)}
               {...ariaAttrs}
             >
-              <item.icon className="h-5 w-5" aria-hidden="true" />
-              <span className="mt-1 text-xs font-semibold">
+              <item.icon className={getBottomNavIconClasses()} aria-hidden="true" />
+              <span className={getBottomNavLabelClasses()}>
                 {item.label}
               </span>
             </Link>
@@ -67,7 +70,7 @@ export function BottomNav({
           className={getFabClasses()}
           {...getFabAriaAttributes()}
         >
-          <Plus className="h-6 w-6" aria-hidden="true" />
+          <Plus className={getFabIconClasses()} aria-hidden="true" />
         </Link>
 
         {secondaryItems.map((item) => {
@@ -81,8 +84,8 @@ export function BottomNav({
               className={getNavItemClasses(isActive)}
               {...ariaAttrs}
             >
-              <item.icon className="h-5 w-5" aria-hidden="true" />
-              <span className="mt-1 text-xs font-semibold">
+              <item.icon className={getBottomNavIconClasses()} aria-hidden="true" />
+              <span className={getBottomNavLabelClasses()}>
                 {item.label}
               </span>
             </Link>
