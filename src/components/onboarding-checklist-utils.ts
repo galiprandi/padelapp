@@ -83,3 +83,68 @@ export function getOnboardingStepButtonAriaLabel(
         : "Solicitar permisos para notificaciones";
   }
 }
+
+/**
+ * Returns localized ARIA landmark region label for the onboarding welcome guide container.
+ */
+export function getOnboardingRegionAriaLabel(): string {
+  return "Guía de bienvenida de Padel Red";
+}
+
+/**
+ * Returns localized title text for the onboarding welcome guide header.
+ */
+export function getOnboardingTitleText(): string {
+  return "Guía de bienvenida 🎾";
+}
+
+/**
+ * Returns localized description subtitle for the onboarding welcome guide.
+ */
+export function getOnboardingDescriptionText(): string {
+  return "Completá estos 4 simples pasos para empezar a disfrutar de la red sin fricciones.";
+}
+
+/**
+ * Returns localized accessible ARIA label for dismissing the welcome guide.
+ */
+export function getOnboardingDismissAriaLabel(): string {
+  return "Descartar guía de bienvenida";
+}
+
+/**
+ * Returns localized section header for the onboarding progress bar.
+ */
+export function getOnboardingProgressTitleText(): string {
+  return "Progreso de preparación";
+}
+
+/**
+ * Formats completed step count and percentage progress text.
+ */
+export function getOnboardingProgressText(completedCount: number, progressPercent: number): string {
+  return `${completedCount} de 4 (${progressPercent}%)`;
+}
+
+/**
+ * Returns localized success message when all 4 onboarding steps are completed.
+ */
+export function getOnboardingCompletedSuccessText(): string {
+  return "¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.";
+}
+
+/**
+ * Returns localized toast feedback message for push notification permission actions.
+ */
+export function getOnboardingNotificationToastMessage(
+  type: "enabled" | "denied" | "unsupported"
+): string {
+  switch (type) {
+    case "enabled":
+      return "Activaste las notificaciones.";
+    case "denied":
+      return "Las notificaciones están bloqueadas.";
+    case "unsupported":
+      return "No soportado en este navegador";
+  }
+}

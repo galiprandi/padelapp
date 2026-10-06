@@ -21,6 +21,14 @@ import {
   calculateOnboardingProgress,
   getStepStatusAriaLabel,
   getOnboardingStepButtonAriaLabel,
+  getOnboardingRegionAriaLabel,
+  getOnboardingTitleText,
+  getOnboardingDescriptionText,
+  getOnboardingDismissAriaLabel,
+  getOnboardingProgressTitleText,
+  getOnboardingProgressText,
+  getOnboardingCompletedSuccessText,
+  getOnboardingNotificationToastMessage,
   type OnboardingStepsState,
 } from "@/components/onboarding-checklist-utils";
 
@@ -133,24 +141,24 @@ export function OnboardingChecklist({
   return (
     <div
       role="region"
-      aria-label="Guía de bienvenida de Padel Red"
+      aria-label={getOnboardingRegionAriaLabel()}
       className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5"
     >
       {/* Header section with progress bar */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <h2 className="text-base font-bold text-foreground">
-            Guía de bienvenida 🎾
+            {getOnboardingTitleText()}
           </h2>
           <p className="text-xs text-muted-foreground leading-normal">
-            Completá estos 4 simples pasos para empezar a disfrutar de la red sin fricciones.
+            {getOnboardingDescriptionText()}
           </p>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleDismiss}
-          aria-label="Descartar guía de bienvenida"
+          aria-label={getOnboardingDismissAriaLabel()}
           className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background shrink-0 active:scale-[0.98]"
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -161,10 +169,10 @@ export function OnboardingChecklist({
       <div className="space-y-2">
         <div className="flex justify-between items-center text-xs">
           <span className="font-semibold text-foreground">
-            Progreso de preparación
+            {getOnboardingProgressTitleText()}
           </span>
           <span className="font-bold text-primary tabular-nums">
-            {completedCount} de 4 ({progressPercent}%)
+            {getOnboardingProgressText(completedCount, progressPercent)}
           </span>
         </div>
         <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
@@ -359,7 +367,7 @@ export function OnboardingChecklist({
               <div className="pt-1.5">
                 {permission === "unsupported" ? (
                   <span className="text-xs text-muted-foreground font-medium">
-                    No soportado en este navegador
+                    {getOnboardingNotificationToastMessage("unsupported")}
                   </span>
                 ) : (
                   <Button
@@ -368,9 +376,9 @@ export function OnboardingChecklist({
                     onClick={async () => {
                       const token = await requestPermission();
                       if (token) {
-                        showToast("Activaste las notificaciones.");
+                        showToast(getOnboardingNotificationToastMessage("enabled"));
                       } else if (permission === "denied") {
-                        showToast("Las notificaciones están bloqueadas.");
+                        showToast(getOnboardingNotificationToastMessage("denied"));
                       }
                     }}
                     disabled={notificationLoading}
@@ -396,7 +404,7 @@ export function OnboardingChecklist({
       {completedCount === 4 && (
         <div className="rounded-lg bg-muted border border-primary p-3 text-center shadow-xs">
           <p className="text-xs font-bold text-foreground">
-            ¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.
+            {getOnboardingCompletedSuccessText()}
           </p>
         </div>
       )}

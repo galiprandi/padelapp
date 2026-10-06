@@ -11,6 +11,14 @@ import {
   calculateOnboardingProgress,
   getStepStatusAriaLabel,
   getOnboardingStepButtonAriaLabel,
+  getOnboardingRegionAriaLabel,
+  getOnboardingTitleText,
+  getOnboardingDescriptionText,
+  getOnboardingDismissAriaLabel,
+  getOnboardingProgressTitleText,
+  getOnboardingProgressText,
+  getOnboardingCompletedSuccessText,
+  getOnboardingNotificationToastMessage,
 } from "../onboarding-checklist-utils";
 
 describe("calculateOnboardingProgress", () => {
@@ -83,6 +91,34 @@ describe("getOnboardingStepButtonAriaLabel", () => {
     expect(getOnboardingStepButtonAriaLabel("pwa-install", true)).toBe("Instalando aplicación de pádel...");
     expect(getOnboardingStepButtonAriaLabel("notifications", false)).toBe("Solicitar permisos para notificaciones");
     expect(getOnboardingStepButtonAriaLabel("notifications", true)).toBe("Activando notificaciones de la aplicación...");
+  });
+});
+
+describe("Onboarding text and ARIA pure helpers", () => {
+  it("returns correct region landmark ARIA label", () => {
+    expect(getOnboardingRegionAriaLabel()).toBe("Guía de bienvenida de Padel Red");
+  });
+
+  it("returns correct header title and description strings", () => {
+    expect(getOnboardingTitleText()).toBe("Guía de bienvenida 🎾");
+    expect(getOnboardingDescriptionText()).toBe("Completá estos 4 simples pasos para empezar a disfrutar de la red sin fricciones.");
+    expect(getOnboardingDismissAriaLabel()).toBe("Descartar guía de bienvenida");
+  });
+
+  it("returns correct progress headers and formatted count text", () => {
+    expect(getOnboardingProgressTitleText()).toBe("Progreso de preparación");
+    expect(getOnboardingProgressText(2, 50)).toBe("2 de 4 (50%)");
+    expect(getOnboardingProgressText(4, 100)).toBe("4 de 4 (100%)");
+  });
+
+  it("returns correct congratulatory success text", () => {
+    expect(getOnboardingCompletedSuccessText()).toBe("¡Felicitaciones! Completaste tu preparación al 100%. Ya estás listo para jugar y salvar turnos en Padel Red.");
+  });
+
+  it("returns correct notification toast feedback messages", () => {
+    expect(getOnboardingNotificationToastMessage("enabled")).toBe("Activaste las notificaciones.");
+    expect(getOnboardingNotificationToastMessage("denied")).toBe("Las notificaciones están bloqueadas.");
+    expect(getOnboardingNotificationToastMessage("unsupported")).toBe("No soportado en este navegador");
   });
 });
 
