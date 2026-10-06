@@ -28,6 +28,12 @@ export interface NotificationsBadgeAriaAttributes {
   "aria-label": string;
 }
 
+export interface BottomNavSkeletonAriaAttributes {
+  role: "status";
+  "aria-busy": "true";
+  "aria-label": string;
+}
+
 export interface FabAriaAttributes {
   "aria-label": string;
 }
@@ -189,6 +195,59 @@ export function getBottomNavContainerClasses(
       "fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom,0px)]",
     customClassName,
   );
+}
+
+/**
+ * Genera los atributos ARIA accesibles para el esqueleto de carga de la navegación principal.
+ */
+export function getBottomNavSkeletonAriaAttributes(): BottomNavSkeletonAriaAttributes {
+  return {
+    role: "status",
+    "aria-busy": "true",
+    "aria-label": getBottomNavSkeletonAriaLabel(),
+  };
+}
+
+/**
+ * Genera las clases CSS para el ícono de pestaña en el esqueleto de carga de la barra de navegación.
+ */
+export function getBottomNavTabIconSkeletonClasses(customClassName?: string): string {
+  return cn("h-5 w-5 rounded-md", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la etiqueta de texto de pestaña en el esqueleto de carga de la barra de navegación.
+ */
+export function getBottomNavTabLabelSkeletonClasses(customClassName?: string): string {
+  return cn("h-3 w-10 rounded-sm", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el ícono central FAB en el esqueleto de carga de la barra de navegación.
+ */
+export function getBottomNavFabIconSkeletonClasses(customClassName?: string): string {
+  return cn("h-6 w-6 rounded-md", customClassName);
+}
+
+/**
+ * Genera las clases CSS para los íconos de los enlaces de navegación principales.
+ */
+export function getBottomNavIconClasses(customClassName?: string): string {
+  return cn("h-5 w-5", customClassName);
+}
+
+/**
+ * Genera las clases CSS para las etiquetas de texto de los enlaces de navegación principales.
+ */
+export function getBottomNavLabelClasses(customClassName?: string): string {
+  return cn("mt-1 text-xs font-semibold", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el ícono Plus dentro del botón de acción flotante central (FAB).
+ */
+export function getFabIconClasses(customClassName?: string): string {
+  return cn("h-6 w-6", customClassName);
 }
 
 /**

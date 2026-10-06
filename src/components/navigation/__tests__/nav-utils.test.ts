@@ -20,6 +20,13 @@ import {
   getFabClasses,
   getNotificationsBadgeClasses,
   getFloatingNotificationsBadgeClasses,
+  getBottomNavSkeletonAriaAttributes,
+  getBottomNavTabIconSkeletonClasses,
+  getBottomNavTabLabelSkeletonClasses,
+  getBottomNavFabIconSkeletonClasses,
+  getBottomNavIconClasses,
+  getBottomNavLabelClasses,
+  getFabIconClasses,
   getAppLayoutClasses,
   getAppMainClasses,
   getAppLayoutAriaAttributes,
@@ -44,6 +51,49 @@ describe("nav-utils", () => {
   describe("getBottomNavSkeletonAriaLabel", () => {
     it("returns Spanish screen reader label for loading bottom navigation skeleton", () => {
       expect(getBottomNavSkeletonAriaLabel()).toBe("Cargando navegación principal de Padel Red");
+    });
+  });
+
+  describe("getBottomNavSkeletonAriaAttributes", () => {
+    it("returns status role, aria-busy true, and localized ARIA label", () => {
+      const attrs = getBottomNavSkeletonAriaAttributes();
+      expect(attrs).toEqual({
+        role: "status",
+        "aria-busy": "true",
+        "aria-label": "Cargando navegación principal de Padel Red",
+      });
+    });
+  });
+
+  describe("Skeleton and Nav Icon/Label Class Helpers", () => {
+    it("getBottomNavTabIconSkeletonClasses returns tab icon skeleton classes", () => {
+      const classes = getBottomNavTabIconSkeletonClasses();
+      expect(classes).toContain("h-5 w-5 rounded-md");
+    });
+
+    it("getBottomNavTabLabelSkeletonClasses returns tab label skeleton classes", () => {
+      const classes = getBottomNavTabLabelSkeletonClasses();
+      expect(classes).toContain("h-3 w-10 rounded-sm");
+    });
+
+    it("getBottomNavFabIconSkeletonClasses returns fab icon skeleton classes", () => {
+      const classes = getBottomNavFabIconSkeletonClasses();
+      expect(classes).toContain("h-6 w-6 rounded-md");
+    });
+
+    it("getBottomNavIconClasses returns navigation icon classes", () => {
+      const classes = getBottomNavIconClasses();
+      expect(classes).toContain("h-5 w-5");
+    });
+
+    it("getBottomNavLabelClasses returns navigation label typography classes", () => {
+      const classes = getBottomNavLabelClasses();
+      expect(classes).toContain("mt-1 text-xs font-semibold");
+    });
+
+    it("getFabIconClasses returns FAB icon dimensions", () => {
+      const classes = getFabIconClasses();
+      expect(classes).toContain("h-6 w-6");
     });
   });
 

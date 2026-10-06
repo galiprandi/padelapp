@@ -70,10 +70,11 @@ describe("BottomNav Component", () => {
 });
 
 describe("BottomNavSkeleton Component", () => {
-  it("renders status role and Spanish navigation loading ARIA label", () => {
+  it("renders status role, aria-busy true, and Spanish navigation loading ARIA label", () => {
     const skeleton = BottomNavSkeleton({});
 
     expect(skeleton.props.role).toBe("status");
+    expect(skeleton.props["aria-busy"]).toBe("true");
     expect(skeleton.props["aria-label"]).toBe("Cargando navegación principal de Padel Red");
   });
 
