@@ -46,6 +46,13 @@ import {
   getGraphViewEmptySearchProps,
   getGraphViewNodeName,
   getGraphViewLegendAriaLabel,
+  getConnectionBadgeClasses,
+  getConnectionTypeSymbol,
+  getGraphViewSelectedNodeAriaLabel,
+  getGraphViewFocusNodeAriaLabel,
+  getGraphViewConnectionWinRateAriaLabel,
+  getGraphViewConnectionMutualAriaLabel,
+  getGraphViewNodeGroupAriaLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -826,7 +833,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 {getGraphViewNodeName(selectedNodeData.name, selectedNodeData.alias, selectedNodeData.id === viewerId)}
               </p>
               <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
-                <p className="text-xs text-muted-foreground">
+                <p
+                  className="text-xs text-muted-foreground"
+                  aria-label={getGraphViewSelectedNodeAriaLabel(
+                    getGraphViewNodeName(selectedNodeData.name, selectedNodeData.alias, selectedNodeData.id === viewerId),
+                    selectedNodeData.matchesPlayed,
+                    selectedNodeData.networkSize,
+                  )}
+                >
                   {selectedNodeData.matchesPlayed} partidos ·{" "}
                   {selectedNodeData.networkSize} contactos
                 </p>
@@ -1124,11 +1138,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     className="w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
                     style={{ color: nodeColor(selectedNodeData) }}
                     title={`Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`}
-                    aria-label={
-                      selectedCommunity === selectedNodeData.community
-                        ? `Mostrar todas las comunidades. Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`
-                        : `Filtrar el grafo por Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`
-                    }
+                    aria-label={getGraphViewNodeGroupAriaLabel(
+                      selectedNodeData.community,
+                      commSummary.formattedSummary,
+                      selectedCommunity === selectedNodeData.community,
+                    )}
                   >
                     {selectedNodeData.community}
                   </button>
@@ -1218,18 +1232,15 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       type="button"
                       onClick={() => handleSelectAndFocusNode(otherId)}
                       className="flex items-center gap-2 flex-1 min-w-0 text-left active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
-                      aria-label={`Enfocar a ${otherName} en el grafo`}
+                      aria-label={getGraphViewFocusNodeAriaLabel(otherName)}
                     >
                       <span
                         className={cn(
                           "inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0 border",
-                          record.type === "partner" && "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800",
-                          record.type === "rival" && "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800",
-                          record.type === "mixed" && "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800",
-                          record.type === "turns" && "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-800"
+                          getConnectionBadgeClasses(record.type),
                         )}
                       >
-                        {record.type === "partner" ? "P" : record.type === "rival" ? "R" : record.type === "mixed" ? "M" : "T"}
+                        {getConnectionTypeSymbol(record.type)}
                       </span>
                       <span className="text-xs font-medium text-foreground truncate">
                         {otherName}
@@ -1238,8 +1249,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {record.winRatePercentage !== null && (
                           <span
                             className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0"
-                            title={`Porcentaje de victorias: ${record.winRatePercentage}%`}
-                            aria-label={`Porcentaje de victorias: ${record.winRatePercentage}%`}
+                            title={getGraphViewConnectionWinRateAriaLabel(record.winRatePercentage)}
+                            aria-label={getGraphViewConnectionWinRateAriaLabel(record.winRatePercentage)}
                           >
                             {record.winRatePercentage}% WR
                           </span>
@@ -1284,7 +1295,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         <span
                           className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0"
                           title={`${mutualCount} ${mutualCount === 1 ? "contacto en común" : "contactos en común"}`}
-                          aria-label={`${mutualCount} ${mutualCount === 1 ? "contacto en común con" : "contactos en común con"} ${otherName}`}
+                          aria-label={getGraphViewConnectionMutualAriaLabel(otherName, mutualCount)}
                         >
                           {mutualCount} en común 🤝
                         </span>

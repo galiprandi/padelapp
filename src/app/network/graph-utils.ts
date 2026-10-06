@@ -3093,3 +3093,75 @@ export function calculateNodeConnectionSummary(
     formattedSummary: parts.join(" · "),
   };
 }
+
+export function getConnectionBadgeClasses(
+  type: "partner" | "rival" | "mixed" | "turns",
+): string {
+  switch (type) {
+    case "partner":
+      return "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+    case "rival":
+      return "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800";
+    case "mixed":
+      return "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+    case "turns":
+      return "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-800";
+  }
+}
+
+export function getConnectionTypeSymbol(
+  type: "partner" | "rival" | "mixed" | "turns",
+): string {
+  switch (type) {
+    case "partner":
+      return "P";
+    case "rival":
+      return "R";
+    case "mixed":
+      return "M";
+    case "turns":
+      return "T";
+  }
+}
+
+export function getGraphViewSelectedNodeAriaLabel(
+  playerName: string,
+  matchesPlayed: number,
+  networkSize: number,
+): string {
+  const matchesText =
+    matchesPlayed === 1 ? "1 partido" : `${matchesPlayed} partidos`;
+  const contactsText =
+    networkSize === 1 ? "1 contacto" : `${networkSize} contactos`;
+  return `Detalles de ${playerName}: ${matchesText}, ${contactsText}`;
+}
+
+export function getGraphViewFocusNodeAriaLabel(otherName: string): string {
+  return `Enfocar a ${otherName} en el grafo`;
+}
+
+export function getGraphViewConnectionWinRateAriaLabel(
+  winRatePercentage: number,
+): string {
+  return `Porcentaje de victorias: ${winRatePercentage}%`;
+}
+
+export function getGraphViewConnectionMutualAriaLabel(
+  otherName: string,
+  mutualCount: number,
+): string {
+  const contactsText =
+    mutualCount === 1 ? "contacto en común con" : "contactos en común con";
+  return `${mutualCount} ${contactsText} ${otherName}`;
+}
+
+export function getGraphViewNodeGroupAriaLabel(
+  communityId: number,
+  summaryText: string,
+  isSelected: boolean,
+): string {
+  if (isSelected) {
+    return `Mostrar todas las comunidades. Grupo ${communityId}: ${summaryText}`;
+  }
+  return `Filtrar el grafo por Grupo ${communityId}: ${summaryText}`;
+}

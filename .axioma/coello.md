@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-09-23
+## Última actualización: 2026-09-26
 
 ## Estado actual
 
 ### Completado
+- Phase 49 (GraphView Connection Badges & ARIA Helpers Pure Extraction, Refactoring & Unit Tests):
+  - [x] 2026-09-26 — Hecho: Extraídas las funciones puras `getConnectionBadgeClasses`, `getConnectionTypeSymbol`, `getGraphViewSelectedNodeAriaLabel`, `getGraphViewFocusNodeAriaLabel`, `getGraphViewConnectionWinRateAriaLabel`, `getGraphViewConnectionMutualAriaLabel` y `getGraphViewNodeGroupAriaLabel` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-26 — Hecho: Refactorizado `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para estandarizar estilos de insignias de tipo de conexión ('P', 'R', 'M', 'T'), formateo de victorias y etiquetas descriptivas ARIA para lectores de pantalla.
+  - [x] 2026-09-26 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 48 (Turn Rescue Proximity Summary Pure Helper Extraction & Network Contacts Refactoring):
   - [x] 2026-09-25 — Hecho: Extraída la función pura `calculateTurnRescueProximitySummary` en `src/app/network/graph-utils.ts` para construir resúmenes de proximidad de rescate de candidatos a turnos abiertos basándose en diferencia de habilidad, complementariedad de posición, contactos directos en el turno y grupo comunitario compartido.
   - [x] 2026-09-25 — Hecho: Verificadas y refactorizadas las funciones puras de contactos de red `calculateNetworkContactPriorityScore`, `formatNetworkContactSummary` y `calculatePadelContactAriaLabel` en `src/lib/queries/contacts.ts`.
