@@ -14,15 +14,35 @@ import {
   calculatePartnershipStabilityInfo,
   calculatePlayerInteractionReciprocity,
   calculatePlayerSimilarityInfo,
+  formatGrowthRateText,
   formatTimeAgo,
+  getGrowthBadgeClasses,
   getNetworkActivityTier,
+  getRecent30DaysHeadingTitle,
+  getRecentUsersHeadingTitle,
   getRecommendedPlayerAriaLabel,
   getRecommendedPlayerAvatarAriaLabel,
   getRecommendedPlayerContainerClasses,
+  getRecommendedPlayerProfileLinkAriaLabel,
   getRecommendedPlayerSideText,
   getRecommendedPlayerSkillText,
+  getRecommenderEmptyStateText,
+  getRecommenderHeadingDescription,
+  getRecommenderHeadingTitle,
+  getStatCardContainerClasses,
+  getStatsCardCommunityLabel,
+  getStatsCardCommunityMembersText,
+  getStatsPanelBackAriaLabel,
+  getStatsPanelHeadingDescription,
+  getStatsPanelHeadingTitle,
   getStatsPanelRegionAriaLabel,
+  getTopClubsHeadingTitle,
+  getTopCommunitiesHeadingTitle,
+  getTopConnectedHeadingTitle,
+  getTopPlayerContactsText,
   getTopPlayerExpansionAriaLabel,
+  getTopPlayerMatchesText,
+  getTopPlayerRankText,
 } from "./graph-utils";
 
 interface StatsPanelProps {
@@ -38,14 +58,9 @@ function GrowthBadge({ rate }: { rate: number }) {
   const isPositive = rate >= 0;
   const Icon = isPositive ? TrendingUp : TrendingDown;
   return (
-    <span
-      className={`inline-flex items-center gap-0.5 text-xs font-bold tabular-nums ${
-        isPositive ? "text-emerald-600" : "text-red-600"
-      }`}
-    >
+    <span className={getGrowthBadgeClasses(rate)}>
       <Icon className="h-3 w-3" aria-hidden="true" />
-      {isPositive ? "+" : ""}
-      {rate.toFixed(0)}%
+      {formatGrowthRateText(rate)}
     </span>
   );
 }
@@ -64,7 +79,7 @@ function StatCard({
   growth?: number;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+    <div className={getStatCardContainerClasses()}>
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold text-muted-foreground">{label}</span>
         <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
@@ -93,16 +108,16 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           href="/me"
           prefetch={true}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Volver al inicio"
+          aria-label={getStatsPanelBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
         <div className="space-y-0.5">
           <h1 className="text-xl font-bold text-foreground">
-            Red & Adopción
+            {getStatsPanelHeadingTitle()}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Monitoreo de la red de contactos y adopción de la app.
+            {getStatsPanelHeadingDescription()}
           </p>
         </div>
       </div>
@@ -191,9 +206,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
           <div className="space-y-0.5">
-            <h2 className="text-sm font-bold text-foreground">Jugadores como vos 🧠</h2>
+            <h2 className="text-sm font-bold text-foreground">{getRecommenderHeadingTitle()}</h2>
             <p className="text-xs text-muted-foreground">
-              Gente de tu nivel y comunidad con la que todavía no jugaste.
+              {getRecommenderHeadingDescription()}
             </p>
           </div>
         </div>
@@ -259,7 +274,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground truncate">
-                          {player.matchesPlayed} {player.matchesPlayed === 1 ? "partido" : "partidos"} · {sideText}
+                          {getTopPlayerMatchesText(player.matchesPlayed)} · {sideText}
                         </p>
                       </div>
                     </Link>
@@ -273,7 +288,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       <Link
                         href={`/p/${player.id}`}
                         prefetch={true}
-                        aria-label={`Ver perfil público de ${name}`}
+                        aria-label={getRecommendedPlayerProfileLinkAriaLabel(name)}
                         className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                       >
                         Perfil
@@ -289,7 +304,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           </div>
         ) : (
           <p className="text-xs text-muted-foreground pt-1 italic">
-            No hay nuevos jugadores sugeridos por ahora.
+            {getRecommenderEmptyStateText()}
           </p>
         )}
       </div>
@@ -323,7 +338,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
             <h2 className="text-sm font-bold text-foreground">
-              Últimos usuarios
+              {getRecentUsersHeadingTitle()}
             </h2>
           </div>
           <div className="space-y-2">
@@ -360,7 +375,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           aria-label={getStatsPanelRegionAriaLabel("communities")}
           className="rounded-xl border border-border bg-card p-4 space-y-3"
         >
-          <h2 className="text-sm font-bold text-foreground">Comunidades de la red</h2>
+          <h2 className="text-sm font-bold text-foreground">{getTopCommunitiesHeadingTitle()}</h2>
           <div className="space-y-2.5">
             {metrics.communities.map((c) => {
               const max = metrics.communities[0]?.size ?? 1;
@@ -377,7 +392,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   <div className="flex items-center justify-between text-xs flex-wrap gap-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-semibold text-foreground">
-                        Grupo {c.id}
+                        {getStatsCardCommunityLabel(c.id)}
                       </span>
                       {cohesion && (
                         <span
@@ -405,7 +420,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                     </div>
                     <span className="text-muted-foreground tabular-nums text-xs">
-                      {c.size} {c.size === 1 ? "jugador" : "jugadores"}
+                      {getStatsCardCommunityMembersText(c.size)}
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
@@ -429,7 +444,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           className="rounded-xl border border-border bg-card p-4 space-y-3"
         >
           <h2 className="text-sm font-bold text-foreground">
-            Más conectados
+            {getTopConnectedHeadingTitle()}
           </h2>
           <div className="space-y-2">
             {metrics.topPlayers.map((p, i) => {
@@ -464,7 +479,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums shrink-0">
-                    {i + 1}
+                    {getTopPlayerRankText(i)}
                   </span>
                   <PlayerAvatar
                     name={capitalizeName(p.name ?? p.alias ?? "?")}
@@ -577,12 +592,12 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {p.matchesPlayed} {p.matchesPlayed === 1 ? "partido" : "partidos"}
+                      {getTopPlayerMatchesText(p.matchesPlayed)}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-xs font-bold tabular-nums text-primary block">
-                      {p.networkSize} {p.networkSize === 1 ? "contacto" : "contactos"}
+                      {getTopPlayerContactsText(p.networkSize)}
                     </span>
                   </div>
                 </Link>
@@ -598,7 +613,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         aria-label={getStatsPanelRegionAriaLabel("recent")}
         className="rounded-xl border border-border bg-muted p-4 space-y-2"
       >
-        <h2 className="text-sm font-bold text-foreground">Últimos 30 días</h2>
+        <h2 className="text-sm font-bold text-foreground">{getRecent30DaysHeadingTitle()}</h2>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <p className="text-lg font-bold tabular-nums text-foreground">
@@ -631,7 +646,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
             <h2 className="text-sm font-bold text-foreground">
-              Clubes con más actividad
+              {getTopClubsHeadingTitle()}
             </h2>
           </div>
           <div className="space-y-2">

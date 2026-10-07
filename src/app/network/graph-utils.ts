@@ -3165,3 +3165,90 @@ export function getGraphViewNodeGroupAriaLabel(
   }
   return `Filtrar el grafo por Grupo ${communityId}: ${summaryText}`;
 }
+
+export function getGrowthBadgeClasses(rate: number): string {
+  const isPositive = rate >= 0;
+  return cn(
+    "inline-flex items-center gap-0.5 text-xs font-bold tabular-nums",
+    isPositive ? "text-emerald-600" : "text-red-600",
+  );
+}
+
+export function formatGrowthRateText(rate: number): string {
+  const isPositive = rate >= 0;
+  return `${isPositive ? "+" : ""}${rate.toFixed(0)}%`;
+}
+
+export function getStatCardContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-2";
+}
+
+export function getStatsPanelHeadingTitle(): string {
+  return "Red & Adopción";
+}
+
+export function getStatsPanelHeadingDescription(): string {
+  return "Monitoreo de la red de contactos y adopción de la app.";
+}
+
+export function getStatsPanelBackAriaLabel(): string {
+  return "Volver al inicio";
+}
+
+export function getRecommenderHeadingTitle(): string {
+  return "Jugadores como vos 🧠";
+}
+
+export function getRecommenderHeadingDescription(): string {
+  return "Gente de tu nivel y comunidad con la que todavía no jugaste.";
+}
+
+export function getRecommenderEmptyStateText(): string {
+  return "No hay nuevos jugadores sugeridos por ahora.";
+}
+
+export function getRecentUsersHeadingTitle(): string {
+  return "Últimos usuarios";
+}
+
+export function getTopCommunitiesHeadingTitle(): string {
+  return "Comunidades de la red";
+}
+
+export function getTopConnectedHeadingTitle(): string {
+  return "Más conectados";
+}
+
+export function getRecent30DaysHeadingTitle(): string {
+  return "Últimos 30 días";
+}
+
+export function getTopClubsHeadingTitle(): string {
+  return "Clubes con más actividad";
+}
+
+export function getRecommendedPlayerProfileLinkAriaLabel(
+  playerName: string,
+): string {
+  return `Ver perfil público de ${playerName}`;
+}
+
+export function getStatsCardCommunityLabel(communityId: number): string {
+  return `Grupo ${communityId}`;
+}
+
+export function getStatsCardCommunityMembersText(size: number): string {
+  return `${size} ${size === 1 ? "jugador" : "jugadores"}`;
+}
+
+export function getTopPlayerRankText(index: number): string {
+  return `${index + 1}`;
+}
+
+export function getTopPlayerMatchesText(matchesPlayed: number): string {
+  return `${matchesPlayed} ${matchesPlayed === 1 ? "partido" : "partidos"}`;
+}
+
+export function getTopPlayerContactsText(networkSize: number): string {
+  return `${networkSize} ${networkSize === 1 ? "contacto" : "contactos"}`;
+}
