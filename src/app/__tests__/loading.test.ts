@@ -21,4 +21,11 @@ describe("RootLoading Skeleton Component", () => {
 
     expect(element.props.className).toContain("relative flex min-h-dvh flex-col bg-background");
   });
+
+  it("renders inner container with max width layout styling", () => {
+    const element = RootLoading();
+    const innerContainer = element.props.children;
+
+    expect(innerContainer.props.className).toContain("flex w-full max-w-sm mx-auto flex-col gap-6");
+  });
 });
