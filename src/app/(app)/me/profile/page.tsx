@@ -6,6 +6,14 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Shield, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  getProfileHeadingTitle,
+  getProfileHeadingDescription,
+  getProfileBackAriaLabel,
+  getProfileSecurityTitle,
+  getProfileSecurityDescription,
+  getProfileSkeletonAriaLabel,
+} from "./profile-utils";
 
 export default function ProfilePage() {
   return (
@@ -15,14 +23,16 @@ export default function ProfilePage() {
           href="/me"
           prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Volver"
+          aria-label={getProfileBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Mi Perfil</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {getProfileHeadingTitle()}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Cómo te ven los demás jugadores en el ranking y los partidos.
+            {getProfileHeadingDescription()}
           </p>
         </div>
       </div>
@@ -41,10 +51,10 @@ export default function ProfilePage() {
         </div>
         <div className="flex-1 space-y-0.5">
           <p className="text-sm font-semibold text-foreground">
-            Seguridad
+            {getProfileSecurityTitle()}
           </p>
           <p className="text-xs text-muted-foreground">
-            Huella y Face ID para entrar más rápido
+            {getProfileSecurityDescription()}
           </p>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -84,7 +94,12 @@ async function ProfileFormSection() {
 
 function ProfileFormSkeleton() {
   return (
-    <div className="space-y-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getProfileSkeletonAriaLabel()}
+      className="space-y-6"
+    >
       {/* Avatar card skeleton */}
       <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
         <Skeleton className="h-16 w-16 rounded-xl shrink-0" />

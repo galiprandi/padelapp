@@ -166,3 +166,27 @@ export function getCategoryUpdateSuccessToast(categoryName: string): string {
 export function getPreferredSideUpdateSuccessToast(sideLabel: string): string {
   return `Lado preferido actualizado a ${sideLabel}`;
 }
+
+export function getProfileHeadingTitle(): string {
+  return "Mi Perfil";
+}
+
+export function getProfileHeadingDescription(): string {
+  return "Cómo te ven los demás jugadores en el ranking y los partidos.";
+}
+
+export function getProfileBackAriaLabel(): string {
+  return "Volver a mi perfil";
+}
+
+export function getProfileSecurityTitle(): string {
+  return "Seguridad";
+}
+
+export function getProfileSecurityDescription(): string {
+  return "Huella y Face ID para entrar más rápido";
+}
+
+export function getProfileSkeletonAriaLabel(): string {
+  return "Cargando formulario de perfil...";
+}
