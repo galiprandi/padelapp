@@ -246,6 +246,26 @@ import {
   getNetworkPageTabButtonClasses,
   getNetworkPageTabAriaLabel,
   getNetworkPageRegionAriaLabel,
+  getGrowthBadgeClasses,
+  formatGrowthRateText,
+  getStatCardContainerClasses,
+  getStatsPanelHeadingTitle,
+  getStatsPanelHeadingDescription,
+  getStatsPanelBackAriaLabel,
+  getRecommenderHeadingTitle,
+  getRecommenderHeadingDescription,
+  getRecommenderEmptyStateText,
+  getRecentUsersHeadingTitle,
+  getTopCommunitiesHeadingTitle,
+  getTopConnectedHeadingTitle,
+  getRecent30DaysHeadingTitle,
+  getTopClubsHeadingTitle,
+  getRecommendedPlayerProfileLinkAriaLabel,
+  getStatsCardCommunityLabel,
+  getStatsCardCommunityMembersText,
+  getTopPlayerRankText,
+  getTopPlayerMatchesText,
+  getTopPlayerContactsText,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1498,6 +1518,59 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("StatsPanel pure helper functions", () => {
+  it("formats growth badge classes and growth text correctly", () => {
+    expect(getGrowthBadgeClasses(15)).toContain("text-emerald-600");
+    expect(getGrowthBadgeClasses(-5)).toContain("text-red-600");
+
+    expect(formatGrowthRateText(12.5)).toBe("+13%");
+    expect(formatGrowthRateText(-8.2)).toBe("-8%");
+  });
+
+  it("returns correct stat card container CSS classes", () => {
+    expect(getStatCardContainerClasses()).toBe(
+      "rounded-xl border border-border bg-card p-4 space-y-2"
+    );
+  });
+
+  it("returns expected section headers and descriptions", () => {
+    expect(getStatsPanelHeadingTitle()).toBe("Red & Adopción");
+    expect(getStatsPanelHeadingDescription()).toBe("Monitoreo de la red de contactos y adopción de la app.");
+    expect(getStatsPanelBackAriaLabel()).toBe("Volver al inicio");
+    expect(getRecommenderHeadingTitle()).toBe("Jugadores como vos 🧠");
+    expect(getRecommenderHeadingDescription()).toBe("Gente de tu nivel y comunidad con la que todavía no jugaste.");
+    expect(getRecommenderEmptyStateText()).toBe("No hay nuevos jugadores sugeridos por ahora.");
+    expect(getRecentUsersHeadingTitle()).toBe("Últimos usuarios");
+    expect(getTopCommunitiesHeadingTitle()).toBe("Comunidades de la red");
+    expect(getTopConnectedHeadingTitle()).toBe("Más conectados");
+    expect(getRecent30DaysHeadingTitle()).toBe("Últimos 30 días");
+    expect(getTopClubsHeadingTitle()).toBe("Clubes con más actividad");
+  });
+
+  it("formats recommended player profile link ARIA label", () => {
+    expect(getRecommendedPlayerProfileLinkAriaLabel("Agustín")).toBe(
+      "Ver perfil público de Agustín"
+    );
+  });
+
+  it("formats community card label and members text", () => {
+    expect(getStatsCardCommunityLabel(1)).toBe("Grupo 1");
+    expect(getStatsCardCommunityMembersText(1)).toBe("1 jugador");
+    expect(getStatsCardCommunityMembersText(4)).toBe("4 jugadores");
+  });
+
+  it("formats top player rank, matches, and contacts text", () => {
+    expect(getTopPlayerRankText(0)).toBe("1");
+    expect(getTopPlayerRankText(2)).toBe("3");
+
+    expect(getTopPlayerMatchesText(1)).toBe("1 partido");
+    expect(getTopPlayerMatchesText(5)).toBe("5 partidos");
+
+    expect(getTopPlayerContactsText(1)).toBe("1 contacto");
+    expect(getTopPlayerContactsText(12)).toBe("12 contactos");
   });
 });
 
