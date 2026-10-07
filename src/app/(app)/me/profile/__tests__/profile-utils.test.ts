@@ -15,6 +15,12 @@ import {
   getPhotoRestoreSuccessToast,
   getCategoryUpdateSuccessToast,
   getPreferredSideUpdateSuccessToast,
+  getProfileHeadingTitle,
+  getProfileHeadingDescription,
+  getProfileBackAriaLabel,
+  getProfileSecurityTitle,
+  getProfileSecurityDescription,
+  getProfileSkeletonAriaLabel,
 } from "../profile-utils";
 
 describe("validateAlias", () => {
@@ -140,5 +146,14 @@ describe("profile region landmark and toast helpers", () => {
   it("formats category and preferred side update success toasts", () => {
     expect(getCategoryUpdateSuccessToast("6ª Cat.")).toBe("Categoría actualizada a 6ª Cat.");
     expect(getPreferredSideUpdateSuccessToast("Revés")).toBe("Lado preferido actualizado a Revés");
+  });
+
+  it("returns correct page header, back navigation, security, and skeleton ARIA labels", () => {
+    expect(getProfileHeadingTitle()).toBe("Mi Perfil");
+    expect(getProfileHeadingDescription()).toBe("Cómo te ven los demás jugadores en el ranking y los partidos.");
+    expect(getProfileBackAriaLabel()).toBe("Volver a mi perfil");
+    expect(getProfileSecurityTitle()).toBe("Seguridad");
+    expect(getProfileSecurityDescription()).toBe("Huella y Face ID para entrar más rápido");
+    expect(getProfileSkeletonAriaLabel()).toBe("Cargando formulario de perfil...");
   });
 });
