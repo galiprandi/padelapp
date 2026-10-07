@@ -162,6 +162,13 @@ import {
   getPlayCasualDismissAriaLabel,
   getQuickJoinEmptySlotAriaLabel,
   getQuickJoinEmptySlotText,
+  getTodayBadgeText,
+  getTomorrowBadgeText,
+  getTurnCardShareTitle,
+  getTurnCardSalvageLabel,
+  getTurnCardQuickJoinText,
+  getTurnCardStatusBadgeText,
+  getTurnCardContainerClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -835,6 +842,48 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("TurnCard pure helpers batch", () => {
+  it("formats getTodayBadgeText and getTomorrowBadgeText", () => {
+    expect(getTodayBadgeText()).toBe("Hoy");
+    expect(getTomorrowBadgeText()).toBe("Mañana");
+  });
+
+  it("formats getTurnCardShareTitle and getTurnCardSalvageLabel", () => {
+    expect(getTurnCardShareTitle()).toBe("Sumate al Turno");
+    expect(getTurnCardSalvageLabel()).toBe("Salvar turno");
+  });
+
+  it("formats getTurnCardQuickJoinText across idle, pending, and substitute states", () => {
+    expect(getTurnCardQuickJoinText({})).toBe("Sumarme");
+    expect(getTurnCardQuickJoinText({ isSubstitute: true })).toBe("Suplente");
+    expect(getTurnCardQuickJoinText({ isPending: true })).toBe("Sumando...");
+    expect(getTurnCardQuickJoinText({ isSubstitute: true, isPending: true })).toBe("Sumando...");
+  });
+
+  it("formats getTurnCardStatusBadgeText across roles and slot states", () => {
+    expect(getTurnCardStatusBadgeText({ isCreator: true })).toBe("Organizador");
+    expect(getTurnCardStatusBadgeText({ isSubstitute: true })).toBe("Suplente");
+    expect(getTurnCardStatusBadgeText({ isJoined: true })).toBe("Inscripto");
+    expect(getTurnCardStatusBadgeText({ isFull: true })).toBe("Completo");
+    expect(getTurnCardStatusBadgeText({ openSlots: 1 })).toBe("Falta 1");
+    expect(getTurnCardStatusBadgeText({ openSlots: 2 })).toBe("Faltan 2");
+    expect(getTurnCardStatusBadgeText({ openSlots: 0 })).toBeNull();
+  });
+
+  it("formats getTurnCardContainerClasses across recommended and pending variants", () => {
+    const defaultClasses = getTurnCardContainerClasses({});
+    expect(defaultClasses).toContain("rounded-xl");
+    expect(defaultClasses).not.toContain("border-primary");
+    expect(defaultClasses).not.toContain("opacity-70");
+
+    const recommendedClasses = getTurnCardContainerClasses({ isRecommended: true });
+    expect(recommendedClasses).toContain("border-primary");
+
+    const pendingClasses = getTurnCardContainerClasses({ isPending: true });
+    expect(pendingClasses).toContain("opacity-70");
   });
 });
 
