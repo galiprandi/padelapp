@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-28 — Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLoading` (`src/app/loading.tsx`) (PR #tino/perf/root-loading-layout-helpers)
 - [x] 2026-09-27 — Extracción de Funciones Helper Puras para Atributos ARIA del Esqueleto de Navegación, Clases CSS de Íconos y Etiquetas (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNavSkeleton` y `BottomNav` (PR #tino/ux/bottom-nav-skeleton-aria-and-icon-helpers)
 - [x] 2026-09-26 — Extracción de Funciones Helper Puras de Clases CSS para Contenedor Flex Interior, Pestañas y FAB del Esqueleto de Navegación (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` y `BottomNavSkeleton` (PR #tino/ux/bottom-nav-inner-and-skeleton-helpers)
 - [x] 2026-09-25 — Extracción de Funciones Helper Puras de Atributos ARIA, Habilitación de PWA y Clases CSS en Providers (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (PR #tino/perf/providers-helpers-extraction)
@@ -67,6 +68,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-28 - Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz
+**Aprendizaje:** Encapsular la composición de clases CSS para el contenedor interior (`getRootLoadingInnerContainerClasses`), la sección héroe (`getRootLoadingHeroClasses`, `getRootLoadingHeroTextClasses`), las tarjetas de características (`getRootLoadingCardClasses`) y el bloque CTA (`getRootLoadingCtaClasses`) dentro de `src/lib/root-layout-utils.ts` desacopla la maquetación visual del componente `RootLoading` (`src/app/loading.tsx`), facilitando la reutilización y permitiendo verificar las reglas de estilo mediante unit tests aislados sin acoplamiento con la estructura DOM.
+**Acción:** Reutilizar siempre las utilidades de `src/lib/root-layout-utils.ts` al modificar o extender la vista de carga streaming de la aplicación.
+
 ### 2026-09-27 - Extracción de Funciones Helper Puras para Atributos ARIA del Esqueleto de Navegación y Clases CSS de Íconos
 **Aprendizaje:** Encapsular la generación de atributos ARIA con `aria-busy="true"` (`getBottomNavSkeletonAriaAttributes`), las clases CSS para íconos/etiquetas de pestañas (`getBottomNavIconClasses`, `getBottomNavLabelClasses`), el botón central FAB (`getFabIconClasses`), y los elementos del esqueleto (`getBottomNavTabIconSkeletonClasses`, `getBottomNavTabLabelSkeletonClasses`, `getBottomNavFabIconSkeletonClasses`) en `src/components/navigation/nav-utils.ts` asegura que la navegación principal comunique accesiblemente su estado de carga por streaming mientras desacopla el diseño de los componentes `BottomNav` y `BottomNavSkeleton`.
 **Acción:** Utilizar siempre las utilidades de `nav-utils.ts` al extender la navegación principal o definir vistas de carga por streaming asociadas a la barra de menú.
@@ -148,7 +153,7 @@
 **Acción:** Reutilizar el componente `Skeleton` refactorizado en cualquier nueva pantalla o vista con estados de carga por streaming.
 
 ### 2026-09-06 - Reglas de Especulación Basadas en Documento para Prerenderizado Dinámico de Enlaces Compartidos
-**Aprendizaje:** Además de las listas estáticas de URLs primarias y secundarias, incorporar reglas de especulación a nivel de documento (`source: "document"`) con patrones de coincidencia de hipervínculos (`href_matches`: `/t/*`, `/m/*`, `/j/*`, `/p/*`, etc.) y nivel de *eagerness* `moderate` permite que Chrome detecte e inicie el prerenderizado especulativo automáticamente al interactuar o pasar el cursor sobre enlaces a partidos, turnos, cupos o perfiles de jugadores sin necesidad de conocer los identificadores dinámicos de antemano.
+**Aprendizaje:** Además de las listas estáticas de URLs primarias y secundarias, incorporar reglas de especulación a nivel de documento (`source: "document"`) con patrones de coincidencia de hipervínculos (`href_matches`: `/t/*`, `/m/*`, `/j/*`, `/p/*`, etc.) and nivel de *eagerness* `moderate` permite que Chrome detecte e inicie el prerenderizado especulativo automáticamente al interactuar o pasar el cursor sobre enlaces a partidos, turnos, cupos o perfiles de jugadores sin necesidad de conocer los identificadores dinámicos de antemano.
 **Acción:** Reutilizar reglas de documento para cualquier nuevo patrón de ruta dinámico que se añada a la aplicación.
 
 ### 2026-09-05 - Speculation Rules API Multinivel para Prerenderizado Especulativo por Prioridad de Rutas (Performance Transversal)
