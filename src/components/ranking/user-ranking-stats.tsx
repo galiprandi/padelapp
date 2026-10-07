@@ -16,6 +16,9 @@ import {
   getRankingRegionAriaLabel,
   getRankingBreakdownItemLabel,
   getRankingStatLabel,
+  getRankingBreakdownErrorText,
+  formatRankingPositionText,
+  formatMatchRecordText,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -62,7 +65,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
         if (res.status === "ok" && res.breakdown) {
           setBreakdown(res.breakdown);
         } else {
-          setError(res.message || "Error al cargar el desglose.");
+          setError(getRankingBreakdownErrorText(res.message));
         }
       });
     }
@@ -233,7 +236,7 @@ export function UserRankingBanner({
           <div className="flex flex-col">
             <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("position")}</span>
             <span className="text-2xl font-bold text-foreground">
-              {position ? `#${position}` : "S/P"}
+              {formatRankingPositionText(position, "S/P")}
             </span>
           </div>
           <div className="flex flex-col">
@@ -257,7 +260,7 @@ export function UserRankingBanner({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-muted-foreground">
-              {wins}V-{losses}D
+              {formatMatchRecordText(wins, losses)}
             </span>
             {delta > 0 ? (
               <div
@@ -343,7 +346,7 @@ export function UserRankingCard({
           <div className="flex flex-col">
             <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("myPosition")}</span>
             <span className="text-2xl font-bold text-foreground">
-              {position ? `#${position}` : "--"}
+              {formatRankingPositionText(position, "--")}
             </span>
           </div>
           <div className="flex flex-col">
@@ -389,7 +392,7 @@ export function UserRankingCard({
           )}
           {matchesPlayed > 0 && (
             <span className="text-xs text-muted-foreground">
-              {wins}V-{losses}D
+              {formatMatchRecordText(wins, losses)}
             </span>
           )}
         </div>

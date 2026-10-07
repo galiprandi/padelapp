@@ -8,12 +8,20 @@ import { useMounted } from "@/lib/hooks/use-mounted";
 import { confirmMatchResultAction } from "@/app/(app)/match/actions";
 import Link from "next/link";
 import {
+  getPendingConfirmationsTitle,
   getPendingConfirmationsCountText,
   formatPendingMatchDate,
   getPendingMatchConfirmAriaLabel,
   getPendingMatchResultAriaLabel,
   getPendingMatchDetailAriaLabel,
   getRankingRegionAriaLabel,
+  getPendingMatchConfirmSuccessToast,
+  getPendingMatchConfirmErrorToast,
+  getPendingMatchConfirmExceptionToast,
+  getPendingMatchScoreLoadedLabel,
+  getPendingMatchScorePendingText,
+  getPendingMatchConfirmButtonText,
+  getPendingMatchResultButtonText,
 } from "./ranking-utils";
 
 interface PendingPlayer {
@@ -58,18 +66,18 @@ export function PendingConfirmationsAlert({
       try {
         const res = await confirmMatchResultAction(matchId);
         if (res.status === "ok") {
-          showToast("Confirmaste el resultado. 🏆", {
+          showToast(getPendingMatchConfirmSuccessToast(), {
             type: "success",
           });
           router.refresh();
         } else {
-          showToast(res.message || "No se pudo confirmar el resultado.", {
+          showToast(getPendingMatchConfirmErrorToast(res.message), {
             type: "error",
           });
         }
       } catch (err) {
         console.error("Error confirming match:", err);
-        showToast("Ocurrió un error al procesar la confirmación.", {
+        showToast(getPendingMatchConfirmExceptionToast(), {
           type: "error",
         });
       } finally {
@@ -88,7 +96,7 @@ export function PendingConfirmationsAlert({
         <AlertCircle className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-foreground leading-tight">
-            Confirmaciones pendientes
+            {getPendingConfirmationsTitle()}
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             {getPendingConfirmationsCountText(pendingActions.length)}
@@ -116,11 +124,12 @@ export function PendingConfirmationsAlert({
                 </div>
                 {hasScore ? (
                   <p className="text-sm font-bold text-foreground">
-                    Resultado cargado: <span className="text-primary tabular-nums">{match.score}</span>
+                    {getPendingMatchScoreLoadedLabel()}{" "}
+                    <span className="text-primary tabular-nums">{match.score}</span>
                   </p>
                 ) : (
                   <p className="text-xs font-semibold text-destructive">
-                    Pendiente de cargar resultado
+                    {getPendingMatchScorePendingText()}
                   </p>
                 )}
               </div>
@@ -140,7 +149,7 @@ export function PendingConfirmationsAlert({
                     ) : (
                       <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
-                    Confirmar
+                    {getPendingMatchConfirmButtonText()}
                   </button>
                 ) : (
                   <Link
@@ -149,7 +158,7 @@ export function PendingConfirmationsAlert({
                     aria-label={getPendingMatchResultAriaLabel(formattedDate)}
                     className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
-                    Cargar resultado
+                    {getPendingMatchResultButtonText()}
                     <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
                 )}
