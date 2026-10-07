@@ -31,6 +31,13 @@ import {
   getTurnCardSubstitutesText,
   getTurnCardContactPlayersAriaLabel,
   getTurnCardDetailLinkAriaLabel,
+  getTodayBadgeText,
+  getTomorrowBadgeText,
+  getTurnCardShareTitle,
+  getTurnCardSalvageLabel,
+  getTurnCardQuickJoinText,
+  getTurnCardStatusBadgeText,
+  getTurnCardContainerClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -136,15 +143,19 @@ export function TurnCard({
     isSubstitute,
   });
 
+  const statusBadgeText = getTurnCardStatusBadgeText({
+    isCreator,
+    isSubstitute,
+    isJoined,
+    isFull: turn.status === "FULL" || isFull,
+    openSlots,
+  });
+
   return (
     <div
       role="region"
       aria-label={cardAriaLabel}
-      className={cn(
-        "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs transition-all hover:bg-muted active:scale-[0.98]",
-        isRecommended && "border-primary font-semibold shadow-sm",
-        isPending && "opacity-70 pointer-events-none",
-      )}
+      className={getTurnCardContainerClasses({ isRecommended, isPending })}
     >
       <Link
         href={`/t/${turn.id}`}
@@ -169,8 +180,8 @@ export function TurnCard({
               <p className="truncate text-sm font-semibold text-foreground">
                 {turn.club}
               </p>
-              {isTodayDate && <Badge variant="success">Hoy</Badge>}
-              {isTomorrowDate && <Badge variant="default">Mañana</Badge>}
+              {isTodayDate && <Badge variant="success">{getTodayBadgeText()}</Badge>}
+              {isTomorrowDate && <Badge variant="default">{getTomorrowBadgeText()}</Badge>}
               {urgencyText && (
                 <Badge variant="warning">
                   {urgencyText}
@@ -214,28 +225,28 @@ export function TurnCard({
                 variant="primary"
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isCreator: true })}
               >
-                Organizador
+                {statusBadgeText}
               </Badge>
             ) : isSubstitute ? (
               <Badge
                 variant="default"
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isSubstitute: true })}
               >
-                Suplente
+                {statusBadgeText}
               </Badge>
             ) : isJoined ? (
               <Badge
                 variant="primary"
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots, isJoined: true })}
               >
-                Inscripto
+                {statusBadgeText}
               </Badge>
             ) : turn.status === "FULL" ? (
               <Badge
                 variant="default"
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots: 0 })}
               >
-                Completo
+                {statusBadgeText}
               </Badge>
             ) : openSlots > 0 ? (
               <Badge
@@ -246,7 +257,7 @@ export function TurnCard({
                 )}
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots })}
               >
-                {getOpenSlotsBadgeText(openSlots)}
+                {statusBadgeText}
               </Badge>
             ) : null}
           </div>
@@ -264,7 +275,7 @@ export function TurnCard({
                   variant="outline"
                   size="sm"
                   showText={false}
-                  label="Salvar turno"
+                  label={getTurnCardSalvageLabel()}
                   iconOnly={false}
                 />
               </div>
@@ -272,7 +283,7 @@ export function TurnCard({
 
             <ShareButton
               url={createMagicLink({ resource: "turn", identifier: turn.id }).url}
-              title="Sumate al Turno"
+              title={getTurnCardShareTitle()}
               text={
                 openSlots > 0
                   ? getTurnSalvageShareMessage({
@@ -311,10 +322,8 @@ export function TurnCard({
               >
                 {isPending ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : canJoinAsSubstitute ? (
-                  "Suplente"
                 ) : (
-                  "Sumarme"
+                  getTurnCardQuickJoinText({ isSubstitute: canJoinAsSubstitute })
                 )}
               </button>
             )}

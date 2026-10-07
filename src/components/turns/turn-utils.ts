@@ -1,4 +1,4 @@
-import { isToday, isTomorrow, getNaturalShareText, getCalendarTitle } from "@/lib/utils";
+import { cn, isToday, isTomorrow, getNaturalShareText, getCalendarTitle } from "@/lib/utils";
 
 export interface WhatsAppInviteMessageOptions {
   club: string;
@@ -1978,4 +1978,94 @@ export function getAddPlayerErrorToast(message?: string | null): string {
  */
 export function getSendChatMessageErrorToast(message?: string | null): string {
   return message ?? "No se pudo enviar el mensaje.";
+}
+
+/**
+ * Format badge label text for today's date.
+ */
+export function getTodayBadgeText(): string {
+  return "Hoy";
+}
+
+/**
+ * Format badge label text for tomorrow's date.
+ */
+export function getTomorrowBadgeText(): string {
+  return "Mañana";
+}
+
+/**
+ * Format share dialog title for TurnCard.
+ */
+export function getTurnCardShareTitle(): string {
+  return "Sumate al Turno";
+}
+
+/**
+ * Format button label for salvage action in TurnCard.
+ */
+export function getTurnCardSalvageLabel(): string {
+  return "Salvar turno";
+}
+
+export interface QuickJoinTextOptions {
+  isSubstitute?: boolean;
+  isPending?: boolean;
+}
+
+/**
+ * Format button text for quick-join trigger in TurnCard.
+ */
+export function getTurnCardQuickJoinText({
+  isSubstitute = false,
+  isPending = false,
+}: QuickJoinTextOptions = {}): string {
+  if (isPending) return "Sumando...";
+  if (isSubstitute) return "Suplente";
+  return "Sumarme";
+}
+
+export interface TurnCardStatusBadgeTextOptions {
+  isCreator?: boolean;
+  isSubstitute?: boolean;
+  isJoined?: boolean;
+  isFull?: boolean;
+  openSlots?: number;
+}
+
+/**
+ * Format status or role badge label text for TurnCard.
+ */
+export function getTurnCardStatusBadgeText({
+  isCreator = false,
+  isSubstitute = false,
+  isJoined = false,
+  isFull = false,
+  openSlots = 0,
+}: TurnCardStatusBadgeTextOptions): string | null {
+  if (isCreator) return "Organizador";
+  if (isSubstitute) return "Suplente";
+  if (isJoined) return "Inscripto";
+  if (isFull) return "Completo";
+  if (openSlots > 0) return getOpenSlotsBadgeText(openSlots);
+  return null;
+}
+
+export interface TurnCardContainerClassesOptions {
+  isRecommended?: boolean;
+  isPending?: boolean;
+}
+
+/**
+ * Format CSS classes for TurnCard outer container.
+ */
+export function getTurnCardContainerClasses({
+  isRecommended = false,
+  isPending = false,
+}: TurnCardContainerClassesOptions = {}): string {
+  return cn(
+    "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs transition-all hover:bg-muted active:scale-[0.98]",
+    isRecommended && "border-primary font-semibold shadow-sm",
+    isPending && "opacity-70 pointer-events-none"
+  );
 }

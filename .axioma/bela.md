@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-06 — TurnCard Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-card-pure-helpers-and-refactoring)
 - [x] 2026-10-05 — Calendar Export UI & Error Toast Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-and-error-toast-pure-helpers)
 - [x] 2026-10-04 — OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring (bela/turnos/open-to-network-button-text-helpers)
 - [x] 2026-09-30 — Late Leave Warning & Turn Actions Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/late-leave-and-actions-pure-helpers)
@@ -70,6 +71,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-06 - TurnCard Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getTodayBadgeText`, `getTomorrowBadgeText`, `getTurnCardShareTitle`, `getTurnCardSalvageLabel`, `getTurnCardQuickJoinText`, `getTurnCardStatusBadgeText`, and `getTurnCardContainerClasses`) into `src/components/turns/turn-utils.ts` decouples localized badge text formatting, share dialog titles, quick-join button label states ("Sumando...", "Suplente", "Sumarme"), status badge role labels, and outer container CSS class composition from React component render trees in `TurnCard` (`src/components/turns/turn-card.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining semantic accessibility attributes (`role="region"`, `aria-label`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract card badge labels, share titles, status badge text logic, and container class composition into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-05 - Calendar Export UI & Error Toast Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getCalendarButtonText`, `getCalendarButtonAriaLabel`, `getCalendarHeaderPromptText`, `getGoogleButtonText`, `getGoogleButtonAriaLabel`, `getIcsButtonText`, `getIcsButtonAriaLabel`, `getGoogleCalendarToast`, `getIcsCalendarToast`, `getRemovePlayerErrorToast`, `getAssignSubstituteErrorToast`, `getAddPlayerErrorToast`, `getSendChatMessageErrorToast`) into `src/components/turns/turn-utils.ts` decouples calendar export UI copy, screen reader ARIA labels, and fallback error toast messages from React render components in `AddToCalendarButton` (`src/components/turns/add-to-calendar.tsx`), `RemovePlayerButton`, `AssignSubstituteButton` (`src/components/turns/organizer-actions.tsx`), `AddPlayerButton` (`src/components/turns/add-player-button.tsx`), and `TurnChat` (`src/components/turns/turn-chat.tsx`). Consuming these helpers guarantees strict compliance with Argentine Spanish voseo copy conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract calendar button labels, prompt headers, export toast feedback messages, and fallback error toasts into pure helper functions backed by Vitest unit tests.
