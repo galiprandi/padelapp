@@ -414,3 +414,104 @@ export function getRankingStatLabel(
       return "Rep";
   }
 }
+
+/**
+ * Returns title text for pending confirmations alert header
+ */
+export function getPendingConfirmationsTitle(): string {
+  return "Confirmaciones pendientes";
+}
+
+/**
+ * Returns success toast message for confirming match result
+ */
+export function getPendingMatchConfirmSuccessToast(): string {
+  return "Confirmaste el resultado. 🏆";
+}
+
+/**
+ * Returns error toast message when match result confirmation fails
+ */
+export function getPendingMatchConfirmErrorToast(message?: string | null): string {
+  return message || "No se pudo confirmar el resultado.";
+}
+
+/**
+ * Returns error toast message when match result confirmation throws an exception
+ */
+export function getPendingMatchConfirmExceptionToast(): string {
+  return "Ocurrió un error al procesar la confirmación.";
+}
+
+/**
+ * Returns prefix text for loaded match result in pending confirmations
+ */
+export function getPendingMatchScoreLoadedLabel(): string {
+  return "Resultado cargado:";
+}
+
+/**
+ * Returns text when match result is pending in pending confirmations
+ */
+export function getPendingMatchScorePendingText(): string {
+  return "Pendiente de cargar resultado";
+}
+
+/**
+ * Returns button text for confirming pending match result
+ */
+export function getPendingMatchConfirmButtonText(): string {
+  return "Confirmar";
+}
+
+/**
+ * Returns button text for navigating to load pending match result
+ */
+export function getPendingMatchResultButtonText(): string {
+  return "Cargar resultado";
+}
+
+/**
+ * Returns label text for ranking filter tab buttons ("Activos" | "Todos")
+ */
+export function getRankingFilterTabLabel(tab: "activos" | "todos"): string {
+  return tab === "activos" ? "Activos" : "Todos";
+}
+
+/**
+ * Returns accessible ARIA label for ranking filter radiogroup
+ */
+export function getRankingFilterTabsGroupAriaLabel(): string {
+  return "Filtrar clasificación";
+}
+
+/**
+ * Returns clear search button text in ranking filter empty state
+ */
+export function getRankingFilterClearButtonText(): string {
+  return "Limpiar búsqueda";
+}
+
+/**
+ * Returns error message text for ranking breakdown loading failures
+ */
+export function getRankingBreakdownErrorText(message?: string | null): string {
+  return message || "Error al cargar el desglose.";
+}
+
+/**
+ * Formats ranking position text (e.g. "#1", "S/P", "--")
+ */
+export function formatRankingPositionText(
+  position: number | null | undefined,
+  fallback = "S/P"
+): string {
+  return position ? `#${position}` : fallback;
+}
+
+/**
+ * Formats match record text (e.g. "8V-2D")
+ */
+export function formatMatchRecordText(wins: number, losses: number): string {
+  return `${wins}V-${losses}D`;
+}

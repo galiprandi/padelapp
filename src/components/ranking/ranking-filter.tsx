@@ -15,6 +15,9 @@ import {
   getRankingFilterEmptyTitle,
   getRankingFilterEmptyDescription,
   getRankingFilterClearAriaLabel,
+  getRankingFilterTabLabel,
+  getRankingFilterTabsGroupAriaLabel,
+  getRankingFilterClearButtonText,
 } from "./ranking-utils";
 
 interface RankingPlayer {
@@ -60,7 +63,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
       {!query && (
         <div className="flex flex-col gap-1.5">
           <span id="ranking-tabs-label" className="sr-only">
-            Filtrar clasificación
+            {getRankingFilterTabsGroupAriaLabel()}
           </span>
           <div
             role="radiogroup"
@@ -100,7 +103,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               )}
               aria-label={getRankingFilterTabAriaLabel("activos", players.filter(p => p.matchesPlayed > 0).length)}
             >
-              Activos
+              {getRankingFilterTabLabel("activos")}
             </button>
             <button
               type="button"
@@ -116,7 +119,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               )}
               aria-label={getRankingFilterTabAriaLabel("todos", players.length)}
             >
-              Todos
+              {getRankingFilterTabLabel("todos")}
             </button>
           </div>
         </div>
@@ -164,7 +167,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
                     prefetch={true}
                     aria-label={getRankingFilterClearAriaLabel()}
                   >
-                    Limpiar búsqueda
+                    {getRankingFilterClearButtonText()}
                   </Link>
                 </Button>
               ) : null

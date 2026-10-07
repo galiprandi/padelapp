@@ -30,6 +30,20 @@ import {
   getDeltaChangeTitle,
   getRankingBreakdownItemLabel,
   getRankingStatLabel,
+  getPendingConfirmationsTitle,
+  getPendingMatchConfirmSuccessToast,
+  getPendingMatchConfirmErrorToast,
+  getPendingMatchConfirmExceptionToast,
+  getPendingMatchScoreLoadedLabel,
+  getPendingMatchScorePendingText,
+  getPendingMatchConfirmButtonText,
+  getPendingMatchResultButtonText,
+  getRankingFilterTabLabel,
+  getRankingFilterTabsGroupAriaLabel,
+  getRankingFilterClearButtonText,
+  getRankingBreakdownErrorText,
+  formatRankingPositionText,
+  formatMatchRecordText,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -469,6 +483,58 @@ describe("Ranking Helpers", () => {
       expect(getRankingStatLabel("points")).toBe("Puntos");
       expect(getRankingStatLabel("winRate")).toBe("WR");
       expect(getRankingStatLabel("reputation")).toBe("Rep");
+    });
+  });
+
+  describe("newly extracted ranking UI helpers", () => {
+    it("getPendingConfirmationsTitle returns expected title", () => {
+      expect(getPendingConfirmationsTitle()).toBe("Confirmaciones pendientes");
+    });
+
+    it("getPendingMatchConfirmSuccessToast returns expected toast", () => {
+      expect(getPendingMatchConfirmSuccessToast()).toBe("Confirmaste el resultado. 🏆");
+    });
+
+    it("getPendingMatchConfirmErrorToast handles custom and fallback messages", () => {
+      expect(getPendingMatchConfirmErrorToast("Error de servidor")).toBe("Error de servidor");
+      expect(getPendingMatchConfirmErrorToast(null)).toBe("No se pudo confirmar el resultado.");
+    });
+
+    it("getPendingMatchConfirmExceptionToast returns expected exception toast", () => {
+      expect(getPendingMatchConfirmExceptionToast()).toBe("Ocurrió un error al procesar la confirmación.");
+    });
+
+    it("getPendingMatchScoreLoadedLabel and getPendingMatchScorePendingText return expected labels", () => {
+      expect(getPendingMatchScoreLoadedLabel()).toBe("Resultado cargado:");
+      expect(getPendingMatchScorePendingText()).toBe("Pendiente de cargar resultado");
+    });
+
+    it("getPendingMatchConfirmButtonText and getPendingMatchResultButtonText return expected texts", () => {
+      expect(getPendingMatchConfirmButtonText()).toBe("Confirmar");
+      expect(getPendingMatchResultButtonText()).toBe("Cargar resultado");
+    });
+
+    it("getRankingFilterTabLabel, getRankingFilterTabsGroupAriaLabel, getRankingFilterClearButtonText", () => {
+      expect(getRankingFilterTabLabel("activos")).toBe("Activos");
+      expect(getRankingFilterTabLabel("todos")).toBe("Todos");
+      expect(getRankingFilterTabsGroupAriaLabel()).toBe("Filtrar clasificación");
+      expect(getRankingFilterClearButtonText()).toBe("Limpiar búsqueda");
+    });
+
+    it("getRankingBreakdownErrorText handles custom and default error messages", () => {
+      expect(getRankingBreakdownErrorText("Red caída")).toBe("Red caída");
+      expect(getRankingBreakdownErrorText(undefined)).toBe("Error al cargar el desglose.");
+    });
+
+    it("formatRankingPositionText formats position with custom fallback", () => {
+      expect(formatRankingPositionText(1, "S/P")).toBe("#1");
+      expect(formatRankingPositionText(null, "S/P")).toBe("S/P");
+      expect(formatRankingPositionText(null, "--")).toBe("--");
+    });
+
+    it("formatMatchRecordText formats wins and losses", () => {
+      expect(formatMatchRecordText(8, 2)).toBe("8V-2D");
+      expect(formatMatchRecordText(0, 0)).toBe("0V-0D");
     });
   });
 });
