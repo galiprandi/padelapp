@@ -16,8 +16,23 @@ import {
   calculatePlayerSimilarityInfo,
   formatGrowthRateText,
   formatTimeAgo,
+  get30dSummaryMatchesLabel,
+  get30dSummaryTurnsLabel,
+  get30dSummaryUsersLabel,
+  getActive30dLabel,
+  getActive30dSubtext,
+  getActiveSessionsLabel,
+  getEnrollmentsOverviewCardSubtext,
+  getEnrollmentsOverviewCardTitle,
   getGrowthBadgeClasses,
+  getMatchesOverviewCardSubtext,
+  getMatchesOverviewCardTitle,
   getNetworkActivityTier,
+  getNetworkAvgConnectionsLabel,
+  getNetworkConnectionsLabel,
+  getNetworkDensityLabel,
+  getNetworkPlayersLabel,
+  getNetworkSectionTitle,
   getRecent30DaysHeadingTitle,
   getRecentUsersHeadingTitle,
   getRecommendedPlayerAriaLabel,
@@ -43,6 +58,10 @@ import {
   getTopPlayerExpansionAriaLabel,
   getTopPlayerMatchesText,
   getTopPlayerRankText,
+  getTurnsOverviewCardSubtext,
+  getTurnsOverviewCardTitle,
+  getUsersOverviewCardSubtext,
+  getUsersOverviewCardTitle,
 } from "./graph-utils";
 
 interface StatsPanelProps {
@@ -129,31 +148,31 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         className="grid grid-cols-2 gap-3"
       >
         <StatCard
-          label="Usuarios"
+          label={getUsersOverviewCardTitle()}
           value={metrics.totalUsers}
           icon={Users}
-          sub={`${metrics.newUsers7d} nuevos esta semana`}
+          sub={getUsersOverviewCardSubtext(metrics.newUsers7d)}
           growth={metrics.userGrowthRate}
         />
         <StatCard
-          label="Turnos"
+          label={getTurnsOverviewCardTitle()}
           value={metrics.totalTurns}
           icon={CalendarDays}
-          sub={`${metrics.newTurns7d} esta semana`}
+          sub={getTurnsOverviewCardSubtext(metrics.newTurns7d)}
           growth={metrics.turnGrowthRate}
         />
         <StatCard
-          label="Partidos"
+          label={getMatchesOverviewCardTitle()}
           value={metrics.totalMatches}
           icon={Trophy}
-          sub={`${metrics.confirmedMatches} confirmados`}
+          sub={getMatchesOverviewCardSubtext(metrics.confirmedMatches)}
           growth={metrics.matchGrowthRate}
         />
         <StatCard
-          label="Inscripciones"
+          label={getEnrollmentsOverviewCardTitle()}
           value={metrics.totalEnrollments}
           icon={Activity}
-          sub="Total a turnos"
+          sub={getEnrollmentsOverviewCardSubtext()}
         />
       </div>
 
@@ -165,23 +184,31 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       >
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary" aria-hidden="true" />
-          <h2 className="text-sm font-bold text-foreground">Red de contactos</h2>
+          <h2 className="text-sm font-bold text-foreground">
+            {getNetworkSectionTitle()}
+          </h2>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">Jugadores</p>
+            <p className="text-xs text-muted-foreground">
+              {getNetworkPlayersLabel()}
+            </p>
             <p className="text-lg font-bold tabular-nums text-foreground">
               {graphNodes}
             </p>
           </div>
           <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">Conexiones</p>
+            <p className="text-xs text-muted-foreground">
+              {getNetworkConnectionsLabel()}
+            </p>
             <p className="text-lg font-bold tabular-nums text-foreground">
               {graphLinks}
             </p>
           </div>
           <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">Densidad</p>
+            <p className="text-xs text-muted-foreground">
+              {getNetworkDensityLabel()}
+            </p>
             <p className="text-lg font-bold tabular-nums text-foreground">
               {(metrics.networkDensity * 100).toFixed(1)}%
             </p>
@@ -189,7 +216,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         </div>
         <div className="space-y-0.5 pt-2 border-t border-border">
           <p className="text-xs text-muted-foreground">
-            Promedio de contactos por jugador
+            {getNetworkAvgConnectionsLabel()}
           </p>
           <p className="text-sm font-bold tabular-nums text-foreground">
             {metrics.avgConnectionsPerPlayer.toFixed(1)}
@@ -316,15 +343,15 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         className="grid grid-cols-2 gap-3"
       >
         <StatCard
-          label="Sesiones activas"
+          label={getActiveSessionsLabel()}
           value={metrics.activeSessions}
           icon={Activity}
         />
         <StatCard
-          label="Activos (30d)"
+          label={getActive30dLabel()}
           value={metrics.pushEnabled}
           icon={Bell}
-          sub="Con sesión reciente"
+          sub={getActive30dSubtext()}
         />
       </div>
 
@@ -619,19 +646,25 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
             <p className="text-lg font-bold tabular-nums text-foreground">
               {metrics.newUsers30d}
             </p>
-            <p className="text-xs text-muted-foreground">Usuarios</p>
+            <p className="text-xs text-muted-foreground">
+              {get30dSummaryUsersLabel()}
+            </p>
           </div>
           <div>
             <p className="text-lg font-bold tabular-nums text-foreground">
               {metrics.newTurns30d}
             </p>
-            <p className="text-xs text-muted-foreground">Turnos</p>
+            <p className="text-xs text-muted-foreground">
+              {get30dSummaryTurnsLabel()}
+            </p>
           </div>
           <div>
             <p className="text-lg font-bold tabular-nums text-foreground">
               {metrics.newMatches30d}
             </p>
-            <p className="text-xs text-muted-foreground">Partidos</p>
+            <p className="text-xs text-muted-foreground">
+              {get30dSummaryMatchesLabel()}
+            </p>
           </div>
         </div>
       </div>

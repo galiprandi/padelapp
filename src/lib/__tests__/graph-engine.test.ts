@@ -266,6 +266,25 @@ import {
   getTopPlayerRankText,
   getTopPlayerMatchesText,
   getTopPlayerContactsText,
+  getUsersOverviewCardTitle,
+  getUsersOverviewCardSubtext,
+  getTurnsOverviewCardTitle,
+  getTurnsOverviewCardSubtext,
+  getMatchesOverviewCardTitle,
+  getMatchesOverviewCardSubtext,
+  getEnrollmentsOverviewCardTitle,
+  getEnrollmentsOverviewCardSubtext,
+  getNetworkSectionTitle,
+  getNetworkPlayersLabel,
+  getNetworkConnectionsLabel,
+  getNetworkDensityLabel,
+  getNetworkAvgConnectionsLabel,
+  getActiveSessionsLabel,
+  getActive30dLabel,
+  getActive30dSubtext,
+  get30dSummaryUsersLabel,
+  get30dSummaryTurnsLabel,
+  get30dSummaryMatchesLabel,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1571,6 +1590,40 @@ describe("StatsPanel pure helper functions", () => {
 
     expect(getTopPlayerContactsText(1)).toBe("1 contacto");
     expect(getTopPlayerContactsText(12)).toBe("12 contactos");
+  });
+
+  it("formats overview card titles and subtexts", () => {
+    expect(getUsersOverviewCardTitle()).toBe("Usuarios");
+    expect(getUsersOverviewCardSubtext(1)).toBe("1 nuevo esta semana");
+    expect(getUsersOverviewCardSubtext(5)).toBe("5 nuevos esta semana");
+
+    expect(getTurnsOverviewCardTitle()).toBe("Turnos");
+    expect(getTurnsOverviewCardSubtext(3)).toBe("3 esta semana");
+
+    expect(getMatchesOverviewCardTitle()).toBe("Partidos");
+    expect(getMatchesOverviewCardSubtext(1)).toBe("1 confirmado");
+    expect(getMatchesOverviewCardSubtext(8)).toBe("8 confirmados");
+
+    expect(getEnrollmentsOverviewCardTitle()).toBe("Inscripciones");
+    expect(getEnrollmentsOverviewCardSubtext()).toBe("Total a turnos");
+  });
+
+  it("returns network metrics section labels", () => {
+    expect(getNetworkSectionTitle()).toBe("Red de contactos");
+    expect(getNetworkPlayersLabel()).toBe("Jugadores");
+    expect(getNetworkConnectionsLabel()).toBe("Conexiones");
+    expect(getNetworkDensityLabel()).toBe("Densidad");
+    expect(getNetworkAvgConnectionsLabel()).toBe("Promedio de contactos por jugador");
+  });
+
+  it("returns engagement stats and 30d summary titles", () => {
+    expect(getActiveSessionsLabel()).toBe("Sesiones activas");
+    expect(getActive30dLabel()).toBe("Activos (30d)");
+    expect(getActive30dSubtext()).toBe("Con sesión reciente");
+
+    expect(get30dSummaryUsersLabel()).toBe("Usuarios");
+    expect(get30dSummaryTurnsLabel()).toBe("Turnos");
+    expect(get30dSummaryMatchesLabel()).toBe("Partidos");
   });
 });
 
