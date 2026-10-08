@@ -8,6 +8,7 @@ import {
   getRankingRegionAriaLabel,
   getWinStreakTitle,
   getDeltaChangeTitle,
+  getPodiumHeadingTitle,
 } from "./ranking-utils";
 
 interface PodiumPlayer {
@@ -51,7 +52,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
       aria-label={getRankingRegionAriaLabel("podium")}
       className="space-y-3"
     >
-      <h2 className="text-sm font-bold text-foreground">Podio</h2>
+      <h2 className="text-sm font-bold text-foreground">{getPodiumHeadingTitle()}</h2>
       <div className="grid grid-cols-3 items-end gap-2">
         {/* 2nd Place */}
         {second && (
