@@ -22,6 +22,11 @@ export interface NavItemAriaAttributes {
   "aria-current"?: "page";
 }
 
+export interface BottomNavAriaAttributes {
+  role: "navigation";
+  "aria-label": string;
+}
+
 export interface NotificationsBadgeAriaAttributes {
   role: "status";
   "aria-live": "polite";
@@ -43,6 +48,16 @@ export interface FabAriaAttributes {
  */
 export function getBottomNavAriaLabel(): string {
   return "Navegación principal de Padel Red";
+}
+
+/**
+ * Genera los atributos ARIA accesibles para el contenedor de la navegación principal.
+ */
+export function getBottomNavAriaAttributes(): BottomNavAriaAttributes {
+  return {
+    role: "navigation",
+    "aria-label": getBottomNavAriaLabel(),
+  };
 }
 
 /**

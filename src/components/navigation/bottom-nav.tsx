@@ -8,7 +8,7 @@ import {
   getFabItemConfig,
   getFabAriaAttributes,
   getNavItemAriaAttributes,
-  getBottomNavAriaLabel,
+  getBottomNavAriaAttributes,
   getNotificationsBadgeAriaAttributes,
   formatNotificationsDisplayCount,
   isNavItemActive,
@@ -39,8 +39,7 @@ export function BottomNav({
 
   return (
     <nav
-      role="navigation"
-      aria-label={getBottomNavAriaLabel()}
+      {...getBottomNavAriaAttributes()}
       className={getBottomNavContainerClasses(position)}
     >
       <div className={getBottomNavInnerContainerClasses()}>

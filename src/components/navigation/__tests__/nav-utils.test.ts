@@ -6,6 +6,7 @@ import {
   getFabAriaAttributes,
   getNavItemAriaAttributes,
   getBottomNavAriaLabel,
+  getBottomNavAriaAttributes,
   getBottomNavSkeletonAriaLabel,
   getCatalogSkeletonAriaLabel,
   formatNotificationsAriaLabel,
@@ -45,6 +46,16 @@ describe("nav-utils", () => {
   describe("getBottomNavAriaLabel", () => {
     it("returns Spanish screen reader label for main bottom navigation", () => {
       expect(getBottomNavAriaLabel()).toBe("Navegación principal de Padel Red");
+    });
+  });
+
+  describe("getBottomNavAriaAttributes", () => {
+    it("returns navigation role and localized screen reader ARIA label", () => {
+      const attrs = getBottomNavAriaAttributes();
+      expect(attrs).toEqual({
+        role: "navigation",
+        "aria-label": "Navegación principal de Padel Red",
+      });
     });
   });
 

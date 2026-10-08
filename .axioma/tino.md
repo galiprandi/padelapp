@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-29 — Extracción de Función Helper Pura `getBottomNavAriaAttributes` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/bottom-nav-aria-attributes-helper)
 - [x] 2026-09-28 — Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLoading` (`src/app/loading.tsx`) (PR #tino/perf/root-loading-layout-helpers)
 - [x] 2026-09-27 — Extracción de Funciones Helper Puras para Atributos ARIA del Esqueleto de Navegación, Clases CSS de Íconos y Etiquetas (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNavSkeleton` y `BottomNav` (PR #tino/ux/bottom-nav-skeleton-aria-and-icon-helpers)
 - [x] 2026-09-26 — Extracción de Funciones Helper Puras de Clases CSS para Contenedor Flex Interior, Pestañas y FAB del Esqueleto de Navegación (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` y `BottomNavSkeleton` (PR #tino/ux/bottom-nav-inner-and-skeleton-helpers)
@@ -68,6 +69,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-29 - Extracción de Función Helper Pura `getBottomNavAriaAttributes`
+**Aprendizaje:** Encapsular la generación del objeto de atributos ARIA con `role="navigation"` y la etiqueta traducida en español argentino (`getBottomNavAriaAttributes`) en `src/components/navigation/nav-utils.ts` desacopla las propiedades de accesibilidad de la renderización en `BottomNav` (`src/components/navigation/bottom-nav.tsx`), permitiendo propagar limpiamente `{...getBottomNavAriaAttributes()}` y facilitando unit tests aislados.
+**Acción:** Reutilizar `getBottomNavAriaAttributes` siempre que se refactorice o extienda el componente de navegación inferior de la aplicación.
+
 ### 2026-09-28 - Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz
 **Aprendizaje:** Encapsular la composición de clases CSS para el contenedor interior (`getRootLoadingInnerContainerClasses`), la sección héroe (`getRootLoadingHeroClasses`, `getRootLoadingHeroTextClasses`), las tarjetas de características (`getRootLoadingCardClasses`) y el bloque CTA (`getRootLoadingCtaClasses`) dentro de `src/lib/root-layout-utils.ts` desacopla la maquetación visual del componente `RootLoading` (`src/app/loading.tsx`), facilitando la reutilización y permitiendo verificar las reglas de estilo mediante unit tests aislados sin acoplamiento con la estructura DOM.
 **Acción:** Reutilizar siempre las utilidades de `src/lib/root-layout-utils.ts` al modificar o extender la vista de carga streaming de la aplicación.
