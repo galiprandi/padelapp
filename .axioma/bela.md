@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-07 — Turn Chat Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-chat-pure-helpers)
 - [x] 2026-10-06 — TurnCard Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-card-pure-helpers-and-refactoring)
 - [x] 2026-10-05 — Calendar Export UI & Error Toast Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-and-error-toast-pure-helpers)
 - [x] 2026-10-04 — OpenToNetworkButton Label & Result ARIA Helpers Extraction & Refactoring (bela/turnos/open-to-network-button-text-helpers)
@@ -71,6 +72,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-07 - Turn Chat Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getChatLoadingText`, `getChatEmptyStateText`, `getChatShortcutsTitleText`, `getChatShortcutsRegionAriaLabel`, `getChatInputPlaceholderText`, `getChatSendButtonAriaLabel`, `getChatBubbleClasses`, and `getChatCounterTextClasses`) into `src/components/turns/turn-chat-utils.ts` decouples localized copy, loading indicators, shortcuts region ARIA labels, input placeholders, send button status labels, message bubble CSS class compositions, and character counter text color classes from React component render trees in `TurnChat` (`src/components/turns/turn-chat.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract real-time chat copy, button labels, and message bubble styling into pure helper functions backed by Vitest unit tests.
+
 ## 2026-10-06 - TurnCard Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getTodayBadgeText`, `getTomorrowBadgeText`, `getTurnCardShareTitle`, `getTurnCardSalvageLabel`, `getTurnCardQuickJoinText`, `getTurnCardStatusBadgeText`, and `getTurnCardContainerClasses`) into `src/components/turns/turn-utils.ts` decouples localized badge text formatting, share dialog titles, quick-join button label states ("Sumando...", "Suplente", "Sumarme"), status badge role labels, and outer container CSS class composition from React component render trees in `TurnCard` (`src/components/turns/turn-card.tsx`). Consuming these helpers ensures strict compliance with Argentine Spanish voseo conventions without exclamation marks while maintaining semantic accessibility attributes (`role="region"`, `aria-label`), focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract card badge labels, share titles, status badge text logic, and container class composition into pure helper utilities backed by Vitest unit tests.
@@ -264,7 +269,7 @@
 **Action:** Always seek to propagate minimal, high-impact social proof triggers in summary cards (e.g. TurnCard) by passing contextual contacts down from layout/shell components.
 
 ## 2026-07-17 - Setup inicial
-**Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries estrictas para evitar conflictos.
+**Learning:** El sistema .ants fue creado con 4 agentes especializados para Padel Red. Cada agente tiene scope boundaries strictly para evitar conflictos.
 **Action:** Respetar las boundaries en cada run. Si una mejora requiere tocar otro scope, registrar en backlog y notificar en el PR.
 
 ## 2026-07-17 - Salvage Cooldown

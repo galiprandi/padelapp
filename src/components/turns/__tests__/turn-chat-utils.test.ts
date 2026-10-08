@@ -9,6 +9,14 @@ import {
   getChatLogAriaLabel,
   getChatInputAriaLabel,
   getChatCharacterCounterAriaLabel,
+  getChatLoadingText,
+  getChatEmptyStateText,
+  getChatShortcutsTitleText,
+  getChatShortcutsRegionAriaLabel,
+  getChatInputPlaceholderText,
+  getChatSendButtonAriaLabel,
+  getChatBubbleClasses,
+  getChatCounterTextClasses,
 } from "../turn-chat-utils";
 
 describe("CHAT_QUICK_SUGGESTIONS", () => {
@@ -163,5 +171,34 @@ describe("getQuickChipAriaLabel & Landmark Helpers", () => {
     expect(getChatInputAriaLabel(false)).toBe("Escribir mensaje para el chat del turno");
     expect(getChatInputAriaLabel(true)).toBe("Enviando mensaje...");
     expect(getChatCharacterCounterAriaLabel(210, 300)).toBe("210 de 300 caracteres (90 restantes)");
+  });
+});
+
+describe("Extracted Turn Chat Pure Helpers", () => {
+  it("returns localized loading and empty state copy", () => {
+    expect(getChatLoadingText()).toBe("Cargando chat del turno...");
+    expect(getChatEmptyStateText()).toBe("No hay mensajes todavía. Escribí el primero para organizar.");
+  });
+
+  it("returns localized shortcuts title and region ARIA label", () => {
+    expect(getChatShortcutsTitleText()).toBe("Atajos:");
+    expect(getChatShortcutsRegionAriaLabel()).toBe("Atajos de mensajes rápidos");
+  });
+
+  it("returns localized input placeholder and send button ARIA label", () => {
+    expect(getChatInputPlaceholderText()).toBe("Escribí un mensaje...");
+    expect(getChatSendButtonAriaLabel(false)).toBe("Enviar mensaje");
+    expect(getChatSendButtonAriaLabel(true)).toBe("Enviando mensaje...");
+  });
+
+  it("returns chat bubble CSS class composition based on sender", () => {
+    expect(getChatBubbleClasses(true)).toContain("bg-primary text-primary-foreground");
+    expect(getChatBubbleClasses(false)).toContain("bg-muted text-foreground border border-border");
+  });
+
+  it("returns counter text CSS classes based on character threshold", () => {
+    expect(getChatCounterTextClasses(200)).toBe("text-muted-foreground");
+    expect(getChatCounterTextClasses(255)).toBe("text-amber-600 dark:text-amber-400");
+    expect(getChatCounterTextClasses(295)).toBe("text-destructive");
   });
 });

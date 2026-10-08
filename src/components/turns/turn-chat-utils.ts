@@ -148,3 +148,67 @@ export function getChatCharacterCounterAriaLabel(currentLength: number, maxLengt
   const remaining = maxLength - currentLength;
   return `${currentLength} de ${maxLength} caracteres (${remaining} restantes)`;
 }
+
+/**
+ * Returns localized loading text for Turn Chat.
+ */
+export function getChatLoadingText(): string {
+  return "Cargando chat del turno...";
+}
+
+/**
+ * Returns localized empty state text when no messages exist in Turn Chat.
+ */
+export function getChatEmptyStateText(): string {
+  return "No hay mensajes todavía. Escribí el primero para organizar.";
+}
+
+/**
+ * Returns localized shortcuts label text.
+ */
+export function getChatShortcutsTitleText(): string {
+  return "Atajos:";
+}
+
+/**
+ * Returns localized ARIA label for the shortcuts bar region landmark.
+ */
+export function getChatShortcutsRegionAriaLabel(): string {
+  return "Atajos de mensajes rápidos";
+}
+
+/**
+ * Returns localized input placeholder text for Turn Chat.
+ */
+export function getChatInputPlaceholderText(): string {
+  return "Escribí un mensaje...";
+}
+
+/**
+ * Returns localized send button ARIA label.
+ */
+export function getChatSendButtonAriaLabel(isSending: boolean): string {
+  return isSending ? "Enviando mensaje..." : "Enviar mensaje";
+}
+
+/**
+ * Returns CSS classes for Turn Chat message bubbles based on sender identity.
+ */
+export function getChatBubbleClasses(isMe: boolean): string {
+  return isMe
+    ? "bg-primary text-primary-foreground rounded-tr-none"
+    : "bg-muted text-foreground border border-border rounded-tl-none";
+}
+
+/**
+ * Returns CSS color classes for the Turn Chat character counter based on length.
+ */
+export function getChatCounterTextClasses(currentLength: number): string {
+  if (currentLength >= 290) {
+    return "text-destructive";
+  }
+  if (currentLength >= 250) {
+    return "text-amber-600 dark:text-amber-400";
+  }
+  return "text-muted-foreground";
+}

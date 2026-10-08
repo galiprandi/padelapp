@@ -21,6 +21,14 @@ import {
   getChatLogAriaLabel,
   getChatInputAriaLabel,
   getChatCharacterCounterAriaLabel,
+  getChatLoadingText,
+  getChatEmptyStateText,
+  getChatShortcutsTitleText,
+  getChatShortcutsRegionAriaLabel,
+  getChatInputPlaceholderText,
+  getChatSendButtonAriaLabel,
+  getChatBubbleClasses,
+  getChatCounterTextClasses,
 } from "./turn-chat-utils";
 import { getSendChatMessageErrorToast } from "./turn-utils";
 
@@ -138,7 +146,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
         <div className="flex flex-col items-center gap-2" role="status" aria-live="polite">
           <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
           <p className="text-xs text-muted-foreground font-medium">
-            Cargando chat del turno...
+            {getChatLoadingText()}
           </p>
         </div>
       </div>
@@ -163,7 +171,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center p-6 my-auto">
             <p className="text-xs text-muted-foreground font-medium italic">
-              No hay mensajes todavía. Escribí el primero para organizar.
+              {getChatEmptyStateText()}
             </p>
           </div>
         ) : (
@@ -204,9 +212,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
                 <div
                   className={cn(
                     "rounded-xl px-3.5 py-2 text-sm leading-relaxed break-words shadow-xs font-medium",
-                    isMe
-                      ? "bg-primary text-primary-foreground rounded-tr-none"
-                      : "bg-muted text-foreground border border-border rounded-tl-none",
+                    getChatBubbleClasses(isMe),
                   )}
                 >
                   {msg.text}
@@ -222,10 +228,10 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
       <div
         className="px-3 py-2 bg-muted/60 border-t border-border flex items-center gap-1.5 overflow-x-auto scrollbar-none"
         role="region"
-        aria-label="Atajos de mensajes rápidos"
+        aria-label={getChatShortcutsRegionAriaLabel()}
       >
         <span className="text-[10px] font-bold text-muted-foreground/70 shrink-0 mr-0.5">
-          Atajos:
+          {getChatShortcutsTitleText()}
         </span>
         {CHAT_QUICK_SUGGESTIONS.map((chip) => (
           <button
@@ -255,7 +261,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
                 setInputText("");
               }
             }}
-            placeholder="Escribí un mensaje..."
+            placeholder={getChatInputPlaceholderText()}
             maxLength={300}
             disabled={isSending}
             aria-busy={isSending}
@@ -268,7 +274,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             disabled={!inputText.trim() || isSending}
             aria-busy={isSending}
             className="h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
-            aria-label={isSending ? "Enviando mensaje..." : "Enviar mensaje"}
+            aria-label={getChatSendButtonAriaLabel(isSending)}
           >
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -282,11 +288,7 @@ export function TurnChat({ turnId, currentUserId }: TurnChatProps) {
             <span
               className={cn(
                 "text-[11px] font-bold",
-                (inputText ?? "").length >= 290
-                  ? "text-destructive"
-                  : (inputText ?? "").length >= 250
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-muted-foreground",
+                getChatCounterTextClasses((inputText ?? "").length),
               )}
               aria-label={getChatCharacterCounterAriaLabel((inputText ?? "").length, 300)}
             >
