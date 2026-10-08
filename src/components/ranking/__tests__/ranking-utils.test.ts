@@ -44,6 +44,9 @@ import {
   getRankingBreakdownErrorText,
   formatRankingPositionText,
   formatMatchRecordText,
+  getPodiumHeadingTitle,
+  getReliablePlayerBadgeTitle,
+  formatRecentFormTitle,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -535,6 +538,20 @@ describe("Ranking Helpers", () => {
     it("formatMatchRecordText formats wins and losses", () => {
       expect(formatMatchRecordText(8, 2)).toBe("8V-2D");
       expect(formatMatchRecordText(0, 0)).toBe("0V-0D");
+    });
+
+    it("getPodiumHeadingTitle returns expected section title", () => {
+      expect(getPodiumHeadingTitle()).toBe("Podio");
+    });
+
+    it("getReliablePlayerBadgeTitle returns expected badge title", () => {
+      expect(getReliablePlayerBadgeTitle()).toBe("Jugador confiable");
+    });
+
+    it("formatRecentFormTitle formats recent match results", () => {
+      expect(formatRecentFormTitle([])).toBe("");
+      expect(formatRecentFormTitle(["W", "L", "W"])).toBe("Forma reciente: G, P, G");
+      expect(formatRecentFormTitle(["W", "W"])).toBe("Forma reciente: G, G");
     });
   });
 });

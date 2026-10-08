@@ -515,3 +515,26 @@ export function formatRankingPositionText(
 export function formatMatchRecordText(wins: number, losses: number): string {
   return `${wins}V-${losses}D`;
 }
+
+/**
+ * Returns heading title text for ranking podium section ("Podio")
+ */
+export function getPodiumHeadingTitle(): string {
+  return "Podio";
+}
+
+/**
+ * Returns badge title text for reliable players with high attendance score
+ */
+export function getReliablePlayerBadgeTitle(): string {
+  return "Jugador confiable";
+}
+
+/**
+ * Formats recent form title string for tooltips and screen readers
+ */
+export function formatRecentFormTitle(recentForm: ("W" | "L")[]): string {
+  if (!recentForm || recentForm.length === 0) return "";
+  const formStr = recentForm.map((r) => (r === "W" ? "G" : "P")).join(", ");
+  return `Forma reciente: ${formStr}`;
+}

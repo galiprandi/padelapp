@@ -7,6 +7,8 @@ import {
   getRankingListItemAriaLabel,
   getWinStreakTitle,
   getDeltaChangeTitle,
+  getReliablePlayerBadgeTitle,
+  formatRecentFormTitle,
 } from "./ranking-utils";
 
 interface RankingListItemProps {
@@ -106,7 +108,7 @@ export function RankingListItem({
               </div>
             )}
             {player.attendanceScore >= 0.9 && (
-              <span title="Jugador confiable">
+              <span title={getReliablePlayerBadgeTitle()}>
                 <ShieldCheck className="h-3 w-3 text-primary" aria-hidden="true" />
               </span>
             )}
@@ -118,9 +120,7 @@ export function RankingListItem({
             {recentForm.length > 0 && (
               <div
                 className="flex gap-0.5"
-                title={`Forma reciente: ${recentForm
-                  .map((r) => (r === "W" ? "G" : "P"))
-                  .join(", ")}`}
+                title={formatRecentFormTitle(recentForm)}
               >
                 {recentForm.map((result, i) => (
                   <div
