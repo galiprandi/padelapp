@@ -3252,3 +3252,79 @@ export function getTopPlayerMatchesText(matchesPlayed: number): string {
 export function getTopPlayerContactsText(networkSize: number): string {
   return `${networkSize} ${networkSize === 1 ? "contacto" : "contactos"}`;
 }
+
+export function getUsersOverviewCardTitle(): string {
+  return "Usuarios";
+}
+
+export function getUsersOverviewCardSubtext(newUsers7d: number): string {
+  return `${newUsers7d} ${newUsers7d === 1 ? "nuevo esta semana" : "nuevos esta semana"}`;
+}
+
+export function getTurnsOverviewCardTitle(): string {
+  return "Turnos";
+}
+
+export function getTurnsOverviewCardSubtext(newTurns7d: number): string {
+  return `${newTurns7d} esta semana`;
+}
+
+export function getMatchesOverviewCardTitle(): string {
+  return "Partidos";
+}
+
+export function getMatchesOverviewCardSubtext(confirmedMatches: number): string {
+  return `${confirmedMatches} ${confirmedMatches === 1 ? "confirmado" : "confirmados"}`;
+}
+
+export function getEnrollmentsOverviewCardTitle(): string {
+  return "Inscripciones";
+}
+
+export function getEnrollmentsOverviewCardSubtext(): string {
+  return "Total a turnos";
+}
+
+export function getNetworkSectionTitle(): string {
+  return "Red de contactos";
+}
+
+export function getNetworkPlayersLabel(): string {
+  return "Jugadores";
+}
+
+export function getNetworkConnectionsLabel(): string {
+  return "Conexiones";
+}
+
+export function getNetworkDensityLabel(): string {
+  return "Densidad";
+}
+
+export function getNetworkAvgConnectionsLabel(): string {
+  return "Promedio de contactos por jugador";
+}
+
+export function getActiveSessionsLabel(): string {
+  return "Sesiones activas";
+}
+
+export function getActive30dLabel(): string {
+  return "Activos (30d)";
+}
+
+export function getActive30dSubtext(): string {
+  return "Con sesión reciente";
+}
+
+export function get30dSummaryUsersLabel(): string {
+  return "Usuarios";
+}
+
+export function get30dSummaryTurnsLabel(): string {
+  return "Turnos";
+}
+
+export function get30dSummaryMatchesLabel(): string {
+  return "Partidos";
+}
