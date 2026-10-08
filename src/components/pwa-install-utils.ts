@@ -36,3 +36,31 @@ export function getPwaInstallLinkAriaLabel(): string {
 export function getDismissBannerAriaLabel(): string {
   return "Cerrar aviso de instalación";
 }
+
+/**
+ * Returns localized header title text for the PWA install banner.
+ */
+export function getPwaBannerTitleText(): string {
+  return "Instalá la App";
+}
+
+/**
+ * Returns localized description subtitle for the PWA install banner.
+ */
+export function getPwaBannerDescriptionText(): string {
+  return "Accedé más rápido desde tu inicio.";
+}
+
+/**
+ * Returns localized ARIA label for the mobile app icon inside the PWA install banner.
+ */
+export function getPwaBannerIconAriaLabel(): string {
+  return "Icono de aplicación móvil";
+}
+
+/**
+ * Returns localized primary action button text for the PWA install banner.
+ */
+export function getPwaBannerInstallButtonText(): string {
+  return "Instalar";
+}
