@@ -9,6 +9,10 @@ import {
   getInstallGuideAriaLabel,
   getPwaInstallLinkAriaLabel,
   getDismissBannerAriaLabel,
+  getPwaBannerTitleText,
+  getPwaBannerDescriptionText,
+  getPwaBannerIconAriaLabel,
+  getPwaBannerInstallButtonText,
 } from "../pwa-install-utils";
 
 describe("pwa-install-utils", () => {
@@ -84,6 +88,24 @@ describe("pwa-install-utils", () => {
 
     it("returns expected banner dismiss button ARIA label", () => {
       expect(getDismissBannerAriaLabel()).toBe("Cerrar aviso de instalación");
+    });
+  });
+
+  describe("UI banner text pure helper formatters", () => {
+    it("returns expected PWA banner header title text", () => {
+      expect(getPwaBannerTitleText()).toBe("Instalá la App");
+    });
+
+    it("returns expected PWA banner description text", () => {
+      expect(getPwaBannerDescriptionText()).toBe("Accedé más rápido desde tu inicio.");
+    });
+
+    it("returns expected PWA banner mobile icon ARIA label", () => {
+      expect(getPwaBannerIconAriaLabel()).toBe("Icono de aplicación móvil");
+    });
+
+    it("returns expected PWA banner primary install button text", () => {
+      expect(getPwaBannerInstallButtonText()).toBe("Instalar");
     });
   });
 });

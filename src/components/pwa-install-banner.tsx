@@ -14,6 +14,10 @@ import {
   getInstallButtonAriaLabel,
   getInstallGuideAriaLabel,
   getDismissBannerAriaLabel,
+  getPwaBannerTitleText,
+  getPwaBannerDescriptionText,
+  getPwaBannerIconAriaLabel,
+  getPwaBannerInstallButtonText,
 } from "./pwa-install-utils";
 
 export {
@@ -113,10 +117,10 @@ export function PwaInstallBanner() {
 
       <div className="flex-1 space-y-0.5">
         <h3 className="text-sm font-semibold text-foreground">
-          Instalá la App
+          {getPwaBannerTitleText()}
         </h3>
         <p className="text-xs text-muted-foreground">
-          Accedé más rápido desde tu inicio.
+          {getPwaBannerDescriptionText()}
         </p>
       </div>
 
@@ -145,7 +149,7 @@ export function PwaInstallBanner() {
           ) : (
             <Download className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
           )}
-          Instalar
+          {getPwaBannerInstallButtonText()}
         </Button>
       ) : (
         <Button
