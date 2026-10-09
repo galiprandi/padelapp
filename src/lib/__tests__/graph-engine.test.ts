@@ -225,6 +225,7 @@ import {
   getNetworkSkeletonAriaLabel,
   getStatsPanelRegionAriaLabel,
   getTopPlayerExpansionAriaLabel,
+  getTopPlayerReciprocityAriaLabel,
   getGraphViewLoadingText,
   getGraphViewEmptyDataProps,
   getGraphViewScopeAriaLabel,
@@ -1794,6 +1795,19 @@ describe("NetworkPageClient pure helpers", () => {
         getGraphViewNodeGroupAriaLabel(1, "3 jugadores · Score prom. 1100", false)
       ).toBe(
         "Filtrar el grafo por Grupo 1: 3 jugadores · Score prom. 1100"
+      );
+    });
+  });
+
+  describe("getTopPlayerReciprocityAriaLabel", () => {
+    it("formats player interaction reciprocity badge accessibility aria label", () => {
+      const label = getTopPlayerReciprocityAriaLabel(
+        "Fernando Belasteguín",
+        "Red recíproca y equilibrada ⚖️",
+        "2 vínculos recíprocos · 4 duplas · 3 rivales"
+      );
+      expect(label).toBe(
+        "Reciprocidad de interacción de Fernando Belasteguín: Red recíproca y equilibrada ⚖️. 2 vínculos recíprocos · 4 duplas · 3 rivales"
       );
     });
   });
