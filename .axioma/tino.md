@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-09-30 — Extracción de Funciones Helper Puras `getNotificationsBadgeHref` y `getNotificationsBadgeLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`) (PR #tino/ux/notifications-badge-link-props-helper)
 - [x] 2026-09-29 — Extracción de Función Helper Pura `getBottomNavAriaAttributes` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/bottom-nav-aria-attributes-helper)
 - [x] 2026-09-28 — Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLoading` (`src/app/loading.tsx`) (PR #tino/perf/root-loading-layout-helpers)
 - [x] 2026-09-27 — Extracción de Funciones Helper Puras para Atributos ARIA del Esqueleto de Navegación, Clases CSS de Íconos y Etiquetas (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNavSkeleton` y `BottomNav` (PR #tino/ux/bottom-nav-skeleton-aria-and-icon-helpers)
@@ -69,6 +70,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-09-30 - Extracción de Funciones Helper Puras `getNotificationsBadgeHref` y `getNotificationsBadgeLinkProps`
+**Aprendizaje:** Encapsular la ruta de destino (`getNotificationsBadgeHref`) y la composición completa de propiedades del elemento de enlace (`getNotificationsBadgeLinkProps` incluyendo `href`, `prefetch: true`, atributos ARIA `role="status"`, `aria-live="polite"` y la etiqueta formateada) en `src/components/navigation/nav-utils.ts` permite que `NotificationsCount` dentro de `NotificationsBadge` binding los atributos mediante un spread directo `<Link {...linkProps}>`. Esto abstrae el comportamiento de accesibilidad y navegación de la renderización del componente React y facilita su prueba unitaria directa.
+**Acción:** Reutilizar `getNotificationsBadgeLinkProps` cuando se renderice la insignia flotante de notificaciones o al extender los enlaces de acciones pendientes.
+
 ### 2026-09-29 - Extracción de Función Helper Pura `getBottomNavAriaAttributes`
 **Aprendizaje:** Encapsular la generación del objeto de atributos ARIA con `role="navigation"` y la etiqueta traducida en español argentino (`getBottomNavAriaAttributes`) en `src/components/navigation/nav-utils.ts` desacopla las propiedades de accesibilidad de la renderización en `BottomNav` (`src/components/navigation/bottom-nav.tsx`), permitiendo propagar limpiamente `{...getBottomNavAriaAttributes()}` y facilitando unit tests aislados.
 **Acción:** Reutilizar `getBottomNavAriaAttributes` siempre que se refactorice o extienda el componente de navegación inferior de la aplicación.

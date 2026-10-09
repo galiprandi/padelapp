@@ -40,6 +40,8 @@ import {
   getNotificationsActionsBadgeAriaLabel,
   getNotificationsEmptyStateProps,
   shouldRenderNotificationsBadge,
+  getNotificationsBadgeHref,
+  getNotificationsBadgeLinkProps,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -491,6 +493,22 @@ describe("nav-utils", () => {
       expect(shouldRenderNotificationsBadge(-1)).toBe(false);
       expect(shouldRenderNotificationsBadge(1)).toBe(true);
       expect(shouldRenderNotificationsBadge(5)).toBe(true);
+    });
+
+    it("getNotificationsBadgeHref returns target notifications path", () => {
+      expect(getNotificationsBadgeHref()).toBe("/notifications");
+    });
+
+    it("getNotificationsBadgeLinkProps returns composed link properties and ARIA attributes", () => {
+      const linkProps = getNotificationsBadgeLinkProps(3);
+      expect(linkProps).toEqual({
+        href: "/notifications",
+        prefetch: true,
+        role: "status",
+        "aria-live": "polite",
+        "aria-label": "3 notificaciones pendientes",
+        className: expect.stringContaining("fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)]"),
+      });
     });
   });
 });

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import { NotificationsBadge } from "../notifications-badge";
 import { getCachedPendingActionsCount } from "@/lib/queries";
+import { getNotificationsBadgeLinkProps } from "../nav-utils";
 
 vi.mock("@/lib/queries", () => ({
   getCachedPendingActionsCount: vi.fn(),
@@ -47,5 +48,15 @@ describe("NotificationsBadge Component", () => {
         ? "1 notificación pendiente"
         : `${countPlural} notificaciones pendientes`;
     expect(pluralLabel).toBe("3 notificaciones pendientes");
+  });
+
+  it("verifies link properties composition for notification badge", () => {
+    const linkProps = getNotificationsBadgeLinkProps(5);
+
+    expect(linkProps.href).toBe("/notifications");
+    expect(linkProps.prefetch).toBe(true);
+    expect(linkProps.role).toBe("status");
+    expect(linkProps["aria-live"]).toBe("polite");
+    expect(linkProps["aria-label"]).toBe("5 notificaciones pendientes");
   });
 });
