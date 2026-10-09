@@ -53,6 +53,8 @@ import {
   getPlayCasualConfirmText,
   getQuickJoinEmptySlotAriaLabel,
   getQuickJoinEmptySlotText,
+  getLeaveSubstituteButtonText,
+  getQuickJoinEmptySlotButtonText,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -164,10 +166,10 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
       {isPending ? (
         <>
           <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-          <span>{getQuickJoinEmptySlotText(true)}</span>
+          <span>{getQuickJoinEmptySlotButtonText(true)}</span>
         </>
       ) : (
-        getQuickJoinEmptySlotText(false)
+        getQuickJoinEmptySlotButtonText(false)
       )}
     </Button>
   );
@@ -339,11 +341,7 @@ export function LeaveSubstituteForm({
         ) : (
           <LogOut className="mr-2 h-4 w-4" />
         )}
-        {isPending
-          ? "Saliendo..."
-          : hasOpenSlot
-            ? "No puedo — salir de suplentes"
-            : "Salir de suplentes"}
+        {getLeaveSubstituteButtonText({ isPending, hasOpenSlot })}
       </Button>
     </form>
   );
