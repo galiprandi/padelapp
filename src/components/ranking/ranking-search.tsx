@@ -64,8 +64,7 @@ export function RankingSearch() {
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
         <Search className={cn(
           "h-4 w-4 transition-colors",
-          query || isPending ? "text-primary" : "text-muted-foreground",
-          isPending && "animate-pulse"
+          query || isPending ? "text-primary" : "text-muted-foreground"
         )} />
       </div>
       <Input
@@ -96,9 +95,7 @@ export function RankingSearch() {
       )}
 
       {isPending && (
-        <div className="absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-all">
-          <div className="h-full bg-primary w-full animate-pulse" />
-        </div>
+        <div className="absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors" />
       )}
     </div>
   );

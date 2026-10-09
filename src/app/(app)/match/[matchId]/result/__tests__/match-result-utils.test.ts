@@ -5,6 +5,7 @@ import {
   extractMatchTeams,
   calculateTeammateSide,
   getMatchResultAriaLabel,
+  getMatchResultSkeletonAriaLabel,
   MatchPlayerInput,
 } from "../match-result-utils";
 
@@ -139,6 +140,12 @@ describe("match-result-utils", () => {
     it("returns closed match ARIA label with score when closed", () => {
       const label = getMatchResultAriaLabel("Pareja A", "Pareja B", true, "6-4, 6-3");
       expect(label).toBe("Resultado confirmado del partido entre Pareja A y Pareja B: 6-4, 6-3");
+    });
+  });
+
+  describe("getMatchResultSkeletonAriaLabel", () => {
+    it("returns expected skeleton ARIA label", () => {
+      expect(getMatchResultSkeletonAriaLabel()).toBe("Cargando formulario de resultado del partido...");
     });
   });
 });

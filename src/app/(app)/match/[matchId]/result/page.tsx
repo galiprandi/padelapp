@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import { getMatchByIdAction } from "@/app/(app)/match/actions";
 import { MatchResultForm } from "./result-form";
+import { getMatchResultSkeletonAriaLabel } from "./match-result-utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
 interface MatchResultPageProps {
@@ -19,39 +21,46 @@ export default function MatchResultPage({ params }: MatchResultPageProps) {
 }
 
 function MatchResultSkeleton() {
+  const ariaLabel = getMatchResultSkeletonAriaLabel();
+
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={ariaLabel}
+      className="flex flex-col gap-6"
+    >
       <div className="space-y-1">
-        <div className="h-7 w-48 bg-muted/60 animate-pulse rounded" />
-        <div className="h-4 w-64 bg-muted/60 animate-pulse rounded" />
+        <Skeleton className="h-7 w-48 rounded-lg" />
+        <Skeleton className="h-4 w-64 rounded-md" />
       </div>
 
       <div className="space-y-6">
         <div className="space-y-3">
-          <div className="h-5 w-16 bg-muted/60 animate-pulse rounded" />
-          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+          <Skeleton className="h-5 w-16 rounded-md" />
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
             <div className="flex justify-between items-center">
               <div className="flex gap-2">
-                <div className="h-8 w-8 bg-muted/60 animate-pulse rounded-full" />
-                <div className="h-8 w-8 bg-muted/60 animate-pulse rounded-full" />
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <Skeleton className="h-8 w-8 rounded-full" />
               </div>
-              <div className="h-10 w-10 bg-muted/60 animate-pulse rounded-lg" />
+              <Skeleton className="h-10 w-10 rounded-lg" />
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-12 bg-muted/60 animate-pulse rounded-lg" />
+                <Skeleton key={i} className="h-12 rounded-lg" />
               ))}
             </div>
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="h-5 w-48 bg-muted/60 animate-pulse rounded" />
-          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+          <Skeleton className="h-5 w-48 rounded-md" />
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
             {[1, 2].map((i) => (
               <div key={i} className="flex justify-between items-center">
-                <div className="h-6 w-32 bg-muted/60 animate-pulse rounded" />
-                <div className="h-8 w-28 bg-muted/60 animate-pulse rounded-lg" />
+                <Skeleton className="h-6 w-32 rounded-md" />
+                <Skeleton className="h-8 w-28 rounded-lg" />
               </div>
             ))}
           </div>

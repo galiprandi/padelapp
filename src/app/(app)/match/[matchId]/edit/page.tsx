@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getMatchByIdAction } from "../../actions";
 import { EditMatchForm } from "./edit-form";
+import { getMatchEditSkeletonAriaLabel } from "./edit-match-utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -21,47 +23,54 @@ export default function EditMatchPage({ params }: EditMatchPageProps) {
 }
 
 function MatchEditSkeleton() {
+  const ariaLabel = getMatchEditSkeletonAriaLabel();
+
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={ariaLabel}
+      className="flex flex-col gap-6"
+    >
       <div className="flex flex-col gap-4">
-        <div className="h-5 w-16 bg-muted/60 animate-pulse rounded" />
+        <Skeleton className="h-5 w-16 rounded" />
         <div className="space-y-2">
-          <div className="h-7 w-48 bg-muted/60 animate-pulse rounded" />
-          <div className="h-4 w-64 bg-muted/60 animate-pulse rounded" />
+          <Skeleton className="h-7 w-48 rounded-lg" />
+          <Skeleton className="h-4 w-64 rounded-md" />
         </div>
       </div>
 
       {/* 1st Card: Ubicación y Tiempo */}
-      <div className="rounded-xl border border-border bg-card p-6 space-y-4">
-        <div className="h-5 w-40 bg-muted/60 animate-pulse rounded" />
+      <div className="rounded-xl border border-border bg-card p-6 space-y-4 shadow-xs">
+        <Skeleton className="h-5 w-40 rounded-md" />
         <div className="space-y-2">
-          <div className="h-4 w-12 bg-muted/60 animate-pulse rounded" />
-          <div className="h-10 w-full bg-muted/60 animate-pulse rounded-lg" />
+          <Skeleton className="h-4 w-12 rounded-md" />
+          <Skeleton className="h-10 w-full rounded-lg" />
         </div>
         <div className="space-y-2">
-          <div className="h-4 w-16 bg-muted/60 animate-pulse rounded" />
-          <div className="h-10 w-full bg-muted/60 animate-pulse rounded-lg" />
+          <Skeleton className="h-4 w-16 rounded-md" />
+          <Skeleton className="h-10 w-full rounded-lg" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <div className="h-4 w-12 bg-muted/60 animate-pulse rounded" />
-            <div className="h-10 w-full bg-muted/60 animate-pulse rounded-lg" />
+            <Skeleton className="h-4 w-12 rounded-md" />
+            <Skeleton className="h-10 w-full rounded-lg" />
           </div>
           <div className="space-y-2">
-            <div className="h-4 w-12 bg-muted/60 animate-pulse rounded" />
-            <div className="h-10 w-full bg-muted/60 animate-pulse rounded-lg" />
+            <Skeleton className="h-4 w-12 rounded-md" />
+            <Skeleton className="h-10 w-full rounded-lg" />
           </div>
         </div>
       </div>
 
       {/* 2nd Card: Formato */}
-      <div className="rounded-xl border border-border bg-card p-6 space-y-4">
-        <div className="h-5 w-24 bg-muted/60 animate-pulse rounded" />
+      <div className="rounded-xl border border-border bg-card p-6 space-y-4 shadow-xs">
+        <Skeleton className="h-5 w-24 rounded-md" />
         <div className="space-y-2">
-          <div className="h-4 w-28 bg-muted/60 animate-pulse rounded" />
+          <Skeleton className="h-4 w-28 rounded-md" />
           <div className="grid grid-cols-2 gap-2">
-            <div className="h-10 bg-muted/60 animate-pulse rounded-lg" />
-            <div className="h-10 bg-muted/60 animate-pulse rounded-lg" />
+            <Skeleton className="h-10 rounded-lg" />
+            <Skeleton className="h-10 rounded-lg" />
           </div>
         </div>
       </div>

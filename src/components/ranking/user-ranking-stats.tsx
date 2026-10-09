@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { TrendingUp, TrendingDown, Minus, Calendar, Award, AlertTriangle, Flame, RefreshCw, Trophy, Sparkles } from "lucide-react";
 import { cn, calculateWinRate } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { getUserRankingBreakdownAction } from "@/app/(app)/ranking/actions";
 import {
@@ -114,9 +115,9 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
           {isPending && (
             <div className="space-y-2 py-1">
-              <div className="h-4 bg-muted-foreground/10 rounded animate-pulse w-full" />
-              <div className="h-4 bg-muted-foreground/10 rounded animate-pulse w-5/6" />
-              <div className="h-4 bg-muted-foreground/10 rounded animate-pulse w-4/5" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-5/6 rounded" />
+              <Skeleton className="h-4 w-4/5 rounded" />
             </div>
           )}
 
