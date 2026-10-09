@@ -295,6 +295,15 @@ export function getBottomNavFabSkeletonClasses(customClassName?: string): string
   );
 }
 
+export interface NotificationsBadgeLinkProps {
+  href: string;
+  prefetch: boolean;
+  role: "status";
+  "aria-live": "polite";
+  "aria-label": string;
+  className: string;
+}
+
 export interface NotificationsEmptyStateProps {
   title: string;
   description: string;
@@ -417,6 +426,29 @@ export function getNavItemClasses(
       : "text-muted-foreground hover:text-foreground",
     customClassName,
   );
+}
+
+/**
+ * Retorna la ruta de destino para el enlace de la insignia/badge flotante de notificaciones.
+ */
+export function getNotificationsBadgeHref(): string {
+  return "/notifications";
+}
+
+/**
+ * Genera el objeto completo de propiedades para el componente Link de la insignia/badge flotante de notificaciones.
+ */
+export function getNotificationsBadgeLinkProps(
+  count: number,
+  customClassName?: string,
+): NotificationsBadgeLinkProps {
+  const ariaAttrs = getNotificationsBadgeAriaAttributes(count);
+  return {
+    href: getNotificationsBadgeHref(),
+    prefetch: true,
+    ...ariaAttrs,
+    className: getFloatingNotificationsBadgeClasses(customClassName),
+  };
 }
 
 /**

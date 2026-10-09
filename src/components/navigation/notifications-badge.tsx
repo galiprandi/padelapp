@@ -2,9 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { getCachedPendingActionsCount } from "@/lib/queries";
 import {
-  getNotificationsBadgeAriaAttributes,
+  getNotificationsBadgeLinkProps,
   formatNotificationsDisplayCount,
-  getFloatingNotificationsBadgeClasses,
   shouldRenderNotificationsBadge,
 } from "./nav-utils";
 
@@ -13,15 +12,10 @@ async function NotificationsCount({ userId }: { userId: string }) {
 
   if (!shouldRenderNotificationsBadge(count)) return null;
 
-  const ariaAttrs = getNotificationsBadgeAriaAttributes(count);
+  const linkProps = getNotificationsBadgeLinkProps(count);
 
   return (
-    <Link
-      href="/notifications"
-      prefetch={true}
-      {...ariaAttrs}
-      className={getFloatingNotificationsBadgeClasses()}
-    >
+    <Link {...linkProps}>
       {formatNotificationsDisplayCount(count)}
     </Link>
   );
