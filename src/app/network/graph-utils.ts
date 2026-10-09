@@ -561,6 +561,14 @@ export function getTopPlayerExpansionAriaLabel(
   return `Potencial de expansión de red de ${playerName}: ${expansionTier}. ${summary}`;
 }
 
+export function getTopPlayerReciprocityAriaLabel(
+  playerName: string,
+  reciprocityTier: string,
+  summary: string
+): string {
+  return `Reciprocidad de interacción de ${playerName}: ${reciprocityTier}. ${summary}`;
+}
+
 export interface NetworkExpansionPotential {
   expansionScore: number;
   unexploredReachCount: number;
