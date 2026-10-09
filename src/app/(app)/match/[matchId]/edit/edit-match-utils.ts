@@ -128,3 +128,10 @@ export function getEditMatchSubmitAriaLabel(isPending: boolean): string {
     ? "Guardando cambios del partido..."
     : "Guardar cambios del partido";
 }
+
+/**
+ * Returns accessible ARIA label for match edit loading skeleton state.
+ */
+export function getMatchEditSkeletonAriaLabel(): string {
+  return "Cargando formulario de edición del partido...";
+}

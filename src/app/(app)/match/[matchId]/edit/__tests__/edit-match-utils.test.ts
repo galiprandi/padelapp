@@ -6,6 +6,7 @@ import {
   getEditMatchSuccessToast,
   getEditMatchErrorToast,
   getEditMatchSubmitAriaLabel,
+  getMatchEditSkeletonAriaLabel,
 } from "../edit-match-utils";
 
 describe("edit-match-utils", () => {
@@ -135,6 +136,14 @@ describe("edit-match-utils", () => {
     it("returns default label when isPending is false", () => {
       expect(getEditMatchSubmitAriaLabel(false)).toBe(
         "Guardar cambios del partido",
+      );
+    });
+  });
+
+  describe("getMatchEditSkeletonAriaLabel", () => {
+    it("returns expected skeleton aria label in Argentine Spanish", () => {
+      expect(getMatchEditSkeletonAriaLabel()).toBe(
+        "Cargando formulario de edición del partido...",
       );
     });
   });

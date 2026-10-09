@@ -129,3 +129,10 @@ export function getMatchResultAriaLabel(
   }
   return `Formulario para cargar marcador del partido entre ${team1Label} y ${team2Label}`;
 }
+
+/**
+ * Returns accessible ARIA label for match result loading skeleton state.
+ */
+export function getMatchResultSkeletonAriaLabel(): string {
+  return "Cargando formulario de resultado del partido...";
+}
