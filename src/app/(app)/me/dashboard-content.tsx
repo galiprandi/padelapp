@@ -45,6 +45,26 @@ import {
   getAgendaItems,
   getHeroActivity,
   formatDashboardWelcomeSubtitle,
+  getCreateFirstTurnAriaLabel,
+  getIncompleteProfileRegionAriaLabel,
+  getInviteFriendsRegionAriaLabel,
+  getDashboardStatsRegionAriaLabel,
+  getRankingStatAriaLabel,
+  getMatchesStatAriaLabel,
+  getWinsStatAriaLabel,
+  getReputationStatAriaLabel,
+  getHeroActivityRegionAriaLabel,
+  formatMissingPlayersText,
+  getPendingActionsRegionAriaLabel,
+  getPendingActionMatchLabel,
+  getPendingAttendanceRegionAriaLabel,
+  formatPlayersWithoutAttendanceText,
+  getAgendaRegionAriaLabel,
+  getSubstituteTurnsRegionAriaLabel,
+  getOpenSlotBadgeText,
+  getRecommendedTurnsRegionAriaLabel,
+  getRecentResultsRegionAriaLabel,
+  formatRecentFormAriaLabel,
   type DashboardTurn,
 } from "./dashboard-utils";
 
@@ -151,7 +171,7 @@ export default async function DashboardContent() {
               href="/turnos/nuevo"
               prefetch={true}
               className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-              aria-label="Creá tu primer turno. Armá un turno, compartilo por WhatsApp y jugá."
+              aria-label={getCreateFirstTurnAriaLabel()}
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -178,7 +198,7 @@ export default async function DashboardContent() {
         !user?.alias && (
           <div
             role="region"
-            aria-label="Perfil de jugador incompleto"
+            aria-label={getIncompleteProfileRegionAriaLabel()}
             className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs"
           >
             <div className="flex items-center gap-3">
@@ -208,7 +228,7 @@ export default async function DashboardContent() {
       {user && user.matchesPlayed < 5 && (
         <div
           role="region"
-          aria-label="Invitar amigos a Padel Red"
+          aria-label={getInviteFriendsRegionAriaLabel()}
           className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
@@ -231,7 +251,7 @@ export default async function DashboardContent() {
             iconOnly
             variant="outline"
             className="shrink-0"
-            aria-label="Invitar amigos a Padel Red"
+            aria-label={getInviteFriendsRegionAriaLabel()}
           />
         </div>
       )}
@@ -240,14 +260,14 @@ export default async function DashboardContent() {
       {user && (
         <div
           role="region"
-          aria-label="Resumen de estadísticas personales"
+          aria-label={getDashboardStatsRegionAriaLabel()}
           className="grid grid-cols-2 sm:grid-cols-4 gap-3"
         >
           <Link
             href="/ranking"
             prefetch={true}
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-            aria-label={`Ranking: posición actual #${user.rankingPosition ?? "sin clasificar"}. Ver clasificación.`}
+            aria-label={getRankingStatAriaLabel(user.rankingPosition)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Ranking
@@ -260,7 +280,7 @@ export default async function DashboardContent() {
             href="/match"
             prefetch={true}
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-            aria-label={`Partidos jugados: ${user.matchesPlayed}. Ver historial de partidos.`}
+            aria-label={getMatchesStatAriaLabel(user.matchesPlayed)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Partidos
@@ -273,7 +293,7 @@ export default async function DashboardContent() {
             href="/ranking"
             prefetch={true}
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-            aria-label={`Victorias: ${user.wins}. Ver tabla de posiciones.`}
+            aria-label={getWinsStatAriaLabel(user.wins)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Victorias
@@ -284,7 +304,7 @@ export default async function DashboardContent() {
             href="/ranking"
             prefetch={true}
             className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-            aria-label={`Reputación de asistencia: ${Math.round((user.attendanceScore ?? 1) * 100)}%. Ver ranking.`}
+            aria-label={getReputationStatAriaLabel(user.attendanceScore)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               Reputación
@@ -314,11 +334,7 @@ export default async function DashboardContent() {
         return (
           <section
             role="region"
-            aria-label={
-              isIncompleteTurn
-                ? "Próximo turno incompleto"
-                : "Próxima actividad inminente"
-            }
+            aria-label={getHeroActivityRegionAriaLabel(isIncompleteTurn)}
             className={cn(
               "space-y-3 rounded-xl border p-4 shadow-xs",
               isIncompleteTurn
@@ -339,7 +355,7 @@ export default async function DashboardContent() {
               </div>
               {isIncompleteTurn && turnData && (
                 <span className="text-xs font-bold text-amber-600">
-                  Faltan {turnData.maxPlayers - turnData.players.length}
+                  {formatMissingPlayersText(turnData.maxPlayers - turnData.players.length)}
                 </span>
               )}
             </div>
@@ -377,7 +393,7 @@ export default async function DashboardContent() {
 
       {/* Pending actions */}
       {pendingActionMatches.length > 0 && (
-        <section role="region" aria-label="Acciones pendientes de partidos" className="space-y-3">
+        <section role="region" aria-label={getPendingActionsRegionAriaLabel()} className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">
@@ -410,9 +426,7 @@ export default async function DashboardContent() {
                       ? `/match/${match.id}/result`
                       : `/match/${match.id}`
                   }
-                  label={
-                    needsScore ? "Cargar resultado" : "Confirmación pendiente"
-                  }
+                  label={getPendingActionMatchLabel(needsScore)}
                   viewerId={viewerId}
                 />
               );
@@ -423,7 +437,7 @@ export default async function DashboardContent() {
 
       {/* Pending attendance marking (creator only) */}
       {pendingAttendance.length > 0 && (
-        <section role="region" aria-label="Marcar asistencia de partidos" className="space-y-3">
+        <section role="region" aria-label={getPendingAttendanceRegionAriaLabel()} className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
               Marcar asistencia
@@ -450,7 +464,7 @@ export default async function DashboardContent() {
                       options={{ day: "2-digit", month: "2-digit" }}
                       locale="es-AR"
                     />{" "}
-                    · {match.playersWithoutAttendance} sin marcar
+                    · {formatPlayersWithoutAttendanceText(match.playersWithoutAttendance)}
                   </span>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -461,7 +475,7 @@ export default async function DashboardContent() {
       )}
 
       {/* My Agenda */}
-      <section role="region" aria-label="Agenda personal de turnos y partidos" className="space-y-3">
+      <section role="region" aria-label={getAgendaRegionAriaLabel()} className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">Mi Agenda</h2>
           <Link
@@ -532,7 +546,7 @@ export default async function DashboardContent() {
 
       {/* My substitute turns */}
       {mySubstituteTurns.length > 0 && (
-        <section role="region" aria-label="Turnos como suplente" className="space-y-3">
+        <section role="region" aria-label={getSubstituteTurnsRegionAriaLabel()} className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">Soy suplente</h2>
             <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold shadow-xs">
@@ -570,7 +584,7 @@ export default async function DashboardContent() {
                   </div>
                   {hasOpenSlot ? (
                     <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0 shadow-xs">
-                      Cupo libre
+                      {getOpenSlotBadgeText()}
                     </span>
                   ) : (
                     <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -584,7 +598,7 @@ export default async function DashboardContent() {
 
       {/* Recommended turns */}
       {recommendedTurns.length > 0 && (
-        <section role="region" aria-label="Turnos disponibles recomendados" className="space-y-3">
+        <section role="region" aria-label={getRecommendedTurnsRegionAriaLabel()} className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">
             Turnos disponibles
           </h2>
@@ -606,7 +620,7 @@ export default async function DashboardContent() {
       )}
 
       {/* Recent results */}
-      <section role="region" aria-label="Últimos resultados de partidos" className="space-y-3">
+      <section role="region" aria-label={getRecentResultsRegionAriaLabel()} className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
@@ -615,9 +629,7 @@ export default async function DashboardContent() {
             {recentForm.length > 0 && (
               <div
                 className="flex gap-1"
-                aria-label={`Forma reciente: ${recentForm
-                  .map((r) => (r === "W" ? "G" : "P"))
-                  .join(", ")}`}
+                aria-label={formatRecentFormAriaLabel(recentForm)}
               >
                 {recentForm.map((result, i) => (
                   <div

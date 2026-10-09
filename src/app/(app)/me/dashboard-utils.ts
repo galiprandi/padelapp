@@ -125,3 +125,85 @@ export function formatDashboardWelcomeSubtitle(isNewUser: boolean): string {
 export function getDashboardSkeletonAriaLabel(): string {
   return "Cargando mi perfil y panel principal de pádel";
 }
+
+export function getCreateFirstTurnAriaLabel(): string {
+  return "Creá tu primer turno. Armá un turno, compartilo por WhatsApp y jugá.";
+}
+
+export function getIncompleteProfileRegionAriaLabel(): string {
+  return "Perfil de jugador incompleto";
+}
+
+export function getInviteFriendsRegionAriaLabel(): string {
+  return "Invitar amigos a Padel Red";
+}
+
+export function getDashboardStatsRegionAriaLabel(): string {
+  return "Resumen de estadísticas personales";
+}
+
+export function getRankingStatAriaLabel(rankingPosition?: number | null): string {
+  return `Ranking: posición actual #${rankingPosition ?? "sin clasificar"}. Ver clasificación.`;
+}
+
+export function getMatchesStatAriaLabel(matchesPlayed: number): string {
+  return `Partidos jugados: ${matchesPlayed}. Ver historial de partidos.`;
+}
+
+export function getWinsStatAriaLabel(wins: number): string {
+  return `Victorias: ${wins}. Ver tabla de posiciones.`;
+}
+
+export function getReputationStatAriaLabel(attendanceScore?: number | null): string {
+  const percentage = Math.round((attendanceScore ?? 1) * 100);
+  return `Reputación de asistencia: ${percentage}%. Ver ranking.`;
+}
+
+export function getHeroActivityRegionAriaLabel(isIncompleteTurn: boolean): string {
+  return isIncompleteTurn ? "Próximo turno incompleto" : "Próxima actividad inminente";
+}
+
+export function formatMissingPlayersText(missingCount: number): string {
+  return `Faltan ${missingCount}`;
+}
+
+export function getPendingActionsRegionAriaLabel(): string {
+  return "Acciones pendientes de partidos";
+}
+
+export function getPendingActionMatchLabel(needsScore: boolean): string {
+  return needsScore ? "Cargar resultado" : "Confirmación pendiente";
+}
+
+export function getPendingAttendanceRegionAriaLabel(): string {
+  return "Marcar asistencia de partidos";
+}
+
+export function formatPlayersWithoutAttendanceText(count: number): string {
+  return `${count} sin marcar`;
+}
+
+export function getAgendaRegionAriaLabel(): string {
+  return "Agenda personal de turnos y partidos";
+}
+
+export function getSubstituteTurnsRegionAriaLabel(): string {
+  return "Turnos como suplente";
+}
+
+export function getOpenSlotBadgeText(): string {
+  return "Cupo libre";
+}
+
+export function getRecommendedTurnsRegionAriaLabel(): string {
+  return "Turnos disponibles recomendados";
+}
+
+export function getRecentResultsRegionAriaLabel(): string {
+  return "Últimos resultados de partidos";
+}
+
+export function formatRecentFormAriaLabel(results: ("W" | "L")[]): string {
+  const formatted = results.map((r) => (r === "W" ? "G" : "P")).join(", ");
+  return `Forma reciente: ${formatted}`;
+}

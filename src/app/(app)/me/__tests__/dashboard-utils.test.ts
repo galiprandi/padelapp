@@ -6,6 +6,26 @@ import {
   getHeroActivity,
   formatDashboardWelcomeSubtitle,
   getDashboardSkeletonAriaLabel,
+  getCreateFirstTurnAriaLabel,
+  getIncompleteProfileRegionAriaLabel,
+  getInviteFriendsRegionAriaLabel,
+  getDashboardStatsRegionAriaLabel,
+  getRankingStatAriaLabel,
+  getMatchesStatAriaLabel,
+  getWinsStatAriaLabel,
+  getReputationStatAriaLabel,
+  getHeroActivityRegionAriaLabel,
+  formatMissingPlayersText,
+  getPendingActionsRegionAriaLabel,
+  getPendingActionMatchLabel,
+  getPendingAttendanceRegionAriaLabel,
+  formatPlayersWithoutAttendanceText,
+  getAgendaRegionAriaLabel,
+  getSubstituteTurnsRegionAriaLabel,
+  getOpenSlotBadgeText,
+  getRecommendedTurnsRegionAriaLabel,
+  getRecentResultsRegionAriaLabel,
+  formatRecentFormAriaLabel,
   type DashboardMatch,
   type DashboardTurn,
 } from "../dashboard-utils";
@@ -195,6 +215,94 @@ describe("dashboard-utils", () => {
   describe("getDashboardSkeletonAriaLabel", () => {
     it("returns dashboard loading skeleton ARIA label string", () => {
       expect(getDashboardSkeletonAriaLabel()).toBe("Cargando mi perfil y panel principal de pádel");
+    });
+  });
+
+  describe("extracted pure helper functions", () => {
+    it("returns create first turn aria label", () => {
+      expect(getCreateFirstTurnAriaLabel()).toBe(
+        "Creá tu primer turno. Armá un turno, compartilo por WhatsApp y jugá.",
+      );
+    });
+
+    it("returns incomplete profile region aria label", () => {
+      expect(getIncompleteProfileRegionAriaLabel()).toBe("Perfil de jugador incompleto");
+    });
+
+    it("returns invite friends region aria label", () => {
+      expect(getInviteFriendsRegionAriaLabel()).toBe("Invitar amigos a Padel Red");
+    });
+
+    it("returns dashboard stats region aria label", () => {
+      expect(getDashboardStatsRegionAriaLabel()).toBe("Resumen de estadísticas personales");
+    });
+
+    it("formats ranking stat aria label correctly", () => {
+      expect(getRankingStatAriaLabel(5)).toBe("Ranking: posición actual #5. Ver clasificación.");
+      expect(getRankingStatAriaLabel(null)).toBe("Ranking: posición actual #sin clasificar. Ver clasificación.");
+    });
+
+    it("formats matches stat aria label correctly", () => {
+      expect(getMatchesStatAriaLabel(12)).toBe("Partidos jugados: 12. Ver historial de partidos.");
+    });
+
+    it("formats wins stat aria label correctly", () => {
+      expect(getWinsStatAriaLabel(8)).toBe("Victorias: 8. Ver tabla de posiciones.");
+    });
+
+    it("formats reputation stat aria label correctly", () => {
+      expect(getReputationStatAriaLabel(0.95)).toBe("Reputación de asistencia: 95%. Ver ranking.");
+      expect(getReputationStatAriaLabel(null)).toBe("Reputación de asistencia: 100%. Ver ranking.");
+    });
+
+    it("formats hero activity region aria label correctly", () => {
+      expect(getHeroActivityRegionAriaLabel(true)).toBe("Próximo turno incompleto");
+      expect(getHeroActivityRegionAriaLabel(false)).toBe("Próxima actividad inminente");
+    });
+
+    it("formats missing players text correctly", () => {
+      expect(formatMissingPlayersText(2)).toBe("Faltan 2");
+    });
+
+    it("returns pending actions region aria label", () => {
+      expect(getPendingActionsRegionAriaLabel()).toBe("Acciones pendientes de partidos");
+    });
+
+    it("returns pending action match label", () => {
+      expect(getPendingActionMatchLabel(true)).toBe("Cargar resultado");
+      expect(getPendingActionMatchLabel(false)).toBe("Confirmación pendiente");
+    });
+
+    it("returns pending attendance region aria label", () => {
+      expect(getPendingAttendanceRegionAriaLabel()).toBe("Marcar asistencia de partidos");
+    });
+
+    it("formats players without attendance text correctly", () => {
+      expect(formatPlayersWithoutAttendanceText(3)).toBe("3 sin marcar");
+    });
+
+    it("returns agenda region aria label", () => {
+      expect(getAgendaRegionAriaLabel()).toBe("Agenda personal de turnos y partidos");
+    });
+
+    it("returns substitute turns region aria label", () => {
+      expect(getSubstituteTurnsRegionAriaLabel()).toBe("Turnos como suplente");
+    });
+
+    it("returns open slot badge text", () => {
+      expect(getOpenSlotBadgeText()).toBe("Cupo libre");
+    });
+
+    it("returns recommended turns region aria label", () => {
+      expect(getRecommendedTurnsRegionAriaLabel()).toBe("Turnos disponibles recomendados");
+    });
+
+    it("returns recent results region aria label", () => {
+      expect(getRecentResultsRegionAriaLabel()).toBe("Últimos resultados de partidos");
+    });
+
+    it("formats recent form aria label correctly", () => {
+      expect(formatRecentFormAriaLabel(["W", "L", "W"])).toBe("Forma reciente: G, P, G");
     });
   });
 });
