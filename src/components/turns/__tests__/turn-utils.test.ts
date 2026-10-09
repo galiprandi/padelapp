@@ -169,6 +169,8 @@ import {
   getTurnCardQuickJoinText,
   getTurnCardStatusBadgeText,
   getTurnCardContainerClasses,
+  getLeaveSubstituteButtonText,
+  getQuickJoinEmptySlotButtonText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -884,6 +886,22 @@ describe("TurnCard pure helpers batch", () => {
 
     const pendingClasses = getTurnCardContainerClasses({ isPending: true });
     expect(pendingClasses).toContain("opacity-70");
+  });
+});
+
+describe("getLeaveSubstituteButtonText & getQuickJoinEmptySlotButtonText", () => {
+  it("formats getLeaveSubstituteButtonText across pending, open slots, and default states", () => {
+    expect(getLeaveSubstituteButtonText({ isPending: true })).toBe("Saliendo...");
+    expect(getLeaveSubstituteButtonText({ isPending: true, hasOpenSlot: true })).toBe("Saliendo...");
+    expect(getLeaveSubstituteButtonText({ isPending: false, hasOpenSlot: true })).toBe("No puedo — salir de suplentes");
+    expect(getLeaveSubstituteButtonText({ isPending: false, hasOpenSlot: false })).toBe("Salir de suplentes");
+    expect(getLeaveSubstituteButtonText()).toBe("Salir de suplentes");
+  });
+
+  it("formats getQuickJoinEmptySlotButtonText across pending and idle states", () => {
+    expect(getQuickJoinEmptySlotButtonText(true)).toBe("Sumando...");
+    expect(getQuickJoinEmptySlotButtonText(false)).toBe("Sumarme");
+    expect(getQuickJoinEmptySlotButtonText()).toBe("Sumarme");
   });
 });
 

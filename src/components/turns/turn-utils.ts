@@ -2069,3 +2069,27 @@ export function getTurnCardContainerClasses({
     isPending && "opacity-70 pointer-events-none"
   );
 }
+
+export interface LeaveSubstituteButtonTextOptions {
+  isPending?: boolean;
+  hasOpenSlot?: boolean;
+}
+
+/**
+ * Format button label text for leaving substitute list depending on pending or open slot states.
+ */
+export function getLeaveSubstituteButtonText({
+  isPending = false,
+  hasOpenSlot = false,
+}: LeaveSubstituteButtonTextOptions = {}): string {
+  if (isPending) return "Saliendo...";
+  if (hasOpenSlot) return "No puedo — salir de suplentes";
+  return "Salir de suplentes";
+}
+
+/**
+ * Format button label text for quick joining an empty slot depending on pending state.
+ */
+export function getQuickJoinEmptySlotButtonText(isPending: boolean = false): string {
+  return isPending ? "Sumando..." : "Sumarme";
+}
