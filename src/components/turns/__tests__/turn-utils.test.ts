@@ -171,6 +171,16 @@ import {
   getTurnCardContainerClasses,
   getLeaveSubstituteButtonText,
   getQuickJoinEmptySlotButtonText,
+  getCancelTurnButtonText,
+  getCancelTurnConfirmButtonText,
+  getStartMatchButtonText,
+  getJoinTurnButtonText,
+  getJoinSubstituteButtonText,
+  getTakeOpenSlotButtonText,
+  getScheduleNextTurnButtonText,
+  getPlayCasualButtonText,
+  getPlayCasualCancelButtonText,
+  getPlayCasualConfirmButtonText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -902,6 +912,53 @@ describe("getLeaveSubstituteButtonText & getQuickJoinEmptySlotButtonText", () =>
     expect(getQuickJoinEmptySlotButtonText(true)).toBe("Sumando...");
     expect(getQuickJoinEmptySlotButtonText(false)).toBe("Sumarme");
     expect(getQuickJoinEmptySlotButtonText()).toBe("Sumarme");
+  });
+});
+
+describe("Turn actions button text pure helpers", () => {
+  it("formats getCancelTurnButtonText and getCancelTurnConfirmButtonText", () => {
+    expect(getCancelTurnButtonText()).toBe("Eliminar");
+    expect(getCancelTurnConfirmButtonText(false)).toBe("Confirmar");
+    expect(getCancelTurnConfirmButtonText(true)).toBe("Eliminando...");
+    expect(getCancelTurnConfirmButtonText()).toBe("Confirmar");
+  });
+
+  it("formats getStartMatchButtonText across idle and pending states", () => {
+    expect(getStartMatchButtonText(false)).toBe("Iniciar partido");
+    expect(getStartMatchButtonText(true)).toBe("Iniciando...");
+    expect(getStartMatchButtonText()).toBe("Iniciar partido");
+  });
+
+  it("formats getJoinTurnButtonText across idle and pending states", () => {
+    expect(getJoinTurnButtonText(false)).toBe("Sumarme ahora");
+    expect(getJoinTurnButtonText(true)).toBe("Sumando...");
+    expect(getJoinTurnButtonText()).toBe("Sumarme ahora");
+  });
+
+  it("formats getJoinSubstituteButtonText across idle and pending states", () => {
+    expect(getJoinSubstituteButtonText(false)).toBe("Sumarme como suplente");
+    expect(getJoinSubstituteButtonText(true)).toBe("Sumando...");
+    expect(getJoinSubstituteButtonText()).toBe("Sumarme como suplente");
+  });
+
+  it("formats getTakeOpenSlotButtonText across idle and pending states", () => {
+    expect(getTakeOpenSlotButtonText(false)).toBe("Ocupar cupo");
+    expect(getTakeOpenSlotButtonText(true)).toBe("Ocupando...");
+    expect(getTakeOpenSlotButtonText()).toBe("Ocupar cupo");
+  });
+
+  it("formats getScheduleNextTurnButtonText across idle and pending states", () => {
+    expect(getScheduleNextTurnButtonText(false)).toBe("Programar próximo turno");
+    expect(getScheduleNextTurnButtonText(true)).toBe("Programando...");
+    expect(getScheduleNextTurnButtonText()).toBe("Programar próximo turno");
+  });
+
+  it("formats getPlayCasualButtonText, getPlayCasualCancelButtonText, and getPlayCasualConfirmButtonText", () => {
+    expect(getPlayCasualButtonText()).toBe("Jugar igual");
+    expect(getPlayCasualCancelButtonText()).toBe("Cancelar");
+    expect(getPlayCasualConfirmButtonText(false)).toBe("Confirmar");
+    expect(getPlayCasualConfirmButtonText(true)).toBe("Marcando...");
+    expect(getPlayCasualConfirmButtonText()).toBe("Confirmar");
   });
 });
 

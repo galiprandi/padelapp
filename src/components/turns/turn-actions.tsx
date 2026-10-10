@@ -55,6 +55,16 @@ import {
   getQuickJoinEmptySlotText,
   getLeaveSubstituteButtonText,
   getQuickJoinEmptySlotButtonText,
+  getCancelTurnButtonText,
+  getCancelTurnConfirmButtonText,
+  getStartMatchButtonText,
+  getJoinTurnButtonText,
+  getJoinSubstituteButtonText,
+  getTakeOpenSlotButtonText,
+  getScheduleNextTurnButtonText,
+  getPlayCasualButtonText,
+  getPlayCasualCancelButtonText,
+  getPlayCasualConfirmButtonText,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -86,7 +96,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         aria-label={getCancelTurnAriaLabel({})}
       >
         <Trash2 className="mr-2 h-4 w-4" />
-        Eliminar
+        {getCancelTurnButtonText()}
       </Button>
     );
   }
@@ -128,7 +138,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         ) : (
           <Trash2 className="mr-1.5 h-3.5 w-3.5" />
         )}
-        {isPending ? "Eliminando..." : "Confirmar"}
+        {getCancelTurnConfirmButtonText(isPending)}
       </Button>
     </div>
   );
@@ -207,7 +217,7 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
         ) : (
           <Play className="mr-2 h-5 w-5 fill-current" />
         )}
-        {isPending ? "Iniciando..." : "Iniciar partido"}
+        {getStartMatchButtonText(isPending)}
       </Button>
     </form>
   );
@@ -257,7 +267,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
         ) : (
           <UserPlus className="mr-2 h-5 w-5" />
         )}
-        {isPending ? "Sumando..." : "Sumarme ahora"}
+        {getJoinTurnButtonText(isPending)}
       </Button>
     </form>
   );
@@ -296,7 +306,7 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         ) : (
           <UserPlus className="mr-2 h-5 w-5" />
         )}
-        {isPending ? "Sumando..." : "Sumarme como suplente"}
+        {getJoinSubstituteButtonText(isPending)}
       </Button>
     </form>
   );
@@ -379,7 +389,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
         ) : (
           <Play className="mr-2 h-5 w-5 fill-current" />
         )}
-        {isPending ? "Ocupando..." : "Ocupar cupo"}
+        {getTakeOpenSlotButtonText(isPending)}
       </Button>
     </form>
   );
@@ -418,7 +428,7 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
         ) : (
           <CalendarPlus className="mr-2 h-4 w-4" />
         )}
-        {isPending ? "Programando..." : "Programar próximo turno"}
+        {getScheduleNextTurnButtonText(isPending)}
       </Button>
     </form>
   );
@@ -452,7 +462,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         aria-label={getPlayCasualAriaLabel({})}
       >
         <Play className="mr-2 h-5 w-5" />
-        Jugar igual
+        {getPlayCasualButtonText()}
       </Button>
     );
   }
@@ -484,7 +494,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           aria-label={getPlayCasualDismissAriaLabel()}
         >
           <X className="mr-2 h-4 w-4" />
-          Cancelar
+          {getPlayCasualCancelButtonText()}
         </Button>
         <Button
           type="button"
@@ -500,7 +510,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           ) : (
             <Play className="mr-2 h-4 w-4 fill-current" />
           )}
-          {isPending ? "Marcando..." : "Confirmar"}
+          {getPlayCasualConfirmButtonText(isPending)}
         </Button>
       </div>
     </div>

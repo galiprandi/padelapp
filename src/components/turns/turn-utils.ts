@@ -2093,3 +2093,73 @@ export function getLeaveSubstituteButtonText({
 export function getQuickJoinEmptySlotButtonText(isPending: boolean = false): string {
   return isPending ? "Sumando..." : "Sumarme";
 }
+
+/**
+ * Format button label text for initial cancel turn action trigger.
+ */
+export function getCancelTurnButtonText(): string {
+  return "Eliminar";
+}
+
+/**
+ * Format button label text for confirming cancel turn action depending on pending state.
+ */
+export function getCancelTurnConfirmButtonText(isPending: boolean = false): string {
+  return isPending ? "Eliminando..." : "Confirmar";
+}
+
+/**
+ * Format button label text for start match action trigger depending on pending state.
+ */
+export function getStartMatchButtonText(isPending: boolean = false): string {
+  return isPending ? "Iniciando..." : "Iniciar partido";
+}
+
+/**
+ * Format button label text for join turn action trigger depending on pending state.
+ */
+export function getJoinTurnButtonText(isPending: boolean = false): string {
+  return isPending ? "Sumando..." : "Sumarme ahora";
+}
+
+/**
+ * Format button label text for join substitute action trigger depending on pending state.
+ */
+export function getJoinSubstituteButtonText(isPending: boolean = false): string {
+  return isPending ? "Sumando..." : "Sumarme como suplente";
+}
+
+/**
+ * Format button label text for take open slot action trigger depending on pending state.
+ */
+export function getTakeOpenSlotButtonText(isPending: boolean = false): string {
+  return isPending ? "Ocupando..." : "Ocupar cupo";
+}
+
+/**
+ * Format button label text for schedule next turn action trigger depending on pending state.
+ */
+export function getScheduleNextTurnButtonText(isPending: boolean = false): string {
+  return isPending ? "Programando..." : "Programar próximo turno";
+}
+
+/**
+ * Format button label text for initial play casual action trigger.
+ */
+export function getPlayCasualButtonText(): string {
+  return "Jugar igual";
+}
+
+/**
+ * Format button label text for canceling play casual confirmation.
+ */
+export function getPlayCasualCancelButtonText(): string {
+  return "Cancelar";
+}
+
+/**
+ * Format button label text for confirming play casual action depending on pending state.
+ */
+export function getPlayCasualConfirmButtonText(isPending: boolean = false): string {
+  return isPending ? "Marcando..." : "Confirmar";
+}
