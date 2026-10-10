@@ -9,7 +9,9 @@ import {
   getInstallSkeletonAriaLabel,
   getInstallPageTitle,
   getInstallPageDescription,
+  getInstallPageLogoAltText,
   getInstallPageBackAriaLabel,
+  getInstallPageBackLinkClasses,
   getInstallActionAriaLabel,
   getInstallButtonLabel,
   getInstallButtonClasses,
@@ -84,7 +86,10 @@ describe("PWA install guide and platform detection logic", () => {
     expect(getInstallSkeletonAriaLabel()).toBe("Cargando guía de instalación de Padel Red");
     expect(getInstallPageTitle()).toBe("Instalar Padel Red");
     expect(getInstallPageDescription()).toBe("Agregá la app a tu pantalla de inicio para acceder más rápido.");
+    expect(getInstallPageLogoAltText()).toBe("Padel Red");
     expect(getInstallPageBackAriaLabel()).toBe("Volver a la página principal");
+    expect(getInstallPageBackLinkClasses()).toContain("h-10 w-full rounded-lg text-sm font-semibold");
+    expect(getInstallPageBackLinkClasses()).toContain("focus-visible:ring-2");
   });
 
   it("returns correct install button action ARIA labels and button state text", () => {

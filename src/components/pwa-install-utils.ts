@@ -33,6 +33,13 @@ export function getPwaInstallLinkAriaLabel(): string {
   return "Ver instrucciones de instalación de Padel Red";
 }
 
+/**
+ * Returns standardized CSS class string for the sidebar/footer InstallLinkButton.
+ */
+export function getInstallLinkClasses(): string {
+  return "h-10 w-full rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
 export function getDismissBannerAriaLabel(): string {
   return "Cerrar aviso de instalación";
 }
