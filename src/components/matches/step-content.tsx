@@ -23,6 +23,16 @@ import {
   isRecentClubSelected,
   getRecentClubRadioAriaLabel,
   getNewMatchPrimaryButtonText,
+  getStepHeadingTitle,
+  getStepHeadingDescription,
+  getPairingSuggestionTitle,
+  getPairingSuggestionDescription,
+  getRecordScoreNowLabel,
+  getRecordScoreNowDescription,
+  getRankingToggleLabel,
+  getRankingToggleDescription,
+  getRecentClubsHeaderLabel,
+  getScoreSelectorGroupLabel,
 } from "@/app/(app)/match/new/new-match-utils";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
@@ -99,7 +109,7 @@ function ScoreSelector({
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5 min-w-0">
           <span id={groupLabelId} className="text-xs text-muted-foreground">
-            {teamLabel}: {players}
+            {getScoreSelectorGroupLabel(teamLabel, players)}
           </span>
         </div>
         <div
@@ -129,6 +139,7 @@ function ScoreSelector({
               type="button"
               role="radio"
               aria-checked={isSelected}
+              tabIndex={isSelected ? 0 : -1}
               aria-label={getScoreOptionAriaLabel(num)}
               onClick={() => onValueChange(num)}
               className={cn(
@@ -203,7 +214,7 @@ function RecentClubs({
     <div className="space-y-2">
       <Label id="recent-clubs-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
         <MapPin className="h-3 w-3" />
-        Clubes recientes
+        {getRecentClubsHeaderLabel()}
       </Label>
       <div
         role="radiogroup"
@@ -302,20 +313,19 @@ export function StepContent({
       >
         <div className="space-y-6">
           <div>
-            <h1 className="text-xl font-bold text-foreground">Nuevo Partido</h1>
+            <h1 className="text-xl font-bold text-foreground">{getStepHeadingTitle(0)}</h1>
             <p className="text-sm text-muted-foreground">
-              Armá tu partido seleccionando las parejas. Tocá un jugador para
-              gestionarlo. Usá el botón de intercambio para cambiar derecha/revés.
+              {getStepHeadingDescription(0)}
             </p>
           </div>
 
           <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs">
             <div className="space-y-1">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                <span>Sugerencia de Parejas 🧠</span>
+                <span>{getPairingSuggestionTitle()}</span>
               </h3>
               <p className="text-xs text-muted-foreground">
-                ¿Querés nivelar el partido? El algoritmo analiza el historial y lado preferido de juego de los 4 jugadores para balancear las parejas automáticamente.
+                {getPairingSuggestionDescription()}
               </p>
             </div>
             <button
@@ -440,11 +450,10 @@ export function StepContent({
         <div className="space-y-6">
           <div>
             <h1 className="text-xl font-bold text-foreground">
-              Tipo de Partido
+              {getStepHeadingTitle(1)}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Elegí el formato del partido y configurá cuántos sets se jugarán.
-              Activá el ranking si querés que cuente para las posiciones.
+              {getStepHeadingDescription(1)}
             </p>
           </div>
 
@@ -452,11 +461,10 @@ export function StepContent({
             <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
               <div className="space-y-1">
                 <Label htmlFor="record-score" className="text-sm font-semibold">
-                  Cargar resultado ahora
+                  {getRecordScoreNowLabel()}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Si el partido ya terminó, cargá el marcador para cerrarlo
-                  inmediatamente.
+                  {getRecordScoreNowDescription()}
                 </p>
               </div>
               <Switch
@@ -541,11 +549,10 @@ export function StepContent({
                   htmlFor="counts-ranking"
                   className="text-sm font-semibold"
                 >
-                  Ranking competitivo
+                  {getRankingToggleLabel()}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Si está activo, el resultado impactará en tu posición y delta
-                  del ranking global.
+                  {getRankingToggleDescription()}
                 </p>
               </div>
               <Switch
@@ -578,11 +585,10 @@ export function StepContent({
         <div className="space-y-6">
           <div>
             <h1 className="text-xl font-bold text-foreground">
-              Detalles del Partido
+              {getStepHeadingTitle(2)}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Agregá información opcional como el club y la cancha. Estos datos
-              ayudan a organizar mejor el partido.
+              {getStepHeadingDescription(2)}
             </p>
           </div>
 
@@ -653,9 +659,9 @@ export function StepContent({
     >
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Marcador Final</h1>
+          <h1 className="text-xl font-bold text-foreground">{getStepHeadingTitle(3)}</h1>
           <p className="text-sm text-muted-foreground">
-            Completá los sets jugados para finalizar el registro del partido.
+            {getStepHeadingDescription(3)}
           </p>
         </div>
 
