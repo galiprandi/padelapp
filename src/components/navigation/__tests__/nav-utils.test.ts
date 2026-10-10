@@ -42,6 +42,8 @@ import {
   shouldRenderNotificationsBadge,
   getNotificationsBadgeHref,
   getNotificationsBadgeLinkProps,
+  getNavItemLinkProps,
+  getFabLinkProps,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -57,6 +59,47 @@ describe("nav-utils", () => {
       expect(attrs).toEqual({
         role: "navigation",
         "aria-label": "Navegación principal de Padel Red",
+      });
+    });
+  });
+
+  describe("getNavItemLinkProps", () => {
+    it("returns composed link properties for active navigation item", () => {
+      const navItem = { href: "/turnos", icon: expect.anything(), label: "Turnos" };
+      const props = getNavItemLinkProps(navItem, true);
+
+      expect(props).toEqual({
+        href: "/turnos",
+        prefetch: true,
+        className: expect.stringContaining("text-primary"),
+        "aria-label": "Turnos",
+        "aria-current": "page",
+      });
+    });
+
+    it("returns composed link properties for inactive navigation item", () => {
+      const navItem = { href: "/ranking", icon: expect.anything(), label: "Ranking" };
+      const props = getNavItemLinkProps(navItem, false);
+
+      expect(props).toEqual({
+        href: "/ranking",
+        prefetch: true,
+        className: expect.stringContaining("text-muted-foreground"),
+        "aria-label": "Ranking",
+        "aria-current": undefined,
+      });
+    });
+  });
+
+  describe("getFabLinkProps", () => {
+    it("returns composed link properties for FAB action button", () => {
+      const props = getFabLinkProps();
+
+      expect(props).toEqual({
+        href: "/match/new",
+        prefetch: true,
+        className: expect.stringContaining("bg-primary"),
+        "aria-label": "Crear partido",
       });
     });
   });

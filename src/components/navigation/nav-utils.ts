@@ -295,6 +295,21 @@ export function getBottomNavFabSkeletonClasses(customClassName?: string): string
   );
 }
 
+export interface NavItemLinkProps {
+  href: string;
+  prefetch: boolean;
+  className: string;
+  "aria-label": string;
+  "aria-current"?: "page";
+}
+
+export interface FabLinkProps {
+  href: string;
+  prefetch: boolean;
+  className: string;
+  "aria-label": string;
+}
+
 export interface NotificationsBadgeLinkProps {
   href: string;
   prefetch: boolean;
@@ -426,6 +441,39 @@ export function getNavItemClasses(
       : "text-muted-foreground hover:text-foreground",
     customClassName,
   );
+}
+
+/**
+ * Genera el objeto completo de propiedades para el enlace (<Link>) de un ítem de navegación principal.
+ */
+export function getNavItemLinkProps(
+  item: NavItem,
+  isActive: boolean,
+  customClassName?: string,
+): NavItemLinkProps {
+  const ariaAttrs = getNavItemAriaAttributes(item, isActive);
+  return {
+    href: item.href,
+    prefetch: true,
+    className: getNavItemClasses(isActive, customClassName),
+    ...ariaAttrs,
+  };
+}
+
+/**
+ * Genera el objeto completo de propiedades para el enlace (<Link>) del botón de acción flotante central (FAB).
+ */
+export function getFabLinkProps(
+  customClassName?: string,
+): FabLinkProps {
+  const fabConfig = getFabItemConfig();
+  const ariaAttrs = getFabAriaAttributes();
+  return {
+    href: fabConfig.href,
+    prefetch: true,
+    className: getFabClasses(customClassName),
+    ...ariaAttrs,
+  };
 }
 
 /**

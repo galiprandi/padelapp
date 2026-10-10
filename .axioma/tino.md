@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-01 — Extracción de Funciones Helper Puras `getNavItemLinkProps` y `getFabLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/nav-item-and-fab-link-props-helpers)
 - [x] 2026-09-30 — Extracción de Funciones Helper Puras `getNotificationsBadgeHref` y `getNotificationsBadgeLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`) (PR #tino/ux/notifications-badge-link-props-helper)
 - [x] 2026-09-29 — Extracción de Función Helper Pura `getBottomNavAriaAttributes` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/bottom-nav-aria-attributes-helper)
 - [x] 2026-09-28 — Extracción de Funciones Helper Puras de Clases CSS para el Esqueleto de Carga Raíz (`src/lib/root-layout-utils.ts`) y Refactorización de `RootLoading` (`src/app/loading.tsx`) (PR #tino/perf/root-loading-layout-helpers)
@@ -70,6 +71,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-01 - Extracción de Funciones Helper Puras `getNavItemLinkProps` y `getFabLinkProps`
+**Aprendizaje:** Encapsular la composición completa de propiedades del elemento de enlace (<Link>) para ítems de navegación (`getNavItemLinkProps` incluyendo `href`, `prefetch: true`, `className`, `aria-label`, y `aria-current="page"` condicional) y para el botón flotante de acción central (`getFabLinkProps` con `href`, `prefetch: true`, `className`, y `aria-label`) en `src/components/navigation/nav-utils.ts` permite refactorizar `BottomNav` (`src/components/navigation/bottom-nav.tsx`) propagando un spread directo `{...linkProps}` y `{...getFabLinkProps()}`. Esto elimina duplicación de atributos en los bucles de renderización de ítems primarios y secundarios, desacopla la lógica de navegación de la plantilla JSX y simplifica las pruebas unitarias.
+**Acción:** Reutilizar `getNavItemLinkProps` y `getFabLinkProps` al extender la navegación principal o crear menús laterales o flotantes derivados.
+
 ### 2026-09-30 - Extracción de Funciones Helper Puras `getNotificationsBadgeHref` y `getNotificationsBadgeLinkProps`
 **Aprendizaje:** Encapsular la ruta de destino (`getNotificationsBadgeHref`) y la composición completa de propiedades del elemento de enlace (`getNotificationsBadgeLinkProps` incluyendo `href`, `prefetch: true`, atributos ARIA `role="status"`, `aria-live="polite"` y la etiqueta formateada) en `src/components/navigation/nav-utils.ts` permite que `NotificationsCount` dentro de `NotificationsBadge` binding los atributos mediante un spread directo `<Link {...linkProps}>`. Esto abstrae el comportamiento de accesibilidad y navegación de la renderización del componente React y facilita su prueba unitaria directa.
 **Acción:** Reutilizar `getNotificationsBadgeLinkProps` cuando se renderice la insignia flotante de notificaciones o al extender los enlaces de acciones pendientes.
