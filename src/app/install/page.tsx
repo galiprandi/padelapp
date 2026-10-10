@@ -5,7 +5,9 @@ import {
   getInstallPageAriaLabel,
   getInstallPageTitle,
   getInstallPageDescription,
+  getInstallPageLogoAltText,
   getInstallPageBackAriaLabel,
+  getInstallPageBackLinkClasses,
 } from "@/components/share/install-utils";
 import Image from "next/image";
 
@@ -20,7 +22,7 @@ export default function InstallPage() {
         {/* Logo */}
         <Image
           src="/icon.svg"
-          alt="Padel Red"
+          alt={getInstallPageLogoAltText()}
           className="h-20 w-20"
           width={80}
           height={80}
@@ -42,7 +44,7 @@ export default function InstallPage() {
 
         <Button
           variant="ghost"
-          className="h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getInstallPageBackLinkClasses()}
           asChild
         >
           <Link href="/" prefetch={true} aria-label={getInstallPageBackAriaLabel()}>

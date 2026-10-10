@@ -8,6 +8,7 @@ import {
   getInstallButtonAriaLabel,
   getInstallGuideAriaLabel,
   getPwaInstallLinkAriaLabel,
+  getInstallLinkClasses,
   getDismissBannerAriaLabel,
   getPwaBannerTitleText,
   getPwaBannerDescriptionText,
@@ -94,6 +95,11 @@ describe("pwa-install-utils", () => {
   describe("UI banner text pure helper formatters", () => {
     it("returns expected PWA banner header title text", () => {
       expect(getPwaBannerTitleText()).toBe("Instalá la App");
+    });
+
+    it("returns expected InstallLinkButton CSS classes", () => {
+      expect(getInstallLinkClasses()).toContain("h-10 w-full rounded-xl text-xs font-semibold");
+      expect(getInstallLinkClasses()).toContain("focus-visible:ring-2");
     });
 
     it("returns expected PWA banner description text", () => {

@@ -71,10 +71,24 @@ export function getInstallPageDescription(): string {
 }
 
 /**
+ * Returns accessible alt text description for the Padel Red application logo image on the install page.
+ */
+export function getInstallPageLogoAltText(): string {
+  return "Padel Red";
+}
+
+/**
  * Returns localized ARIA label for the return to home button.
  */
 export function getInstallPageBackAriaLabel(): string {
   return "Volver a la página principal";
+}
+
+/**
+ * Returns standardized CSS class string for the return to home button on the install page.
+ */
+export function getInstallPageBackLinkClasses(): string {
+  return "h-10 w-full rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
 }
 
 /**
