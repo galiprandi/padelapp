@@ -221,6 +221,20 @@ import {
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
   calculateNetworkExpansionPotential,
+  getInitials,
+  getEmptyPersonalNetworkTitle,
+  getEmptyPersonalNetworkDescription,
+  getEmptyPersonalNetworkSearchTurnsLabel,
+  getEmptyPersonalNetworkViewGlobalLabel,
+  getGraphViewCenterButtonAriaLabel,
+  getGraphViewClearSearchAriaLabel,
+  getGraphViewLegendTitle,
+  getGraphViewLegendPartnerLabel,
+  getGraphViewLegendRivalLabel,
+  getGraphViewLegendMixedLabel,
+  getGraphViewLegendTurnsLabel,
+  getGraphViewProfileLinkAriaLabel,
+  getGraphViewAffinityTitle,
   formatTimeAgo,
   getNetworkSkeletonAriaLabel,
   getStatsPanelRegionAriaLabel,
@@ -1538,6 +1552,39 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("GraphView Pure Helpers Extraction", () => {
+  it("calculates player name initials accurately", () => {
+    expect(getInitials("Arturo Coello")).toBe("AC");
+    expect(getInitials("Agustin Tapia")).toBe("AT");
+    expect(getInitials("Bela")).toBe("BE");
+    expect(getInitials("  Fernando Belasteguin  ")).toBe("FB");
+  });
+
+  it("returns localized empty personal network copy and action labels", () => {
+    expect(getEmptyPersonalNetworkTitle()).toBe("Tu red de contactos está vacía");
+    expect(getEmptyPersonalNetworkDescription()).toBe(
+      "Los contactos se agregan automáticamente al sumarte a turnos o confirmar partidos con otros jugadores."
+    );
+    expect(getEmptyPersonalNetworkSearchTurnsLabel()).toBe("Buscar turnos");
+    expect(getEmptyPersonalNetworkViewGlobalLabel()).toBe("Ver red completa");
+  });
+
+  it("returns accessible ARIA button and legend labels", () => {
+    expect(getGraphViewCenterButtonAriaLabel()).toBe("Centrar grafo");
+    expect(getGraphViewClearSearchAriaLabel()).toBe("Limpiar búsqueda");
+    expect(getGraphViewLegendTitle()).toBe("Leyenda");
+    expect(getGraphViewLegendPartnerLabel()).toBe("Pareja");
+    expect(getGraphViewLegendRivalLabel()).toBe("Rival");
+    expect(getGraphViewLegendMixedLabel()).toBe("Mixto");
+    expect(getGraphViewLegendTurnsLabel()).toBe("Turnos");
+  });
+
+  it("formats profile link aria-labels and affinity titles", () => {
+    expect(getGraphViewProfileLinkAriaLabel("Agustín Tapia")).toBe("Ver perfil de Agustín Tapia");
+    expect(getGraphViewAffinityTitle("Dupla frecuente 🤝")).toBe("Afinidad: Dupla frecuente 🤝");
   });
 });
 
