@@ -53,6 +53,20 @@ import {
   getGraphViewConnectionWinRateAriaLabel,
   getGraphViewConnectionMutualAriaLabel,
   getGraphViewNodeGroupAriaLabel,
+  getInitials,
+  getEmptyPersonalNetworkTitle,
+  getEmptyPersonalNetworkDescription,
+  getEmptyPersonalNetworkSearchTurnsLabel,
+  getEmptyPersonalNetworkViewGlobalLabel,
+  getGraphViewCenterButtonAriaLabel,
+  getGraphViewClearSearchAriaLabel,
+  getGraphViewLegendTitle,
+  getGraphViewLegendPartnerLabel,
+  getGraphViewLegendRivalLabel,
+  getGraphViewLegendMixedLabel,
+  getGraphViewLegendTurnsLabel,
+  getGraphViewProfileLinkAriaLabel,
+  getGraphViewAffinityTitle,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -91,14 +105,6 @@ function preloadImages(nodes: GraphNode[]): Map<string, HTMLImageElement> {
     }
   }
   return imageMap;
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
 }
 
 
@@ -593,7 +599,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               <button
                 onClick={() => setSearchQuery("")}
                 className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
-                aria-label="Limpiar búsqueda"
+                aria-label={getGraphViewClearSearchAriaLabel()}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -604,7 +610,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               if (fgRef.current) fgRef.current.zoomToFit(300, 50);
             }}
             className="rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-            aria-label="Centrar grafo"
+            aria-label={getGraphViewCenterButtonAriaLabel()}
           >
             Centrar
           </button>
@@ -731,9 +737,9 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             <Users2 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-foreground">Tu red de contactos está vacía</p>
+            <p className="text-sm font-bold text-foreground">{getEmptyPersonalNetworkTitle()}</p>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              Los contactos se agregan automáticamente al sumarte a turnos o confirmar partidos con otros jugadores.
+              {getEmptyPersonalNetworkDescription()}
             </p>
           </div>
           <div className="flex gap-2 justify-center">
@@ -742,13 +748,13 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             prefetch={true}
               className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
-              Buscar turnos
+              {getEmptyPersonalNetworkSearchTurnsLabel()}
             </Link>
             <button
               onClick={() => setScope("global")}
               className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-bold text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             >
-              Ver red completa
+              {getEmptyPersonalNetworkViewGlobalLabel()}
             </button>
           </div>
         </div>
@@ -1262,7 +1268,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       href={`/p/${otherId}`}
                       prefetch={true}
                       className="text-[11px] font-bold text-primary hover:underline px-1.5 py-0.5 rounded-md active:scale-[0.95] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
-                      aria-label={`Ver perfil de ${otherName}`}
+                      aria-label={getGraphViewProfileLinkAriaLabel(otherName)}
                     >
                       Perfil
                     </Link>
@@ -1274,8 +1280,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           affinity.badgeStyle
                         )}
-                        title={`Afinidad: ${affinity.label}`}
-                        aria-label={`Afinidad: ${affinity.label}`}
+                        title={getGraphViewAffinityTitle(affinity.label)}
+                        aria-label={getGraphViewAffinityTitle(affinity.label)}
                       >
                         {affinity.label}
                       </span>
@@ -1315,24 +1321,24 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         aria-label={getGraphViewLegendAriaLabel()}
       >
         <p className="text-xs text-muted-foreground mb-1.5 font-medium">
-          Leyenda
+          {getGraphViewLegendTitle()}
         </p>
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-emerald-500" />
-            <span className="text-xs text-muted-foreground">Pareja</span>
+            <span className="text-xs text-muted-foreground">{getGraphViewLegendPartnerLabel()}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500" />
-            <span className="text-xs text-muted-foreground">Rival</span>
+            <span className="text-xs text-muted-foreground">{getGraphViewLegendRivalLabel()}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-amber-500" />
-            <span className="text-xs text-muted-foreground">Mixto</span>
+            <span className="text-xs text-muted-foreground">{getGraphViewLegendMixedLabel()}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-slate-500" />
-            <span className="text-xs text-muted-foreground">Turnos</span>
+            <span className="text-xs text-muted-foreground">{getGraphViewLegendTurnsLabel()}</span>
           </div>
         </div>
       </div>

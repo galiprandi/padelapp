@@ -3336,3 +3336,63 @@ export function get30dSummaryTurnsLabel(): string {
 export function get30dSummaryMatchesLabel(): string {
   return "Partidos";
 }
+
+export function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
+export function getEmptyPersonalNetworkTitle(): string {
+  return "Tu red de contactos está vacía";
+}
+
+export function getEmptyPersonalNetworkDescription(): string {
+  return "Los contactos se agregan automáticamente al sumarte a turnos o confirmar partidos con otros jugadores.";
+}
+
+export function getEmptyPersonalNetworkSearchTurnsLabel(): string {
+  return "Buscar turnos";
+}
+
+export function getEmptyPersonalNetworkViewGlobalLabel(): string {
+  return "Ver red completa";
+}
+
+export function getGraphViewCenterButtonAriaLabel(): string {
+  return "Centrar grafo";
+}
+
+export function getGraphViewClearSearchAriaLabel(): string {
+  return "Limpiar búsqueda";
+}
+
+export function getGraphViewLegendTitle(): string {
+  return "Leyenda";
+}
+
+export function getGraphViewLegendPartnerLabel(): string {
+  return "Pareja";
+}
+
+export function getGraphViewLegendRivalLabel(): string {
+  return "Rival";
+}
+
+export function getGraphViewLegendMixedLabel(): string {
+  return "Mixto";
+}
+
+export function getGraphViewLegendTurnsLabel(): string {
+  return "Turnos";
+}
+
+export function getGraphViewProfileLinkAriaLabel(playerName: string): string {
+  return `Ver perfil de ${playerName}`;
+}
+
+export function getGraphViewAffinityTitle(affinityLabel: string): string {
+  return `Afinidad: ${affinityLabel}`;
+}
