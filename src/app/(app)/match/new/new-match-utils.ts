@@ -243,3 +243,95 @@ export function getFormErrorAlertAriaLabel(): string {
 export function formatFormErrorMessage(error: string | null | undefined): string {
   return error?.trim() || "";
 }
+
+/**
+ * Returns heading title text for each step in new match creation flow.
+ */
+export function getStepHeadingTitle(step: 0 | 1 | 2 | 3): string {
+  switch (step) {
+    case 0:
+      return "Nuevo Partido";
+    case 1:
+      return "Tipo de Partido";
+    case 2:
+      return "Detalles del Partido";
+    case 3:
+      return "Marcador Final";
+    default:
+      return "Nuevo Partido";
+  }
+}
+
+/**
+ * Returns heading description text for each step in new match creation flow.
+ */
+export function getStepHeadingDescription(step: 0 | 1 | 2 | 3): string {
+  switch (step) {
+    case 0:
+      return "Armá tu partido seleccionando las parejas. Tocá un jugador para gestionarlo. Usá el botón de intercambio para cambiar derecha/revés.";
+    case 1:
+      return "Elegí el formato del partido y configurá cuántos sets se jugarán. Activá el ranking si querés que cuente para las posiciones.";
+    case 2:
+      return "Agregá información opcional como el club y la cancha. Estos datos ayudan a organizar mejor el partido.";
+    case 3:
+      return "Completá los sets jugados para finalizar el registro del partido.";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Returns title text for pairing suggestion card.
+ */
+export function getPairingSuggestionTitle(): string {
+  return "Sugerencia de Parejas 🧠";
+}
+
+/**
+ * Returns description text for pairing suggestion card.
+ */
+export function getPairingSuggestionDescription(): string {
+  return "¿Querés nivelar el partido? El algoritmo analiza el historial y lado preferido de juego de los 4 jugadores para balancear las parejas automáticamente.";
+}
+
+/**
+ * Returns label text for record score now switch.
+ */
+export function getRecordScoreNowLabel(): string {
+  return "Cargar resultado ahora";
+}
+
+/**
+ * Returns description text for record score now switch.
+ */
+export function getRecordScoreNowDescription(): string {
+  return "Si el partido ya terminó, cargá el marcador para cerrarlo inmediatamente.";
+}
+
+/**
+ * Returns label text for competitive ranking toggle switch.
+ */
+export function getRankingToggleLabel(): string {
+  return "Ranking competitivo";
+}
+
+/**
+ * Returns description text for competitive ranking toggle switch.
+ */
+export function getRankingToggleDescription(): string {
+  return "Si está activo, el resultado impactará en tu posición y delta del ranking global.";
+}
+
+/**
+ * Returns header text for recent clubs selector.
+ */
+export function getRecentClubsHeaderLabel(): string {
+  return "Clubes recientes";
+}
+
+/**
+ * Returns formatted group label text for set score selector.
+ */
+export function getScoreSelectorGroupLabel(teamLabel: string, players: string): string {
+  return `${teamLabel}: ${players}`;
+}

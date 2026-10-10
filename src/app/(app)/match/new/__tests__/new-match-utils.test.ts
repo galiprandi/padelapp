@@ -20,6 +20,16 @@ import {
   getNewMatchPrimaryButtonText,
   getFormErrorAlertAriaLabel,
   formatFormErrorMessage,
+  getStepHeadingTitle,
+  getStepHeadingDescription,
+  getPairingSuggestionTitle,
+  getPairingSuggestionDescription,
+  getRecordScoreNowLabel,
+  getRecordScoreNowDescription,
+  getRankingToggleLabel,
+  getRankingToggleDescription,
+  getRecentClubsHeaderLabel,
+  getScoreSelectorGroupLabel,
 } from "../new-match-utils";
 import type { TeamState, PlayerOption } from "@/lib/match-types";
 
@@ -313,6 +323,42 @@ describe("new-match-utils", () => {
       expect(formatFormErrorMessage("  Falta seleccionar jugadores  ")).toBe("Falta seleccionar jugadores");
       expect(formatFormErrorMessage(null)).toBe("");
       expect(formatFormErrorMessage(undefined)).toBe("");
+    });
+  });
+
+  describe("step heading, descriptions and card labels helpers", () => {
+    it("returns correct step heading title and description for steps 0 to 3", () => {
+      expect(getStepHeadingTitle(0)).toBe("Nuevo Partido");
+      expect(getStepHeadingDescription(0)).toContain("Armá tu partido");
+
+      expect(getStepHeadingTitle(1)).toBe("Tipo de Partido");
+      expect(getStepHeadingDescription(1)).toContain("Elegí el formato");
+
+      expect(getStepHeadingTitle(2)).toBe("Detalles del Partido");
+      expect(getStepHeadingDescription(2)).toContain("Agregá información opcional");
+
+      expect(getStepHeadingTitle(3)).toBe("Marcador Final");
+      expect(getStepHeadingDescription(3)).toContain("Completá los sets jugados");
+    });
+
+    it("returns pairing suggestion card title and description", () => {
+      expect(getPairingSuggestionTitle()).toBe("Sugerencia de Parejas 🧠");
+      expect(getPairingSuggestionDescription()).toContain("¿Querés nivelar el partido?");
+    });
+
+    it("returns record score now and ranking toggle texts", () => {
+      expect(getRecordScoreNowLabel()).toBe("Cargar resultado ahora");
+      expect(getRecordScoreNowDescription()).toContain("Si el partido ya terminó");
+
+      expect(getRankingToggleLabel()).toBe("Ranking competitivo");
+      expect(getRankingToggleDescription()).toContain("Si está activo, el resultado impactará");
+    });
+
+    it("returns recent clubs header and score selector group labels", () => {
+      expect(getRecentClubsHeaderLabel()).toBe("Clubes recientes");
+      expect(getScoreSelectorGroupLabel("Pareja A", "Agustín Tapia & Arturo Coello")).toBe(
+        "Pareja A: Agustín Tapia & Arturo Coello"
+      );
     });
   });
 });
