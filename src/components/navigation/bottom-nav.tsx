@@ -5,17 +5,14 @@ import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
 import {
   getSplitNavItems,
-  getFabItemConfig,
-  getFabAriaAttributes,
-  getNavItemAriaAttributes,
   getBottomNavAriaAttributes,
   getNotificationsBadgeAriaAttributes,
   formatNotificationsDisplayCount,
   isNavItemActive,
+  getNavItemLinkProps,
+  getFabLinkProps,
   getBottomNavContainerClasses,
   getBottomNavInnerContainerClasses,
-  getNavItemClasses,
-  getFabClasses,
   getNotificationsBadgeClasses,
   getBottomNavIconClasses,
   getBottomNavLabelClasses,
@@ -35,7 +32,6 @@ export function BottomNav({
 }: BottomNavProps) {
   const pathname = usePathname();
   const { primaryItems, secondaryItems } = getSplitNavItems();
-  const fabConfig = getFabItemConfig();
 
   return (
     <nav
@@ -45,15 +41,9 @@ export function BottomNav({
       <div className={getBottomNavInnerContainerClasses()}>
         {primaryItems.map((item) => {
           const isActive = isNavItemActive(item.href, pathname);
-          const ariaAttrs = getNavItemAriaAttributes(item, isActive);
+          const linkProps = getNavItemLinkProps(item, isActive);
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={true}
-              className={getNavItemClasses(isActive)}
-              {...ariaAttrs}
-            >
+            <Link key={item.href} {...linkProps}>
               <item.icon className={getBottomNavIconClasses()} aria-hidden="true" />
               <span className={getBottomNavLabelClasses()}>
                 {item.label}
@@ -63,26 +53,15 @@ export function BottomNav({
         })}
 
         {/* FAB Central */}
-        <Link
-          href={fabConfig.href}
-          prefetch={true}
-          className={getFabClasses()}
-          {...getFabAriaAttributes()}
-        >
+        <Link {...getFabLinkProps()}>
           <Plus className={getFabIconClasses()} aria-hidden="true" />
         </Link>
 
         {secondaryItems.map((item) => {
           const isActive = isNavItemActive(item.href, pathname);
-          const ariaAttrs = getNavItemAriaAttributes(item, isActive);
+          const linkProps = getNavItemLinkProps(item, isActive);
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={true}
-              className={getNavItemClasses(isActive)}
-              {...ariaAttrs}
-            >
+            <Link key={item.href} {...linkProps}>
               <item.icon className={getBottomNavIconClasses()} aria-hidden="true" />
               <span className={getBottomNavLabelClasses()}>
                 {item.label}
