@@ -7,9 +7,11 @@ import {
   getRemovePlayerCancelAriaLabel,
   getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
+  getRemovePlayerConfirmText,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
+  getAssignSubstituteButtonText,
 } from "../turn-utils";
 
 describe("Turn Utils & Organizer Helpers", () => {
@@ -22,13 +24,16 @@ describe("Turn Utils & Organizer Helpers", () => {
     expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: false })).toBe("Gestión de jugador Lucas");
     expect(getRemovePlayerRegionAriaLabel({ playerName: "Lucas", isConfirming: true })).toBe("Confirmación para sacar a Lucas");
     expect(getRemovePlayerSuccessToast("Lucas")).toBe("Sacaste a Lucas del turno.");
+    expect(getRemovePlayerConfirmText()).toBe("Sacar");
   });
 
-  it("formats assign substitute ARIA label, region label and toast", () => {
+  it("formats assign substitute ARIA label, region label, button text and toast", () => {
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos" })).toBe("Asignar a Marcos como titular");
     expect(getAssignSubstituteAriaLabel({ substituteName: "Marcos", isPending: true })).toBe("Asignando a Marcos...");
     expect(getAssignSubstituteRegionAriaLabel("Marcos")).toBe("Asignación de suplente Marcos");
     expect(getAssignSubstituteSuccessToast("Marcos")).toBe("Promoviste a Marcos a titular.");
+    expect(getAssignSubstituteButtonText(false)).toBe("Asignar");
+    expect(getAssignSubstituteButtonText(true)).toBe("Asignando...");
   });
   it("formats open slot badge text correctly", () => {
     expect(getOpenSlotsBadgeText(1)).toBe("Falta 1");

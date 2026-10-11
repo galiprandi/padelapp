@@ -181,6 +181,13 @@ import {
   getPlayCasualButtonText,
   getPlayCasualCancelButtonText,
   getPlayCasualConfirmButtonText,
+  getRemovePlayerConfirmText,
+  getAssignSubstituteButtonText,
+  getAddPlayerButtonTitle,
+  getAddPlayerButtonSubtitle,
+  getAddPlayerSearchPlaceholder,
+  getAddPlayerSearchResultsRegionAriaLabel,
+  getAddPlayerRegionAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1606,8 +1613,9 @@ describe("Organizer Action Helpers", () => {
     expect(getRemovePlayerAriaLabel({ playerName: "Mateo", isPending: true })).toBe("Sacando a Mateo...");
   });
 
-  it("formats getRemovePlayerSuccessToast in Argentine Spanish", () => {
+  it("formats getRemovePlayerSuccessToast and getRemovePlayerConfirmText in Argentine Spanish", () => {
     expect(getRemovePlayerSuccessToast("Mateo")).toBe("Sacaste a Mateo del turno.");
+    expect(getRemovePlayerConfirmText()).toBe("Sacar");
   });
 
   it("formats getAssignSubstituteAriaLabel across default and pending states", () => {
@@ -1615,8 +1623,18 @@ describe("Organizer Action Helpers", () => {
     expect(getAssignSubstituteAriaLabel({ substituteName: "Gonzalo", isPending: true })).toBe("Asignando a Gonzalo...");
   });
 
-  it("formats getAssignSubstituteSuccessToast in Argentine Spanish", () => {
+  it("formats getAssignSubstituteSuccessToast and getAssignSubstituteButtonText in Argentine Spanish", () => {
     expect(getAssignSubstituteSuccessToast("Gonzalo")).toBe("Promoviste a Gonzalo a titular.");
+    expect(getAssignSubstituteButtonText(false)).toBe("Asignar");
+    expect(getAssignSubstituteButtonText(true)).toBe("Asignando...");
+  });
+
+  it("formats AddPlayerButton UI copy pure helpers", () => {
+    expect(getAddPlayerButtonTitle()).toBe("Agregar jugador");
+    expect(getAddPlayerButtonSubtitle()).toBe("Para confirmaciones fuera de la app");
+    expect(getAddPlayerSearchPlaceholder()).toBe("Buscar jugador...");
+    expect(getAddPlayerSearchResultsRegionAriaLabel()).toBe("Resultados de búsqueda de jugadores");
+    expect(getAddPlayerRegionAriaLabel()).toBe("Agregar jugador al turno");
   });
 });
 

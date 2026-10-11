@@ -14,10 +14,12 @@ import {
   getRemovePlayerRegionAriaLabel,
   getRemovePlayerSuccessToast,
   getRemovePlayerErrorToast,
+  getRemovePlayerConfirmText,
   getAssignSubstituteAriaLabel,
   getAssignSubstituteRegionAriaLabel,
   getAssignSubstituteSuccessToast,
   getAssignSubstituteErrorToast,
+  getAssignSubstituteButtonText,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -100,7 +102,7 @@ export function RemovePlayerButton({
         {isPending ? (
           <Loader2 className="h-3 w-3 animate-spin" />
         ) : (
-          "Sacar"
+          getRemovePlayerConfirmText()
         )}
       </button>
       <button
@@ -169,7 +171,7 @@ export function AssignSubstituteButton({
         ) : (
           <UserCheck className="h-3.5 w-3.5" />
         )}
-        {isPending ? "Asignando..." : "Asignar"}
+        {getAssignSubstituteButtonText(isPending)}
       </button>
     </div>
   );
