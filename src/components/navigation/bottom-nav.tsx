@@ -6,14 +6,13 @@ import { Plus } from "lucide-react";
 import {
   getSplitNavItems,
   getBottomNavAriaAttributes,
-  getNotificationsBadgeAriaAttributes,
   formatNotificationsDisplayCount,
   isNavItemActive,
   getNavItemLinkProps,
   getFabLinkProps,
+  getBottomNavNotificationsBadgeLinkProps,
   getBottomNavContainerClasses,
   getBottomNavInnerContainerClasses,
-  getNotificationsBadgeClasses,
   getBottomNavIconClasses,
   getBottomNavLabelClasses,
   getFabIconClasses,
@@ -72,10 +71,10 @@ export function BottomNav({
 
         {notificationsCount > 0 && (
           <Link
-            href={notificationsHref}
-            prefetch={true}
-            {...getNotificationsBadgeAriaAttributes(notificationsCount)}
-            className={getNotificationsBadgeClasses()}
+            {...getBottomNavNotificationsBadgeLinkProps(
+              notificationsCount,
+              notificationsHref,
+            )}
           >
             {formatNotificationsDisplayCount(notificationsCount)}
           </Link>
