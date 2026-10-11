@@ -11,10 +11,18 @@ import {
   dismissPushPrompt,
   clearPushPromptDismissal,
   getPushPermissionRegionAriaLabel,
+  getPushPermissionTitle,
+  getPushPermissionDescription,
   getPushPermissionActionButtonLabel,
   getPushPermissionActionButtonAriaLabel,
+  getPushPermissionDismissButtonText,
   getPushPermissionDismissButtonAriaLabel,
+  getPushPermissionSuccessToast,
   getPushPermissionLiveStatus,
+  getPushPermissionContainerClasses,
+  getPushPermissionIconBadgeClasses,
+  getPushPermissionActionButtonClasses,
+  getPushPermissionDismissButtonClasses,
 } from "./push-permission-utils";
 
 export {
@@ -72,32 +80,31 @@ export function PushPermissionPrompt() {
       role="region"
       aria-label={getPushPermissionRegionAriaLabel()}
       aria-busy={loading}
-      className="rounded-xl border border-border bg-card p-4 shadow-xs"
+      className={getPushPermissionContainerClasses()}
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs shrink-0">
+        <div className={getPushPermissionIconBadgeClasses()}>
           <Bell className="h-5 w-5" aria-hidden="true" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-foreground">
-            Activar notificaciones
+            {getPushPermissionTitle()}
           </h3>
           <p className="mt-1 text-xs text-muted-foreground leading-normal">
-            Recibí avisos cuando abran un cupo en tu red o necesiten confirmar
-            un resultado.
+            {getPushPermissionDescription()}
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button
               onClick={async () => {
                 const token = await requestPermission();
                 if (token) {
-                  showToast("Activaste las notificaciones.");
+                  showToast(getPushPermissionSuccessToast());
                 }
               }}
               disabled={loading}
               size="sm"
               aria-label={getPushPermissionActionButtonAriaLabel(loading)}
-              className="h-9 font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getPushPermissionActionButtonClasses()}
             >
               {loading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
@@ -112,9 +119,9 @@ export function PushPermissionPrompt() {
               disabled={loading}
               size="sm"
               aria-label={getPushPermissionDismissButtonAriaLabel()}
-              className="h-9 font-semibold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getPushPermissionDismissButtonClasses()}
             >
-              Ahora no
+              {getPushPermissionDismissButtonText()}
             </Button>
           </div>
         </div>

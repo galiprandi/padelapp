@@ -5,10 +5,18 @@ import {
   dismissPushPrompt,
   clearPushPromptDismissal,
   getPushPermissionRegionAriaLabel,
+  getPushPermissionTitle,
+  getPushPermissionDescription,
   getPushPermissionActionButtonLabel,
   getPushPermissionActionButtonAriaLabel,
+  getPushPermissionDismissButtonText,
   getPushPermissionDismissButtonAriaLabel,
+  getPushPermissionSuccessToast,
   getPushPermissionLiveStatus,
+  getPushPermissionContainerClasses,
+  getPushPermissionIconBadgeClasses,
+  getPushPermissionActionButtonClasses,
+  getPushPermissionDismissButtonClasses,
 } from "../push-permission-utils";
 
 describe("push-permission-utils Pure Helper Specifications", () => {
@@ -60,6 +68,13 @@ describe("push-permission-utils Pure Helper Specifications", () => {
       );
     });
 
+    it("returns title and description text", () => {
+      expect(getPushPermissionTitle()).toBe("Activar notificaciones");
+      expect(getPushPermissionDescription()).toBe(
+        "Recibí avisos cuando abran un cupo en tu red o necesiten confirmar un resultado."
+      );
+    });
+
     it("returns correct action button labels based on loading state", () => {
       expect(getPushPermissionActionButtonLabel(false)).toBe("Activar");
       expect(getPushPermissionActionButtonLabel(true)).toBe("Activando...");
@@ -74,9 +89,16 @@ describe("push-permission-utils Pure Helper Specifications", () => {
       );
     });
 
-    it("returns dismiss button ARIA label", () => {
+    it("returns dismiss button text and ARIA label", () => {
+      expect(getPushPermissionDismissButtonText()).toBe("Ahora no");
       expect(getPushPermissionDismissButtonAriaLabel()).toBe(
         "Descartar solicitud de notificaciones por ahora"
+      );
+    });
+
+    it("returns success toast message", () => {
+      expect(getPushPermissionSuccessToast()).toBe(
+        "Activaste las notificaciones."
       );
     });
 
@@ -85,6 +107,30 @@ describe("push-permission-utils Pure Helper Specifications", () => {
       expect(getPushPermissionLiveStatus(true)).toBe(
         "Solicitando activación de notificaciones de la aplicación..."
       );
+    });
+  });
+
+  describe("CSS styling class helpers", () => {
+    it("returns container classes", () => {
+      expect(getPushPermissionContainerClasses()).toContain("bg-card");
+      expect(getPushPermissionContainerClasses()).toContain("rounded-xl");
+    });
+
+    it("returns icon badge classes", () => {
+      expect(getPushPermissionIconBadgeClasses()).toContain("bg-muted");
+      expect(getPushPermissionIconBadgeClasses()).toContain("h-10 w-10");
+    });
+
+    it("returns action button classes with focus and active states", () => {
+      expect(getPushPermissionActionButtonClasses()).toContain("font-bold");
+      expect(getPushPermissionActionButtonClasses()).toContain("active:scale-[0.98]");
+      expect(getPushPermissionActionButtonClasses()).toContain("focus-visible:ring-2");
+    });
+
+    it("returns dismiss button classes with focus and hover states", () => {
+      expect(getPushPermissionDismissButtonClasses()).toContain("hover:bg-muted");
+      expect(getPushPermissionDismissButtonClasses()).toContain("active:scale-[0.98]");
+      expect(getPushPermissionDismissButtonClasses()).toContain("focus-visible:ring-2");
     });
   });
 });
