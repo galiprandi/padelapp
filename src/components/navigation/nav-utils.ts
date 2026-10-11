@@ -319,6 +319,11 @@ export interface NotificationsBadgeLinkProps {
   className: string;
 }
 
+export interface PendingActionMatchDetailProps {
+  detailUrl: string;
+  label: string;
+}
+
 export interface NotificationsEmptyStateProps {
   title: string;
   description: string;
@@ -441,6 +446,72 @@ export function getNavItemClasses(
       : "text-muted-foreground hover:text-foreground",
     customClassName,
   );
+}
+
+/**
+ * Determina la URL de detalle y la etiqueta de acción para un partido con acciones pendientes.
+ * Si el partido carece de marcador (score), redirige al formulario de resultado ("/match/[id]/result") con etiqueta "Cargar resultado".
+ * De lo contrario, redirige a la vista del partido ("/match/[id]") con etiqueta "Confirmar".
+ */
+export function getPendingActionMatchDetailProps(match: {
+  id: string;
+  score?: unknown;
+}): PendingActionMatchDetailProps {
+  const needsScore = !match.score;
+  return {
+    detailUrl: needsScore
+      ? `/match/${match.id}/result`
+      : `/match/${match.id}`,
+    label: needsScore ? "Cargar resultado" : "Confirmar",
+  };
+}
+
+/**
+ * Genera el objeto completo de propiedades para el componente Link del badge de notificaciones en la barra de navegación (BottomNav).
+ */
+export function getBottomNavNotificationsBadgeLinkProps(
+  count: number,
+  href: string = "/notifications",
+  customClassName?: string,
+): NotificationsBadgeLinkProps {
+  const ariaAttrs = getNotificationsBadgeAriaAttributes(count);
+  return {
+    href,
+    prefetch: true,
+    ...ariaAttrs,
+    className: getNotificationsBadgeClasses(customClassName),
+  };
+}
+
+/**
+ * Retorna las clases CSS para el contenedor superior de la vista de notificaciones.
+ */
+export function getNotificationsHeaderClasses(customClassName?: string): string {
+  return cn("flex flex-col gap-6", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el contenedor de la lista de notificaciones y acciones requeridas.
+ */
+export function getNotificationsContainerClasses(customClassName?: string): string {
+  return cn("space-y-3", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para la insignia/badge numérica de la sección de acciones requeridas.
+ */
+export function getNotificationsActionsBadgeClasses(customClassName?: string): string {
+  return cn(
+    "rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground",
+    customClassName,
+  );
+}
+
+/**
+ * Retorna las clases CSS para el listado de tarjetas de partidos con acciones pendientes.
+ */
+export function getNotificationsListClasses(customClassName?: string): string {
+  return cn("space-y-2", customClassName);
 }
 
 /**

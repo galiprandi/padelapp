@@ -44,6 +44,12 @@ import {
   getNotificationsBadgeLinkProps,
   getNavItemLinkProps,
   getFabLinkProps,
+  getPendingActionMatchDetailProps,
+  getBottomNavNotificationsBadgeLinkProps,
+  getNotificationsHeaderClasses,
+  getNotificationsContainerClasses,
+  getNotificationsActionsBadgeClasses,
+  getNotificationsListClasses,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -552,6 +558,54 @@ describe("nav-utils", () => {
         "aria-label": "3 notificaciones pendientes",
         className: expect.stringContaining("fixed bottom-[calc(4rem+env(safe-area-inset-bottom,0px)+12px)]"),
       });
+    });
+
+    it("getPendingActionMatchDetailProps computes result URL and label when match lacks score", () => {
+      const props = getPendingActionMatchDetailProps({ id: "match-123" });
+      expect(props).toEqual({
+        detailUrl: "/match/match-123/result",
+        label: "Cargar resultado",
+      });
+    });
+
+    it("getPendingActionMatchDetailProps computes detail URL and label when match has score", () => {
+      const props = getPendingActionMatchDetailProps({ id: "match-456", score: { set1: "6-4" } });
+      expect(props).toEqual({
+        detailUrl: "/match/match-456",
+        label: "Confirmar",
+      });
+    });
+
+    it("getBottomNavNotificationsBadgeLinkProps returns composed link props for bottom nav inline badge", () => {
+      const props = getBottomNavNotificationsBadgeLinkProps(2, "/notifications");
+      expect(props).toEqual({
+        href: "/notifications",
+        prefetch: true,
+        role: "status",
+        "aria-live": "polite",
+        "aria-label": "2 notificaciones pendientes",
+        className: expect.stringContaining("absolute -top-3 right-6"),
+      });
+    });
+
+    it("getNotificationsHeaderClasses returns flex container classes", () => {
+      expect(getNotificationsHeaderClasses()).toContain("flex flex-col gap-6");
+      expect(getNotificationsHeaderClasses("custom-header")).toContain("custom-header");
+    });
+
+    it("getNotificationsContainerClasses returns spacing container classes", () => {
+      expect(getNotificationsContainerClasses()).toContain("space-y-3");
+      expect(getNotificationsContainerClasses("custom-container")).toContain("custom-container");
+    });
+
+    it("getNotificationsActionsBadgeClasses returns badge styling classes", () => {
+      expect(getNotificationsActionsBadgeClasses()).toContain("rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground");
+      expect(getNotificationsActionsBadgeClasses("custom-badge")).toContain("custom-badge");
+    });
+
+    it("getNotificationsListClasses returns list spacing classes", () => {
+      expect(getNotificationsListClasses()).toContain("space-y-2");
+      expect(getNotificationsListClasses("custom-list")).toContain("custom-list");
     });
   });
 });

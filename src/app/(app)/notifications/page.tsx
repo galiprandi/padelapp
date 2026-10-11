@@ -15,6 +15,11 @@ import {
   getNotificationsActionsBadgeAriaLabel,
   getNotificationsEmptyStateProps,
   getNotificationsSkeletonAriaLabel,
+  getPendingActionMatchDetailProps,
+  getNotificationsHeaderClasses,
+  getNotificationsContainerClasses,
+  getNotificationsActionsBadgeClasses,
+  getNotificationsListClasses,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsPage() {
@@ -22,7 +27,7 @@ export default function NotificationsPage() {
     <div
       role="region"
       aria-label={getNotificationsRegionAriaLabel()}
-      className="flex flex-col gap-6"
+      className={getNotificationsHeaderClasses()}
     >
       <div>
         <h1 className="text-xl font-bold text-foreground">
@@ -50,14 +55,14 @@ async function NotificationsList() {
   const emptyStateProps = getNotificationsEmptyStateProps();
 
   return (
-    <div className="space-y-3">
+    <div className={getNotificationsContainerClasses()}>
       <div className="flex items-center gap-2">
         <h2 className="text-sm font-bold text-foreground">
           {getNotificationsActionsTitle()}
         </h2>
         {pendingActions.length > 0 && (
           <span
-            className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground"
+            className={getNotificationsActionsBadgeClasses()}
             aria-label={getNotificationsActionsBadgeAriaLabel(
               pendingActions.length,
             )}
@@ -68,19 +73,15 @@ async function NotificationsList() {
       </div>
 
       {pendingActions.length > 0 ? (
-        <div className="space-y-2">
+        <div className={getNotificationsListClasses()}>
           {pendingActions.map((match) => {
-            const needsScore = !match.score;
+            const { detailUrl, label } = getPendingActionMatchDetailProps(match);
             return (
               <MatchResultCompact
                 key={match.id}
                 match={match}
-                detailUrl={
-                  needsScore
-                    ? `/match/${match.id}/result`
-                    : `/match/${match.id}`
-                }
-                label={needsScore ? "Cargar resultado" : "Confirmar"}
+                detailUrl={detailUrl}
+                label={label}
                 viewerId={userId}
               />
             );
@@ -110,13 +111,13 @@ function NotificationsListSkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getNotificationsSkeletonAriaLabel()}
-      className="space-y-3"
+      className={getNotificationsContainerClasses()}
     >
       <div className="flex items-center gap-2">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-5 w-8 rounded-md" />
       </div>
-      <div className="space-y-2">
+      <div className={getNotificationsListClasses()}>
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-16 w-full rounded-xl" />
         ))}
