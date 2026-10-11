@@ -137,6 +137,20 @@ export function getPlayerFeedbackSectionAriaLabel(playerName: string): string {
 }
 
 /**
+ * Returns localized Argentine Spanish heading title text for attendance and level feedback section.
+ */
+export function getAttendanceHeadingTitle(): string {
+  return "Asistencia y Feedback de Nivel";
+}
+
+/**
+ * Generates an Argentine Spanish accessible ARIA label for player attendance radio group.
+ */
+export function getAttendanceGroupAriaLabel(playerName: string): string {
+  return `Estado de asistencia para ${playerName}`;
+}
+
+/**
  * Returns localized Argentine Spanish button text for level feedback options.
  */
 export function getFeedbackOptionButtonLabel(

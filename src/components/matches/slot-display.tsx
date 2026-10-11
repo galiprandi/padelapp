@@ -11,6 +11,8 @@ import {
   getSlotAriaLabel,
   getManageButtonAriaLabel,
   getSlotRegionAriaLabel,
+  getSlotSubtext,
+  getSelfBadgeText,
 } from "./slot-display-utils";
 
 interface SlotDisplayProps {
@@ -100,7 +102,7 @@ export function SlotDisplay({
             {displayName}
           </p>
           <span className="text-xs text-muted-foreground mt-0.5">
-            {isUser ? sideLabel : `${sideLabel} · Cupo pendiente`}
+            {getSlotSubtext(Boolean(isUser), sideLabel)}
           </span>
         </div>
       </button>
@@ -108,7 +110,7 @@ export function SlotDisplay({
       <div className="flex items-center gap-1 pr-1">
         {isSelf ? (
           <div className="flex h-8 items-center px-2.5 rounded-lg bg-muted border border-border shadow-xs">
-            <span className="text-xs font-bold text-foreground">Vos</span>
+            <span className="text-xs font-bold text-foreground">{getSelfBadgeText()}</span>
           </div>
         ) : null}
         <Button
