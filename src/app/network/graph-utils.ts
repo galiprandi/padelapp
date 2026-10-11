@@ -3396,3 +3396,63 @@ export function getGraphViewProfileLinkAriaLabel(playerName: string): string {
 export function getGraphViewAffinityTitle(affinityLabel: string): string {
   return `Afinidad: ${affinityLabel}`;
 }
+
+export function getFilterChipClasses(active: boolean): string {
+  return `flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ${
+    active
+      ? "bg-card text-foreground border border-border shadow-sm"
+      : "bg-muted text-muted-foreground border border-transparent hover:bg-card hover:text-foreground"
+  }`;
+}
+
+export function getGraphViewDetailPanelCloseAriaLabel(): string {
+  return "Cerrar panel";
+}
+
+export function getGraphViewDetailPanelPublicProfileText(): string {
+  return "Ver perfil público";
+}
+
+export function getGraphViewDetailPanelConnectionsHeader(count: number): string {
+  return `Conexiones (${count})`;
+}
+
+export function getGraphViewDetailPanelScoreLabel(): string {
+  return "Score";
+}
+
+export function getGraphViewDetailPanelSideLabel(): string {
+  return "Lado";
+}
+
+export function getGraphViewDetailPanelGroupLabel(): string {
+  return "Grupo";
+}
+
+export function getGraphViewCommunityClearFilterText(): string {
+  return "Limpiar filtro";
+}
+
+export function getGraphViewSearchInputPlaceholder(): string {
+  return "Buscar jugador...";
+}
+
+export function getGraphViewCenterButtonText(): string {
+  return "Centrar";
+}
+
+export function getGraphViewLegendContainerClasses(): string {
+  return "absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2.5 border border-border shadow-sm";
+}
+
+export function getGraphViewSelectedNodeDetailClasses(): string {
+  return "absolute bottom-3 left-3 z-10 rounded-xl bg-card p-4 max-w-[280px] border border-border shadow-sm";
+}
+
+export function getGraphViewTopFilterContainerClasses(): string {
+  return "absolute top-3 left-3 right-3 z-10 flex flex-col gap-2";
+}
+
+export function getGraphViewSearchContainerClasses(): string {
+  return "flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background transition-all duration-200";
+}

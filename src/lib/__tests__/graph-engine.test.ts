@@ -235,6 +235,20 @@ import {
   getGraphViewLegendTurnsLabel,
   getGraphViewProfileLinkAriaLabel,
   getGraphViewAffinityTitle,
+  getFilterChipClasses,
+  getGraphViewDetailPanelCloseAriaLabel,
+  getGraphViewDetailPanelPublicProfileText,
+  getGraphViewDetailPanelConnectionsHeader,
+  getGraphViewDetailPanelScoreLabel,
+  getGraphViewDetailPanelSideLabel,
+  getGraphViewDetailPanelGroupLabel,
+  getGraphViewCommunityClearFilterText,
+  getGraphViewSearchInputPlaceholder,
+  getGraphViewCenterButtonText,
+  getGraphViewLegendContainerClasses,
+  getGraphViewSelectedNodeDetailClasses,
+  getGraphViewTopFilterContainerClasses,
+  getGraphViewSearchContainerClasses,
   formatTimeAgo,
   getNetworkSkeletonAriaLabel,
   getStatsPanelRegionAriaLabel,
@@ -1552,6 +1566,38 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("GraphView detail panel and filter pure helper functions", () => {
+  it("formats FilterChip classes correctly for active and inactive states", () => {
+    const activeClasses = getFilterChipClasses(true);
+    expect(activeClasses).toContain("bg-card");
+    expect(activeClasses).toContain("text-foreground");
+
+    const inactiveClasses = getFilterChipClasses(false);
+    expect(inactiveClasses).toContain("bg-muted");
+    expect(inactiveClasses).toContain("text-muted-foreground");
+  });
+
+  it("returns detail panel headings, button labels and search placeholders", () => {
+    expect(getGraphViewDetailPanelCloseAriaLabel()).toBe("Cerrar panel");
+    expect(getGraphViewDetailPanelPublicProfileText()).toBe("Ver perfil público");
+    expect(getGraphViewDetailPanelConnectionsHeader(3)).toBe("Conexiones (3)");
+    expect(getGraphViewDetailPanelConnectionsHeader(0)).toBe("Conexiones (0)");
+    expect(getGraphViewDetailPanelScoreLabel()).toBe("Score");
+    expect(getGraphViewDetailPanelSideLabel()).toBe("Lado");
+    expect(getGraphViewDetailPanelGroupLabel()).toBe("Grupo");
+    expect(getGraphViewCommunityClearFilterText()).toBe("Limpiar filtro");
+    expect(getGraphViewSearchInputPlaceholder()).toBe("Buscar jugador...");
+    expect(getGraphViewCenterButtonText()).toBe("Centrar");
+  });
+
+  it("returns container layout CSS class strings for legend, detail panel and top filter bar", () => {
+    expect(getGraphViewLegendContainerClasses()).toContain("absolute bottom-3 right-3");
+    expect(getGraphViewSelectedNodeDetailClasses()).toContain("absolute bottom-3 left-3");
+    expect(getGraphViewTopFilterContainerClasses()).toContain("absolute top-3 left-3 right-3");
+    expect(getGraphViewSearchContainerClasses()).toContain("flex-1 flex items-center gap-2");
   });
 });
 

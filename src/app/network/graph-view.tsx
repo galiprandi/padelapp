@@ -67,6 +67,20 @@ import {
   getGraphViewLegendTurnsLabel,
   getGraphViewProfileLinkAriaLabel,
   getGraphViewAffinityTitle,
+  getFilterChipClasses,
+  getGraphViewDetailPanelCloseAriaLabel,
+  getGraphViewDetailPanelPublicProfileText,
+  getGraphViewDetailPanelConnectionsHeader,
+  getGraphViewDetailPanelScoreLabel,
+  getGraphViewDetailPanelSideLabel,
+  getGraphViewDetailPanelGroupLabel,
+  getGraphViewCommunityClearFilterText,
+  getGraphViewSearchInputPlaceholder,
+  getGraphViewCenterButtonText,
+  getGraphViewLegendContainerClasses,
+  getGraphViewSelectedNodeDetailClasses,
+  getGraphViewTopFilterContainerClasses,
+  getGraphViewSearchContainerClasses,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -536,7 +550,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       style={{ height: "calc(100dvh - 49px)" }}
     >
       {/* Top bar with search and filters */}
-      <div className="absolute top-3 left-3 right-3 z-10 flex flex-col gap-2">
+      <div className={getGraphViewTopFilterContainerClasses()}>
         {viewerId && (
           <div className="flex flex-col gap-1.5">
             <span id="network-scope-label" className="sr-only">
@@ -585,11 +599,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
         <div className="flex items-center gap-2">
           {/* Search */}
-          <div className="flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background transition-all duration-200">
+          <div className={getGraphViewSearchContainerClasses()}>
             <Search className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Buscar jugador..."
+              placeholder={getGraphViewSearchInputPlaceholder()}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
@@ -612,7 +626,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             className="rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
             aria-label={getGraphViewCenterButtonAriaLabel()}
           >
-            Centrar
+            {getGraphViewCenterButtonText()}
           </button>
         </div>
 
@@ -724,7 +738,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto"
               aria-label={`Limpiar filtro del Grupo ${selectedCommunity}`}
             >
-              Limpiar filtro
+              {getGraphViewCommunityClearFilterText()}
             </button>
           </div>
         )}
@@ -817,7 +831,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
       {/* Detail panel */}
       {selectedNodeData && (
-        <div className="absolute bottom-3 left-3 z-10 rounded-xl bg-card p-4 max-w-[280px] border border-border shadow-sm">
+        <div className={getGraphViewSelectedNodeDetailClasses()}>
           <div className="flex items-center gap-3 mb-3">
             {selectedNodeData.image ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -1095,7 +1109,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             <button
               onClick={() => setSelectedNode(null)}
               className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-              aria-label="Cerrar panel"
+              aria-label={getGraphViewDetailPanelCloseAriaLabel()}
             >
               <X className="h-4 w-4" />
             </button>
@@ -1103,7 +1117,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
           <div className="grid grid-cols-3 gap-2 mb-3">
             <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
-              <p className="text-xs text-muted-foreground">Score</p>
+              <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelScoreLabel()}</p>
               <p className="text-sm tabular-nums font-bold text-foreground">
                 {selectedNodeData.skillScore}
               </p>
@@ -1116,7 +1130,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   title={sideInfo.label}
                   aria-label={sideInfo.label}
                 >
-                  <p className="text-xs text-muted-foreground">Lado</p>
+                  <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelSideLabel()}</p>
                   <p className="text-sm font-bold text-foreground">
                     {sideInfo.shortLabel}
                   </p>
@@ -1124,7 +1138,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               );
             })()}
             <div className="rounded-lg bg-muted px-2 py-1.5 text-center border border-border">
-              <p className="text-xs text-muted-foreground">Grupo</p>
+              <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelGroupLabel()}</p>
               {selectedNodeData.community !== null ? (
               (() => {
                 const commSummary = calculateCommunitySummary(
@@ -1165,7 +1179,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             prefetch={true}
             className="block w-full text-center rounded-lg border border-border bg-card px-3 py-2 text-xs font-bold text-foreground transition-colors hover:bg-muted active:scale-[0.98] mb-3"
           >
-            Ver perfil público
+            {getGraphViewDetailPanelPublicProfileText()}
           </Link>
 
           <div className="pt-3 border-t border-border">
@@ -1206,7 +1220,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             })()}
 
             <p className="text-xs text-muted-foreground mb-2 font-medium">
-              Conexiones ({selectedLinks.length})
+              {getGraphViewDetailPanelConnectionsHeader(selectedLinks.length)}
             </p>
             <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
               {selectedLinks.map((link, i) => {
@@ -1317,7 +1331,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
       {/* Legend */}
       <div
-        className="absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2.5 border border-border shadow-sm"
+        className={getGraphViewLegendContainerClasses()}
         aria-label={getGraphViewLegendAriaLabel()}
       >
         <p className="text-xs text-muted-foreground mb-1.5 font-medium">
@@ -1364,11 +1378,7 @@ function FilterChip({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ${
-        active
-          ? "bg-card text-foreground border border-border shadow-sm"
-          : "bg-muted text-muted-foreground border border-transparent hover:bg-card hover:text-foreground"
-      }`}
+      className={getFilterChipClasses(active)}
       aria-pressed={active}
       aria-label={ariaLabel}
     >
