@@ -23,6 +23,11 @@ import {
   getAddPlayerEmptyResultsText,
   getAddPlayerClearSearchAriaLabel,
   getAddPlayerCancelSearchAriaLabel,
+  getAddPlayerButtonTitle,
+  getAddPlayerButtonSubtitle,
+  getAddPlayerSearchPlaceholder,
+  getAddPlayerSearchResultsRegionAriaLabel,
+  getAddPlayerRegionAriaLabel,
 } from "../turn-utils";
 
 describe("AddPlayerButton & Manual Add Helpers", () => {
@@ -85,5 +90,13 @@ describe("AddPlayerButton & Manual Add Helpers", () => {
     expect(getAddPlayerCancelSearchAriaLabel()).toBe("Cancelar búsqueda de jugador");
     expect(getAddPlayerPromptText()).toBe("Escribí al menos 2 caracteres para buscar.");
     expect(getAddPlayerEmptyResultsText()).toBe("No se encontraron jugadores con ese nombre.");
+  });
+
+  it("formats title, subtitle, placeholder, search results region and region ARIA labels", () => {
+    expect(getAddPlayerButtonTitle()).toBe("Agregar jugador");
+    expect(getAddPlayerButtonSubtitle()).toBe("Para confirmaciones fuera de la app");
+    expect(getAddPlayerSearchPlaceholder()).toBe("Buscar jugador...");
+    expect(getAddPlayerSearchResultsRegionAriaLabel()).toBe("Resultados de búsqueda de jugadores");
+    expect(getAddPlayerRegionAriaLabel()).toBe("Agregar jugador al turno");
   });
 });

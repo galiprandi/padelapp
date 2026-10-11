@@ -2163,3 +2163,52 @@ export function getPlayCasualCancelButtonText(): string {
 export function getPlayCasualConfirmButtonText(isPending: boolean = false): string {
   return isPending ? "Marcando..." : "Confirmar";
 }
+
+/**
+ * Format button label text for confirming player removal.
+ */
+export function getRemovePlayerConfirmText(): string {
+  return "Sacar";
+}
+
+/**
+ * Format button label text for assigning a substitute depending on pending state.
+ */
+export function getAssignSubstituteButtonText(isPending: boolean = false): string {
+  return isPending ? "Asignando..." : "Asignar";
+}
+
+/**
+ * Format title text for AddPlayerButton in closed state.
+ */
+export function getAddPlayerButtonTitle(): string {
+  return "Agregar jugador";
+}
+
+/**
+ * Format subtitle text for AddPlayerButton in closed state.
+ */
+export function getAddPlayerButtonSubtitle(): string {
+  return "Para confirmaciones fuera de la app";
+}
+
+/**
+ * Format placeholder text for player search input.
+ */
+export function getAddPlayerSearchPlaceholder(): string {
+  return "Buscar jugador...";
+}
+
+/**
+ * Format ARIA label for search results region.
+ */
+export function getAddPlayerSearchResultsRegionAriaLabel(): string {
+  return "Resultados de búsqueda de jugadores";
+}
+
+/**
+ * Format ARIA label for manual player addition region landmark.
+ */
+export function getAddPlayerRegionAriaLabel(): string {
+  return "Agregar jugador al turno";
+}

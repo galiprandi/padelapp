@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-10 — Organizer Actions & Add Player Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/organizer-actions-and-add-player-pure-helpers)
 - [x] 2026-10-08 — QuickJoinEmptySlotButton & LeaveSubstituteForm Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/quick-join-and-leave-substitute-helpers)
 - [x] 2026-10-07 — Turn Chat Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-chat-pure-helpers)
 - [x] 2026-10-06 — TurnCard Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-card-pure-helpers-and-refactoring)
@@ -337,6 +338,10 @@
 **Action:** Always employ high-fidelity mock fallbacks in store wrappers to facilitate visual test compilation and execution. Ensure scrollable list elements on mobile viewports include proper spacing/padding to avoid collision or overlap with fixed-positioned action menus.
 
 - [x] 2026-10-09 — Turn Actions Button Text Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-actions-button-text-pure-helpers)
+
+## 2026-10-10 - Organizer Actions & Add Player Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getRemovePlayerConfirmText`, `getAssignSubstituteButtonText`, `getAddPlayerButtonTitle`, `getAddPlayerButtonSubtitle`, `getAddPlayerSearchPlaceholder`, `getAddPlayerSearchResultsRegionAriaLabel`, and `getAddPlayerRegionAriaLabel`) into `src/components/turns/turn-utils.ts` decouples localized button text ("Sacar", "Asignar", "Asignando..."), card titles, subtitles, placeholders, and screen reader region landmark ARIA labels from React component render trees in `RemovePlayerButton`, `AssignSubstituteButton` (`src/components/turns/organizer-actions.tsx`), and `AddPlayerButton` (`src/components/turns/add-player-button.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract organizer action copy, search placeholders, and region ARIA labels into pure helper utilities backed by Vitest unit tests.
 
 ## 2026-10-09 - Turn Actions Button Text Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getCancelTurnButtonText`, `getCancelTurnConfirmButtonText`, `getStartMatchButtonText`, `getJoinTurnButtonText`, `getJoinSubstituteButtonText`, `getTakeOpenSlotButtonText`, `getScheduleNextTurnButtonText`, `getPlayCasualButtonText`, `getPlayCasualCancelButtonText`, and `getPlayCasualConfirmButtonText`) into `src/components/turns/turn-utils.ts` decouples localized button label copy across idle and pending states ("Eliminar", "Confirmar", "Eliminando...", "Iniciar partido", "Iniciando...", "Sumarme ahora", "Sumando...", "Sumarme como suplente", "Ocupar cupo", "Ocupando...", "Programar próximo turno", "Programando...", "Jugar igual", "Cancelar", "Marcando...") from React client component render trees in `TurnActions` (`src/components/turns/turn-actions.tsx`). Consuming these pure helpers guarantees strict adherence to Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
