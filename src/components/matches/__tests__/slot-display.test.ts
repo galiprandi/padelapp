@@ -4,6 +4,8 @@ import {
   getSlotAriaLabel,
   getManageButtonAriaLabel,
   getSlotRegionAriaLabel,
+  getSlotSubtext,
+  getSelfBadgeText,
 } from "../slot-display-utils";
 import type { SlotValue } from "@/lib/match-types";
 
@@ -78,6 +80,24 @@ describe("SlotDisplay Pure Helpers", () => {
     it("formats slot region landmark ARIA label correctly", () => {
       const regionLabel = getSlotRegionAriaLabel("A", "Revés", "Arturo Coello");
       expect(regionLabel).toBe("Cupo Pareja A, Revés: Arturo Coello");
+    });
+  });
+
+  describe("getSlotSubtext", () => {
+    it("returns side label when slot is user", () => {
+      expect(getSlotSubtext(true, "Derecha")).toBe("Derecha");
+      expect(getSlotSubtext(true, "Revés")).toBe("Revés");
+    });
+
+    it("returns pending slot subtext when slot is not user", () => {
+      expect(getSlotSubtext(false, "Derecha")).toBe("Derecha · Cupo pendiente");
+      expect(getSlotSubtext(false, "Revés")).toBe("Revés · Cupo pendiente");
+    });
+  });
+
+  describe("getSelfBadgeText", () => {
+    it("returns self badge text in Argentine Spanish", () => {
+      expect(getSelfBadgeText()).toBe("Vos");
     });
   });
 });

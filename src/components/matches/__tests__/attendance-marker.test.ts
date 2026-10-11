@@ -15,6 +15,8 @@ import {
   getPlayerFeedbackSectionAriaLabel,
   getFeedbackOptionButtonLabel,
   getFeedbackOptionClasses,
+  getAttendanceHeadingTitle,
+  getAttendanceGroupAriaLabel,
   ATTENDANCE_STATUS_LABELS,
   ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
@@ -179,6 +181,16 @@ describe("attendance-utils", () => {
     it("returns correct player feedback section ARIA label", () => {
       expect(getPlayerFeedbackSectionAriaLabel("Agustín Tapia")).toBe(
         "Nivel de Agustín Tapia comparado con el grupo",
+      );
+    });
+
+    it("returns correct attendance section heading title", () => {
+      expect(getAttendanceHeadingTitle()).toBe("Asistencia y Feedback de Nivel");
+    });
+
+    it("returns correct attendance group radiogroup ARIA label", () => {
+      expect(getAttendanceGroupAriaLabel("Agustín Tapia")).toBe(
+        "Estado de asistencia para Agustín Tapia",
       );
     });
 

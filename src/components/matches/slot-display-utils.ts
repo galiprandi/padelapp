@@ -57,3 +57,17 @@ export function getSlotRegionAriaLabel(
 ): string {
   return `Cupo Pareja ${team}, ${sideLabel}: ${displayName}`;
 }
+
+/**
+ * Returns formatted subtext label for a match slot (e.g., "Derecha" or "Derecha · Cupo pendiente").
+ */
+export function getSlotSubtext(isUser: boolean, sideLabel: string): string {
+  return isUser ? sideLabel : `${sideLabel} · Cupo pendiente`;
+}
+
+/**
+ * Returns localized Argentine Spanish badge text for self user indicator.
+ */
+export function getSelfBadgeText(): string {
+  return "Vos";
+}

@@ -26,6 +26,8 @@ import {
   getPlayerFeedbackSectionAriaLabel,
   getFeedbackOptionButtonLabel,
   getFeedbackOptionClasses,
+  getAttendanceHeadingTitle,
+  getAttendanceGroupAriaLabel,
   ATTENDANCE_STATUS_LABELS,
 } from "@/components/matches/attendance-utils";
 
@@ -150,7 +152,7 @@ export function AttendanceMarker({
       className="space-y-4"
     >
       <div>
-        <h2 className="text-sm font-bold text-foreground">Asistencia y Feedback de Nivel</h2>
+        <h2 className="text-sm font-bold text-foreground">{getAttendanceHeadingTitle()}</h2>
         <p className="text-xs text-muted-foreground">
           {getAttendanceSummaryText(players.length)}
         </p>
@@ -177,7 +179,7 @@ export function AttendanceMarker({
                 <div
                   className="flex gap-1.5 shrink-0"
                   role="radiogroup"
-                  aria-label={`Estado de asistencia para ${player.name}`}
+                  aria-label={getAttendanceGroupAriaLabel(player.name)}
                   onKeyDown={(e) => {
                     if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
                       e.preventDefault();
