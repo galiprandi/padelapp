@@ -29,6 +29,55 @@ export function getMatchQuickConfirmButtonAriaLabel(score?: string | null): stri
 }
 
 /**
+ * Returns button text for quick confirm button depending on confirmation state
+ */
+export function getMatchQuickConfirmButtonText(isConfirming: boolean): string {
+  return isConfirming ? "Confirmando..." : "Confirmar";
+}
+
+/**
+ * Returns share modal title for match result
+ */
+export function getMatchShareTitle(): string {
+  return "Resultado de Pádel";
+}
+
+/**
+ * Returns accessible ARIA label for share button
+ */
+export function getMatchShareButtonAriaLabel(): string {
+  return "Compartir resultado";
+}
+
+/**
+ * Returns text for detail link
+ */
+export function getMatchDetailLinkText(): string {
+  return "Detalle";
+}
+
+/**
+ * Returns versus separator text
+ */
+export function getMatchVersusSeparatorText(): string {
+  return "vs";
+}
+
+/**
+ * Returns score placeholder text when set score is not available
+ */
+export function getMatchScorePlaceholderText(): string {
+  return "—";
+}
+
+/**
+ * Returns player display name considering whether the player is the active viewer
+ */
+export function getMatchTeamPlayerNameText(isViewer: boolean, name: string): string {
+  return isViewer ? "Vos" : name;
+}
+
+/**
  * Returns localized status badge text for match result compact card
  */
 export function getMatchStatusBadgeText(

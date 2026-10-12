@@ -19,6 +19,13 @@ import {
   getMatchQuickConfirmSuccessToast,
   getMatchQuickConfirmErrorToast,
   getMatchQuickConfirmButtonAriaLabel,
+  getMatchQuickConfirmButtonText,
+  getMatchShareTitle,
+  getMatchShareButtonAriaLabel,
+  getMatchDetailLinkText,
+  getMatchVersusSeparatorText,
+  getMatchScorePlaceholderText,
+  getMatchTeamPlayerNameText,
   getMatchStatusBadgeText,
   getMatchStatusBadgeVariant,
   getMatchDetailLinkAriaLabel,
@@ -215,7 +222,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 {statusText}
               </Badge>
               <span className="text-xs text-muted-foreground">
-                {formattedDate ?? "—"}
+                {formattedDate ?? getMatchScorePlaceholderText()}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -232,7 +239,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   ) : (
                     <Check className="h-3 w-3" aria-hidden="true" />
                   )}
-                  {isConfirming ? "Confirmando..." : "Confirmar"}
+                  {getMatchQuickConfirmButtonText(isConfirming)}
                 </button>
               )}
               {isConfirmed && match.score && (
@@ -241,7 +248,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                     createMagicLink({ resource: "match", identifier: match.id })
                       .url
                   }
-                  title="Resultado de Pádel"
+                  title={getMatchShareTitle()}
                   shareData={{
                     type: "match-result",
                     club: "", // Club not available directly on compact match object in this prop structure, but getNaturalShareText handles empty string clean
@@ -251,7 +258,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   variant="ghost"
                   size="icon"
                   iconOnly
-                  aria-label="Compartir resultado"
+                  aria-label={getMatchShareButtonAriaLabel()}
                   className="h-8 w-8 rounded-lg text-primary hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 />
               )}
@@ -262,7 +269,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   className="flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
                   aria-label={getMatchDetailLinkAriaLabel(formattedDate)}
                 >
-                  Detalle
+                  {getMatchDetailLinkText()}
                   <ChevronRight className="h-3 w-3" aria-hidden="true" />
                 </Link>
               ) : null}
@@ -341,7 +348,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                               isViewer && "text-primary",
                             )}
                           >
-                            {isViewer ? "Vos" : player.name}
+                            {getMatchTeamPlayerNameText(isViewer, player.name)}
                           </Link>
                         ) : (
                           <span className="truncate">{player.name}</span>
@@ -394,7 +401,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                           segmentClass,
                         )}
                       >
-                        {rawValue ?? "—"}
+                        {rawValue ?? getMatchScorePlaceholderText()}
                       </span>
                     );
                   })}
@@ -405,7 +412,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                 <div className="flex items-center gap-2 py-0.5">
                   <div className="h-px flex-1 bg-border" />
                   <span className="text-xs font-medium text-muted-foreground">
-                    vs
+                    {getMatchVersusSeparatorText()}
                   </span>
                   <div className="h-px flex-1 bg-border" />
                 </div>
