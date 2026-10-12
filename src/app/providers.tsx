@@ -9,20 +9,24 @@ import { createAppQueryClient } from "@/lib/query-client-config";
 import {
   getProvidersContainerClasses,
   getProvidersRegionAriaAttributes,
+  getSessionProviderProps,
+  getProvidersToastProviderProps,
   isPwaRegistrarEnabled,
 } from "@/lib/providers-utils";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => createAppQueryClient());
+  const sessionProps = getSessionProviderProps();
+  const toastProps = getProvidersToastProviderProps();
 
   return (
     <div
       className={getProvidersContainerClasses()}
       {...getProvidersRegionAriaAttributes()}
     >
-      <SessionProvider>
+      <SessionProvider {...sessionProps}>
         <QueryClientProvider client={queryClient}>
-          <ToastProvider>
+          <ToastProvider {...toastProps}>
             {isPwaRegistrarEnabled(process.env.NEXT_PUBLIC_DISABLE_PWA) && (
               <PwaRegistrar />
             )}
