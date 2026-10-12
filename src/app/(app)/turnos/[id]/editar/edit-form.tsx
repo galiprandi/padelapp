@@ -17,6 +17,16 @@ import {
   getUpdateTurnSuccessToast,
   getTurnFormRegionAriaLabel,
   getTurnFormSubmitButtonAriaLabel,
+  getTurnFormDetailsHeaderTitle,
+  getTurnFormClubLabel,
+  getTurnFormClubPlaceholder,
+  getTurnFormDateLabel,
+  getTurnFormTimeLabel,
+  getTurnFormDurationTurnLabel,
+  getTurnFormPlayersLabel,
+  getTurnFormNotesLabel,
+  getTurnFormNotesPlaceholder,
+  getTurnFormSubmitButtonText,
 } from "@/components/turns/turn-utils";
 
 const DURATION_OPTIONS = [
@@ -99,7 +109,9 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-bold text-foreground">Detalles del partido</h2>
+            <h2 className="text-sm font-bold text-foreground">
+              {getTurnFormDetailsHeaderTitle()}
+            </h2>
           </div>
         </div>
         <div className="p-6 flex flex-col gap-6">
@@ -109,11 +121,11 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               requiredIndicator="*"
               className="text-sm font-semibold"
             >
-              Club y cancha
+              {getTurnFormClubLabel()}
             </Label>
             <ClubInput
               id="club"
-              placeholder="Ej: Padel City · Cancha 3"
+              placeholder={getTurnFormClubPlaceholder()}
               value={formData.club}
               onChange={(value) => setFormData({ ...formData, club: value })}
               required
@@ -129,7 +141,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                 requiredIndicator="*"
                 className="text-sm font-semibold"
               >
-                Fecha
+                {getTurnFormDateLabel()}
               </Label>
               <Input
                 id="date"
@@ -147,7 +159,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                 requiredIndicator="*"
                 className="text-sm font-semibold"
               >
-                Hora
+                {getTurnFormTimeLabel()}
               </Label>
               <Input
                 id="time"
@@ -167,7 +179,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               className="text-sm font-semibold flex items-center gap-2"
             >
               <Clock className="h-4 w-4" />
-              Duración del turno
+              {getTurnFormDurationTurnLabel()}
             </Label>
             <div
               role="radiogroup"
@@ -215,7 +227,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               className="text-sm font-semibold flex items-center gap-2"
             >
               <Check className="h-4 w-4" />
-              Cupos totales
+              {getTurnFormPlayersLabel()}
             </Label>
             <div
               role="radiogroup"
@@ -262,7 +274,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
             <div className="flex justify-between items-center">
               <Label htmlFor="notes" className="text-sm font-semibold flex items-center gap-2">
                 <Info className="h-4 w-4" />
-                Notas adicionales
+                {getTurnFormNotesLabel()}
               </Label>
               <span className="text-xs text-muted-foreground">
                 {(formData.notes ?? "").length}/200
@@ -271,7 +283,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
             <Textarea
               id="notes"
               maxLength={200}
-              placeholder="Ej: Traer pelotas nuevas..."
+              placeholder={getTurnFormNotesPlaceholder("edit")}
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               className="min-h-[100px] rounded-lg resize-none animate-none"
@@ -287,14 +299,8 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
         aria-busy={isPending}
         aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "edit", isPending })}
       >
-        {isPending ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Actualizando...
-          </>
-        ) : (
-          "Guardar cambios"
-        )}
+        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {getTurnFormSubmitButtonText("edit", isPending)}
       </Button>
     </form>
   );

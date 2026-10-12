@@ -188,6 +188,21 @@ import {
   getAddPlayerSearchPlaceholder,
   getAddPlayerSearchResultsRegionAriaLabel,
   getAddPlayerRegionAriaLabel,
+  getTurnFormDetailsHeaderTitle,
+  getTurnFormClubLabel,
+  getTurnFormClubPlaceholder,
+  getTurnFormDateLabel,
+  getTurnFormTimeLabel,
+  getTurnFormDurationLabel,
+  getTurnFormDurationTurnLabel,
+  getTurnFormPlayersLabel,
+  getTurnFormNotesLabel,
+  getTurnFormNotesPlaceholder,
+  getTurnFormSubmitButtonText,
+  getTurnUrgencyBadgeAriaLabel,
+  getTurnContactProfileLinkAriaLabel,
+  getTurnContactCompatibilityAriaLabel,
+  getTurnContactBadgeAriaLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -861,6 +876,46 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("turn form & detail pure helpers", () => {
+  it("returns static turn form label and placeholder strings", () => {
+    expect(getTurnFormDetailsHeaderTitle()).toBe("Detalles del partido");
+    expect(getTurnFormClubLabel()).toBe("Club y cancha");
+    expect(getTurnFormClubPlaceholder()).toBe("Ej: Padel City · Cancha 3");
+    expect(getTurnFormDateLabel()).toBe("Fecha");
+    expect(getTurnFormTimeLabel()).toBe("Hora");
+    expect(getTurnFormDurationLabel()).toBe("Duración");
+    expect(getTurnFormDurationTurnLabel()).toBe("Duración del turno");
+    expect(getTurnFormPlayersLabel()).toBe("Cupos totales");
+    expect(getTurnFormNotesLabel()).toBe("Notas adicionales");
+  });
+
+  it("returns mode-appropriate notes placeholder", () => {
+    expect(getTurnFormNotesPlaceholder("create")).toBe(
+      "Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
+    );
+    expect(getTurnFormNotesPlaceholder("edit")).toBe("Ej: Traer pelotas nuevas...");
+  });
+
+  it("returns state-driven submit button text for create and edit modes", () => {
+    expect(getTurnFormSubmitButtonText("create", false)).toBe("Crear turno y compartir link");
+    expect(getTurnFormSubmitButtonText("create", true)).toBe("Creando...");
+    expect(getTurnFormSubmitButtonText("edit", false)).toBe("Guardar cambios");
+    expect(getTurnFormSubmitButtonText("edit", true)).toBe("Actualizando...");
+  });
+
+  it("formats turn detail accessibility ARIA labels", () => {
+    expect(getTurnUrgencyBadgeAriaLabel("Quedan 2hs")).toBe("Urgencia: Quedan 2hs");
+    expect(getTurnContactProfileLinkAriaLabel("Lucas")).toBe("Ver perfil público de Lucas");
+    expect(getTurnContactCompatibilityAriaLabel("Lucas", "Alta", "Mismo nivel e historial reciente")).toBe(
+      "Compatibilidad de Lucas con el turno: Alta. Mismo nivel e historial reciente"
+    );
+    expect(getTurnContactCompatibilityAriaLabel("Lucas", "Media", null)).toBe(
+      "Compatibilidad de Lucas con el turno: Media."
+    );
+    expect(getTurnContactBadgeAriaLabel("Contacto frecuente")).toBe("Contacto frecuente");
   });
 });
 

@@ -2212,3 +2212,120 @@ export function getAddPlayerSearchResultsRegionAriaLabel(): string {
 export function getAddPlayerRegionAriaLabel(): string {
   return "Agregar jugador al turno";
 }
+
+/**
+ * Format header title for turn details section in creation/editing form.
+ */
+export function getTurnFormDetailsHeaderTitle(): string {
+  return "Detalles del partido";
+}
+
+/**
+ * Format label for club and court input in turn form.
+ */
+export function getTurnFormClubLabel(): string {
+  return "Club y cancha";
+}
+
+/**
+ * Format placeholder for club and court input in turn form.
+ */
+export function getTurnFormClubPlaceholder(): string {
+  return "Ej: Padel City · Cancha 3";
+}
+
+/**
+ * Format label for date input in turn form.
+ */
+export function getTurnFormDateLabel(): string {
+  return "Fecha";
+}
+
+/**
+ * Format label for time input in turn form.
+ */
+export function getTurnFormTimeLabel(): string {
+  return "Hora";
+}
+
+/**
+ * Format label for duration selection in turn form.
+ */
+export function getTurnFormDurationLabel(): string {
+  return "Duración";
+}
+
+/**
+ * Format label for duration selection in turn form (with 'del turno').
+ */
+export function getTurnFormDurationTurnLabel(): string {
+  return "Duración del turno";
+}
+
+/**
+ * Format label for max players selection in turn form.
+ */
+export function getTurnFormPlayersLabel(): string {
+  return "Cupos totales";
+}
+
+/**
+ * Format label for notes textarea in turn form.
+ */
+export function getTurnFormNotesLabel(): string {
+  return "Notas adicionales";
+}
+
+/**
+ * Format placeholder for notes textarea in turn form.
+ */
+export function getTurnFormNotesPlaceholder(mode: "create" | "edit"): string {
+  return mode === "create"
+    ? "Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
+    : "Ej: Traer pelotas nuevas...";
+}
+
+/**
+ * Format submit button label text for turn creation or edit form depending on pending state.
+ */
+export function getTurnFormSubmitButtonText(
+  mode: "create" | "edit",
+  isPending: boolean = false
+): string {
+  if (mode === "create") {
+    return isPending ? "Creando..." : "Crear turno y compartir link";
+  }
+  return isPending ? "Actualizando..." : "Guardar cambios";
+}
+
+/**
+ * Format ARIA label for turn urgency badge.
+ */
+export function getTurnUrgencyBadgeAriaLabel(urgencyText: string): string {
+  return `Urgencia: ${urgencyText}`;
+}
+
+/**
+ * Format ARIA label for public profile link of a contact player.
+ */
+export function getTurnContactProfileLinkAriaLabel(contactName: string): string {
+  return `Ver perfil público de ${contactName}`;
+}
+
+/**
+ * Format ARIA label for turn contact compatibility badge.
+ */
+export function getTurnContactCompatibilityAriaLabel(
+  contactName: string,
+  tier: string,
+  summary?: string | null
+): string {
+  return `Compatibilidad de ${contactName} con el turno: ${tier}.${summary ? ` ${summary}` : ""}`;
+}
+
+/**
+ * Format ARIA label for contact badge.
+ */
+export function getTurnContactBadgeAriaLabel(text: string): string {
+  return text;
+}
