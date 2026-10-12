@@ -254,6 +254,9 @@ import {
   getStatsPanelRegionAriaLabel,
   getTopPlayerExpansionAriaLabel,
   getTopPlayerReciprocityAriaLabel,
+  getNetworkDiversityAriaLabel,
+  getCrossRivalryAriaLabel,
+  getPlayerGraphReachAriaLabel,
   getGraphViewLoadingText,
   getGraphViewEmptyDataProps,
   getGraphViewScopeAriaLabel,
@@ -1901,6 +1904,42 @@ describe("NetworkPageClient pure helpers", () => {
       );
       expect(label).toBe(
         "Reciprocidad de interacción de Fernando Belasteguín: Red recíproca y equilibrada ⚖️. 2 vínculos recíprocos · 4 duplas · 3 rivales"
+      );
+    });
+  });
+
+  describe("getNetworkDiversityAriaLabel", () => {
+    it("formats network diversity accessibility aria label", () => {
+      const label = getNetworkDiversityAriaLabel(
+        "Red multidisciplinaria 🎨",
+        "3 comunidades conectadas · Índice Shannon 1.25"
+      );
+      expect(label).toBe(
+        "Diversidad de red: Red multidisciplinaria 🎨. 3 comunidades conectadas · Índice Shannon 1.25"
+      );
+    });
+  });
+
+  describe("getCrossRivalryAriaLabel", () => {
+    it("formats cross rivalry density accessibility aria label", () => {
+      const label = getCrossRivalryAriaLabel(
+        "Alta rivalidad ⚔️",
+        "75% de partidos en rivalidades cruzadas"
+      );
+      expect(label).toBe(
+        "Rivalidad cruzada: Alta rivalidad ⚔️. 75% de partidos en rivalidades cruzadas"
+      );
+    });
+  });
+
+  describe("getPlayerGraphReachAriaLabel", () => {
+    it("formats player graph reach accessibility aria label", () => {
+      const label = getPlayerGraphReachAriaLabel(
+        "Amplia conectividad 🌐",
+        "Alcanza 12 jugadores en 2 grados de separación"
+      );
+      expect(label).toBe(
+        "Alcance de red: Amplia conectividad 🌐. Alcanza 12 jugadores en 2 grados de separación"
       );
     });
   });

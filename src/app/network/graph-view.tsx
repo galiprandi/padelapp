@@ -81,6 +81,9 @@ import {
   getGraphViewSelectedNodeDetailClasses,
   getGraphViewTopFilterContainerClasses,
   getGraphViewSearchContainerClasses,
+  getNetworkDiversityAriaLabel,
+  getCrossRivalryAriaLabel,
+  getPlayerGraphReachAriaLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -1066,8 +1069,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           diversity.badgeStyle,
                         )}
-                        title={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
-                        aria-label={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
+                        title={getNetworkDiversityAriaLabel(
+                          diversity.diversityTier,
+                          diversity.formattedSummary,
+                        )}
+                        aria-label={getNetworkDiversityAriaLabel(
+                          diversity.diversityTier,
+                          diversity.formattedSummary,
+                        )}
                       >
                         {diversity.diversityTier}
                       </span>
@@ -1076,8 +1085,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           crossRivalry.badgeStyle,
                         )}
-                        title={`Rivalidad cruzada: ${crossRivalry.rivalryTier}. ${crossRivalry.formattedSummary}`}
-                        aria-label={`Rivalidad cruzada: ${crossRivalry.rivalryTier}. ${crossRivalry.formattedSummary}`}
+                        title={getCrossRivalryAriaLabel(
+                          crossRivalry.rivalryTier,
+                          crossRivalry.formattedSummary,
+                        )}
+                        aria-label={getCrossRivalryAriaLabel(
+                          crossRivalry.rivalryTier,
+                          crossRivalry.formattedSummary,
+                        )}
                       >
                         {crossRivalry.rivalryTier}
                       </span>
@@ -1086,8 +1101,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           reach.badgeStyle,
                         )}
-                        title={`Alcance de red: ${reach.reachTier}. ${reach.formattedSummary}`}
-                        aria-label={`Alcance de red: ${reach.reachTier}. ${reach.formattedSummary}`}
+                        title={getPlayerGraphReachAriaLabel(
+                          reach.reachTier,
+                          reach.formattedSummary,
+                        )}
+                        aria-label={getPlayerGraphReachAriaLabel(
+                          reach.reachTier,
+                          reach.formattedSummary,
+                        )}
                       >
                         {reach.reachTier}
                       </span>

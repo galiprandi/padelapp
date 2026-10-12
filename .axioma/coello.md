@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 50 (Graph Network Metrics ARIA Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-09-27 — Hecho: Extraídas las funciones puras `getNetworkDiversityAriaLabel`, `getCrossRivalryAriaLabel` y `getPlayerGraphReachAriaLabel` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-27 — Hecho: Refactorizado `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para los indicadores de diversidad de red, rivalidad cruzada y alcance de red en voz argentina.
+  - [x] 2026-09-27 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 49 (GraphView Connection Badges & ARIA Helpers Pure Extraction, Refactoring & Unit Tests):
   - [x] 2026-09-26 — Hecho: Extraídas las funciones puras `getConnectionBadgeClasses`, `getConnectionTypeSymbol`, `getGraphViewSelectedNodeAriaLabel`, `getGraphViewFocusNodeAriaLabel`, `getGraphViewConnectionWinRateAriaLabel`, `getGraphViewConnectionMutualAriaLabel` y `getGraphViewNodeGroupAriaLabel` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-26 — Hecho: Refactorizado `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para estandarizar estilos de insignias de tipo de conexión ('P', 'R', 'M', 'T'), formateo de victorias y etiquetas descriptivas ARIA para lectores de pantalla.
