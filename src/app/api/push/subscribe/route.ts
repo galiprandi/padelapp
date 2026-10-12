@@ -3,20 +3,35 @@ import { and, eq, ne } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
+import {
+  validatePushSubscribePayload,
+  getPushSubscribeUnauthorizedResponseBody,
+  getPushSubscribeBadRequestResponseBody,
+  getPushSubscribeSuccessResponseBody,
+  getPushSubscribeErrorResponseBody,
+} from "./subscribe-utils";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      getPushSubscribeUnauthorizedResponseBody(),
+      { status: 401 }
+    );
   }
 
   try {
     const body = await request.json();
-    const { token } = body;
+    const validation = validatePushSubscribePayload(body);
 
-    if (!token || typeof token !== "string") {
-      return NextResponse.json({ error: "Token required" }, { status: 400 });
+    if (!validation.isValid || !validation.token) {
+      return NextResponse.json(
+        getPushSubscribeBadRequestResponseBody(validation.error),
+        { status: 400 }
+      );
     }
+
+    const { token } = validation;
 
     // Clean up any stale mappings where this token is assigned to other users
     await db
@@ -40,11 +55,11 @@ export async function POST(request: NextRequest) {
         set: { endpoint: token },
       });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json(getPushSubscribeSuccessResponseBody());
   } catch (error) {
     console.error("Error saving push subscription:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      getPushSubscribeErrorResponseBody(),
       { status: 500 }
     );
   }
