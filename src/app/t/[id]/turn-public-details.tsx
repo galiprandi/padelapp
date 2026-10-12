@@ -65,6 +65,10 @@ import {
   getTurnConnectionText,
   getTurnConnectionAriaLabel,
   getTurnBackAriaLabel,
+  getTurnUrgencyBadgeAriaLabel,
+  getTurnContactProfileLinkAriaLabel,
+  getTurnContactCompatibilityAriaLabel,
+  getTurnContactBadgeAriaLabel,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -338,7 +342,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </h2>
           <div className="flex items-center gap-1.5">
             {urgencyText && (
-              <Badge variant="warning" aria-label={`Urgencia: ${urgencyText}`}>
+              <Badge variant="warning" aria-label={getTurnUrgencyBadgeAriaLabel(urgencyText)}>
                 {urgencyText}
               </Badge>
             )}
@@ -569,7 +573,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   <Link
                     href={`/p/${contact.id}`}
                     prefetch={true}
-                    aria-label={`Ver perfil público de ${contactName}`}
+                    aria-label={getTurnContactProfileLinkAriaLabel(contactName)}
                     className="flex items-center gap-3 flex-1 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   >
                     <PlayerAvatar
@@ -589,7 +593,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                               contact.badgeStyle ?? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
                             }`}
                             title={`Compatibilidad con el turno: ${contact.proximityTier}. ${contact.proximitySummary ?? ""}`}
-                            aria-label={`Compatibilidad de ${contactName} con el turno: ${contact.proximityTier}. ${contact.proximitySummary ?? ""}`}
+                            aria-label={getTurnContactCompatibilityAriaLabel(contactName, contact.proximityTier, contact.proximitySummary)}
                           >
                             {contact.proximityTier}
                           </span>
@@ -666,7 +670,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                         <span
                           className="h-2 w-2 rounded-full bg-primary"
                           title="Contacto"
-                          aria-label="Contacto frecuente"
+                          aria-label={getTurnContactBadgeAriaLabel("Contacto frecuente")}
                         />
                       )}
                     </p>

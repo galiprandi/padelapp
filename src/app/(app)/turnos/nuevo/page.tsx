@@ -20,6 +20,16 @@ import {
   getTurnFormSubmitButtonAriaLabel,
   getNewTurnHeadingTitle,
   getNewTurnHeadingDescription,
+  getTurnFormDetailsHeaderTitle,
+  getTurnFormClubLabel,
+  getTurnFormClubPlaceholder,
+  getTurnFormDateLabel,
+  getTurnFormTimeLabel,
+  getTurnFormDurationLabel,
+  getTurnFormPlayersLabel,
+  getTurnFormNotesLabel,
+  getTurnFormNotesPlaceholder,
+  getTurnFormSubmitButtonText,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
@@ -122,7 +132,9 @@ export default function NewTurnPage() {
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-primary" />
-              <h2 className="text-sm font-bold text-foreground">Detalles del partido</h2>
+              <h2 className="text-sm font-bold text-foreground">
+                {getTurnFormDetailsHeaderTitle()}
+              </h2>
             </div>
           </div>
           <div className="p-6 flex flex-col gap-6">
@@ -132,11 +144,11 @@ export default function NewTurnPage() {
                 requiredIndicator="*"
                 className="text-sm font-semibold text-foreground"
               >
-                Club y cancha
+                {getTurnFormClubLabel()}
               </Label>
               <ClubInput
                 id="club"
-                placeholder="Ej: Padel City · Cancha 3"
+                placeholder={getTurnFormClubPlaceholder()}
                 value={formData.club}
                 onChange={(value) => setFormData({ ...formData, club: value })}
                 required
@@ -152,7 +164,7 @@ export default function NewTurnPage() {
                   requiredIndicator="*"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Fecha
+                  {getTurnFormDateLabel()}
                 </Label>
                 <Input
                   id="date"
@@ -172,7 +184,7 @@ export default function NewTurnPage() {
                   requiredIndicator="*"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Hora
+                  {getTurnFormTimeLabel()}
                 </Label>
                 <Input
                   id="time"
@@ -190,7 +202,7 @@ export default function NewTurnPage() {
 
             <div className="flex flex-col gap-3">
               <Label id="duration-label" className="text-sm font-semibold text-foreground">
-                Duración
+                {getTurnFormDurationLabel()}
               </Label>
               <div
                 role="radiogroup"
@@ -236,7 +248,7 @@ export default function NewTurnPage() {
 
             <div className="flex flex-col gap-3">
               <Label id="players-label" className="text-sm font-semibold text-foreground">
-                Cupos totales
+                {getTurnFormPlayersLabel()}
               </Label>
               <div
                 role="radiogroup"
@@ -287,7 +299,7 @@ export default function NewTurnPage() {
                   htmlFor="notes"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Notas adicionales
+                  {getTurnFormNotesLabel()}
                 </Label>
                 <span className="text-xs text-muted-foreground">
                   {(formData.notes ?? "").length}/200
@@ -296,7 +308,7 @@ export default function NewTurnPage() {
               <Textarea
                 id="notes"
                 maxLength={200}
-                placeholder="Ej: Traer pelotas nuevas. Punto de encuentro en recepción."
+                placeholder={getTurnFormNotesPlaceholder("create")}
                 value={formData.notes}
                 onChange={(e) =>
                   setFormData({ ...formData, notes: e.target.value })
@@ -314,14 +326,8 @@ export default function NewTurnPage() {
           aria-busy={isPending}
           aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "create", isPending })}
         >
-          {isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creando...
-            </>
-          ) : (
-            "Crear turno y compartir link"
-          )}
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {getTurnFormSubmitButtonText("create", isPending)}
         </Button>
       </form>
     </div>

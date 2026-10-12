@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-11 — Turn Form & Detail View Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-form-and-details-pure-helpers)
 - [x] 2026-10-10 — Organizer Actions & Add Player Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/organizer-actions-and-add-player-pure-helpers)
 - [x] 2026-10-08 — QuickJoinEmptySlotButton & LeaveSubstituteForm Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/quick-join-and-leave-substitute-helpers)
 - [x] 2026-10-07 — Turn Chat Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-chat-pure-helpers)
@@ -74,6 +75,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-11 - Turn Form & Detail View Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getTurnFormDetailsHeaderTitle`, `getTurnFormClubLabel`, `getTurnFormClubPlaceholder`, `getTurnFormDateLabel`, `getTurnFormTimeLabel`, `getTurnFormDurationLabel`, `getTurnFormDurationTurnLabel`, `getTurnFormPlayersLabel`, `getTurnFormNotesLabel`, `getTurnFormNotesPlaceholder`, `getTurnFormSubmitButtonText`, `getTurnUrgencyBadgeAriaLabel`, `getTurnContactProfileLinkAriaLabel`, `getTurnContactCompatibilityAriaLabel`, and `getTurnContactBadgeAriaLabel`) into `src/components/turns/turn-utils.ts` decouples form labels, placeholders, header titles, state-driven submit button text ("Creando...", "Crear turno y compartir link", "Actualizando...", "Guardar cambios"), urgency badge ARIA screen reader attributes, and contact compatibility labels from React component render trees in `NewTurnPage` (`src/app/(app)/turnos/nuevo/page.tsx`), `EditTurnForm` (`src/app/(app)/turnos/[id]/editar/edit-form.tsx`), and `TurnPublicDetails` (`src/app/t/[id]/turn-public-details.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract form input labels, header titles, state-driven submit button text, and detail ARIA labels into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-08 - QuickJoinEmptySlotButton & LeaveSubstituteForm Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getLeaveSubstituteButtonText` and `getQuickJoinEmptySlotButtonText`) into `src/components/turns/turn-utils.ts` decouples localized button status copy ("Saliendo...", "No puedo — salir de suplentes", "Salir de suplentes", "Sumando...", "Sumarme") from React client component render trees in `TurnActions` (`src/components/turns/turn-actions.tsx`). Consuming these pure helpers guarantees strict adherence to Argentine Spanish voseo conventions without exclamation marks while maintaining focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS button container styling.
 **Action:** Always extract button label copy and status conditional logic into pure helper utilities backed by Vitest unit tests.
