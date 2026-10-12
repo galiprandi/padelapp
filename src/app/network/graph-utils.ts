@@ -569,6 +569,27 @@ export function getTopPlayerReciprocityAriaLabel(
   return `Reciprocidad de interacción de ${playerName}: ${reciprocityTier}. ${summary}`;
 }
 
+export function getNetworkDiversityAriaLabel(
+  diversityTier: string,
+  formattedSummary: string
+): string {
+  return `Diversidad de red: ${diversityTier}. ${formattedSummary}`;
+}
+
+export function getCrossRivalryAriaLabel(
+  rivalryTier: string,
+  formattedSummary: string
+): string {
+  return `Rivalidad cruzada: ${rivalryTier}. ${formattedSummary}`;
+}
+
+export function getPlayerGraphReachAriaLabel(
+  reachTier: string,
+  formattedSummary: string
+): string {
+  return `Alcance de red: ${reachTier}. ${formattedSummary}`;
+}
+
 export interface NetworkExpansionPotential {
   expansionScore: number;
   unexploredReachCount: number;
