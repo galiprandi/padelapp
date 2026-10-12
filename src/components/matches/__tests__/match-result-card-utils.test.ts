@@ -3,6 +3,13 @@ import {
   getMatchQuickConfirmSuccessToast,
   getMatchQuickConfirmErrorToast,
   getMatchQuickConfirmButtonAriaLabel,
+  getMatchQuickConfirmButtonText,
+  getMatchShareTitle,
+  getMatchShareButtonAriaLabel,
+  getMatchDetailLinkText,
+  getMatchVersusSeparatorText,
+  getMatchScorePlaceholderText,
+  getMatchTeamPlayerNameText,
   getMatchStatusBadgeText,
   getMatchStatusBadgeVariant,
   getMatchDetailLinkAriaLabel,
@@ -24,6 +31,21 @@ describe("match-result-card-utils", () => {
     expect(getMatchQuickConfirmButtonAriaLabel("6-4, 6-3")).toBe(
       "Confirmar resultado (6-4, 6-3) del partido"
     );
+  });
+
+  it("returns correct quick confirm button text depending on isConfirming state", () => {
+    expect(getMatchQuickConfirmButtonText(true)).toBe("Confirmando...");
+    expect(getMatchQuickConfirmButtonText(false)).toBe("Confirmar");
+  });
+
+  it("returns correct UI texts for sharing, detail links, separators, placeholders and player names", () => {
+    expect(getMatchShareTitle()).toBe("Resultado de Pádel");
+    expect(getMatchShareButtonAriaLabel()).toBe("Compartir resultado");
+    expect(getMatchDetailLinkText()).toBe("Detalle");
+    expect(getMatchVersusSeparatorText()).toBe("vs");
+    expect(getMatchScorePlaceholderText()).toBe("—");
+    expect(getMatchTeamPlayerNameText(true, "Agustín Tapia")).toBe("Vos");
+    expect(getMatchTeamPlayerNameText(false, "Agustín Tapia")).toBe("Agustín Tapia");
   });
 
   it("returns correct status badge text based on status and needsConfirmation flag", () => {
