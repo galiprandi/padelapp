@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-03 — Extracción de Funciones Helper Puras `formatProvidersRegionAriaLabel`, `getSessionProviderProps`, `isAnalyticsEnabled` y `getProvidersToastProviderProps` (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (`src/app/providers.tsx`)
 - [x] 2026-10-02 — Extracción de Funciones Helper Puras de Acciones Pendientes y Badge de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsPage` y `BottomNav` (PR #tino/ux/pending-actions-and-notifications-badge-helpers)
 - [x] 2026-10-01 — Extracción de Funciones Helper Puras `getNavItemLinkProps` y `getFabLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/nav-item-and-fab-link-props-helpers)
 - [x] 2026-09-30 — Extracción de Funciones Helper Puras `getNotificationsBadgeHref` y `getNotificationsBadgeLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsBadge` (`src/components/navigation/notifications-badge.tsx`) (PR #tino/ux/notifications-badge-link-props-helper)
@@ -72,6 +73,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-03 - Extracción de Funciones Helper Puras para Proveedores Globales de Contexto
+**Aprendizaje:** Encapsular el formateo flexible de etiquetas accesibles ARIA (`formatProvidersRegionAriaLabel`), la configuración predeterminada de SessionProvider (`getSessionProviderProps`), el flag de evaluación para Analytics (`isAnalyticsEnabled`), y las opciones recomendadas para ToastProvider (`getProvidersToastProviderProps`) dentro de `src/lib/providers-utils.ts` desasocia la lógica de opciones del entorno y accesibilidad del árbol de componentes en `Providers` (`src/app/providers.tsx`). Esto simplifica las plantillas de envoltorios de contexto y asegura que las configuraciones globales sean fáciles de verificar mediante pruebas unitarias rápidas e independientes.
+**Acción:** Reutilizar `getSessionProviderProps` y `getProvidersToastProviderProps` al instanciar o probar subproveedores de contexto en la aplicación.
+
 ### 2026-10-02 - Extracción de Funciones Helper Puras de Acciones Pendientes y Badge de Notificaciones
 **Aprendizaje:** Encapsular la lógica de cálculo de URLs y etiquetas de acción para partidos con acciones pendientes (`getPendingActionMatchDetailProps` retornando `/match/[id]/result` o `/match/[id]` y "Cargar resultado" o "Confirmar"), la composición de propiedades de enlace para la insignia de notificaciones en la barra inferior (`getBottomNavNotificationsBadgeLinkProps`), y las clases CSS utilitarias (`getNotificationsHeaderClasses`, `getNotificationsContainerClasses`, `getNotificationsActionsBadgeClasses`, `getNotificationsListClasses`) en `src/components/navigation/nav-utils.ts` desacopla la lógica condicional de maquetación en `NotificationsPage` (`src/app/(app)/notifications/page.tsx`) y `BottomNav` (`src/components/navigation/bottom-nav.tsx`), simplificando las plantillas JSX y garantizando cobertura completa mediante pruebas unitarias rápidas e independientes.
 **Acción:** Reutilizar `getPendingActionMatchDetailProps` y `getBottomNavNotificationsBadgeLinkProps` al ampliar o presentar notificaciones o acciones pendientes en otras vistas de la app.
