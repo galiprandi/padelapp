@@ -16,16 +16,20 @@ import {
   finalizeMatchAction,
 } from "@/app/(app)/match/actions";
 import {
+  getCancelMatchButtonText,
+  getCancelMatchConfirmButtonText,
   getCancelMatchAriaLabel,
   getCancelMatchConfirmRegionAriaLabel,
   getCancelMatchCancelAriaLabel,
   getCancelMatchSubmitAriaLabel,
   getCancelMatchSuccessToast,
   getCancelMatchErrorToast,
+  getConfirmResultButtonText,
   getConfirmResultRegionAriaLabel,
   getConfirmResultAriaLabel,
   getConfirmResultSuccessToast,
   getConfirmResultErrorToast,
+  getFinalizeMatchButtonText,
   getFinalizeMatchRegionAriaLabel,
   getFinalizeMatchAriaLabel,
   getFinalizeMatchSuccessToast,
@@ -74,7 +78,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         aria-label={getCancelMatchAriaLabel()}
       >
         <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
-        Eliminar Partido
+        {getCancelMatchButtonText()}
       </Button>
     );
   }
@@ -115,7 +119,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         ) : (
           <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
         )}
-        {isPending ? "Eliminando..." : "Confirmar"}
+        {getCancelMatchConfirmButtonText(isPending)}
       </Button>
     </div>
   );
@@ -158,7 +162,7 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
         ) : (
           <CheckCircle2 className="mr-2 h-5 w-5" aria-hidden="true" />
         )}
-        {isPending ? "Confirmando..." : "Confirmar Resultado"}
+        {getConfirmResultButtonText(isPending)}
       </Button>
     </form>
   );
@@ -202,7 +206,7 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
         ) : (
           <CheckCircle2 className="mr-2 h-4 w-4 text-primary" aria-hidden="true" />
         )}
-        {isPending ? "Finalizando..." : "Finalizar como Organizador"}
+        {getFinalizeMatchButtonText(isPending)}
       </Button>
     </form>
   );

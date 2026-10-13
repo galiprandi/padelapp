@@ -84,8 +84,19 @@ export function getManageSlotHeaderTitle(): string {
 /**
  * Generates an Argentine Spanish accessible ARIA label for the slot swap action button.
  */
+export function getManageSlotSwapButtonText(): string {
+  return "Mover";
+}
+
 export function getManageSlotSwapButtonAriaLabel(): string {
   return "Mover o intercambiar posición del jugador";
+}
+
+/**
+ * Returns localized button text for releasing/removing slot.
+ */
+export function getManageSlotReleaseButtonText(): string {
+  return "Quitar";
 }
 
 /**
@@ -93,4 +104,18 @@ export function getManageSlotSwapButtonAriaLabel(): string {
  */
 export function getManageSlotReleaseButtonAriaLabel(): string {
   return "Quitar o liberar cupo del jugador";
+}
+
+/**
+ * Returns localized button text for saving slot.
+ */
+export function getManageSlotSaveButtonText(): string {
+  return "Guardar";
+}
+
+/**
+ * Returns localized button text for closing/canceling slot management dialog.
+ */
+export function getManageSlotCloseButtonText(isReadOnlyUserSlot: boolean): string {
+  return isReadOnlyUserSlot ? "Cerrar" : "Cancelar";
 }

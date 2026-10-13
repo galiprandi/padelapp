@@ -2,6 +2,14 @@
  * Pure helper functions for Match Actions (Cancel, Confirm Result, Finalize)
  */
 
+export function getCancelMatchButtonText(): string {
+  return "Eliminar Partido";
+}
+
+export function getCancelMatchConfirmButtonText(isPending: boolean): string {
+  return isPending ? "Eliminando..." : "Confirmar";
+}
+
 export function getCancelMatchAriaLabel(): string {
   return "Eliminar este partido";
 }
@@ -30,6 +38,10 @@ export function getConfirmResultRegionAriaLabel(): string {
   return "Acción para confirmar resultado del partido";
 }
 
+export function getConfirmResultButtonText(isPending: boolean): string {
+  return isPending ? "Confirmando..." : "Confirmar Resultado";
+}
+
 export function getConfirmResultAriaLabel(isPending: boolean): string {
   return isPending ? "Confirmando resultado del partido..." : "Confirmar resultado del partido";
 }
@@ -44,6 +56,10 @@ export function getConfirmResultErrorToast(message?: string): string {
 
 export function getFinalizeMatchRegionAriaLabel(): string {
   return "Acción para finalizar partido como organizador";
+}
+
+export function getFinalizeMatchButtonText(isPending: boolean): string {
+  return isPending ? "Finalizando..." : "Finalizar como Organizador";
 }
 
 export function getFinalizeMatchAriaLabel(isPending: boolean): string {

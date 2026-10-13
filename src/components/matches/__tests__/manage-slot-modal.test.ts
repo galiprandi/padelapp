@@ -7,8 +7,12 @@ import {
   getSearchResultsStatusAriaLabel,
   getManageSlotRegionAriaLabel,
   getManageSlotHeaderTitle,
+  getManageSlotSwapButtonText,
   getManageSlotSwapButtonAriaLabel,
+  getManageSlotReleaseButtonText,
   getManageSlotReleaseButtonAriaLabel,
+  getManageSlotSaveButtonText,
+  getManageSlotCloseButtonText,
 } from "../manage-slot-utils";
 
 describe("manage-slot-utils", () => {
@@ -124,16 +128,33 @@ describe("manage-slot-utils", () => {
       expect(getManageSlotHeaderTitle()).toBe("Gestionar jugador");
     });
 
+    it("returns correct swap button text", () => {
+      expect(getManageSlotSwapButtonText()).toBe("Mover");
+    });
+
     it("returns correct swap button ARIA label", () => {
       expect(getManageSlotSwapButtonAriaLabel()).toBe(
         "Mover o intercambiar posición del jugador",
       );
     });
 
+    it("returns correct release button text", () => {
+      expect(getManageSlotReleaseButtonText()).toBe("Quitar");
+    });
+
     it("returns correct release button ARIA label", () => {
       expect(getManageSlotReleaseButtonAriaLabel()).toBe(
         "Quitar o liberar cupo del jugador",
       );
+    });
+
+    it("returns correct save button text", () => {
+      expect(getManageSlotSaveButtonText()).toBe("Guardar");
+    });
+
+    it("returns correct close/cancel button text depending on read-only user slot state", () => {
+      expect(getManageSlotCloseButtonText(true)).toBe("Cerrar");
+      expect(getManageSlotCloseButtonText(false)).toBe("Cancelar");
     });
   });
 });
