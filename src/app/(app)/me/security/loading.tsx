@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getSecuritySkeletonAriaLabel } from "@/components/webauthn/passkey-utils";
 
 export default function SecurityLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getSecuritySkeletonAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div className="flex items-center gap-4">
         <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
         <div className="space-y-1">

@@ -1,8 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getProfileSkeletonAriaLabel } from "./profile-utils";
 
 export default function ProfileLoading() {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-busy="true"
+      aria-label={getProfileSkeletonAriaLabel()}
+      className="flex flex-col gap-6"
+    >
       <div>
         <Skeleton className="h-5 w-24" />
         <Skeleton className="mt-1 h-4 w-48" />
