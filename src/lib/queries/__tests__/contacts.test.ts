@@ -8,6 +8,10 @@ import {
   calculatePadelContactAriaLabel,
   calculateNetworkContactPriorityScore,
   formatNetworkContactSummary,
+  getNetworkContactBadgeText,
+  getNetworkContactBadgeStyle,
+  getNetworkContactMatchCountText,
+  getNetworkContactFormattedDate,
   type PadelContact,
 } from "@/lib/queries/contacts";
 
@@ -362,6 +366,83 @@ describe("calculateNetworkContactPriorityScore", () => {
     expect(calculateNetworkContactPriorityScore(1, 1, 0, date90Days)).toBe(20 + 15); // 35
     expect(calculateNetworkContactPriorityScore(1, 1, 0, date150Days)).toBe(20); // 20
     expect(calculateNetworkContactPriorityScore(1, 1, 0, null)).toBe(20); // 20
+  });
+});
+
+describe("getNetworkContactBadgeText", () => {
+  it("returns habitual pair badge text for 10 or more matches", () => {
+    expect(getNetworkContactBadgeText(10)).toBe("Dupla habitual 🏆");
+    expect(getNetworkContactBadgeText(25)).toBe("Dupla habitual 🏆");
+  });
+
+  it("returns frequent badge text for 5 to 9 matches", () => {
+    expect(getNetworkContactBadgeText(5)).toBe("Frecuente 🤝");
+    expect(getNetworkContactBadgeText(9)).toBe("Frecuente 🤝");
+  });
+
+  it("returns network contact badge text for 1 to 4 matches", () => {
+    expect(getNetworkContactBadgeText(1)).toBe("Contacto de red 🎾");
+    expect(getNetworkContactBadgeText(4)).toBe("Contacto de red 🎾");
+  });
+
+  it("returns new contact badge text for 0 matches", () => {
+    expect(getNetworkContactBadgeText(0)).toBe("Nuevo contacto 🌱");
+  });
+});
+
+describe("getNetworkContactBadgeStyle", () => {
+  it("returns emerald badge style for habitual pair (>= 10 matches)", () => {
+    const style = getNetworkContactBadgeStyle(10);
+    expect(style).toContain("bg-emerald-100");
+    expect(style).toContain("text-emerald-800");
+  });
+
+  it("returns sky badge style for frequent contacts (5 to 9 matches)", () => {
+    const style = getNetworkContactBadgeStyle(6);
+    expect(style).toContain("bg-sky-100");
+    expect(style).toContain("text-sky-800");
+  });
+
+  it("returns slate badge style for standard network contacts (1 to 4 matches)", () => {
+    const style = getNetworkContactBadgeStyle(2);
+    expect(style).toContain("bg-slate-100");
+    expect(style).toContain("text-slate-800");
+  });
+
+  it("returns muted badge style for new contacts (0 matches)", () => {
+    const style = getNetworkContactBadgeStyle(0);
+    expect(style).toBe("bg-muted text-muted-foreground border-border");
+  });
+});
+
+describe("getNetworkContactMatchCountText", () => {
+  it("formats singular match count text", () => {
+    expect(getNetworkContactMatchCountText(1)).toBe("1 partido");
+  });
+
+  it("formats plural match count text", () => {
+    expect(getNetworkContactMatchCountText(0)).toBe("0 partidos");
+    expect(getNetworkContactMatchCountText(5)).toBe("5 partidos");
+    expect(getNetworkContactMatchCountText(12)).toBe("12 partidos");
+  });
+});
+
+describe("getNetworkContactFormattedDate", () => {
+  it("formats Date instances into Argentine date string", () => {
+    const date = new Date("2026-06-15T12:00:00Z");
+    expect(getNetworkContactFormattedDate(date)).toBe("15/6/2026");
+  });
+
+  it("formats ISO date strings and timestamps", () => {
+    expect(getNetworkContactFormattedDate("2026-08-10T12:00:00Z")).toBe("10/8/2026");
+    expect(getNetworkContactFormattedDate(1778846400000)).toBe("15/5/2026");
+  });
+
+  it("returns empty string for null, undefined, invalid, or epoch zero dates", () => {
+    expect(getNetworkContactFormattedDate(null)).toBe("");
+    expect(getNetworkContactFormattedDate(undefined)).toBe("");
+    expect(getNetworkContactFormattedDate("invalid-date")).toBe("");
+    expect(getNetworkContactFormattedDate(new Date(0))).toBe("");
   });
 });
 

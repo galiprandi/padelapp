@@ -44,6 +44,10 @@ export {
   calculatePadelContactAriaLabel,
   calculateNetworkContactPriorityScore,
   formatNetworkContactSummary,
+  getNetworkContactBadgeText,
+  getNetworkContactBadgeStyle,
+  getNetworkContactMatchCountText,
+  getNetworkContactFormattedDate,
   type PadelContact,
   type NetworkContactSummary,
 } from "./contacts";
