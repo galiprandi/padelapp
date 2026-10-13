@@ -2329,3 +2329,65 @@ export function getTurnContactCompatibilityAriaLabel(
 export function getTurnContactBadgeAriaLabel(text: string): string {
   return text;
 }
+
+/**
+ * Format button label text for leave turn trigger.
+ */
+export function getLeaveTurnTriggerButtonText(): string {
+  return "Bajarme del turno";
+}
+
+/**
+ * Format button label text for confirming leave turn depending on pending state.
+ */
+export function getConfirmLeaveButtonText(isPending: boolean = false): string {
+  return isPending ? "Bajando..." : "Confirmar baja";
+}
+
+/**
+ * Format button label text for canceling leave turn dialog.
+ */
+export function getLeaveTurnCancelButtonText(): string {
+  return "Cancelar";
+}
+
+/**
+ * Format title for share prompt when leaving a full turn.
+ */
+export function getWasFullShareTitle(): string {
+  return "Sumate al Turno";
+}
+
+/**
+ * Format text payload for share prompt when leaving a full turn.
+ */
+export function getWasFullShareText(club: string): string {
+  return `Se liberó un cupo en ${club}`;
+}
+
+/**
+ * Format CSS classes for WhatsApp group invite button variants.
+ */
+export function getWhatsAppGroupInviteVariantClasses(
+  variant: "default" | "outline" | "amber" = "default"
+): string {
+  if (variant === "amber") {
+    return "bg-amber-600 text-white hover:bg-amber-700 border-transparent shadow-xs";
+  }
+  if (variant === "outline") {
+    return "border border-border text-foreground bg-card hover:bg-muted shadow-xs";
+  }
+  return "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent shadow-xs";
+}
+
+/**
+ * Format CSS classes for turn filter tabs depending on selection state.
+ */
+export function getTurnFilterTabClasses(isSelected: boolean): string {
+  return cn(
+    "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isSelected
+      ? "bg-card border border-border text-foreground shadow-xs font-bold"
+      : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground"
+  );
+}
