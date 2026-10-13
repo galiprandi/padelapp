@@ -19,6 +19,11 @@ import {
   getLateLeaveWarningTitle,
   getLateLeaveWarningDescription,
   getWasFullSharePromptText,
+  getLeaveTurnTriggerButtonText,
+  getConfirmLeaveButtonText,
+  getLeaveTurnCancelButtonText,
+  getWasFullShareTitle,
+  getWasFullShareText,
 } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
@@ -64,7 +69,7 @@ export function LeaveTurnButton({
         aria-label={getLeaveTurnTriggerAriaLabel()}
       >
         <LogOut className="mr-2 h-4 w-4" />
-        Bajarme del turno
+        {getLeaveTurnTriggerButtonText()}
       </Button>
     );
   }
@@ -98,8 +103,8 @@ export function LeaveTurnButton({
             {getWasFullSharePromptText()}
           </p>
           <ShareButton
-            title="Sumate al Turno"
-            text={`Se liberó un cupo en ${club}`}
+            title={getWasFullShareTitle()}
+            text={getWasFullShareText(club)}
             url={createMagicLink({ resource: "turn", identifier: turnId }).url}
             variant="outline"
             className="w-full h-10 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
@@ -115,7 +120,7 @@ export function LeaveTurnButton({
           aria-label={getCancelLeaveTurnAriaLabel()}
         >
           <X className="mr-2 h-4 w-4" />
-          Cancelar
+          {getLeaveTurnCancelButtonText()}
         </Button>
         <Button
           onClick={handleLeave}
@@ -130,7 +135,7 @@ export function LeaveTurnButton({
           ) : (
             <LogOut className="mr-2 h-4 w-4" />
           )}
-          {isPending ? "Bajando..." : "Confirmar baja"}
+          {getConfirmLeaveButtonText(isPending)}
         </Button>
       </div>
     </div>

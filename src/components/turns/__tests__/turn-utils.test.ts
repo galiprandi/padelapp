@@ -203,6 +203,13 @@ import {
   getTurnContactProfileLinkAriaLabel,
   getTurnContactCompatibilityAriaLabel,
   getTurnContactBadgeAriaLabel,
+  getLeaveTurnTriggerButtonText,
+  getConfirmLeaveButtonText,
+  getLeaveTurnCancelButtonText,
+  getWasFullShareTitle,
+  getWasFullShareText,
+  getWhatsAppGroupInviteVariantClasses,
+  getTurnFilterTabClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -876,6 +883,40 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("leave turn button text & share props pure helpers", () => {
+  it("formats getLeaveTurnTriggerButtonText, getConfirmLeaveButtonText, and getLeaveTurnCancelButtonText", () => {
+    expect(getLeaveTurnTriggerButtonText()).toBe("Bajarme del turno");
+    expect(getConfirmLeaveButtonText(false)).toBe("Confirmar baja");
+    expect(getConfirmLeaveButtonText(true)).toBe("Bajando...");
+    expect(getConfirmLeaveButtonText()).toBe("Confirmar baja");
+    expect(getLeaveTurnCancelButtonText()).toBe("Cancelar");
+  });
+
+  it("formats getWasFullShareTitle and getWasFullShareText", () => {
+    expect(getWasFullShareTitle()).toBe("Sumate al Turno");
+    expect(getWasFullShareText("Central Padel")).toBe("Se liberó un cupo en Central Padel");
+  });
+});
+
+describe("variant and filter tab CSS class pure helpers", () => {
+  it("formats getWhatsAppGroupInviteVariantClasses across amber, outline, and default variants", () => {
+    expect(getWhatsAppGroupInviteVariantClasses("amber")).toContain("bg-amber-600");
+    expect(getWhatsAppGroupInviteVariantClasses("outline")).toContain("border border-border");
+    expect(getWhatsAppGroupInviteVariantClasses("default")).toContain("bg-emerald-600");
+    expect(getWhatsAppGroupInviteVariantClasses()).toContain("bg-emerald-600");
+  });
+
+  it("formats getTurnFilterTabClasses across selected and idle states", () => {
+    const selectedClasses = getTurnFilterTabClasses(true);
+    expect(selectedClasses).toContain("bg-card");
+    expect(selectedClasses).toContain("font-bold");
+
+    const idleClasses = getTurnFilterTabClasses(false);
+    expect(idleClasses).toContain("border-transparent");
+    expect(idleClasses).toContain("text-muted-foreground");
   });
 });
 

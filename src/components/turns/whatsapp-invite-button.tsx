@@ -12,6 +12,7 @@ import {
   getWhatsAppInviteButtonText,
   getWhatsAppGroupInviteButtonText,
   getFallbackWhatsAppShareUrl,
+  getWhatsAppGroupInviteVariantClasses,
 } from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -101,12 +102,7 @@ export function WhatsAppGroupInviteButton({
     showToast(getWhatsAppGroupInviteSuccessToast());
   };
 
-  const variantStyles =
-    variant === "amber"
-      ? "bg-amber-600 text-white hover:bg-amber-700 border-transparent shadow-xs"
-      : variant === "outline"
-        ? "border border-border text-foreground bg-card hover:bg-muted shadow-xs"
-        : "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent shadow-xs";
+  const variantStyles = getWhatsAppGroupInviteVariantClasses(variant);
 
   return (
     <a
