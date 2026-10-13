@@ -6,6 +6,10 @@ import {
   getErrorHomeAriaLabel,
   getErrorRegionAriaLabel,
   getErrorContainerClasses,
+  getRootErrorContainerClasses,
+  getAppErrorContainerClasses,
+  getErrorIconContainerClasses,
+  getErrorActionButtonClasses,
   formatErrorDetails,
 } from "../error-utils";
 
@@ -90,6 +94,65 @@ describe("error-utils", () => {
       const classes = getErrorContainerClasses("max-w-md min-h-[60vh]");
       expect(classes).toContain("max-w-md");
       expect(classes).toContain("min-h-[60vh]");
+    });
+  });
+
+  describe("getRootErrorContainerClasses", () => {
+    it("returns full viewport height and background classes for root error container", () => {
+      const classes = getRootErrorContainerClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("min-h-[100dvh]");
+      expect(classes).toContain("bg-background");
+      expect(classes).toContain("items-center");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getRootErrorContainerClasses("custom-root-error");
+      expect(classes).toContain("custom-root-error");
+    });
+  });
+
+  describe("getAppErrorContainerClasses", () => {
+    it("returns layout and gap classes for app-level error container", () => {
+      const classes = getAppErrorContainerClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("flex-col");
+      expect(classes).toContain("gap-4");
+      expect(classes).toContain("py-16");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getAppErrorContainerClasses("custom-app-error");
+      expect(classes).toContain("custom-app-error");
+    });
+  });
+
+  describe("getErrorIconContainerClasses", () => {
+    it("returns destructive background and dimension classes for icon badge", () => {
+      const classes = getErrorIconContainerClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("h-12");
+      expect(classes).toContain("w-12");
+      expect(classes).toContain("bg-destructive/10");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorIconContainerClasses("custom-icon-bg");
+      expect(classes).toContain("custom-icon-bg");
+    });
+  });
+
+  describe("getErrorActionButtonClasses", () => {
+    it("returns active tactile scale and accessible focus ring classes", () => {
+      const classes = getErrorActionButtonClasses();
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("focus-visible:ring-2");
+      expect(classes).toContain("focus-visible:ring-ring");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorActionButtonClasses("custom-btn");
+      expect(classes).toContain("custom-btn");
     });
   });
 

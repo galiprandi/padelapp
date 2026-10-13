@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-04 — Extracción de Funciones Helper Puras de Fronteras de Error y Clases CSS (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-03 — Extracción de Funciones Helper Puras `formatProvidersRegionAriaLabel`, `getSessionProviderProps`, `isAnalyticsEnabled` y `getProvidersToastProviderProps` (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (`src/app/providers.tsx`)
 - [x] 2026-10-02 — Extracción de Funciones Helper Puras de Acciones Pendientes y Badge de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsPage` y `BottomNav` (PR #tino/ux/pending-actions-and-notifications-badge-helpers)
 - [x] 2026-10-01 — Extracción de Funciones Helper Puras `getNavItemLinkProps` y `getFabLinkProps` (`src/components/navigation/nav-utils.ts`) y Refactorización de `BottomNav` (`src/components/navigation/bottom-nav.tsx`) (PR #tino/ux/nav-item-and-fab-link-props-helpers)

@@ -58,6 +58,47 @@ export function getErrorContainerClasses(customClassName?: string): string {
   );
 }
 
+/**
+ * Retorna las clases CSS para el contenedor de pantalla completa de RootError.
+ */
+export function getRootErrorContainerClasses(customClassName?: string): string {
+  return cn(
+    "flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10",
+    customClassName,
+  );
+}
+
+/**
+ * Retorna las clases CSS para el contenedor de nivel de aplicación en AppError.
+ */
+export function getAppErrorContainerClasses(customClassName?: string): string {
+  return cn(
+    "flex flex-col items-center justify-center gap-4 py-16 text-center",
+    customClassName,
+  );
+}
+
+/**
+ * Retorna las clases CSS para el contenedor del ícono de alerta destructiva.
+ */
+export function getErrorIconContainerClasses(customClassName?: string): string {
+  return cn(
+    "flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10",
+    customClassName,
+  );
+}
+
+/**
+ * Retorna las clases CSS para los botones de acción (reintentar / ir al inicio) en pantallas de error,
+ * aplicando respuesta táctil al toque y anillos de foco accesibles.
+ */
+export function getErrorActionButtonClasses(customClassName?: string): string {
+  return cn(
+    "active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
+}
+
 export interface FormatErrorDetailsOptions {
   section?: string;
   fallbackMessage?: string;
