@@ -16,8 +16,12 @@ import {
   getSearchResultsStatusAriaLabel,
   getManageSlotRegionAriaLabel,
   getManageSlotHeaderTitle,
+  getManageSlotSwapButtonText,
   getManageSlotSwapButtonAriaLabel,
+  getManageSlotReleaseButtonText,
   getManageSlotReleaseButtonAriaLabel,
+  getManageSlotSaveButtonText,
+  getManageSlotCloseButtonText,
 } from "./manage-slot-utils";
 
 interface RecentPlayer {
@@ -241,7 +245,7 @@ export function ManageSlotModal({
                 onClick={onSwap}
               >
                 <ArrowUpDown className="mr-1.5 h-3 w-3" />
-                Mover
+                {getManageSlotSwapButtonText()}
               </Button>
             )}
             {onRelease && (
@@ -254,7 +258,7 @@ export function ManageSlotModal({
                 onClick={onRelease}
               >
                 <UserMinus className="mr-1.5 h-3 w-3" />
-                Quitar
+                {getManageSlotReleaseButtonText()}
               </Button>
             )}
           </div>
@@ -478,7 +482,7 @@ export function ManageSlotModal({
                 className="flex-1 h-12 rounded-lg font-bold text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 onClick={handleSave}
               >
-                Guardar
+                {getManageSlotSaveButtonText()}
               </Button>
               {onShare && (
                 <Button
@@ -500,7 +504,7 @@ export function ManageSlotModal({
             className="w-full h-10 rounded-lg font-medium text-muted-foreground text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
             onClick={onClose}
           >
-            {isUserSlot && !canEdit ? "Cerrar" : "Cancelar"}
+            {getManageSlotCloseButtonText(isUserSlot && !canEdit)}
           </Button>
         </div>
       </div>

@@ -1,15 +1,19 @@
 import { describe, it, expect } from "vitest";
 import {
+  getCancelMatchButtonText,
+  getCancelMatchConfirmButtonText,
   getCancelMatchAriaLabel,
   getCancelMatchConfirmRegionAriaLabel,
   getCancelMatchCancelAriaLabel,
   getCancelMatchSubmitAriaLabel,
   getCancelMatchSuccessToast,
   getCancelMatchErrorToast,
+  getConfirmResultButtonText,
   getConfirmResultRegionAriaLabel,
   getConfirmResultAriaLabel,
   getConfirmResultSuccessToast,
   getConfirmResultErrorToast,
+  getFinalizeMatchButtonText,
   getFinalizeMatchRegionAriaLabel,
   getFinalizeMatchAriaLabel,
   getFinalizeMatchSuccessToast,
@@ -18,6 +22,15 @@ import {
 
 describe("Match Actions Utils", () => {
   describe("Cancel Match Helpers", () => {
+    it("returns correct trigger button text", () => {
+      expect(getCancelMatchButtonText()).toBe("Eliminar Partido");
+    });
+
+    it("returns correct confirmation button text based on pending state", () => {
+      expect(getCancelMatchConfirmButtonText(false)).toBe("Confirmar");
+      expect(getCancelMatchConfirmButtonText(true)).toBe("Eliminando...");
+    });
+
     it("returns correct trigger aria-label", () => {
       expect(getCancelMatchAriaLabel()).toBe("Eliminar este partido");
     });
@@ -46,6 +59,11 @@ describe("Match Actions Utils", () => {
   });
 
   describe("Confirm Result Helpers", () => {
+    it("returns correct confirm result button text based on pending state", () => {
+      expect(getConfirmResultButtonText(false)).toBe("Confirmar Resultado");
+      expect(getConfirmResultButtonText(true)).toBe("Confirmando...");
+    });
+
     it("returns correct confirm result region aria-label", () => {
       expect(getConfirmResultRegionAriaLabel()).toBe("Acción para confirmar resultado del partido");
     });
@@ -66,6 +84,11 @@ describe("Match Actions Utils", () => {
   });
 
   describe("Finalize Match Helpers", () => {
+    it("returns correct finalize match button text based on pending state", () => {
+      expect(getFinalizeMatchButtonText(false)).toBe("Finalizar como Organizador");
+      expect(getFinalizeMatchButtonText(true)).toBe("Finalizando...");
+    });
+
     it("returns correct finalize match region aria-label", () => {
       expect(getFinalizeMatchRegionAriaLabel()).toBe("Acción para finalizar partido como organizador");
     });
