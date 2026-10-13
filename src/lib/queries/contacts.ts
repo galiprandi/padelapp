@@ -59,40 +59,65 @@ export interface NetworkContactSummary {
 }
 
 /**
+ * Pure helper: returns standardized solid MDS badge text for a network contact based on match frequency.
+ */
+export function getNetworkContactBadgeText(matchesTogether: number): string {
+  if (matchesTogether >= 10) return "Dupla habitual 🏆";
+  if (matchesTogether >= 5) return "Frecuente 🤝";
+  if (matchesTogether >= 1) return "Contacto de red 🎾";
+  return "Nuevo contacto 🌱";
+}
+
+/**
+ * Pure helper: returns standardized solid MDS badge style classes for a network contact based on match frequency.
+ */
+export function getNetworkContactBadgeStyle(matchesTogether: number): string {
+  if (matchesTogether >= 10) {
+    return "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800";
+  }
+  if (matchesTogether >= 5) {
+    return "bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950 dark:text-sky-200 dark:border-sky-800";
+  }
+  if (matchesTogether >= 1) {
+    return "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-800";
+  }
+  return "bg-muted text-muted-foreground border-border";
+}
+
+/**
+ * Pure helper: returns formatted match count text for network contact summary.
+ */
+export function getNetworkContactMatchCountText(matchesTogether: number): string {
+  return matchesTogether === 1 ? "1 partido" : `${matchesTogether} partidos`;
+}
+
+/**
+ * Pure helper: formats last match date in Argentine locale format (es-AR).
+ */
+export function getNetworkContactFormattedDate(
+  date: Date | string | number | null | undefined
+): string {
+  if (!date) return "";
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime()) || d.getTime() === 0) return "";
+  return d.toLocaleDateString("es-AR", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+}
+
+/**
  * Pure helper: formats padel contact information into standardized UI texts
  * (match count, recency, solid MDS badge text, and accessible ARIA label).
  */
 export function formatNetworkContactSummary(
   contact: PadelContact
 ): NetworkContactSummary {
-  const count = contact.matchesTogether;
-  const matchCountText = count === 1 ? "1 partido" : `${count} partidos`;
-
-  const lastMatchAt = contact.lastMatchAt ? new Date(contact.lastMatchAt) : null;
-  const isValidDate = lastMatchAt && lastMatchAt.getTime() > 0;
-
-  let recencyText = "";
-  let badgeText = "Contacto de red 🎾";
-
-  if (count >= 10) {
-    badgeText = "Dupla habitual 🏆";
-  } else if (count >= 5) {
-    badgeText = "Frecuente 🤝";
-  } else if (count >= 1) {
-    badgeText = "Contacto de red 🎾";
-  } else {
-    badgeText = "Nuevo contacto 🌱";
-  }
-
-  if (isValidDate) {
-    recencyText = lastMatchAt.toLocaleDateString("es-AR", {
-      day: "numeric",
-      month: "numeric",
-      year: "numeric",
-      timeZone: "America/Argentina/Buenos_Aires",
-    });
-  }
-
+  const matchCountText = getNetworkContactMatchCountText(contact.matchesTogether);
+  const badgeText = getNetworkContactBadgeText(contact.matchesTogether);
+  const recencyText = getNetworkContactFormattedDate(contact.lastMatchAt);
   const ariaLabel = calculatePadelContactAriaLabel(contact);
 
   return {
