@@ -590,6 +590,83 @@ export function getPlayerGraphReachAriaLabel(
   return `Alcance de red: ${reachTier}. ${formattedSummary}`;
 }
 
+export function getPlayerExpansionAriaLabel(
+  expansionTier: string,
+  formattedSummary: string
+): string {
+  return `Potencial de expansión de red: ${expansionTier}. ${formattedSummary}`;
+}
+
+export function getInteractionConcentrationAriaLabel(
+  concentrationTier: string,
+  formattedSummary: string
+): string {
+  return `Concentración de interacciones: ${concentrationTier}. ${formattedSummary}`;
+}
+
+export function getMultiBelongingAriaLabel(
+  multiBelongingTier: string,
+  formattedSummary: string
+): string {
+  return `Multipertenencia comunitaria: ${multiBelongingTier}. ${formattedSummary}`;
+}
+
+export function getMatchComplementarityAriaLabel(
+  complementarityTier: string,
+  formattedSummary: string
+): string {
+  return `Complementariedad de duplas: ${complementarityTier}. ${formattedSummary}`;
+}
+
+export function getPartnershipStabilityAriaLabel(
+  stabilityTier: string,
+  formattedSummary: string
+): string {
+  return `Estabilidad de duplas: ${stabilityTier}. ${formattedSummary}`;
+}
+
+export function getLocalClusteringAriaLabel(
+  clusteringTier: string,
+  formattedSummary: string
+): string {
+  return `Cohesión local: ${clusteringTier}. ${formattedSummary}`;
+}
+
+export function getNetworkCentralityAriaLabel(
+  centralityTier: string,
+  formattedSummary: string
+): string {
+  return `Centralidad en la red: ${centralityTier}. ${formattedSummary}`;
+}
+
+export function getNetworkRoleAriaLabel(
+  roleLabel: string,
+  description: string
+): string {
+  return `Rol en la red: ${roleLabel}. ${description}`;
+}
+
+export function getCommunityBridgingAriaLabel(
+  bridgingTier: string,
+  formattedSummary: string
+): string {
+  return `Nivel de puente comunitario: ${bridgingTier}. ${formattedSummary}`;
+}
+
+export function getInteractionReciprocityAriaLabel(
+  reciprocityTier: string,
+  formattedSummary: string
+): string {
+  return `Reciprocidad de interacción: ${reciprocityTier}. ${formattedSummary}`;
+}
+
+export function getPlayerSimilarityAriaLabel(
+  similarityTier: string,
+  formattedSummary: string
+): string {
+  return `Similitud con vos: ${similarityTier}. ${formattedSummary}`;
+}
+
 export interface NetworkExpansionPotential {
   expansionScore: number;
   unexploredReachCount: number;

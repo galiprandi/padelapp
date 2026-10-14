@@ -84,6 +84,17 @@ import {
   getNetworkDiversityAriaLabel,
   getCrossRivalryAriaLabel,
   getPlayerGraphReachAriaLabel,
+  getPlayerExpansionAriaLabel,
+  getInteractionConcentrationAriaLabel,
+  getMultiBelongingAriaLabel,
+  getMatchComplementarityAriaLabel,
+  getPartnershipStabilityAriaLabel,
+  getLocalClusteringAriaLabel,
+  getNetworkCentralityAriaLabel,
+  getNetworkRoleAriaLabel,
+  getCommunityBridgingAriaLabel,
+  getInteractionReciprocityAriaLabel,
+  getPlayerSimilarityAriaLabel,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -958,8 +969,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             similarityInfo.badgeStyle,
                           )}
-                          title={`Similitud con vos: ${similarityInfo.similarityTier}. ${similarityInfo.formattedSummary}`}
-                          aria-label={`Similitud con vos: ${similarityInfo.similarityTier}. ${similarityInfo.formattedSummary}`}
+                          title={getPlayerSimilarityAriaLabel(
+                            similarityInfo.similarityTier,
+                            similarityInfo.formattedSummary,
+                          )}
+                          aria-label={getPlayerSimilarityAriaLabel(
+                            similarityInfo.similarityTier,
+                            similarityInfo.formattedSummary,
+                          )}
                         >
                           {similarityInfo.similarityTier}
                         </span>
@@ -969,8 +986,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           expansionPotential.badgeStyle,
                         )}
-                        title={`Potencial de expansión de red: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
-                        aria-label={`Potencial de expansión de red: ${expansionPotential.expansionTier}. ${expansionPotential.formattedSummary}`}
+                        title={getPlayerExpansionAriaLabel(
+                          expansionPotential.expansionTier,
+                          expansionPotential.formattedSummary,
+                        )}
+                        aria-label={getPlayerExpansionAriaLabel(
+                          expansionPotential.expansionTier,
+                          expansionPotential.formattedSummary,
+                        )}
                       >
                         {expansionPotential.expansionTier}
                       </span>
@@ -979,8 +1002,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           concentration.badgeStyle,
                         )}
-                        title={`Concentración de interacciones: ${concentration.concentrationTier}. ${concentration.formattedSummary}`}
-                        aria-label={`Concentración de interacciones: ${concentration.concentrationTier}. ${concentration.formattedSummary}`}
+                        title={getInteractionConcentrationAriaLabel(
+                          concentration.concentrationTier,
+                          concentration.formattedSummary,
+                        )}
+                        aria-label={getInteractionConcentrationAriaLabel(
+                          concentration.concentrationTier,
+                          concentration.formattedSummary,
+                        )}
                       >
                         {concentration.concentrationTier}
                       </span>
@@ -989,8 +1018,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           multiBelonging.badgeStyle,
                         )}
-                        title={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
-                        aria-label={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                        title={getMultiBelongingAriaLabel(
+                          multiBelonging.multiBelongingTier,
+                          multiBelonging.formattedSummary,
+                        )}
+                        aria-label={getMultiBelongingAriaLabel(
+                          multiBelonging.multiBelongingTier,
+                          multiBelonging.formattedSummary,
+                        )}
                       >
                         {multiBelonging.multiBelongingTier}
                       </span>
@@ -999,8 +1034,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           complementarity.badgeStyle,
                         )}
-                        title={`Complementariedad de duplas: ${complementarity.complementarityTier}. ${complementarity.formattedSummary}`}
-                        aria-label={`Complementariedad de duplas: ${complementarity.complementarityTier}. ${complementarity.formattedSummary}`}
+                        title={getMatchComplementarityAriaLabel(
+                          complementarity.complementarityTier,
+                          complementarity.formattedSummary,
+                        )}
+                        aria-label={getMatchComplementarityAriaLabel(
+                          complementarity.complementarityTier,
+                          complementarity.formattedSummary,
+                        )}
                       >
                         {complementarity.complementarityTier}
                       </span>
@@ -1009,8 +1050,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           stability.badgeStyle,
                         )}
-                        title={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
-                        aria-label={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                        title={getPartnershipStabilityAriaLabel(
+                          stability.stabilityTier,
+                          stability.formattedSummary,
+                        )}
+                        aria-label={getPartnershipStabilityAriaLabel(
+                          stability.stabilityTier,
+                          stability.formattedSummary,
+                        )}
                       >
                         {stability.stabilityTier}
                       </span>
@@ -1019,8 +1066,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           localClustering.badgeStyle,
                         )}
-                        title={`Cohesión local: ${localClustering.clusteringTier}. ${localClustering.formattedSummary}`}
-                        aria-label={`Cohesión local: ${localClustering.clusteringTier}. ${localClustering.formattedSummary}`}
+                        title={getLocalClusteringAriaLabel(
+                          localClustering.clusteringTier,
+                          localClustering.formattedSummary,
+                        )}
+                        aria-label={getLocalClusteringAriaLabel(
+                          localClustering.clusteringTier,
+                          localClustering.formattedSummary,
+                        )}
                       >
                         {localClustering.clusteringTier}
                       </span>
@@ -1039,8 +1092,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           centrality.badgeStyle,
                         )}
-                        title={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
-                        aria-label={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                        title={getNetworkCentralityAriaLabel(
+                          centrality.centralityTier,
+                          centrality.formattedSummary,
+                        )}
+                        aria-label={getNetworkCentralityAriaLabel(
+                          centrality.centralityTier,
+                          centrality.formattedSummary,
+                        )}
                       >
                         {centrality.centralityTier}
                       </span>
@@ -1049,8 +1108,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           roleInfo.badgeStyle,
                         )}
-                        title={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
-                        aria-label={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                        title={getNetworkRoleAriaLabel(
+                          roleInfo.roleLabel,
+                          roleInfo.description,
+                        )}
+                        aria-label={getNetworkRoleAriaLabel(
+                          roleInfo.roleLabel,
+                          roleInfo.description,
+                        )}
                       >
                         {roleInfo.roleLabel}
                       </span>
@@ -1059,8 +1124,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           bridging.badgeStyle,
                         )}
-                        title={`Nivel de puente comunitario: ${bridging.bridgingTier}. ${bridging.formattedSummary}`}
-                        aria-label={`Nivel de puente comunitario: ${bridging.bridgingTier}. ${bridging.formattedSummary}`}
+                        title={getCommunityBridgingAriaLabel(
+                          bridging.bridgingTier,
+                          bridging.formattedSummary,
+                        )}
+                        aria-label={getCommunityBridgingAriaLabel(
+                          bridging.bridgingTier,
+                          bridging.formattedSummary,
+                        )}
                       >
                         {bridging.bridgingTier}
                       </span>
@@ -1117,8 +1188,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           reciprocity.badgeStyle,
                         )}
-                        title={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
-                        aria-label={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                        title={getInteractionReciprocityAriaLabel(
+                          reciprocity.reciprocityTier,
+                          reciprocity.formattedSummary,
+                        )}
+                        aria-label={getInteractionReciprocityAriaLabel(
+                          reciprocity.reciprocityTier,
+                          reciprocity.formattedSummary,
+                        )}
                       >
                         {reciprocity.reciprocityTier}
                       </span>
