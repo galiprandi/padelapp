@@ -210,6 +210,16 @@ import {
   getWasFullShareText,
   getWhatsAppGroupInviteVariantClasses,
   getTurnFilterTabClasses,
+  getTurnShareTitle,
+  getTurnShareButtonClasses,
+  getTurnSalvageBannerBadgeText,
+  getTurnTimeLabel,
+  getTurnCoveredSlotsLabel,
+  getTurnCoveredSlotsText,
+  getTurnNotesTitle,
+  getTurnOpenSlotsBadgeText,
+  getTurnOrganizerBadgeText,
+  getTurnYouBadgeText,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -917,6 +927,30 @@ describe("variant and filter tab CSS class pure helpers", () => {
     const idleClasses = getTurnFilterTabClasses(false);
     expect(idleClasses).toContain("border-transparent");
     expect(idleClasses).toContain("text-muted-foreground");
+  });
+});
+
+describe("TurnShareButton and detail view pure helpers batch", () => {
+  it("formats getTurnShareTitle and getTurnShareButtonClasses", () => {
+    expect(getTurnShareTitle()).toBe("Sumate al Turno");
+    expect(getTurnShareButtonClasses("full")).toBe("w-full h-12 rounded-lg text-base font-bold");
+    expect(getTurnShareButtonClasses("icon", "custom-class")).toBe("custom-class");
+  });
+
+  it("formats getTurnSalvageBannerBadgeText, getTurnTimeLabel, getTurnCoveredSlotsLabel, getTurnNotesTitle, getTurnOrganizerBadgeText, and getTurnYouBadgeText", () => {
+    expect(getTurnSalvageBannerBadgeText()).toBe("Salvataje de turno");
+    expect(getTurnTimeLabel()).toBe("Horario");
+    expect(getTurnCoveredSlotsLabel()).toBe("Cupos cubiertos");
+    expect(getTurnNotesTitle()).toBe("Notas del organizador");
+    expect(getTurnOrganizerBadgeText()).toBe("Organizador");
+    expect(getTurnYouBadgeText()).toBe("Vos");
+  });
+
+  it("formats getTurnCoveredSlotsText and getTurnOpenSlotsBadgeText across slot counts", () => {
+    expect(getTurnCoveredSlotsText(3, 4)).toBe("3 de 4");
+    expect(getTurnCoveredSlotsText(4, 4)).toBe("4 de 4");
+    expect(getTurnOpenSlotsBadgeText(1)).toBe("1 cupo libre");
+    expect(getTurnOpenSlotsBadgeText(2)).toBe("2 cupos libres");
   });
 });
 
