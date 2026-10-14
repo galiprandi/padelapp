@@ -19,6 +19,22 @@ import {
   formatH2HLastMatchResultText,
   getMatchHistoryRegionAriaLabel,
   getPublicProfileSkeletonAriaLabel,
+  getPublicProfileHeaderTitle,
+  getPublicProfileHeaderSubtitle,
+  getMiniCourtIndicatorClasses,
+  getRecentFormDotClasses,
+  getPublicProfileWinRateLabel,
+  getPublicProfileRecentFormLabel,
+  getPublicProfileNetworkContactsLabel,
+  getPublicProfilePreferredSideHeadingText,
+  getPublicProfileSuccessfulPartnerLabel,
+  getPublicProfileFrequentRivalLabel,
+  getPublicProfileHeadToHeadHeadingText,
+  getPublicProfileAsPartnersLabel,
+  getPublicProfileAsRivalsLabel,
+  getPublicProfileLastMatchLabel,
+  getPublicProfileMatchHistoryHeadingText,
+  getPublicProfileEmptyStateProps,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -180,6 +196,33 @@ describe("public-profile-utils", () => {
 
     it("returns public profile skeleton ARIA label", () => {
       expect(getPublicProfileSkeletonAriaLabel()).toBe("Cargando perfil público y estadísticas de jugador");
+    });
+
+    it("returns static titles, headings, and labels for public profile page", () => {
+      expect(getPublicProfileHeaderTitle()).toBe("Perfil Público");
+      expect(getPublicProfileHeaderSubtitle()).toBe("Estadísticas de jugador");
+      expect(getPublicProfileWinRateLabel()).toBe("Efectividad");
+      expect(getPublicProfileRecentFormLabel()).toBe("Forma");
+      expect(getPublicProfileNetworkContactsLabel()).toBe("Contactos");
+      expect(getPublicProfilePreferredSideHeadingText()).toBe("Lado preferido");
+      expect(getPublicProfileSuccessfulPartnerLabel()).toBe("Pareja más exitosa");
+      expect(getPublicProfileFrequentRivalLabel()).toBe("Rival más frecuente");
+      expect(getPublicProfileHeadToHeadHeadingText()).toBe("Cara a Cara");
+      expect(getPublicProfileAsPartnersLabel()).toBe("Como socios");
+      expect(getPublicProfileAsRivalsLabel()).toBe("Como rivales");
+      expect(getPublicProfileLastMatchLabel()).toBe("Último duelo");
+      expect(getPublicProfileMatchHistoryHeadingText()).toBe("Historial Reciente");
+      expect(getPublicProfileEmptyStateProps()).toEqual({
+        title: "Sin resultados todavía",
+        description: "Este jugador aún no tiene partidos confirmados.",
+      });
+    });
+
+    it("composes mini court indicator and recent form dot classes correctly", () => {
+      expect(getMiniCourtIndicatorClasses(true)).toContain("bg-primary");
+      expect(getMiniCourtIndicatorClasses(false)).toContain("bg-muted");
+      expect(getRecentFormDotClasses("W")).toContain("bg-emerald-500");
+      expect(getRecentFormDotClasses("L")).toContain("bg-rose-500");
     });
   });
 });

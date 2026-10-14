@@ -49,6 +49,22 @@ import {
   formatH2HLastMatchResultText,
   getMatchHistoryRegionAriaLabel,
   getPublicProfileSkeletonAriaLabel,
+  getPublicProfileHeaderTitle,
+  getPublicProfileHeaderSubtitle,
+  getMiniCourtIndicatorClasses,
+  getRecentFormDotClasses,
+  getPublicProfileWinRateLabel,
+  getPublicProfileRecentFormLabel,
+  getPublicProfileNetworkContactsLabel,
+  getPublicProfilePreferredSideHeadingText,
+  getPublicProfileSuccessfulPartnerLabel,
+  getPublicProfileFrequentRivalLabel,
+  getPublicProfileHeadToHeadHeadingText,
+  getPublicProfileAsPartnersLabel,
+  getPublicProfileAsRivalsLabel,
+  getPublicProfileLastMatchLabel,
+  getPublicProfileMatchHistoryHeadingText,
+  getPublicProfileEmptyStateProps,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -73,8 +89,12 @@ export default function PublicProfilePage({
           <DynamicBackButton searchParams={searchParams} />
         </Suspense>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
-          <p className="text-sm text-muted-foreground">Estadísticas de jugador</p>
+          <h1 className="text-xl font-bold text-foreground">
+            {getPublicProfileHeaderTitle()}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {getPublicProfileHeaderSubtitle()}
+          </p>
         </div>
       </div>
 
@@ -228,7 +248,7 @@ async function PublicProfileContent({
             aria-label={getWinRateAriaLabel(winRate, user.matchesPlayed)}
           >
             <div className="text-xs font-bold text-muted-foreground">
-              Efectividad
+              {getPublicProfileWinRateLabel()}
             </div>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold">
@@ -242,7 +262,7 @@ async function PublicProfileContent({
 
           <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs">
             <div className="text-xs font-bold text-muted-foreground">
-              Forma
+              {getPublicProfileRecentFormLabel()}
             </div>
             {recentForm.length > 0 ? (
               <div
@@ -253,12 +273,7 @@ async function PublicProfileContent({
                   <div
                     key={i}
                     aria-hidden="true"
-                    className={cn(
-                      "h-2.5 w-2.5 rounded-full",
-                      result === "W"
-                        ? "bg-emerald-500"
-                        : "bg-rose-500",
-                    )}
+                    className={getRecentFormDotClasses(result)}
                   />
                 ))}
               </div>
@@ -286,7 +301,7 @@ async function PublicProfileContent({
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                 <Network className="h-3.5 w-3.5 text-primary" />
-                Contactos
+                {getPublicProfileNetworkContactsLabel()}
               </div>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-xl font-bold">
@@ -299,7 +314,7 @@ async function PublicProfileContent({
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                 <Activity className="h-3.5 w-3.5 text-primary" />
-                Lado preferido
+                {getPublicProfilePreferredSideHeadingText()}
               </div>
               <div className="flex items-center justify-between gap-2">
                 <div className="flex flex-col min-w-0">
@@ -323,7 +338,7 @@ async function PublicProfileContent({
               {networkStats.successfulPartner && networkStats.successfulPartner.user && (
                 <div className="flex items-center justify-between gap-3 text-xs">
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-muted-foreground">Pareja más exitosa</span>
+                    <span className="font-semibold text-muted-foreground">{getPublicProfileSuccessfulPartnerLabel()}</span>
                     <Link
                       href={`/p/${networkStats.successfulPartner.user.id}?backUrl=/p/${userId}`}
                       prefetch={true}
@@ -349,7 +364,7 @@ async function PublicProfileContent({
               {networkStats.frequentRival && networkStats.frequentRival.user && (
                 <div className="flex items-center justify-between gap-3 text-xs">
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-muted-foreground">Rival más frecuente</span>
+                    <span className="font-semibold text-muted-foreground">{getPublicProfileFrequentRivalLabel()}</span>
                     <Link
                       href={`/p/${networkStats.frequentRival.user.id}?backUrl=/p/${userId}`}
                       prefetch={true}
@@ -382,14 +397,14 @@ async function PublicProfileContent({
             className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
           >
             <h3 className="text-xs font-bold text-muted-foreground">
-              Cara a Cara
+              {getPublicProfileHeadToHeadHeadingText()}
             </h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                   <Users className="h-3.5 w-3.5" />
-                  Como socios
+                  {getPublicProfileAsPartnersLabel()}
                 </div>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-xl font-bold">
@@ -404,7 +419,7 @@ async function PublicProfileContent({
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                   <Swords className="h-3.5 w-3.5" />
-                  Como rivales
+                  {getPublicProfileAsRivalsLabel()}
                 </div>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-xl font-bold text-primary">
@@ -421,7 +436,7 @@ async function PublicProfileContent({
               <div className="pt-3 border-t border-border flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-muted-foreground">
-                    Último duelo
+                    {getPublicProfileLastMatchLabel()}
                   </span>
                   <span
                     className={cn(
@@ -454,7 +469,7 @@ async function PublicProfileContent({
       <section className="space-y-4" role="region" aria-label={getMatchHistoryRegionAriaLabel()}>
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">
-            Historial Reciente
+            {getPublicProfileMatchHistoryHeadingText()}
           </h2>
           <div className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border shadow-xs">
             <Zap className="h-3 w-3 text-primary fill-current" aria-hidden="true" />
@@ -472,11 +487,16 @@ async function PublicProfileContent({
               />
             ))
           ) : (
-            <EmptyState
-              icon={Trophy}
-              title="Sin resultados todavía"
-              description="Este jugador aún no tiene partidos confirmados."
-            />
+            (() => {
+              const emptyProps = getPublicProfileEmptyStateProps();
+              return (
+                <EmptyState
+                  icon={Trophy}
+                  title={emptyProps.title}
+                  description={emptyProps.description}
+                />
+              );
+            })()
           )}
         </div>
       </section>
@@ -499,19 +519,9 @@ function MiniCourtIndicator({
     >
       <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40">
         {/* Left side (Revés) */}
-        <div
-          className={cn(
-            "h-full rounded-[1px] transition-colors",
-            isLeft ? "bg-primary" : "bg-muted"
-          )}
-        />
+        <div className={getMiniCourtIndicatorClasses(isLeft)} />
         {/* Right side (Derecha) */}
-        <div
-          className={cn(
-            "h-full rounded-[1px] transition-colors",
-            isRight ? "bg-primary" : "bg-muted"
-          )}
-        />
+        <div className={getMiniCourtIndicatorClasses(isRight)} />
       </div>
     </div>
   );

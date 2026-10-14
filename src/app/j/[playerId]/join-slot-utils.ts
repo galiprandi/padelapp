@@ -166,3 +166,55 @@ export function getJoinSlotErrorToast(message?: string): string {
 export function getJoinSlotSkeletonAriaLabel(): string {
   return "Cargando detalles de la invitación al partido...";
 }
+
+export function getJoinSlotHeaderTitle(): string {
+  return "Invitación a jugar";
+}
+
+export function getJoinSlotHeaderSubtitle(): string {
+  return "Invitación directa para partido de pádel";
+}
+
+export function getJoinSlotBackAriaLabel(): string {
+  return "Volver";
+}
+
+export function getJoinSlotInvitationLabel(): string {
+  return "Invitación enviada";
+}
+
+export function getJoinSlotMatchDetailTitle(): string {
+  return "Detalle del partido";
+}
+
+export function getJoinSlotClubSubtext(): string {
+  return "Sede del encuentro";
+}
+
+export function getJoinSlotCourtText(courtNumber: string | null): string {
+  return courtNumber ? `(Cancha ${courtNumber})` : "";
+}
+
+export function getJoinSlotFormationTitle(): string {
+  return "Formación actual";
+}
+
+export function getJoinSlotJoiningAsLabel(): string {
+  return "Te unirás como";
+}
+
+export function getJoinSlotAlreadyJoinedButtonText(): string {
+  return "Ya estás unido · Ver partido";
+}
+
+export function getJoinSlotViewMatchDetailsText(): string {
+  return "Ver todos los detalles del encuentro";
+}
+
+export function formatSlotPositionText(position: number): string {
+  return `Jugador ${position + 1}`;
+}
+
+export function getSignInFormLabelForMatch(club: string | null): string {
+  return `Iniciá sesión para unirte a ${club ?? "el partido"}`;
+}

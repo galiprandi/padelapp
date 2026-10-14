@@ -1,4 +1,4 @@
-import { getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner } from "@/lib/utils";
 
 export type RecentFormResult = "W" | "L";
 
@@ -150,4 +150,80 @@ export function getMatchHistoryRegionAriaLabel(): string {
 
 export function getPublicProfileSkeletonAriaLabel(): string {
   return "Cargando perfil público y estadísticas de jugador";
+}
+
+export function getPublicProfileHeaderTitle(): string {
+  return "Perfil Público";
+}
+
+export function getPublicProfileHeaderSubtitle(): string {
+  return "Estadísticas de jugador";
+}
+
+export function getMiniCourtIndicatorClasses(isSideActive: boolean): string {
+  return cn(
+    "h-full rounded-[1px] transition-colors",
+    isSideActive ? "bg-primary" : "bg-muted"
+  );
+}
+
+export function getRecentFormDotClasses(result: RecentFormResult): string {
+  return cn(
+    "h-2.5 w-2.5 rounded-full",
+    result === "W" ? "bg-emerald-500" : "bg-rose-500"
+  );
+}
+
+export function getPublicProfileWinRateLabel(): string {
+  return "Efectividad";
+}
+
+export function getPublicProfileRecentFormLabel(): string {
+  return "Forma";
+}
+
+export function getPublicProfileNetworkContactsLabel(): string {
+  return "Contactos";
+}
+
+export function getPublicProfilePreferredSideHeadingText(): string {
+  return "Lado preferido";
+}
+
+export function getPublicProfileSuccessfulPartnerLabel(): string {
+  return "Pareja más exitosa";
+}
+
+export function getPublicProfileFrequentRivalLabel(): string {
+  return "Rival más frecuente";
+}
+
+export function getPublicProfileHeadToHeadHeadingText(): string {
+  return "Cara a Cara";
+}
+
+export function getPublicProfileAsPartnersLabel(): string {
+  return "Como socios";
+}
+
+export function getPublicProfileAsRivalsLabel(): string {
+  return "Como rivales";
+}
+
+export function getPublicProfileLastMatchLabel(): string {
+  return "Último duelo";
+}
+
+export function getPublicProfileMatchHistoryHeadingText(): string {
+  return "Historial Reciente";
+}
+
+export function getPublicProfileEmptyStateProps(): {
+  title: string;
+  description: string;
+} {
+  return {
+    title: "Sin resultados todavía",
+    description: "Este jugador aún no tiene partidos confirmados.",
+  };
 }

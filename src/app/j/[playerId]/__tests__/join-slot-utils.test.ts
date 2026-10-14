@@ -14,6 +14,19 @@ import {
   getJoinSlotSuccessToast,
   getJoinSlotErrorToast,
   getJoinSlotSkeletonAriaLabel,
+  getJoinSlotHeaderTitle,
+  getJoinSlotHeaderSubtitle,
+  getJoinSlotBackAriaLabel,
+  getJoinSlotInvitationLabel,
+  getJoinSlotMatchDetailTitle,
+  getJoinSlotClubSubtext,
+  getJoinSlotCourtText,
+  getJoinSlotFormationTitle,
+  getJoinSlotJoiningAsLabel,
+  getJoinSlotAlreadyJoinedButtonText,
+  getJoinSlotViewMatchDetailsText,
+  formatSlotPositionText,
+  getSignInFormLabelForMatch,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -211,6 +224,43 @@ describe("join-slot-utils", () => {
     it("returns localized ARIA region label for loading skeleton", () => {
       expect(getJoinSlotSkeletonAriaLabel()).toBe(
         "Cargando detalles de la invitación al partido..."
+      );
+    });
+  });
+
+  describe("new join slot pure helpers", () => {
+    it("returns static header title, subtitle, and back ARIA label", () => {
+      expect(getJoinSlotHeaderTitle()).toBe("Invitación a jugar");
+      expect(getJoinSlotHeaderSubtitle()).toBe("Invitación directa para partido de pádel");
+      expect(getJoinSlotBackAriaLabel()).toBe("Volver");
+    });
+
+    it("returns invitation, match detail, club, and formation labels", () => {
+      expect(getJoinSlotInvitationLabel()).toBe("Invitación enviada");
+      expect(getJoinSlotMatchDetailTitle()).toBe("Detalle del partido");
+      expect(getJoinSlotClubSubtext()).toBe("Sede del encuentro");
+      expect(getJoinSlotFormationTitle()).toBe("Formación actual");
+      expect(getJoinSlotJoiningAsLabel()).toBe("Te unirás como");
+      expect(getJoinSlotAlreadyJoinedButtonText()).toBe("Ya estás unido · Ver partido");
+      expect(getJoinSlotViewMatchDetailsText()).toBe("Ver todos los detalles del encuentro");
+    });
+
+    it("formats court text correctly", () => {
+      expect(getJoinSlotCourtText("3")).toBe("(Cancha 3)");
+      expect(getJoinSlotCourtText(null)).toBe("");
+    });
+
+    it("formats slot position text correctly", () => {
+      expect(formatSlotPositionText(0)).toBe("Jugador 1");
+      expect(formatSlotPositionText(3)).toBe("Jugador 4");
+    });
+
+    it("formats sign in form label for match with club or fallback", () => {
+      expect(getSignInFormLabelForMatch("Padel Club Central")).toBe(
+        "Iniciá sesión para unirte a Padel Club Central"
+      );
+      expect(getSignInFormLabelForMatch(null)).toBe(
+        "Iniciá sesión para unirte a el partido"
       );
     });
   });

@@ -24,6 +24,19 @@ import {
   getJoinSlotRegionAriaLabel,
   getSlotStatusBadgeProps,
   getJoinSlotSkeletonAriaLabel,
+  getJoinSlotHeaderTitle,
+  getJoinSlotHeaderSubtitle,
+  getJoinSlotBackAriaLabel,
+  getJoinSlotInvitationLabel,
+  getJoinSlotMatchDetailTitle,
+  getJoinSlotClubSubtext,
+  getJoinSlotCourtText,
+  getJoinSlotFormationTitle,
+  getJoinSlotJoiningAsLabel,
+  getJoinSlotAlreadyJoinedButtonText,
+  getJoinSlotViewMatchDetailsText,
+  formatSlotPositionText,
+  getSignInFormLabelForMatch,
 } from "./join-slot-utils";
 
 interface JoinSlotPageProps {
@@ -42,16 +55,16 @@ export default function JoinSlotPage({ params }: JoinSlotPageProps) {
           href="/me"
           prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Volver"
+          aria-label={getJoinSlotBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-bold text-foreground">
-            Invitación a jugar
+            {getJoinSlotHeaderTitle()}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Invitación directa para partido de pádel
+            {getJoinSlotHeaderSubtitle()}
           </p>
         </div>
       </header>
@@ -188,7 +201,7 @@ async function JoinSlotContent({
           />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-muted-foreground">
-              Invitación enviada
+              {getJoinSlotInvitationLabel()}
             </p>
             <p className="text-sm font-semibold text-foreground leading-snug">
               {invitationMessage}
@@ -204,7 +217,7 @@ async function JoinSlotContent({
       >
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
           <CardTitle className="text-xs font-bold text-muted-foreground">
-            Detalle del partido
+            {getJoinSlotMatchDetailTitle()}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
@@ -236,10 +249,10 @@ async function JoinSlotContent({
               <div className="min-w-0">
                 <p className="text-sm font-bold truncate">
                   {match.club}{" "}
-                  {match.courtNumber ? `(Cancha ${match.courtNumber})` : ""}
+                  {getJoinSlotCourtText(match.courtNumber)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Sede del encuentro
+                  {getJoinSlotClubSubtext()}
                 </p>
               </div>
             </div>
@@ -254,7 +267,7 @@ async function JoinSlotContent({
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground">
-            Formación actual
+            {getJoinSlotFormationTitle()}
           </h2>
           <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </div>
@@ -315,7 +328,7 @@ async function JoinSlotContent({
                             {name}
                           </p>
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            Jugador {slot.position + 1}
+                            {formatSlotPositionText(slot.position)}
                           </p>
                         </div>
                         {isOccupied && (
@@ -352,7 +365,7 @@ async function JoinSlotContent({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-muted-foreground leading-none mb-1">
-                  Te unirás como
+                  {getJoinSlotJoiningAsLabel()}
                 </p>
                 <p className="text-xl font-bold text-foreground truncate">
                   {teamLabel}
@@ -371,7 +384,7 @@ async function JoinSlotContent({
               {!session?.user ? (
                 <SignInForm
                   callbackUrl={`/j/${playerId}`}
-                  label={`Iniciá sesión para unirte a ${match.club ?? "el partido"}`}
+                  label={getSignInFormLabelForMatch(match.club)}
                   className="w-full h-12 rounded-lg text-base font-bold"
                 />
               ) : slotTakenByViewer ? (
@@ -381,7 +394,7 @@ async function JoinSlotContent({
                   className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                 >
                   <Link href={`/match/${match.id}`} prefetch={true}>
-                    Ya estás unido · Ver partido
+                    {getJoinSlotAlreadyJoinedButtonText()}
                   </Link>
                 </Button>
               ) : (
@@ -398,7 +411,7 @@ async function JoinSlotContent({
                 prefetch={true}
                 className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-sm"
               >
-                Ver todos los detalles del encuentro
+                {getJoinSlotViewMatchDetailsText()}
               </Link>
             </div>
           </div>
