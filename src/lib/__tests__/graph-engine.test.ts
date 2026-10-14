@@ -257,6 +257,17 @@ import {
   getNetworkDiversityAriaLabel,
   getCrossRivalryAriaLabel,
   getPlayerGraphReachAriaLabel,
+  getPlayerExpansionAriaLabel,
+  getInteractionConcentrationAriaLabel,
+  getMultiBelongingAriaLabel,
+  getMatchComplementarityAriaLabel,
+  getPartnershipStabilityAriaLabel,
+  getLocalClusteringAriaLabel,
+  getNetworkCentralityAriaLabel,
+  getNetworkRoleAriaLabel,
+  getCommunityBridgingAriaLabel,
+  getInteractionReciprocityAriaLabel,
+  getPlayerSimilarityAriaLabel,
   getGraphViewLoadingText,
   getGraphViewEmptyDataProps,
   getGraphViewScopeAriaLabel,
@@ -1940,6 +1951,129 @@ describe("NetworkPageClient pure helpers", () => {
       );
       expect(label).toBe(
         "Alcance de red: Amplia conectividad 🌐. Alcanza 12 jugadores en 2 grados de separación"
+      );
+    });
+  });
+
+  describe("Player graph metrics ARIA pure helpers", () => {
+    it("formats player expansion potential ARIA label", () => {
+      expect(
+        getPlayerExpansionAriaLabel(
+          "Red en expansión activa 🚀",
+          "4 contactos de 2º grado · 3 grupos no conectados",
+        ),
+      ).toBe(
+        "Potencial de expansión de red: Red en expansión activa 🚀. 4 contactos de 2º grado · 3 grupos no conectados",
+      );
+    });
+
+    it("formats interaction concentration ARIA label", () => {
+      expect(
+        getInteractionConcentrationAriaLabel(
+          "Red concentrada 🎯",
+          "80% concentración en contacto principal · 3 contactos totales",
+        ),
+      ).toBe(
+        "Concentración de interacciones: Red concentrada 🎯. 80% concentración en contacto principal · 3 contactos totales",
+      );
+    });
+
+    it("formats multi-belonging ARIA label", () => {
+      expect(
+        getMultiBelongingAriaLabel(
+          "Multicomunitario 🌐",
+          "3 grupos de la red · 67% interacción externa",
+        ),
+      ).toBe(
+        "Multipertenencia comunitaria: Multicomunitario 🌐. 3 grupos de la red · 67% interacción externa",
+      );
+    });
+
+    it("formats match complementarity ARIA label", () => {
+      expect(
+        getMatchComplementarityAriaLabel(
+          "Dupla sinérgica ideal 🎯",
+          "2 duplas sinérgicas (Der + Rev) · 83% WR dupla",
+        ),
+      ).toBe(
+        "Complementariedad de duplas: Dupla sinérgica ideal 🎯. 2 duplas sinérgicas (Der + Rev) · 83% WR dupla",
+      );
+    });
+
+    it("formats partnership stability ARIA label", () => {
+      expect(
+        getPartnershipStabilityAriaLabel(
+          "Duplas consolidadas 🏆",
+          "2 vínculos recurrentes (67%) · 3 contactos totales",
+        ),
+      ).toBe(
+        "Estabilidad de duplas: Duplas consolidadas 🏆. 2 vínculos recurrentes (67%) · 3 contactos totales",
+      );
+    });
+
+    it("formats local clustering ARIA label", () => {
+      expect(
+        getLocalClusteringAriaLabel(
+          "Grupo cerrado 👥",
+          "1 triángulo (100% cohesión local) · 2 contactos",
+        ),
+      ).toBe(
+        "Cohesión local: Grupo cerrado 👥. 1 triángulo (100% cohesión local) · 2 contactos",
+      );
+    });
+
+    it("formats network centrality ARIA label", () => {
+      expect(
+        getNetworkCentralityAriaLabel(
+          "Hub principal 👑",
+          "4 contactos directos · 13 interacciones",
+        ),
+      ).toBe(
+        "Centralidad en la red: Hub principal 👑. 4 contactos directos · 13 interacciones",
+      );
+    });
+
+    it("formats network role ARIA label", () => {
+      expect(
+        getNetworkRoleAriaLabel(
+          "Nexo comunitario 🌉",
+          "Conecta diferentes grupos de la comunidad",
+        ),
+      ).toBe(
+        "Rol en la red: Nexo comunitario 🌉. Conecta diferentes grupos de la comunidad",
+      );
+    });
+
+    it("formats community bridging ARIA label", () => {
+      expect(
+        getCommunityBridgingAriaLabel(
+          "Puente de red 🌉",
+          "3 grupos de la red · 2 enlaces puente (67%)",
+        ),
+      ).toBe(
+        "Nivel de puente comunitario: Puente de red 🌉. 3 grupos de la red · 2 enlaces puente (67%)",
+      );
+    });
+
+    it("formats interaction reciprocity ARIA label", () => {
+      expect(
+        getInteractionReciprocityAriaLabel(
+          "Red recíproca y equilibrada ⚖️",
+          "1 vínculo recíproco · 1 dupla · 1 rival",
+        ),
+      ).toBe(
+        "Reciprocidad de interacción: Red recíproca y equilibrada ⚖️. 1 vínculo recíproco · 1 dupla · 1 rival",
+      );
+    });
+
+    it("formats player similarity ARIA label", () => {
+      expect(
+        getPlayerSimilarityAriaLabel(
+          "Dupla ideal 🎯",
+          "90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
+        ),
+      ).toBe(
+        "Similitud con vos: Dupla ideal 🎯. 90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
       );
     });
   });
