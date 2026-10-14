@@ -2391,3 +2391,80 @@ export function getTurnFilterTabClasses(isSelected: boolean): string {
       : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground"
   );
 }
+
+/**
+ * Format share dialog title for TurnShareButton.
+ */
+export function getTurnShareTitle(): string {
+  return "Sumate al Turno";
+}
+
+/**
+ * Format CSS classes for TurnShareButton depending on full or icon variant.
+ */
+export function getTurnShareButtonClasses(
+  variant: "full" | "icon" = "full",
+  className?: string
+): string | undefined {
+  if (variant === "full") {
+    return "w-full h-12 rounded-lg text-base font-bold";
+  }
+  return className;
+}
+
+/**
+ * Format upper-case badge text for salvage callout banner in turn public details.
+ */
+export function getTurnSalvageBannerBadgeText(): string {
+  return "Salvataje de turno";
+}
+
+/**
+ * Format label for turn time display.
+ */
+export function getTurnTimeLabel(): string {
+  return "Horario";
+}
+
+/**
+ * Format label for covered player slots in turn public details.
+ */
+export function getTurnCoveredSlotsLabel(): string {
+  return "Cupos cubiertos";
+}
+
+/**
+ * Format text string for covered player slots in turn public details.
+ */
+export function getTurnCoveredSlotsText(enrolledCount: number, maxPlayers: number): string {
+  return `${enrolledCount} de ${maxPlayers}`;
+}
+
+/**
+ * Format section title for organizer notes in turn public details.
+ */
+export function getTurnNotesTitle(): string {
+  return "Notas del organizador";
+}
+
+/**
+ * Format badge text for remaining open slots in enrolled players header.
+ */
+export function getTurnOpenSlotsBadgeText(openSlots: number): string {
+  if (openSlots === 1) return "1 cupo libre";
+  return `${openSlots} cupos libres`;
+}
+
+/**
+ * Format organizer role badge text for creator in enrolled players list.
+ */
+export function getTurnOrganizerBadgeText(): string {
+  return "Organizador";
+}
+
+/**
+ * Format self role badge text for viewer in substitute list.
+ */
+export function getTurnYouBadgeText(): string {
+  return "Vos";
+}

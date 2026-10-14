@@ -69,6 +69,16 @@ import {
   getTurnContactProfileLinkAriaLabel,
   getTurnContactCompatibilityAriaLabel,
   getTurnContactBadgeAriaLabel,
+  getTurnShareTitle,
+  getTurnShareButtonClasses,
+  getTurnSalvageBannerBadgeText,
+  getTurnTimeLabel,
+  getTurnCoveredSlotsLabel,
+  getTurnCoveredSlotsText,
+  getTurnNotesTitle,
+  getTurnOpenSlotsBadgeText,
+  getTurnOrganizerBadgeText,
+  getTurnYouBadgeText,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -119,7 +129,7 @@ function TurnShareButton({
 
   return (
     <ShareButton
-      title="Sumate al Turno"
+      title={getTurnShareTitle()}
       text={shareText}
       shareData={
         openSlots <= 0
@@ -129,11 +139,7 @@ function TurnShareButton({
       url={shareUrl}
       variant="outline"
       iconOnly={variant === "icon"}
-      className={
-        variant === "full"
-          ? "w-full h-12 rounded-lg text-base font-bold"
-          : className
-      }
+      className={getTurnShareButtonClasses(variant, className)}
     />
   );
 }
@@ -303,7 +309,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <Sparkles className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
-              Salvataje de turno
+              {getTurnSalvageBannerBadgeText()}
             </p>
             <p className="text-sm font-semibold mt-0.5 leading-snug">
               {salvageBannerText}
@@ -358,7 +364,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <div className="bg-card p-4 flex flex-col gap-1">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-              <span className="text-xs font-semibold">Horario</span>
+              <span className="text-xs font-semibold">{getTurnTimeLabel()}</span>
             </div>
             <p className="text-lg font-bold">
               <LocalTime date={turn.date} />
@@ -379,9 +385,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
           <div className="bg-card p-4 border-t border-border flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-semibold text-muted-foreground">Cupos cubiertos</span>
+              <span className="text-xs font-semibold text-muted-foreground">{getTurnCoveredSlotsLabel()}</span>
               <span className="text-xs font-bold text-foreground tabular-nums">
-                {turn.players.length} de {turn.maxPlayers}
+                {getTurnCoveredSlotsText(turn.players.length, turn.maxPlayers)}
               </span>
             </div>
             <div
@@ -403,7 +409,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         {turn.notes && (
           <div className="p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed">
             <span className="block text-xs font-bold not-italic mb-1 text-foreground">
-              Notas del organizador
+              {getTurnNotesTitle()}
             </span>
             &ldquo;{turn.notes}&rdquo;
           </div>
@@ -433,7 +439,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             {getTurnEnrolledSectionTitle()}
           </h2>
           <Badge variant="primary">
-            {turn.maxPlayers - turn.players.length} cupos libres
+            {getTurnOpenSlotsBadgeText(turn.maxPlayers - turn.players.length)}
           </Badge>
         </div>
 
@@ -472,7 +478,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 <div className="flex items-center gap-2">
                   {p.userId === turn.creatorId && (
                     <Badge variant="primary">
-                      Organizador
+                      {getTurnOrganizerBadgeText()}
                     </Badge>
                   )}
                   {isCreator &&
@@ -683,7 +689,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   </div>
                   {s.userId === viewerId && (
                     <Badge variant="primary">
-                      Vos
+                      {getTurnYouBadgeText()}
                     </Badge>
                   )}
                   {isCreator &&
