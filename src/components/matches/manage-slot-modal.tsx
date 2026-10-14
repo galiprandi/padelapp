@@ -22,6 +22,15 @@ import {
   getManageSlotReleaseButtonAriaLabel,
   getManageSlotSaveButtonText,
   getManageSlotCloseButtonText,
+  getManageSlotVerifiedUserBadgeText,
+  getManageSlotVerifiedUserNoticeText,
+  getManageSlotRecentPlayersLabel,
+  getManageSlotSearchInputPlaceholder,
+  getManageSlotSearchClearAriaLabel,
+  getManageSlotNoResultsNoticeText,
+  getManageSlotRecentContactsLabel,
+  getManageSlotShareButtonAriaLabel,
+  getManageSlotShareValidationErrorMessage,
 } from "./manage-slot-utils";
 
 interface RecentPlayer {
@@ -195,7 +204,7 @@ export function ManageSlotModal({
     if (!onShare) return;
     const { isValid } = validateSlotInputValue(inputValue);
     if (!isValid) {
-      setError("Ingresá un nombre antes de compartir");
+      setError(getManageSlotShareValidationErrorMessage());
       return;
     }
     onShare(capitalizeName(inputValue.trim()));
@@ -280,12 +289,12 @@ export function ManageSlotModal({
                   <p className="text-sm font-bold text-foreground truncate">
                     {slot.player.displayName}
                   </p>
-                  <p className="text-xs text-muted-foreground">Jugador verificado</p>
+                  <p className="text-xs text-muted-foreground">{getManageSlotVerifiedUserBadgeText()}</p>
                 </div>
                 <Check className="h-4 w-4 text-primary" />
               </div>
               <p className="text-xs font-medium text-muted-foreground/60 leading-relaxed px-1">
-                Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés &quot;Quitar&quot; al jugador primero.
+                {getManageSlotVerifiedUserNoticeText()}
               </p>
             </div>
           ) : (
@@ -295,7 +304,7 @@ export function ManageSlotModal({
                 <div className="space-y-2">
                   <span id="recent-players-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 px-1">
                     <Clock className="h-3 w-3" />
-                    Jugadores recientes
+                    {getManageSlotRecentPlayersLabel()}
                   </span>
                   <div
                     role="radiogroup"
@@ -377,7 +386,7 @@ export function ManageSlotModal({
                         handleSave();
                       }
                     }}
-                    placeholder="Buscar jugador o escribir nombre..."
+                    placeholder={getManageSlotSearchInputPlaceholder()}
                     autoCapitalize="words"
                     className="h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
                   />
@@ -392,7 +401,7 @@ export function ManageSlotModal({
                         setSearchResults([]);
                         inputRef.current?.focus();
                       }}
-                      aria-label="Limpiar nombre"
+                      aria-label={getManageSlotSearchClearAriaLabel()}
                       className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
                     >
                       <X className="h-4 w-4" />
@@ -431,7 +440,7 @@ export function ManageSlotModal({
                 {/* No results hint */}
                 {showNoResults && (
                   <p className="text-xs font-medium text-muted-foreground italic px-1">
-                    No hay jugadores con ese nombre. Tocá &quot;Guardar&quot; para registrarlo igual.
+                    {getManageSlotNoResultsNoticeText()}
                   </p>
                 )}
 
@@ -439,7 +448,7 @@ export function ManageSlotModal({
                 {showContactsList && (
                   <div className="space-y-1">
                     <span className="text-xs font-semibold text-muted-foreground px-1">
-                      Contactos recientes
+                      {getManageSlotRecentContactsLabel()}
                     </span>
                     <div className="rounded-lg border border-border bg-muted p-2 space-y-1 shadow-xs">
                       {searchResults.map((player) => (
@@ -489,7 +498,7 @@ export function ManageSlotModal({
                   type="button"
                   size="icon"
                   variant="outline"
-                  aria-label="Compartir enlace de invitación"
+                  aria-label={getManageSlotShareButtonAriaLabel()}
                   onClick={handleShare}
                   className="h-12 w-12 rounded-lg border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
                 >
