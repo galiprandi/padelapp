@@ -119,3 +119,66 @@ export function getManageSlotSaveButtonText(): string {
 export function getManageSlotCloseButtonText(isReadOnlyUserSlot: boolean): string {
   return isReadOnlyUserSlot ? "Cerrar" : "Cancelar";
 }
+
+/**
+ * Returns localized text for verified user badge in read-only slot state.
+ */
+export function getManageSlotVerifiedUserBadgeText(): string {
+  return "Jugador verificado";
+}
+
+/**
+ * Returns localized explanatory notice for verified user slot in read-only state.
+ */
+export function getManageSlotVerifiedUserNoticeText(): string {
+  return 'Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.';
+}
+
+/**
+ * Returns localized header label for recent players quick select list.
+ */
+export function getManageSlotRecentPlayersLabel(): string {
+  return "Jugadores recientes";
+}
+
+/**
+ * Returns localized placeholder text for the player search input field.
+ */
+export function getManageSlotSearchInputPlaceholder(): string {
+  return "Buscar jugador o escribir nombre...";
+}
+
+/**
+ * Returns localized ARIA label for clearing search input.
+ */
+export function getManageSlotSearchClearAriaLabel(): string {
+  return "Limpiar nombre";
+}
+
+/**
+ * Returns localized notice text displayed when no search results are found.
+ */
+export function getManageSlotNoResultsNoticeText(): string {
+  return 'No hay jugadores con ese nombre. Tocá "Guardar" para registrarlo igual.';
+}
+
+/**
+ * Returns localized header label for recent contacts list.
+ */
+export function getManageSlotRecentContactsLabel(): string {
+  return "Contactos recientes";
+}
+
+/**
+ * Returns localized ARIA label for the share invitation button.
+ */
+export function getManageSlotShareButtonAriaLabel(): string {
+  return "Compartir enlace de invitación";
+}
+
+/**
+ * Returns localized error message shown when attempting to share with an empty name.
+ */
+export function getManageSlotShareValidationErrorMessage(): string {
+  return "Ingresá un nombre antes de compartir";
+}

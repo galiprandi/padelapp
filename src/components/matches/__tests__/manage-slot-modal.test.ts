@@ -13,6 +13,15 @@ import {
   getManageSlotReleaseButtonAriaLabel,
   getManageSlotSaveButtonText,
   getManageSlotCloseButtonText,
+  getManageSlotVerifiedUserBadgeText,
+  getManageSlotVerifiedUserNoticeText,
+  getManageSlotRecentPlayersLabel,
+  getManageSlotSearchInputPlaceholder,
+  getManageSlotSearchClearAriaLabel,
+  getManageSlotNoResultsNoticeText,
+  getManageSlotRecentContactsLabel,
+  getManageSlotShareButtonAriaLabel,
+  getManageSlotShareValidationErrorMessage,
 } from "../manage-slot-utils";
 
 describe("manage-slot-utils", () => {
@@ -155,6 +164,52 @@ describe("manage-slot-utils", () => {
     it("returns correct close/cancel button text depending on read-only user slot state", () => {
       expect(getManageSlotCloseButtonText(true)).toBe("Cerrar");
       expect(getManageSlotCloseButtonText(false)).toBe("Cancelar");
+    });
+
+    it("returns correct verified user badge text", () => {
+      expect(getManageSlotVerifiedUserBadgeText()).toBe("Jugador verificado");
+    });
+
+    it("returns correct verified user notice text", () => {
+      expect(getManageSlotVerifiedUserNoticeText()).toBe(
+        'Este cupo está ocupado por un perfil verificado. Si querés cambiarlo, debés "Quitar" al jugador primero.',
+      );
+    });
+
+    it("returns correct recent players label", () => {
+      expect(getManageSlotRecentPlayersLabel()).toBe("Jugadores recientes");
+    });
+
+    it("returns correct search input placeholder", () => {
+      expect(getManageSlotSearchInputPlaceholder()).toBe(
+        "Buscar jugador o escribir nombre...",
+      );
+    });
+
+    it("returns correct search clear ARIA label", () => {
+      expect(getManageSlotSearchClearAriaLabel()).toBe("Limpiar nombre");
+    });
+
+    it("returns correct no results notice text", () => {
+      expect(getManageSlotNoResultsNoticeText()).toBe(
+        'No hay jugadores con ese nombre. Tocá "Guardar" para registrarlo igual.',
+      );
+    });
+
+    it("returns correct recent contacts label", () => {
+      expect(getManageSlotRecentContactsLabel()).toBe("Contactos recientes");
+    });
+
+    it("returns correct share button ARIA label", () => {
+      expect(getManageSlotShareButtonAriaLabel()).toBe(
+        "Compartir enlace de invitación",
+      );
+    });
+
+    it("returns correct share validation error message", () => {
+      expect(getManageSlotShareValidationErrorMessage()).toBe(
+        "Ingresá un nombre antes de compartir",
+      );
     });
   });
 });
