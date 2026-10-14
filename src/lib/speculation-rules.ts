@@ -104,6 +104,22 @@ export function getSpeculationRuleGroupsCount(
 }
 
 /**
+ * Retorna la lista de patrones de documentos dinámicos configurados para prerenderizado especulativo.
+ */
+export function getSpeculationDocumentPatterns(): string[] {
+  return [...DYNAMIC_SPECULATION_PATTERNS];
+}
+
+/**
+ * Retorna el nivel de avidez (eagerness) de un grupo de reglas de especulación.
+ */
+export function getSpeculationRuleGroupEagerness(
+  group: SpeculationRuleGroup,
+): SpeculationEagerness {
+  return group.eagerness;
+}
+
+/**
  * Genera un resumen ejecutivo de un grupo de reglas de especulación (tipo, nivel de avidez y cantidad de elementos).
  */
 export function getSpeculationRuleGroupSummary(
@@ -122,6 +138,26 @@ export function getSpeculationRuleGroupSummary(
     eagerness: group.eagerness,
     count: group.where && group.where.or ? group.where.or.length : 0,
   };
+}
+
+/**
+ * Retorna una descripción legible en español argentino sobre un grupo de reglas de especulación.
+ */
+export function getSpeculationRuleGroupDescription(
+  group: SpeculationRuleGroup,
+): string {
+  const summary = getSpeculationRuleGroupSummary(group);
+  if (summary.type === "list") {
+    return `Prerenderizado de lista (${summary.count} URLs, avidez: ${summary.eagerness})`;
+  }
+  return `Prerenderizado por documento (${summary.count} patrones, avidez: ${summary.eagerness})`;
+}
+
+/**
+ * Genera el tipo y atributos por defecto del tag script para Speculation Rules.
+ */
+export function formatSpeculationScriptTagAttributes(): { type: "speculationrules" } {
+  return { type: "speculationrules" };
 }
 
 export function getSpeculationRulesConfig(
@@ -217,7 +253,7 @@ export function formatSpeculationRulesScript(
   eagerness?: SpeculationEagerness,
 ): SpeculationRulesScriptProps {
   return {
-    type: "speculationrules",
+    ...formatSpeculationScriptTagAttributes(),
     dangerouslySetInnerHTML: getSpeculationRulesTag(customUrls, eagerness),
   };
 }

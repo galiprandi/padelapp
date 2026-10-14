@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-05 — Extracción de Funciones Helper Puras `getSpeculationDocumentPatterns`, `getSpeculationRuleGroupEagerness`, `getSpeculationRuleGroupDescription` y `formatSpeculationScriptTagAttributes` (`src/lib/speculation-rules.ts`)
 - [x] 2026-10-04 — Extracción de Funciones Helper Puras de Fronteras de Error y Clases CSS (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-03 — Extracción de Funciones Helper Puras `formatProvidersRegionAriaLabel`, `getSessionProviderProps`, `isAnalyticsEnabled` y `getProvidersToastProviderProps` (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (`src/app/providers.tsx`)
 - [x] 2026-10-02 — Extracción de Funciones Helper Puras de Acciones Pendientes y Badge de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de `NotificationsPage` y `BottomNav` (PR #tino/ux/pending-actions-and-notifications-badge-helpers)
@@ -74,6 +75,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-05 - Extracción de Funciones Helper Puras para Speculation Rules Script y Descriptores de Grupos
+**Aprendizaje:** Encapsular la lectura limpia de patrones dinámicos (`getSpeculationDocumentPatterns`), la extracción de avidez (`getSpeculationRuleGroupEagerness`), el formateo de descripciones en español argentino (`getSpeculationRuleGroupDescription`) y la composición de los atributos del tag script (`formatSpeculationScriptTagAttributes`) dentro de `src/lib/speculation-rules.ts` desacopla las especificaciones de precarga del navegador y los tags HTML de la renderización del RootLayout (`src/app/layout.tsx`). Esto simplifica el etiquetado de Speculation Rules y facilita la verificación aislada mediante pruebas unitarias rápidas e independientes.
+**Acción:** Reutilizar `getSpeculationDocumentPatterns` y `formatSpeculationScriptTagAttributes` al extender o auditar reglas de especulación en navegadores compatibles.
+
 ### 2026-10-03 - Extracción de Funciones Helper Puras para Proveedores Globales de Contexto
 **Aprendizaje:** Encapsular el formateo flexible de etiquetas accesibles ARIA (`formatProvidersRegionAriaLabel`), la configuración predeterminada de SessionProvider (`getSessionProviderProps`), el flag de evaluación para Analytics (`isAnalyticsEnabled`), y las opciones recomendadas para ToastProvider (`getProvidersToastProviderProps`) dentro de `src/lib/providers-utils.ts` desasocia la lógica de opciones del entorno y accesibilidad del árbol de componentes en `Providers` (`src/app/providers.tsx`). Esto simplifica las plantillas de envoltorios de contexto y asegura que las configuraciones globales sean fáciles de verificar mediante pruebas unitarias rápidas e independientes.
 **Acción:** Reutilizar `getSessionProviderProps` y `getProvidersToastProviderProps` al instanciar o probar subproveedores de contexto en la aplicación.

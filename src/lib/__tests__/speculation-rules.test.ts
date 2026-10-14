@@ -9,6 +9,10 @@ import {
   getSpeculationUrlsByPriority,
   getSpeculationRuleGroupsCount,
   getSpeculationRuleGroupSummary,
+  getSpeculationDocumentPatterns,
+  getSpeculationRuleGroupEagerness,
+  getSpeculationRuleGroupDescription,
+  formatSpeculationScriptTagAttributes,
   formatSpeculationRulesScript,
   PRIMARY_SPECULATION_URLS,
   SECONDARY_SPECULATION_URLS,
@@ -132,6 +136,33 @@ describe("getSpeculationRuleGroupsCount", () => {
   });
 });
 
+describe("getSpeculationDocumentPatterns", () => {
+  it("debe retornar una copia del arreglo de patrones de documentos dinámicos", () => {
+    const patterns = getSpeculationDocumentPatterns();
+    expect(patterns).toEqual([...DYNAMIC_SPECULATION_PATTERNS]);
+    expect(patterns).toContain("/t/*");
+    expect(patterns).toContain("/m/*");
+  });
+});
+
+describe("getSpeculationRuleGroupEagerness", () => {
+  it("debe retornar el nivel de avidez (eagerness) de un grupo de lista o documento", () => {
+    const listGroup: SpeculationListRuleGroup = {
+      source: "list",
+      urls: ["/me"],
+      eagerness: "eager",
+    };
+    const docGroup: SpeculationDocumentRuleGroup = {
+      source: "document",
+      where: { or: [{ href_matches: "/t/*" }] },
+      eagerness: "moderate",
+    };
+
+    expect(getSpeculationRuleGroupEagerness(listGroup)).toBe("eager");
+    expect(getSpeculationRuleGroupEagerness(docGroup)).toBe("moderate");
+  });
+});
+
 describe("getSpeculationRuleGroupSummary", () => {
   it("debe retornar un resumen de grupo para fuentes de tipo 'list'", () => {
     const listGroup: SpeculationListRuleGroup = {
@@ -162,6 +193,42 @@ describe("getSpeculationRuleGroupSummary", () => {
       type: "document",
       eagerness: "moderate",
       count: 2,
+    });
+  });
+});
+
+describe("getSpeculationRuleGroupDescription", () => {
+  it("debe formatear una descripción clara en español argentino para grupos de tipo 'list'", () => {
+    const listGroup: SpeculationListRuleGroup = {
+      source: "list",
+      urls: ["/me", "/turnos"],
+      eagerness: "eager",
+    };
+
+    expect(getSpeculationRuleGroupDescription(listGroup)).toBe(
+      "Prerenderizado de lista (2 URLs, avidez: eager)",
+    );
+  });
+
+  it("debe formatear una descripción clara en español argentino para grupos de tipo 'document'", () => {
+    const docGroup: SpeculationDocumentRuleGroup = {
+      source: "document",
+      where: {
+        or: [{ href_matches: "/t/*" }, { href_matches: "/m/*" }, { href_matches: "/j/*" }],
+      },
+      eagerness: "moderate",
+    };
+
+    expect(getSpeculationRuleGroupDescription(docGroup)).toBe(
+      "Prerenderizado por documento (3 patrones, avidez: moderate)",
+    );
+  });
+});
+
+describe("formatSpeculationScriptTagAttributes", () => {
+  it("debe retornar un objeto con type='speculationrules'", () => {
+    expect(formatSpeculationScriptTagAttributes()).toEqual({
+      type: "speculationrules",
     });
   });
 });
