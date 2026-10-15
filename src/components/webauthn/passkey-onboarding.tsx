@@ -17,11 +17,17 @@ import {
   getPasskeyErrorMessage,
   getPasskeyOnboardingDescription,
   getPasskeyOnboardingDismissAriaLabel,
+  getPasskeyOnboardingDismissButtonClasses,
   getPasskeyOnboardingLaterAriaLabel,
+  getPasskeyOnboardingLaterButtonClasses,
   getPasskeyOnboardingLaterLabel,
   getPasskeyOnboardingRegionAriaLabel,
+  getPasskeyOnboardingRegisterActionAriaLabel,
+  getPasskeyOnboardingRegisterButtonClasses,
+  getPasskeyOnboardingRegisterButtonText,
   getPasskeyOnboardingTitle,
   getPasskeyRegisterAriaLabel,
+  getPasskeyRegisterErrorFallbackMessage,
   getPasskeyRegisterSuccessToast,
 } from "./passkey-utils";
 
@@ -120,7 +126,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         dismissPasskeyOnboarding();
         setVisible(false);
       } catch (err: unknown) {
-        showToast(getPasskeyErrorMessage(err, "No pudimos registrar la huella"));
+        showToast(getPasskeyErrorMessage(err, getPasskeyRegisterErrorFallbackMessage()));
       }
     });
   }
@@ -136,7 +142,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
         size="sm"
         onClick={handleDismiss}
         aria-label={getPasskeyOnboardingDismissAriaLabel()}
-        className="absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getPasskeyOnboardingDismissButtonClasses()}
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
@@ -158,28 +164,28 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
       <div className="flex gap-2">
         <Button
           type="button"
-          className="h-10 flex-1 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getPasskeyOnboardingRegisterButtonClasses()}
           disabled={isRegistering}
           aria-busy={isRegistering}
-          aria-label={getPasskeyRegisterAriaLabel(isRegistering, "Activar acceso con huella")}
+          aria-label={getPasskeyRegisterAriaLabel(isRegistering, getPasskeyOnboardingRegisterActionAriaLabel())}
           onClick={handleRegister}
         >
           {isRegistering ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-              Registrando…
+              {getPasskeyOnboardingRegisterButtonText(true)}
             </>
           ) : (
             <>
               <Fingerprint className="mr-2 h-4 w-4" aria-hidden="true" />
-              Activar huella
+              {getPasskeyOnboardingRegisterButtonText(false)}
             </>
           )}
         </Button>
         <Button
           type="button"
           variant="outline"
-          className="h-10 text-xs font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getPasskeyOnboardingLaterButtonClasses()}
           aria-label={getPasskeyOnboardingLaterAriaLabel()}
           onClick={handleDismiss}
         >

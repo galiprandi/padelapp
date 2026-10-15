@@ -27,6 +27,20 @@ import {
   getSecurityPageHeadingDescription,
   getSecurityPageBackAriaLabel,
   getSecuritySkeletonAriaLabel,
+  getPasskeyRegisterButtonText,
+  getPasskeyOnboardingRegisterButtonText,
+  getPasskeyRegisterActionAriaLabel,
+  getPasskeyOnboardingRegisterActionAriaLabel,
+  getPasskeyRegisterErrorFallbackMessage,
+  getPasskeyItemContainerClasses,
+  getPasskeyDeleteButtonClasses,
+  getPasskeyRegisterButtonClasses,
+  getPasskeyLoginButtonClasses,
+  getPasskeyOnboardingDismissButtonClasses,
+  getPasskeyOnboardingRegisterButtonClasses,
+  getPasskeyOnboardingLaterButtonClasses,
+  getSecurityPageBackLinkClasses,
+  getSecurityRegionAriaLabel,
 } from "../passkey-utils";
 
 describe("passkey-utils", () => {
@@ -176,6 +190,33 @@ describe("passkey-utils", () => {
       expect(getSecurityPageHeadingDescription()).toBe("Iniciá sesión sin contraseña usando tu huella o Face ID.");
       expect(getSecurityPageBackAriaLabel()).toBe("Volver a mi perfil");
       expect(getSecuritySkeletonAriaLabel()).toBe("Cargando opciones de seguridad y acceso biométrico");
+      expect(getSecurityRegionAriaLabel()).toBe("Configuración de seguridad y acceso biométrico");
+    });
+  });
+
+  describe("newly extracted passkey button, error and styling helpers", () => {
+    it("returns correct button text states for register actions", () => {
+      expect(getPasskeyRegisterButtonText(true)).toBe("Registrando…");
+      expect(getPasskeyRegisterButtonText(false)).toBe("Registrar huella");
+      expect(getPasskeyOnboardingRegisterButtonText(true)).toBe("Registrando…");
+      expect(getPasskeyOnboardingRegisterButtonText(false)).toBe("Activar huella");
+    });
+
+    it("returns correct default action ARIA labels and error fallbacks", () => {
+      expect(getPasskeyRegisterActionAriaLabel()).toBe("Registrar nueva huella biométrica");
+      expect(getPasskeyOnboardingRegisterActionAriaLabel()).toBe("Activar acceso con huella");
+      expect(getPasskeyRegisterErrorFallbackMessage()).toBe("No pudimos registrar la huella");
+    });
+
+    it("returns consistent styling classes for passkey items and buttons", () => {
+      expect(getPasskeyItemContainerClasses()).toContain("bg-muted");
+      expect(getPasskeyDeleteButtonClasses()).toContain("active:scale-[0.98]");
+      expect(getPasskeyRegisterButtonClasses()).toContain("active:scale-[0.98]");
+      expect(getPasskeyLoginButtonClasses()).toContain("h-12");
+      expect(getPasskeyOnboardingDismissButtonClasses()).toContain("absolute");
+      expect(getPasskeyOnboardingRegisterButtonClasses()).toContain("flex-1");
+      expect(getPasskeyOnboardingLaterButtonClasses()).toContain("text-xs");
+      expect(getSecurityPageBackLinkClasses()).toContain("h-10 w-10");
     });
   });
 });
