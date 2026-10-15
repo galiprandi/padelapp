@@ -561,6 +561,60 @@ export function getTopPlayerExpansionAriaLabel(
   return `Potencial de expansión de red de ${playerName}: ${expansionTier}. ${summary}`;
 }
 
+export function getTopPlayerRoleAriaLabel(
+  playerName: string,
+  roleLabel: string,
+  description: string,
+): string {
+  return `Rol en la red de ${playerName}: ${roleLabel}. ${description}`;
+}
+
+export function getTopPlayerActivityAriaLabel(
+  playerName: string,
+  activityLabel: string,
+): string {
+  return `Nivel de actividad de ${playerName}: ${activityLabel}`;
+}
+
+export function getTopPlayerCentralityAriaLabel(
+  playerName: string,
+  centralityTier: string,
+  summary: string,
+): string {
+  return `Centralidad en la red de ${playerName}: ${centralityTier}. ${summary}`;
+}
+
+export function getTopPlayerDiversityAriaLabel(
+  playerName: string,
+  diversityTier: string,
+  summary: string,
+): string {
+  return `Diversidad de red de ${playerName}: ${diversityTier}. ${summary}`;
+}
+
+export function getTopPlayerMultiBelongingAriaLabel(
+  playerName: string,
+  multiBelongingTier: string,
+  summary: string,
+): string {
+  return `Multipertenencia comunitaria de ${playerName}: ${multiBelongingTier}. ${summary}`;
+}
+
+export function getTopPlayerStabilityAriaLabel(
+  playerName: string,
+  stabilityTier: string,
+  summary: string,
+): string {
+  return `Estabilidad de duplas de ${playerName}: ${stabilityTier}. ${summary}`;
+}
+
+export function getTopClubTurnsMatchesText(
+  turns: number,
+  matches: number,
+): string {
+  return `${turns}T · ${matches}P`;
+}
+
 export function getTopPlayerReciprocityAriaLabel(
   playerName: string,
   reciprocityTier: string,

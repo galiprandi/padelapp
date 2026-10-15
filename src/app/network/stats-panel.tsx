@@ -54,10 +54,17 @@ import {
   getTopClubsHeadingTitle,
   getTopCommunitiesHeadingTitle,
   getTopConnectedHeadingTitle,
+  getTopClubTurnsMatchesText,
+  getTopPlayerActivityAriaLabel,
+  getTopPlayerCentralityAriaLabel,
   getTopPlayerContactsText,
+  getTopPlayerDiversityAriaLabel,
   getTopPlayerExpansionAriaLabel,
   getTopPlayerMatchesText,
+  getTopPlayerMultiBelongingAriaLabel,
   getTopPlayerRankText,
+  getTopPlayerRoleAriaLabel,
+  getTopPlayerStabilityAriaLabel,
   getTurnsOverviewCardSubtext,
   getTurnsOverviewCardTitle,
   getUsersOverviewCardSubtext,
@@ -525,7 +532,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             roleInfo.badgeStyle,
                           )}
                           title={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
-                          aria-label={`Rol en la red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                          aria-label={getTopPlayerRoleAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            roleInfo.roleLabel,
+                            roleInfo.description,
+                          )}
                         >
                           {roleInfo.roleLabel}
                         </span>
@@ -536,7 +547,10 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             activityTier.badgeStyle,
                           )}
                           title={`Actividad: ${activityTier.label}`}
-                          aria-label={`Nivel de actividad de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${activityTier.label}`}
+                          aria-label={getTopPlayerActivityAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            activityTier.label,
+                          )}
                         >
                           {activityTier.label}
                         </span>
@@ -548,7 +562,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             centrality.badgeStyle,
                           )}
                           title={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
-                          aria-label={`Centralidad en la red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                          aria-label={getTopPlayerCentralityAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            centrality.centralityTier,
+                            centrality.formattedSummary,
+                          )}
                         >
                           {centrality.centralityTier}
                         </span>
@@ -560,7 +578,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             diversity.badgeStyle,
                           )}
                           title={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
-                          aria-label={`Diversidad de red de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
+                          aria-label={getTopPlayerDiversityAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            diversity.diversityTier,
+                            diversity.formattedSummary,
+                          )}
                         >
                           {diversity.diversityTier}
                         </span>
@@ -572,7 +594,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             multiBelonging.badgeStyle,
                           )}
                           title={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
-                          aria-label={`Multipertenencia comunitaria de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                          aria-label={getTopPlayerMultiBelongingAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            multiBelonging.multiBelongingTier,
+                            multiBelonging.formattedSummary,
+                          )}
                         >
                           {multiBelonging.multiBelongingTier}
                         </span>
@@ -596,7 +622,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             stability.badgeStyle,
                           )}
                           title={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
-                          aria-label={`Estabilidad de duplas de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                          aria-label={getTopPlayerStabilityAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            stability.stabilityTier,
+                            stability.formattedSummary,
+                          )}
                         >
                           {stability.stabilityTier}
                         </span>
@@ -696,7 +726,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       <span className="truncate">{c.name}</span>
                     </span>
                     <span className="text-muted-foreground tabular-nums shrink-0">
-                      {c.turns}T · {c.matches}P
+                      {getTopClubTurnsMatchesText(c.turns, c.matches)}
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-muted overflow-hidden">

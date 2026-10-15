@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 51 (Top Connected Players ARIA Helpers & Top Club Summary Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-09-28 — Hecho: Extraídas las funciones puras `getTopPlayerRoleAriaLabel`, `getTopPlayerActivityAriaLabel`, `getTopPlayerCentralityAriaLabel`, `getTopPlayerDiversityAriaLabel`, `getTopPlayerMultiBelongingAriaLabel`, `getTopPlayerStabilityAriaLabel` y `getTopClubTurnsMatchesText` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-28 — Hecho: Refactorizado `StatsPanel` (`src/app/network/stats-panel.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para las insignias de jugadores más conectados y el resumen de turnos/partidos de clubes en voz argentina.
+  - [x] 2026-09-28 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 50 (Graph Network Metrics ARIA Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-09-27 — Hecho: Extraídas las funciones puras `getNetworkDiversityAriaLabel`, `getCrossRivalryAriaLabel` y `getPlayerGraphReachAriaLabel` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-27 — Hecho: Refactorizado `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para los indicadores de diversidad de red, rivalidad cruzada y alcance de red en voz argentina.
