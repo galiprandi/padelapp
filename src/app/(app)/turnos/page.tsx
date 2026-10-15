@@ -7,6 +7,7 @@ import {
   getTurnosHeadingTitle,
   getTurnosHeadingDescription,
   getTurnosLoadingAriaLabel,
+  getTurnCreateButtonText,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -27,7 +28,7 @@ export default function TurnsPage() {
         <Button asChild size="sm">
           <Link href="/turnos/nuevo" prefetch={true}>
             <Plus className="mr-1 h-4 w-4" />
-            Crear
+            {getTurnCreateButtonText()}
           </Link>
         </Button>
       </div>

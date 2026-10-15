@@ -220,6 +220,10 @@ import {
   getTurnOpenSlotsBadgeText,
   getTurnOrganizerBadgeText,
   getTurnYouBadgeText,
+  getTurnBackButtonAriaLabel,
+  getTurnCreateButtonText,
+  formatDurationOptionLabel,
+  formatPlayerOptionLabel,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -893,6 +897,27 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("turn navigation and form option label pure helpers", () => {
+  it("formats getTurnBackButtonAriaLabel and getTurnCreateButtonText", () => {
+    expect(getTurnBackButtonAriaLabel()).toBe("Volver");
+    expect(getTurnCreateButtonText()).toBe("Crear");
+  });
+
+  it("formats formatDurationOptionLabel across numeric and string inputs", () => {
+    expect(formatDurationOptionLabel(60)).toBe("60 min");
+    expect(formatDurationOptionLabel("90")).toBe("90 min");
+    expect(formatDurationOptionLabel(120)).toBe("120 min");
+  });
+
+  it("formats formatPlayerOptionLabel across singular and plural player counts", () => {
+    expect(formatPlayerOptionLabel(1)).toBe("1 jugador");
+    expect(formatPlayerOptionLabel(4)).toBe("4 jugadores");
+    expect(formatPlayerOptionLabel("6")).toBe("6 jugadores");
+    expect(formatPlayerOptionLabel(8)).toBe("8 jugadores");
+    expect(formatPlayerOptionLabel("10")).toBe("10 jugadores");
   });
 });
 

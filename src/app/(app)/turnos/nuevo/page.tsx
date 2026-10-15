@@ -30,20 +30,23 @@ import {
   getTurnFormNotesLabel,
   getTurnFormNotesPlaceholder,
   getTurnFormSubmitButtonText,
+  getTurnBackButtonAriaLabel,
+  formatDurationOptionLabel,
+  formatPlayerOptionLabel,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
 const DURATION_OPTIONS = [
-  { value: "60", label: "60 min" },
-  { value: "90", label: "90 min" },
-  { value: "120", label: "120 min" },
+  { value: "60", label: formatDurationOptionLabel(60) },
+  { value: "90", label: formatDurationOptionLabel(90) },
+  { value: "120", label: formatDurationOptionLabel(120) },
 ] as const;
 
 const PLAYER_OPTIONS = [
-  { value: "4", label: "4 jugadores" },
-  { value: "6", label: "6 jugadores" },
-  { value: "8", label: "8 jugadores" },
-  { value: "10", label: "10 jugadores" },
+  { value: "4", label: formatPlayerOptionLabel(4) },
+  { value: "6", label: formatPlayerOptionLabel(6) },
+  { value: "8", label: formatPlayerOptionLabel(8) },
+  { value: "10", label: formatPlayerOptionLabel(10) },
 ] as const;
 
 export default function NewTurnPage() {
@@ -109,7 +112,7 @@ export default function NewTurnPage() {
           href="/turnos"
           prefetch={true}
           className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
-          aria-label="Volver"
+          aria-label={getTurnBackButtonAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
