@@ -2468,3 +2468,32 @@ export function getTurnOrganizerBadgeText(): string {
 export function getTurnYouBadgeText(): string {
   return "Vos";
 }
+
+/**
+ * Format accessible ARIA label for back button navigation in turn pages.
+ */
+export function getTurnBackButtonAriaLabel(): string {
+  return "Volver";
+}
+
+/**
+ * Format button text for creating a new turn on turn listing page.
+ */
+export function getTurnCreateButtonText(): string {
+  return "Crear";
+}
+
+/**
+ * Format duration option label for turn creation/edit form.
+ */
+export function formatDurationOptionLabel(value: number | string): string {
+  return `${value} min`;
+}
+
+/**
+ * Format max players option label for turn creation/edit form.
+ */
+export function formatPlayerOptionLabel(value: number | string): string {
+  const num = Number(value);
+  return `${num} jugador${num === 1 ? "" : "es"}`;
+}
