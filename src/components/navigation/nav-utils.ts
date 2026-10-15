@@ -275,6 +275,21 @@ export function getBottomNavInnerContainerClasses(customClassName?: string): str
   );
 }
 
+export interface BottomNavSkeletonTabsConfig {
+  leftTabs: number[];
+  rightTabs: number[];
+}
+
+/**
+ * Retorna la estructura y cantidad de pestañas del esqueleto de carga a la izquierda y derecha del FAB central.
+ */
+export function getBottomNavSkeletonTabsConfig(): BottomNavSkeletonTabsConfig {
+  return {
+    leftTabs: [1, 2],
+    rightTabs: [3, 4],
+  };
+}
+
 /**
  * Genera las clases CSS para las columnas de pestañas en el esqueleto de carga de la barra de navegación.
  */
@@ -283,6 +298,13 @@ export function getBottomNavTabSkeletonClasses(customClassName?: string): string
     "flex flex-1 flex-col items-center justify-center gap-1",
     customClassName,
   );
+}
+
+/**
+ * Genera las clases CSS para la columna individual de una pestaña en el esqueleto de carga de la barra de navegación.
+ */
+export function getBottomNavTabItemSkeletonClasses(customClassName?: string): string {
+  return getBottomNavTabSkeletonClasses(customClassName);
 }
 
 /**
