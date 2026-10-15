@@ -252,8 +252,15 @@ import {
   formatTimeAgo,
   getNetworkSkeletonAriaLabel,
   getStatsPanelRegionAriaLabel,
+  getTopClubTurnsMatchesText,
+  getTopPlayerActivityAriaLabel,
+  getTopPlayerCentralityAriaLabel,
+  getTopPlayerDiversityAriaLabel,
   getTopPlayerExpansionAriaLabel,
+  getTopPlayerMultiBelongingAriaLabel,
   getTopPlayerReciprocityAriaLabel,
+  getTopPlayerRoleAriaLabel,
+  getTopPlayerStabilityAriaLabel,
   getNetworkDiversityAriaLabel,
   getCrossRivalryAriaLabel,
   getPlayerGraphReachAriaLabel,
@@ -2075,6 +2082,81 @@ describe("NetworkPageClient pure helpers", () => {
       ).toBe(
         "Similitud con vos: Dupla ideal 🎯. 90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
       );
+    });
+  });
+
+  describe("Top connected players ARIA labels and top club pure helpers", () => {
+    it("formats top player role ARIA label correctly", () => {
+      expect(
+        getTopPlayerRoleAriaLabel(
+          "Agustín Aliprandi",
+          "Nexo comunitario 🌉",
+          "Conecta diferentes grupos de la comunidad",
+        ),
+      ).toBe(
+        "Rol en la red de Agustín Aliprandi: Nexo comunitario 🌉. Conecta diferentes grupos de la comunidad",
+      );
+    });
+
+    it("formats top player activity ARIA label correctly", () => {
+      expect(
+        getTopPlayerActivityAriaLabel("Fernando Belasteguín", "Conector leyenda ⚡"),
+      ).toBe(
+        "Nivel de actividad de Fernando Belasteguín: Conector leyenda ⚡",
+      );
+    });
+
+    it("formats top player centrality ARIA label correctly", () => {
+      expect(
+        getTopPlayerCentralityAriaLabel(
+          "Agustín Aliprandi",
+          "Hub principal 👑",
+          "12 contactos directos · 25 interacciones",
+        ),
+      ).toBe(
+        "Centralidad en la red de Agustín Aliprandi: Hub principal 👑. 12 contactos directos · 25 interacciones",
+      );
+    });
+
+    it("formats top player diversity ARIA label correctly", () => {
+      expect(
+        getTopPlayerDiversityAriaLabel(
+          "Agustín Aliprandi",
+          "Red ultra diversificada 🌐",
+          "4 grupos de la red · 85% índice de diversidad",
+        ),
+      ).toBe(
+        "Diversidad de red de Agustín Aliprandi: Red ultra diversificada 🌐. 4 grupos de la red · 85% índice de diversidad",
+      );
+    });
+
+    it("formats top player multi-belonging ARIA label correctly", () => {
+      expect(
+        getTopPlayerMultiBelongingAriaLabel(
+          "Facundo Lopez",
+          "Multicomunitario 🌐",
+          "3 grupos de la red · 67% interacción externa",
+        ),
+      ).toBe(
+        "Multipertenencia comunitaria de Facundo Lopez: Multicomunitario 🌐. 3 grupos de la red · 67% interacción externa",
+      );
+    });
+
+    it("formats top player stability ARIA label correctly", () => {
+      expect(
+        getTopPlayerStabilityAriaLabel(
+          "Fernando Belasteguín",
+          "Duplas consolidadas 🏆",
+          "5 vínculos recurrentes (71%) · 7 contactos totales",
+        ),
+      ).toBe(
+        "Estabilidad de duplas de Fernando Belasteguín: Duplas consolidadas 🏆. 5 vínculos recurrentes (71%) · 7 contactos totales",
+      );
+    });
+
+    it("formats top club turns and matches text correctly", () => {
+      expect(getTopClubTurnsMatchesText(12, 8)).toBe("12T · 8P");
+      expect(getTopClubTurnsMatchesText(0, 1)).toBe("0T · 1P");
     });
   });
 });
