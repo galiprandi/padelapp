@@ -20,15 +20,21 @@ import {
   formatPasskeyDate,
   getPasskeyDefaultNickname,
   getPasskeyDeleteAriaLabel,
+  getPasskeyDeleteButtonClasses,
   getPasskeyDeleteSuccessToast,
   getPasskeyErrorMessage,
+  getPasskeyItemContainerClasses,
   getPasskeyManagerDescription,
   getPasskeyManagerRegionAriaLabel,
   getPasskeyManagerTitle,
   getPasskeyNicknameAriaLabel,
   getPasskeyNicknameLabel,
   getPasskeyNicknamePlaceholder,
+  getPasskeyRegisterActionAriaLabel,
   getPasskeyRegisterAriaLabel,
+  getPasskeyRegisterButtonClasses,
+  getPasskeyRegisterButtonText,
+  getPasskeyRegisterErrorFallbackMessage,
   getPasskeyRegisterSuccessToast,
   getPasskeyUnsupportedDescription,
   sanitizePasskeyNickname,
@@ -109,7 +115,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
         setNickname("");
         window.location.reload();
       } catch (err: unknown) {
-        showToast(getPasskeyErrorMessage(err, "No pudimos registrar la huella"));
+        showToast(getPasskeyErrorMessage(err, getPasskeyRegisterErrorFallbackMessage()));
       }
     });
   }
@@ -176,7 +182,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           {passkeys.map((passkey) => (
             <div
               key={passkey.credentialId}
-              className="flex items-center gap-3 rounded-lg border border-border bg-muted px-3 py-2"
+              className={getPasskeyItemContainerClasses()}
             >
               <Fingerprint
                 className="h-4 w-4 text-muted-foreground shrink-0"
@@ -195,7 +201,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
                 disabled={isDeleting}
                 aria-busy={isDeleting}
                 aria-label={getPasskeyDeleteAriaLabel(passkey.nickname)}
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-card hover:text-destructive transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+                className={getPasskeyDeleteButtonClasses()}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -207,21 +213,21 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
       <Button
         type="button"
         variant="outline"
-        className="w-full h-10 font-medium active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getPasskeyRegisterButtonClasses()}
         disabled={isRegistering || supported === null}
         aria-busy={isRegistering}
-        aria-label={getPasskeyRegisterAriaLabel(isRegistering, "Registrar nueva huella biométrica")}
+        aria-label={getPasskeyRegisterAriaLabel(isRegistering, getPasskeyRegisterActionAriaLabel())}
         onClick={handleRegister}
       >
         {isRegistering ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Registrando…
+            {getPasskeyRegisterButtonText(true)}
           </>
         ) : (
           <>
             <Plus className="mr-2 h-4 w-4" />
-            Registrar huella
+            {getPasskeyRegisterButtonText(false)}
           </>
         )}
       </Button>
