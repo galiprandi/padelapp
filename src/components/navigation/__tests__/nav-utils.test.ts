@@ -15,7 +15,9 @@ import {
   isNavItemActive,
   getBottomNavContainerClasses,
   getBottomNavInnerContainerClasses,
+  getBottomNavSkeletonTabsConfig,
   getBottomNavTabSkeletonClasses,
+  getBottomNavTabItemSkeletonClasses,
   getBottomNavFabSkeletonClasses,
   getNavItemClasses,
   getFabClasses,
@@ -375,6 +377,28 @@ describe("nav-utils", () => {
     it("applies custom class overrides", () => {
       const classes = getBottomNavTabSkeletonClasses("custom-tab-skeleton");
       expect(classes).toContain("custom-tab-skeleton");
+    });
+  });
+
+  describe("getBottomNavSkeletonTabsConfig", () => {
+    it("returns left and right tabs arrays for skeleton rendering", () => {
+      const config = getBottomNavSkeletonTabsConfig();
+      expect(config).toEqual({
+        leftTabs: [1, 2],
+        rightTabs: [3, 4],
+      });
+    });
+  });
+
+  describe("getBottomNavTabItemSkeletonClasses", () => {
+    it("returns tab item skeleton classes matching getBottomNavTabSkeletonClasses", () => {
+      const classes = getBottomNavTabItemSkeletonClasses();
+      expect(classes).toContain("flex flex-1 flex-col items-center justify-center gap-1");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getBottomNavTabItemSkeletonClasses("custom-tab-item");
+      expect(classes).toContain("custom-tab-item");
     });
   });
 
