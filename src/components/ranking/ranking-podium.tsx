@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, capitalizeName } from "@/lib/utils";
 import { calculatePlayerStreak } from "@/lib/match-helpers";
 import { TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 import {
@@ -9,6 +8,11 @@ import {
   getWinStreakTitle,
   getDeltaChangeTitle,
   getPodiumHeadingTitle,
+  getRankingPlayerDisplayName,
+  getPodiumContainerClasses,
+  getPodiumAvatarClasses,
+  getPodiumBadgeClasses,
+  getPodiumPlayerNameClasses,
 } from "./ranking-utils";
 
 interface PodiumPlayer {
@@ -61,33 +65,28 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             prefetch={true}
             aria-label={getPodiumPlayerAriaLabel(
               2,
-              capitalizeName(second.displayName ?? second.alias ?? "?"),
+              getRankingPlayerDisplayName(second.displayName, second.alias, "?"),
               Boolean(isSecondViewer),
               second.rankingScore,
               second.rankingDelta
             )}
-            className={cn(
-              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-              isSecondViewer
-                ? "border-primary font-semibold shadow-xs bg-card"
-                : "border-border bg-card",
-            )}
+            className={getPodiumContainerClasses(2, Boolean(isSecondViewer))}
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={capitalizeName(second.displayName ?? second.alias ?? "?")}
+                name={getRankingPlayerDisplayName(second.displayName, second.alias, "?")}
                 image={second.image ?? undefined}
                 size={48}
-                className={cn("border-2", isSecondViewer ? "border-primary" : "border-muted")}
+                className={getPodiumAvatarClasses(2, Boolean(isSecondViewer))}
                 aria-hidden="true"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground border-2 border-card">
+              <div className={getPodiumBadgeClasses(2)}>
                 2
               </div>
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
-              <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isSecondViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                <span className="truncate">{isSecondViewer ? "Vos" : capitalizeName(second.displayName ?? second.alias ?? "?")}</span>
+              <span className={getPodiumPlayerNameClasses(2, Boolean(isSecondViewer))}>
+                <span className="truncate">{isSecondViewer ? "Vos" : getRankingPlayerDisplayName(second.displayName, second.alias, "?")}</span>
                 {secondStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
@@ -133,28 +132,28 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             prefetch={true}
             aria-label={getPodiumPlayerAriaLabel(
               1,
-              capitalizeName(first.displayName ?? first.alias ?? "?"),
+              getRankingPlayerDisplayName(first.displayName, first.alias, "?"),
               Boolean(isFirstViewer),
               first.rankingScore,
               first.rankingDelta
             )}
-            className="flex flex-col items-center gap-2 rounded-xl border border-primary font-semibold shadow-xs bg-card p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            className={getPodiumContainerClasses(1, Boolean(isFirstViewer))}
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={capitalizeName(first.displayName ?? first.alias ?? "?")}
+                name={getRankingPlayerDisplayName(first.displayName, first.alias, "?")}
                 image={first.image ?? undefined}
                 size={56}
-                className="border-2 border-primary"
+                className={getPodiumAvatarClasses(1, Boolean(isFirstViewer))}
                 aria-hidden="true"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground border-2 border-background">
+              <div className={getPodiumBadgeClasses(1)}>
                 1
               </div>
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
-              <span className={cn("text-xs font-bold truncate w-full text-center flex items-center justify-center gap-0.5", isFirstViewer ? "text-primary" : "text-foreground")}>
-                <span className="truncate">{isFirstViewer ? "Vos" : capitalizeName(first.displayName ?? first.alias ?? "?")}</span>
+              <span className={getPodiumPlayerNameClasses(1, Boolean(isFirstViewer))}>
+                <span className="truncate">{isFirstViewer ? "Vos" : getRankingPlayerDisplayName(first.displayName, first.alias, "?")}</span>
                 {firstStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
@@ -200,33 +199,28 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
             prefetch={true}
             aria-label={getPodiumPlayerAriaLabel(
               3,
-              capitalizeName(third.displayName ?? third.alias ?? "?"),
+              getRankingPlayerDisplayName(third.displayName, third.alias, "?"),
               Boolean(isThirdViewer),
               third.rankingScore,
               third.rankingDelta
             )}
-            className={cn(
-              "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-              isThirdViewer
-                ? "border-primary font-semibold shadow-xs bg-card"
-                : "border-border bg-card",
-            )}
+            className={getPodiumContainerClasses(3, Boolean(isThirdViewer))}
           >
             <div className="relative" aria-hidden="true">
               <PlayerAvatar
-                name={capitalizeName(third.displayName ?? third.alias ?? "?")}
+                name={getRankingPlayerDisplayName(third.displayName, third.alias, "?")}
                 image={third.image ?? undefined}
                 size={44}
-                className={cn("border-2", isThirdViewer ? "border-primary" : "border-muted")}
+                className={getPodiumAvatarClasses(3, Boolean(isThirdViewer))}
                 aria-hidden="true"
               />
-              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground border-2 border-card">
+              <div className={getPodiumBadgeClasses(3)}>
                 3
               </div>
             </div>
             <div className="flex flex-col items-center min-w-0 w-full animate-none" aria-hidden="true">
-              <span className={cn("text-xs truncate w-full text-center flex items-center justify-center gap-0.5", isThirdViewer ? "text-primary font-bold" : "font-semibold text-foreground")}>
-                <span className="truncate">{isThirdViewer ? "Vos" : capitalizeName(third.displayName ?? third.alias ?? "?")}</span>
+              <span className={getPodiumPlayerNameClasses(3, Boolean(isThirdViewer))}>
+                <span className="truncate">{isThirdViewer ? "Vos" : getRankingPlayerDisplayName(third.displayName, third.alias, "?")}</span>
                 {thirdStreak >= 2 && (
                   <span
                     className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"

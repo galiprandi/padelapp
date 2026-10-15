@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck, TrendingUp, TrendingDown, Minus, Flame } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
-import { cn, capitalizeName } from "@/lib/utils";
 import { getPlayerRecentForm, calculatePlayerStreak } from "@/lib/match-helpers";
 import {
   getRankingListItemAriaLabel,
@@ -9,6 +8,11 @@ import {
   getDeltaChangeTitle,
   getReliablePlayerBadgeTitle,
   formatRecentFormTitle,
+  getRankingPlayerDisplayName,
+  getRankingListItemContainerClasses,
+  getRankingListItemPositionClasses,
+  getRankingListItemNameClasses,
+  getRecentFormDotClasses,
 } from "./ranking-utils";
 
 interface RankingListItemProps {
@@ -45,7 +49,7 @@ export function RankingListItem({
   const recentForm = getPlayerRecentForm(player.matchPlayers);
   const winStreak = calculatePlayerStreak(player.matchPlayers);
 
-  const displayName = capitalizeName(player.displayName ?? player.alias ?? "Jugador");
+  const displayName = getRankingPlayerDisplayName(player.displayName, player.alias, "Jugador");
   const positionNum = customPosition ?? player.rankingPosition ?? index + 1;
 
   const ariaLabel = getRankingListItemAriaLabel(
@@ -63,19 +67,11 @@ export function RankingListItem({
       href={`/p/${player.id}?backUrl=/ranking`}
       prefetch={true}
       aria-label={ariaLabel}
-      className={cn(
-        "flex items-center gap-3 rounded-xl border px-4 py-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-        isViewer ? "border-primary font-semibold shadow-sm bg-card" : "border-border bg-card",
-      )}
+      className={getRankingListItemContainerClasses(isViewer)}
     >
       <div
         aria-hidden="true"
-        className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold tabular-nums",
-          isViewer
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-muted-foreground",
-        )}
+        className={getRankingListItemPositionClasses(isViewer)}
       >
         {positionNum}
       </div>
@@ -90,12 +86,7 @@ export function RankingListItem({
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p
-              className={cn(
-                "text-sm font-bold truncate",
-                isViewer ? "text-primary" : "text-foreground",
-              )}
-            >
+            <p className={getRankingListItemNameClasses(isViewer)}>
               {displayName}
             </p>
             {winStreak >= 2 && (
@@ -125,10 +116,7 @@ export function RankingListItem({
                 {recentForm.map((result, i) => (
                   <div
                     key={i}
-                    className={cn(
-                      "h-1.5 w-1.5 rounded-full",
-                      result === "W" ? "bg-emerald-500" : "bg-rose-500",
-                    )}
+                    className={getRecentFormDotClasses(result)}
                     aria-hidden="true"
                   />
                 ))}

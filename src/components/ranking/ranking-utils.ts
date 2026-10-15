@@ -1,3 +1,5 @@
+import { cn, capitalizeName } from "@/lib/utils";
+
 /**
  * Pure helper functions for Ranking UI components accessibility and formatting
  */
@@ -537,4 +539,113 @@ export function formatRecentFormTitle(recentForm: ("W" | "L")[]): string {
   if (!recentForm || recentForm.length === 0) return "";
   const formStr = recentForm.map((r) => (r === "W" ? "G" : "P")).join(", ");
   return `Forma reciente: ${formStr}`;
+}
+
+/**
+ * Returns capitalized display name or alias or fallback for a player
+ */
+export function getRankingPlayerDisplayName(
+  displayName?: string | null,
+  alias?: string | null,
+  fallback = "Jugador"
+): string {
+  return capitalizeName(displayName ?? alias ?? fallback);
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem container
+ */
+export function getRankingListItemContainerClasses(isViewer: boolean): string {
+  return cn(
+    "flex items-center gap-3 rounded-xl border px-4 py-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isViewer ? "border-primary font-semibold shadow-sm bg-card" : "border-border bg-card"
+  );
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem position badge
+ */
+export function getRankingListItemPositionClasses(isViewer: boolean): string {
+  return cn(
+    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold tabular-nums",
+    isViewer ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+  );
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem player name
+ */
+export function getRankingListItemNameClasses(isViewer: boolean): string {
+  return cn(
+    "text-sm font-bold truncate",
+    isViewer ? "text-primary" : "text-foreground"
+  );
+}
+
+/**
+ * Returns Tailwind class names for recent form dot indicators
+ */
+export function getRecentFormDotClasses(result: "W" | "L" | string): string {
+  return cn(
+    "h-1.5 w-1.5 rounded-full",
+    result === "W" ? "bg-emerald-500" : "bg-rose-500"
+  );
+}
+
+/**
+ * Returns Tailwind class names for podium player card containers
+ */
+export function getPodiumContainerClasses(
+  positionRank: 1 | 2 | 3,
+  isViewer: boolean
+): string {
+  if (positionRank === 1) {
+    return "flex flex-col items-center gap-2 rounded-xl border border-primary font-semibold shadow-xs bg-card p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+  }
+  return cn(
+    "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isViewer ? "border-primary font-semibold shadow-xs bg-card" : "border-border bg-card"
+  );
+}
+
+/**
+ * Returns Tailwind class names for podium player avatar border
+ */
+export function getPodiumAvatarClasses(
+  positionRank: 1 | 2 | 3,
+  isViewer: boolean
+): string {
+  if (positionRank === 1) {
+    return "border-2 border-primary";
+  }
+  return cn("border-2", isViewer ? "border-primary" : "border-muted");
+}
+
+/**
+ * Returns Tailwind class names for podium position rank badge
+ */
+export function getPodiumBadgeClasses(positionRank: 1 | 2 | 3): string {
+  if (positionRank === 1) {
+    return "absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground border-2 border-background";
+  }
+  return "absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground border-2 border-card";
+}
+
+/**
+ * Returns Tailwind class names for podium player name text
+ */
+export function getPodiumPlayerNameClasses(
+  positionRank: 1 | 2 | 3,
+  isViewer: boolean
+): string {
+  if (positionRank === 1) {
+    return cn(
+      "text-xs font-bold truncate w-full text-center flex items-center justify-center gap-0.5",
+      isViewer ? "text-primary" : "text-foreground"
+    );
+  }
+  return cn(
+    "text-xs truncate w-full text-center flex items-center justify-center gap-0.5",
+    isViewer ? "text-primary font-bold" : "font-semibold text-foreground"
+  );
 }
