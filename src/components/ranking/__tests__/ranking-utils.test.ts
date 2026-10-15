@@ -47,6 +47,15 @@ import {
   getPodiumHeadingTitle,
   getReliablePlayerBadgeTitle,
   formatRecentFormTitle,
+  getRankingPlayerDisplayName,
+  getRankingListItemContainerClasses,
+  getRankingListItemPositionClasses,
+  getRankingListItemNameClasses,
+  getRecentFormDotClasses,
+  getPodiumContainerClasses,
+  getPodiumAvatarClasses,
+  getPodiumBadgeClasses,
+  getPodiumPlayerNameClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -552,6 +561,61 @@ describe("Ranking Helpers", () => {
       expect(formatRecentFormTitle([])).toBe("");
       expect(formatRecentFormTitle(["W", "L", "W"])).toBe("Forma reciente: G, P, G");
       expect(formatRecentFormTitle(["W", "W"])).toBe("Forma reciente: G, G");
+    });
+
+    it("getRankingPlayerDisplayName capitalizes display name or alias with fallback", () => {
+      expect(getRankingPlayerDisplayName("agustín tapia", null)).toBe("Agustín Tapia");
+      expect(getRankingPlayerDisplayName(null, "tapita")).toBe("Tapita");
+      expect(getRankingPlayerDisplayName(null, null, "desconocido")).toBe("Desconocido");
+    });
+
+    it("getRankingListItemContainerClasses returns correct styling for viewer and others", () => {
+      expect(getRankingListItemContainerClasses(true)).toContain("border-primary font-semibold");
+      expect(getRankingListItemContainerClasses(false)).toContain("border-border bg-card");
+    });
+
+    it("getRankingListItemPositionClasses returns correct styling for viewer and others", () => {
+      expect(getRankingListItemPositionClasses(true)).toContain("bg-primary text-primary-foreground");
+      expect(getRankingListItemPositionClasses(false)).toContain("bg-muted text-muted-foreground");
+    });
+
+    it("getRankingListItemNameClasses returns correct text styling", () => {
+      expect(getRankingListItemNameClasses(true)).toContain("text-primary");
+      expect(getRankingListItemNameClasses(false)).toContain("text-foreground");
+    });
+
+    it("getRecentFormDotClasses returns emerald for win and rose for loss", () => {
+      expect(getRecentFormDotClasses("W")).toContain("bg-emerald-500");
+      expect(getRecentFormDotClasses("L")).toContain("bg-rose-500");
+    });
+
+    it("getPodiumContainerClasses returns appropriate styling by rank and viewer status", () => {
+      expect(getPodiumContainerClasses(1, true)).toContain("border-primary");
+      expect(getPodiumContainerClasses(2, true)).toContain("border-primary");
+      expect(getPodiumContainerClasses(2, false)).toContain("border-border");
+      expect(getPodiumContainerClasses(3, false)).toContain("border-border");
+    });
+
+    it("getPodiumAvatarClasses returns primary border for rank 1 or viewer", () => {
+      expect(getPodiumAvatarClasses(1, false)).toBe("border-2 border-primary");
+      expect(getPodiumAvatarClasses(2, true)).toBe("border-2 border-primary");
+      expect(getPodiumAvatarClasses(2, false)).toBe("border-2 border-muted");
+    });
+
+    it("getPodiumBadgeClasses returns primary badge for rank 1 and muted for others", () => {
+      expect(getPodiumBadgeClasses(1)).toContain("bg-primary");
+      expect(getPodiumBadgeClasses(1)).toContain("text-primary-foreground");
+      expect(getPodiumBadgeClasses(2)).toContain("bg-muted");
+      expect(getPodiumBadgeClasses(2)).toContain("text-muted-foreground");
+      expect(getPodiumBadgeClasses(3)).toContain("bg-muted");
+      expect(getPodiumBadgeClasses(3)).toContain("text-muted-foreground");
+    });
+
+    it("getPodiumPlayerNameClasses returns appropriate text styling", () => {
+      expect(getPodiumPlayerNameClasses(1, true)).toContain("text-primary");
+      expect(getPodiumPlayerNameClasses(1, false)).toContain("text-foreground");
+      expect(getPodiumPlayerNameClasses(2, true)).toContain("text-primary font-bold");
+      expect(getPodiumPlayerNameClasses(2, false)).toContain("font-semibold text-foreground");
     });
   });
 });
