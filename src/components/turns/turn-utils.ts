@@ -2497,3 +2497,106 @@ export function formatPlayerOptionLabel(value: number | string): string {
   const num = Number(value);
   return `${num} jugador${num === 1 ? "" : "es"}`;
 }
+
+/**
+ * Format a turn date/time into a compact localized string in Argentine Spanish (e.g. "sáb, 25 jul · 19:00").
+ */
+export function formatTurnCompactDate(date: Date | string): string {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "";
+
+  const turnDateStr = d.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+  const turnTimeStr = d.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+
+  return `${turnDateStr} · ${turnTimeStr}`;
+}
+
+/**
+ * Format button text for editing turn details.
+ */
+export function getTurnEditButtonText(): string {
+  return "Editar";
+}
+
+/**
+ * Format accessible ARIA label for editing turn details in Argentine Spanish.
+ */
+export function getTurnEditButtonAriaLabel(club: string): string {
+  return `Editar detalles del turno en ${club}`;
+}
+
+/**
+ * Format CSS classes for turn edit action button.
+ */
+export function getTurnActionsEditButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs";
+}
+
+/**
+ * Format CSS classes for substitute notice container when no slots are available.
+ */
+export function getTurnActionsSubstituteNoSlotsClasses(): string {
+  return "w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border shadow-xs text-sm";
+}
+
+/**
+ * Format CSS classes for completed turn status button in action bar.
+ */
+export function getTurnActionsCompletedButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs";
+}
+
+/**
+ * Format CSS classes for already joined status button in action bar.
+ */
+export function getTurnActionsAlreadyJoinedButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs";
+}
+
+/**
+ * Format CSS classes for fixed bottom action bar container.
+ */
+export function getTurnActionsContainerClasses(): string {
+  return "fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50 shadow-xs";
+}
+
+export interface TurnCancelledHeaderProps {
+  title: string;
+  description: string;
+  buttonLabel: string;
+}
+
+/**
+ * Format title, description, and button label props for cancelled turn screen.
+ */
+export function getTurnCancelledHeaderProps(): TurnCancelledHeaderProps {
+  return {
+    title: getTurnCancelledTitle(),
+    description: getTurnCancelledDescription(),
+    buttonLabel: getTurnCancelledButtonLabel(),
+  };
+}
+
+export interface TurnSuggestedContactsHeaderProps {
+  title: string;
+  subtitle: string;
+}
+
+/**
+ * Format title and subtitle props for suggested contacts section in turn details.
+ */
+export function getTurnSuggestedContactsHeaderProps(): TurnSuggestedContactsHeaderProps {
+  return {
+    title: getTurnSuggestedContactsTitle(),
+    subtitle: getTurnSuggestedContactsSubtitle(),
+  };
+}
