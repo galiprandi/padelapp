@@ -1,5 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getNotificationsSkeletonAriaLabel } from "@/components/navigation/nav-utils";
+import {
+  getNotificationsSkeletonAriaLabel,
+  getNotificationsSkeletonContainerClasses,
+} from "@/components/navigation/nav-utils";
 
 export default function NotificationsLoading() {
   return (
@@ -7,7 +10,7 @@ export default function NotificationsLoading() {
       role="region"
       aria-busy="true"
       aria-label={getNotificationsSkeletonAriaLabel()}
-      className="flex flex-col gap-6"
+      className={getNotificationsSkeletonContainerClasses()}
     >
       <div>
         <Skeleton className="h-5 w-32" />

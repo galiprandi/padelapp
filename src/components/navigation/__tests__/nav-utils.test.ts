@@ -49,6 +49,7 @@ import {
   getPendingActionMatchDetailProps,
   getBottomNavNotificationsBadgeLinkProps,
   getNotificationsHeaderClasses,
+  getNotificationsSkeletonContainerClasses,
   getNotificationsContainerClasses,
   getNotificationsActionsBadgeClasses,
   getNotificationsListClasses,
@@ -615,6 +616,11 @@ describe("nav-utils", () => {
     it("getNotificationsHeaderClasses returns flex container classes", () => {
       expect(getNotificationsHeaderClasses()).toContain("flex flex-col gap-6");
       expect(getNotificationsHeaderClasses("custom-header")).toContain("custom-header");
+    });
+
+    it("getNotificationsSkeletonContainerClasses returns skeleton flex container classes", () => {
+      expect(getNotificationsSkeletonContainerClasses()).toContain("flex flex-col gap-6");
+      expect(getNotificationsSkeletonContainerClasses("custom-skeleton-container")).toContain("custom-skeleton-container");
     });
 
     it("getNotificationsContainerClasses returns spacing container classes", () => {
