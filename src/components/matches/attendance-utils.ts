@@ -182,3 +182,33 @@ export function getFeedbackOptionClasses(
 
   return `${baseClasses} bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800`;
 }
+
+/**
+ * Returns solid MDS active color styling classes for an attendance status button.
+ */
+export function getAttendanceStatusActiveColorClasses(status: AttendanceStatus): string {
+  if (status === "ATTENDED") {
+    return "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 font-bold";
+  }
+  if (status === "LATE") {
+    return "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold";
+  }
+  return "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800 font-bold";
+}
+
+/**
+ * Generates solid MDS CSS classes for an attendance status radio button.
+ */
+export function getAttendanceStatusButtonClasses(
+  isActive: boolean,
+  status: AttendanceStatus,
+): string {
+  const baseClasses =
+    "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+
+  if (isActive) {
+    return `${baseClasses} ${getAttendanceStatusActiveColorClasses(status)}`;
+  }
+
+  return `${baseClasses} border-border bg-background text-muted-foreground hover:bg-muted`;
+}

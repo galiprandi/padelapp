@@ -28,6 +28,7 @@ import {
   getFeedbackOptionClasses,
   getAttendanceHeadingTitle,
   getAttendanceGroupAriaLabel,
+  getAttendanceStatusButtonClasses,
   ATTENDANCE_STATUS_LABELS,
 } from "@/components/matches/attendance-utils";
 
@@ -48,28 +49,19 @@ interface AttendanceMarkerProps {
 
 const STATUS_CONFIG: Record<
   AttendanceStatus,
-  { label: string; icon: typeof Check; color: string; activeColor: string }
+  { label: string; icon: typeof Check }
 > = {
   ATTENDED: {
     label: ATTENDANCE_STATUS_LABELS.ATTENDED,
     icon: Check,
-    color: "text-muted-foreground",
-    activeColor:
-      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 font-bold",
   },
   LATE: {
     label: ATTENDANCE_STATUS_LABELS.LATE,
     icon: Clock,
-    color: "text-muted-foreground",
-    activeColor:
-      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold",
   },
   NO_SHOW: {
     label: ATTENDANCE_STATUS_LABELS.NO_SHOW,
     icon: X,
-    color: "text-muted-foreground",
-    activeColor:
-      "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800 font-bold",
   },
 };
 
@@ -209,12 +201,7 @@ export function AttendanceMarker({
                           tabIndex={isActive ? 0 : -1}
                           onClick={() => handleStatusChange(player.id, status)}
                           aria-label={getAttendanceStatusAriaLabel(status, player.name)}
-                          className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-lg border transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                            isActive
-                              ? config.activeColor
-                              : "border-border bg-background text-muted-foreground hover:bg-muted",
-                          )}
+                          className={getAttendanceStatusButtonClasses(isActive, status)}
                         >
                           <Icon className="h-4 w-4" aria-hidden="true" />
                         </button>
