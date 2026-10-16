@@ -6,6 +6,22 @@ import {
   calculateTeammateSide,
   getMatchResultAriaLabel,
   getMatchResultSkeletonAriaLabel,
+  getSaveMatchResultSuccessToast,
+  getSaveMatchResultErrorToast,
+  getFinalScoreRegionAriaLabel,
+  getSetScoresRegionAriaLabel,
+  getPlayerSidesRegionAriaLabel,
+  getPlayerSideGroupAriaLabel,
+  getSetScoreButtonAriaLabel,
+  getSetScoreGroupAriaLabel,
+  getRegisterScorePrimaryButtonText,
+  getCancelScoreSecondaryButtonText,
+  getConfirmedMatchTitle,
+  getBackToDetailButtonText,
+  getSetHeaderTitle,
+  getPlayerSidesHeadingTitle,
+  getSideOptionButtonLabel,
+  getSideOptionButtonClasses,
   MatchPlayerInput,
 } from "../match-result-utils";
 
@@ -146,6 +162,82 @@ describe("match-result-utils", () => {
   describe("getMatchResultSkeletonAriaLabel", () => {
     it("returns expected skeleton ARIA label", () => {
       expect(getMatchResultSkeletonAriaLabel()).toBe("Cargando formulario de resultado del partido...");
+    });
+  });
+
+  describe("newly extracted match result helper functions", () => {
+    it("returns correct save match result success toast", () => {
+      expect(getSaveMatchResultSuccessToast()).toBe("Guardaste el resultado.");
+    });
+
+    it("returns correct save match result error toast", () => {
+      expect(getSaveMatchResultErrorToast("Error al guardar")).toBe("Error al guardar");
+      expect(getSaveMatchResultErrorToast()).toBe("No pudimos guardar el resultado.");
+      expect(getSaveMatchResultErrorToast("   ")).toBe("No pudimos guardar el resultado.");
+    });
+
+    it("returns correct final score region ARIA label", () => {
+      expect(getFinalScoreRegionAriaLabel("6-4, 6-3")).toBe("Resultado final del partido: 6-4, 6-3");
+    });
+
+    it("returns correct set scores region ARIA label", () => {
+      expect(getSetScoresRegionAriaLabel(0)).toBe("Puntajes del Set 1");
+      expect(getSetScoresRegionAriaLabel(1)).toBe("Puntajes del Set 2");
+    });
+
+    it("returns correct player sides region ARIA label", () => {
+      expect(getPlayerSidesRegionAriaLabel()).toBe("Selección de posición en cancha por jugador");
+    });
+
+    it("returns correct player side group ARIA label", () => {
+      expect(getPlayerSideGroupAriaLabel("Agustín Tapia")).toBe("Lado para Agustín Tapia");
+    });
+
+    it("returns correct set score button ARIA label", () => {
+      expect(getSetScoreButtonAriaLabel(6, "Pareja A")).toBe("6 juegos para Pareja A");
+    });
+
+    it("returns correct set score group ARIA label", () => {
+      expect(getSetScoreGroupAriaLabel("Pareja A", 0)).toBe("Puntaje de Pareja A para Set 1");
+    });
+
+    it("returns correct register score primary button text", () => {
+      expect(getRegisterScorePrimaryButtonText(true)).toBe("Guardando...");
+      expect(getRegisterScorePrimaryButtonText(false)).toBe("Registrar Resultado");
+    });
+
+    it("returns correct cancel score secondary button text", () => {
+      expect(getCancelScoreSecondaryButtonText()).toBe("Cancelar");
+    });
+
+    it("returns correct confirmed match title", () => {
+      expect(getConfirmedMatchTitle()).toBe("Partido ya confirmado");
+    });
+
+    it("returns correct back to detail button text", () => {
+      expect(getBackToDetailButtonText()).toBe("Volver al detalle");
+    });
+
+    it("returns correct set header title", () => {
+      expect(getSetHeaderTitle(0)).toBe("Set 1");
+      expect(getSetHeaderTitle(1)).toBe("Set 2");
+    });
+
+    it("returns correct player sides heading title", () => {
+      expect(getPlayerSidesHeadingTitle()).toBe("Posición en cancha (Derecha / Revés)");
+    });
+
+    it("returns correct side option button labels", () => {
+      expect(getSideOptionButtonLabel("RIGHT")).toBe("Derecha");
+      expect(getSideOptionButtonLabel("LEFT")).toBe("Revés");
+    });
+
+    it("generates correct solid MDS CSS classes for side option buttons", () => {
+      const selectedClasses = getSideOptionButtonClasses(true);
+      expect(selectedClasses).toContain("bg-background text-foreground shadow-xs");
+
+      const unselectedClasses = getSideOptionButtonClasses(false);
+      expect(unselectedClasses).toContain("text-muted-foreground hover:text-foreground");
     });
   });
 });

@@ -17,6 +17,8 @@ import {
   getFeedbackOptionClasses,
   getAttendanceHeadingTitle,
   getAttendanceGroupAriaLabel,
+  getAttendanceStatusActiveColorClasses,
+  getAttendanceStatusButtonClasses,
   ATTENDANCE_STATUS_LABELS,
   ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
@@ -212,6 +214,20 @@ describe("attendance-utils", () => {
     it("generates correct MDS button CSS classes for selected WEAKER state", () => {
       const classes = getFeedbackOptionClasses(true, "WEAKER");
       expect(classes).toContain("bg-amber-100 text-amber-800");
+    });
+
+    it("returns correct attendance status active color classes", () => {
+      expect(getAttendanceStatusActiveColorClasses("ATTENDED")).toContain("bg-emerald-100");
+      expect(getAttendanceStatusActiveColorClasses("LATE")).toContain("bg-amber-100");
+      expect(getAttendanceStatusActiveColorClasses("NO_SHOW")).toContain("bg-rose-100");
+    });
+
+    it("generates correct attendance status button CSS classes for active and inactive states", () => {
+      const activeClasses = getAttendanceStatusButtonClasses(true, "ATTENDED");
+      expect(activeClasses).toContain("bg-emerald-100");
+
+      const inactiveClasses = getAttendanceStatusButtonClasses(false, "ATTENDED");
+      expect(inactiveClasses).toContain("border-border bg-background text-muted-foreground");
     });
   });
 });

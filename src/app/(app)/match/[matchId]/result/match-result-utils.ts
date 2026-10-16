@@ -136,3 +136,129 @@ export function getMatchResultAriaLabel(
 export function getMatchResultSkeletonAriaLabel(): string {
   return "Cargando formulario de resultado del partido...";
 }
+
+/**
+ * Formats toast notification message for successful match result save.
+ */
+export function getSaveMatchResultSuccessToast(): string {
+  return "Guardaste el resultado.";
+}
+
+/**
+ * Formats toast notification message for match result save error.
+ */
+export function getSaveMatchResultErrorToast(fallbackMessage?: string): string {
+  if (fallbackMessage && fallbackMessage.trim().length > 0) {
+    return fallbackMessage;
+  }
+  return "No pudimos guardar el resultado.";
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for final score section when match is closed.
+ */
+export function getFinalScoreRegionAriaLabel(score: string): string {
+  return `Resultado final del partido: ${score}`;
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for set scores section.
+ */
+export function getSetScoresRegionAriaLabel(setIndex: number): string {
+  return `Puntajes del Set ${setIndex + 1}`;
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for player sides selection section.
+ */
+export function getPlayerSidesRegionAriaLabel(): string {
+  return "Selección de posición en cancha por jugador";
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for a player's court side selection radio group.
+ */
+export function getPlayerSideGroupAriaLabel(playerName: string): string {
+  return `Lado para ${playerName}`;
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for set score option buttons.
+ */
+export function getSetScoreButtonAriaLabel(scoreNum: number, teamLabel: string): string {
+  return `${scoreNum} juegos para ${teamLabel}`;
+}
+
+/**
+ * Generates Argentine Spanish accessible ARIA label for set score radio group.
+ */
+export function getSetScoreGroupAriaLabel(teamLabel: string, setIndex: number): string {
+  return `Puntaje de ${teamLabel} para Set ${setIndex + 1}`;
+}
+
+/**
+ * Returns primary navigation button label for registering match score.
+ */
+export function getRegisterScorePrimaryButtonText(isPending: boolean): string {
+  if (isPending) {
+    return "Guardando...";
+  }
+  return "Registrar Resultado";
+}
+
+/**
+ * Returns secondary navigation button label for cancelling score entry.
+ */
+export function getCancelScoreSecondaryButtonText(): string {
+  return "Cancelar";
+}
+
+/**
+ * Returns localized heading text for confirmed match result.
+ */
+export function getConfirmedMatchTitle(): string {
+  return "Partido ya confirmado";
+}
+
+/**
+ * Returns localized text for returning to match detail button.
+ */
+export function getBackToDetailButtonText(): string {
+  return "Volver al detalle";
+}
+
+/**
+ * Returns localized header title for a specific set (e.g. "Set 1").
+ */
+export function getSetHeaderTitle(setIndex: number): string {
+  return `Set ${setIndex + 1}`;
+}
+
+/**
+ * Returns localized heading title for player court position selection.
+ */
+export function getPlayerSidesHeadingTitle(): string {
+  return "Posición en cancha (Derecha / Revés)";
+}
+
+/**
+ * Returns localized label for court side option button ("Derecha" / "Revés").
+ */
+export function getSideOptionButtonLabel(side: "RIGHT" | "LEFT"): string {
+  if (side === "RIGHT") {
+    return "Derecha";
+  }
+  return "Revés";
+}
+
+/**
+ * Generates solid MDS CSS classes for court side selection option buttons.
+ */
+export function getSideOptionButtonClasses(isSelected: boolean): string {
+  const baseClasses =
+    "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+  if (isSelected) {
+    return `${baseClasses} bg-background text-foreground shadow-xs`;
+  }
+  return `${baseClasses} text-muted-foreground hover:text-foreground`;
+}

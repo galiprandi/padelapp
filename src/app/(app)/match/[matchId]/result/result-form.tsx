@@ -18,6 +18,22 @@ import {
   extractMatchTeams,
   calculateTeammateSide,
   getMatchResultAriaLabel,
+  getSaveMatchResultSuccessToast,
+  getSaveMatchResultErrorToast,
+  getFinalScoreRegionAriaLabel,
+  getSetScoresRegionAriaLabel,
+  getPlayerSidesRegionAriaLabel,
+  getPlayerSideGroupAriaLabel,
+  getSetScoreButtonAriaLabel,
+  getSetScoreGroupAriaLabel,
+  getRegisterScorePrimaryButtonText,
+  getCancelScoreSecondaryButtonText,
+  getConfirmedMatchTitle,
+  getBackToDetailButtonText,
+  getSetHeaderTitle,
+  getPlayerSidesHeadingTitle,
+  getSideOptionButtonLabel,
+  getSideOptionButtonClasses,
   MatchPlayerInput,
 } from "./match-result-utils";
 
@@ -117,11 +133,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
         sides: sidesPayload,
       });
       if (res.status === "ok") {
-        showToast("Guardaste el resultado.");
+        showToast(getSaveMatchResultSuccessToast());
         router.push(`/match/${match.id}`);
         router.refresh();
       } else {
-        showToast(res.message || "No pudimos guardar el resultado.", {
+        showToast(getSaveMatchResultErrorToast(res.message), {
           duration: 4000,
         });
       }
@@ -159,16 +175,16 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
         {isClosed ? (
           <section
             role="region"
-            aria-label={`Resultado final del partido: ${match.score}`}
+            aria-label={getFinalScoreRegionAriaLabel(match.score || "")}
             className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
           >
             <Trophy className="h-8 w-8 text-primary mb-3" />
             <h2 className="text-3xl font-bold mb-1">{match.score}</h2>
             <p className="text-xs text-muted-foreground mb-6">
-              Partido ya confirmado
+              {getConfirmedMatchTitle()}
             </p>
             <Button asChild className="w-full transition-all active:scale-[0.98]">
-              <Link href={`/match/${match.id}`} prefetch={true}>Volver al detalle</Link>
+              <Link href={`/match/${match.id}`} prefetch={true}>{getBackToDetailButtonText()}</Link>
             </Button>
           </section>
         ) : (
@@ -178,11 +194,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                 <section
                   key={setIndex}
                   role="region"
-                  aria-label={`Puntajes del Set ${setIndex + 1}`}
+                  aria-label={getSetScoresRegionAriaLabel(setIndex)}
                   className="space-y-3"
                 >
                   <h2 className="text-sm font-bold text-foreground">
-                    Set {setIndex + 1}
+                    {getSetHeaderTitle(setIndex)}
                   </h2>
 
                   <div className="flex flex-col gap-4">
@@ -242,7 +258,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                           }}
                         >
                           <span id={`team-${team.id}-set-${setIndex}-label`} className="sr-only">
-                            Puntaje de {team.label} para Set {setIndex + 1}
+                            {getSetScoreGroupAriaLabel(team.label, setIndex)}
                           </span>
                           {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => {
                             const isSelected =
@@ -254,7 +270,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                                 role="radio"
                                 aria-checked={isSelected}
                                 tabIndex={isSelected ? 0 : -1}
-                                aria-label={`${num} juegos para ${team.label}`}
+                                aria-label={getSetScoreButtonAriaLabel(num, team.label)}
                                 onClick={() => {
                                   setScores((prev) => {
                                     const newScores = prev.map((s) => [...s]);
@@ -286,11 +302,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             {/* Side selection section */}
             <section
               role="region"
-              aria-label="Selección de posición en cancha por jugador"
+              aria-label={getPlayerSidesRegionAriaLabel()}
               className="space-y-3"
             >
               <h2 className="text-sm font-bold text-foreground">
-                Posición en cancha (Derecha / Revés)
+                {getPlayerSidesHeadingTitle()}
               </h2>
               <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
                 {teams.map((team) => (
@@ -308,7 +324,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                           <div
                             className="flex items-center gap-1 bg-muted p-1 rounded-lg"
                             role="radiogroup"
-                            aria-label={`Lado para ${p.name}`}
+                            aria-label={getPlayerSideGroupAriaLabel(p.name)}
                             onKeyDown={(e) => {
                               if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
                                 e.preventDefault();
@@ -333,14 +349,9 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               aria-checked={playerSides[p.id] === "RIGHT"}
                               tabIndex={playerSides[p.id] === "RIGHT" || (!playerSides[p.id]) ? 0 : -1}
                               onClick={() => handleSideChange(p.id, "RIGHT")}
-                              className={cn(
-                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                                playerSides[p.id] === "RIGHT"
-                                  ? "bg-background text-foreground shadow-xs"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
+                              className={getSideOptionButtonClasses(playerSides[p.id] === "RIGHT")}
                             >
-                              Derecha
+                              {getSideOptionButtonLabel("RIGHT")}
                             </button>
                             <button
                               type="button"
@@ -348,14 +359,9 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                               aria-checked={playerSides[p.id] === "LEFT"}
                               tabIndex={playerSides[p.id] === "LEFT" ? 0 : -1}
                               onClick={() => handleSideChange(p.id, "LEFT")}
-                              className={cn(
-                                "px-3 py-1.5 rounded-md text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                                playerSides[p.id] === "LEFT"
-                                  ? "bg-background text-foreground shadow-xs"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
+                              className={getSideOptionButtonClasses(playerSides[p.id] === "LEFT")}
                             >
-                              Revés
+                              {getSideOptionButtonLabel("LEFT")}
                             </button>
                           </div>
                         </div>
@@ -367,13 +373,11 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             </section>
 
             <MatchNavigation
-              primaryButtonText={
-                pending ? "Guardando..." : "Registrar Resultado"
-              }
+              primaryButtonText={getRegisterScorePrimaryButtonText(pending)}
               onPrimaryClick={save}
               primaryDisabled={pending || isClosed}
               primaryLoading={pending}
-              secondaryButtonText="Cancelar"
+              secondaryButtonText={getCancelScoreSecondaryButtonText()}
               onSecondaryClick={() => router.push(`/match/${match.id}`)}
             />
           </Fragment>
