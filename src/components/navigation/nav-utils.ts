@@ -513,6 +513,15 @@ export function getNotificationsHeaderClasses(customClassName?: string): string 
 }
 
 /**
+ * Retorna las clases CSS para el contenedor del esqueleto de carga de notificaciones.
+ */
+export function getNotificationsSkeletonContainerClasses(
+  customClassName?: string,
+): string {
+  return cn("flex flex-col gap-6", customClassName);
+}
+
+/**
  * Retorna las clases CSS para el contenedor de la lista de notificaciones y acciones requeridas.
  */
 export function getNotificationsContainerClasses(customClassName?: string): string {
