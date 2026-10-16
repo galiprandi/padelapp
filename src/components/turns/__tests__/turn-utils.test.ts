@@ -224,6 +224,16 @@ import {
   getTurnCreateButtonText,
   formatDurationOptionLabel,
   formatPlayerOptionLabel,
+  formatTurnCompactDate,
+  getTurnEditButtonText,
+  getTurnEditButtonAriaLabel,
+  getTurnActionsEditButtonClasses,
+  getTurnActionsSubstituteNoSlotsClasses,
+  getTurnActionsCompletedButtonClasses,
+  getTurnActionsAlreadyJoinedButtonClasses,
+  getTurnActionsContainerClasses,
+  getTurnCancelledHeaderProps,
+  getTurnSuggestedContactsHeaderProps,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -897,6 +907,42 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Compact date, edit button & container pure helpers batch", () => {
+  it("formats formatTurnCompactDate across Date and string inputs", () => {
+    const testDate = new Date("2026-09-20T19:00:00.000Z");
+    const compactStr = formatTurnCompactDate(testDate);
+    expect(compactStr).toContain("dom");
+    expect(compactStr).toContain("20");
+    expect(compactStr).toContain("·");
+
+    expect(formatTurnCompactDate("invalid-date")).toBe("");
+  });
+
+  it("formats getTurnEditButtonText and getTurnEditButtonAriaLabel", () => {
+    expect(getTurnEditButtonText()).toBe("Editar");
+    expect(getTurnEditButtonAriaLabel("Central Padel")).toBe("Editar detalles del turno en Central Padel");
+  });
+
+  it("formats getTurnActionsEditButtonClasses, getTurnActionsSubstituteNoSlotsClasses, getTurnActionsCompletedButtonClasses, getTurnActionsAlreadyJoinedButtonClasses, and getTurnActionsContainerClasses", () => {
+    expect(getTurnActionsEditButtonClasses()).toContain("flex-1 h-10 rounded-lg");
+    expect(getTurnActionsSubstituteNoSlotsClasses()).toContain("w-full h-12 rounded-lg");
+    expect(getTurnActionsCompletedButtonClasses()).toContain("w-full h-12 rounded-lg");
+    expect(getTurnActionsAlreadyJoinedButtonClasses()).toContain("w-full h-12 rounded-lg");
+    expect(getTurnActionsContainerClasses()).toContain("fixed bottom-0 left-0 right-0");
+  });
+
+  it("formats getTurnCancelledHeaderProps and getTurnSuggestedContactsHeaderProps", () => {
+    const cancelledProps = getTurnCancelledHeaderProps();
+    expect(cancelledProps.title).toBe("Turno cancelado");
+    expect(cancelledProps.description).toBe("Este turno ha sido cancelado por el organizador.");
+    expect(cancelledProps.buttonLabel).toBe("Ver otros turnos");
+
+    const suggestedProps = getTurnSuggestedContactsHeaderProps();
+    expect(suggestedProps.title).toBe("Sugeridos para invitar 🧠");
+    expect(suggestedProps.subtitle).toBe("De tu red de contactos");
   });
 });
 

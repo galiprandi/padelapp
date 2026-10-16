@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-16 — Compact Date, Edit Button & Container Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/compact-date-and-edit-button-pure-helpers)
 - [x] 2026-10-15 — Turn Form Option Labels, Back Navigation & Skeleton Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/form-options-and-skeleton-pure-helpers)
 - [x] 2026-10-12 — Leave Turn Button, WhatsApp Group Invite Variant & Turn Filter Tab Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/leave-turn-and-filter-tab-pure-helpers)
 - [x] 2026-10-11 — Turn Form & Detail View Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-form-and-details-pure-helpers)
@@ -77,6 +78,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-16 - Compact Date, Edit Button & Container Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`formatTurnCompactDate`, `getTurnEditButtonText`, `getTurnEditButtonAriaLabel`, `getTurnActionsEditButtonClasses`, `getTurnActionsSubstituteNoSlotsClasses`, `getTurnActionsCompletedButtonClasses`, `getTurnActionsAlreadyJoinedButtonClasses`, `getTurnActionsContainerClasses`, `getTurnCancelledHeaderProps`, and `getTurnSuggestedContactsHeaderProps`) into `src/components/turns/turn-utils.ts` decouples localized compact date formatting ("sáb, 25 jul · 19:00"), action trigger copy ("Editar"), screen reader ARIA labels ("Editar detalles del turno en [Club]"), container/action bar CSS class compositions, and section header properties from React component render trees in `TurnPublicDetails` and `TurnActions` (`src/app/t/[id]/turn-public-details.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract date formatting, edit button copy, action bar container classes, and header props into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-15 - Turn Form Option Labels, Back Navigation & Skeleton Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getTurnBackButtonAriaLabel`, `getTurnCreateButtonText`, `formatDurationOptionLabel`, and `formatPlayerOptionLabel`) into `src/components/turns/turn-utils.ts` decouples localized back navigation ARIA screen reader attributes ("Volver"), top action trigger text ("Crear"), and form radio option label formatting ("60 min", "90 min", "120 min", "4 jugadores", "6 jugadores", "8 jugadores", "10 jugadores") from React render components in `NewTurnPage` (`src/app/(app)/turnos/nuevo/page.tsx`), `EditTurnForm` (`src/app/(app)/turnos/[id]/editar/edit-form.tsx`), `TurnsPage` (`src/app/(app)/turnos/page.tsx`), and `EditTurnPage` (`src/app/(app)/turnos/[id]/editar/page.tsx`). Refactoring `TurnEditSkeleton` in `EditTurnPage` to replace custom non-standard `animate-pulse bg-muted/60` divs with standard `<Skeleton />` components wrapped in explicit `role="region"` landmark containers with `aria-busy="true"` ensures full compliance with Minimal Design System (MDS) §1.4 guidelines and screen reader accessibility standards.
 **Action:** Always extract navigation ARIA labels, form radio option labels, and action trigger copy into pure helper functions backed by Vitest unit tests, and enforce standard `<Skeleton />` UI components across all loading states.

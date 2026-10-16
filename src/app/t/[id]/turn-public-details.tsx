@@ -79,6 +79,16 @@ import {
   getTurnOpenSlotsBadgeText,
   getTurnOrganizerBadgeText,
   getTurnYouBadgeText,
+  formatTurnCompactDate,
+  getTurnEditButtonText,
+  getTurnEditButtonAriaLabel,
+  getTurnActionsEditButtonClasses,
+  getTurnActionsSubstituteNoSlotsClasses,
+  getTurnActionsCompletedButtonClasses,
+  getTurnActionsAlreadyJoinedButtonClasses,
+  getTurnActionsContainerClasses,
+  getTurnCancelledHeaderProps,
+  getTurnSuggestedContactsHeaderProps,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -219,6 +229,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   }
 
   if (isCancelled) {
+    const cancelledHeader = getTurnCancelledHeaderProps();
     return (
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
@@ -232,34 +243,22 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-foreground">
-              {getTurnCancelledTitle()}
+              {cancelledHeader.title}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {getTurnCancelledDescription()}
+              {cancelledHeader.description}
             </p>
           </div>
         </div>
         <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
-          <Link href="/turnos" prefetch={true}>{getTurnCancelledButtonLabel()}</Link>
+          <Link href="/turnos" prefetch={true}>{cancelledHeader.buttonLabel}</Link>
         </Button>
       </div>
     );
   }
 
   // Compact date for subtitle (server-side, Argentina timezone)
-  const turnDateObj = new Date(turn.date);
-  const turnDateStr = turnDateObj.toLocaleDateString("es-ES", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    timeZone: "America/Argentina/Buenos_Aires",
-  });
-  const turnTimeStr = turnDateObj.toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "America/Argentina/Buenos_Aires",
-  });
-  const compactDate = `${turnDateStr} · ${turnTimeStr}`;
+  const compactDate = formatTurnCompactDate(turn.date);
 
   // Expanded subtitle logic — extracted to pure helper function
   const subtitle = getTurnPublicSubtitle({
@@ -556,10 +555,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
-              {getTurnSuggestedContactsTitle()}
+              {getTurnSuggestedContactsHeaderProps().title}
             </h2>
             <span className="text-xs font-medium text-muted-foreground">
-              {getTurnSuggestedContactsSubtitle()}
+              {getTurnSuggestedContactsHeaderProps().subtitle}
             </span>
           </div>
 
@@ -726,7 +725,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       <div className="h-64" />
 
       <div
-        className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-background border-t border-border z-50 shadow-xs"
+        className={getTurnActionsContainerClasses()}
         role="region"
         aria-label={getTurnActionsRegionAriaLabel({
           club: turn.club,
@@ -813,7 +812,7 @@ function TurnActions({
           <TakeOpenSlotForm turnId={turnId} />
         ) : (
           <>
-            <div className="w-full h-12 rounded-lg flex items-center justify-center bg-muted text-muted-foreground font-bold border border-border shadow-xs text-sm">
+            <div className={getTurnActionsSubstituteNoSlotsClasses()}>
               {getSubstituteNoSlotsText()}
             </div>
             <p className="text-xs text-muted-foreground text-center">
@@ -841,11 +840,15 @@ function TurnActions({
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+                className={getTurnActionsEditButtonClasses()}
               >
-                <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
-                  <Edit3 className="mr-2 h-4 w-4" />
-                  Editar
+                <Link
+                  href={`/turnos/${turnId}/editar`}
+                  prefetch={true}
+                  aria-label={getTurnEditButtonAriaLabel(club)}
+                >
+                  <Edit3 className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {getTurnEditButtonText()}
                 </Link>
               </Button>
               <CancelTurnForm turnId={turnId} />
@@ -855,14 +858,14 @@ function TurnActions({
         {isCompleted ? (
           <Button
             disabled
-            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs"
+            className={getTurnActionsCompletedButtonClasses()}
           >
             {getTurnCompletedButtonLabel()}
           </Button>
         ) : isJoined ? (
           <Button
             disabled
-            className="w-full h-12 rounded-lg font-bold bg-muted text-muted-foreground border border-border shadow-xs"
+            className={getTurnActionsAlreadyJoinedButtonClasses()}
           >
             {getAlreadyJoinedButtonLabel()}
           </Button>
@@ -916,11 +919,15 @@ function TurnActions({
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+                className={getTurnActionsEditButtonClasses()}
               >
-                <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
-                  <Edit3 className="mr-2 h-4 w-4" />
-                  Editar
+                <Link
+                  href={`/turnos/${turnId}/editar`}
+                  prefetch={true}
+                  aria-label={getTurnEditButtonAriaLabel(club)}
+                >
+                  <Edit3 className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {getTurnEditButtonText()}
                 </Link>
               </Button>
               <CancelTurnForm turnId={turnId} />
@@ -972,11 +979,15 @@ function TurnActions({
             <Button
               asChild
               variant="outline"
-              className="flex-1 h-10 rounded-lg font-bold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+              className={getTurnActionsEditButtonClasses()}
             >
-              <Link href={`/turnos/${turnId}/editar`} prefetch={true}>
-                <Edit3 className="mr-2 h-4 w-4" />
-                Editar
+              <Link
+                href={`/turnos/${turnId}/editar`}
+                prefetch={true}
+                aria-label={getTurnEditButtonAriaLabel(club)}
+              >
+                <Edit3 className="mr-2 h-4 w-4" aria-hidden="true" />
+                {getTurnEditButtonText()}
               </Link>
             </Button>
             <CancelTurnForm turnId={turnId} />
