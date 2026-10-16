@@ -3608,3 +3608,116 @@ export function getGraphViewTopFilterContainerClasses(): string {
 export function getGraphViewSearchContainerClasses(): string {
   return "flex-1 flex items-center gap-2 rounded-xl bg-card px-3 py-2 border border-border shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background transition-all duration-200";
 }
+
+export function getRecommendedPlayerSimilarityAriaLabel(
+  playerName: string,
+  similarityTier: string,
+  summary: string,
+): string {
+  return `Similitud de juego de ${playerName}: ${similarityTier}. ${summary}`;
+}
+
+export function getRecommendedPlayerSimilarityTitle(
+  similarityTier: string,
+  summary: string,
+): string {
+  return `Similitud de juego: ${similarityTier}. ${summary}`;
+}
+
+export function getStatsCardCommunityCohesionAriaLabel(
+  communityId: number,
+  cohesionTier: string,
+  summary: string,
+): string {
+  return `Cohesión de Grupo ${communityId}: ${cohesionTier}. ${summary}`;
+}
+
+export function getStatsCardCommunityCohesionTitle(
+  cohesionTier: string,
+  summary: string,
+): string {
+  return `Cohesión: ${cohesionTier}. ${summary}`;
+}
+
+export function getStatsCardCommunityBalanceAriaLabel(
+  communityId: number,
+  balanceTier: string,
+  summary: string,
+): string {
+  return `Balance de posiciones de Grupo ${communityId}: ${balanceTier}. ${summary}`;
+}
+
+export function getStatsCardCommunityBalanceTitle(
+  balanceTier: string,
+  summary: string,
+): string {
+  return `Balance de posiciones: ${balanceTier}. ${summary}`;
+}
+
+export function getGraphViewGraphDensityAriaLabel(
+  densityTier: string,
+  summary: string,
+): string {
+  return `Densidad de red: ${densityTier}. ${summary}`;
+}
+
+export function getGraphViewGraphDensityTitle(
+  densityTier: string,
+  summary: string,
+): string {
+  return `Densidad de red: ${densityTier}. ${summary}`;
+}
+
+export function getGraphViewCommunityCohesionAriaLabel(
+  cohesionTier: string,
+  summary: string,
+): string {
+  return `Cohesión de comunidad: ${cohesionTier}. ${summary}`;
+}
+
+export function getGraphViewCommunityCohesionTitle(
+  cohesionTier: string,
+  summary: string,
+): string {
+  return `Cohesión de comunidad: ${cohesionTier}. ${summary}`;
+}
+
+export function getGraphViewCommunityBalanceAriaLabel(
+  balanceTier: string,
+  summary: string,
+): string {
+  return `Balance de posiciones: ${balanceTier}. ${summary}`;
+}
+
+export function getGraphViewCommunityBalanceTitle(
+  balanceTier: string,
+  summary: string,
+): string {
+  return `Balance de posiciones: ${balanceTier}. ${summary}`;
+}
+
+export function getGraphViewClearCommunityFilterAriaLabel(
+  communityId: number,
+): string {
+  return `Limpiar filtro del Grupo ${communityId}`;
+}
+
+export function getGraphViewNodeActivityAriaLabel(activityLabel: string): string {
+  return `Nivel de actividad: ${activityLabel}`;
+}
+
+export function getGraphViewNodeActivityTitle(activityLabel: string): string {
+  return `Nivel de actividad: ${activityLabel}`;
+}
+
+export function getGraphViewNodeSummaryTitle(summary: string): string {
+  return `Resumen de relaciones: ${summary}`;
+}
+
+export function getGraphViewNodeSummaryAriaLabel(
+  playerName: string,
+  summary: string,
+  synergySummary: string,
+): string {
+  return `Resumen de relaciones para ${playerName}: ${summary}. Sinergia de posiciones: ${synergySummary}`;
+}

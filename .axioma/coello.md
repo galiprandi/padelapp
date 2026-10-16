@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-09-26
+## Última actualización: 2026-09-29
 
 ## Estado actual
 
 ### Completado
+- Phase 52 (Graph View & Network Stats Panel ARIA Accessibility & Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-09-29 — Hecho: Extraídas las funciones puras `getRecommendedPlayerSimilarityAriaLabel`, `getRecommendedPlayerSimilarityTitle`, `getStatsCardCommunityCohesionAriaLabel`, `getStatsCardCommunityCohesionTitle`, `getStatsCardCommunityBalanceAriaLabel`, `getStatsCardCommunityBalanceTitle`, `getGraphViewGraphDensityAriaLabel`, `getGraphViewGraphDensityTitle`, `getGraphViewCommunityCohesionAriaLabel`, `getGraphViewCommunityCohesionTitle`, `getGraphViewCommunityBalanceAriaLabel`, `getGraphViewCommunityBalanceTitle`, `getGraphViewClearCommunityFilterAriaLabel`, `getGraphViewNodeActivityAriaLabel`, `getGraphViewNodeActivityTitle`, `getGraphViewNodeSummaryTitle` y `getGraphViewNodeSummaryAriaLabel` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-29 — Hecho: Refactorizados `StatsPanel` (`src/app/network/stats-panel.tsx`) y `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para la densidad de red, cohesión comunitaria, balance de posiciones, similitud de jugadores y resúmenes de relaciones de red en voz argentina.
+  - [x] 2026-09-29 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 51 (Top Connected Players ARIA Helpers & Top Club Summary Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-09-28 — Hecho: Extraídas las funciones puras `getTopPlayerRoleAriaLabel`, `getTopPlayerActivityAriaLabel`, `getTopPlayerCentralityAriaLabel`, `getTopPlayerDiversityAriaLabel`, `getTopPlayerMultiBelongingAriaLabel`, `getTopPlayerStabilityAriaLabel` y `getTopClubTurnsMatchesText` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-28 — Hecho: Refactorizado `StatsPanel` (`src/app/network/stats-panel.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para las insignias de jugadores más conectados y el resumen de turnos/partidos de clubes en voz argentina.

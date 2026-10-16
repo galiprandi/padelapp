@@ -45,6 +45,12 @@ import {
   getRecommenderHeadingDescription,
   getRecommenderHeadingTitle,
   getStatCardContainerClasses,
+  getRecommendedPlayerSimilarityAriaLabel,
+  getRecommendedPlayerSimilarityTitle,
+  getStatsCardCommunityBalanceAriaLabel,
+  getStatsCardCommunityBalanceTitle,
+  getStatsCardCommunityCohesionAriaLabel,
+  getStatsCardCommunityCohesionTitle,
   getStatsCardCommunityLabel,
   getStatsCardCommunityMembersText,
   getStatsPanelBackAriaLabel,
@@ -63,6 +69,7 @@ import {
   getTopPlayerMatchesText,
   getTopPlayerMultiBelongingAriaLabel,
   getTopPlayerRankText,
+  getTopPlayerReciprocityAriaLabel,
   getTopPlayerRoleAriaLabel,
   getTopPlayerStabilityAriaLabel,
   getTurnsOverviewCardSubtext,
@@ -301,8 +308,15 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                               "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                               similarity.badgeStyle,
                             )}
-                            title={`Similitud de juego: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
-                            aria-label={`Similitud de juego de ${name}: ${similarity.similarityTier}. ${similarity.formattedSummary}`}
+                            title={getRecommendedPlayerSimilarityTitle(
+                              similarity.similarityTier,
+                              similarity.formattedSummary,
+                            )}
+                            aria-label={getRecommendedPlayerSimilarityAriaLabel(
+                              name,
+                              similarity.similarityTier,
+                              similarity.formattedSummary,
+                            )}
                           >
                             {similarity.similarityTier}
                           </span>
@@ -434,8 +448,15 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             cohesion.badgeStyle,
                           )}
-                          title={`Cohesión: ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`}
-                          aria-label={`Cohesión de Grupo ${c.id}: ${cohesion.cohesionTier}. ${cohesion.formattedCohesionSummary}`}
+                          title={getStatsCardCommunityCohesionTitle(
+                            cohesion.cohesionTier,
+                            cohesion.formattedCohesionSummary,
+                          )}
+                          aria-label={getStatsCardCommunityCohesionAriaLabel(
+                            c.id,
+                            cohesion.cohesionTier,
+                            cohesion.formattedCohesionSummary,
+                          )}
                         >
                           {cohesion.cohesionTier}
                         </span>
@@ -446,8 +467,15 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             balanceInfo.badgeStyle,
                           )}
-                          title={`Balance de posiciones: ${balanceInfo.balanceTier}. ${balanceInfo.formattedBalanceSummary}`}
-                          aria-label={`Balance de posiciones de Grupo ${c.id}: ${balanceInfo.balanceTier}. ${balanceInfo.formattedBalanceSummary}`}
+                          title={getStatsCardCommunityBalanceTitle(
+                            balanceInfo.balanceTier,
+                            balanceInfo.formattedBalanceSummary,
+                          )}
+                          aria-label={getStatsCardCommunityBalanceAriaLabel(
+                            c.id,
+                            balanceInfo.balanceTier,
+                            balanceInfo.formattedBalanceSummary,
+                          )}
                         >
                           {balanceInfo.balanceTier}
                         </span>
@@ -610,7 +638,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             reciprocity.badgeStyle,
                           )}
                           title={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
-                          aria-label={`Reciprocidad de interacción de ${capitalizeName(p.name ?? p.alias ?? "Jugador")}: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                          aria-label={getTopPlayerReciprocityAriaLabel(
+                            capitalizeName(p.name ?? p.alias ?? "Jugador"),
+                            reciprocity.reciprocityTier,
+                            reciprocity.formattedSummary,
+                          )}
                         >
                           {reciprocity.reciprocityTier}
                         </span>

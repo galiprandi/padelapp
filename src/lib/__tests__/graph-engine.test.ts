@@ -296,6 +296,23 @@ import {
   getNetworkPageTabButtonClasses,
   getNetworkPageTabAriaLabel,
   getNetworkPageRegionAriaLabel,
+  getRecommendedPlayerSimilarityAriaLabel,
+  getRecommendedPlayerSimilarityTitle,
+  getStatsCardCommunityCohesionAriaLabel,
+  getStatsCardCommunityCohesionTitle,
+  getStatsCardCommunityBalanceAriaLabel,
+  getStatsCardCommunityBalanceTitle,
+  getGraphViewGraphDensityAriaLabel,
+  getGraphViewGraphDensityTitle,
+  getGraphViewCommunityCohesionAriaLabel,
+  getGraphViewCommunityCohesionTitle,
+  getGraphViewCommunityBalanceAriaLabel,
+  getGraphViewCommunityBalanceTitle,
+  getGraphViewClearCommunityFilterAriaLabel,
+  getGraphViewNodeActivityAriaLabel,
+  getGraphViewNodeActivityTitle,
+  getGraphViewNodeSummaryTitle,
+  getGraphViewNodeSummaryAriaLabel,
   getGrowthBadgeClasses,
   formatGrowthRateText,
   getStatCardContainerClasses,
@@ -1587,6 +1604,111 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("Graph view & stats panel accessibility pure helpers", () => {
+  it("formats recommended player similarity ARIA label and title", () => {
+    expect(
+      getRecommendedPlayerSimilarityAriaLabel(
+        "Agustín Aliprandi",
+        "Dupla ideal 🎯",
+        "90% similitud",
+      ),
+    ).toBe("Similitud de juego de Agustín Aliprandi: Dupla ideal 🎯. 90% similitud");
+
+    expect(
+      getRecommendedPlayerSimilarityTitle("Dupla ideal 🎯", "90% similitud"),
+    ).toBe("Similitud de juego: Dupla ideal 🎯. 90% similitud");
+  });
+
+  it("formats stats card community cohesion and balance ARIA labels and titles", () => {
+    expect(
+      getStatsCardCommunityCohesionAriaLabel(
+        1,
+        "Comunidad consolidada 🏆",
+        "100% cohesión interna",
+      ),
+    ).toBe("Cohesión de Grupo 1: Comunidad consolidada 🏆. 100% cohesión interna");
+
+    expect(
+      getStatsCardCommunityCohesionTitle(
+        "Comunidad consolidada 🏆",
+        "100% cohesión interna",
+      ),
+    ).toBe("Cohesión: Comunidad consolidada 🏆. 100% cohesión interna");
+
+    expect(
+      getStatsCardCommunityBalanceAriaLabel(
+        2,
+        "Equilibrio Der/Rev ⚖️",
+        "2 Der · 2 Rev",
+      ),
+    ).toBe("Balance de posiciones de Grupo 2: Equilibrio Der/Rev ⚖️. 2 Der · 2 Rev");
+
+    expect(
+      getStatsCardCommunityBalanceTitle("Equilibrio Der/Rev ⚖️", "2 Der · 2 Rev"),
+    ).toBe("Balance de posiciones: Equilibrio Der/Rev ⚖️. 2 Der · 2 Rev");
+  });
+
+  it("formats graph view density, cohesion, and balance ARIA labels and titles", () => {
+    expect(
+      getGraphViewGraphDensityAriaLabel("Red en expansión 🌐", "25% densidad"),
+    ).toBe("Densidad de red: Red en expansión 🌐. 25% densidad");
+
+    expect(
+      getGraphViewGraphDensityTitle("Red en expansión 🌐", "25% densidad"),
+    ).toBe("Densidad de red: Red en expansión 🌐. 25% densidad");
+
+    expect(
+      getGraphViewCommunityCohesionAriaLabel(
+        "Grupo activo 🎾",
+        "30% cohesión interna",
+      ),
+    ).toBe("Cohesión de comunidad: Grupo activo 🎾. 30% cohesión interna");
+
+    expect(
+      getGraphViewCommunityCohesionTitle("Grupo activo 🎾", "30% cohesión interna"),
+    ).toBe("Cohesión de comunidad: Grupo activo 🎾. 30% cohesión interna");
+
+    expect(
+      getGraphViewCommunityBalanceAriaLabel("Flexibilidad total 🔄", "3 Ambos"),
+    ).toBe("Balance de posiciones: Flexibilidad total 🔄. 3 Ambos");
+
+    expect(
+      getGraphViewCommunityBalanceTitle("Flexibilidad total 🔄", "3 Ambos"),
+    ).toBe("Balance de posiciones: Flexibilidad total 🔄. 3 Ambos");
+  });
+
+  it("formats clear community filter button ARIA label", () => {
+    expect(getGraphViewClearCommunityFilterAriaLabel(3)).toBe(
+      "Limpiar filtro del Grupo 3",
+    );
+  });
+
+  it("formats node activity ARIA label and title", () => {
+    expect(getGraphViewNodeActivityAriaLabel("Conector leyenda ⚡")).toBe(
+      "Nivel de actividad: Conector leyenda ⚡",
+    );
+    expect(getGraphViewNodeActivityTitle("Conector leyenda ⚡")).toBe(
+      "Nivel de actividad: Conector leyenda ⚡",
+    );
+  });
+
+  it("formats node summary title and ARIA label", () => {
+    expect(getGraphViewNodeSummaryTitle("2 parejas · 1 rival")).toBe(
+      "Resumen de relaciones: 2 parejas · 1 rival",
+    );
+
+    expect(
+      getGraphViewNodeSummaryAriaLabel(
+        "Facundo Lopez",
+        "2 parejas · 1 rival",
+        "1 dupla complementaria 🎯",
+      ),
+    ).toBe(
+      "Resumen de relaciones para Facundo Lopez: 2 parejas · 1 rival. Sinergia de posiciones: 1 dupla complementaria 🎯",
+    );
   });
 });
 

@@ -81,6 +81,17 @@ import {
   getGraphViewSelectedNodeDetailClasses,
   getGraphViewTopFilterContainerClasses,
   getGraphViewSearchContainerClasses,
+  getGraphViewGraphDensityAriaLabel,
+  getGraphViewGraphDensityTitle,
+  getGraphViewCommunityCohesionAriaLabel,
+  getGraphViewCommunityCohesionTitle,
+  getGraphViewCommunityBalanceAriaLabel,
+  getGraphViewCommunityBalanceTitle,
+  getGraphViewClearCommunityFilterAriaLabel,
+  getGraphViewNodeActivityAriaLabel,
+  getGraphViewNodeActivityTitle,
+  getGraphViewNodeSummaryTitle,
+  getGraphViewNodeSummaryAriaLabel,
   getNetworkDiversityAriaLabel,
   getCrossRivalryAriaLabel,
   getPlayerGraphReachAriaLabel,
@@ -697,8 +708,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                 graphDensityMetric.badgeStyle,
               )}
-              title={`Densidad de red: ${graphDensityMetric.densityTier}. ${graphDensityMetric.formattedSummary}`}
-              aria-label={`Densidad de red: ${graphDensityMetric.densityTier}. ${graphDensityMetric.formattedSummary}`}
+              title={getGraphViewGraphDensityTitle(
+                graphDensityMetric.densityTier,
+                graphDensityMetric.formattedSummary,
+              )}
+              aria-label={getGraphViewGraphDensityAriaLabel(
+                graphDensityMetric.densityTier,
+                graphDensityMetric.formattedSummary,
+              )}
             >
               {graphDensityMetric.densityTier}
             </span>
@@ -727,8 +744,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                   activeCommunitySummary.cohesion.badgeStyle,
                 )}
-                title={`Cohesión de comunidad: ${activeCommunitySummary.cohesion.cohesionTier}. ${activeCommunitySummary.cohesion.formattedCohesionSummary}`}
-                aria-label={`Cohesión de comunidad: ${activeCommunitySummary.cohesion.cohesionTier}. ${activeCommunitySummary.cohesion.formattedCohesionSummary}`}
+                title={getGraphViewCommunityCohesionTitle(
+                  activeCommunitySummary.cohesion.cohesionTier,
+                  activeCommunitySummary.cohesion.formattedCohesionSummary,
+                )}
+                aria-label={getGraphViewCommunityCohesionAriaLabel(
+                  activeCommunitySummary.cohesion.cohesionTier,
+                  activeCommunitySummary.cohesion.formattedCohesionSummary,
+                )}
               >
                 {activeCommunitySummary.cohesion.cohesionTier}
               </span>
@@ -737,8 +760,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                   activeCommunitySummary.balanceInfo.badgeStyle,
                 )}
-                title={`Balance de posiciones: ${activeCommunitySummary.balanceInfo.balanceTier}. ${activeCommunitySummary.balanceInfo.formattedBalanceSummary}`}
-                aria-label={`Balance de posiciones: ${activeCommunitySummary.balanceInfo.balanceTier}. ${activeCommunitySummary.balanceInfo.formattedBalanceSummary}`}
+                title={getGraphViewCommunityBalanceTitle(
+                  activeCommunitySummary.balanceInfo.balanceTier,
+                  activeCommunitySummary.balanceInfo.formattedBalanceSummary,
+                )}
+                aria-label={getGraphViewCommunityBalanceAriaLabel(
+                  activeCommunitySummary.balanceInfo.balanceTier,
+                  activeCommunitySummary.balanceInfo.formattedBalanceSummary,
+                )}
               >
                 {activeCommunitySummary.balanceInfo.balanceTier}
               </span>
@@ -750,7 +779,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               type="button"
               onClick={() => setSelectedCommunity(null)}
               className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto"
-              aria-label={`Limpiar filtro del Grupo ${selectedCommunity}`}
+              aria-label={getGraphViewClearCommunityFilterAriaLabel(selectedCommunity)}
             >
               {getGraphViewCommunityClearFilterText()}
             </button>
@@ -1082,8 +1111,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                           activityTier.badgeStyle,
                         )}
-                        title={`Nivel de actividad: ${activityTier.label}`}
-                        aria-label={`Nivel de actividad: ${activityTier.label}`}
+                        title={getGraphViewNodeActivityTitle(activityTier.label)}
+                        aria-label={getGraphViewNodeActivityAriaLabel(activityTier.label)}
                       >
                         {activityTier.label}
                       </span>
@@ -1294,8 +1323,12 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               return (
                 <div
                   className="mb-2.5 rounded-lg bg-muted p-2 border border-border text-xs space-y-1"
-                  title={`Resumen de relaciones: ${summary.formattedSummary}`}
-                  aria-label={`Resumen de relaciones para ${selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "Jugador")}: ${summary.formattedSummary}. Sinergia de posiciones: ${synergyBreakdown.formattedSynergySummary}`}
+                  title={getGraphViewNodeSummaryTitle(summary.formattedSummary)}
+                  aria-label={getGraphViewNodeSummaryAriaLabel(
+                    selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "Jugador"),
+                    summary.formattedSummary,
+                    synergyBreakdown.formattedSynergySummary,
+                  )}
                 >
                   <div className="flex items-center justify-between gap-1">
                     <p className="font-semibold text-foreground text-[11px]">
