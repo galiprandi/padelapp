@@ -5,10 +5,14 @@ import { auth, signIn } from "@/auth";
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
 import {
+  getLoginContainerClasses,
+  getLoginContentContainerClasses,
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
+  getLoginLogoAltText,
   getLoginRegionAriaLabel,
   getLoginTaglineText,
+  getLoginTermsNoticeClasses,
   getLoginTermsNoticeText,
   getLoginTitleText,
   safeCallbackUrl,
@@ -21,17 +25,17 @@ interface LoginPageProps {
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
   return (
-    <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+    <main className={getLoginContainerClasses()}>
       <section
         role="region"
         aria-label={getLoginRegionAriaLabel()}
-        className="flex w-full max-w-sm flex-col items-center gap-12"
+        className={getLoginContentContainerClasses()}
       >
         {/* Logo + tagline */}
         <div className="flex flex-col items-center gap-6">
           <Image
             src="/icon.svg"
-            alt="Padel Red"
+            alt={getLoginLogoAltText()}
             className="h-24 w-24"
             width={96}
             height={96}
@@ -63,7 +67,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
           <LoginForm searchParams={searchParams} />
         </Suspense>
 
-        <p className="text-center text-xs text-muted-foreground">
+        <p className={getLoginTermsNoticeClasses()}>
           {getLoginTermsNoticeText()}
         </p>
       </section>

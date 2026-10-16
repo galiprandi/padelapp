@@ -1,9 +1,13 @@
 import { describe, it, expect } from "vitest";
 import {
+  getLoginContainerClasses,
+  getLoginContentContainerClasses,
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
+  getLoginLogoAltText,
   getLoginRegionAriaLabel,
   getLoginTaglineText,
+  getLoginTermsNoticeClasses,
   getLoginTermsNoticeText,
   getLoginTitleText,
   getSignInFormAriaLabel,
@@ -25,6 +29,29 @@ describe("auth-utils login text helpers", () => {
   it("returns a non-empty localized terms notice text", () => {
     const text = getLoginTermsNoticeText();
     expect(text).toBe("Al continuar, aceptás nuestros términos de servicio.");
+  });
+
+  it("returns a non-empty localized login logo alt text", () => {
+    const alt = getLoginLogoAltText();
+    expect(alt).toBe("Padel Red");
+  });
+
+  it("returns login container CSS classes", () => {
+    const classes = getLoginContainerClasses();
+    expect(classes).toContain("min-h-[100dvh]");
+    expect(classes).toContain("bg-background");
+  });
+
+  it("returns login content container CSS classes", () => {
+    const classes = getLoginContentContainerClasses();
+    expect(classes).toContain("max-w-sm");
+    expect(classes).toContain("flex-col");
+  });
+
+  it("returns login terms notice CSS classes", () => {
+    const classes = getLoginTermsNoticeClasses();
+    expect(classes).toContain("text-xs");
+    expect(classes).toContain("text-muted-foreground");
   });
 
   it("returns a non-empty localized login title text", () => {

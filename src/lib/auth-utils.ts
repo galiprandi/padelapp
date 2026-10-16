@@ -27,6 +27,34 @@ export function getLoginTermsNoticeText(): string {
 }
 
 /**
+ * Returns the localized alt text for the login logo image.
+ */
+export function getLoginLogoAltText(): string {
+  return "Padel Red";
+}
+
+/**
+ * Returns container CSS classes for the login page main wrapper.
+ */
+export function getLoginContainerClasses(): string {
+  return "relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10";
+}
+
+/**
+ * Returns container CSS classes for the login page content section.
+ */
+export function getLoginContentContainerClasses(): string {
+  return "flex w-full max-w-sm flex-col items-center gap-12";
+}
+
+/**
+ * Returns typography CSS classes for the login page terms notice.
+ */
+export function getLoginTermsNoticeClasses(): string {
+  return "text-center text-xs text-muted-foreground";
+}
+
+/**
  * Returns the localized login page title text.
  */
 export function getLoginTitleText(): string {
