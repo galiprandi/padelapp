@@ -7,6 +7,11 @@ import { PasskeyLoginButton } from "@/components/webauthn/passkey-login-button";
 import {
   getLoginContainerClasses,
   getLoginContentContainerClasses,
+  getLoginFallbackContainerClasses,
+  getLoginFormContainerClasses,
+  getLoginHeaderContainerClasses,
+  getLoginHeaderTaglineClasses,
+  getLoginHeaderTitleClasses,
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
   getLoginLogoAltText,
@@ -32,7 +37,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         className={getLoginContentContainerClasses()}
       >
         {/* Logo + tagline */}
-        <div className="flex flex-col items-center gap-6">
+        <div className={getLoginHeaderContainerClasses()}>
           <Image
             src="/icon.svg"
             alt={getLoginLogoAltText()}
@@ -42,10 +47,10 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             unoptimized
           />
           <div className="space-y-3 text-center">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className={getLoginHeaderTitleClasses()}>
               {getLoginTitleText()}
             </h1>
-            <p className="text-sm text-muted-foreground max-w-[240px] whitespace-pre-line">
+            <p className={getLoginHeaderTaglineClasses()}>
               {getLoginTaglineText()}
             </p>
           </div>
@@ -57,7 +62,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             <div
               role="status"
               aria-label={getLoginLoadingAriaLabel()}
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm font-semibold"
+              className={getLoginFallbackContainerClasses()}
             >
               <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" aria-hidden="true" />
               {getLoginLoadingText()}
@@ -100,7 +105,7 @@ async function LoginForm({
   }
 
   return (
-    <div className="flex w-full flex-col gap-3">
+    <div className={getLoginFormContainerClasses()}>
       <form action={handleSignIn} className="w-full">
         <SignInButton />
       </form>

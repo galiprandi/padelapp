@@ -3,6 +3,11 @@
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  getSignInPendingText,
+  getSignInSpinnerClasses,
+  getSignInContentContainerClasses,
+} from "@/lib/auth-utils";
 import { cn } from "@/lib/utils";
 
 export interface SignInButtonProps {
@@ -44,11 +49,11 @@ export function SignInButton({
     >
       {pending ? (
         <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary-foreground" aria-hidden="true" />
-          Conectando…
+          <Loader2 className={getSignInSpinnerClasses()} aria-hidden="true" />
+          {getSignInPendingText()}
         </>
       ) : (
-        <span className="flex items-center justify-center gap-2">
+        <span className={getSignInContentContainerClasses()}>
           <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="#4285F4"
