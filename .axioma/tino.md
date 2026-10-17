@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-06 — Extracción de Funciones Helper Puras `getCacheTagForDomain`, `getCacheRevalidateOptions`, `formatCacheInvalidationLogMessage` y `getCacheTagsSummary` (`src/lib/cache-tags.ts`)
 - [x] 2026-10-05 — Extracción de Funciones Helper Puras `getSpeculationDocumentPatterns`, `getSpeculationRuleGroupEagerness`, `getSpeculationRuleGroupDescription` y `formatSpeculationScriptTagAttributes` (`src/lib/speculation-rules.ts`)
 - [x] 2026-10-04 — Extracción de Funciones Helper Puras de Fronteras de Error y Clases CSS (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-03 — Extracción de Funciones Helper Puras `formatProvidersRegionAriaLabel`, `getSessionProviderProps`, `isAnalyticsEnabled` y `getProvidersToastProviderProps` (`src/lib/providers-utils.ts`) y Refactorización de `Providers` (`src/app/providers.tsx`)
@@ -75,6 +76,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-06 - Extracción de Funciones Helper Puras para Opciones de Revalidación de Caché y Auditoría de Etiquetas
+**Aprendizaje:** Abstraer las opciones integrales de revalidación (`getCacheRevalidateOptions` combinando TTL y etiquetas para `unstable_cache`), el formateo de mensajes de registro de invalidación de caché en español argentino (`formatCacheInvalidationLogMessage`), la categorización de etiquetas conocidas y desconocidas (`getCacheTagsSummary`), y la obtención de la etiqueta primaria por dominio (`getCacheTagForDomain`) en `src/lib/cache-tags.ts` simplifica el estandarizado de caché global en Server Actions y Server Components, facilita el registro claro de telemetría y asegura cobertura mediante pruebas unitarias puras e independientes.
+**Acción:** Reutilizar `getCacheRevalidateOptions` y `getCacheTagsSummary` al configurar almacenamiento en caché o invalidación de etiquetas en Server Actions.
+
 ### 2026-10-05 - Extracción de Funciones Helper Puras para Speculation Rules Script y Descriptores de Grupos
 **Aprendizaje:** Encapsular la lectura limpia de patrones dinámicos (`getSpeculationDocumentPatterns`), la extracción de avidez (`getSpeculationRuleGroupEagerness`), el formateo de descripciones en español argentino (`getSpeculationRuleGroupDescription`) y la composición de los atributos del tag script (`formatSpeculationScriptTagAttributes`) dentro de `src/lib/speculation-rules.ts` desacopla las especificaciones de precarga del navegador y los tags HTML de la renderización del RootLayout (`src/app/layout.tsx`). Esto simplifica el etiquetado de Speculation Rules y facilita la verificación aislada mediante pruebas unitarias rápidas e independientes.
 **Acción:** Reutilizar `getSpeculationDocumentPatterns` y `formatSpeculationScriptTagAttributes` al extender o auditar reglas de especulación en navegadores compatibles.
