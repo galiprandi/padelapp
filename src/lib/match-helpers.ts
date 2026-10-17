@@ -384,3 +384,129 @@ export function getMatchListEmptyStateProps(): {
 export function getMatchListAuthPromptText(): string {
   return "Iniciá sesión para ver tus partidos.";
 }
+
+/**
+ * Returns heading title text for match summary section
+ */
+export function getMatchSummaryHeadingTitle(): string {
+  return "Resumen";
+}
+
+/**
+ * Returns label text for total matches metric in summary
+ */
+export function getMatchSummaryMatchesLabel(): string {
+  return "Partidos";
+}
+
+/**
+ * Returns label text for win rate metric in summary
+ */
+export function getMatchSummaryWinRateLabel(): string {
+  return "Win Rate";
+}
+
+/**
+ * Returns label text for win streak metric in summary
+ */
+export function getMatchSummaryStreakLabel(): string {
+  return "Racha";
+}
+
+/**
+ * Returns label text for total wins metric in summary
+ */
+export function getMatchSummaryWinsLabel(): string {
+  return "Victorias";
+}
+
+/**
+ * Returns label text for best partner relation in summary
+ */
+export function getMatchSummaryBestPartnerLabel(): string {
+  return "Mejor socio:";
+}
+
+/**
+ * Formats victory count text for best partner relation in summary
+ */
+export function formatMatchSummaryPartnerWins(count: number): string {
+  return `(${count} ${count === 1 ? "victoria" : "victorias"})`;
+}
+
+/**
+ * Returns label text for nemesis relation in summary
+ */
+export function getMatchSummaryNemesisLabel(): string {
+  return "Némesis ⚔️:";
+}
+
+/**
+ * Formats loss count text for nemesis relation in summary
+ */
+export function formatMatchSummaryNemesisLosses(count: number): string {
+  return `(${count} ${count === 1 ? "derrota" : "derrotas"})`;
+}
+
+/**
+ * Returns heading title text for pending matches section
+ */
+export function getMatchListPendingHeadingTitle(): string {
+  return "Pendientes";
+}
+
+/**
+ * Returns heading title text for match history section
+ */
+export function getMatchListHistoryHeadingTitle(): string {
+  return "Historial";
+}
+
+/**
+ * Returns text for create new match button in header
+ */
+export function getMatchListCreateButtonText(): string {
+  return "Crear";
+}
+
+/**
+ * Returns accessible ARIA label for create new match button in header
+ */
+export function getMatchListCreateButtonAriaLabel(): string {
+  return "Crear nuevo partido";
+}
+
+/**
+ * Returns text for see all notifications link
+ */
+export function getMatchListSeeAllNotificationsText(): string {
+  return "Ver todas";
+}
+
+/**
+ * Returns accessible ARIA label for see all notifications link
+ */
+export function getMatchListSeeAllNotificationsAriaLabel(count: number): string {
+  return `Ver las ${count} acciones pendientes`;
+}
+
+/**
+ * Returns action button label when match needs score entry
+ */
+export function getMatchListPendingScoreLabel(): string {
+  return "Cargar resultado";
+}
+
+/**
+ * Returns action button label when match needs result confirmation
+ */
+export function getMatchListPendingConfirmLabel(): string {
+  return "Confirmar";
+}
+
+/**
+ * Returns text for login button in unauthenticated prompt
+ */
+export function getMatchListLoginButtonText(): string {
+  return "Ir al login";
+}

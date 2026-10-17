@@ -16,6 +16,24 @@ import {
   getMatchListSectionAriaLabel,
   getMatchListEmptyStateProps,
   getMatchListAuthPromptText,
+  getMatchSummaryHeadingTitle,
+  getMatchSummaryMatchesLabel,
+  getMatchSummaryWinRateLabel,
+  getMatchSummaryStreakLabel,
+  getMatchSummaryWinsLabel,
+  getMatchSummaryBestPartnerLabel,
+  formatMatchSummaryPartnerWins,
+  getMatchSummaryNemesisLabel,
+  formatMatchSummaryNemesisLosses,
+  getMatchListPendingHeadingTitle,
+  getMatchListHistoryHeadingTitle,
+  getMatchListCreateButtonText,
+  getMatchListCreateButtonAriaLabel,
+  getMatchListSeeAllNotificationsText,
+  getMatchListSeeAllNotificationsAriaLabel,
+  getMatchListPendingScoreLabel,
+  getMatchListPendingConfirmLabel,
+  getMatchListLoginButtonText,
 } from "@/lib/match-helpers";
 
 export default function MatchListPage() {
@@ -29,9 +47,9 @@ export default function MatchListPage() {
           </p>
         </div>
         <Button asChild size="sm">
-          <Link href="/match/new" prefetch={true}>
-            <Plus className="mr-1 h-4 w-4" />
-            Crear
+          <Link href="/match/new" prefetch={true} aria-label={getMatchListCreateButtonAriaLabel()}>
+            <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
+            {getMatchListCreateButtonText()}
           </Link>
         </Button>
       </div>
@@ -109,28 +127,28 @@ async function MatchList() {
           aria-label={getMatchListSectionAriaLabel("summary")}
           className="rounded-xl border border-border bg-card p-4 shadow-xs"
         >
-          <h2 className="text-sm font-bold text-foreground mb-3">Resumen</h2>
+          <h2 className="text-sm font-bold text-foreground mb-3">{getMatchSummaryHeadingTitle()}</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <p className="text-xs text-muted-foreground">Partidos</p>
+              <p className="text-xs text-muted-foreground">{getMatchSummaryMatchesLabel()}</p>
               <p className="text-xl font-bold text-foreground">
                 {summaryStats.totalMatches}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Win Rate</p>
+              <p className="text-xs text-muted-foreground">{getMatchSummaryWinRateLabel()}</p>
               <p className="text-xl font-bold text-primary">{summaryStats.winRate}%</p>
             </div>
             {summaryStats.currentStreak >= 2 ? (
               <div>
-                <p className="text-xs text-muted-foreground">Racha</p>
+                <p className="text-xs text-muted-foreground">{getMatchSummaryStreakLabel()}</p>
                 <p className="text-xl font-bold text-primary">
                   {summaryStats.currentStreak}W
                 </p>
               </div>
             ) : (
               <div>
-                <p className="text-xs text-muted-foreground">Victorias</p>
+                <p className="text-xs text-muted-foreground">{getMatchSummaryWinsLabel()}</p>
                 <p className="text-xl font-bold text-foreground">
                   {summaryStats.wins}
                 </p>
@@ -141,7 +159,7 @@ async function MatchList() {
             <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
               {summaryStats.bestPartner && (
                 <p className="text-xs text-muted-foreground">
-                  Mejor socio:{" "}
+                  {getMatchSummaryBestPartnerLabel()}{" "}
                   <Link
                     href={`/p/${summaryStats.bestPartner.id}`}
                     prefetch={true}
@@ -149,12 +167,12 @@ async function MatchList() {
                   >
                     {summaryStats.bestPartner.name}
                   </Link>{" "}
-                  ({summaryStats.bestPartner.count} {summaryStats.bestPartner.count === 1 ? "victoria" : "victorias"})
+                  {formatMatchSummaryPartnerWins(summaryStats.bestPartner.count)}
                 </p>
               )}
               {summaryStats.nemesis && (
                 <p className="text-xs text-muted-foreground">
-                  Némesis ⚔️:{" "}
+                  {getMatchSummaryNemesisLabel()}{" "}
                   <Link
                     href={`/p/${summaryStats.nemesis.id}`}
                     prefetch={true}
@@ -162,7 +180,7 @@ async function MatchList() {
                   >
                     {summaryStats.nemesis.name}
                   </Link>{" "}
-                  ({summaryStats.nemesis.count} {summaryStats.nemesis.count === 1 ? "derrota" : "derrotas"})
+                  {formatMatchSummaryNemesisLosses(summaryStats.nemesis.count)}
                 </p>
               )}
             </div>
@@ -178,7 +196,7 @@ async function MatchList() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-foreground">Pendientes</h2>
+              <h2 className="text-sm font-bold text-foreground">{getMatchListPendingHeadingTitle()}</h2>
               <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
                 {pendingActions.length}
               </span>
@@ -187,9 +205,10 @@ async function MatchList() {
               <Link
                 href="/notifications"
                 prefetch={true}
+                aria-label={getMatchListSeeAllNotificationsAriaLabel(pendingActions.length)}
                 className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
               >
-                Ver todas <ChevronRight className="h-3 w-3" />
+                {getMatchListSeeAllNotificationsText()} <ChevronRight className="h-3 w-3" aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -205,7 +224,7 @@ async function MatchList() {
                       ? `/match/${match.id}/result`
                       : `/match/${match.id}`
                   }
-                  label={needsScore ? "Cargar resultado" : "Confirmar"}
+                  label={needsScore ? getMatchListPendingScoreLabel() : getMatchListPendingConfirmLabel()}
                   viewerId={viewerId}
                 />
               );
@@ -219,7 +238,7 @@ async function MatchList() {
         aria-label={getMatchListSectionAriaLabel("history")}
         className="flex flex-col gap-3"
       >
-        <h2 className="text-sm font-bold text-foreground">Historial</h2>
+        <h2 className="text-sm font-bold text-foreground">{getMatchListHistoryHeadingTitle()}</h2>
         {viewerId ? (
           confirmedMatches.length > 0 ? (
             <div className="flex flex-col gap-4">
@@ -264,7 +283,7 @@ async function MatchList() {
               {getMatchListAuthPromptText()}
             </p>
             <Button asChild className="w-full">
-              <Link href="/login" prefetch={true}>Ir al login</Link>
+              <Link href="/login" prefetch={true}>{getMatchListLoginButtonText()}</Link>
             </Button>
           </div>
         )}
