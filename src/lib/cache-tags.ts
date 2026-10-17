@@ -121,3 +121,100 @@ export function isKnownCacheTag(tag: unknown): tag is KnownCacheTag {
   }
   return (KNOWN_CACHE_TAGS as readonly string[]).includes(tag.trim());
 }
+
+/**
+ * Retorna la etiqueta de caché principal asociada a un dominio específico.
+ */
+export function getCacheTagForDomain(domain: CacheDomain): KnownCacheTag {
+  const tags = getCacheTagsForDomain(domain);
+  return tags[0] ?? CACHE_TAG_RANKING;
+}
+
+export interface CacheRevalidateOptions {
+  revalidate: number;
+  tags: KnownCacheTag[];
+}
+
+/**
+ * Devuelve un objeto con las opciones completas de revalidación (`revalidate` TTL y `tags`)
+ * listos para ser pasados directamente a `unstable_cache` o a opciones de consulta.
+ */
+export function getCacheRevalidateOptions(
+  domain?: CacheDomain,
+): CacheRevalidateOptions {
+  return {
+    revalidate: getCacheRevalidateTTL(domain),
+    tags: getCacheTagsForDomain(domain),
+  };
+}
+
+/**
+ * Formatea un mensaje descriptivo en español argentino sobre la invalidación de etiquetas de caché.
+ */
+export function formatCacheInvalidationLogMessage(
+  tags: string[],
+  reason?: string,
+): string {
+  if (!tags || tags.length === 0) {
+    return reason
+      ? `Sin etiquetas de caché para revalidar — Razón: ${reason}`
+      : "Sin etiquetas de caché para revalidar.";
+  }
+
+  const cleanTags = tags.map((t) => t.trim()).filter(Boolean);
+  const count = cleanTags.length;
+  const tagList = cleanTags.join(", ");
+  const baseMessage =
+    count === 1
+      ? `Revalidando 1 etiqueta de caché (${tagList})`
+      : `Revalidando ${count} etiquetas de caché (${tagList})`;
+
+  return reason ? `${baseMessage} — Razón: ${reason}` : `${baseMessage}.`;
+}
+
+export interface CacheTagsSummary {
+  knownCount: number;
+  unknownCount: number;
+  knownTags: KnownCacheTag[];
+  unknownTags: string[];
+}
+
+/**
+ * Categoriza un arreglo de etiquetas en conocidas y desconocidas para auditoría e invalidación segura.
+ */
+export function getCacheTagsSummary(tags: string[]): CacheTagsSummary {
+  if (!tags || !Array.isArray(tags)) {
+    return {
+      knownCount: 0,
+      unknownCount: 0,
+      knownTags: [],
+      unknownTags: [],
+    };
+  }
+
+  const knownTags: KnownCacheTag[] = [];
+  const unknownTags: string[] = [];
+
+  for (const tag of tags) {
+    if (typeof tag !== "string") continue;
+    const cleanTag = tag.trim();
+    if (!cleanTag) continue;
+
+    if (isKnownCacheTag(cleanTag)) {
+      if (!knownTags.includes(cleanTag)) {
+        knownTags.push(cleanTag);
+      }
+    } else {
+      if (!unknownTags.includes(cleanTag)) {
+        unknownTags.push(cleanTag);
+      }
+    }
+  }
+
+  return {
+    knownCount: knownTags.length,
+    unknownCount: unknownTags.length,
+    knownTags,
+    unknownTags,
+  };
+}
