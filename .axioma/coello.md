@@ -1,10 +1,15 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-09-29
+## Última actualización: 2026-09-30
 
 ## Estado actual
 
 ### Completado
+- Phase 53 (Graph Analytics, Adoption Metrics & Player Recommendation Pure Helpers Extraction, Actions Refactoring & Unit Tests):
+  - [x] 2026-09-30 — Hecho: Extraídas las funciones puras `calculateAdoptionGrowthRate`, `aggregateTopCommunities`, `aggregateTopClubsActivity` y `sortRecommendedCandidatesBySkillDiff` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-09-30 — Hecho: Corregido un error de acumulación de conteo en la agregación de clubes por nombre normalizado en `aggregateTopClubsActivity` (cambiado `=` por `+=`).
+  - [x] 2026-09-30 — Hecho: Refactorizadas `fetchAdoptionMetricsRaw` y `getPlayersLikeYouRaw` en `src/app/network/actions.ts` para consumir las funciones puras extraídas.
+  - [x] 2026-09-30 — Hecho: Pruebas unitarias verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 52 (Graph View & Network Stats Panel ARIA Accessibility & Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-09-29 — Hecho: Extraídas las funciones puras `getRecommendedPlayerSimilarityAriaLabel`, `getRecommendedPlayerSimilarityTitle`, `getStatsCardCommunityCohesionAriaLabel`, `getStatsCardCommunityCohesionTitle`, `getStatsCardCommunityBalanceAriaLabel`, `getStatsCardCommunityBalanceTitle`, `getGraphViewGraphDensityAriaLabel`, `getGraphViewGraphDensityTitle`, `getGraphViewCommunityCohesionAriaLabel`, `getGraphViewCommunityCohesionTitle`, `getGraphViewCommunityBalanceAriaLabel`, `getGraphViewCommunityBalanceTitle`, `getGraphViewClearCommunityFilterAriaLabel`, `getGraphViewNodeActivityAriaLabel`, `getGraphViewNodeActivityTitle`, `getGraphViewNodeSummaryTitle` y `getGraphViewNodeSummaryAriaLabel` en `src/app/network/graph-utils.ts`.
   - [x] 2026-09-29 — Hecho: Refactorizados `StatsPanel` (`src/app/network/stats-panel.tsx`) y `GraphView` (`src/app/network/graph-view.tsx`) para consumir los helpers extraídos para formatear los atributos `title` y `aria-label` de accesibilidad para la densidad de red, cohesión comunitaria, balance de posiciones, similitud de jugadores y resúmenes de relaciones de red en voz argentina.
@@ -218,6 +223,7 @@
 - [x] 2026-09-08 — Extended 2nd-Degree Network Reach Calculation & Solid MDS Badging in Graph View
 
 ## Learnings
+- **Agregación Acumulativa de Actividad de Clubes Normalizada**: Al agrupar métricas de turnos y partidos por clave normalizada de club (`aggregateTopClubsActivity`), es crítico utilizar asignación aditiva (`entry.turns += t.count`) en lugar de asignación destructiva (`entry.turns = t.count`), garantizando que múltiples registros que mapean a la misma clave normalizada de club (ej. "Padel City" y "padel city") acumulen correctamente la actividad total.
 - **Multipertenencia Comunitaria en Grafos de Pádel**: Evaluar la distribución de interacciones a través de múltiples clusters Louvain (`calculateNetworkMultiBelonging`) permite distinguir a jugadores integrados en un solo núcleo ("Focalizado en grupo 🏛️") de conectores sociales con alcance en múltiples grupos de la red ("Bicomunitario 🔗", "Multicomunitario 🌐"). Renderizar estas insignias sólidas MDS con etiquetas de accesibilidad ARIA en voz argentina tanto en el visor del grafo como en el panel de métricas motiva a los jugadores a expandir sus vínculos sociales.
 - **Puntuación de Puente Comunitario en Grafos de Pádel**: Evaluar cuantitativamente la capacidad de un jugador para unir grupos comunitarios distintos (`calculateCommunityBridgingScore`) mediante la proporción de enlaces puente externos sobre el total de conexiones permite identificar conectores sociales estratégicos ("Puente de red 🌉", "Nexo de grupo 🔗") frente a nodos concentrados ("Núcleo de comunidad 🏛️"). Mostrar estas insignias sólidas MDS con descripciones ARIA en voz argentina enriquece la exploración del grafo y fomenta el cruce entre grupos.
 - **Alcance Extendido a 2.º Grado en Grafos Social-Pádel**: Calcular el alcance indirecto a 2.º grado (contactos de contactos) y su multiplicador de expansión (`calculatePlayerGraphReach`) permite a cada jugador dimensionar la amplitud real de su red en la comunidad. Clasificar esta métrica mediante insignias sólidas MDS ("Red expansiva 🌌", "Red interconectada 🌐") y resúmenes contextuales en voz argentina brinda una motivación constante para seguir conectando con nuevos jugadores y expandir el ecosistema.

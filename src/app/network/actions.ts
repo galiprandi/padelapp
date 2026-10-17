@@ -12,7 +12,12 @@ import {
 } from "@/db/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
 import { inArray, count, gte, lt, and, eq, desc, isNotNull, or, ne } from "drizzle-orm";
-import { normalizeClub, pickClubDisplayName } from "@/lib/club";
+import {
+  aggregateTopClubsActivity,
+  aggregateTopCommunities,
+  calculateAdoptionGrowthRate,
+  sortRecommendedCandidatesBySkillDiff,
+} from "./graph-utils";
 
 export interface GraphNode {
   id: string;
@@ -452,16 +457,7 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
       : 0;
 
   // Communities
-  const communityMap = new Map<number, number>();
-  for (const s of stats) {
-    if (s.community != null) {
-      communityMap.set(s.community, (communityMap.get(s.community) ?? 0) + 1);
-    }
-  }
-  const communities = Array.from(communityMap.entries())
-    .map(([id, size]) => ({ id, size }))
-    .sort((a, b) => b.size - a.size)
-    .slice(0, 5);
+  const communities = aggregateTopCommunities(stats, 5);
 
   // Top players by network size
   const topStats = stats
@@ -517,8 +513,6 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
   }));
 
   // Clubs with most activity (turns + matches), grouped by normalized name
-  // to avoid "Padel City" / "padel city" / "Padel City · Cancha 3" counting
-  // as separate clubs.
   const turnClubs = await db
     .select({ club: turns.club, count: count() })
     .from(turns)
@@ -530,39 +524,7 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     .where(isNotNull(matches.club))
     .groupBy(matches.club);
 
-  // group by normalized key, keep original spellings for display
-  const clubAgg = new Map<
-    string,
-    { turns: number; matches: number; originals: string[] }
-  >();
-  for (const t of turnClubs) {
-    const original = (t.club ?? "").trim();
-    const key = normalizeClub(original);
-    if (!key) continue;
-    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
-    entry.turns = t.count;
-    if (original) entry.originals.push(original);
-    clubAgg.set(key, entry);
-  }
-  for (const m of matchClubs) {
-    const original = (m.club ?? "").trim();
-    const key = normalizeClub(original);
-    if (!key) continue;
-    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
-    entry.matches = m.count;
-    if (original) entry.originals.push(original);
-    clubAgg.set(key, entry);
-  }
-
-  const topClubs = Array.from(clubAgg.entries())
-    .map(([key, c]) => ({
-      name: pickClubDisplayName(c.originals) || key,
-      turns: c.turns,
-      matches: c.matches,
-      total: c.turns + c.matches,
-    }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
+  const topClubs = aggregateTopClubsActivity(turnClubs, matchClubs, 5);
 
   const prevU = prevUsers30dRow.value;
   const prevT = prevTurns30dRow.value;
@@ -582,9 +544,9 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
     newUsers30d: newUsers30dRow.value,
     newTurns30d: newTurns30dRow.value,
     newMatches30d: newMatches30dRow.value,
-    userGrowthRate: prevU > 0 ? ((newUsers30dRow.value - prevU) / prevU) * 100 : 0,
-    turnGrowthRate: prevT > 0 ? ((newTurns30dRow.value - prevT) / prevT) * 100 : 0,
-    matchGrowthRate: prevM > 0 ? ((newMatches30dRow.value - prevM) / prevM) * 100 : 0,
+    userGrowthRate: calculateAdoptionGrowthRate(newUsers30dRow.value, prevU),
+    turnGrowthRate: calculateAdoptionGrowthRate(newTurns30dRow.value, prevT),
+    matchGrowthRate: calculateAdoptionGrowthRate(newMatches30dRow.value, prevM),
     networkDensity,
     avgConnectionsPerPlayer: avgConnections,
     communities,
@@ -749,16 +711,13 @@ async function getPlayersLikeYouRaw(
   if (candidates.length === 0) return [];
 
   // 5. Sort candidates by absolute skill score difference to the viewer
-  candidates.sort((a, b) => {
-    const scoreA = a.skillScore ?? 1000;
-    const scoreB = b.skillScore ?? 1000;
-    const diffA = Math.abs(scoreA - viewerScore);
-    const diffB = Math.abs(scoreB - viewerScore);
-    return diffA - diffB;
-  });
+  const sortedCandidates = sortRecommendedCandidatesBySkillDiff(
+    candidates,
+    viewerScore
+  );
 
   // Limit to 3 recommendations
-  const topCandidates = candidates.slice(0, 3);
+  const topCandidates = sortedCandidates.slice(0, 3);
 
   // 6. Map to the expected return structure directly!
   return topCandidates.map((c) => ({

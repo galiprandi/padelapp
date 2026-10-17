@@ -352,6 +352,10 @@ import {
   get30dSummaryUsersLabel,
   get30dSummaryTurnsLabel,
   get30dSummaryMatchesLabel,
+  calculateAdoptionGrowthRate,
+  aggregateTopCommunities,
+  aggregateTopClubsActivity,
+  sortRecommendedCandidatesBySkillDiff,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1604,6 +1608,97 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("calculateAdoptionGrowthRate", () => {
+  it("returns 0 when previous count is zero or negative", () => {
+    expect(calculateAdoptionGrowthRate(10, 0)).toBe(0);
+    expect(calculateAdoptionGrowthRate(10, -5)).toBe(0);
+  });
+
+  it("calculates positive growth rate percentage", () => {
+    expect(calculateAdoptionGrowthRate(150, 100)).toBe(50);
+  });
+
+  it("calculates negative growth rate percentage", () => {
+    expect(calculateAdoptionGrowthRate(50, 100)).toBe(-50);
+  });
+});
+
+describe("aggregateTopCommunities", () => {
+  it("returns empty array when no stats have valid assigned communities", () => {
+    const stats = [{ community: null }, { community: null }];
+    expect(aggregateTopCommunities(stats)).toEqual([]);
+  });
+
+  it("aggregates community member counts, sorts descending by size, and limits to limit count", () => {
+    const stats = [
+      { community: 1 },
+      { community: 1 },
+      { community: 1 },
+      { community: 2 },
+      { community: 2 },
+      { community: 3 },
+      { community: 4 },
+      { community: 4 },
+      { community: 4 },
+      { community: 4 },
+    ];
+
+    const res = aggregateTopCommunities(stats, 2);
+    expect(res).toHaveLength(2);
+    expect(res[0]).toEqual({ id: 4, size: 4 });
+    expect(res[1]).toEqual({ id: 1, size: 3 });
+  });
+});
+
+describe("aggregateTopClubsActivity", () => {
+  it("normalizes club names, aggregates turn and match counts, and sorts descending by total activity", () => {
+    const turnClubs = [
+      { club: "Padel City", count: 10 },
+      { club: "padel city", count: 5 },
+      { club: "El Monasterio", count: 8 },
+    ];
+    const matchClubs = [
+      { club: "Padel City", count: 10 },
+      { club: "El Monasterio", count: 12 },
+    ];
+
+    const topClubs = aggregateTopClubsActivity(turnClubs, matchClubs, 5);
+    expect(topClubs).toHaveLength(2);
+    expect(topClubs[0].name).toBe("Padel City");
+    expect(topClubs[0].turns).toBe(15);
+    expect(topClubs[0].matches).toBe(10);
+    expect(topClubs[0].total).toBe(25);
+
+    expect(topClubs[1].name).toBe("El Monasterio");
+    expect(topClubs[1].turns).toBe(8);
+    expect(topClubs[1].matches).toBe(12);
+    expect(topClubs[1].total).toBe(20);
+  });
+
+  it("filters out empty or null club names", () => {
+    const turnClubs = [{ club: null, count: 5 }, { club: "  ", count: 3 }];
+    const matchClubs = [{ club: null, count: 2 }];
+
+    const topClubs = aggregateTopClubsActivity(turnClubs, matchClubs, 5);
+    expect(topClubs).toEqual([]);
+  });
+});
+
+describe("sortRecommendedCandidatesBySkillDiff", () => {
+  it("sorts candidates in ascending order of absolute skill score difference relative to viewer score", () => {
+    const viewerScore = 1000;
+    const candidates = [
+      { id: "p-01", skillScore: 1200 }, // diff 200
+      { id: "p-02", skillScore: 1020 }, // diff 20
+      { id: "p-03", skillScore: 950 },  // diff 50
+      { id: "p-04", skillScore: null }, // default 1000 => diff 0
+    ];
+
+    const sorted = sortRecommendedCandidatesBySkillDiff(candidates, viewerScore);
+    expect(sorted.map((c) => c.id)).toEqual(["p-04", "p-02", "p-03", "p-01"]);
   });
 });
 

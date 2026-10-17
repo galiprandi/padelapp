@@ -1,5 +1,6 @@
 import type { GraphLink, GraphNode } from "./actions";
 import { capitalizeName, cn } from "@/lib/utils";
+import { normalizeClub, pickClubDisplayName } from "@/lib/club";
 
 export function linkNodeId(val: string | { id: string }): string {
   return typeof val === "string" ? val : val.id;
@@ -3720,4 +3721,107 @@ export function getGraphViewNodeSummaryAriaLabel(
   synergySummary: string,
 ): string {
   return `Resumen de relaciones para ${playerName}: ${summary}. Sinergia de posiciones: ${synergySummary}`;
+}
+
+/**
+ * Calculates adoption metric percentage growth rate between current 30-day count and previous 30-day count.
+ * Returns 0 if previous count is 0 or invalid.
+ */
+export function calculateAdoptionGrowthRate(
+  currentCount: number,
+  previousCount: number
+): number {
+  if (!previousCount || previousCount <= 0) return 0;
+  return ((currentCount - previousCount) / previousCount) * 100;
+}
+
+export interface CommunitySizeItem {
+  id: number;
+  size: number;
+}
+
+/**
+ * Aggregates member counts per Louvain community cluster and returns the top N groups sorted by size descending.
+ */
+export function aggregateTopCommunities(
+  stats: Array<{ community: number | null }>,
+  limit = 5
+): CommunitySizeItem[] {
+  const communityMap = new Map<number, number>();
+  for (const s of stats) {
+    if (s.community !== null && s.community !== undefined) {
+      communityMap.set(s.community, (communityMap.get(s.community) ?? 0) + 1);
+    }
+  }
+  return Array.from(communityMap.entries())
+    .map(([id, size]) => ({ id, size }))
+    .sort((a, b) => b.size - a.size)
+    .slice(0, limit);
+}
+
+export interface ClubActivityItem {
+  name: string;
+  turns: number;
+  matches: number;
+  total: number;
+}
+
+/**
+ * Aggregates turns and matches counts per normalized club name, picks display name,
+ * and returns top N clubs sorted by total activity descending.
+ */
+export function aggregateTopClubsActivity(
+  turnClubs: Array<{ club: string | null; count: number }>,
+  matchClubs: Array<{ club: string | null; count: number }>,
+  limit = 5
+): ClubActivityItem[] {
+  const clubAgg = new Map<
+    string,
+    { turns: number; matches: number; originals: string[] }
+  >();
+
+  for (const t of turnClubs) {
+    const original = (t.club ?? "").trim();
+    const key = normalizeClub(original);
+    if (!key) continue;
+    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
+    entry.turns += t.count;
+    if (original) entry.originals.push(original);
+    clubAgg.set(key, entry);
+  }
+
+  for (const m of matchClubs) {
+    const original = (m.club ?? "").trim();
+    const key = normalizeClub(original);
+    if (!key) continue;
+    const entry = clubAgg.get(key) ?? { turns: 0, matches: 0, originals: [] };
+    entry.matches += m.count;
+    if (original) entry.originals.push(original);
+    clubAgg.set(key, entry);
+  }
+
+  return Array.from(clubAgg.entries())
+    .map(([key, c]) => ({
+      name: pickClubDisplayName(c.originals) || key,
+      turns: c.turns,
+      matches: c.matches,
+      total: c.turns + c.matches,
+    }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, limit);
+}
+
+/**
+ * Sorts recommended player candidates in ascending order of absolute skill score difference relative to viewer score.
+ */
+export function sortRecommendedCandidatesBySkillDiff<
+  T extends { skillScore: number | null }
+>(candidates: T[], viewerScore: number): T[] {
+  return [...candidates].sort((a, b) => {
+    const scoreA = a.skillScore ?? 1000;
+    const scoreB = b.skillScore ?? 1000;
+    const diffA = Math.abs(scoreA - viewerScore);
+    const diffB = Math.abs(scoreB - viewerScore);
+    return diffA - diffB;
+  });
 }
