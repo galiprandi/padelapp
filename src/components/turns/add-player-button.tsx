@@ -22,6 +22,7 @@ import {
   getAddPlayerSearchPlaceholder,
   getAddPlayerSearchResultsRegionAriaLabel,
   getAddPlayerRegionAriaLabel,
+  getAddPlayerInputLabelText,
   type PlayerOption,
 } from "@/components/turns/turn-utils";
 
@@ -150,7 +151,7 @@ export function AddPlayerButton({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <label htmlFor="player-search-input" className="sr-only">
-            Buscar jugador por nombre o email
+            {getAddPlayerInputLabelText()}
           </label>
           <input
             id="player-search-input"

@@ -18,6 +18,7 @@ import {
   getGoogleButtonAriaLabel,
   getIcsButtonText,
   getIcsButtonAriaLabel,
+  getIcsDownloadFilename,
 } from "./turn-utils";
 
 interface AddToCalendarButtonProps {
@@ -71,7 +72,7 @@ export function AddToCalendarButton({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `partido-padel-${turnId}.ics`);
+    link.setAttribute("download", getIcsDownloadFilename(turnId));
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

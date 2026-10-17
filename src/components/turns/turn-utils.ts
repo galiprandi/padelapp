@@ -2600,3 +2600,17 @@ export function getTurnSuggestedContactsHeaderProps(): TurnSuggestedContactsHead
     subtitle: getTurnSuggestedContactsSubtitle(),
   };
 }
+
+/**
+ * Format iCal (.ics) download filename.
+ */
+export function getIcsDownloadFilename(turnId: string): string {
+  return `partido-padel-${turnId}.ics`;
+}
+
+/**
+ * Format search input label text for manual player addition.
+ */
+export function getAddPlayerInputLabelText(): string {
+  return "Buscar jugador por nombre o email";
+}
