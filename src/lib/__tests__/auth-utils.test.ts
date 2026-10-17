@@ -2,6 +2,11 @@ import { describe, it, expect } from "vitest";
 import {
   getLoginContainerClasses,
   getLoginContentContainerClasses,
+  getLoginFallbackContainerClasses,
+  getLoginFormContainerClasses,
+  getLoginHeaderContainerClasses,
+  getLoginHeaderTaglineClasses,
+  getLoginHeaderTitleClasses,
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
   getLoginLogoAltText,
@@ -10,8 +15,12 @@ import {
   getLoginTermsNoticeClasses,
   getLoginTermsNoticeText,
   getLoginTitleText,
+  getSignInButtonText,
+  getSignInContentContainerClasses,
   getSignInFormAriaLabel,
   getSignInFormClasses,
+  getSignInPendingText,
+  getSignInSpinnerClasses,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 
@@ -77,6 +86,65 @@ describe("auth-utils login text helpers", () => {
   it("generates sign-in form classes with optional custom className", () => {
     expect(getSignInFormClasses()).toBe("w-full");
     expect(getSignInFormClasses("mt-4 flex-col")).toBe("w-full mt-4 flex-col");
+  });
+
+  it("returns login header container CSS classes", () => {
+    const classes = getLoginHeaderContainerClasses();
+    expect(classes).toContain("flex-col");
+    expect(classes).toContain("items-center");
+    expect(classes).toContain("gap-6");
+  });
+
+  it("returns login header title CSS classes", () => {
+    const classes = getLoginHeaderTitleClasses();
+    expect(classes).toContain("text-3xl");
+    expect(classes).toContain("font-bold");
+    expect(classes).toContain("text-foreground");
+  });
+
+  it("returns login header tagline CSS classes", () => {
+    const classes = getLoginHeaderTaglineClasses();
+    expect(classes).toContain("text-sm");
+    expect(classes).toContain("text-muted-foreground");
+    expect(classes).toContain("whitespace-pre-line");
+  });
+
+  it("returns login fallback container CSS classes", () => {
+    const classes = getLoginFallbackContainerClasses();
+    expect(classes).toContain("h-12");
+    expect(classes).toContain("rounded-xl");
+    expect(classes).toContain("bg-muted");
+  });
+
+  it("returns login form container CSS classes", () => {
+    const classes = getLoginFormContainerClasses();
+    expect(classes).toContain("w-full");
+    expect(classes).toContain("flex-col");
+    expect(classes).toContain("gap-3");
+  });
+
+  it("returns localized sign-in pending text", () => {
+    expect(getSignInPendingText()).toBe("Conectando…");
+  });
+
+  it("returns correct sign-in button text based on pending state", () => {
+    expect(getSignInButtonText(false)).toBe("Continuar con Google");
+    expect(getSignInButtonText(false, "Ingresar")).toBe("Ingresar");
+    expect(getSignInButtonText(true)).toBe("Conectando…");
+    expect(getSignInButtonText(true, "Ingresar")).toBe("Conectando…");
+  });
+
+  it("returns sign-in spinner CSS classes", () => {
+    const classes = getSignInSpinnerClasses();
+    expect(classes).toContain("animate-spin");
+    expect(classes).toContain("text-primary-foreground");
+  });
+
+  it("returns sign-in content container CSS classes", () => {
+    const classes = getSignInContentContainerClasses();
+    expect(classes).toContain("items-center");
+    expect(classes).toContain("justify-center");
+    expect(classes).toContain("gap-2");
   });
 });
 
