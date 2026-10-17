@@ -20,6 +20,24 @@ import {
   getMatchListSectionAriaLabel,
   getMatchListEmptyStateProps,
   getMatchListAuthPromptText,
+  getMatchSummaryHeadingTitle,
+  getMatchSummaryMatchesLabel,
+  getMatchSummaryWinRateLabel,
+  getMatchSummaryStreakLabel,
+  getMatchSummaryWinsLabel,
+  getMatchSummaryBestPartnerLabel,
+  formatMatchSummaryPartnerWins,
+  getMatchSummaryNemesisLabel,
+  formatMatchSummaryNemesisLosses,
+  getMatchListPendingHeadingTitle,
+  getMatchListHistoryHeadingTitle,
+  getMatchListCreateButtonText,
+  getMatchListCreateButtonAriaLabel,
+  getMatchListSeeAllNotificationsText,
+  getMatchListSeeAllNotificationsAriaLabel,
+  getMatchListPendingScoreLabel,
+  getMatchListPendingConfirmLabel,
+  getMatchListLoginButtonText,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -322,6 +340,43 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("matchListSummaryAndLabelsHelpers", () => {
+  it("returns correct headings for summary, pending, and history sections", () => {
+    expect(getMatchSummaryHeadingTitle()).toBe("Resumen");
+    expect(getMatchListPendingHeadingTitle()).toBe("Pendientes");
+    expect(getMatchListHistoryHeadingTitle()).toBe("Historial");
+  });
+
+  it("returns correct metric labels for summary cards", () => {
+    expect(getMatchSummaryMatchesLabel()).toBe("Partidos");
+    expect(getMatchSummaryWinRateLabel()).toBe("Win Rate");
+    expect(getMatchSummaryStreakLabel()).toBe("Racha");
+    expect(getMatchSummaryWinsLabel()).toBe("Victorias");
+  });
+
+  it("returns correct relation labels and formatted victory/loss counts for best partner and nemesis", () => {
+    expect(getMatchSummaryBestPartnerLabel()).toBe("Mejor socio:");
+    expect(formatMatchSummaryPartnerWins(1)).toBe("(1 victoria)");
+    expect(formatMatchSummaryPartnerWins(3)).toBe("(3 victorias)");
+
+    expect(getMatchSummaryNemesisLabel()).toBe("Némesis ⚔️:");
+    expect(formatMatchSummaryNemesisLosses(1)).toBe("(1 derrota)");
+    expect(formatMatchSummaryNemesisLosses(2)).toBe("(2 derrotas)");
+  });
+
+  it("returns correct button and link labels with accessible ARIA attributes", () => {
+    expect(getMatchListCreateButtonText()).toBe("Crear");
+    expect(getMatchListCreateButtonAriaLabel()).toBe("Crear nuevo partido");
+
+    expect(getMatchListSeeAllNotificationsText()).toBe("Ver todas");
+    expect(getMatchListSeeAllNotificationsAriaLabel(4)).toBe("Ver las 4 acciones pendientes");
+
+    expect(getMatchListPendingScoreLabel()).toBe("Cargar resultado");
+    expect(getMatchListPendingConfirmLabel()).toBe("Confirmar");
+    expect(getMatchListLoginButtonText()).toBe("Ir al login");
   });
 });
 
