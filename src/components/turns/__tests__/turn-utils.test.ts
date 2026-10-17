@@ -23,6 +23,8 @@ import {
   getAddPlayerPromptText,
   getAddPlayerEmptyResultsText,
   getAddPlayerClearSearchAriaLabel,
+  getIcsDownloadFilename,
+  getAddPlayerInputLabelText,
   getAddPlayerCancelSearchAriaLabel,
   validateTurnFormData,
   getNewTurnWhatsAppShareUrl,
@@ -907,6 +909,18 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("getIcsDownloadFilename", () => {
+  it("formats iCal filename with turn ID", () => {
+    expect(getIcsDownloadFilename("turn-123")).toBe("partido-padel-turn-123.ics");
+  });
+});
+
+describe("getAddPlayerInputLabelText", () => {
+  it("returns search input screen reader label text", () => {
+    expect(getAddPlayerInputLabelText()).toBe("Buscar jugador por nombre o email");
   });
 });
 
