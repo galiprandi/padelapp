@@ -3,9 +3,57 @@ import {
   DEFAULT_RESOURCE_HINT_DOMAINS,
   getResourceHints,
   getOriginTrialMetaProps,
+  sanitizeResourceHintDomain,
+  isResourceHintDomainValid,
+  getResourceHintKey,
+  formatResourceHintLinkProps,
 } from "../resource-hints";
 
 describe("resource-hints", () => {
+  describe("sanitizeResourceHintDomain", () => {
+    it("debe retornar la cadena recortada para dominios válidos", () => {
+      expect(sanitizeResourceHintDomain("  https://images.example.com  ")).toBe("https://images.example.com");
+    });
+
+    it("debe retornar null para entradas vacías, nulas o no válidas", () => {
+      expect(sanitizeResourceHintDomain(undefined)).toBeNull();
+      expect(sanitizeResourceHintDomain(null)).toBeNull();
+      expect(sanitizeResourceHintDomain("")).toBeNull();
+      expect(sanitizeResourceHintDomain("   ")).toBeNull();
+      // @ts-expect-error testing non-string input
+      expect(sanitizeResourceHintDomain(123)).toBeNull();
+    });
+  });
+
+  describe("isResourceHintDomainValid", () => {
+    it("debe retornar true para dominios válidos", () => {
+      expect(isResourceHintDomainValid("https://lh3.googleusercontent.com")).toBe(true);
+    });
+
+    it("debe retornar false para dominios inválidos o vacíos", () => {
+      expect(isResourceHintDomainValid("")).toBe(false);
+      expect(isResourceHintDomainValid(null)).toBe(false);
+      expect(isResourceHintDomainValid(undefined)).toBe(false);
+    });
+  });
+
+  describe("getResourceHintKey", () => {
+    it("debe formatear una clave de elemento JSX con rel, href e índice", () => {
+      const hint = { rel: "preconnect" as const, href: "https://lh3.googleusercontent.com" };
+      expect(getResourceHintKey(hint, 0)).toBe("preconnect-https://lh3.googleusercontent.com-0");
+    });
+  });
+
+  describe("formatResourceHintLinkProps", () => {
+    it("debe retornar un objeto con rel y href para el elemento link", () => {
+      const hint = { rel: "dns-prefetch" as const, href: "https://lh3.googleusercontent.com" };
+      expect(formatResourceHintLinkProps(hint)).toEqual({
+        rel: "dns-prefetch",
+        href: "https://lh3.googleusercontent.com",
+      });
+    });
+  });
+
   describe("DEFAULT_RESOURCE_HINT_DOMAINS", () => {
     it("debe contener el dominio de avatares de Google por defecto", () => {
       expect(DEFAULT_RESOURCE_HINT_DOMAINS).toContain("https://lh3.googleusercontent.com");

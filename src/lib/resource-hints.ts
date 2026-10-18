@@ -13,6 +13,48 @@ export interface OriginTrialMetaProps {
 }
 
 /**
+ * Sanitiza y valida la cadena de un dominio para pista de recursos.
+ */
+export function sanitizeResourceHintDomain(
+  domain?: string | null,
+): string | null {
+  if (!domain || typeof domain !== "string") return null;
+  const cleanDomain = domain.trim();
+  return cleanDomain.length > 0 ? cleanDomain : null;
+}
+
+/**
+ * Determina si una cadena de dominio es válida para una pista de recursos.
+ */
+export function isResourceHintDomainValid(
+  domain?: string | null,
+): boolean {
+  return sanitizeResourceHintDomain(domain) !== null;
+}
+
+/**
+ * Genera una clave única para iterar pistas de recursos en el árbol JSX.
+ */
+export function getResourceHintKey(
+  hint: ResourceHint,
+  index: number,
+): string {
+  return `${hint.rel}-${hint.href}-${index}`;
+}
+
+/**
+ * Formatea las propiedades del elemento <link> para la pista de recursos.
+ */
+export function formatResourceHintLinkProps(
+  hint: ResourceHint,
+): { rel: "preconnect" | "dns-prefetch"; href: string } {
+  return {
+    rel: hint.rel,
+    href: hint.href,
+  };
+}
+
+/**
  * Retorna las propiedades para las etiquetas <link rel="preconnect"> y <link rel="dns-prefetch">
  * optimizando la conexión temprana a dominios estáticos de imágenes (Google Avatars).
  */
@@ -22,8 +64,7 @@ export function getResourceHints(
   const hints: ResourceHint[] = [];
 
   for (const domain of domains) {
-    if (!domain || typeof domain !== "string") continue;
-    const cleanDomain = domain.trim();
+    const cleanDomain = sanitizeResourceHintDomain(domain);
     if (!cleanDomain) continue;
 
     hints.push({
