@@ -31,6 +31,25 @@ import {
   getMatchShareButtonAriaLabel,
   getPlayerProfileLinkAriaLabel,
   formatMatchClubCourtText,
+  getMatchHeaderTitle,
+  getMatchClubLabel,
+  getMatchOrganizerLabel,
+  getMatchEnterScoreButtonText,
+  getMatchEditButtonText,
+  getMatchInviteShareTitle,
+  getMatchResultShareTitle,
+  getMatchFinalScoreHeadingTitle,
+  getMatchModeLabel,
+  getMatchConfirmationsHeadingTitle,
+  getMatchConfirmationsDescription,
+  getPlayerConfirmationStatusText,
+  getMatchCreatorFinalizeNoticeText,
+  getPendingConfirmationBannerTitle,
+  getPendingConfirmationBannerDescription,
+  getMatchProcessedNoticeText,
+  getMatchAttendanceHeadingTitle,
+  getMatchTeamsHeadingTitle,
+  getMatchOrganizerNotesHeadingTitle,
 } from "./match-detail-utils";
 
 interface MatchPageProps {
@@ -194,7 +213,7 @@ async function MatchContent({ params }: MatchPageProps) {
     <div className={cn("flex flex-col gap-6", userNeedsToConfirm && "pb-32")}>
       <header role="region" aria-label={getMatchDetailRegionAriaLabel("header")}>
         <h1 className="text-xl font-bold text-foreground">
-          Partido {getMatchTypeLabel(match.matchType)}
+          {getMatchHeaderTitle(getMatchTypeLabel(match.matchType))}
         </h1>
         <div className="flex items-center gap-2 mt-1">
           <span
@@ -224,7 +243,7 @@ async function MatchContent({ params }: MatchPageProps) {
       >
         {match.club && (
           <div className="flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3">
-            <span className="text-xs text-muted-foreground">Club:</span>
+            <span className="text-xs text-muted-foreground">{getMatchClubLabel()}</span>
             <span className="text-sm font-semibold text-foreground truncate">
               {formatMatchClubCourtText(match.club, match.courtNumber)}
             </span>
@@ -243,7 +262,7 @@ async function MatchContent({ params }: MatchPageProps) {
               className="h-8 w-8 rounded-lg"
             />
             <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">Organizador</span>
+              <span className="text-xs text-muted-foreground">{getMatchOrganizerLabel()}</span>
               <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 {match.creator?.displayName || "Usuario"}
               </span>
@@ -257,7 +276,7 @@ async function MatchContent({ params }: MatchPageProps) {
               className="h-8 w-8 rounded-lg"
             />
             <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">Organizador</span>
+              <span className="text-xs text-muted-foreground">{getMatchOrganizerLabel()}</span>
               <span className="text-sm font-semibold text-foreground">
                 {match.creator?.displayName || "Usuario"}
               </span>
@@ -276,18 +295,18 @@ async function MatchContent({ params }: MatchPageProps) {
             <Button asChild className="w-full h-12 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
               <Link href={`/match/${match.id}/result`} prefetch={true}>
                 <FileText className="mr-2 h-4 w-4" />
-                Ingresar Resultado
+                {getMatchEnterScoreButtonText()}
               </Link>
             </Button>
             <div className="flex gap-2">
               <Button asChild variant="outline" className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
                 <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
-                  Editar
+                  {getMatchEditButtonText()}
                 </Link>
               </Button>
               <ShareButton
-                title="Invitación a partido de Pádel"
+                title={getMatchInviteShareTitle()}
                 shareData={{
                   type: "match-invite",
                   club: match.club || "el club",
@@ -312,11 +331,11 @@ async function MatchContent({ params }: MatchPageProps) {
               <Button asChild variant="outline" className="flex-1 h-10 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background">
                 <Link href={`/match/${match.id}/edit`} prefetch={true}>
                   <Edit3 className="mr-2 h-4 w-4" />
-                  Editar
+                  {getMatchEditButtonText()}
                 </Link>
               </Button>
               <ShareButton
-                title="Resultado de Pádel"
+                title={getMatchResultShareTitle()}
                 shareData={{
                   type: "match-result",
                   club: match.club || "el club",
@@ -347,7 +366,7 @@ async function MatchContent({ params }: MatchPageProps) {
             className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
           >
             <span className="text-xs font-semibold text-muted-foreground mb-6">
-              Resultado Final
+              {getMatchFinalScoreHeadingTitle()}
             </span>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4">
               {parsedScoreSets.map((set, idx) => (
@@ -392,7 +411,7 @@ async function MatchContent({ params }: MatchPageProps) {
                   })}
               </div>
               <p className="text-xs font-medium text-muted-foreground">
-                Modalidad {getMatchTypeLabel(match.matchType)}
+                {getMatchModeLabel(getMatchTypeLabel(match.matchType))}
               </p>
             </div>
           </section>
@@ -413,10 +432,10 @@ async function MatchContent({ params }: MatchPageProps) {
             >
               <div className="space-y-1">
                 <h2 className="text-sm font-bold text-foreground">
-                  Confirmaciones
+                  {getMatchConfirmationsHeadingTitle()}
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Un jugador de cada equipo debe validar el marcador.
+                  {getMatchConfirmationsDescription()}
                 </p>
               </div>
 
@@ -465,7 +484,7 @@ async function MatchContent({ params }: MatchPageProps) {
                                 : "text-muted-foreground/60",
                             )}
                           >
-                            {isConfirmed ? "Confirmado" : "Pendiente"}
+                            {getPlayerConfirmationStatusText(isConfirmed)}
                           </span>
                         </div>
                       </>
@@ -503,7 +522,7 @@ async function MatchContent({ params }: MatchPageProps) {
               {viewerId === match.creatorId && (
                 <div className="mt-4 pt-4 border-t border-border">
                   <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                    ¿Algunos jugadores no confirman o son invitados? Como organizador podés cerrar el partido inmediatamente.
+                    {getMatchCreatorFinalizeNoticeText()}
                   </p>
                   <FinalizeMatchForm matchId={match.id} />
                 </div>
@@ -520,10 +539,10 @@ async function MatchContent({ params }: MatchPageProps) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-foreground">
-                      Confirmación pendiente
+                      {getPendingConfirmationBannerTitle()}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      Validá el resultado para impactar el ranking.
+                      {getPendingConfirmationBannerDescription()}
                     </span>
                   </div>
                 </div>
@@ -536,7 +555,7 @@ async function MatchContent({ params }: MatchPageProps) {
             <div className="flex justify-center">
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-3 py-1.5 text-xs font-bold shadow-xs">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                Partido procesado en el Ranking
+                {getMatchProcessedNoticeText()}
               </span>
             </div>
           )}
@@ -547,7 +566,7 @@ async function MatchContent({ params }: MatchPageProps) {
               aria-label={getMatchDetailRegionAriaLabel("attendance")}
               className="space-y-3 rounded-xl border border-border bg-card shadow-xs p-4"
             >
-              <h2 className="text-sm font-bold text-foreground">Asistencia</h2>
+              <h2 className="text-sm font-bold text-foreground">{getMatchAttendanceHeadingTitle()}</h2>
               <div className="space-y-2">
                 {match.players
                   .filter((p) => p.userId)
@@ -600,7 +619,7 @@ async function MatchContent({ params }: MatchPageProps) {
             className="space-y-3"
           >
             <h2 className="text-sm font-bold text-foreground">
-              Formación de equipos
+              {getMatchTeamsHeadingTitle()}
             </h2>
             <MatchPlayersManager
               matchId={match.id}
@@ -636,7 +655,7 @@ async function MatchContent({ params }: MatchPageProps) {
               className="rounded-xl border border-border bg-card shadow-xs p-4"
             >
               <h3 className="text-sm font-bold text-foreground mb-2">
-                Notas del organizador
+                {getMatchOrganizerNotesHeadingTitle()}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 &ldquo;{match.notes}&rdquo;
