@@ -236,6 +236,12 @@ import {
   getTurnActionsContainerClasses,
   getTurnCancelledHeaderProps,
   getTurnSuggestedContactsHeaderProps,
+  getTurnCardDateContainerClasses,
+  getTurnCardContactPlayersClasses,
+  getTurnCardOpenSlotsBadgeClasses,
+  getTurnCardQuickJoinButtonClasses,
+  getWhatsAppInviteButtonClasses,
+  getWhatsAppGroupInviteButtonClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -921,6 +927,42 @@ describe("getIcsDownloadFilename", () => {
 describe("getAddPlayerInputLabelText", () => {
   it("returns search input screen reader label text", () => {
     expect(getAddPlayerInputLabelText()).toBe("Buscar jugador por nombre o email");
+  });
+});
+
+describe("TurnCard and WhatsApp invite button CSS class pure helpers", () => {
+  it("formats getTurnCardDateContainerClasses and getTurnCardContactPlayersClasses", () => {
+    expect(getTurnCardDateContainerClasses()).toContain("bg-muted");
+    expect(getTurnCardDateContainerClasses()).toContain("min-w-[56px]");
+
+    expect(getTurnCardContactPlayersClasses()).toContain("text-amber-600");
+    expect(getTurnCardContactPlayersClasses()).toContain("font-semibold");
+  });
+
+  it("formats getTurnCardOpenSlotsBadgeClasses across 1 and multiple open slots", () => {
+    const singleSlot = getTurnCardOpenSlotsBadgeClasses(1);
+    expect(singleSlot).toContain("bg-amber-100");
+    expect(singleSlot).toContain("font-bold");
+
+    const multiSlot = getTurnCardOpenSlotsBadgeClasses(2);
+    expect(multiSlot).toContain("bg-muted");
+    expect(multiSlot).toContain("border-border");
+  });
+
+  it("formats getTurnCardQuickJoinButtonClasses", () => {
+    const classes = getTurnCardQuickJoinButtonClasses();
+    expect(classes).toContain("bg-primary");
+    expect(classes).toContain("active:scale-[0.98]");
+  });
+
+  it("formats getWhatsAppInviteButtonClasses and getWhatsAppGroupInviteButtonClasses", () => {
+    expect(getWhatsAppInviteButtonClasses()).toContain("bg-emerald-600");
+    expect(getWhatsAppInviteButtonClasses()).toContain("shadow-xs");
+
+    const groupClasses = getWhatsAppGroupInviteButtonClasses("bg-amber-600 text-white", "custom-class");
+    expect(groupClasses).toContain("bg-amber-600");
+    expect(groupClasses).toContain("custom-class");
+    expect(groupClasses).toContain("active:scale-[0.98]");
   });
 });
 

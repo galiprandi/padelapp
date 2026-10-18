@@ -2614,3 +2614,56 @@ export function getIcsDownloadFilename(turnId: string): string {
 export function getAddPlayerInputLabelText(): string {
   return "Buscar jugador por nombre o email";
 }
+
+/**
+ * Format CSS classes for TurnCard date container badge.
+ */
+export function getTurnCardDateContainerClasses(): string {
+  return "flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14";
+}
+
+/**
+ * Format CSS classes for TurnCard contact players summary label.
+ */
+export function getTurnCardContactPlayersClasses(): string {
+  return "mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none";
+}
+
+/**
+ * Format CSS classes for TurnCard open slots badge depending on remaining open slots count.
+ */
+export function getTurnCardOpenSlotsBadgeClasses(openSlots: number): string {
+  return cn(
+    openSlots === 1
+      ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold"
+      : "bg-muted text-foreground border-border"
+  );
+}
+
+/**
+ * Format CSS classes for TurnCard quick-join button trigger.
+ */
+export function getTurnCardQuickJoinButtonClasses(): string {
+  return "h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for individual contact WhatsApp invite button.
+ */
+export function getWhatsAppInviteButtonClasses(): string {
+  return "inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 shadow-xs";
+}
+
+/**
+ * Format CSS classes for WhatsApp group salvage invite button combining variant styles and custom className.
+ */
+export function getWhatsAppGroupInviteButtonClasses(
+  variantStyles: string,
+  className?: string
+): string {
+  return cn(
+    "inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0",
+    variantStyles,
+    className
+  );
+}
