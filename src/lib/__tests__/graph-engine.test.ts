@@ -356,10 +356,57 @@ import {
   aggregateTopCommunities,
   aggregateTopClubsActivity,
   sortRecommendedCandidatesBySkillDiff,
+  calculateSelectedNodeGraphMetrics,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
+
+describe("calculateSelectedNodeGraphMetrics", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "agu", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "LEFT" },
+    { id: "p-03", name: "Gero", alias: "gero", image: null, skillScore: 1050, community: 2, networkSize: 2, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Facu", alias: "facu", image: null, skillScore: 1020, community: 3, networkSize: 2, matchesPlayed: 4, preferredSide: "LEFT" },
+  ];
+
+  const links: GraphLink[] = [
+    { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 3, winsA: 1, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 4 },
+    { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+    { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+  ];
+
+  it("aggregates all 15 graph network metrics for selected node p-01 without viewerId", () => {
+    const selected = nodes[0];
+    const metrics = calculateSelectedNodeGraphMetrics(selected, nodes, links);
+
+    expect(metrics.activityTier.label).toBe("Jugador activo 🎾");
+    expect(metrics.roleInfo.roleLabel).toBe("Nexo comunitario 🌉");
+    expect(metrics.diversity.diversityTier).toBe("Red ultra diversificada 🌐");
+    expect(metrics.crossRivalry.rivalryTier).toBe("Red de rivalidad activa ⚔️");
+    expect(metrics.reach.reachTier).toBe("Red inicial 📍");
+    expect(metrics.bridging.bridgingTier).toBe("Puente de red 🌉");
+    expect(metrics.centrality.centralityTier).toBe("Hub principal 👑");
+    expect(metrics.reciprocity.reciprocityTier).toBe("Red recíproca y equilibrada ⚖️");
+    expect(metrics.stability.stabilityTier).toBe("Duplas consolidadas 🏆");
+    expect(metrics.localClustering.clusteringTier).toBe("Conector abierto 🌐");
+    expect(metrics.concentration.concentrationTier).toBe("Red distribuida 🌐");
+    expect(metrics.complementarity.complementarityTier).toBe("Dupla sinérgica ideal 🎯");
+    expect(metrics.multiBelonging.multiBelongingTier).toBe("Multicomunitario 🌐");
+    expect(metrics.expansionPotential.expansionTier).toBe("Círculo exclusivo 🔒");
+    expect(metrics.similarityInfo).toBeNull();
+  });
+
+  it("calculates similarityInfo when viewerId is provided and distinct from selected node", () => {
+    const selected = nodes[1]; // p-02 (Bela)
+    const metrics = calculateSelectedNodeGraphMetrics(selected, nodes, links, "p-01");
+
+    expect(metrics.similarityInfo).not.toBeNull();
+    expect(metrics.similarityInfo?.similarityTier).toBe("Alta compatibilidad 👍");
+    expect(metrics.similarityInfo?.isSideComplementary).toBe(true);
+    expect(metrics.similarityInfo?.skillDiff).toBe(100);
+  });
+});
 
 describe("calculateNetworkExpansionPotential", () => {
   const nodes: GraphNode[] = [

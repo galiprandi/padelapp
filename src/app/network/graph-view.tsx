@@ -39,6 +39,7 @@ import {
   calculateNetworkConcentrationIndex,
   calculateNetworkMultiBelonging,
   calculateNetworkExpansionPotential,
+  calculateSelectedNodeGraphMetrics,
   getGraphViewLoadingText,
   getGraphViewEmptyDataProps,
   getGraphViewScopeAriaLabel,
@@ -908,325 +909,249 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   {selectedNodeData.networkSize} contactos
                 </p>
                 {(() => {
-                  const activityTier = getNetworkActivityTier(
-                    selectedNodeData.networkSize,
-                    selectedNodeData.matchesPlayed,
-                  );
-                  const roleInfo = calculateNetworkRoleInfo(
+                  const metrics = calculateSelectedNodeGraphMetrics(
+                    selectedNodeData,
                     graphData.nodes,
                     filteredData.links,
-                    selectedNodeData.id,
+                    viewerId,
                   );
-                  const diversity = calculateNetworkDiversityScore(
-                    graphData.nodes,
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const crossRivalry = calculateCrossRivalryDensity(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const reach = calculatePlayerGraphReach(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const bridging = calculateCommunityBridgingScore(
-                    graphData.nodes,
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const centrality = calculateNetworkCentralityScore(
-                    graphData.nodes,
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const reciprocity = calculatePlayerInteractionReciprocity(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const stability = calculatePartnershipStabilityInfo(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const localClustering = calculateLocalClusteringCoefficient(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const concentration = calculateNetworkConcentrationIndex(
-                    filteredData.links,
-                    selectedNodeData.id,
-                  );
-                  const complementarity = calculatePlayerMatchComplementarity(
-                    filteredData.links,
-                    graphData.nodes,
-                    selectedNodeData.id,
-                  );
-                  const multiBelonging = calculateNetworkMultiBelonging(
-                    filteredData.links,
-                    graphData.nodes,
-                    selectedNodeData.id,
-                  );
-                  const expansionPotential = calculateNetworkExpansionPotential(
-                    filteredData.links,
-                    graphData.nodes,
-                    selectedNodeData.id,
-                  );
-                  const viewerNode = viewerId
-                    ? graphData.nodes.find((n) => n.id === viewerId)
-                    : null;
-                  const similarityInfo =
-                    viewerNode && selectedNodeData.id !== viewerId
-                      ? calculatePlayerSimilarityInfo(
-                          {
-                            id: selectedNodeData.id,
-                            skillScore: selectedNodeData.skillScore,
-                            preferredSide: selectedNodeData.preferredSide,
-                          },
-                          {
-                            id: viewerNode.id,
-                            skillScore: viewerNode.skillScore,
-                            preferredSide: viewerNode.preferredSide,
-                          },
-                          filteredData.links,
-                        )
-                      : null;
                   return (
                     <>
-                      {similarityInfo && (
+                      {metrics.similarityInfo && (
                         <span
                           className={cn(
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            similarityInfo.badgeStyle,
+                            metrics.similarityInfo.badgeStyle,
                           )}
                           title={getPlayerSimilarityAriaLabel(
-                            similarityInfo.similarityTier,
-                            similarityInfo.formattedSummary,
+                            metrics.similarityInfo.similarityTier,
+                            metrics.similarityInfo.formattedSummary,
                           )}
                           aria-label={getPlayerSimilarityAriaLabel(
-                            similarityInfo.similarityTier,
-                            similarityInfo.formattedSummary,
+                            metrics.similarityInfo.similarityTier,
+                            metrics.similarityInfo.formattedSummary,
                           )}
                         >
-                          {similarityInfo.similarityTier}
+                          {metrics.similarityInfo.similarityTier}
                         </span>
                       )}
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          expansionPotential.badgeStyle,
+                          metrics.expansionPotential.badgeStyle,
                         )}
                         title={getPlayerExpansionAriaLabel(
-                          expansionPotential.expansionTier,
-                          expansionPotential.formattedSummary,
+                          metrics.expansionPotential.expansionTier,
+                          metrics.expansionPotential.formattedSummary,
                         )}
                         aria-label={getPlayerExpansionAriaLabel(
-                          expansionPotential.expansionTier,
-                          expansionPotential.formattedSummary,
+                          metrics.expansionPotential.expansionTier,
+                          metrics.expansionPotential.formattedSummary,
                         )}
                       >
-                        {expansionPotential.expansionTier}
+                        {metrics.expansionPotential.expansionTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          concentration.badgeStyle,
+                          metrics.concentration.badgeStyle,
                         )}
                         title={getInteractionConcentrationAriaLabel(
-                          concentration.concentrationTier,
-                          concentration.formattedSummary,
+                          metrics.concentration.concentrationTier,
+                          metrics.concentration.formattedSummary,
                         )}
                         aria-label={getInteractionConcentrationAriaLabel(
-                          concentration.concentrationTier,
-                          concentration.formattedSummary,
+                          metrics.concentration.concentrationTier,
+                          metrics.concentration.formattedSummary,
                         )}
                       >
-                        {concentration.concentrationTier}
+                        {metrics.concentration.concentrationTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          multiBelonging.badgeStyle,
+                          metrics.multiBelonging.badgeStyle,
                         )}
                         title={getMultiBelongingAriaLabel(
-                          multiBelonging.multiBelongingTier,
-                          multiBelonging.formattedSummary,
+                          metrics.multiBelonging.multiBelongingTier,
+                          metrics.multiBelonging.formattedSummary,
                         )}
                         aria-label={getMultiBelongingAriaLabel(
-                          multiBelonging.multiBelongingTier,
-                          multiBelonging.formattedSummary,
+                          metrics.multiBelonging.multiBelongingTier,
+                          metrics.multiBelonging.formattedSummary,
                         )}
                       >
-                        {multiBelonging.multiBelongingTier}
+                        {metrics.multiBelonging.multiBelongingTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          complementarity.badgeStyle,
+                          metrics.complementarity.badgeStyle,
                         )}
                         title={getMatchComplementarityAriaLabel(
-                          complementarity.complementarityTier,
-                          complementarity.formattedSummary,
+                          metrics.complementarity.complementarityTier,
+                          metrics.complementarity.formattedSummary,
                         )}
                         aria-label={getMatchComplementarityAriaLabel(
-                          complementarity.complementarityTier,
-                          complementarity.formattedSummary,
+                          metrics.complementarity.complementarityTier,
+                          metrics.complementarity.formattedSummary,
                         )}
                       >
-                        {complementarity.complementarityTier}
+                        {metrics.complementarity.complementarityTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          stability.badgeStyle,
+                          metrics.stability.badgeStyle,
                         )}
                         title={getPartnershipStabilityAriaLabel(
-                          stability.stabilityTier,
-                          stability.formattedSummary,
+                          metrics.stability.stabilityTier,
+                          metrics.stability.formattedSummary,
                         )}
                         aria-label={getPartnershipStabilityAriaLabel(
-                          stability.stabilityTier,
-                          stability.formattedSummary,
+                          metrics.stability.stabilityTier,
+                          metrics.stability.formattedSummary,
                         )}
                       >
-                        {stability.stabilityTier}
+                        {metrics.stability.stabilityTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          localClustering.badgeStyle,
+                          metrics.localClustering.badgeStyle,
                         )}
                         title={getLocalClusteringAriaLabel(
-                          localClustering.clusteringTier,
-                          localClustering.formattedSummary,
+                          metrics.localClustering.clusteringTier,
+                          metrics.localClustering.formattedSummary,
                         )}
                         aria-label={getLocalClusteringAriaLabel(
-                          localClustering.clusteringTier,
-                          localClustering.formattedSummary,
+                          metrics.localClustering.clusteringTier,
+                          metrics.localClustering.formattedSummary,
                         )}
                       >
-                        {localClustering.clusteringTier}
+                        {metrics.localClustering.clusteringTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          activityTier.badgeStyle,
+                          metrics.activityTier.badgeStyle,
                         )}
-                        title={getGraphViewNodeActivityTitle(activityTier.label)}
-                        aria-label={getGraphViewNodeActivityAriaLabel(activityTier.label)}
+                        title={getGraphViewNodeActivityTitle(metrics.activityTier.label)}
+                        aria-label={getGraphViewNodeActivityAriaLabel(metrics.activityTier.label)}
                       >
-                        {activityTier.label}
+                        {metrics.activityTier.label}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          centrality.badgeStyle,
+                          metrics.centrality.badgeStyle,
                         )}
                         title={getNetworkCentralityAriaLabel(
-                          centrality.centralityTier,
-                          centrality.formattedSummary,
+                          metrics.centrality.centralityTier,
+                          metrics.centrality.formattedSummary,
                         )}
                         aria-label={getNetworkCentralityAriaLabel(
-                          centrality.centralityTier,
-                          centrality.formattedSummary,
+                          metrics.centrality.centralityTier,
+                          metrics.centrality.formattedSummary,
                         )}
                       >
-                        {centrality.centralityTier}
+                        {metrics.centrality.centralityTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          roleInfo.badgeStyle,
+                          metrics.roleInfo.badgeStyle,
                         )}
                         title={getNetworkRoleAriaLabel(
-                          roleInfo.roleLabel,
-                          roleInfo.description,
+                          metrics.roleInfo.roleLabel,
+                          metrics.roleInfo.description,
                         )}
                         aria-label={getNetworkRoleAriaLabel(
-                          roleInfo.roleLabel,
-                          roleInfo.description,
+                          metrics.roleInfo.roleLabel,
+                          metrics.roleInfo.description,
                         )}
                       >
-                        {roleInfo.roleLabel}
+                        {metrics.roleInfo.roleLabel}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          bridging.badgeStyle,
+                          metrics.bridging.badgeStyle,
                         )}
                         title={getCommunityBridgingAriaLabel(
-                          bridging.bridgingTier,
-                          bridging.formattedSummary,
+                          metrics.bridging.bridgingTier,
+                          metrics.bridging.formattedSummary,
                         )}
                         aria-label={getCommunityBridgingAriaLabel(
-                          bridging.bridgingTier,
-                          bridging.formattedSummary,
+                          metrics.bridging.bridgingTier,
+                          metrics.bridging.formattedSummary,
                         )}
                       >
-                        {bridging.bridgingTier}
+                        {metrics.bridging.bridgingTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          diversity.badgeStyle,
+                          metrics.diversity.badgeStyle,
                         )}
                         title={getNetworkDiversityAriaLabel(
-                          diversity.diversityTier,
-                          diversity.formattedSummary,
+                          metrics.diversity.diversityTier,
+                          metrics.diversity.formattedSummary,
                         )}
                         aria-label={getNetworkDiversityAriaLabel(
-                          diversity.diversityTier,
-                          diversity.formattedSummary,
+                          metrics.diversity.diversityTier,
+                          metrics.diversity.formattedSummary,
                         )}
                       >
-                        {diversity.diversityTier}
+                        {metrics.diversity.diversityTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          crossRivalry.badgeStyle,
+                          metrics.crossRivalry.badgeStyle,
                         )}
                         title={getCrossRivalryAriaLabel(
-                          crossRivalry.rivalryTier,
-                          crossRivalry.formattedSummary,
+                          metrics.crossRivalry.rivalryTier,
+                          metrics.crossRivalry.formattedSummary,
                         )}
                         aria-label={getCrossRivalryAriaLabel(
-                          crossRivalry.rivalryTier,
-                          crossRivalry.formattedSummary,
+                          metrics.crossRivalry.rivalryTier,
+                          metrics.crossRivalry.formattedSummary,
                         )}
                       >
-                        {crossRivalry.rivalryTier}
+                        {metrics.crossRivalry.rivalryTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          reach.badgeStyle,
+                          metrics.reach.badgeStyle,
                         )}
                         title={getPlayerGraphReachAriaLabel(
-                          reach.reachTier,
-                          reach.formattedSummary,
+                          metrics.reach.reachTier,
+                          metrics.reach.formattedSummary,
                         )}
                         aria-label={getPlayerGraphReachAriaLabel(
-                          reach.reachTier,
-                          reach.formattedSummary,
+                          metrics.reach.reachTier,
+                          metrics.reach.formattedSummary,
                         )}
                       >
-                        {reach.reachTier}
+                        {metrics.reach.reachTier}
                       </span>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          reciprocity.badgeStyle,
+                          metrics.reciprocity.badgeStyle,
                         )}
                         title={getInteractionReciprocityAriaLabel(
-                          reciprocity.reciprocityTier,
-                          reciprocity.formattedSummary,
+                          metrics.reciprocity.reciprocityTier,
+                          metrics.reciprocity.formattedSummary,
                         )}
                         aria-label={getInteractionReciprocityAriaLabel(
-                          reciprocity.reciprocityTier,
-                          reciprocity.formattedSummary,
+                          metrics.reciprocity.reciprocityTier,
+                          metrics.reciprocity.formattedSummary,
                         )}
                       >
-                        {reciprocity.reciprocityTier}
+                        {metrics.reciprocity.reciprocityTier}
                       </span>
                     </>
                   );
