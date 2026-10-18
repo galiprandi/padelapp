@@ -71,3 +71,38 @@ export function getPwaBannerIconAriaLabel(): string {
 export function getPwaBannerInstallButtonText(): string {
   return "Instalar";
 }
+
+/**
+ * Returns standardized CSS class string for the main PWA install banner container.
+ */
+export function getPwaBannerContainerClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm";
+}
+
+/**
+ * Returns standardized CSS class string for the icon badge container inside the PWA banner.
+ */
+export function getPwaBannerIconBadgeClasses(): string {
+  return "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for the dismiss button inside the PWA banner.
+ */
+export function getPwaBannerDismissButtonClasses(): string {
+  return "rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns standardized CSS class string for the primary install button inside the PWA banner.
+ */
+export function getPwaBannerInstallButtonClasses(): string {
+  return "h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0";
+}
+
+/**
+ * Returns standardized CSS class string for the view guide button inside the PWA banner.
+ */
+export function getPwaBannerGuideButtonClasses(): string {
+  return "h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0";
+}

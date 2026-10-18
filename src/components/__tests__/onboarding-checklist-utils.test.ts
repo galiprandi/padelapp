@@ -19,6 +19,13 @@ import {
   getOnboardingProgressText,
   getOnboardingCompletedSuccessText,
   getOnboardingNotificationToastMessage,
+  getOnboardingStepTitleText,
+  getOnboardingStepDescriptionText,
+  getOnboardingStepButtonText,
+  getOnboardingContainerClasses,
+  getOnboardingDismissButtonClasses,
+  getOnboardingStepBadgeClasses,
+  getOnboardingStepButtonClasses,
 } from "../onboarding-checklist-utils";
 
 describe("calculateOnboardingProgress", () => {
@@ -119,6 +126,42 @@ describe("Onboarding text and ARIA pure helpers", () => {
     expect(getOnboardingNotificationToastMessage("enabled")).toBe("Activaste las notificaciones.");
     expect(getOnboardingNotificationToastMessage("denied")).toBe("Las notificaciones están bloqueadas.");
     expect(getOnboardingNotificationToastMessage("unsupported")).toBe("No soportado en este navegador");
+  });
+
+  it("returns correct step title text for all onboarding steps", () => {
+    expect(getOnboardingStepTitleText("alias")).toBe("Configurá tu alias en la cancha");
+    expect(getOnboardingStepTitleText("activity")).toBe("Creá tu primer turno");
+    expect(getOnboardingStepTitleText("pwa")).toBe("Instalá la aplicación (PWA)");
+    expect(getOnboardingStepTitleText("notifications")).toBe("Activá las notificaciones");
+  });
+
+  it("returns correct step description text for all onboarding steps", () => {
+    expect(getOnboardingStepDescriptionText("alias")).toBe("Elegí tu nombre de juego para aparecer en los partidos y el ranking.");
+    expect(getOnboardingStepDescriptionText("activity")).toBe("Armá un turno, compartilo por WhatsApp y dejá que la red llene los cupos.");
+    expect(getOnboardingStepDescriptionText("pwa")).toBe("Accedé al instante a tus partidos desde tu pantalla de inicio en el celular.");
+    expect(getOnboardingStepDescriptionText("notifications")).toBe("Recibí alertas al instante cuando falten jugadores o confirmen resultados.");
+  });
+
+  it("returns correct step button text for all onboarding step actions", () => {
+    expect(getOnboardingStepButtonText("alias")).toBe("Configurar alias");
+    expect(getOnboardingStepButtonText("activity")).toBe("Crear turno");
+    expect(getOnboardingStepButtonText("pwa-install")).toBe("Instalar ahora");
+    expect(getOnboardingStepButtonText("pwa-guide")).toBe("Ver cómo instalar");
+    expect(getOnboardingStepButtonText("notifications")).toBe("Activar notificaciones");
+  });
+
+  it("returns correct CSS class string for onboarding container and dismiss button", () => {
+    expect(getOnboardingContainerClasses()).toContain("rounded-xl border border-border bg-card");
+    expect(getOnboardingDismissButtonClasses()).toContain("rounded-md p-1.5 h-8 w-8");
+  });
+
+  it("returns correct badge classes for completed and pending step states", () => {
+    expect(getOnboardingStepBadgeClasses(true)).toContain("bg-primary border-primary text-primary-foreground");
+    expect(getOnboardingStepBadgeClasses(false)).toContain("bg-muted border-border text-muted-foreground");
+  });
+
+  it("returns correct onboarding step CTA button CSS classes", () => {
+    expect(getOnboardingStepButtonClasses()).toContain("h-9 text-xs font-bold border-border");
   });
 });
 

@@ -29,6 +29,13 @@ import {
   getOnboardingProgressText,
   getOnboardingCompletedSuccessText,
   getOnboardingNotificationToastMessage,
+  getOnboardingStepTitleText,
+  getOnboardingStepDescriptionText,
+  getOnboardingStepButtonText,
+  getOnboardingContainerClasses,
+  getOnboardingDismissButtonClasses,
+  getOnboardingStepBadgeClasses,
+  getOnboardingStepButtonClasses,
   type OnboardingStepsState,
 } from "@/components/onboarding-checklist-utils";
 
@@ -142,7 +149,7 @@ export function OnboardingChecklist({
     <div
       role="region"
       aria-label={getOnboardingRegionAriaLabel()}
-      className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5"
+      className={getOnboardingContainerClasses()}
     >
       {/* Header section with progress bar */}
       <div className="flex items-start justify-between gap-4">
@@ -159,7 +166,7 @@ export function OnboardingChecklist({
           size="sm"
           onClick={handleDismiss}
           aria-label={getOnboardingDismissAriaLabel()}
-          className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background shrink-0 active:scale-[0.98]"
+          className={getOnboardingDismissButtonClasses()}
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </Button>
@@ -189,12 +196,8 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={getStepStatusAriaLabel(1, "Configurá tu alias en la cancha", stepAliasCompleted)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
-                stepAliasCompleted
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-muted border-border text-muted-foreground"
-              }`}
+              aria-label={getStepStatusAriaLabel(1, getOnboardingStepTitleText("alias"), stepAliasCompleted)}
+              className={getOnboardingStepBadgeClasses(stepAliasCompleted)}
             >
               {stepAliasCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
@@ -207,11 +210,11 @@ export function OnboardingChecklist({
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="text-xs font-bold text-foreground">
-                Configurá tu alias en la cancha
+                {getOnboardingStepTitleText("alias")}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-normal">
-              Elegí tu nombre de juego para aparecer en los partidos y el ranking.
+              {getOnboardingStepDescriptionText("alias")}
             </p>
             {!stepAliasCompleted && (
               <div className="pt-1.5">
@@ -219,10 +222,10 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getOnboardingStepButtonClasses()}
                   aria-label={getOnboardingStepButtonAriaLabel("alias")}
                 >
-                  <Link href="/me/profile" prefetch={true}>Configurar alias</Link>
+                  <Link href="/me/profile" prefetch={true}>{getOnboardingStepButtonText("alias")}</Link>
                 </Button>
               </div>
             )}
@@ -233,12 +236,8 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={getStepStatusAriaLabel(2, "Creá tu primer turno", stepActivityCompleted)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
-                stepActivityCompleted
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-muted border-border text-muted-foreground"
-              }`}
+              aria-label={getStepStatusAriaLabel(2, getOnboardingStepTitleText("activity"), stepActivityCompleted)}
+              className={getOnboardingStepBadgeClasses(stepActivityCompleted)}
             >
               {stepActivityCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
@@ -251,11 +250,11 @@ export function OnboardingChecklist({
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="text-xs font-bold text-foreground">
-                Creá tu primer turno
+                {getOnboardingStepTitleText("activity")}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-normal">
-              Armá un turno, compartilo por WhatsApp y dejá que la red llene los cupos.
+              {getOnboardingStepDescriptionText("activity")}
             </p>
             {!stepActivityCompleted && (
               <div className="pt-1.5">
@@ -263,10 +262,10 @@ export function OnboardingChecklist({
                   variant="outline"
                   size="sm"
                   asChild
-                  className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getOnboardingStepButtonClasses()}
                   aria-label={getOnboardingStepButtonAriaLabel("activity")}
                 >
-                  <Link href="/turnos/nuevo" prefetch={true}>Crear turno</Link>
+                  <Link href="/turnos/nuevo" prefetch={true}>{getOnboardingStepButtonText("activity")}</Link>
                 </Button>
               </div>
             )}
@@ -277,12 +276,8 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={getStepStatusAriaLabel(3, "Instalá la aplicación", stepPwaCompleted)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
-                stepPwaCompleted
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-muted border-border text-muted-foreground"
-              }`}
+              aria-label={getStepStatusAriaLabel(3, getOnboardingStepTitleText("pwa"), stepPwaCompleted)}
+              className={getOnboardingStepBadgeClasses(stepPwaCompleted)}
             >
               {stepPwaCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
@@ -295,11 +290,11 @@ export function OnboardingChecklist({
           <div className="flex-1 space-y-1 pb-2">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="text-xs font-bold text-foreground">
-                Instalá la aplicación (PWA)
+                {getOnboardingStepTitleText("pwa")}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-normal">
-              Accedé al instante a tus partidos desde tu pantalla de inicio en el celular.
+              {getOnboardingStepDescriptionText("pwa")}
             </p>
             {!stepPwaCompleted && (
               <div className="pt-1.5">
@@ -310,7 +305,7 @@ export function OnboardingChecklist({
                     onClick={handleInstallPwa}
                     disabled={isInstalling}
                     aria-busy={isInstalling}
-                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getOnboardingStepButtonClasses()}
                     aria-label={getOnboardingStepButtonAriaLabel("pwa-install", isInstalling)}
                   >
                     {isInstalling ? (
@@ -318,17 +313,17 @@ export function OnboardingChecklist({
                     ) : (
                       <Smartphone className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                     )}
-                    Instalar ahora
+                    {getOnboardingStepButtonText("pwa-install")}
                   </Button>
                 ) : (
                   <Button
                     variant="outline"
                     size="sm"
                     asChild
-                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getOnboardingStepButtonClasses()}
                     aria-label={getOnboardingStepButtonAriaLabel("pwa-guide")}
                   >
-                    <Link href="/install" prefetch={true}>Ver cómo instalar</Link>
+                    <Link href="/install" prefetch={true}>{getOnboardingStepButtonText("pwa-guide")}</Link>
                   </Button>
                 )}
               </div>
@@ -340,12 +335,8 @@ export function OnboardingChecklist({
         <div className="flex gap-3">
           <div className="flex flex-col items-center">
             <div
-              aria-label={getStepStatusAriaLabel(4, "Activá las notificaciones", stepNotificationsCompleted)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
-                stepNotificationsCompleted
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-muted border-border text-muted-foreground"
-              }`}
+              aria-label={getStepStatusAriaLabel(4, getOnboardingStepTitleText("notifications"), stepNotificationsCompleted)}
+              className={getOnboardingStepBadgeClasses(stepNotificationsCompleted)}
             >
               {stepNotificationsCompleted ? (
                 <Check className="h-4 w-4" aria-hidden="true" />
@@ -357,11 +348,11 @@ export function OnboardingChecklist({
           <div className="flex-1 space-y-1">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="text-xs font-bold text-foreground">
-                Activá las notificaciones
+                {getOnboardingStepTitleText("notifications")}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-normal">
-              Recibí alertas al instante cuando falten jugadores o confirmen resultados.
+              {getOnboardingStepDescriptionText("notifications")}
             </p>
             {!stepNotificationsCompleted && (
               <div className="pt-1.5">
@@ -383,7 +374,7 @@ export function OnboardingChecklist({
                     }}
                     disabled={notificationLoading}
                     aria-busy={notificationLoading}
-                    className="h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getOnboardingStepButtonClasses()}
                     aria-label={getOnboardingStepButtonAriaLabel("notifications", notificationLoading)}
                   >
                     {notificationLoading ? (
@@ -391,7 +382,7 @@ export function OnboardingChecklist({
                     ) : (
                       <Bell className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                     )}
-                    Activar notificaciones
+                    {getOnboardingStepButtonText("notifications")}
                   </Button>
                 )}
               </div>

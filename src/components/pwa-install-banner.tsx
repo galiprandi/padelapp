@@ -18,6 +18,11 @@ import {
   getPwaBannerDescriptionText,
   getPwaBannerIconAriaLabel,
   getPwaBannerInstallButtonText,
+  getPwaBannerContainerClasses,
+  getPwaBannerIconBadgeClasses,
+  getPwaBannerDismissButtonClasses,
+  getPwaBannerInstallButtonClasses,
+  getPwaBannerGuideButtonClasses,
 } from "./pwa-install-utils";
 
 export {
@@ -109,9 +114,9 @@ export function PwaInstallBanner() {
     <div
       role="region"
       aria-label={getPwaBannerRegionAriaLabel()}
-      className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm"
+      className={getPwaBannerContainerClasses()}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+      <div className={getPwaBannerIconBadgeClasses()}>
         <Smartphone className="h-4 w-4" aria-hidden="true" />
       </div>
 
@@ -129,7 +134,7 @@ export function PwaInstallBanner() {
         size="sm"
         onClick={handleDismiss}
         aria-label={getDismissBannerAriaLabel()}
-        className="rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getPwaBannerDismissButtonClasses()}
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </Button>
@@ -141,7 +146,7 @@ export function PwaInstallBanner() {
           aria-busy={isInstalling}
           variant="default"
           size="sm"
-          className="h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0"
+          className={getPwaBannerInstallButtonClasses()}
           aria-label={getInstallButtonAriaLabel(isInstalling)}
         >
           {isInstalling ? (
@@ -156,7 +161,7 @@ export function PwaInstallBanner() {
           asChild
           variant="default"
           size="sm"
-          className="h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0"
+          className={getPwaBannerGuideButtonClasses()}
         >
           <Link href="/install" prefetch={true} aria-label={getInstallGuideAriaLabel()}>
             Ver cómo
