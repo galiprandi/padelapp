@@ -14,6 +14,11 @@ import {
   getPwaBannerDescriptionText,
   getPwaBannerIconAriaLabel,
   getPwaBannerInstallButtonText,
+  getPwaBannerContainerClasses,
+  getPwaBannerIconBadgeClasses,
+  getPwaBannerDismissButtonClasses,
+  getPwaBannerInstallButtonClasses,
+  getPwaBannerGuideButtonClasses,
 } from "../pwa-install-utils";
 
 describe("pwa-install-utils", () => {
@@ -92,7 +97,7 @@ describe("pwa-install-utils", () => {
     });
   });
 
-  describe("UI banner text pure helper formatters", () => {
+  describe("UI banner text and CSS class pure helper formatters", () => {
     it("returns expected PWA banner header title text", () => {
       expect(getPwaBannerTitleText()).toBe("Instalá la App");
     });
@@ -112,6 +117,17 @@ describe("pwa-install-utils", () => {
 
     it("returns expected PWA banner primary install button text", () => {
       expect(getPwaBannerInstallButtonText()).toBe("Instalar");
+    });
+
+    it("returns expected container and badge CSS classes for PWA install banner", () => {
+      expect(getPwaBannerContainerClasses()).toContain("flex items-center gap-3 rounded-xl border");
+      expect(getPwaBannerIconBadgeClasses()).toContain("flex h-9 w-9 shrink-0 items-center");
+    });
+
+    it("returns expected dismiss and action button CSS classes for PWA install banner", () => {
+      expect(getPwaBannerDismissButtonClasses()).toContain("rounded-md p-1.5 h-8 w-8");
+      expect(getPwaBannerInstallButtonClasses()).toContain("h-8 px-3 text-xs font-bold bg-primary");
+      expect(getPwaBannerGuideButtonClasses()).toContain("h-8 px-3 text-xs font-bold bg-primary");
     });
   });
 });

@@ -148,3 +148,91 @@ export function getOnboardingNotificationToastMessage(
       return "No soportado en este navegador";
   }
 }
+
+/**
+ * Returns localized step header title text for onboarding steps.
+ */
+export function getOnboardingStepTitleText(
+  step: "alias" | "activity" | "pwa" | "notifications"
+): string {
+  switch (step) {
+    case "alias":
+      return "Configurá tu alias en la cancha";
+    case "activity":
+      return "Creá tu primer turno";
+    case "pwa":
+      return "Instalá la aplicación (PWA)";
+    case "notifications":
+      return "Activá las notificaciones";
+  }
+}
+
+/**
+ * Returns localized step description text for onboarding steps.
+ */
+export function getOnboardingStepDescriptionText(
+  step: "alias" | "activity" | "pwa" | "notifications"
+): string {
+  switch (step) {
+    case "alias":
+      return "Elegí tu nombre de juego para aparecer en los partidos y el ranking.";
+    case "activity":
+      return "Armá un turno, compartilo por WhatsApp y dejá que la red llene los cupos.";
+    case "pwa":
+      return "Accedé al instante a tus partidos desde tu pantalla de inicio en el celular.";
+    case "notifications":
+      return "Recibí alertas al instante cuando falten jugadores o confirmen resultados.";
+  }
+}
+
+/**
+ * Returns localized button text for onboarding step actions.
+ */
+export function getOnboardingStepButtonText(
+  actionType: "alias" | "activity" | "pwa-install" | "pwa-guide" | "notifications"
+): string {
+  switch (actionType) {
+    case "alias":
+      return "Configurar alias";
+    case "activity":
+      return "Crear turno";
+    case "pwa-install":
+      return "Instalar ahora";
+    case "pwa-guide":
+      return "Ver cómo instalar";
+    case "notifications":
+      return "Activar notificaciones";
+  }
+}
+
+/**
+ * Returns standardized CSS class string for the main onboarding checklist container.
+ */
+export function getOnboardingContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-5 shadow-sm space-y-5";
+}
+
+/**
+ * Returns standardized CSS class string for the onboarding dismiss button.
+ */
+export function getOnboardingDismissButtonClasses(): string {
+  return "rounded-md p-1.5 h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background shrink-0 active:scale-[0.98]";
+}
+
+/**
+ * Returns standardized CSS class string for the step completion status badge.
+ */
+export function getOnboardingStepBadgeClasses(isCompleted: boolean): string {
+  return `flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors ${
+    isCompleted
+      ? "bg-primary border-primary text-primary-foreground"
+      : "bg-muted border-border text-muted-foreground"
+  }`;
+}
+
+/**
+ * Returns standardized CSS class string for onboarding step CTA buttons.
+ */
+export function getOnboardingStepButtonClasses(): string {
+  return "h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
