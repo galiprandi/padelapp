@@ -3825,3 +3825,120 @@ export function sortRecommendedCandidatesBySkillDiff<
     return diffA - diffB;
   });
 }
+
+export interface SelectedNodeGraphMetrics {
+  activityTier: NetworkActivityTier;
+  roleInfo: NetworkRoleInfo;
+  diversity: NetworkDiversityScore;
+  crossRivalry: CrossRivalryDensity;
+  reach: PlayerGraphReachResult;
+  bridging: CommunityBridgingScore;
+  centrality: NetworkCentralityScore;
+  reciprocity: PlayerInteractionReciprocity;
+  stability: PartnershipStabilityInfo;
+  localClustering: LocalClusteringInfo;
+  concentration: NetworkConcentrationIndex;
+  complementarity: PlayerMatchComplementarity;
+  multiBelonging: NetworkMultiBelonging;
+  expansionPotential: NetworkExpansionPotential;
+  similarityInfo: PlayerSimilarityInfo | null;
+}
+
+/**
+ * Aggregates and calculates all 15 graph metrics for a selected node in the GraphView detail panel.
+ */
+export function calculateSelectedNodeGraphMetrics(
+  selectedNodeData: GraphNode,
+  nodes: GraphNode[],
+  links: GraphLink[],
+  viewerId?: string,
+): SelectedNodeGraphMetrics {
+  const activityTier = getNetworkActivityTier(
+    selectedNodeData.networkSize,
+    selectedNodeData.matchesPlayed,
+  );
+  const roleInfo = calculateNetworkRoleInfo(nodes, links, selectedNodeData.id);
+  const diversity = calculateNetworkDiversityScore(
+    nodes,
+    links,
+    selectedNodeData.id,
+  );
+  const crossRivalry = calculateCrossRivalryDensity(links, selectedNodeData.id);
+  const reach = calculatePlayerGraphReach(links, selectedNodeData.id);
+  const bridging = calculateCommunityBridgingScore(
+    nodes,
+    links,
+    selectedNodeData.id,
+  );
+  const centrality = calculateNetworkCentralityScore(
+    nodes,
+    links,
+    selectedNodeData.id,
+  );
+  const reciprocity = calculatePlayerInteractionReciprocity(
+    links,
+    selectedNodeData.id,
+  );
+  const stability = calculatePartnershipStabilityInfo(
+    links,
+    selectedNodeData.id,
+  );
+  const localClustering = calculateLocalClusteringCoefficient(
+    links,
+    selectedNodeData.id,
+  );
+  const concentration = calculateNetworkConcentrationIndex(
+    links,
+    selectedNodeData.id,
+  );
+  const complementarity = calculatePlayerMatchComplementarity(
+    links,
+    nodes,
+    selectedNodeData.id,
+  );
+  const multiBelonging = calculateNetworkMultiBelonging(
+    links,
+    nodes,
+    selectedNodeData.id,
+  );
+  const expansionPotential = calculateNetworkExpansionPotential(
+    links,
+    nodes,
+    selectedNodeData.id,
+  );
+  const viewerNode = viewerId ? nodes.find((n) => n.id === viewerId) : null;
+  const similarityInfo =
+    viewerNode && selectedNodeData.id !== viewerId
+      ? calculatePlayerSimilarityInfo(
+          {
+            id: selectedNodeData.id,
+            skillScore: selectedNodeData.skillScore,
+            preferredSide: selectedNodeData.preferredSide,
+          },
+          {
+            id: viewerNode.id,
+            skillScore: viewerNode.skillScore,
+            preferredSide: viewerNode.preferredSide,
+          },
+          links,
+        )
+      : null;
+
+  return {
+    activityTier,
+    roleInfo,
+    diversity,
+    crossRivalry,
+    reach,
+    bridging,
+    centrality,
+    reciprocity,
+    stability,
+    localClustering,
+    concentration,
+    complementarity,
+    multiBelonging,
+    expansionPotential,
+    similarityInfo,
+  };
+}
