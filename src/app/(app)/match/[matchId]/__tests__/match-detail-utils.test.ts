@@ -13,6 +13,25 @@ import {
   getMatchShareButtonAriaLabel,
   getPlayerProfileLinkAriaLabel,
   formatMatchClubCourtText,
+  getMatchHeaderTitle,
+  getMatchClubLabel,
+  getMatchOrganizerLabel,
+  getMatchEnterScoreButtonText,
+  getMatchEditButtonText,
+  getMatchInviteShareTitle,
+  getMatchResultShareTitle,
+  getMatchFinalScoreHeadingTitle,
+  getMatchModeLabel,
+  getMatchConfirmationsHeadingTitle,
+  getMatchConfirmationsDescription,
+  getPlayerConfirmationStatusText,
+  getMatchCreatorFinalizeNoticeText,
+  getPendingConfirmationBannerTitle,
+  getPendingConfirmationBannerDescription,
+  getMatchProcessedNoticeText,
+  getMatchAttendanceHeadingTitle,
+  getMatchTeamsHeadingTitle,
+  getMatchOrganizerNotesHeadingTitle,
 } from "../match-detail-utils";
 
 describe("match-detail-utils", () => {
@@ -81,5 +100,38 @@ describe("match-detail-utils", () => {
     expect(formatMatchClubCourtText("Padel Club Central", null)).toBe("Padel Club Central");
     expect(formatMatchClubCourtText("", "3")).toBe("Sin club especificado");
     expect(formatMatchClubCourtText(null, null)).toBe("Sin club especificado");
+  });
+
+  it("returns match detail header title", () => {
+    expect(getMatchHeaderTitle("Competitivo")).toBe("Partido Competitivo");
+    expect(getMatchHeaderTitle("Amistoso")).toBe("Partido Amistoso");
+  });
+
+  it("returns static text labels and titles", () => {
+    expect(getMatchClubLabel()).toBe("Club:");
+    expect(getMatchOrganizerLabel()).toBe("Organizador");
+    expect(getMatchEnterScoreButtonText()).toBe("Ingresar Resultado");
+    expect(getMatchEditButtonText()).toBe("Editar");
+    expect(getMatchInviteShareTitle()).toBe("Invitación a partido de Pádel");
+    expect(getMatchResultShareTitle()).toBe("Resultado de Pádel");
+    expect(getMatchFinalScoreHeadingTitle()).toBe("Resultado Final");
+    expect(getMatchConfirmationsHeadingTitle()).toBe("Confirmaciones");
+    expect(getMatchConfirmationsDescription()).toBe("Un jugador de cada equipo debe validar el marcador.");
+    expect(getMatchCreatorFinalizeNoticeText()).toBe("¿Algunos jugadores no confirman o son invitados? Como organizador podés cerrar el partido inmediatamente.");
+    expect(getPendingConfirmationBannerTitle()).toBe("Confirmación pendiente");
+    expect(getPendingConfirmationBannerDescription()).toBe("Validá el resultado para impactar el ranking.");
+    expect(getMatchProcessedNoticeText()).toBe("Partido procesado en el Ranking");
+    expect(getMatchAttendanceHeadingTitle()).toBe("Asistencia");
+    expect(getMatchTeamsHeadingTitle()).toBe("Formación de equipos");
+    expect(getMatchOrganizerNotesHeadingTitle()).toBe("Notas del organizador");
+  });
+
+  it("formats match mode label", () => {
+    expect(getMatchModeLabel("Competitivo")).toBe("Modalidad Competitivo");
+  });
+
+  it("returns player confirmation status text", () => {
+    expect(getPlayerConfirmationStatusText(true)).toBe("Confirmado");
+    expect(getPlayerConfirmationStatusText(false)).toBe("Pendiente");
   });
 });

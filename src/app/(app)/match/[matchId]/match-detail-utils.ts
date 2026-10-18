@@ -148,3 +148,136 @@ export function formatMatchClubCourtText(
   }
   return cleanClub;
 }
+
+/**
+ * Returns match detail header title with match type label.
+ */
+export function getMatchHeaderTitle(matchTypeLabel: string): string {
+  return `Partido ${matchTypeLabel}`;
+}
+
+/**
+ * Returns "Club:" label text.
+ */
+export function getMatchClubLabel(): string {
+  return "Club:";
+}
+
+/**
+ * Returns "Organizador" label text.
+ */
+export function getMatchOrganizerLabel(): string {
+  return "Organizador";
+}
+
+/**
+ * Returns "Ingresar Resultado" button text.
+ */
+export function getMatchEnterScoreButtonText(): string {
+  return "Ingresar Resultado";
+}
+
+/**
+ * Returns "Editar" button text.
+ */
+export function getMatchEditButtonText(): string {
+  return "Editar";
+}
+
+/**
+ * Returns share invitation title text.
+ */
+export function getMatchInviteShareTitle(): string {
+  return "Invitación a partido de Pádel";
+}
+
+/**
+ * Returns share result title text.
+ */
+export function getMatchResultShareTitle(): string {
+  return "Resultado de Pádel";
+}
+
+/**
+ * Returns final score heading title.
+ */
+export function getMatchFinalScoreHeadingTitle(): string {
+  return "Resultado Final";
+}
+
+/**
+ * Returns match mode display label with match type.
+ */
+export function getMatchModeLabel(matchTypeLabel: string): string {
+  return `Modalidad ${matchTypeLabel}`;
+}
+
+/**
+ * Returns confirmations section heading title.
+ */
+export function getMatchConfirmationsHeadingTitle(): string {
+  return "Confirmaciones";
+}
+
+/**
+ * Returns confirmations section description text.
+ */
+export function getMatchConfirmationsDescription(): string {
+  return "Un jugador de cada equipo debe validar el marcador.";
+}
+
+/**
+ * Returns localized player result confirmation status label.
+ */
+export function getPlayerConfirmationStatusText(isConfirmed: boolean): string {
+  return isConfirmed ? "Confirmado" : "Pendiente";
+}
+
+/**
+ * Returns notice text for match creator regarding unconfirmed guest players.
+ */
+export function getMatchCreatorFinalizeNoticeText(): string {
+  return "¿Algunos jugadores no confirman o son invitados? Como organizador podés cerrar el partido inmediatamente.";
+}
+
+/**
+ * Returns title text for pending confirmation sticky banner.
+ */
+export function getPendingConfirmationBannerTitle(): string {
+  return "Confirmación pendiente";
+}
+
+/**
+ * Returns description text for pending confirmation sticky banner.
+ */
+export function getPendingConfirmationBannerDescription(): string {
+  return "Validá el resultado para impactar el ranking.";
+}
+
+/**
+ * Returns notice text when a match score has been confirmed and processed in ranking.
+ */
+export function getMatchProcessedNoticeText(): string {
+  return "Partido procesado en el Ranking";
+}
+
+/**
+ * Returns attendance section heading title.
+ */
+export function getMatchAttendanceHeadingTitle(): string {
+  return "Asistencia";
+}
+
+/**
+ * Returns team formation section heading title.
+ */
+export function getMatchTeamsHeadingTitle(): string {
+  return "Formación de equipos";
+}
+
+/**
+ * Returns organizer notes section heading title.
+ */
+export function getMatchOrganizerNotesHeadingTitle(): string {
+  return "Notas del organizador";
+}
