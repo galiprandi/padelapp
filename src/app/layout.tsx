@@ -8,6 +8,8 @@ import { formatSpeculationRulesScript } from "@/lib/speculation-rules";
 import {
   getResourceHints,
   getOriginTrialMetaProps,
+  getResourceHintKey,
+  formatResourceHintLinkProps,
 } from "@/lib/resource-hints";
 import {
   getRootBodyClasses,
@@ -62,7 +64,7 @@ export default function RootLayout({
     <html {...getRootHtmlAttributes()}>
       <head>
         {resourceHints.map((hint, idx) => (
-          <link key={`${hint.rel}-${hint.href}-${idx}`} {...hint} />
+          <link key={getResourceHintKey(hint, idx)} {...formatResourceHintLinkProps(hint)} />
         ))}
         {originTrialMeta && <meta {...originTrialMeta} />}
         <script {...formatSpeculationRulesScript()} />
