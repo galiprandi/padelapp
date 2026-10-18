@@ -38,6 +38,10 @@ import {
   getTurnCardQuickJoinText,
   getTurnCardStatusBadgeText,
   getTurnCardContainerClasses,
+  getTurnCardDateContainerClasses,
+  getTurnCardContactPlayersClasses,
+  getTurnCardOpenSlotsBadgeClasses,
+  getTurnCardQuickJoinButtonClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -165,7 +169,7 @@ export function TurnCard({
       />
         <div className="flex items-center gap-3">
           {/* Date */}
-          <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-2.5 py-1.5 min-w-[56px] h-14">
+          <div className={getTurnCardDateContainerClasses()}>
             <span className="text-xs font-bold text-muted-foreground leading-none">
               <LocalMonth date={turn.date} />
             </span>
@@ -207,7 +211,7 @@ export function TurnCard({
 
             {mounted && contactPlayers.length > 0 && (
               <p
-                className="mt-1.5 text-xs text-amber-600 dark:text-amber-500 font-semibold flex items-center gap-1.5 leading-none"
+                className={getTurnCardContactPlayersClasses()}
                 aria-label={getTurnCardContactPlayersAriaLabel(contactPlayers)}
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
@@ -250,11 +254,7 @@ export function TurnCard({
               </Badge>
             ) : openSlots > 0 ? (
               <Badge
-                className={cn(
-                  openSlots === 1
-                    ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold"
-                    : "bg-muted text-foreground border-border"
-                )}
+                className={getTurnCardOpenSlotsBadgeClasses(openSlots)}
                 aria-label={getTurnStatusBadgeAriaLabel({ openSlots })}
               >
                 {statusBadgeText}
@@ -318,7 +318,7 @@ export function TurnCard({
                   isSubstitute: canJoinAsSubstitute,
                   isPending,
                 })}
-                className="h-8 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+                className={getTurnCardQuickJoinButtonClasses()}
               >
                 {isPending ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />

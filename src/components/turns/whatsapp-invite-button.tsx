@@ -13,6 +13,8 @@ import {
   getWhatsAppGroupInviteButtonText,
   getFallbackWhatsAppShareUrl,
   getWhatsAppGroupInviteVariantClasses,
+  getWhatsAppInviteButtonClasses,
+  getWhatsAppGroupInviteButtonClasses,
 } from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -56,7 +58,7 @@ export function WhatsAppInviteButton({
       href={whatsappUrl || getFallbackWhatsAppShareUrl()}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 shadow-xs"
+      className={getWhatsAppInviteButtonClasses()}
       aria-label={getWhatsAppInviteAriaLabel(contactName, club)}
       onClick={handleClick}
     >
@@ -109,7 +111,7 @@ export function WhatsAppGroupInviteButton({
       href={whatsappUrl || getFallbackWhatsAppShareUrl()}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] gap-1.5 shrink-0 ${variantStyles} ${className ?? ""}`}
+      className={getWhatsAppGroupInviteButtonClasses(variantStyles, className)}
       aria-label={getWhatsAppGroupInviteAriaLabel(openSlots, club)}
       onClick={handleClick}
     >
