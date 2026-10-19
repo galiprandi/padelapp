@@ -18,6 +18,8 @@ import {
   getRankingFilterTabLabel,
   getRankingFilterTabsGroupAriaLabel,
   getRankingFilterClearButtonText,
+  getRankingFilterRadiogroupClasses,
+  getRankingFilterTabButtonClasses,
 } from "./ranking-utils";
 
 interface RankingPlayer {
@@ -68,7 +70,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
           <div
             role="radiogroup"
             aria-labelledby="ranking-tabs-label"
-            className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs"
+            className={getRankingFilterRadiogroupClasses()}
             onKeyDown={(e) => {
               if (
                 e.key !== "ArrowRight" &&
@@ -95,12 +97,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               aria-checked={activeTab === "activos"}
               tabIndex={activeTab === "activos" ? 0 : -1}
               onClick={() => setActiveTab("activos")}
-              className={cn(
-                "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                activeTab === "activos"
-                  ? "bg-card border border-border text-foreground shadow-xs"
-                  : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
-              )}
+              className={getRankingFilterTabButtonClasses(activeTab === "activos")}
               aria-label={getRankingFilterTabAriaLabel("activos", players.filter(p => p.matchesPlayed > 0).length)}
             >
               {getRankingFilterTabLabel("activos")}
@@ -111,12 +108,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
               aria-checked={activeTab === "todos"}
               tabIndex={activeTab === "todos" ? 0 : -1}
               onClick={() => setActiveTab("todos")}
-              className={cn(
-                "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                activeTab === "todos"
-                  ? "bg-card border border-border text-foreground shadow-xs"
-                  : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground",
-              )}
+              className={getRankingFilterTabButtonClasses(activeTab === "todos")}
               aria-label={getRankingFilterTabAriaLabel("todos", players.length)}
             >
               {getRankingFilterTabLabel("todos")}

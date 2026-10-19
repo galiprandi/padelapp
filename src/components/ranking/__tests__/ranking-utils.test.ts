@@ -56,6 +56,19 @@ import {
   getPodiumAvatarClasses,
   getPodiumBadgeClasses,
   getPodiumPlayerNameClasses,
+  getRankingDeltaClasses,
+  getRankingFilterRadiogroupClasses,
+  getRankingFilterTabButtonClasses,
+  getRankingSearchContainerClasses,
+  getRankingSearchInputClasses,
+  getRankingSearchClearButtonClasses,
+  getRankingBreakdownButtonClasses,
+  getRankingBreakdownContainerClasses,
+  getRankingDecayBannerClasses,
+  getRankingInfoContainerClasses,
+  getRankingInfoHeaderButtonClasses,
+  getPendingConfirmationsContainerClasses,
+  getPendingConfirmationsItemClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -616,6 +629,40 @@ describe("Ranking Helpers", () => {
       expect(getPodiumPlayerNameClasses(1, false)).toContain("text-foreground");
       expect(getPodiumPlayerNameClasses(2, true)).toContain("text-primary font-bold");
       expect(getPodiumPlayerNameClasses(2, false)).toContain("font-semibold text-foreground");
+    });
+
+    it("getRankingDeltaClasses returns expected styling classes for positive, negative, and zero delta", () => {
+      expect(getRankingDeltaClasses(3)).toContain("text-primary");
+      expect(getRankingDeltaClasses(-2)).toContain("text-muted-foreground");
+      expect(getRankingDeltaClasses(0)).toContain("text-muted-foreground/50");
+    });
+
+    it("getRankingFilterRadiogroupClasses and getRankingFilterTabButtonClasses return expected styling", () => {
+      expect(getRankingFilterRadiogroupClasses()).toContain("grid grid-cols-2");
+      expect(getRankingFilterTabButtonClasses(true)).toContain("bg-card");
+      expect(getRankingFilterTabButtonClasses(false)).toContain("border-transparent");
+    });
+
+    it("getRankingSearchContainerClasses, getRankingSearchInputClasses, and getRankingSearchClearButtonClasses return expected styling", () => {
+      expect(getRankingSearchContainerClasses()).toBe("relative group");
+      expect(getRankingSearchInputClasses()).toContain("h-12 pl-11");
+      expect(getRankingSearchClearButtonClasses()).toContain("absolute inset-y-0 right-3.5");
+    });
+
+    it("getRankingBreakdownButtonClasses, getRankingBreakdownContainerClasses, and getRankingDecayBannerClasses return expected styling", () => {
+      expect(getRankingBreakdownButtonClasses()).toContain("w-full flex items-center");
+      expect(getRankingBreakdownContainerClasses()).toContain("bg-muted border border-border");
+      expect(getRankingDecayBannerClasses()).toContain("mt-3 pt-3 border-t");
+    });
+
+    it("getRankingInfoContainerClasses and getRankingInfoHeaderButtonClasses return expected styling", () => {
+      expect(getRankingInfoContainerClasses()).toContain("rounded-xl border");
+      expect(getRankingInfoHeaderButtonClasses()).toContain("w-full flex items-center justify-between");
+    });
+
+    it("getPendingConfirmationsContainerClasses and getPendingConfirmationsItemClasses return expected styling", () => {
+      expect(getPendingConfirmationsContainerClasses()).toContain("flex flex-col gap-3");
+      expect(getPendingConfirmationsItemClasses()).toContain("flex flex-col sm:flex-row");
     });
   });
 });

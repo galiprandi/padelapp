@@ -11,6 +11,9 @@ import {
   getRankingSearchInputAriaLabel,
   getRankingSearchClearAriaLabel,
   getRankingSearchPlaceholder,
+  getRankingSearchContainerClasses,
+  getRankingSearchInputClasses,
+  getRankingSearchClearButtonClasses,
 } from "./ranking-utils";
 
 export function RankingSearch() {
@@ -55,7 +58,7 @@ export function RankingSearch() {
     <div
       role="search"
       aria-label={getRankingRegionAriaLabel("search")}
-      className="relative group"
+      className={getRankingSearchContainerClasses()}
     >
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {getRankingSearchStatusAriaLabel(isPending, query)}
@@ -81,14 +84,14 @@ export function RankingSearch() {
           }
         }}
         autoComplete="off"
-        className="h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background transition-colors shadow-xs [&::-webkit-search-cancel-button]:hidden"
+        className={getRankingSearchInputClasses()}
       />
       {query && (
         <button
           type="button"
           onClick={handleClear}
           aria-label={getRankingSearchClearAriaLabel()}
-          className="absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-all active:scale-[0.95] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getRankingSearchClearButtonClasses()}
         >
           <X className="h-4 w-4" />
         </button>

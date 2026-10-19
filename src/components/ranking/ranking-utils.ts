@@ -649,3 +649,105 @@ export function getPodiumPlayerNameClasses(
     isViewer ? "text-primary font-bold" : "font-semibold text-foreground"
   );
 }
+
+/**
+ * Returns Tailwind class names for ranking position delta indicator
+ */
+export function getRankingDeltaClasses(delta: number): string {
+  if (delta > 0) {
+    return "flex items-center gap-0.5 text-xs text-primary";
+  }
+  if (delta < 0) {
+    return "flex items-center gap-0.5 text-xs text-muted-foreground";
+  }
+  return "flex items-center gap-0.5 text-xs text-muted-foreground/50";
+}
+
+/**
+ * Returns Tailwind class names for ranking filter radiogroup container
+ */
+export function getRankingFilterRadiogroupClasses(): string {
+  return "grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs";
+}
+
+/**
+ * Returns Tailwind class names for ranking filter tab buttons
+ */
+export function getRankingFilterTabButtonClasses(isActive: boolean): string {
+  return cn(
+    "flex h-10 items-center justify-center rounded-lg text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isActive
+      ? "bg-card border border-border text-foreground shadow-xs"
+      : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground"
+  );
+}
+
+/**
+ * Returns Tailwind class names for ranking search container
+ */
+export function getRankingSearchContainerClasses(): string {
+  return "relative group";
+}
+
+/**
+ * Returns Tailwind class names for ranking search input field
+ */
+export function getRankingSearchInputClasses(): string {
+  return "h-12 pl-11 pr-11 rounded-xl bg-card border-border placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background transition-colors shadow-xs [&::-webkit-search-cancel-button]:hidden";
+}
+
+/**
+ * Returns Tailwind class names for ranking search clear button
+ */
+export function getRankingSearchClearButtonClasses(): string {
+  return "absolute inset-y-0 right-3.5 my-auto h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown toggle button
+ */
+export function getRankingBreakdownButtonClasses(): string {
+  return "w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-primary bg-muted rounded-lg border border-border hover:bg-muted/80 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown details container
+ */
+export function getRankingBreakdownContainerClasses(): string {
+  return "mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs";
+}
+
+/**
+ * Returns Tailwind class names for ranking decay banner container
+ */
+export function getRankingDecayBannerClasses(): string {
+  return "mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0";
+}
+
+/**
+ * Returns Tailwind class names for ranking info container
+ */
+export function getRankingInfoContainerClasses(): string {
+  return "rounded-xl border border-border bg-card overflow-hidden transition-all shadow-xs";
+}
+
+/**
+ * Returns Tailwind class names for ranking info toggle button
+ */
+export function getRankingInfoHeaderButtonClasses(): string {
+  return "w-full flex items-center justify-between p-4 text-left hover:bg-muted transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations alert container
+ */
+export function getPendingConfirmationsContainerClasses(): string {
+  return "flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+/**
+ * Returns Tailwind class names for individual pending confirmation item card
+ */
+export function getPendingConfirmationsItemClasses(): string {
+  return "flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3 shadow-xs";
+}

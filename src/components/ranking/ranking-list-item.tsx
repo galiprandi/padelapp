@@ -13,6 +13,7 @@ import {
   getRankingListItemPositionClasses,
   getRankingListItemNameClasses,
   getRecentFormDotClasses,
+  getRankingDeltaClasses,
 } from "./ranking-utils";
 
 interface RankingListItemProps {
@@ -132,17 +133,17 @@ export function RankingListItem({
         </span>
         <div className="flex items-center gap-0.5">
           {player.rankingDelta > 0 ? (
-            <div className="flex items-center gap-0.5 text-xs text-primary" title={getDeltaChangeTitle(player.rankingDelta)}>
+            <div className={getRankingDeltaClasses(player.rankingDelta)} title={getDeltaChangeTitle(player.rankingDelta)}>
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
               <span>+{player.rankingDelta}</span>
             </div>
           ) : player.rankingDelta < 0 ? (
-            <div className="flex items-center gap-0.5 text-xs text-muted-foreground" title={getDeltaChangeTitle(player.rankingDelta)}>
+            <div className={getRankingDeltaClasses(player.rankingDelta)} title={getDeltaChangeTitle(player.rankingDelta)}>
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
               <span>{player.rankingDelta}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-0.5 text-xs text-muted-foreground/50" title={getDeltaChangeTitle(0)}>
+            <div className={getRankingDeltaClasses(0)} title={getDeltaChangeTitle(0)}>
               <Minus className="h-3 w-3" aria-hidden="true" />
               <span>0</span>
             </div>

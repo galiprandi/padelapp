@@ -9,6 +9,8 @@ import {
   getRankingRulesHeaderSubtitle,
   getRankingRulesSectionTitle,
   getRankingFormulaText,
+  getRankingInfoContainerClasses,
+  getRankingInfoHeaderButtonClasses,
 } from "./ranking-utils";
 
 export function RankingInfo() {
@@ -18,7 +20,7 @@ export function RankingInfo() {
     <div
       role="region"
       aria-label={getRankingRegionAriaLabel("rules")}
-      className="rounded-xl border border-border bg-card overflow-hidden transition-all shadow-xs"
+      className={getRankingInfoContainerClasses()}
       onKeyDown={(e) => {
         if (e.key === "Escape" && isOpen) {
           setIsOpen(false);
@@ -28,7 +30,7 @@ export function RankingInfo() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-muted transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getRankingInfoHeaderButtonClasses()}
         aria-expanded={isOpen}
         aria-label={getRankingRulesAriaLabel(isOpen)}
         aria-controls="ranking-rules-content"
