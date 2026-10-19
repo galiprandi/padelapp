@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  getBypassAuthSession,
   getLoginContainerClasses,
   getLoginContentContainerClasses,
   getLoginFallbackContainerClasses,
@@ -21,6 +22,9 @@ import {
   getSignInFormClasses,
   getSignInPendingText,
   getSignInSpinnerClasses,
+  isPprBailoutError,
+  maskSensitiveData,
+  resolveDisplayNameFromGoogleProfile,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 
@@ -187,5 +191,96 @@ describe("safeCallbackUrl", () => {
 
   it("returns fallback for relative path without leading slash", () => {
     expect(safeCallbackUrl("me")).toBe("/me");
+  });
+});
+
+describe("maskSensitiveData", () => {
+  it("returns primitive values unchanged", () => {
+    expect(maskSensitiveData(123)).toBe(123);
+    expect(maskSensitiveData("hello")).toBe("hello");
+    expect(maskSensitiveData(null)).toBe(null);
+  });
+
+  it("masks sensitive keys in nested objects and arrays", () => {
+    const input = {
+      provider: "google",
+      sessionToken: "secret123",
+      nested: {
+        password: "p1",
+        user: "john",
+      },
+      list: [{ token: "t123", public: "yes" }],
+    };
+
+    const output = maskSensitiveData(input) as Record<string, unknown>;
+
+    expect(output.provider).toBe("google");
+    expect(output.sessionToken).toBe("[REDACTED]");
+    expect((output.nested as Record<string, unknown>).password).toBe("[REDACTED]");
+    expect((output.nested as Record<string, unknown>).user).toBe("john");
+    expect(((output.list as unknown[])[0] as Record<string, unknown>).token).toBe("[REDACTED]");
+    expect(((output.list as unknown[])[0] as Record<string, unknown>).public).toBe("yes");
+  });
+});
+
+describe("resolveDisplayNameFromGoogleProfile", () => {
+  it("returns trimmed name if present", () => {
+    expect(resolveDisplayNameFromGoogleProfile({ name: " Agustín Tapia " })).toBe("Agustín Tapia");
+  });
+
+  it("returns trimmed given_name if name is missing", () => {
+    expect(resolveDisplayNameFromGoogleProfile({ given_name: " Arturo " })).toBe("Arturo");
+  });
+
+  it("returns email prefix if name and given_name are missing", () => {
+    expect(resolveDisplayNameFromGoogleProfile({ email: "galan@padel.com" })).toBe("galan");
+  });
+
+  it("returns default fallback 'Jugador' if profile is empty", () => {
+    expect(resolveDisplayNameFromGoogleProfile({})).toBe("Jugador");
+  });
+});
+
+describe("isPprBailoutError", () => {
+  it("returns false for non-error values", () => {
+    expect(isPprBailoutError("not an error")).toBe(false);
+    expect(isPprBailoutError(null)).toBe(false);
+  });
+
+  it("returns true for error with NEXT_ digest", () => {
+    const err = new Error("Bailout");
+    (err as unknown as { digest: string }).digest = "NEXT_PRERENDER_BAILOUT";
+    expect(isPprBailoutError(err)).toBe(true);
+  });
+
+  it("returns true for error with HANGING_PROMISE_REJECTION digest", () => {
+    const err = new Error("Hanging promise");
+    (err as unknown as { digest: string }).digest = "HANGING_PROMISE_REJECTION";
+    expect(isPprBailoutError(err)).toBe(true);
+  });
+
+  it("returns true for prerender header/cookie error messages", () => {
+    const err = new Error("During prerendering, `cookies()` rejects access");
+    expect(isPprBailoutError(err)).toBe(true);
+  });
+
+  it("returns false for standard errors", () => {
+    const err = new Error("Database connection failed");
+    expect(isPprBailoutError(err)).toBe(false);
+  });
+});
+
+describe("getBypassAuthSession", () => {
+  it("returns mock session payload with default expiration date", () => {
+    const session = getBypassAuthSession();
+    expect(session.user.id).toBe("p-01");
+    expect(session.user.displayName).toBe("Agustín");
+    expect(session.user.email).toBe("agu@mock.test");
+    expect(session.expires).toBe("2026-12-31T23:59:59.999Z");
+  });
+
+  it("supports custom expiration date string", () => {
+    const session = getBypassAuthSession("2027-01-01T00:00:00.000Z");
+    expect(session.expires).toBe("2027-01-01T00:00:00.000Z");
   });
 });

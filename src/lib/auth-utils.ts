@@ -158,3 +158,98 @@ export function safeCallbackUrl(url: string | undefined, fallback = "/me"): stri
   if (url.startsWith("//")) return fallback;
   return url;
 }
+
+const SENSITIVE_KEYS = new Set([
+  "sessiontoken",
+  "token",
+  "verificationtoken",
+  "password",
+  "secret",
+  "accesstoken",
+  "refreshtoken",
+  "idtoken",
+]);
+
+/**
+ * Masks sensitive adapter arguments or object values to prevent credential leakage in logs.
+ */
+export function maskSensitiveData(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(maskSensitiveData);
+  }
+  if (value && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (SENSITIVE_KEYS.has(k.toLowerCase())) {
+        result[k] = "[REDACTED]";
+      } else {
+        result[k] = maskSensitiveData(v);
+      }
+    }
+    return result;
+  }
+  return value;
+}
+
+/**
+ * Formats user display name from Google profile attributes with sensible fallbacks.
+ */
+export function resolveDisplayNameFromGoogleProfile(profile: {
+  name?: string | null;
+  given_name?: string | null;
+  email?: string | null;
+}): string {
+  const trimmedName = profile.name?.trim() || profile.given_name?.trim();
+  if (trimmedName && trimmedName.length > 0) {
+    return trimmedName;
+  }
+
+  const emailUser = profile.email?.split("@")[0];
+  return emailUser && emailUser.length > 0 ? emailUser : "Jugador";
+}
+
+/**
+ * Checks if an error is a Next.js prerendering or PPR dynamic bailout exception signal that must be rethrown.
+ */
+export function isPprBailoutError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message || "";
+  const digest = (error as Error & { digest?: string }).digest || "";
+
+  return (
+    digest === "HANGING_PROMISE_REJECTION" ||
+    digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||
+    digest.startsWith("NEXT_") ||
+    message.includes("During prerendering, `headers()` rejects") ||
+    message.includes("During prerendering, `cookies()` rejects") ||
+    message.includes("DynamicServerError")
+  );
+}
+
+/**
+ * Returns mock Session payload for AUTH_BYPASS environment mode.
+ */
+export function getBypassAuthSession(expires = "2026-12-31T23:59:59.999Z"): {
+  user: {
+    id: string;
+    displayName: string;
+    name: string;
+    email: string;
+    image: string | null;
+  };
+  expires: string;
+} {
+  return {
+    user: {
+      id: "p-01",
+      displayName: "Agustín",
+      name: "Agustín",
+      email: "agu@mock.test",
+      image: null,
+    },
+    expires,
+  };
+}
