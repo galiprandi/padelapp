@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { formatErrorDetails } from "@/lib/error-utils";
+import { getTurnPublicDetailsErrorFallbackProps } from "@/components/turns/turn-utils";
 
 export default function TurnosError({
   error,
@@ -17,10 +18,10 @@ export default function TurnosError({
     console.error("Turnos error:", error);
   }, [error]);
 
+  const fallbackProps = getTurnPublicDetailsErrorFallbackProps("los turnos");
   const details = formatErrorDetails(error, {
     section: "los turnos",
-    fallbackMessage:
-      "Ocurrió un problema al obtener los turnos. Podés reintentar o volver al inicio.",
+    fallbackMessage: fallbackProps.message,
   });
 
   return (
