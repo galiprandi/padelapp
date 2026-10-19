@@ -6,51 +6,14 @@ import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db";
 import { accounts, sessions, users, verificationTokens } from "@/db/schema";
+import {
+  getBypassAuthSession,
+  isPprBailoutError,
+  maskSensitiveData,
+  resolveDisplayNameFromGoogleProfile,
+} from "@/lib/auth-utils";
 
 type AdapterUserWithAlias = AdapterUser & { alias?: string | null };
-
-// Keys whose values must never leak into log output. They tend to appear in
-// adapter args (e.g. sessionToken, verificationTokens.token, passwords, OAuth
-// access/refresh tokens). Matched case-insensitive and against the last path
-// segment so we cover both top-level and nested keys.
-const SENSITIVE_KEYS = new Set([
-  "sessiontoken",
-  "token",
-  "verificationtoken",
-  "password",
-  "secret",
-  "accesstoken",
-  "refreshtoken",
-  "idtoken",
-]);
-
-function maskSensitive(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    return value.map(maskSensitive);
-  }
-  if (value && typeof value === "object") {
-    const result: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value)) {
-      if (SENSITIVE_KEYS.has(k.toLowerCase())) {
-        result[k] = "[REDACTED]";
-      } else {
-        result[k] = maskSensitive(v);
-      }
-    }
-    return result;
-  }
-  return value;
-}
-
-function resolveDisplayName(profile: GoogleProfile): string {
-  const trimmedName = profile.name?.trim() || profile.given_name?.trim();
-  if (trimmedName && trimmedName.length > 0) {
-    return trimmedName;
-  }
-
-  const emailUser = profile.email?.split("@")[0];
-  return emailUser && emailUser.length > 0 ? emailUser : "Jugador";
-}
 
 const rawAdapter = DrizzleAdapter(db, {
   usersTable: users,
@@ -69,7 +32,7 @@ const loggedAdapter = new Proxy(rawAdapter, {
       try {
         return await original.apply(target, args);
       } catch (error) {
-        const safeArgs = maskSensitive(args);
+        const safeArgs = maskSensitiveData(args);
         console.error(`[auth][adapter] ${String(prop)} failed:`, {
           error: error instanceof Error ? error.message : String(error),
           cause: error instanceof Error ? error.cause : undefined,
@@ -100,7 +63,7 @@ const {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       profile(profile: GoogleProfile) {
-        const displayName = resolveDisplayName(profile);
+        const displayName = resolveDisplayNameFromGoogleProfile(profile);
 
         return {
           id: profile.sub,
@@ -215,35 +178,15 @@ const {
 export async function auth(): Promise<Session | null> {
   if (process.env.AUTH_BYPASS === "true") {
     await cookies();
-    return {
-      user: {
-        id: "p-01",
-        displayName: "Agustín",
-        name: "Agustín",
-        email: "agu@mock.test",
-        image: null,
-      },
-      expires: "2026-12-31T23:59:59.999Z",
-    };
+    return getBypassAuthSession();
   }
   try {
     return await (_auth() as Promise<Session | null>);
   } catch (error) {
     // Check if the error is a Next.js prerender or dynamic bailout signal.
     // If so, we MUST rethrow it so Next.js's PPR engine can handle it correctly.
-    if (error instanceof Error) {
-      const message = error.message;
-      const digest = (error as Error & { digest?: string }).digest;
-      if (
-        digest === "HANGING_PROMISE_REJECTION" ||
-        digest === "NEXT_DYNAMIC_NO_SSR_CODE" ||
-        message.includes("During prerendering, `headers()` rejects") ||
-        message.includes("During prerendering, `cookies()` rejects") ||
-        message.includes("DynamicServerError") ||
-        digest?.startsWith("NEXT_")
-      ) {
-        throw error;
-      }
+    if (isPprBailoutError(error)) {
+      throw error;
     }
     console.warn(
       "[auth] Session validation failed, treating as unauthenticated:",

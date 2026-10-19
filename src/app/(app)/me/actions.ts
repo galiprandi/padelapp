@@ -6,66 +6,54 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { users, playerGraphStats } from "@/db/schema";
 import { capitalizeName } from "@/lib/utils";
+import {
+  getUpdateProfileInvalidAliasLengthResponseBody,
+  getUpdateProfileInvalidLevelResponseBody,
+  getUpdateProfileSuccessResponseBody,
+  getUpdateProfileUnauthorizedResponseBody,
+  type PreferredSideInput,
+  type UpdateProfileResponse,
+  validateProfileAliasLength,
+  validateProfileLevelInput,
+} from "./profile-actions-utils";
 
-const MIN_ALIAS_LENGTH = 2;
-const MAX_ALIAS_LENGTH = 30;
-
-export type UpdateProfileResponse =
-  | {
-      status: "ok";
-      alias: string | null;
-      image: string | null;
-      level: number;
-      preferredSide: "RIGHT" | "LEFT" | "BOTH" | null;
-    }
-  | { status: "error"; message: string };
+export type { UpdateProfileResponse };
 
 export async function updateUserProfileAction(
   aliasInput: string | null,
   imageInput?: string | null,
   levelInput?: number | null,
-  preferredSideInput?: "RIGHT" | "LEFT" | "BOTH" | null,
+  preferredSideInput?: PreferredSideInput,
 ): Promise<UpdateProfileResponse> {
   const session = await auth();
   if (!session?.user?.id) {
-    return { status: "error", message: "Tenés que iniciar sesión." };
+    return getUpdateProfileUnauthorizedResponseBody();
   }
 
   const trimmed = capitalizeName(aliasInput ?? "");
 
-  let levelToSave = 6;
-  if (levelInput !== undefined && levelInput !== null) {
-    if (levelInput < 1 || levelInput > 8) {
-      return {
-        status: "error",
-        message: "La categoría debe estar entre 1ª Cat. y 8ª Cat.",
-      };
-    }
-    levelToSave = levelInput;
+  const levelValidation = validateProfileLevelInput(levelInput);
+  if (!levelValidation.isValid) {
+    return getUpdateProfileInvalidLevelResponseBody();
   }
+  const levelToSave = levelValidation.level;
 
   const sideToReturn = preferredSideInput ?? "BOTH";
 
   if (process.env.AUTH_BYPASS === "true" || process.env.MOCK_AUTH === "true") {
     const aliasToSave = trimmed.length === 0 ? null : trimmed;
     const imageToSave = imageInput?.trim() || null;
-    return {
-      status: "ok",
-      alias: aliasToSave,
-      image: imageToSave,
-      level: levelToSave,
-      preferredSide: sideToReturn,
-    };
+    return getUpdateProfileSuccessResponseBody(
+      aliasToSave,
+      imageToSave,
+      levelToSave,
+      sideToReturn,
+    );
   }
 
-  if (
-    trimmed.length > 0 &&
-    (trimmed.length < MIN_ALIAS_LENGTH || trimmed.length > MAX_ALIAS_LENGTH)
-  ) {
-    return {
-      status: "error",
-      message: `El alias debe tener entre ${MIN_ALIAS_LENGTH} y ${MAX_ALIAS_LENGTH} caracteres.`,
-    };
+  const aliasValidation = validateProfileAliasLength(trimmed);
+  if (!aliasValidation.isValid) {
+    return getUpdateProfileInvalidAliasLengthResponseBody();
   }
 
   const aliasToSave = trimmed.length === 0 ? null : trimmed;
@@ -119,11 +107,10 @@ export async function updateUserProfileAction(
   revalidateTag("ranking", "default");
   revalidateTag("matches", "default");
 
-  return {
-    status: "ok",
-    alias: aliasToSave,
-    image: imageToSave,
-    level: levelToSave,
-    preferredSide: sideToReturn,
-  };
+  return getUpdateProfileSuccessResponseBody(
+    aliasToSave,
+    imageToSave,
+    levelToSave,
+    sideToReturn,
+  );
 }
