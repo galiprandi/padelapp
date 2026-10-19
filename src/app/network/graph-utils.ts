@@ -3558,6 +3558,86 @@ export function getFilterChipClasses(active: boolean): string {
   }`;
 }
 
+export function getFilterChipDotClasses(color?: string): string {
+  return cn("h-2 w-2 rounded-full shrink-0", color);
+}
+
+export function getTopPlayerRoleTitle(
+  roleLabel: string,
+  description: string,
+): string {
+  return `Rol en la red: ${roleLabel}. ${description}`;
+}
+
+export function getTopPlayerActivityTitle(activityLabel: string): string {
+  return `Actividad: ${activityLabel}`;
+}
+
+export function getTopPlayerCentralityTitle(
+  centralityTier: string,
+  summary: string,
+): string {
+  return `Centralidad en la red: ${centralityTier}. ${summary}`;
+}
+
+export function getTopPlayerDiversityTitle(
+  diversityTier: string,
+  summary: string,
+): string {
+  return `Diversidad de red: ${diversityTier}. ${summary}`;
+}
+
+export function getTopPlayerMultiBelongingTitle(
+  multiBelongingTier: string,
+  summary: string,
+): string {
+  return `Multipertenencia comunitaria: ${multiBelongingTier}. ${summary}`;
+}
+
+export function getTopPlayerReciprocityTitle(
+  reciprocityTier: string,
+  summary: string,
+): string {
+  return `Reciprocidad de interacción: ${reciprocityTier}. ${summary}`;
+}
+
+export function getTopPlayerStabilityTitle(
+  stabilityTier: string,
+  summary: string,
+): string {
+  return `Estabilidad de duplas: ${stabilityTier}. ${summary}`;
+}
+
+export function getTopPlayerExpansionTitle(
+  expansionTier: string,
+  summary: string,
+): string {
+  return `Potencial de expansión de red: ${expansionTier}. ${summary}`;
+}
+
+export function getRecentUsersItemAriaLabel(
+  userName: string,
+  timeAgoText: string,
+): string {
+  return `${userName}: registrado ${timeAgoText}`;
+}
+
+export function getTopClubItemAriaLabel(
+  rank: number,
+  clubName: string,
+  turns: number,
+  matches: number,
+): string {
+  return `${rank}. ${clubName}: ${turns} ${turns === 1 ? "turno" : "turnos"}, ${matches} ${matches === 1 ? "partido" : "partidos"}`;
+}
+
+export function getCommunityItemAriaLabel(
+  communityId: number,
+  memberCount: number,
+): string {
+  return `Grupo ${communityId}: ${memberCount} ${memberCount === 1 ? "jugador" : "jugadores"}`;
+}
+
 export function getGraphViewDetailPanelCloseAriaLabel(): string {
   return "Cerrar panel";
 }

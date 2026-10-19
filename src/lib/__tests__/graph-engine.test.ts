@@ -260,6 +260,18 @@ import {
   getTopPlayerMultiBelongingAriaLabel,
   getTopPlayerReciprocityAriaLabel,
   getTopPlayerRoleAriaLabel,
+  getTopPlayerRoleTitle,
+  getTopPlayerActivityTitle,
+  getTopPlayerCentralityTitle,
+  getTopPlayerDiversityTitle,
+  getTopPlayerMultiBelongingTitle,
+  getTopPlayerReciprocityTitle,
+  getTopPlayerStabilityTitle,
+  getTopPlayerExpansionTitle,
+  getRecentUsersItemAriaLabel,
+  getTopClubItemAriaLabel,
+  getCommunityItemAriaLabel,
+  getFilterChipDotClasses,
   getTopPlayerStabilityAriaLabel,
   getNetworkDiversityAriaLabel,
   getCrossRivalryAriaLabel,
@@ -2345,6 +2357,72 @@ describe("NetworkPageClient pure helpers", () => {
         ),
       ).toBe(
         "Similitud con vos: Dupla ideal 🎯. 90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
+      );
+    });
+  });
+
+  describe("Top connected players title and item ARIA helpers", () => {
+    it("formats top connected player badge titles correctly", () => {
+      expect(getTopPlayerRoleTitle("Nexo comunitario 🌉", "Conecta diferentes grupos")).toBe(
+        "Rol en la red: Nexo comunitario 🌉. Conecta diferentes grupos",
+      );
+
+      expect(getTopPlayerActivityTitle("Conector leyenda ⚡")).toBe(
+        "Actividad: Conector leyenda ⚡",
+      );
+
+      expect(
+        getTopPlayerCentralityTitle("Hub principal 👑", "12 contactos directos"),
+      ).toBe("Centralidad en la red: Hub principal 👑. 12 contactos directos");
+
+      expect(
+        getTopPlayerDiversityTitle("Red ultra diversificada 🌐", "4 grupos de la red"),
+      ).toBe("Diversidad de red: Red ultra diversificada 🌐. 4 grupos de la red");
+
+      expect(
+        getTopPlayerMultiBelongingTitle("Multicomunitario 🌐", "3 grupos de la red"),
+      ).toBe("Multipertenencia comunitaria: Multicomunitario 🌐. 3 grupos de la red");
+
+      expect(
+        getTopPlayerReciprocityTitle("Red recíproca y equilibrada ⚖️", "2 vínculos recíprocos"),
+      ).toBe("Reciprocidad de interacción: Red recíproca y equilibrada ⚖️. 2 vínculos recíprocos");
+
+      expect(
+        getTopPlayerStabilityTitle("Duplas consolidadas 🏆", "5 vínculos recurrentes"),
+      ).toBe("Estabilidad de duplas: Duplas consolidadas 🏆. 5 vínculos recurrentes");
+
+      expect(
+        getTopPlayerExpansionTitle("Red en expansión activa 🚀", "4 contactos de 2º grado"),
+      ).toBe("Potencial de expansión de red: Red en expansión activa 🚀. 4 contactos de 2º grado");
+    });
+
+    it("formats recent users item ARIA label correctly", () => {
+      expect(getRecentUsersItemAriaLabel("Agustín Aliprandi", "hace 5 min")).toBe(
+        "Agustín Aliprandi: registrado hace 5 min",
+      );
+    });
+
+    it("formats top club item ARIA label correctly", () => {
+      expect(getTopClubItemAriaLabel(1, "Padel City", 10, 5)).toBe(
+        "1. Padel City: 10 turnos, 5 partidos",
+      );
+
+      expect(getTopClubItemAriaLabel(2, "El Monasterio", 1, 1)).toBe(
+        "2. El Monasterio: 1 turno, 1 partido",
+      );
+    });
+
+    it("formats community item ARIA label correctly", () => {
+      expect(getCommunityItemAriaLabel(1, 4)).toBe("Grupo 1: 4 jugadores");
+      expect(getCommunityItemAriaLabel(2, 1)).toBe("Grupo 2: 1 jugador");
+    });
+
+    it("formats FilterChip dot CSS classes correctly", () => {
+      expect(getFilterChipDotClasses("bg-emerald-500")).toBe(
+        "h-2 w-2 rounded-full shrink-0 bg-emerald-500",
+      );
+      expect(getFilterChipDotClasses(undefined)).toBe(
+        "h-2 w-2 rounded-full shrink-0",
       );
     });
   });

@@ -71,6 +71,17 @@ import {
   getTopPlayerRankText,
   getTopPlayerReciprocityAriaLabel,
   getTopPlayerRoleAriaLabel,
+  getTopPlayerRoleTitle,
+  getTopPlayerActivityTitle,
+  getTopPlayerCentralityTitle,
+  getTopPlayerDiversityTitle,
+  getTopPlayerMultiBelongingTitle,
+  getTopPlayerReciprocityTitle,
+  getTopPlayerStabilityTitle,
+  getTopPlayerExpansionTitle,
+  getRecentUsersItemAriaLabel,
+  getTopClubItemAriaLabel,
+  getCommunityItemAriaLabel,
   getTopPlayerStabilityAriaLabel,
   getTurnsOverviewCardSubtext,
   getTurnsOverviewCardTitle,
@@ -390,28 +401,33 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
             </h2>
           </div>
           <div className="space-y-2">
-            {metrics.recentUsers.map((u) => (
-              <Link
-                key={u.id}
-                href={`/p/${u.id}`}
-                prefetch={true}
-                className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
-              >
-                <PlayerAvatar
-                  name={capitalizeName(u.name ?? u.alias ?? "?")}
-                  image={u.image ?? undefined}
-                  size={32}
-                />
-                <div className="flex-1 min-w-0 space-y-0.5">
-                  <p className="text-sm font-semibold text-foreground truncate">
-                    {capitalizeName(u.name ?? u.alias ?? "?")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatTimeAgo(u.createdAt)}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            {metrics.recentUsers.map((u) => {
+              const userName = capitalizeName(u.name ?? u.alias ?? "?");
+              const timeAgoText = formatTimeAgo(u.createdAt);
+              return (
+                <Link
+                  key={u.id}
+                  href={`/p/${u.id}`}
+                  prefetch={true}
+                  aria-label={getRecentUsersItemAriaLabel(userName, timeAgoText)}
+                  className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                >
+                  <PlayerAvatar
+                    name={userName}
+                    image={u.image ?? undefined}
+                    size={32}
+                  />
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <p className="text-sm font-semibold text-foreground truncate">
+                      {userName}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {timeAgoText}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
@@ -436,7 +452,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                 : null;
 
               return (
-                <div key={c.id} className="space-y-1.5">
+                <div
+                  key={c.id}
+                  className="space-y-1.5"
+                  aria-label={getCommunityItemAriaLabel(c.id, c.size)}
+                >
                   <div className="flex items-center justify-between text-xs flex-wrap gap-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-semibold text-foreground">
@@ -559,7 +579,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             roleInfo.badgeStyle,
                           )}
-                          title={`Rol en la red: ${roleInfo.roleLabel}. ${roleInfo.description}`}
+                          title={getTopPlayerRoleTitle(roleInfo.roleLabel, roleInfo.description)}
                           aria-label={getTopPlayerRoleAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             roleInfo.roleLabel,
@@ -574,7 +594,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             activityTier.badgeStyle,
                           )}
-                          title={`Actividad: ${activityTier.label}`}
+                          title={getTopPlayerActivityTitle(activityTier.label)}
                           aria-label={getTopPlayerActivityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             activityTier.label,
@@ -589,7 +609,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             centrality.badgeStyle,
                           )}
-                          title={`Centralidad en la red: ${centrality.centralityTier}. ${centrality.formattedSummary}`}
+                          title={getTopPlayerCentralityTitle(centrality.centralityTier, centrality.formattedSummary)}
                           aria-label={getTopPlayerCentralityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             centrality.centralityTier,
@@ -605,7 +625,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             diversity.badgeStyle,
                           )}
-                          title={`Diversidad de red: ${diversity.diversityTier}. ${diversity.formattedSummary}`}
+                          title={getTopPlayerDiversityTitle(diversity.diversityTier, diversity.formattedSummary)}
                           aria-label={getTopPlayerDiversityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             diversity.diversityTier,
@@ -621,7 +641,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             multiBelonging.badgeStyle,
                           )}
-                          title={`Multipertenencia comunitaria: ${multiBelonging.multiBelongingTier}. ${multiBelonging.formattedSummary}`}
+                          title={getTopPlayerMultiBelongingTitle(multiBelonging.multiBelongingTier, multiBelonging.formattedSummary)}
                           aria-label={getTopPlayerMultiBelongingAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             multiBelonging.multiBelongingTier,
@@ -637,7 +657,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             reciprocity.badgeStyle,
                           )}
-                          title={`Reciprocidad de interacción: ${reciprocity.reciprocityTier}. ${reciprocity.formattedSummary}`}
+                          title={getTopPlayerReciprocityTitle(reciprocity.reciprocityTier, reciprocity.formattedSummary)}
                           aria-label={getTopPlayerReciprocityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             reciprocity.reciprocityTier,
@@ -653,7 +673,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             stability.badgeStyle,
                           )}
-                          title={`Estabilidad de duplas: ${stability.stabilityTier}. ${stability.formattedSummary}`}
+                          title={getTopPlayerStabilityTitle(stability.stabilityTier, stability.formattedSummary)}
                           aria-label={getTopPlayerStabilityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             stability.stabilityTier,
@@ -669,7 +689,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
                             expansion.badgeStyle,
                           )}
-                          title={`Potencial de expansión de red: ${expansion.expansionTier}. ${expansion.formattedSummary}`}
+                          title={getTopPlayerExpansionTitle(expansion.expansionTier, expansion.formattedSummary)}
                           aria-label={getTopPlayerExpansionAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
                             expansion.expansionTier,
@@ -749,7 +769,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               const max = metrics.topClubs[0]?.total ?? 1;
               const pct = (c.total / max) * 100;
               return (
-                <div key={c.name} className="space-y-1">
+                <div
+                  key={c.name}
+                  className="space-y-1"
+                  aria-label={getTopClubItemAriaLabel(i + 1, c.name, c.turns, c.matches)}
+                >
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-2 font-semibold text-foreground truncate">
                       <span className="text-muted-foreground tabular-nums w-4">

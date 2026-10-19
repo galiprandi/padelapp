@@ -69,6 +69,7 @@ import {
   getGraphViewProfileLinkAriaLabel,
   getGraphViewAffinityTitle,
   getFilterChipClasses,
+  getFilterChipDotClasses,
   getGraphViewDetailPanelCloseAriaLabel,
   getGraphViewDetailPanelPublicProfileText,
   getGraphViewDetailPanelConnectionsHeader,
@@ -1441,7 +1442,7 @@ function FilterChip({
       {dotColor ? (
         <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: dotColor }} />
       ) : (
-        color && <div className={`h-2 w-2 rounded-full ${color}`} />
+        color && <div className={getFilterChipDotClasses(color)} />
       )}
       {label}
     </button>
