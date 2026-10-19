@@ -3,7 +3,14 @@ import {
   DEFAULT_QUERY_STALE_TIME,
   DEFAULT_QUERY_GC_TIME,
   MAX_QUERY_RETRY_COUNT,
+  MAX_MUTATION_RETRY_COUNT,
+  DEFAULT_RETRY_BASE_DELAY,
+  DEFAULT_RETRY_MAX_DELAY,
+  getQueryRetryDelay,
   isQueryRetryable,
+  isMutationRetryable,
+  getQueryClientMutationDefaults,
+  getQueryClientCacheSummary,
   getQueryClientConfig,
   createAppQueryClient,
 } from "../query-client-config";
@@ -21,6 +28,37 @@ describe("query-client-config", () => {
 
     it("debe definir MAX_QUERY_RETRY_COUNT en 2 reintentos", () => {
       expect(MAX_QUERY_RETRY_COUNT).toBe(2);
+    });
+
+    it("debe definir MAX_MUTATION_RETRY_COUNT en 1 reintento", () => {
+      expect(MAX_MUTATION_RETRY_COUNT).toBe(1);
+    });
+
+    it("debe definir DEFAULT_RETRY_BASE_DELAY y DEFAULT_RETRY_MAX_DELAY", () => {
+      expect(DEFAULT_RETRY_BASE_DELAY).toBe(1000);
+      expect(DEFAULT_RETRY_MAX_DELAY).toBe(30000);
+    });
+  });
+
+  describe("getQueryRetryDelay", () => {
+    it("debe calcular el retardo exponencial progresivo según el número de fallo", () => {
+      expect(getQueryRetryDelay(0)).toBe(1000); // 1000 * 2^0
+      expect(getQueryRetryDelay(1)).toBe(2000); // 1000 * 2^1
+      expect(getQueryRetryDelay(2)).toBe(4000); // 1000 * 2^2
+      expect(getQueryRetryDelay(3)).toBe(8000); // 1000 * 2^3
+    });
+
+    it("debe acotar el retardo calculado al valor máximo maxDelay", () => {
+      expect(getQueryRetryDelay(10)).toBe(30000); // Excede 30s maxDelay
+    });
+
+    it("debe respetar valores personalizados de baseDelay y maxDelay", () => {
+      expect(getQueryRetryDelay(1, undefined, 500, 5000)).toBe(1000);
+      expect(getQueryRetryDelay(5, undefined, 500, 2000)).toBe(2000);
+    });
+
+    it("debe manejar failureCount negativos tratando el valor como 0", () => {
+      expect(getQueryRetryDelay(-1)).toBe(1000);
     });
   });
 
@@ -47,14 +85,75 @@ describe("query-client-config", () => {
     });
   });
 
+  describe("isMutationRetryable", () => {
+    it("debe retornar true para el primer fallo si no es un error cliente 4xx", () => {
+      expect(isMutationRetryable(0, new Error("Network error"))).toBe(true);
+      expect(isMutationRetryable(0, { status: 500 })).toBe(true);
+    });
+
+    it("debe retornar false cuando failureCount es mayor o igual a MAX_MUTATION_RETRY_COUNT", () => {
+      expect(isMutationRetryable(1, new Error("Network error"))).toBe(false);
+      expect(isMutationRetryable(2, new Error("Network error"))).toBe(false);
+    });
+
+    it("debe retornar false para errores cliente HTTP status 4xx", () => {
+      expect(isMutationRetryable(0, { status: 400 })).toBe(false);
+      expect(isMutationRetryable(0, { statusCode: 422 })).toBe(false);
+    });
+  });
+
+  describe("getQueryClientMutationDefaults", () => {
+    it("debe generar la configuración predeterminada de mutaciones con retry isMutationRetryable", () => {
+      const defaults = getQueryClientMutationDefaults();
+      expect(defaults?.retry).toBe(isMutationRetryable);
+    });
+
+    it("debe permitir sobreescribir opciones de mutación", () => {
+      const defaults = getQueryClientMutationDefaults({ retry: 0 });
+      expect(defaults?.retry).toBe(0);
+    });
+  });
+
+  describe("getQueryClientCacheSummary", () => {
+    it("debe retornar resumen de caché en cero para un QueryClient nuevo", () => {
+      const queryClient = createAppQueryClient();
+      const summary = getQueryClientCacheSummary(queryClient);
+
+      expect(summary).toEqual({
+        totalQueries: 0,
+        activeQueries: 0,
+        staleQueries: 0,
+        errorQueries: 0,
+        fetchingQueries: 0,
+      });
+    });
+
+    it("debe contabilizar correctamente las consultas agregadas e invalidadas en el caché", () => {
+      const queryClient = createAppQueryClient();
+      queryClient.setQueryData(["test-query-1"], { id: 1 });
+      queryClient.setQueryData(["test-query-2"], { id: 2 });
+
+      const initialSummary = getQueryClientCacheSummary(queryClient);
+      expect(initialSummary.totalQueries).toBe(2);
+      expect(initialSummary.staleQueries).toBe(0); // Datos recién insertados dentro del staleTime (60s)
+
+      queryClient.invalidateQueries({ queryKey: ["test-query-1"] });
+      const updatedSummary = getQueryClientCacheSummary(queryClient);
+      expect(updatedSummary.totalQueries).toBe(2);
+      expect(updatedSummary.staleQueries).toBe(1);
+    });
+  });
+
   describe("getQueryClientConfig", () => {
-    it("debe retornar la configuración por defecto de consultas con staleTime de 60s, gcTime de 5m, refetchOnWindowFocus deshabilitado y reintento isQueryRetryable", () => {
+    it("debe retornar la configuración por defecto de consultas con staleTime de 60s, gcTime de 5m, refetchOnWindowFocus deshabilitado y retryDelay", () => {
       const config = getQueryClientConfig();
 
       expect(config.defaultOptions?.queries?.staleTime).toBe(60000);
       expect(config.defaultOptions?.queries?.gcTime).toBe(300000);
       expect(config.defaultOptions?.queries?.refetchOnWindowFocus).toBe(false);
       expect(config.defaultOptions?.queries?.retry).toBe(isQueryRetryable);
+      expect(config.defaultOptions?.queries?.retryDelay).toBe(getQueryRetryDelay);
+      expect(config.defaultOptions?.mutations?.retry).toBe(isMutationRetryable);
     });
 
     it("debe permitir sobreescribir opciones de consulta personalizadas", () => {
@@ -78,12 +177,12 @@ describe("query-client-config", () => {
       const config = getQueryClientConfig({
         defaultOptions: {
           mutations: {
-            retry: 1,
+            retry: 3,
           },
         },
       });
 
-      expect(config.defaultOptions?.mutations?.retry).toBe(1);
+      expect(config.defaultOptions?.mutations?.retry).toBe(3);
     });
   });
 
@@ -98,9 +197,10 @@ describe("query-client-config", () => {
       expect(defaultOptions.queries?.gcTime).toBe(300000);
       expect(defaultOptions.queries?.refetchOnWindowFocus).toBe(false);
       expect(defaultOptions.queries?.retry).toBe(isQueryRetryable);
+      expect(defaultOptions.queries?.retryDelay).toBe(getQueryRetryDelay);
     });
 
-    it("debe instanciar QueryClient con sobreescrituras opcionales cuando se especifican", () => {
+    it("debe instanciar QueryClient with sobreescrituras opcionales cuando se especifican", () => {
       const queryClient = createAppQueryClient({
         defaultOptions: {
           queries: {
