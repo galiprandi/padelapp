@@ -2667,3 +2667,83 @@ export function getWhatsAppGroupInviteButtonClasses(
     className
   );
 }
+
+/**
+ * Format aria-label for share button in turn public details view.
+ */
+export function getTurnPublicDetailsShareButtonAriaLabel(
+  openSlots?: number,
+  club?: string
+): string {
+  if (openSlots && openSlots > 0 && club) {
+    return `Compartir invitación para salvar turno en ${club} (${openSlots} ${
+      openSlots === 1 ? "cupo libre" : "cupos libres"
+    })`;
+  }
+  if (club) {
+    return `Compartir detalles del turno en ${club}`;
+  }
+  return "Compartir turno";
+}
+
+/**
+ * Interface for turn error fallback properties.
+ */
+export interface TurnErrorFallbackProps {
+  regionAriaLabel: string;
+  title: string;
+  message: string;
+  retryAriaLabel: string;
+  homeAriaLabel: string;
+  homeDestinationLabel: string;
+  homeHref: string;
+}
+
+/**
+ * Format error fallback properties for Turnos and TurnPublic error boundaries.
+ */
+export function getTurnPublicDetailsErrorFallbackProps(
+  section: "los turnos" | "el turno" = "los turnos"
+): TurnErrorFallbackProps {
+  const isSingle = section === "el turno";
+  return {
+    regionAriaLabel: `Error al cargar ${section}`,
+    title: `No pudimos cargar ${section}`,
+    message: isSingle
+      ? "Es posible que el turno haya sido eliminado o que haya un problema de conexión."
+      : "Ocurrió un problema al obtener los turnos. Podés reintentar o volver al inicio.",
+    retryAriaLabel: `Reintentar cargar ${section}`,
+    homeAriaLabel: isSingle
+      ? "Volver a explorar turnos"
+      : "Volver a la página principal",
+    homeDestinationLabel: isSingle ? "explorar turnos" : "inicio",
+    homeHref: isSingle ? "/turnos" : "/me",
+  };
+}
+
+/**
+ * Interface for empty slot details properties.
+ */
+export interface TurnEmptySlotProps {
+  text: string;
+  ariaLabel: string;
+  keyPrefix: string;
+}
+
+/**
+ * Format empty slots properties for turn enrollment list.
+ */
+export function getTurnPublicDetailsEmptySlotsProps(
+  openSlots: number
+): TurnEmptySlotProps {
+  const text = getEmptySlotText();
+  const ariaLabel =
+    openSlots === 1
+      ? "Cupo libre disponible para unirse"
+      : `${openSlots} cupos libres disponibles para unirse`;
+  return {
+    text,
+    ariaLabel,
+    keyPrefix: "empty-slot",
+  };
+}

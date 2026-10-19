@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { formatErrorDetails } from "@/lib/error-utils";
+import { getTurnPublicDetailsErrorFallbackProps } from "@/components/turns/turn-utils";
 
 export default function TurnPublicError({
   error,
@@ -17,11 +18,11 @@ export default function TurnPublicError({
     console.error("Turn public error:", error);
   }, [error]);
 
+  const fallbackProps = getTurnPublicDetailsErrorFallbackProps("el turno");
   const details = formatErrorDetails(error, {
     section: "el turno",
-    fallbackMessage:
-      "Es posible que el turno haya sido eliminado o que haya un problema de conexión.",
-    homeDestinationLabel: "explorar turnos",
+    fallbackMessage: fallbackProps.message,
+    homeDestinationLabel: fallbackProps.homeDestinationLabel,
   });
 
   return (

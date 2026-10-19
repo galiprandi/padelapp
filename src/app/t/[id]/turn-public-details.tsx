@@ -89,6 +89,8 @@ import {
   getTurnActionsContainerClasses,
   getTurnCancelledHeaderProps,
   getTurnSuggestedContactsHeaderProps,
+  getTurnPublicDetailsShareButtonAriaLabel,
+  getTurnPublicDetailsEmptySlotsProps,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -150,6 +152,7 @@ function TurnShareButton({
       variant="outline"
       iconOnly={variant === "icon"}
       className={getTurnShareButtonClasses(variant, className)}
+      aria-label={getTurnPublicDetailsShareButtonAriaLabel(openSlots, club)}
     />
   );
 }
@@ -494,37 +497,44 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               </Link>
             );
           })}
-          {Array.from({ length: turn.maxPlayers - turn.players.length }).map(
-            (_, i) => (
-              <div
-                key={`empty-${i}`}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted px-4 py-3 text-muted-foreground"
-              >
-                <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
-                  <Users className="h-5 w-5 text-muted-foreground/50" />
+          {(() => {
+            const emptySlotsProps = getTurnPublicDetailsEmptySlotsProps(
+              turn.maxPlayers - turn.players.length
+            );
+            return Array.from({ length: turn.maxPlayers - turn.players.length }).map(
+              (_, i) => (
+                <div
+                  key={`${emptySlotsProps.keyPrefix}-${i}`}
+                  role="region"
+                  aria-label={emptySlotsProps.ariaLabel}
+                  className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted px-4 py-3 text-muted-foreground shadow-xs"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
+                    <Users className="h-5 w-5 text-muted-foreground/50" aria-hidden="true" />
+                  </div>
+                  <div className="flex-1 flex items-center justify-between min-w-0 gap-2">
+                    <p className="text-xs font-semibold italic opacity-60 truncate">
+                      {emptySlotsProps.text}
+                    </p>
+                    {isJoined || isCreator ? (
+                      <TurnShareButton
+                        shareUrl={shareUrl}
+                        club={turn.club}
+                        date={turn.date}
+                        openSlots={turn.maxPlayers - turn.players.length}
+                        variant="icon"
+                        className="h-8 w-8 rounded-lg shrink-0"
+                      />
+                    ) : (
+                      viewerId && !isSubstitute && turn.status === "OPEN" && (
+                        <QuickJoinEmptySlotButton turnId={id} />
+                      )
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 flex items-center justify-between min-w-0 gap-2">
-                  <p className="text-xs font-semibold italic opacity-60 truncate">
-                    {getEmptySlotText()}
-                  </p>
-                  {isJoined || isCreator ? (
-                    <TurnShareButton
-                      shareUrl={shareUrl}
-                      club={turn.club}
-                      date={turn.date}
-                      openSlots={turn.maxPlayers - turn.players.length}
-                      variant="icon"
-                      className="h-8 w-8 rounded-lg shrink-0"
-                    />
-                  ) : (
-                    viewerId && !isSubstitute && turn.status === "OPEN" && (
-                      <QuickJoinEmptySlotButton turnId={id} />
-                    )
-                  )}
-                </div>
-              </div>
-            ),
-          )}
+              ),
+            );
+          })()}
         </div>
 
         {isCreator && hasOpenSlot && !isCompleted && (

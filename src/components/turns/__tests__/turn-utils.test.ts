@@ -213,6 +213,9 @@ import {
   getWhatsAppGroupInviteVariantClasses,
   getTurnFilterTabClasses,
   getTurnShareTitle,
+  getTurnPublicDetailsShareButtonAriaLabel,
+  getTurnPublicDetailsErrorFallbackProps,
+  getTurnPublicDetailsEmptySlotsProps,
   getTurnShareButtonClasses,
   getTurnSalvageBannerBadgeText,
   getTurnTimeLabel,
@@ -915,6 +918,60 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("getTurnPublicDetailsShareButtonAriaLabel", () => {
+  it("returns specific aria label when open slots and club are provided", () => {
+    expect(
+      getTurnPublicDetailsShareButtonAriaLabel(2, "Club Balcón")
+    ).toBe("Compartir invitación para salvar turno en Club Balcón (2 cupos libres)");
+    expect(
+      getTurnPublicDetailsShareButtonAriaLabel(1, "Padel Norte")
+    ).toBe("Compartir invitación para salvar turno en Padel Norte (1 cupo libre)");
+  });
+
+  it("returns fallback aria label when open slots is 0 or club is omitted", () => {
+    expect(getTurnPublicDetailsShareButtonAriaLabel(0, "Club Balcón")).toBe(
+      "Compartir detalles del turno en Club Balcón"
+    );
+    expect(getTurnPublicDetailsShareButtonAriaLabel()).toBe("Compartir turno");
+  });
+});
+
+describe("getTurnPublicDetailsErrorFallbackProps", () => {
+  it("returns formatted props for 'los turnos' section", () => {
+    const props = getTurnPublicDetailsErrorFallbackProps("los turnos");
+    expect(props.regionAriaLabel).toBe("Error al cargar los turnos");
+    expect(props.title).toBe("No pudimos cargar los turnos");
+    expect(props.message).toContain("Ocurrió un problema al obtener los turnos");
+    expect(props.retryAriaLabel).toBe("Reintentar cargar los turnos");
+    expect(props.homeAriaLabel).toBe("Volver a la página principal");
+    expect(props.homeDestinationLabel).toBe("inicio");
+    expect(props.homeHref).toBe("/me");
+  });
+
+  it("returns formatted props for 'el turno' section", () => {
+    const props = getTurnPublicDetailsErrorFallbackProps("el turno");
+    expect(props.regionAriaLabel).toBe("Error al cargar el turno");
+    expect(props.title).toBe("No pudimos cargar el turno");
+    expect(props.message).toContain("Es posible que el turno haya sido eliminado");
+    expect(props.retryAriaLabel).toBe("Reintentar cargar el turno");
+    expect(props.homeAriaLabel).toBe("Volver a explorar turnos");
+    expect(props.homeDestinationLabel).toBe("explorar turnos");
+    expect(props.homeHref).toBe("/turnos");
+  });
+});
+
+describe("getTurnPublicDetailsEmptySlotsProps", () => {
+  it("formats empty slot properties correctly for single and multiple slots", () => {
+    const singleProps = getTurnPublicDetailsEmptySlotsProps(1);
+    expect(singleProps.text).toBe("Cupo disponible");
+    expect(singleProps.ariaLabel).toBe("Cupo libre disponible para unirse");
+    expect(singleProps.keyPrefix).toBe("empty-slot");
+
+    const multiProps = getTurnPublicDetailsEmptySlotsProps(3);
+    expect(multiProps.ariaLabel).toBe("3 cupos libres disponibles para unirse");
   });
 });
 
