@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientConfig, MutationOptions } from "@tanstack/react-query";
+import { QueryClient, QueryClientConfig, DefaultOptions } from "@tanstack/react-query";
 
 export const DEFAULT_QUERY_STALE_TIME = 60 * 1000; // 1 minuto (60.000 ms)
 export const DEFAULT_QUERY_GC_TIME = 5 * 60 * 1000; // 5 minutos (300.000 ms)
@@ -78,8 +78,8 @@ export function isMutationRetryable(
  * Genera la configuración por defecto para mutaciones en TanStack QueryClient.
  */
 export function getQueryClientMutationDefaults(
-  overrides?: MutationOptions,
-): MutationOptions {
+  overrides?: DefaultOptions["mutations"],
+): DefaultOptions["mutations"] {
   return {
     retry: isMutationRetryable,
     ...overrides,

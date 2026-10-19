@@ -105,12 +105,12 @@ describe("query-client-config", () => {
   describe("getQueryClientMutationDefaults", () => {
     it("debe generar la configuración predeterminada de mutaciones con retry isMutationRetryable", () => {
       const defaults = getQueryClientMutationDefaults();
-      expect(defaults.retry).toBe(isMutationRetryable);
+      expect(defaults?.retry).toBe(isMutationRetryable);
     });
 
     it("debe permitir sobreescribir opciones de mutación", () => {
       const defaults = getQueryClientMutationDefaults({ retry: 0 });
-      expect(defaults.retry).toBe(0);
+      expect(defaults?.retry).toBe(0);
     });
   });
 
