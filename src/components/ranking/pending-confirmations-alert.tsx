@@ -22,6 +22,8 @@ import {
   getPendingMatchScorePendingText,
   getPendingMatchConfirmButtonText,
   getPendingMatchResultButtonText,
+  getPendingConfirmationsContainerClasses,
+  getPendingConfirmationsItemClasses,
 } from "./ranking-utils";
 
 interface PendingPlayer {
@@ -90,7 +92,7 @@ export function PendingConfirmationsAlert({
     <div
       role="region"
       aria-label={getRankingRegionAriaLabel("pending")}
-      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+      className={getPendingConfirmationsContainerClasses()}
     >
       <div className="flex items-center gap-2">
         <AlertCircle className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
@@ -115,7 +117,7 @@ export function PendingConfirmationsAlert({
           return (
             <div
               key={match.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3 shadow-xs"
+              className={getPendingConfirmationsItemClasses()}
             >
               <div className="flex flex-col gap-1 min-w-0">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

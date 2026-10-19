@@ -20,6 +20,10 @@ import {
   getRankingBreakdownErrorText,
   formatRankingPositionText,
   formatMatchRecordText,
+  getRankingBreakdownButtonClasses,
+  getRankingBreakdownContainerClasses,
+  getRankingDecayBannerClasses,
+  getRankingDeltaClasses,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -87,7 +91,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
       <button
         type="button"
         onClick={handleToggle}
-        className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-primary bg-muted rounded-lg border border-border hover:bg-muted/80 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getRankingBreakdownButtonClasses()}
         aria-expanded={isOpen}
         aria-busy={isPending}
         aria-controls={`ranking-breakdown-${userId}`}
@@ -107,7 +111,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
           id={`ranking-breakdown-${userId}`}
           role="region"
           aria-label={getRankingRegionAriaLabel("breakdown")}
-          className="mt-3 p-3 rounded-lg bg-muted border border-border space-y-2.5 text-xs"
+          className={getRankingBreakdownContainerClasses()}
         >
           {error && (
             <p className="text-rose-500 font-semibold text-center">{error}</p>
@@ -265,7 +269,7 @@ export function UserRankingBanner({
             </span>
             {delta > 0 ? (
               <div
-                className="flex items-center gap-0.5 text-xs text-primary"
+                className={getRankingDeltaClasses(delta)}
                 aria-label={deltaText}
               >
                 <TrendingUp className="h-3 w-3" aria-hidden="true" />
@@ -273,7 +277,7 @@ export function UserRankingBanner({
               </div>
             ) : delta < 0 ? (
               <div
-                className="flex items-center gap-0.5 text-xs text-muted-foreground"
+                className={getRankingDeltaClasses(delta)}
                 aria-label={deltaText}
               >
                 <TrendingDown className="h-3 w-3" aria-hidden="true" />
@@ -281,7 +285,7 @@ export function UserRankingBanner({
               </div>
             ) : (
               <div
-                className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
+                className={getRankingDeltaClasses(0)}
                 aria-label={deltaText}
               >
                 <Minus className="h-3 w-3" aria-hidden="true" />
@@ -292,7 +296,7 @@ export function UserRankingBanner({
         </div>
       </div>
       {decayText && (
-        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
+        <div className={getRankingDecayBannerClasses()}>
           <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
           <span>{decayText}</span>
         </div>
@@ -368,7 +372,7 @@ export function UserRankingCard({
         <div className="flex flex-col items-end gap-1.5">
           {delta && delta > 0 ? (
             <div
-              className="flex items-center gap-0.5 text-xs text-primary"
+              className={getRankingDeltaClasses(delta)}
               aria-label={deltaText}
             >
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
@@ -376,7 +380,7 @@ export function UserRankingCard({
             </div>
           ) : delta && delta < 0 ? (
             <div
-              className="flex items-center gap-0.5 text-xs text-muted-foreground"
+              className={getRankingDeltaClasses(delta)}
               aria-label={deltaText}
             >
               <TrendingDown className="h-3 w-3" aria-hidden="true" />
@@ -384,7 +388,7 @@ export function UserRankingCard({
             </div>
           ) : (
             <div
-              className="flex items-center gap-0.5 text-xs text-muted-foreground/50"
+              className={getRankingDeltaClasses(0)}
               aria-label={deltaText}
             >
               <Minus className="h-3 w-3" aria-hidden="true" />
