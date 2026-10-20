@@ -6,6 +6,8 @@ import {
   getPrimaryButtonAriaLabel,
   getSecondaryButtonAriaLabel,
   getSecondaryButtonClasses,
+  getMatchNavigationContainerClasses,
+  getPrimaryButtonClasses,
 } from "./match-navigation-utils";
 
 interface MatchNavigationProps {
@@ -56,12 +58,12 @@ export function MatchNavigation({
     <div
       role="region"
       aria-label={regionAriaLabel}
-      className="flex flex-col gap-2"
+      className={getMatchNavigationContainerClasses()}
     >
       <Button
         type="button"
         aria-label={primaryAriaLabel}
-        className="w-full h-12 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
+        className={getPrimaryButtonClasses()}
         onClick={onPrimaryClick}
         disabled={primaryDisabled || primaryLoading}
         aria-busy={primaryLoading}

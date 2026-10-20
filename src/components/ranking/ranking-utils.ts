@@ -751,3 +751,24 @@ export function getPendingConfirmationsContainerClasses(): string {
 export function getPendingConfirmationsItemClasses(): string {
   return "flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-muted p-3 shadow-xs";
 }
+
+/**
+ * Returns Tailwind class names for pending match confirm result action button
+ */
+export function getPendingMatchConfirmButtonClasses(): string {
+  return "flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50";
+}
+
+/**
+ * Returns Tailwind class names for pending match load result navigation button/link
+ */
+export function getPendingMatchResultButtonClasses(): string {
+  return "flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns Tailwind class names for pending match view detail navigation button/link
+ */
+export function getPendingMatchDetailButtonClasses(): string {
+  return "flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}

@@ -4,6 +4,8 @@ import {
   getPrimaryButtonAriaLabel,
   getSecondaryButtonAriaLabel,
   getSecondaryButtonClasses,
+  getMatchNavigationContainerClasses,
+  getPrimaryButtonClasses,
 } from "../match-navigation-utils";
 
 describe("match-navigation-utils", () => {
@@ -34,6 +36,25 @@ describe("match-navigation-utils", () => {
     it("returns secondary button text", () => {
       expect(getSecondaryButtonAriaLabel("Cancelar")).toBe("Cancelar");
       expect(getSecondaryButtonAriaLabel("Atrás")).toBe("Atrás");
+    });
+  });
+
+  describe("getMatchNavigationContainerClasses", () => {
+    it("returns correct container flex layout classes", () => {
+      const classes = getMatchNavigationContainerClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("flex-col");
+      expect(classes).toContain("gap-2");
+    });
+  });
+
+  describe("getPrimaryButtonClasses", () => {
+    it("returns primary button styling with touch scale and focus ring", () => {
+      const classes = getPrimaryButtonClasses();
+      expect(classes).toContain("w-full");
+      expect(classes).toContain("h-12");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("ring-offset-background");
     });
   });
 

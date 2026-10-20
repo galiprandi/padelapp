@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export type AttendanceStatus = "ATTENDED" | "LATE" | "NO_SHOW";
 export type PlayerFeedback = "STRONGER" | "WEAKER" | null;
 
@@ -29,6 +31,21 @@ export function getAttendanceBadgeLabel(status: AttendanceStatus | null): string
 export function getAttendanceBadgeClasses(status: AttendanceStatus | null): string {
   if (!status) return "";
   return ATTENDANCE_BADGE_CLASSES[status] ?? "";
+}
+
+/**
+ * Returns combined Tailwind CSS class names for attendance badge container.
+ */
+export function getAttendanceBadgeContainerClasses(
+  status: AttendanceStatus | null,
+  className?: string,
+): string {
+  if (!status) return "";
+  return cn(
+    "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold shadow-xs",
+    getAttendanceBadgeClasses(status),
+    className,
+  );
 }
 
 /**

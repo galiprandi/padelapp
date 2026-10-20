@@ -5,6 +5,7 @@ import {
   getAttendanceSummaryText,
   getAttendanceBadgeLabel,
   getAttendanceBadgeClasses,
+  getAttendanceBadgeContainerClasses,
   getAttendanceBadgeAriaLabel,
   getAttendanceSaveSuccessToast,
   getAttendanceSaveErrorToast,
@@ -45,6 +46,19 @@ describe("attendance-utils", () => {
       expect(getAttendanceBadgeClasses("ATTENDED")).toContain("bg-emerald-100");
       expect(getAttendanceBadgeClasses("LATE")).toContain("bg-amber-100");
       expect(getAttendanceBadgeClasses("NO_SHOW")).toContain("bg-rose-100");
+    });
+  });
+
+  describe("getAttendanceBadgeContainerClasses", () => {
+    it("returns empty string when status is null", () => {
+      expect(getAttendanceBadgeContainerClasses(null)).toBe("");
+    });
+
+    it("returns combined badge container classes with optional custom class", () => {
+      const classes = getAttendanceBadgeContainerClasses("ATTENDED", "custom-class");
+      expect(classes).toContain("inline-flex");
+      expect(classes).toContain("bg-emerald-100");
+      expect(classes).toContain("custom-class");
     });
   });
 
