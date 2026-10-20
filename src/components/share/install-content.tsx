@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect } from "react";
 import { Share, PlusSquare, Smartphone, Check } from "lucide-react";
 import { InstallButton } from "@/components/share/install-button";
 import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
-import { cn } from "@/lib/utils";
 import {
   isIOSDeviceUserAgent,
   getPlatformSteps,
@@ -14,8 +13,20 @@ import {
   getAlreadyInstalledTitleText,
   getAlreadyInstalledDescriptionText,
   getPlatformSelectorHeaderText,
+  getPlatformSelectorHeaderClasses,
   getPlatformOptionLabelText,
+  getPlatformRadioClasses,
   getManualInstallDividerText,
+  getManualInstallDividerClasses,
+  getInstallStepContainerClasses,
+  getInstallStepIconBadgeClasses,
+  getInstallStepIconClasses,
+  getInstallStepTitleClasses,
+  getInstallStepDescriptionClasses,
+  getAlreadyInstalledContainerClasses,
+  getAlreadyInstalledIconBadgeClasses,
+  getAlreadyInstalledTitleClasses,
+  getAlreadyInstalledDescriptionClasses,
   PlatformType,
   InstallStep,
 } from "@/components/share/install-utils";
@@ -47,15 +58,15 @@ export function InstallContent() {
       <div
         role="region"
         aria-label={getInstallStatusAriaLabel(true)}
-        className="flex flex-col items-center gap-3 py-6"
+        className={getAlreadyInstalledContainerClasses()}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30">
+        <div className={getAlreadyInstalledIconBadgeClasses()}>
           <Check className="h-6 w-6 text-emerald-500" aria-hidden="true" />
         </div>
-        <p className="text-sm font-semibold text-foreground">
+        <p className={getAlreadyInstalledTitleClasses()}>
           {getAlreadyInstalledTitleText()}
         </p>
-        <p className="text-xs text-muted-foreground text-center max-w-[240px]">
+        <p className={getAlreadyInstalledDescriptionClasses()}>
           {getAlreadyInstalledDescriptionText()}
         </p>
       </div>
@@ -65,15 +76,16 @@ export function InstallContent() {
   const steps = getPlatformSteps(platform);
 
   const renderIcon = (iconName: InstallStep["iconName"]) => {
+    const iconClasses = getInstallStepIconClasses();
     switch (iconName) {
       case "share":
-        return <Share className="h-5 w-5 text-primary" aria-hidden="true" />;
+        return <Share className={iconClasses} aria-hidden="true" />;
       case "plus-square":
-        return <PlusSquare className="h-5 w-5 text-primary" aria-hidden="true" />;
+        return <PlusSquare className={iconClasses} aria-hidden="true" />;
       case "smartphone":
-        return <Smartphone className="h-5 w-5 text-primary" aria-hidden="true" />;
+        return <Smartphone className={iconClasses} aria-hidden="true" />;
       case "check":
-        return <Check className="h-5 w-5 text-primary" aria-hidden="true" />;
+        return <Check className={iconClasses} aria-hidden="true" />;
     }
   };
 
@@ -87,7 +99,7 @@ export function InstallContent() {
       <div className="space-y-2">
         <span
           id="platform-selector-label"
-          className="text-xs font-bold text-muted-foreground"
+          className={getPlatformSelectorHeaderClasses()}
         >
           {getPlatformSelectorHeaderText()}
         </span>
@@ -115,12 +127,7 @@ export function InstallContent() {
             tabIndex={platform === "android" ? 0 : -1}
             aria-label={getPlatformRadioAriaLabel("android")}
             onClick={() => setPlatform("android")}
-            className={cn(
-              "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
-              platform === "android"
-                ? "bg-primary border-primary text-primary-foreground font-bold"
-                : "bg-card border-border text-muted-foreground hover:bg-muted"
-            )}
+            className={getPlatformRadioClasses(platform === "android")}
           >
             {getPlatformOptionLabelText("android")}
           </button>
@@ -131,12 +138,7 @@ export function InstallContent() {
             tabIndex={platform === "ios" ? 0 : -1}
             aria-label={getPlatformRadioAriaLabel("ios")}
             onClick={() => setPlatform("ios")}
-            className={cn(
-              "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background",
-              platform === "ios"
-                ? "bg-primary border-primary text-primary-foreground font-bold"
-                : "bg-card border-border text-muted-foreground hover:bg-muted"
-            )}
+            className={getPlatformRadioClasses(platform === "ios")}
           >
             {getPlatformOptionLabelText("ios")}
           </button>
@@ -153,7 +155,7 @@ export function InstallContent() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-2 text-muted-foreground font-bold">
+                <span className={getManualInstallDividerClasses()}>
                   {getManualInstallDividerText()}
                 </span>
               </div>
@@ -165,18 +167,13 @@ export function InstallContent() {
       {/* Platform-Specific Steps */}
       <div className="space-y-3">
         {steps.map((step) => (
-          <div
-            key={step.id}
-            className="flex items-center gap-4 rounded-xl bg-card p-4 border border-border shadow-xs"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted border border-border">
+          <div key={step.id} className={getInstallStepContainerClasses()}>
+            <div className={getInstallStepIconBadgeClasses()}>
               {renderIcon(step.iconName)}
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs font-bold text-muted-foreground">
-                {step.title}
-              </p>
-              <p className="text-sm font-semibold leading-snug text-foreground">
+              <p className={getInstallStepTitleClasses()}>{step.title}</p>
+              <p className={getInstallStepDescriptionClasses()}>
                 {step.description}
               </p>
             </div>
