@@ -27,7 +27,6 @@ import {
 import { WhatsAppInviteButton, WhatsAppGroupInviteButton } from "@/components/turns/whatsapp-invite-button";
 import { TurnChat } from "@/components/turns/turn-chat";
 import {
-  getTurnSalvageShareMessage,
   getTurnSalvageBannerText,
   getTurnUrgencyBadgeText,
   getTurnPublicSubtitle,
@@ -44,9 +43,6 @@ import {
   getTurnCompletedButtonLabel,
   getAlreadyJoinedButtonLabel,
   getSignInPromptText,
-  getTurnCancelledTitle,
-  getTurnCancelledDescription,
-  getTurnCancelledButtonLabel,
   getTurnDetailsHeading,
   getTurnInfoSectionTitle,
   getTurnInfoRegionAriaLabel,
@@ -54,9 +50,6 @@ import {
   getTurnStatusBadgeClasses,
   getTurnEnrolledSectionTitle,
   getTurnEnrolledRegionAriaLabel,
-  getEmptySlotText,
-  getTurnSuggestedContactsTitle,
-  getTurnSuggestedContactsSubtitle,
   getTurnSubstitutesSectionTitle,
   getTurnSubstitutesRegionAriaLabel,
   getTurnSubstitutesCountText,
@@ -91,6 +84,18 @@ import {
   getTurnSuggestedContactsHeaderProps,
   getTurnPublicDetailsShareButtonAriaLabel,
   getTurnPublicDetailsEmptySlotsProps,
+  getTurnPublicDetailsHeaderBackLinkClasses,
+  getTurnPublicDetailsBannerContainerClasses,
+  getTurnPublicDetailsBannerShareButtonClasses,
+  getTurnPublicDetailsInfoCardClasses,
+  getTurnPublicDetailsInfoCardHeaderClasses,
+  getTurnPublicDetailsInfoCardNotesClasses,
+  getTurnPublicDetailsPlayerItemClasses,
+  getTurnPublicDetailsEmptySlotClasses,
+  getTurnPublicDetailsSuggestedContactItemClasses,
+  getTurnPublicDetailsSubstituteItemClasses,
+  getTurnShareData,
+  getTurnShareText,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -134,20 +139,14 @@ function TurnShareButton({
   variant?: "full" | "icon";
   className?: string;
 }) {
-  const shareText =
-    openSlots > 0
-      ? getTurnSalvageShareMessage({ club, date, openSlots })
-      : undefined;
+  const shareText = getTurnShareText({ club, date, openSlots });
+  const shareData = getTurnShareData({ club, date, openSlots });
 
   return (
     <ShareButton
       title={getTurnShareTitle()}
       text={shareText}
-      shareData={
-        openSlots <= 0
-          ? { type: "turn", club, date }
-          : undefined
-      }
+      shareData={shareData}
       url={shareUrl}
       variant="outline"
       iconOnly={variant === "icon"}
@@ -240,7 +239,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             href={viewerId ? "/me" : "/"}
             prefetch={true}
             aria-label={getTurnBackAriaLabel()}
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            className={getTurnPublicDetailsHeaderBackLinkClasses()}
           >
             <ChevronLeft className="h-5 w-5" />
           </Link>
@@ -287,7 +286,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           href={viewerId ? "/me" : "/"}
           prefetch={true}
           aria-label={getTurnBackAriaLabel()}
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getTurnPublicDetailsHeaderBackLinkClasses()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
@@ -306,7 +305,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             club: turn.club,
             openSlots: openSlotsCount,
           })}
-          className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-100 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 shadow-xs"
+          className={getTurnPublicDetailsBannerContainerClasses()}
         >
           <Sparkles className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
           <div className="flex-1 min-w-0">
@@ -332,7 +331,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               date={turn.date}
               openSlots={openSlotsCount}
               variant="icon"
-              className="h-9 w-9 rounded-lg shrink-0 border-amber-300 dark:border-amber-700 bg-amber-200/50 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900"
+              className={getTurnPublicDetailsBannerShareButtonClasses()}
             />
           </div>
         </div>
@@ -341,9 +340,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       <div
         role="region"
         aria-label={getTurnInfoRegionAriaLabel()}
-        className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
+        className={getTurnPublicDetailsInfoCardClasses()}
       >
-        <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className={getTurnPublicDetailsInfoCardHeaderClasses()}>
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
             {getTurnInfoSectionTitle()}
@@ -409,7 +408,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </div>
 
         {turn.notes && (
-          <div className="p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed">
+          <div className={getTurnPublicDetailsInfoCardNotesClasses()}>
             <span className="block text-xs font-bold not-italic mb-1 text-foreground">
               {getTurnNotesTitle()}
             </span>
@@ -453,7 +452,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                 key={p.id}
                 href={`/p/${p.userId}`}
                 prefetch={true}
-                className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                className={getTurnPublicDetailsPlayerItemClasses()}
               >
                 <PlayerAvatar
                   name={p.user.alias ?? p.user.displayName}
@@ -507,7 +506,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   key={`${emptySlotsProps.keyPrefix}-${i}`}
                   role="region"
                   aria-label={emptySlotsProps.ariaLabel}
-                  className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted px-4 py-3 text-muted-foreground shadow-xs"
+                  className={getTurnPublicDetailsEmptySlotClasses()}
                 >
                   <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
                     <Users className="h-5 w-5 text-muted-foreground/50" aria-hidden="true" />
@@ -583,7 +582,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   role="region"
                   aria-label={ariaLabel}
                   title={ariaLabel}
-                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border shadow-xs transition-all hover:bg-muted/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background"
+                  className={getTurnPublicDetailsSuggestedContactItemClasses()}
                 >
                   <Link
                     href={`/p/${contact.id}`}
@@ -667,7 +666,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   href={`/p/${s.userId}`}
                   prefetch={true}
                   aria-label={formatSubstituteListAriaLabel(index, turn.substitutes.length, name)}
-                  className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getTurnPublicDetailsSubstituteItemClasses()}
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                     {index + 1}

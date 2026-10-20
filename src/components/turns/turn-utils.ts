@@ -2747,3 +2747,109 @@ export function getTurnPublicDetailsEmptySlotsProps(
     keyPrefix: "empty-slot",
   };
 }
+
+/**
+ * Format CSS classes for turn public details back navigation link.
+ */
+export function getTurnPublicDetailsHeaderBackLinkClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for salvage warning callout banner container.
+ */
+export function getTurnPublicDetailsBannerContainerClasses(): string {
+  return "flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-100 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100 shadow-xs";
+}
+
+/**
+ * Format CSS classes for salvage warning callout share icon button.
+ */
+export function getTurnPublicDetailsBannerShareButtonClasses(): string {
+  return "h-9 w-9 rounded-lg shrink-0 border-amber-300 dark:border-amber-700 bg-amber-200/50 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900";
+}
+
+/**
+ * Format CSS classes for turn information card container.
+ */
+export function getTurnPublicDetailsInfoCardClasses(): string {
+  return "rounded-xl border border-border bg-card overflow-hidden shadow-xs";
+}
+
+/**
+ * Format CSS classes for turn information card header bar.
+ */
+export function getTurnPublicDetailsInfoCardHeaderClasses(): string {
+  return "bg-muted border-b border-border px-4 py-3 flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for turn information card organizer notes section.
+ */
+export function getTurnPublicDetailsInfoCardNotesClasses(): string {
+  return "p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed";
+}
+
+/**
+ * Format CSS classes for enrolled player item container in turn public details.
+ */
+export function getTurnPublicDetailsPlayerItemClasses(): string {
+  return "flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for empty slot item container in turn public details.
+ */
+export function getTurnPublicDetailsEmptySlotClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted px-4 py-3 text-muted-foreground shadow-xs";
+}
+
+/**
+ * Format CSS classes for suggested contact item container in turn public details.
+ */
+export function getTurnPublicDetailsSuggestedContactItemClasses(): string {
+  return "flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border shadow-xs transition-all hover:bg-muted/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for substitute player item container in turn public details.
+ */
+export function getTurnPublicDetailsSubstituteItemClasses(): string {
+  return "flex items-center gap-3 rounded-xl bg-card px-4 py-3 border border-border transition-all active:scale-[0.98] hover:bg-muted group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format share data object for turn public details ShareButton depending on remaining open slots.
+ */
+export function getTurnShareData({
+  club,
+  date,
+  openSlots,
+}: {
+  club: string;
+  date: Date | string;
+  openSlots: number;
+}) {
+  if (openSlots <= 0) {
+    return { type: "turn" as const, club, date: new Date(date) };
+  }
+  return undefined;
+}
+
+/**
+ * Format custom share text for turn public details ShareButton when open slots exist.
+ */
+export function getTurnShareText({
+  club,
+  date,
+  openSlots,
+}: {
+  club: string;
+  date: Date | string;
+  openSlots: number;
+}): string | undefined {
+  if (openSlots > 0) {
+    return getTurnSalvageShareMessage({ club, date, openSlots });
+  }
+  return undefined;
+}
