@@ -216,6 +216,18 @@ import {
   getTurnPublicDetailsShareButtonAriaLabel,
   getTurnPublicDetailsErrorFallbackProps,
   getTurnPublicDetailsEmptySlotsProps,
+  getTurnPublicDetailsHeaderBackLinkClasses,
+  getTurnPublicDetailsBannerContainerClasses,
+  getTurnPublicDetailsBannerShareButtonClasses,
+  getTurnPublicDetailsInfoCardClasses,
+  getTurnPublicDetailsInfoCardHeaderClasses,
+  getTurnPublicDetailsInfoCardNotesClasses,
+  getTurnPublicDetailsPlayerItemClasses,
+  getTurnPublicDetailsEmptySlotClasses,
+  getTurnPublicDetailsSuggestedContactItemClasses,
+  getTurnPublicDetailsSubstituteItemClasses,
+  getTurnShareData,
+  getTurnShareText,
   getTurnShareButtonClasses,
   getTurnSalvageBannerBadgeText,
   getTurnTimeLabel,
@@ -1361,6 +1373,34 @@ describe("Turn Public Details pure helpers", () => {
     expect(getTurnCancelledTitle()).toBe("Turno cancelado");
     expect(getTurnCancelledDescription()).toBe("Este turno ha sido cancelado por el organizador.");
     expect(getTurnCancelledButtonLabel()).toBe("Ver otros turnos");
+  });
+
+  it("formats TurnPublicDetails UI styling classes pure helpers", () => {
+    expect(getTurnPublicDetailsHeaderBackLinkClasses()).toContain("h-10 w-10");
+    expect(getTurnPublicDetailsBannerContainerClasses()).toContain("border-amber-300");
+    expect(getTurnPublicDetailsBannerShareButtonClasses()).toContain("h-9 w-9");
+    expect(getTurnPublicDetailsInfoCardClasses()).toContain("rounded-xl border border-border bg-card");
+    expect(getTurnPublicDetailsInfoCardHeaderClasses()).toContain("bg-muted border-b border-border");
+    expect(getTurnPublicDetailsInfoCardNotesClasses()).toContain("p-4 bg-muted border-t border-border");
+    expect(getTurnPublicDetailsPlayerItemClasses()).toContain("flex items-center gap-3 rounded-xl bg-card");
+    expect(getTurnPublicDetailsEmptySlotClasses()).toContain("border-dashed");
+    expect(getTurnPublicDetailsSuggestedContactItemClasses()).toContain("flex items-center gap-3 rounded-xl bg-card");
+    expect(getTurnPublicDetailsSubstituteItemClasses()).toContain("flex items-center gap-3 rounded-xl bg-card");
+  });
+
+  it("formats getTurnShareData and getTurnShareText", () => {
+    const d = new Date("2026-09-20T19:00:00.000Z");
+    expect(getTurnShareData({ club: "Central Padel", date: d, openSlots: 0 })).toEqual({
+      type: "turn",
+      club: "Central Padel",
+      date: d,
+    });
+    expect(getTurnShareData({ club: "Central Padel", date: d, openSlots: 2 })).toBeUndefined();
+
+    expect(getTurnShareText({ club: "Central Padel", date: d, openSlots: 0 })).toBeUndefined();
+    expect(getTurnShareText({ club: "Central Padel", date: d, openSlots: 1 })).toContain(
+      "⚠️ Falta 1 jugador para el turno de pádel en Central Padel"
+    );
   });
 
   it("formats page heading, info section, and ARIA region labels", () => {

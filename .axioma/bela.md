@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-18 — Turn Public Details UI Styling & Share Props Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-public-details-ui-styling-and-share-props-pure-helpers)
 - [x] 2026-10-17 — Calendar iCal Filename & Add Player Search Label Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-ical-filename-and-search-label-pure-helpers)
 - [x] 2026-10-16 — Compact Date, Edit Button & Container Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/compact-date-and-edit-button-pure-helpers)
 - [x] 2026-10-15 — Turn Form Option Labels, Back Navigation & Skeleton Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/form-options-and-skeleton-pure-helpers)
@@ -79,6 +80,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-18 - Turn Public Details UI Styling & Share Props Pure Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper functions (`getTurnPublicDetailsHeaderBackLinkClasses`, `getTurnPublicDetailsBannerContainerClasses`, `getTurnPublicDetailsBannerShareButtonClasses`, `getTurnPublicDetailsInfoCardClasses`, `getTurnPublicDetailsInfoCardHeaderClasses`, `getTurnPublicDetailsInfoCardNotesClasses`, `getTurnPublicDetailsPlayerItemClasses`, `getTurnPublicDetailsEmptySlotClasses`, `getTurnPublicDetailsSuggestedContactItemClasses`, `getTurnPublicDetailsSubstituteItemClasses`, `getTurnShareData`, and `getTurnShareText`) into `src/components/turns/turn-utils.ts` decouples UI container styling compositions and share prop calculations (`type: "turn"` vs salvage message) from React render trees in `TurnPublicDetails` and `TurnShareButton` (`src/app/t/[id]/turn-public-details.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
+**Action:** Always extract card container CSS class compositions and share payload formatting logic into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-17 - Calendar iCal Filename & Add Player Search Label Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getIcsDownloadFilename` and `getAddPlayerInputLabelText`) into `src/components/turns/turn-utils.ts` decouples iCalendar (.ics) download filename generation (`partido-padel-[turnId].ics`) and screen reader search input labels ("Buscar jugador por nombre o email") from React client component render trees in `AddToCalendarButton` (`src/components/turns/add-to-calendar.tsx`) and `AddPlayerButton` (`src/components/turns/add-player-button.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract external calendar export filenames and search input accessibility labels into pure helper utilities backed by Vitest unit tests.
