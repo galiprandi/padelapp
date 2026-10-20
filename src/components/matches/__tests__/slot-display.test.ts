@@ -6,6 +6,11 @@ import {
   getSlotRegionAriaLabel,
   getSlotSubtext,
   getSelfBadgeText,
+  getSlotContainerClasses,
+  getSlotButtonClasses,
+  getSlotAvatarClasses,
+  getSelfBadgeContainerClasses,
+  getSlotManageButtonClasses,
 } from "../slot-display-utils";
 import type { SlotValue } from "@/lib/match-types";
 
@@ -98,6 +103,66 @@ describe("SlotDisplay Pure Helpers", () => {
   describe("getSelfBadgeText", () => {
     it("returns self badge text in Argentine Spanish", () => {
       expect(getSelfBadgeText()).toBe("Vos");
+    });
+  });
+
+  describe("getSlotContainerClasses", () => {
+    it("returns primary border styling when slot is active", () => {
+      const activeClasses = getSlotContainerClasses(true);
+      expect(activeClasses).toContain("border-primary");
+      expect(activeClasses).toContain("bg-card");
+    });
+
+    it("returns standard border styling when slot is not active", () => {
+      const inactiveClasses = getSlotContainerClasses(false);
+      expect(inactiveClasses).toContain("border-border");
+      expect(inactiveClasses).toContain("bg-card");
+    });
+  });
+
+  describe("getSlotButtonClasses", () => {
+    it("returns muted background and font bold when active", () => {
+      const activeClasses = getSlotButtonClasses(true);
+      expect(activeClasses).toContain("bg-muted");
+      expect(activeClasses).toContain("font-semibold");
+    });
+
+    it("returns hover background when inactive", () => {
+      const inactiveClasses = getSlotButtonClasses(false);
+      expect(inactiveClasses).toContain("hover:bg-muted");
+    });
+  });
+
+  describe("getSlotAvatarClasses", () => {
+    it("returns primary theme badge classes when active", () => {
+      const activeAvatar = getSlotAvatarClasses(true);
+      expect(activeAvatar).toContain("bg-primary");
+      expect(activeAvatar).toContain("text-primary-foreground");
+    });
+
+    it("returns muted badge classes when inactive", () => {
+      const inactiveAvatar = getSlotAvatarClasses(false);
+      expect(inactiveAvatar).toContain("bg-muted");
+      expect(inactiveAvatar).toContain("text-muted-foreground");
+    });
+  });
+
+  describe("getSelfBadgeContainerClasses", () => {
+    it("returns correct self badge container styling", () => {
+      const classes = getSelfBadgeContainerClasses();
+      expect(classes).toContain("bg-muted");
+      expect(classes).toContain("border-border");
+      expect(classes).toContain("shadow-xs");
+    });
+  });
+
+  describe("getSlotManageButtonClasses", () => {
+    it("returns correct manage button touch scale and focus styling", () => {
+      const classes = getSlotManageButtonClasses();
+      expect(classes).toContain("h-9");
+      expect(classes).toContain("w-9");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("ring-offset-background");
     });
   });
 });

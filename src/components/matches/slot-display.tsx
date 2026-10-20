@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { UsersRound } from "lucide-react";
 import { avatarFallback, positionFromTeam } from "@/lib/match-utils";
 import type { SlotValue, TeamKey } from "@/lib/match-types";
-import { cn } from "@/lib/utils";
 import {
   getSlotDisplayName,
   getSlotAriaLabel,
@@ -13,6 +12,11 @@ import {
   getSlotRegionAriaLabel,
   getSlotSubtext,
   getSelfBadgeText,
+  getSlotContainerClasses,
+  getSlotButtonClasses,
+  getSlotAvatarClasses,
+  getSelfBadgeContainerClasses,
+  getSlotManageButtonClasses,
 } from "./slot-display-utils";
 
 interface SlotDisplayProps {
@@ -54,32 +58,16 @@ export function SlotDisplay({
     <div
       role="region"
       aria-label={slotRegionAriaLabel}
-      className={cn(
-        "group relative flex items-center justify-between rounded-xl border p-1 shadow-xs transition-all",
-        isActive
-          ? "border-primary bg-card"
-          : "border-border bg-card",
-      )}
+      className={getSlotContainerClasses(isActive)}
     >
       <button
         type="button"
         onClick={() => onSlotClick(team, index)}
         aria-label={slotAriaLabel}
         aria-pressed={isActive}
-        className={cn(
-          "flex flex-1 items-center gap-3 rounded-lg px-3 py-2 text-left transition-all active:scale-[0.98]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-          isActive ? "bg-muted font-semibold" : "hover:bg-muted",
-        )}
+        className={getSlotButtonClasses(isActive)}
       >
-        <div
-          className={cn(
-            "relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold transition-colors",
-            isActive
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground",
-          )}
-        >
+        <div className={getSlotAvatarClasses(isActive)}>
           {slot?.kind === "user" && slot.player.image ? (
             <Image
               alt={slot.player.displayName}
@@ -109,7 +97,7 @@ export function SlotDisplay({
 
       <div className="flex items-center gap-1 pr-1">
         {isSelf ? (
-          <div className="flex h-8 items-center px-2.5 rounded-lg bg-muted border border-border shadow-xs">
+          <div className={getSelfBadgeContainerClasses()}>
             <span className="text-xs font-bold text-foreground">{getSelfBadgeText()}</span>
           </div>
         ) : null}
@@ -117,7 +105,7 @@ export function SlotDisplay({
           type="button"
           variant="ghost"
           size="icon"
-          className="h-9 w-9 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getSlotManageButtonClasses()}
           aria-label={manageButtonAriaLabel}
           onClick={() => onManageClick(team, index)}
         >

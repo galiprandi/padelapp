@@ -69,6 +69,9 @@ import {
   getRankingInfoHeaderButtonClasses,
   getPendingConfirmationsContainerClasses,
   getPendingConfirmationsItemClasses,
+  getPendingMatchConfirmButtonClasses,
+  getPendingMatchResultButtonClasses,
+  getPendingMatchDetailButtonClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -663,6 +666,20 @@ describe("Ranking Helpers", () => {
     it("getPendingConfirmationsContainerClasses and getPendingConfirmationsItemClasses return expected styling", () => {
       expect(getPendingConfirmationsContainerClasses()).toContain("flex flex-col gap-3");
       expect(getPendingConfirmationsItemClasses()).toContain("flex flex-col sm:flex-row");
+    });
+
+    it("getPendingMatchConfirmButtonClasses, getPendingMatchResultButtonClasses, and getPendingMatchDetailButtonClasses return expected styling", () => {
+      const confirmClasses = getPendingMatchConfirmButtonClasses();
+      expect(confirmClasses).toContain("bg-primary");
+      expect(confirmClasses).toContain("text-primary-foreground");
+
+      const resultClasses = getPendingMatchResultButtonClasses();
+      expect(resultClasses).toContain("bg-card");
+      expect(resultClasses).toContain("border-border");
+
+      const detailClasses = getPendingMatchDetailButtonClasses();
+      expect(detailClasses).toContain("h-9 w-9");
+      expect(detailClasses).toContain("bg-card");
     });
   });
 });

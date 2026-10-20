@@ -24,6 +24,9 @@ import {
   getPendingMatchResultButtonText,
   getPendingConfirmationsContainerClasses,
   getPendingConfirmationsItemClasses,
+  getPendingMatchConfirmButtonClasses,
+  getPendingMatchResultButtonClasses,
+  getPendingMatchDetailButtonClasses,
 } from "./ranking-utils";
 
 interface PendingPlayer {
@@ -144,7 +147,7 @@ export function PendingConfirmationsAlert({
                     disabled={isConfirming}
                     aria-busy={isThisConfirming}
                     aria-label={getPendingMatchConfirmAriaLabel(match.score, formattedDate)}
-                    className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50"
+                    className={getPendingMatchConfirmButtonClasses()}
                   >
                     {isThisConfirming ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
@@ -158,7 +161,7 @@ export function PendingConfirmationsAlert({
                     href={`/match/${match.id}/result`}
                     prefetch={true}
                     aria-label={getPendingMatchResultAriaLabel(formattedDate)}
-                    className="flex h-9 items-center justify-center gap-1 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getPendingMatchResultButtonClasses()}
                   >
                     {getPendingMatchResultButtonText()}
                     <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -168,7 +171,7 @@ export function PendingConfirmationsAlert({
                   href={`/match/${match.id}`}
                   prefetch={true}
                   aria-label={getPendingMatchDetailAriaLabel(formattedDate)}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getPendingMatchDetailButtonClasses()}
                 >
                   <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
