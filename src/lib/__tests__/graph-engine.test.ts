@@ -342,6 +342,14 @@ import {
   getRecommendedPlayerProfileLinkAriaLabel,
   getStatsCardCommunityLabel,
   getStatsCardCommunityMembersText,
+  getStatsPanelContainerClasses,
+  getStatsPanelHeaderBackLinkClasses,
+  getStatsPanelOverviewGridClasses,
+  getStatsPanelSectionCardClasses,
+  getStatsPanelSummaryCardClasses,
+  getStatsPanelTopPlayerItemClasses,
+  getStatsPanelRecentUserItemClasses,
+  getStatsPanelBadgeTagClasses,
   getTopPlayerRankText,
   getTopPlayerMatchesText,
   getTopPlayerContactsText,
@@ -2005,6 +2013,18 @@ describe("StatsPanel pure helper functions", () => {
     expect(getNetworkConnectionsLabel()).toBe("Conexiones");
     expect(getNetworkDensityLabel()).toBe("Densidad");
     expect(getNetworkAvgConnectionsLabel()).toBe("Promedio de contactos por jugador");
+  });
+
+  it("returns layout and card styling pure helper CSS classes", () => {
+    expect(getStatsPanelContainerClasses()).toBe("flex flex-col gap-4");
+    expect(getStatsPanelHeaderBackLinkClasses()).toContain("flex h-9 w-9 shrink-0");
+    expect(getStatsPanelOverviewGridClasses()).toBe("grid grid-cols-2 gap-3");
+    expect(getStatsPanelSectionCardClasses()).toBe("rounded-xl border border-border bg-card p-4 space-y-3");
+    expect(getStatsPanelSummaryCardClasses()).toBe("rounded-xl border border-border bg-muted p-4 space-y-2");
+    expect(getStatsPanelTopPlayerItemClasses()).toContain("flex items-center gap-3 rounded-lg p-2");
+    expect(getStatsPanelRecentUserItemClasses()).toContain("flex items-center gap-3 rounded-lg p-2");
+    expect(getStatsPanelBadgeTagClasses("bg-primary text-white")).toContain("text-[10px] font-bold");
+    expect(getStatsPanelBadgeTagClasses("bg-primary text-white")).toContain("bg-primary text-white");
   });
 
   it("returns engagement stats and 30d summary titles", () => {

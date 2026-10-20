@@ -4022,3 +4022,38 @@ export function calculateSelectedNodeGraphMetrics(
     similarityInfo,
   };
 }
+
+export function getStatsPanelContainerClasses(): string {
+  return "flex flex-col gap-4";
+}
+
+export function getStatsPanelHeaderBackLinkClasses(): string {
+  return "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getStatsPanelOverviewGridClasses(): string {
+  return "grid grid-cols-2 gap-3";
+}
+
+export function getStatsPanelSectionCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-3";
+}
+
+export function getStatsPanelSummaryCardClasses(): string {
+  return "rounded-xl border border-border bg-muted p-4 space-y-2";
+}
+
+export function getStatsPanelTopPlayerItemClasses(): string {
+  return "flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getStatsPanelRecentUserItemClasses(): string {
+  return "flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getStatsPanelBadgeTagClasses(badgeStyle?: string): string {
+  return cn(
+    "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+    badgeStyle,
+  );
+}

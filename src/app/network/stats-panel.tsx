@@ -54,9 +54,17 @@ import {
   getStatsCardCommunityLabel,
   getStatsCardCommunityMembersText,
   getStatsPanelBackAriaLabel,
+  getStatsPanelBadgeTagClasses,
+  getStatsPanelContainerClasses,
+  getStatsPanelHeaderBackLinkClasses,
   getStatsPanelHeadingDescription,
   getStatsPanelHeadingTitle,
+  getStatsPanelOverviewGridClasses,
+  getStatsPanelRecentUserItemClasses,
   getStatsPanelRegionAriaLabel,
+  getStatsPanelSectionCardClasses,
+  getStatsPanelSummaryCardClasses,
+  getStatsPanelTopPlayerItemClasses,
   getTopClubsHeadingTitle,
   getTopCommunitiesHeadingTitle,
   getTopConnectedHeadingTitle,
@@ -141,7 +149,7 @@ function StatCard({
 
 export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, graphData, viewerId }: StatsPanelProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={getStatsPanelContainerClasses()}>
       {/* Header */}
       <div
         role="region"
@@ -151,7 +159,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <Link
           href="/me"
           prefetch={true}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getStatsPanelHeaderBackLinkClasses()}
           aria-label={getStatsPanelBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -170,7 +178,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("overview")}
-        className="grid grid-cols-2 gap-3"
+        className={getStatsPanelOverviewGridClasses()}
       >
         <StatCard
           label={getUsersOverviewCardTitle()}
@@ -205,7 +213,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("network")}
-        className="rounded-xl border border-border bg-card p-4 space-y-3"
+        className={getStatsPanelSectionCardClasses()}
       >
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -253,7 +261,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("recommender")}
-        className="rounded-xl border border-border bg-card p-4 space-y-3"
+        className={getStatsPanelSectionCardClasses()}
       >
         <div className="flex items-center gap-2">
           <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
@@ -315,10 +323,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             {name}
                           </p>
                           <span
-                            className={cn(
-                              "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                              similarity.badgeStyle,
-                            )}
+                            className={getStatsPanelBadgeTagClasses(similarity.badgeStyle)}
                             title={getRecommendedPlayerSimilarityTitle(
                               similarity.similarityTier,
                               similarity.formattedSummary,
@@ -372,7 +377,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("users")}
-        className="grid grid-cols-2 gap-3"
+        className={getStatsPanelOverviewGridClasses()}
       >
         <StatCard
           label={getActiveSessionsLabel()}
@@ -392,7 +397,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <div
           role="region"
           aria-label={getStatsPanelRegionAriaLabel("users")}
-          className="rounded-xl border border-border bg-card p-4 space-y-3"
+          className={getStatsPanelSectionCardClasses()}
         >
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -410,7 +415,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   href={`/p/${u.id}`}
                   prefetch={true}
                   aria-label={getRecentUsersItemAriaLabel(userName, timeAgoText)}
-                  className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getStatsPanelRecentUserItemClasses()}
                 >
                   <PlayerAvatar
                     name={userName}
@@ -437,7 +442,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <div
           role="region"
           aria-label={getStatsPanelRegionAriaLabel("communities")}
-          className="rounded-xl border border-border bg-card p-4 space-y-3"
+          className={getStatsPanelSectionCardClasses()}
         >
           <h2 className="text-sm font-bold text-foreground">{getTopCommunitiesHeadingTitle()}</h2>
           <div className="space-y-2.5">
@@ -464,10 +469,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       </span>
                       {cohesion && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            cohesion.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(cohesion.badgeStyle)}
                           title={getStatsCardCommunityCohesionTitle(
                             cohesion.cohesionTier,
                             cohesion.formattedCohesionSummary,
@@ -483,10 +485,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {balanceInfo && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            balanceInfo.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(balanceInfo.badgeStyle)}
                           title={getStatsCardCommunityBalanceTitle(
                             balanceInfo.balanceTier,
                             balanceInfo.formattedBalanceSummary,
@@ -523,7 +522,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <div
           role="region"
           aria-label={getStatsPanelRegionAriaLabel("top-players")}
-          className="rounded-xl border border-border bg-card p-4 space-y-3"
+          className={getStatsPanelSectionCardClasses()}
         >
           <h2 className="text-sm font-bold text-foreground">
             {getTopConnectedHeadingTitle()}
@@ -558,7 +557,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   key={p.id}
                   href={`/p/${p.id}`}
                   prefetch={true}
-                  className="flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getStatsPanelTopPlayerItemClasses()}
                 >
                   <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums shrink-0">
                     {getTopPlayerRankText(i)}
@@ -575,10 +574,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       </p>
                       {roleInfo ? (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            roleInfo.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(roleInfo.badgeStyle)}
                           title={getTopPlayerRoleTitle(roleInfo.roleLabel, roleInfo.description)}
                           aria-label={getTopPlayerRoleAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -590,10 +586,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                         </span>
                       ) : (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            activityTier.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(activityTier.badgeStyle)}
                           title={getTopPlayerActivityTitle(activityTier.label)}
                           aria-label={getTopPlayerActivityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -605,10 +598,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {centrality && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            centrality.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(centrality.badgeStyle)}
                           title={getTopPlayerCentralityTitle(centrality.centralityTier, centrality.formattedSummary)}
                           aria-label={getTopPlayerCentralityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -621,10 +611,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {diversity && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            diversity.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(diversity.badgeStyle)}
                           title={getTopPlayerDiversityTitle(diversity.diversityTier, diversity.formattedSummary)}
                           aria-label={getTopPlayerDiversityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -637,10 +624,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {multiBelonging && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            multiBelonging.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(multiBelonging.badgeStyle)}
                           title={getTopPlayerMultiBelongingTitle(multiBelonging.multiBelongingTier, multiBelonging.formattedSummary)}
                           aria-label={getTopPlayerMultiBelongingAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -653,10 +637,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {reciprocity && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            reciprocity.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(reciprocity.badgeStyle)}
                           title={getTopPlayerReciprocityTitle(reciprocity.reciprocityTier, reciprocity.formattedSummary)}
                           aria-label={getTopPlayerReciprocityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -669,10 +650,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {stability && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            stability.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(stability.badgeStyle)}
                           title={getTopPlayerStabilityTitle(stability.stabilityTier, stability.formattedSummary)}
                           aria-label={getTopPlayerStabilityAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -685,10 +663,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       )}
                       {expansion && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            expansion.badgeStyle,
-                          )}
+                          className={getStatsPanelBadgeTagClasses(expansion.badgeStyle)}
                           title={getTopPlayerExpansionTitle(expansion.expansionTier, expansion.formattedSummary)}
                           aria-label={getTopPlayerExpansionAriaLabel(
                             capitalizeName(p.name ?? p.alias ?? "Jugador"),
@@ -720,7 +695,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("recent")}
-        className="rounded-xl border border-border bg-muted p-4 space-y-2"
+        className={getStatsPanelSummaryCardClasses()}
       >
         <h2 className="text-sm font-bold text-foreground">{getRecent30DaysHeadingTitle()}</h2>
         <div className="grid grid-cols-3 gap-2 text-center">
@@ -756,7 +731,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         <div
           role="region"
           aria-label={getStatsPanelRegionAriaLabel("clubs")}
-          className="rounded-xl border border-border bg-card p-4 space-y-3"
+          className={getStatsPanelSectionCardClasses()}
         >
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
