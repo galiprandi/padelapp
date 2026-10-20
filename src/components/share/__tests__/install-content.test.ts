@@ -22,9 +22,21 @@ import {
   getInstallValidationErrorToast,
   getManualInstallDividerText,
   getPlatformSelectorHeaderText,
+  getPlatformSelectorHeaderClasses,
   getPlatformOptionLabelText,
+  getPlatformRadioClasses,
+  getManualInstallDividerClasses,
+  getInstallStepContainerClasses,
+  getInstallStepIconBadgeClasses,
+  getInstallStepIconClasses,
+  getInstallStepTitleClasses,
+  getInstallStepDescriptionClasses,
   getAlreadyInstalledTitleText,
   getAlreadyInstalledDescriptionText,
+  getAlreadyInstalledContainerClasses,
+  getAlreadyInstalledIconBadgeClasses,
+  getAlreadyInstalledTitleClasses,
+  getAlreadyInstalledDescriptionClasses,
 } from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
@@ -118,5 +130,21 @@ describe("PWA install guide and platform detection logic", () => {
     expect(getPlatformOptionLabelText("ios")).toBe("iOS / Safari");
     expect(getAlreadyInstalledTitleText()).toBe("Padel Red ya está instalada");
     expect(getAlreadyInstalledDescriptionText()).toBe("Buscala en tu pantalla de inicio para jugar con un solo toque.");
+  });
+
+  it("returns standardized CSS classes for platform radio buttons and step layout items", () => {
+    expect(getPlatformSelectorHeaderClasses()).toBe("text-xs font-bold text-muted-foreground");
+    expect(getPlatformRadioClasses(true)).toContain("bg-primary border-primary text-primary-foreground font-bold");
+    expect(getPlatformRadioClasses(false)).toContain("bg-card border-border text-muted-foreground hover:bg-muted");
+    expect(getManualInstallDividerClasses()).toContain("bg-card px-2 text-muted-foreground font-bold");
+    expect(getInstallStepContainerClasses()).toContain("flex items-center gap-4 rounded-xl bg-card p-4");
+    expect(getInstallStepIconBadgeClasses()).toContain("flex h-10 w-10 shrink-0 items-center justify-center");
+    expect(getInstallStepIconClasses()).toBe("h-5 w-5 text-primary");
+    expect(getInstallStepTitleClasses()).toBe("text-xs font-bold text-muted-foreground");
+    expect(getInstallStepDescriptionClasses()).toBe("text-sm font-semibold leading-snug text-foreground");
+    expect(getAlreadyInstalledContainerClasses()).toBe("flex flex-col items-center gap-3 py-6");
+    expect(getAlreadyInstalledIconBadgeClasses()).toContain("border-emerald-500/30");
+    expect(getAlreadyInstalledTitleClasses()).toBe("text-sm font-semibold text-foreground");
+    expect(getAlreadyInstalledDescriptionClasses()).toBe("text-xs text-muted-foreground text-center max-w-[240px]");
   });
 });

@@ -162,10 +162,68 @@ export function getPlatformSelectorHeaderText(): string {
 }
 
 /**
+ * Returns standardized CSS classes for the platform selector header label.
+ */
+export function getPlatformSelectorHeaderClasses(): string {
+  return "text-xs font-bold text-muted-foreground";
+}
+
+/**
  * Returns localized platform option label string for Android/Chrome or iOS/Safari.
  */
 export function getPlatformOptionLabelText(platform: PlatformType): string {
   return platform === "android" ? "Android / Chrome" : "iOS / Safari";
+}
+
+/**
+ * Returns standardized CSS class string for platform radio selector buttons based on selection state.
+ */
+export function getPlatformRadioClasses(isSelected: boolean): string {
+  return isSelected
+    ? "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background bg-primary border-primary text-primary-foreground font-bold"
+    : "h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background bg-card border-border text-muted-foreground hover:bg-muted";
+}
+
+/**
+ * Returns standardized CSS class string for the manual install divider label.
+ */
+export function getManualInstallDividerClasses(): string {
+  return "bg-card px-2 text-muted-foreground font-bold";
+}
+
+/**
+ * Returns standardized CSS class string for individual platform installation step item container.
+ */
+export function getInstallStepContainerClasses(): string {
+  return "flex items-center gap-4 rounded-xl bg-card p-4 border border-border shadow-xs";
+}
+
+/**
+ * Returns standardized CSS class string for individual platform installation step icon badge container.
+ */
+export function getInstallStepIconBadgeClasses(): string {
+  return "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted border border-border";
+}
+
+/**
+ * Returns standardized CSS class string for platform installation step icon element.
+ */
+export function getInstallStepIconClasses(): string {
+  return "h-5 w-5 text-primary";
+}
+
+/**
+ * Returns standardized CSS class string for platform installation step title.
+ */
+export function getInstallStepTitleClasses(): string {
+  return "text-xs font-bold text-muted-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for platform installation step description text.
+ */
+export function getInstallStepDescriptionClasses(): string {
+  return "text-sm font-semibold leading-snug text-foreground";
 }
 
 /**
@@ -180,6 +238,34 @@ export function getAlreadyInstalledTitleText(): string {
  */
 export function getAlreadyInstalledDescriptionText(): string {
   return "Buscala en tu pantalla de inicio para jugar con un solo toque.";
+}
+
+/**
+ * Returns standardized CSS class string for already installed status container.
+ */
+export function getAlreadyInstalledContainerClasses(): string {
+  return "flex flex-col items-center gap-3 py-6";
+}
+
+/**
+ * Returns standardized CSS class string for already installed status check icon badge.
+ */
+export function getAlreadyInstalledIconBadgeClasses(): string {
+  return "flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30";
+}
+
+/**
+ * Returns standardized CSS class string for already installed status title.
+ */
+export function getAlreadyInstalledTitleClasses(): string {
+  return "text-sm font-semibold text-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for already installed status description.
+ */
+export function getAlreadyInstalledDescriptionClasses(): string {
+  return "text-xs text-muted-foreground text-center max-w-[240px]";
 }
 
 export function isIOSDeviceUserAgent(userAgent: string, hasTouchPoints: boolean = false): boolean {
