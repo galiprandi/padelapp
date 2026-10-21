@@ -33,6 +33,13 @@ import {
   getRankingToggleDescription,
   getRecentClubsHeaderLabel,
   getScoreSelectorGroupLabel,
+  getScoreSelectorDisplayClasses,
+  getScoreOptionButtonClasses,
+  getSuggestPairingsCardClasses,
+  getSuggestPairingsButtonClasses,
+  getRecentClubOptionClasses,
+  getMatchTypeOptionClasses,
+  getSetOptionButtonClasses,
 } from "@/app/(app)/match/new/new-match-utils";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
@@ -115,9 +122,7 @@ function ScoreSelector({
         <div
           className={cn(
             "flex h-10 w-10 items-center justify-center rounded-lg text-xl font-bold shrink-0 shadow-xs",
-            currentValue > 0
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground border border-border",
+            getScoreSelectorDisplayClasses(currentValue)
           )}
           aria-hidden="true"
         >
@@ -144,9 +149,7 @@ function ScoreSelector({
               onClick={() => onValueChange(num)}
               className={cn(
                 "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
-                isSelected
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-card border-border text-muted-foreground hover:bg-muted",
+                getScoreOptionButtonClasses(isSelected)
               )}
             >
               {num}
@@ -252,9 +255,7 @@ function RecentClubs({
               }}
               className={cn(
                 "shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
-                isSelected
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-card border-border text-muted-foreground hover:bg-muted",
+                getRecentClubOptionClasses(isSelected)
               )}
             >
               {label}
@@ -319,7 +320,7 @@ export function StepContent({
             </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs">
+          <div className={getSuggestPairingsCardClasses()}>
             <div className="space-y-1">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <span>{getPairingSuggestionTitle()}</span>
@@ -333,12 +334,7 @@ export function StepContent({
               disabled={!canSuggest || isSuggesting}
               aria-busy={isSuggesting}
               onClick={onSuggestPairings}
-              className={cn(
-                "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
-                canSuggest
-                  ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-muted border-transparent text-muted-foreground cursor-not-allowed"
-              )}
+              className={getSuggestPairingsButtonClasses(canSuggest, isSuggesting)}
             >
               {getSuggestPairingsButtonText(isSuggesting)}
             </button>
@@ -496,9 +492,7 @@ export function StepContent({
                       onClick={() => onMatchTypeChange(option.value)}
                       className={cn(
                         "flex items-center justify-between h-12 px-4 rounded-lg border text-sm font-semibold text-left transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground"
-                          : "bg-card border-border text-muted-foreground hover:bg-muted",
+                        getMatchTypeOptionClasses(isSelected)
                       )}
                     >
                       <span>{option.label}</span>
@@ -531,9 +525,7 @@ export function StepContent({
                       onClick={() => onSetsChange(option)}
                       className={cn(
                         "flex items-center justify-center h-12 rounded-lg border text-sm font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs",
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground"
-                          : "bg-card border-border text-muted-foreground hover:bg-muted",
+                        getSetOptionButtonClasses(isSelected)
                       )}
                     >
                       {getSetOptionLabel(option)}

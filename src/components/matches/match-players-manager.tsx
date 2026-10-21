@@ -28,6 +28,8 @@ import {
   getSwapModeCancelAriaLabel,
   getMatchTeamsRegionAriaLabel,
   getPlayerManageAriaLabel,
+  getSwapBannerContainerClasses,
+  getSwapBannerCancelButtonClasses,
 } from "@/components/matches/match-players-manager-utils";
 
 export interface MatchTeamPlayer {
@@ -232,7 +234,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
           role="status"
           aria-live="polite"
           aria-label={getSwapModeStatusAriaLabel()}
-          className="fixed inset-x-0 top-20 z-50 flex justify-center px-5"
+          className={getSwapBannerContainerClasses()}
         >
           <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-xs">
             <ArrowUpDown className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -240,7 +242,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
             <Button
               size="icon"
               variant="ghost"
-              className="h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+              className={getSwapBannerCancelButtonClasses()}
               aria-label={getSwapModeCancelAriaLabel()}
               onClick={() => setSwapSourceId(null)}
             >
