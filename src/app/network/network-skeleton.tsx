@@ -1,6 +1,17 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, Network, ChevronLeft } from "lucide-react";
-import { getNetworkSkeletonAriaLabel } from "./graph-utils";
+import {
+  getNetworkSkeletonAriaLabel,
+  getNetworkSkeletonContainerClasses,
+  getNetworkSkeletonTabBarClasses,
+  getNetworkSkeletonActiveTabButtonClasses,
+  getNetworkSkeletonInactiveTabButtonClasses,
+  getNetworkSkeletonContentClasses,
+  getNetworkSkeletonBackButtonClasses,
+  getNetworkSkeletonCardClasses,
+  getNetworkSkeletonGridTwoColsClasses,
+  getNetworkSkeletonGridThreeColsClasses,
+} from "./graph-utils";
 
 export function NetworkSkeleton() {
   return (
@@ -8,20 +19,20 @@ export function NetworkSkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getNetworkSkeletonAriaLabel()}
-      className="flex flex-col h-[100dvh] overflow-hidden bg-background"
+      className={getNetworkSkeletonContainerClasses()}
     >
       {/* Tab bar skeleton */}
-      <div className="flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0">
+      <div className={getNetworkSkeletonTabBarClasses()}>
         <button
           disabled
-          className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold bg-primary text-primary-foreground opacity-50"
+          className={getNetworkSkeletonActiveTabButtonClasses()}
         >
           <BarChart3 className="h-4 w-4" />
           Métricas
         </button>
         <button
           disabled
-          className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-muted-foreground opacity-50"
+          className={getNetworkSkeletonInactiveTabButtonClasses()}
         >
           <Network className="h-4 w-4" />
           Grafo
@@ -29,10 +40,10 @@ export function NetworkSkeleton() {
       </div>
 
       {/* Content skeleton */}
-      <div className="flex-1 overflow-y-auto p-4 pb-24 space-y-4">
+      <div className={getNetworkSkeletonContentClasses()}>
         {/* Header skeleton */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground opacity-50">
+          <div className={getNetworkSkeletonBackButtonClasses()}>
             <ChevronLeft className="h-5 w-5" />
           </div>
           <div className="space-y-1.5 flex-1">
@@ -42,9 +53,9 @@ export function NetworkSkeleton() {
         </div>
 
         {/* Adoption stats grid skeleton */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={getNetworkSkeletonGridTwoColsClasses()}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-2">
+            <div key={i} className={getNetworkSkeletonCardClasses()}>
               <div className="flex items-center justify-between">
                 <Skeleton className="h-3 w-16" />
                 <Skeleton className="h-4 w-4 rounded-full" />
@@ -59,12 +70,12 @@ export function NetworkSkeleton() {
         </div>
 
         {/* Network stats skeleton */}
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div className={getNetworkSkeletonCardClasses()}>
           <div className="flex items-center gap-2">
             <Skeleton className="h-4 w-4 rounded" />
             <Skeleton className="h-4 w-28" />
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className={getNetworkSkeletonGridThreeColsClasses()}>
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="space-y-1.5">
                 <Skeleton className="h-3 w-12" />
@@ -79,9 +90,9 @@ export function NetworkSkeleton() {
         </div>
 
         {/* Engagement stats skeleton */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={getNetworkSkeletonGridTwoColsClasses()}>
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-2">
+            <div key={i} className={getNetworkSkeletonCardClasses()}>
               <div className="flex items-center justify-between">
                 <Skeleton className="h-3 w-20" />
                 <Skeleton className="h-4 w-4 rounded-full" />
@@ -93,7 +104,7 @@ export function NetworkSkeleton() {
         </div>
 
         {/* Communities skeleton */}
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div className={getNetworkSkeletonCardClasses()}>
           <Skeleton className="h-4 w-24" />
           <div className="space-y-3">
             {Array.from({ length: 2 }).map((_, i) => (
@@ -109,7 +120,7 @@ export function NetworkSkeleton() {
         </div>
 
         {/* Top connected players skeleton */}
-        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <div className={getNetworkSkeletonCardClasses()}>
           <Skeleton className="h-4 w-28" />
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
