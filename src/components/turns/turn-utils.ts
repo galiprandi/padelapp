@@ -2837,6 +2837,167 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for leave turn trigger button.
+ */
+export function getLeaveTurnTriggerButtonClasses(): string {
+  return "w-full h-10 rounded-lg text-xs font-bold text-destructive hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Format CSS classes for late leave penalty warning card in leave turn view.
+ */
+export function getLeaveTurnLateLeaveCardClasses(): string {
+  return "rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left shadow-xs";
+}
+
+/**
+ * Format CSS classes for full turn share prompt card in leave turn view.
+ */
+export function getLeaveTurnWasFullCardClasses(): string {
+  return "rounded-lg border border-border bg-card p-3 flex flex-col gap-2 shadow-xs";
+}
+
+/**
+ * Format CSS classes for leave turn cancel button.
+ */
+export function getLeaveTurnCancelButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Format CSS classes for leave turn confirm button.
+ */
+export function getLeaveTurnConfirmButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg text-xs font-bold text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs";
+}
+
+/**
+ * Format CSS classes for remove player trigger button.
+ */
+export function getRemovePlayerTriggerButtonClasses(): string {
+  return "rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted border border-transparent hover:border-border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs";
+}
+
+/**
+ * Format CSS classes for remove player confirm button.
+ */
+export function getRemovePlayerConfirmButtonClasses(): string {
+  return "rounded-md px-2 py-1 text-xs font-bold text-destructive-foreground bg-destructive hover:bg-destructive/90 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] flex items-center gap-1 shadow-xs";
+}
+
+/**
+ * Format CSS classes for remove player dismiss button.
+ */
+export function getRemovePlayerDismissButtonClasses(): string {
+  return "rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for assign substitute button.
+ */
+export function getAssignSubstituteButtonClasses(): string {
+  return "rounded-md px-2.5 py-1 text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs";
+}
+
+/**
+ * Format CSS classes for cancel turn trigger button.
+ */
+export function getCancelTurnTriggerButtonClasses(): string {
+  return "w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for cancel turn confirmation region container.
+ */
+export function getCancelTurnConfirmContainerClasses(): string {
+  return "flex-1 flex items-center gap-1.5 focus-visible:outline-none";
+}
+
+/**
+ * Format CSS classes for cancel turn dismiss button.
+ */
+export function getCancelTurnDismissButtonClasses(): string {
+  return "h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for cancel turn confirm button.
+ */
+export function getCancelTurnConfirmButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for start match button.
+ */
+export function getStartMatchButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for join turn button.
+ */
+export function getJoinTurnButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for join substitute button.
+ */
+export function getJoinSubstituteButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for leave substitute trigger button.
+ */
+export function getLeaveSubstituteTriggerButtonClasses(): string {
+  return "w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for take open slot button.
+ */
+export function getTakeOpenSlotButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for schedule next turn button.
+ */
+export function getScheduleNextTurnButtonClasses(): string {
+  return "w-full h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for play casual trigger button.
+ */
+export function getPlayCasualTriggerButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for play casual confirmation container.
+ */
+export function getPlayCasualConfirmContainerClasses(): string {
+  return "flex flex-col gap-2 rounded-lg border border-border bg-card shadow-xs p-3 focus-visible:outline-none";
+}
+
+/**
+ * Format CSS classes for play casual cancel button.
+ */
+export function getPlayCasualCancelButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for play casual confirm button.
+ */
+export function getPlayCasualConfirmButtonClasses(): string {
+  return "flex-1 h-10 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
  * Format custom share text for turn public details ShareButton when open slots exist.
  */
 export function getTurnShareText({

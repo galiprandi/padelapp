@@ -257,6 +257,29 @@ import {
   getTurnCardQuickJoinButtonClasses,
   getWhatsAppInviteButtonClasses,
   getWhatsAppGroupInviteButtonClasses,
+  getLeaveTurnTriggerButtonClasses,
+  getLeaveTurnLateLeaveCardClasses,
+  getLeaveTurnWasFullCardClasses,
+  getLeaveTurnCancelButtonClasses,
+  getLeaveTurnConfirmButtonClasses,
+  getRemovePlayerTriggerButtonClasses,
+  getRemovePlayerConfirmButtonClasses,
+  getRemovePlayerDismissButtonClasses,
+  getAssignSubstituteButtonClasses,
+  getCancelTurnTriggerButtonClasses,
+  getCancelTurnConfirmContainerClasses,
+  getCancelTurnDismissButtonClasses,
+  getCancelTurnConfirmButtonClasses,
+  getStartMatchButtonClasses,
+  getJoinTurnButtonClasses,
+  getJoinSubstituteButtonClasses,
+  getLeaveSubstituteTriggerButtonClasses,
+  getTakeOpenSlotButtonClasses,
+  getScheduleNextTurnButtonClasses,
+  getPlayCasualTriggerButtonClasses,
+  getPlayCasualConfirmContainerClasses,
+  getPlayCasualCancelButtonClasses,
+  getPlayCasualConfirmButtonClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1292,6 +1315,43 @@ describe("Turn actions button text pure helpers", () => {
     expect(getPlayCasualConfirmButtonText(false)).toBe("Confirmar");
     expect(getPlayCasualConfirmButtonText(true)).toBe("Marcando...");
     expect(getPlayCasualConfirmButtonText()).toBe("Confirmar");
+  });
+});
+
+describe("Turn action UI button and container CSS class pure helpers", () => {
+  it("formats leave turn button and card CSS class helpers", () => {
+    expect(getLeaveTurnTriggerButtonClasses()).toContain("w-full h-10 rounded-lg");
+    expect(getLeaveTurnTriggerButtonClasses()).toContain("text-destructive");
+    expect(getLeaveTurnLateLeaveCardClasses()).toContain("border-destructive");
+    expect(getLeaveTurnWasFullCardClasses()).toContain("border-border");
+    expect(getLeaveTurnCancelButtonClasses()).toContain("flex-1 h-10 rounded-lg");
+    expect(getLeaveTurnConfirmButtonClasses()).toContain("bg-destructive/10");
+  });
+
+  it("formats remove player and assign substitute CSS class helpers", () => {
+    expect(getRemovePlayerTriggerButtonClasses()).toContain("hover:text-destructive");
+    expect(getRemovePlayerConfirmButtonClasses()).toContain("bg-destructive");
+    expect(getRemovePlayerDismissButtonClasses()).toContain("hover:text-foreground");
+    expect(getAssignSubstituteButtonClasses()).toContain("bg-primary");
+  });
+
+  it("formats turn action form trigger and confirmation CSS class helpers", () => {
+    expect(getCancelTurnTriggerButtonClasses()).toContain("text-destructive");
+    expect(getCancelTurnConfirmContainerClasses()).toContain("flex-1 flex items-center");
+    expect(getCancelTurnDismissButtonClasses()).toContain("px-2 rounded-lg");
+    expect(getCancelTurnConfirmButtonClasses()).toContain("border-destructive/20");
+
+    expect(getStartMatchButtonClasses()).toContain("bg-emerald-600");
+    expect(getJoinTurnButtonClasses()).toContain("w-full h-12 rounded-lg");
+    expect(getJoinSubstituteButtonClasses()).toContain("border-primary text-primary");
+    expect(getLeaveSubstituteTriggerButtonClasses()).toContain("text-destructive");
+    expect(getTakeOpenSlotButtonClasses()).toContain("bg-emerald-600");
+    expect(getScheduleNextTurnButtonClasses()).toContain("w-full h-10 rounded-lg");
+
+    expect(getPlayCasualTriggerButtonClasses()).toContain("w-full h-12 rounded-lg");
+    expect(getPlayCasualConfirmContainerClasses()).toContain("flex flex-col gap-2");
+    expect(getPlayCasualCancelButtonClasses()).toContain("flex-1 h-10 rounded-lg");
+    expect(getPlayCasualConfirmButtonClasses()).toContain("bg-emerald-600");
   });
 });
 

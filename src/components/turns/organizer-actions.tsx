@@ -20,6 +20,10 @@ import {
   getAssignSubstituteSuccessToast,
   getAssignSubstituteErrorToast,
   getAssignSubstituteButtonText,
+  getRemovePlayerTriggerButtonClasses,
+  getRemovePlayerConfirmButtonClasses,
+  getRemovePlayerDismissButtonClasses,
+  getAssignSubstituteButtonClasses,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -61,7 +65,7 @@ export function RemovePlayerButton({
             e.stopPropagation();
             setConfirming(true);
           }}
-          className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted border border-transparent hover:border-border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
+          className={getRemovePlayerTriggerButtonClasses()}
           aria-label={getRemovePlayerAriaLabel({ playerName })}
         >
           <UserMinus className="h-4 w-4" />
@@ -92,7 +96,7 @@ export function RemovePlayerButton({
         }}
         disabled={isPending}
         aria-busy={isPending}
-        className="rounded-md px-2 py-1 text-xs font-bold text-destructive-foreground bg-destructive hover:bg-destructive/90 transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] flex items-center gap-1 shadow-xs"
+        className={getRemovePlayerConfirmButtonClasses()}
         aria-label={getRemovePlayerAriaLabel({
           playerName,
           isPending,
@@ -112,7 +116,7 @@ export function RemovePlayerButton({
           setConfirming(false);
         }}
         disabled={isPending}
-        className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getRemovePlayerDismissButtonClasses()}
         aria-label={getRemovePlayerCancelAriaLabel(playerName)}
       >
         <X className="h-3.5 w-3.5" />
@@ -160,7 +164,7 @@ export function AssignSubstituteButton({
         }}
         disabled={isPending}
         aria-busy={isPending}
-        className="rounded-md px-2.5 py-1 text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
+        className={getAssignSubstituteButtonClasses()}
         aria-label={getAssignSubstituteAriaLabel({
           substituteName,
           isPending,
