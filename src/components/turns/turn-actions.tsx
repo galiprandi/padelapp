@@ -65,6 +65,20 @@ import {
   getPlayCasualButtonText,
   getPlayCasualCancelButtonText,
   getPlayCasualConfirmButtonText,
+  getCancelTurnTriggerButtonClasses,
+  getCancelTurnConfirmContainerClasses,
+  getCancelTurnDismissButtonClasses,
+  getCancelTurnConfirmButtonClasses,
+  getStartMatchButtonClasses,
+  getJoinTurnButtonClasses,
+  getJoinSubstituteButtonClasses,
+  getLeaveSubstituteTriggerButtonClasses,
+  getTakeOpenSlotButtonClasses,
+  getScheduleNextTurnButtonClasses,
+  getPlayCasualTriggerButtonClasses,
+  getPlayCasualConfirmContainerClasses,
+  getPlayCasualCancelButtonClasses,
+  getPlayCasualConfirmButtonClasses,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -92,7 +106,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         type="button"
         variant="ghost"
         onClick={() => setConfirming(true)}
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getCancelTurnTriggerButtonClasses()}
         aria-label={getCancelTurnAriaLabel({})}
       >
         <Trash2 className="mr-2 h-4 w-4" />
@@ -112,14 +126,14 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
           setConfirming(false);
         }
       }}
-      className="flex-1 flex items-center gap-1.5 focus-visible:outline-none"
+      className={getCancelTurnConfirmContainerClasses()}
     >
       <Button
         type="button"
         variant="ghost"
         disabled={isPending}
         onClick={() => setConfirming(false)}
-        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getCancelTurnDismissButtonClasses()}
         aria-label={getCancelTurnDismissAriaLabel()}
       >
         <X className="h-4 w-4" />
@@ -130,7 +144,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         onClick={handleCancel}
-        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getCancelTurnConfirmButtonClasses()}
         aria-label={getCancelTurnAriaLabel({ isPending, isConfirming: true })}
       >
         {isPending ? (
@@ -209,7 +223,7 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getStartMatchButtonClasses()}
         aria-label={getStartMatchAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -259,7 +273,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getJoinTurnButtonClasses()}
         aria-label={getJoinTurnAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -298,7 +312,7 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         variant="outline"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold border-primary text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getJoinSubstituteButtonClasses()}
         aria-label={getJoinSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -343,7 +357,7 @@ export function LeaveSubstituteForm({
         variant="ghost"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getLeaveSubstituteTriggerButtonClasses()}
         aria-label={getLeaveSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -381,7 +395,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getTakeOpenSlotButtonClasses()}
         aria-label={getTakeOpenSlotAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -420,7 +434,7 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
         variant="outline"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getScheduleNextTurnButtonClasses()}
         aria-label={getScheduleNextTurnAriaLabel({ isPending })}
       >
         {isPending ? (
@@ -458,7 +472,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         type="button"
         variant="outline"
         onClick={() => setConfirming(true)}
-        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+        className={getPlayCasualTriggerButtonClasses()}
         aria-label={getPlayCasualAriaLabel({})}
       >
         <Play className="mr-2 h-5 w-5" />
@@ -479,7 +493,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         }
       }}
       aria-busy={isPending}
-      className="flex flex-col gap-2 rounded-lg border border-border bg-card shadow-xs p-3 focus-visible:outline-none"
+      className={getPlayCasualConfirmContainerClasses()}
     >
       <p className="text-xs text-muted-foreground text-center">
         ¿Marcar como jugado? <strong className="text-foreground">{getPlayCasualConfirmText()}</strong>
@@ -490,7 +504,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           onClick={() => setConfirming(false)}
           variant="outline"
           disabled={isPending}
-          className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getPlayCasualCancelButtonClasses()}
           aria-label={getPlayCasualDismissAriaLabel()}
         >
           <X className="mr-2 h-4 w-4" />
@@ -502,7 +516,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           variant="default"
           disabled={isPending}
           aria-busy={isPending}
-          className="flex-1 h-10 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getPlayCasualConfirmButtonClasses()}
           aria-label={getPlayCasualAriaLabel({ isPending, isConfirming: true })}
         >
           {isPending ? (

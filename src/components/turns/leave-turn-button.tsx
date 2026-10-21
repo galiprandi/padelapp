@@ -24,6 +24,11 @@ import {
   getLeaveTurnCancelButtonText,
   getWasFullShareTitle,
   getWasFullShareText,
+  getLeaveTurnTriggerButtonClasses,
+  getLeaveTurnLateLeaveCardClasses,
+  getLeaveTurnWasFullCardClasses,
+  getLeaveTurnCancelButtonClasses,
+  getLeaveTurnConfirmButtonClasses,
 } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
@@ -65,7 +70,7 @@ export function LeaveTurnButton({
       <Button
         onClick={() => setConfirming(true)}
         variant="ghost"
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+        className={getLeaveTurnTriggerButtonClasses()}
         aria-label={getLeaveTurnTriggerAriaLabel()}
       >
         <LogOut className="mr-2 h-4 w-4" />
@@ -87,7 +92,7 @@ export function LeaveTurnButton({
       }}
     >
       {isLateLeave && (
-        <div className="rounded-lg border border-destructive bg-card p-3 flex flex-col gap-1.5 text-left shadow-xs">
+        <div className={getLeaveTurnLateLeaveCardClasses()}>
           <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
             <span className="inline-block h-2 w-2 rounded-full bg-destructive" />
             {getLateLeaveWarningTitle()}
@@ -98,7 +103,7 @@ export function LeaveTurnButton({
         </div>
       )}
       {wasFull && (
-        <div className="rounded-lg border border-border bg-card p-3 flex flex-col gap-2 shadow-xs">
+        <div className={getLeaveTurnWasFullCardClasses()}>
           <p className="text-xs text-muted-foreground text-center">
             {getWasFullSharePromptText()}
           </p>
@@ -115,7 +120,7 @@ export function LeaveTurnButton({
         <Button
           onClick={() => setConfirming(false)}
           variant="outline"
-          className="flex-1 h-10 rounded-lg text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+          className={getLeaveTurnCancelButtonClasses()}
           disabled={isPending}
           aria-label={getCancelLeaveTurnAriaLabel()}
         >
@@ -125,7 +130,7 @@ export function LeaveTurnButton({
         <Button
           onClick={handleLeave}
           variant="ghost"
-          className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+          className={getLeaveTurnConfirmButtonClasses()}
           disabled={isPending}
           aria-busy={isPending}
           aria-label={getConfirmLeaveTurnAriaLabel({ isPending })}
