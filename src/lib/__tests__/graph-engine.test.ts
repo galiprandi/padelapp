@@ -251,6 +251,15 @@ import {
   getGraphViewSearchContainerClasses,
   formatTimeAgo,
   getNetworkSkeletonAriaLabel,
+  getNetworkSkeletonContainerClasses,
+  getNetworkSkeletonTabBarClasses,
+  getNetworkSkeletonActiveTabButtonClasses,
+  getNetworkSkeletonInactiveTabButtonClasses,
+  getNetworkSkeletonContentClasses,
+  getNetworkSkeletonBackButtonClasses,
+  getNetworkSkeletonCardClasses,
+  getNetworkSkeletonGridTwoColsClasses,
+  getNetworkSkeletonGridThreeColsClasses,
   getStatsPanelRegionAriaLabel,
   getTopClubTurnsMatchesText,
   getTopPlayerActivityAriaLabel,
@@ -2696,10 +2705,37 @@ describe("StatsPanel and NetworkSkeleton pure helpers", () => {
     });
   });
 
-  describe("getNetworkSkeletonAriaLabel", () => {
-    it("returns expected accessible screen reader label", () => {
+  describe("getNetworkSkeleton helpers", () => {
+    it("returns expected skeleton container, layout, and tab styling classes", () => {
       expect(getNetworkSkeletonAriaLabel()).toBe(
         "Cargando métricas y visualización del grafo de la red de contactos"
+      );
+      expect(getNetworkSkeletonContainerClasses()).toBe(
+        "flex flex-col h-[100dvh] overflow-hidden bg-background"
+      );
+      expect(getNetworkSkeletonTabBarClasses()).toBe(
+        "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0"
+      );
+      expect(getNetworkSkeletonActiveTabButtonClasses()).toBe(
+        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold bg-primary text-primary-foreground opacity-50"
+      );
+      expect(getNetworkSkeletonInactiveTabButtonClasses()).toBe(
+        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-muted-foreground opacity-50"
+      );
+      expect(getNetworkSkeletonContentClasses()).toBe(
+        "flex-1 overflow-y-auto p-4 pb-24 space-y-4"
+      );
+      expect(getNetworkSkeletonBackButtonClasses()).toBe(
+        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground opacity-50"
+      );
+      expect(getNetworkSkeletonCardClasses()).toBe(
+        "rounded-xl border border-border bg-card p-4 space-y-3"
+      );
+      expect(getNetworkSkeletonGridTwoColsClasses()).toBe(
+        "grid grid-cols-2 gap-3"
+      );
+      expect(getNetworkSkeletonGridThreeColsClasses()).toBe(
+        "grid grid-cols-3 gap-3"
       );
     });
   });

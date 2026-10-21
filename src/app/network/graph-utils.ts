@@ -518,6 +518,42 @@ export function getNetworkSkeletonAriaLabel(): string {
   return "Cargando métricas y visualización del grafo de la red de contactos";
 }
 
+export function getNetworkSkeletonContainerClasses(): string {
+  return "flex flex-col h-[100dvh] overflow-hidden bg-background";
+}
+
+export function getNetworkSkeletonTabBarClasses(): string {
+  return "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0";
+}
+
+export function getNetworkSkeletonActiveTabButtonClasses(): string {
+  return "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold bg-primary text-primary-foreground opacity-50";
+}
+
+export function getNetworkSkeletonInactiveTabButtonClasses(): string {
+  return "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-muted-foreground opacity-50";
+}
+
+export function getNetworkSkeletonContentClasses(): string {
+  return "flex-1 overflow-y-auto p-4 pb-24 space-y-4";
+}
+
+export function getNetworkSkeletonBackButtonClasses(): string {
+  return "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground opacity-50";
+}
+
+export function getNetworkSkeletonCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-3";
+}
+
+export function getNetworkSkeletonGridTwoColsClasses(): string {
+  return "grid grid-cols-2 gap-3";
+}
+
+export function getNetworkSkeletonGridThreeColsClasses(): string {
+  return "grid grid-cols-3 gap-3";
+}
+
 export function getStatsPanelRegionAriaLabel(
   section:
     | "header"
