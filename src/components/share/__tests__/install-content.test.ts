@@ -37,6 +37,20 @@ import {
   getAlreadyInstalledIconBadgeClasses,
   getAlreadyInstalledTitleClasses,
   getAlreadyInstalledDescriptionClasses,
+  getInstallPageMainClasses,
+  getInstallPageContainerClasses,
+  getInstallPageLogoClasses,
+  getInstallPageHeaderClasses,
+  getInstallPageTitleClasses,
+  getInstallPageDescriptionClasses,
+  getInstallPageContentWrapperClasses,
+  getInstallPageBackLinkText,
+  getInstallLoadingLogoSkeletonClasses,
+  getInstallLoadingHeaderClasses,
+  getInstallLoadingTitleSkeletonClasses,
+  getInstallLoadingSubtitleSkeletonClasses,
+  getInstallLoadingCardSkeletonClasses,
+  getInstallLoadingButtonSkeletonClasses,
 } from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
@@ -146,5 +160,25 @@ describe("PWA install guide and platform detection logic", () => {
     expect(getAlreadyInstalledIconBadgeClasses()).toContain("border-emerald-500/30");
     expect(getAlreadyInstalledTitleClasses()).toBe("text-sm font-semibold text-foreground");
     expect(getAlreadyInstalledDescriptionClasses()).toBe("text-xs text-muted-foreground text-center max-w-[240px]");
+  });
+
+  it("returns standardized CSS classes and text labels for InstallPage layout elements", () => {
+    expect(getInstallPageMainClasses()).toContain("flex min-h-[100dvh] flex-col items-center justify-center");
+    expect(getInstallPageContainerClasses()).toContain("flex w-full max-w-sm flex-col items-center gap-8");
+    expect(getInstallPageLogoClasses()).toBe("h-20 w-20");
+    expect(getInstallPageHeaderClasses()).toBe("space-y-2 text-center");
+    expect(getInstallPageTitleClasses()).toBe("text-2xl font-bold text-foreground");
+    expect(getInstallPageDescriptionClasses()).toBe("text-sm text-muted-foreground max-w-[260px]");
+    expect(getInstallPageContentWrapperClasses()).toBe("w-full");
+    expect(getInstallPageBackLinkText()).toBe("Volver al inicio");
+  });
+
+  it("returns standardized CSS classes for InstallLoading skeleton elements", () => {
+    expect(getInstallLoadingLogoSkeletonClasses()).toBe("h-20 w-20 rounded-2xl");
+    expect(getInstallLoadingHeaderClasses()).toBe("flex flex-col items-center space-y-2 text-center");
+    expect(getInstallLoadingTitleSkeletonClasses()).toBe("h-7 w-48 rounded-md");
+    expect(getInstallLoadingSubtitleSkeletonClasses()).toBe("h-8 w-64 rounded-md");
+    expect(getInstallLoadingCardSkeletonClasses()).toBe("h-56 w-full rounded-xl");
+    expect(getInstallLoadingButtonSkeletonClasses()).toBe("h-10 w-full rounded-lg");
   });
 });

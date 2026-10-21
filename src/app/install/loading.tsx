@@ -1,5 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getInstallSkeletonAriaLabel } from "@/components/share/install-utils";
+import {
+  getInstallSkeletonAriaLabel,
+  getInstallPageMainClasses,
+  getInstallPageContainerClasses,
+  getInstallLoadingLogoSkeletonClasses,
+  getInstallLoadingHeaderClasses,
+  getInstallLoadingTitleSkeletonClasses,
+  getInstallLoadingSubtitleSkeletonClasses,
+  getInstallLoadingCardSkeletonClasses,
+  getInstallLoadingButtonSkeletonClasses,
+} from "@/components/share/install-utils";
 
 export default function InstallLoading() {
   return (
@@ -7,23 +17,23 @@ export default function InstallLoading() {
       role="region"
       aria-busy="true"
       aria-label={getInstallSkeletonAriaLabel()}
-      className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+      className={getInstallPageMainClasses()}
     >
-      <div className="flex w-full max-w-sm flex-col items-center gap-8">
+      <div className={getInstallPageContainerClasses()}>
         {/* Logo skeleton */}
-        <Skeleton className="h-20 w-20 rounded-2xl" />
+        <Skeleton className={getInstallLoadingLogoSkeletonClasses()} />
 
         {/* Title & subtitle skeleton */}
-        <div className="flex flex-col items-center space-y-2 text-center">
-          <Skeleton className="h-7 w-48 rounded-md" />
-          <Skeleton className="h-8 w-64 rounded-md" />
+        <div className={getInstallLoadingHeaderClasses()}>
+          <Skeleton className={getInstallLoadingTitleSkeletonClasses()} />
+          <Skeleton className={getInstallLoadingSubtitleSkeletonClasses()} />
         </div>
 
         {/* Install content guide card skeleton */}
-        <Skeleton className="h-56 w-full rounded-xl" />
+        <Skeleton className={getInstallLoadingCardSkeletonClasses()} />
 
         {/* Back button skeleton */}
-        <Skeleton className="h-10 w-full rounded-lg" />
+        <Skeleton className={getInstallLoadingButtonSkeletonClasses()} />
       </div>
     </main>
   );
