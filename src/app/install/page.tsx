@@ -8,6 +8,14 @@ import {
   getInstallPageLogoAltText,
   getInstallPageBackAriaLabel,
   getInstallPageBackLinkClasses,
+  getInstallPageMainClasses,
+  getInstallPageContainerClasses,
+  getInstallPageLogoClasses,
+  getInstallPageHeaderClasses,
+  getInstallPageTitleClasses,
+  getInstallPageDescriptionClasses,
+  getInstallPageContentWrapperClasses,
+  getInstallPageBackLinkText,
 } from "@/components/share/install-utils";
 import Image from "next/image";
 
@@ -16,29 +24,29 @@ export default function InstallPage() {
     <main
       role="region"
       aria-label={getInstallPageAriaLabel()}
-      className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+      className={getInstallPageMainClasses()}
     >
-      <div className="flex w-full max-w-sm flex-col items-center gap-8">
+      <div className={getInstallPageContainerClasses()}>
         {/* Logo */}
         <Image
           src="/icon.svg"
           alt={getInstallPageLogoAltText()}
-          className="h-20 w-20"
+          className={getInstallPageLogoClasses()}
           width={80}
           height={80}
           unoptimized
         />
 
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-bold text-foreground">
+        <div className={getInstallPageHeaderClasses()}>
+          <h1 className={getInstallPageTitleClasses()}>
             {getInstallPageTitle()}
           </h1>
-          <p className="text-sm text-muted-foreground max-w-[260px]">
+          <p className={getInstallPageDescriptionClasses()}>
             {getInstallPageDescription()}
           </p>
         </div>
 
-        <div className="w-full">
+        <div className={getInstallPageContentWrapperClasses()}>
           <InstallContent />
         </div>
 
@@ -48,7 +56,7 @@ export default function InstallPage() {
           asChild
         >
           <Link href="/" prefetch={true} aria-label={getInstallPageBackAriaLabel()}>
-            Volver al inicio
+            {getInstallPageBackLinkText()}
           </Link>
         </Button>
       </div>

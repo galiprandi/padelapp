@@ -268,6 +268,104 @@ export function getAlreadyInstalledDescriptionClasses(): string {
   return "text-xs text-muted-foreground text-center max-w-[240px]";
 }
 
+/**
+ * Returns standardized CSS class string for the main InstallPage landmark container.
+ */
+export function getInstallPageMainClasses(): string {
+  return "flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10";
+}
+
+/**
+ * Returns standardized CSS class string for the inner InstallPage content container.
+ */
+export function getInstallPageContainerClasses(): string {
+  return "flex w-full max-w-sm flex-col items-center gap-8";
+}
+
+/**
+ * Returns standardized CSS class string for the application logo image on the install page.
+ */
+export function getInstallPageLogoClasses(): string {
+  return "h-20 w-20";
+}
+
+/**
+ * Returns standardized CSS class string for the install page header container.
+ */
+export function getInstallPageHeaderClasses(): string {
+  return "space-y-2 text-center";
+}
+
+/**
+ * Returns standardized CSS class string for the install page main heading.
+ */
+export function getInstallPageTitleClasses(): string {
+  return "text-2xl font-bold text-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for the install page description text.
+ */
+export function getInstallPageDescriptionClasses(): string {
+  return "text-sm text-muted-foreground max-w-[260px]";
+}
+
+/**
+ * Returns standardized CSS class string for the install content wrapper container.
+ */
+export function getInstallPageContentWrapperClasses(): string {
+  return "w-full";
+}
+
+/**
+ * Returns localized text for the back link button on the install page.
+ */
+export function getInstallPageBackLinkText(): string {
+  return "Volver al inicio";
+}
+
+/**
+ * Returns standardized CSS class string for the logo skeleton in InstallLoading.
+ */
+export function getInstallLoadingLogoSkeletonClasses(): string {
+  return "h-20 w-20 rounded-2xl";
+}
+
+/**
+ * Returns standardized CSS class string for the header container in InstallLoading.
+ */
+export function getInstallLoadingHeaderClasses(): string {
+  return "flex flex-col items-center space-y-2 text-center";
+}
+
+/**
+ * Returns standardized CSS class string for the title skeleton in InstallLoading.
+ */
+export function getInstallLoadingTitleSkeletonClasses(): string {
+  return "h-7 w-48 rounded-md";
+}
+
+/**
+ * Returns standardized CSS class string for the subtitle skeleton in InstallLoading.
+ */
+export function getInstallLoadingSubtitleSkeletonClasses(): string {
+  return "h-8 w-64 rounded-md";
+}
+
+/**
+ * Returns standardized CSS class string for the content card skeleton in InstallLoading.
+ */
+export function getInstallLoadingCardSkeletonClasses(): string {
+  return "h-56 w-full rounded-xl";
+}
+
+/**
+ * Returns standardized CSS class string for the back button skeleton in InstallLoading.
+ */
+export function getInstallLoadingButtonSkeletonClasses(): string {
+  return "h-10 w-full rounded-lg";
+}
+
 export function isIOSDeviceUserAgent(userAgent: string, hasTouchPoints: boolean = false): boolean {
   if (!userAgent) return false;
   const isIOSUA = /iPad|iPhone|iPod/.test(userAgent);
