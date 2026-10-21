@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const PUSH_PROMPT_DISMISS_KEY = "push-prompt-dismissed";
 
 export function isPushPromptDismissed(): boolean {
@@ -55,18 +57,59 @@ export function getPushPermissionLiveStatus(loading: boolean): string {
     : "";
 }
 
-export function getPushPermissionContainerClasses(): string {
-  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+export function getPushPermissionContainerClasses(customClassName?: string): string {
+  return cn("rounded-xl border border-border bg-card p-4 shadow-xs", customClassName);
 }
 
-export function getPushPermissionIconBadgeClasses(): string {
-  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs shrink-0";
+export function getPushPermissionIconBadgeClasses(customClassName?: string): string {
+  return cn(
+    "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs shrink-0",
+    customClassName
+  );
 }
 
-export function getPushPermissionActionButtonClasses(): string {
-  return "h-9 font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+export function getPushPermissionActionButtonClasses(customClassName?: string): string {
+  return cn(
+    "h-9 font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName
+  );
 }
 
-export function getPushPermissionDismissButtonClasses(): string {
-  return "h-9 font-semibold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+export function getPushPermissionDismissButtonClasses(customClassName?: string): string {
+  return cn(
+    "h-9 font-semibold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName
+  );
+}
+
+export function getPushPermissionInnerLayoutClasses(customClassName?: string): string {
+  return cn("flex items-start gap-3", customClassName);
+}
+
+export function getPushPermissionTextContainerClasses(customClassName?: string): string {
+  return cn("flex-1 min-w-0", customClassName);
+}
+
+export function getPushPermissionTitleClasses(customClassName?: string): string {
+  return cn("text-sm font-bold text-foreground", customClassName);
+}
+
+export function getPushPermissionDescriptionClasses(customClassName?: string): string {
+  return cn("mt-1 text-xs text-muted-foreground leading-normal", customClassName);
+}
+
+export function getPushPermissionActionGroupClasses(customClassName?: string): string {
+  return cn("mt-3 flex items-center gap-2", customClassName);
+}
+
+export function getPushPermissionBellIconClasses(customClassName?: string): string {
+  return cn("h-5 w-5", customClassName);
+}
+
+export function getPushPermissionActionBellIconClasses(customClassName?: string): string {
+  return cn("h-3.5 w-3.5", customClassName);
+}
+
+export function getPushPermissionActionSpinnerClasses(customClassName?: string): string {
+  return cn("h-3.5 w-3.5 animate-spin", customClassName);
 }
