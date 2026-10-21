@@ -18,6 +18,11 @@ import {
   getFinalizeMatchAriaLabel,
   getFinalizeMatchSuccessToast,
   getFinalizeMatchErrorToast,
+  getCancelMatchTriggerButtonClasses,
+  getCancelMatchCancelButtonClasses,
+  getCancelMatchConfirmSubmitButtonClasses,
+  getConfirmResultSubmitButtonClasses,
+  getFinalizeMatchSubmitButtonClasses,
 } from "../match-actions-utils";
 
 describe("Match Actions Utils", () => {
@@ -105,6 +110,16 @@ describe("Match Actions Utils", () => {
     it("returns correct error toast message", () => {
       expect(getFinalizeMatchErrorToast()).toBe("No pudimos finalizar el partido.");
       expect(getFinalizeMatchErrorToast("Permiso denegado")).toBe("Permiso denegado");
+    });
+  });
+
+  describe("CSS styling class helpers", () => {
+    it("returns correct button styling classes", () => {
+      expect(getCancelMatchTriggerButtonClasses()).toContain("text-destructive");
+      expect(getCancelMatchCancelButtonClasses()).toContain("text-muted-foreground");
+      expect(getCancelMatchConfirmSubmitButtonClasses()).toContain("text-destructive border border-destructive/20");
+      expect(getConfirmResultSubmitButtonClasses()).toContain("w-full h-12 rounded-lg text-base font-bold");
+      expect(getFinalizeMatchSubmitButtonClasses()).toContain("border-border bg-card text-foreground");
     });
   });
 });

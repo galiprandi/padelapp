@@ -335,3 +335,68 @@ export function getRecentClubsHeaderLabel(): string {
 export function getScoreSelectorGroupLabel(teamLabel: string, players: string): string {
   return `${teamLabel}: ${players}`;
 }
+
+/**
+ * Returns CSS classes for score selector currentValue indicator badge.
+ */
+export function getScoreSelectorDisplayClasses(currentValue: number): string {
+  return currentValue > 0
+    ? "bg-primary text-primary-foreground"
+    : "bg-muted text-muted-foreground border border-border";
+}
+
+/**
+ * Returns CSS classes for score option button based on selection state.
+ */
+export function getScoreOptionButtonClasses(isSelected: boolean): string {
+  return isSelected
+    ? "bg-primary border-primary text-primary-foreground"
+    : "bg-card border-border text-muted-foreground hover:bg-muted";
+}
+
+/**
+ * Returns CSS classes for suggest pairings container card.
+ */
+export function getSuggestPairingsCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for suggest pairings trigger button based on active state.
+ */
+export function getSuggestPairingsButtonClasses(canSuggest: boolean, isSuggesting?: boolean): string {
+  if (isSuggesting) {
+    return "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs bg-muted border-transparent text-muted-foreground cursor-not-allowed";
+  }
+
+  return canSuggest
+    ? "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs bg-primary border-primary text-primary-foreground hover:bg-primary/90"
+    : "w-full h-11 rounded-lg border font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs bg-muted border-transparent text-muted-foreground cursor-not-allowed";
+}
+
+/**
+ * Returns CSS classes for recent club radio option button based on selection state.
+ */
+export function getRecentClubOptionClasses(isSelected: boolean): string {
+  return isSelected
+    ? "bg-primary border-primary text-primary-foreground"
+    : "bg-card border-border text-muted-foreground hover:bg-muted";
+}
+
+/**
+ * Returns CSS classes for match type radio option button based on selection state.
+ */
+export function getMatchTypeOptionClasses(isSelected: boolean): string {
+  return isSelected
+    ? "bg-primary border-primary text-primary-foreground"
+    : "bg-card border-border text-muted-foreground hover:bg-muted";
+}
+
+/**
+ * Returns CSS classes for sets count radio option button based on selection state.
+ */
+export function getSetOptionButtonClasses(isSelected: boolean): string {
+  return isSelected
+    ? "bg-primary border-primary text-primary-foreground"
+    : "bg-card border-border text-muted-foreground hover:bg-muted";
+}

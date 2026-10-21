@@ -34,6 +34,11 @@ import {
   getFinalizeMatchAriaLabel,
   getFinalizeMatchSuccessToast,
   getFinalizeMatchErrorToast,
+  getCancelMatchTriggerButtonClasses,
+  getCancelMatchCancelButtonClasses,
+  getCancelMatchConfirmSubmitButtonClasses,
+  getConfirmResultSubmitButtonClasses,
+  getFinalizeMatchSubmitButtonClasses,
 } from "./match-actions-utils";
 
 export function CancelMatchForm({ matchId }: { matchId: string }) {
@@ -74,7 +79,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         type="button"
         variant="ghost"
         onClick={() => setConfirming(true)}
-        className="w-full h-10 rounded-lg text-xs font-bold text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        className={getCancelMatchTriggerButtonClasses()}
         aria-label={getCancelMatchAriaLabel()}
       >
         <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -100,7 +105,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         variant="ghost"
         disabled={isPending}
         onClick={() => setConfirming(false)}
-        className="h-10 px-2 rounded-lg text-xs font-bold text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        className={getCancelMatchCancelButtonClasses()}
         aria-label={getCancelMatchCancelAriaLabel()}
       >
         <X className="h-4 w-4" aria-hidden="true" />
@@ -111,7 +116,7 @@ export function CancelMatchForm({ matchId }: { matchId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         onClick={handleCancel}
-        className="flex-1 h-10 rounded-lg text-xs font-bold text-destructive border border-destructive/20 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        className={getCancelMatchConfirmSubmitButtonClasses()}
         aria-label={getCancelMatchSubmitAriaLabel(isPending)}
       >
         {isPending ? (
@@ -154,7 +159,7 @@ export function ConfirmResultForm({ matchId }: { matchId: string }) {
         type="submit"
         disabled={isPending}
         aria-busy={isPending}
-        className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        className={getConfirmResultSubmitButtonClasses()}
         aria-label={getConfirmResultAriaLabel(isPending)}
       >
         {isPending ? (
@@ -198,7 +203,7 @@ export function FinalizeMatchForm({ matchId }: { matchId: string }) {
         disabled={isPending}
         aria-busy={isPending}
         variant="outline"
-        className="w-full h-10 border-border bg-card text-foreground font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+        className={getFinalizeMatchSubmitButtonClasses()}
         aria-label={getFinalizeMatchAriaLabel(isPending)}
       >
         {isPending ? (

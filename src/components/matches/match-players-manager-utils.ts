@@ -66,3 +66,11 @@ export function getMatchTeamsRegionAriaLabel(): string {
 export function getPlayerManageAriaLabel(playerName: string): string {
   return `Gestionar jugador ${playerName}`;
 }
+
+export function getSwapBannerContainerClasses(): string {
+  return "fixed inset-x-0 top-20 z-50 flex justify-center px-5";
+}
+
+export function getSwapBannerCancelButtonClasses(): string {
+  return "h-6 w-6 rounded-lg hover:bg-primary-foreground/10 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}

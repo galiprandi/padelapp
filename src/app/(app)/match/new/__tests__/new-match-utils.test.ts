@@ -30,6 +30,13 @@ import {
   getRankingToggleDescription,
   getRecentClubsHeaderLabel,
   getScoreSelectorGroupLabel,
+  getScoreSelectorDisplayClasses,
+  getScoreOptionButtonClasses,
+  getSuggestPairingsCardClasses,
+  getSuggestPairingsButtonClasses,
+  getRecentClubOptionClasses,
+  getMatchTypeOptionClasses,
+  getSetOptionButtonClasses,
 } from "../new-match-utils";
 import type { TeamState, PlayerOption } from "@/lib/match-types";
 
@@ -359,6 +366,36 @@ describe("new-match-utils", () => {
       expect(getScoreSelectorGroupLabel("Pareja A", "Agustín Tapia & Arturo Coello")).toBe(
         "Pareja A: Agustín Tapia & Arturo Coello"
       );
+    });
+  });
+
+  describe("CSS styling class helpers", () => {
+    it("returns correct score selector display classes based on value", () => {
+      expect(getScoreSelectorDisplayClasses(1)).toContain("bg-primary text-primary-foreground");
+      expect(getScoreSelectorDisplayClasses(0)).toContain("bg-muted text-muted-foreground");
+    });
+
+    it("returns correct score option button classes based on selection", () => {
+      expect(getScoreOptionButtonClasses(true)).toContain("bg-primary border-primary");
+      expect(getScoreOptionButtonClasses(false)).toContain("bg-card border-border");
+    });
+
+    it("returns suggest pairings card and button classes", () => {
+      expect(getSuggestPairingsCardClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getSuggestPairingsButtonClasses(true, false)).toContain("bg-primary border-primary");
+      expect(getSuggestPairingsButtonClasses(false, false)).toContain("bg-muted border-transparent");
+      expect(getSuggestPairingsButtonClasses(true, true)).toContain("cursor-not-allowed");
+    });
+
+    it("returns option button classes for recent clubs, match type and sets count", () => {
+      expect(getRecentClubOptionClasses(true)).toContain("bg-primary border-primary");
+      expect(getRecentClubOptionClasses(false)).toContain("bg-card border-border");
+
+      expect(getMatchTypeOptionClasses(true)).toContain("bg-primary border-primary");
+      expect(getMatchTypeOptionClasses(false)).toContain("bg-card border-border");
+
+      expect(getSetOptionButtonClasses(true)).toContain("bg-primary border-primary");
+      expect(getSetOptionButtonClasses(false)).toContain("bg-card border-border");
     });
   });
 });

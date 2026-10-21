@@ -16,6 +16,8 @@ import {
   getSwapModeCancelAriaLabel,
   getMatchTeamsRegionAriaLabel,
   getPlayerManageAriaLabel,
+  getSwapBannerContainerClasses,
+  getSwapBannerCancelButtonClasses,
 } from "../match-players-manager-utils";
 
 describe("match-players-manager-utils", () => {
@@ -113,6 +115,13 @@ describe("match-players-manager-utils", () => {
 
     it("returns correct player manage button ARIA label", () => {
       expect(getPlayerManageAriaLabel("Bela")).toBe("Gestionar jugador Bela");
+    });
+  });
+
+  describe("CSS styling class helpers", () => {
+    it("returns correct swap banner container and cancel button classes", () => {
+      expect(getSwapBannerContainerClasses()).toContain("fixed inset-x-0 top-20 z-50 flex justify-center px-5");
+      expect(getSwapBannerCancelButtonClasses()).toContain("h-6 w-6 rounded-lg hover:bg-primary-foreground/10");
     });
   });
 });
