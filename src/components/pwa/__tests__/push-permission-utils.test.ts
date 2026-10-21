@@ -17,6 +17,14 @@ import {
   getPushPermissionIconBadgeClasses,
   getPushPermissionActionButtonClasses,
   getPushPermissionDismissButtonClasses,
+  getPushPermissionInnerLayoutClasses,
+  getPushPermissionTextContainerClasses,
+  getPushPermissionTitleClasses,
+  getPushPermissionDescriptionClasses,
+  getPushPermissionActionGroupClasses,
+  getPushPermissionBellIconClasses,
+  getPushPermissionActionBellIconClasses,
+  getPushPermissionActionSpinnerClasses,
 } from "../push-permission-utils";
 
 describe("push-permission-utils Pure Helper Specifications", () => {
@@ -114,23 +122,66 @@ describe("push-permission-utils Pure Helper Specifications", () => {
     it("returns container classes", () => {
       expect(getPushPermissionContainerClasses()).toContain("bg-card");
       expect(getPushPermissionContainerClasses()).toContain("rounded-xl");
+      expect(getPushPermissionContainerClasses("custom-class")).toContain("custom-class");
     });
 
     it("returns icon badge classes", () => {
       expect(getPushPermissionIconBadgeClasses()).toContain("bg-muted");
       expect(getPushPermissionIconBadgeClasses()).toContain("h-10 w-10");
+      expect(getPushPermissionIconBadgeClasses("custom-class")).toContain("custom-class");
     });
 
     it("returns action button classes with focus and active states", () => {
       expect(getPushPermissionActionButtonClasses()).toContain("font-bold");
       expect(getPushPermissionActionButtonClasses()).toContain("active:scale-[0.98]");
       expect(getPushPermissionActionButtonClasses()).toContain("focus-visible:ring-2");
+      expect(getPushPermissionActionButtonClasses("custom-class")).toContain("custom-class");
     });
 
     it("returns dismiss button classes with focus and hover states", () => {
       expect(getPushPermissionDismissButtonClasses()).toContain("hover:bg-muted");
       expect(getPushPermissionDismissButtonClasses()).toContain("active:scale-[0.98]");
       expect(getPushPermissionDismissButtonClasses()).toContain("focus-visible:ring-2");
+      expect(getPushPermissionDismissButtonClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns inner layout classes", () => {
+      expect(getPushPermissionInnerLayoutClasses()).toContain("flex");
+      expect(getPushPermissionInnerLayoutClasses()).toContain("items-start");
+      expect(getPushPermissionInnerLayoutClasses()).toContain("gap-3");
+      expect(getPushPermissionInnerLayoutClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns text container classes", () => {
+      expect(getPushPermissionTextContainerClasses()).toContain("flex-1");
+      expect(getPushPermissionTextContainerClasses()).toContain("min-w-0");
+      expect(getPushPermissionTextContainerClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns title classes", () => {
+      expect(getPushPermissionTitleClasses()).toContain("text-sm");
+      expect(getPushPermissionTitleClasses()).toContain("font-bold");
+      expect(getPushPermissionTitleClasses()).toContain("text-foreground");
+      expect(getPushPermissionTitleClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns description classes", () => {
+      expect(getPushPermissionDescriptionClasses()).toContain("text-xs");
+      expect(getPushPermissionDescriptionClasses()).toContain("text-muted-foreground");
+      expect(getPushPermissionDescriptionClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns action group classes", () => {
+      expect(getPushPermissionActionGroupClasses()).toContain("mt-3");
+      expect(getPushPermissionActionGroupClasses()).toContain("flex");
+      expect(getPushPermissionActionGroupClasses()).toContain("items-center");
+      expect(getPushPermissionActionGroupClasses("custom-class")).toContain("custom-class");
+    });
+
+    it("returns icon sizing classes", () => {
+      expect(getPushPermissionBellIconClasses()).toContain("h-5 w-5");
+      expect(getPushPermissionActionBellIconClasses()).toContain("h-3.5 w-3.5");
+      expect(getPushPermissionActionSpinnerClasses()).toContain("animate-spin");
     });
   });
 });

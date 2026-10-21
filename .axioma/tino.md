@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-07 — Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt` (`src/components/pwa/push-permission-utils.ts`) y Refactorización del Componente
 - [x] 2026-10-06 — Extracción de Funciones Helper Puras `getCacheTagForDomain`, `getCacheRevalidateOptions`, `formatCacheInvalidationLogMessage` y `getCacheTagsSummary` (`src/lib/cache-tags.ts`)
 - [x] 2026-10-05 — Extracción de Funciones Helper Puras `getSpeculationDocumentPatterns`, `getSpeculationRuleGroupEagerness`, `getSpeculationRuleGroupDescription` y `formatSpeculationScriptTagAttributes` (`src/lib/speculation-rules.ts`)
 - [x] 2026-10-04 — Extracción de Funciones Helper Puras de Fronteras de Error y Clases CSS (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
@@ -76,6 +77,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-07 - Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt`
+**Aprendizaje:** Encapsular las clases CSS utilitarias del diseño interior (`getPushPermissionInnerLayoutClasses`), el contenedor de texto (`getPushPermissionTextContainerClasses`), los títulos y descripciones (`getPushPermissionTitleClasses`, `getPushPermissionDescriptionClasses`), el grupo de botones (`getPushPermissionActionGroupClasses`), y los tamaños e íconos (`getPushPermissionBellIconClasses`, `getPushPermissionActionBellIconClasses`, `getPushPermissionActionSpinnerClasses`) en `src/components/pwa/push-permission-utils.ts` mediante `cn()` desacopla las cadenas de Tailwind de la renderización del componente en `PushPermissionPrompt` (`src/components/pwa/push-permission-prompt.tsx`). Esto simplifica la mantención del aviso de permisos de notificaciones PWA y permite probar exhaustivamente las reglas de maquetación y estilos mediante unit tests rápidos e independientes.
+**Acción:** Reutilizar siempre las utilidades de `src/components/pwa/push-permission-utils.ts` al extender la interfaz de solicitud de notificaciones push del sistema.
+
 ### 2026-10-06 - Extracción de Funciones Helper Puras para Opciones de Revalidación de Caché y Auditoría de Etiquetas
 **Aprendizaje:** Abstraer las opciones integrales de revalidación (`getCacheRevalidateOptions` combinando TTL y etiquetas para `unstable_cache`), el formateo de mensajes de registro de invalidación de caché en español argentino (`formatCacheInvalidationLogMessage`), la categorización de etiquetas conocidas y desconocidas (`getCacheTagsSummary`), y la obtención de la etiqueta primaria por dominio (`getCacheTagForDomain`) en `src/lib/cache-tags.ts` simplifica el estandarizado de caché global en Server Actions y Server Components, facilita el registro claro de telemetría y asegura cobertura mediante pruebas unitarias puras e independientes.
 **Acción:** Reutilizar `getCacheRevalidateOptions` y `getCacheTagsSummary` al configurar almacenamiento en caché o invalidación de etiquetas en Server Actions.

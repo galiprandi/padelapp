@@ -23,6 +23,14 @@ import {
   getPushPermissionIconBadgeClasses,
   getPushPermissionActionButtonClasses,
   getPushPermissionDismissButtonClasses,
+  getPushPermissionInnerLayoutClasses,
+  getPushPermissionTextContainerClasses,
+  getPushPermissionTitleClasses,
+  getPushPermissionDescriptionClasses,
+  getPushPermissionActionGroupClasses,
+  getPushPermissionBellIconClasses,
+  getPushPermissionActionBellIconClasses,
+  getPushPermissionActionSpinnerClasses,
 } from "./push-permission-utils";
 
 export {
@@ -82,18 +90,18 @@ export function PushPermissionPrompt() {
       aria-busy={loading}
       className={getPushPermissionContainerClasses()}
     >
-      <div className="flex items-start gap-3">
+      <div className={getPushPermissionInnerLayoutClasses()}>
         <div className={getPushPermissionIconBadgeClasses()}>
-          <Bell className="h-5 w-5" aria-hidden="true" />
+          <Bell className={getPushPermissionBellIconClasses()} aria-hidden="true" />
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold text-foreground">
+        <div className={getPushPermissionTextContainerClasses()}>
+          <h3 className={getPushPermissionTitleClasses()}>
             {getPushPermissionTitle()}
           </h3>
-          <p className="mt-1 text-xs text-muted-foreground leading-normal">
+          <p className={getPushPermissionDescriptionClasses()}>
             {getPushPermissionDescription()}
           </p>
-          <div className="mt-3 flex items-center gap-2">
+          <div className={getPushPermissionActionGroupClasses()}>
             <Button
               onClick={async () => {
                 const token = await requestPermission();
@@ -107,9 +115,15 @@ export function PushPermissionPrompt() {
               className={getPushPermissionActionButtonClasses()}
             >
               {loading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                <Loader2
+                  className={getPushPermissionActionSpinnerClasses()}
+                  aria-hidden="true"
+                />
               ) : (
-                <Bell className="h-3.5 w-3.5" aria-hidden="true" />
+                <Bell
+                  className={getPushPermissionActionBellIconClasses()}
+                  aria-hidden="true"
+                />
               )}
               {getPushPermissionActionButtonLabel(loading)}
             </Button>
