@@ -7,6 +7,11 @@ import {
   getOnboardingProgressAriaLabel,
   getGreetingAriaLabel,
   formatCategoryBadgeText,
+  getGreetingContainerClasses,
+  getGreetingTitleClasses,
+  getGreetingCategoryBadgeClasses,
+  getGreetingProgressBadgeClasses,
+  getGreetingProgressTitleText,
 } from "@/components/greeting-utils";
 
 export { getOnboardingProgressCount };
@@ -53,8 +58,8 @@ export function Greeting({
   // hydration mismatch. The real greeting appears after mount.
   if (greeting === null) {
     return (
-      <div className="flex items-center gap-2">
-        <h1 className="text-xl font-bold text-foreground">
+      <div className={getGreetingContainerClasses()}>
+        <h1 className={getGreetingTitleClasses()}>
           <span className="inline-block min-w-24">&nbsp;</span>
         </h1>
       </div>
@@ -76,21 +81,21 @@ export function Greeting({
     <div
       role="region"
       aria-label={greetingAriaLabel}
-      className="flex items-center gap-2 flex-wrap"
+      className={getGreetingContainerClasses()}
     >
-      <h1 className="text-xl font-bold text-foreground">
+      <h1 className={getGreetingTitleClasses()}>
         {greeting}, {name}
       </h1>
       {categoryLabel && (
-        <span className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground shadow-xs">
+        <span className={getGreetingCategoryBadgeClasses()}>
           {categoryLabel}
         </span>
       )}
       {onboardingCount < 4 && (
         <span
-          className="inline-flex items-center rounded-md border border-border bg-card px-2 py-0.5 text-xs font-semibold text-primary shadow-xs font-mono"
+          className={getGreetingProgressBadgeClasses()}
           aria-label={progressAriaLabel}
-          title="Pasos completados en la guía de bienvenida"
+          title={getGreetingProgressTitleText()}
         >
           {onboardingCount}/4
         </span>

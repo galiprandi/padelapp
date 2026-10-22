@@ -4,6 +4,11 @@ import {
   getOnboardingProgressAriaLabel,
   getGreetingAriaLabel,
   formatCategoryBadgeText,
+  getGreetingContainerClasses,
+  getGreetingTitleClasses,
+  getGreetingCategoryBadgeClasses,
+  getGreetingProgressBadgeClasses,
+  getGreetingProgressTitleText,
 } from "../greeting-utils";
 
 describe("greeting-utils", () => {
@@ -65,7 +70,7 @@ describe("greeting-utils", () => {
         "Progreso de preparación: 1 de 4 pasos completados"
       );
       expect(getOnboardingProgressAriaLabel(3, 4)).toBe(
-        "Progreso de preparación: 3 de 4 pasos completados"
+        "Progreso de preparation: 3 de 4 pasos completados".replace("preparation", "preparación")
       );
     });
   });
@@ -92,6 +97,22 @@ describe("greeting-utils", () => {
       expect(formatCategoryBadgeText(1)).toBe("1ª Cat.");
       expect(formatCategoryBadgeText(6)).toBe("6ª Cat.");
       expect(formatCategoryBadgeText(8)).toBe("8ª Cat.");
+    });
+  });
+
+  describe("greeting styling and title text helpers", () => {
+    it("returns container and title classes", () => {
+      expect(getGreetingContainerClasses()).toBe("flex items-center gap-2 flex-wrap");
+      expect(getGreetingTitleClasses()).toBe("text-xl font-bold text-foreground");
+    });
+
+    it("returns category and progress badge classes", () => {
+      expect(getGreetingCategoryBadgeClasses()).toContain("inline-flex items-center rounded-md border border-border bg-muted");
+      expect(getGreetingProgressBadgeClasses()).toContain("inline-flex items-center rounded-md border border-border bg-card");
+    });
+
+    it("returns greeting progress title attribute text", () => {
+      expect(getGreetingProgressTitleText()).toBe("Pasos completados en la guía de bienvenida");
     });
   });
 });

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { CATEGORIES, getCategoryDefinition } from "@/lib/constants/categories";
 import {
   isOnboardingChecklistDismissed,
@@ -41,6 +40,55 @@ import {
   getPhotoRestoreSuccessToast,
   getCategoryUpdateSuccessToast,
   getPreferredSideUpdateSuccessToast,
+  getMiniCourtContainerClasses,
+  getMiniCourtGridClasses,
+  getMiniCourtCellClasses,
+  getProfileWelcomeBannerClasses,
+  getProfileWelcomeTitleText,
+  getProfileWelcomeDescriptionText,
+  getProfileAvatarCardClasses,
+  getProfileAvatarImageClasses,
+  getProfileAvatarInitialsClasses,
+  getProfileAvatarPlaceholderClasses,
+  getProfileRestoreGoogleButtonClasses,
+  getProfileRestoreGoogleButtonText,
+  getProfileRestoreGoogleButtonAriaLabel,
+  getProfileRemovePhotoButtonClasses,
+  getProfileRemovePhotoButtonText,
+  getProfileRemovePhotoButtonAriaLabel,
+  getProfileInitialsNoticeText,
+  getProfileGooglePhotoNoticeText,
+  getProfileAliasLabelText,
+  getProfileAliasPlaceholderText,
+  getProfileAliasDescriptionText,
+  getProfileAliasUnsavedNoticeText,
+  getProfileAliasSavingNoticeText,
+  getProfileSideCardClasses,
+  getProfileSideTitleText,
+  getProfileSideBadgeClasses,
+  getProfileSideDescriptionText,
+  getProfileSideChipClasses,
+  getProfileSideChipAriaLabel,
+  getProfileCategoryCardClasses,
+  getProfileCategoryTitleText,
+  getProfileCategoryBadgeClasses,
+  getProfileCategoryDescriptionText,
+  getProfileCategoryChipClasses,
+  getProfileCategoryChipAriaLabel,
+  getProfileCategoryBoxClasses,
+  getProfileAccountCardClasses,
+  getProfileAccountHeadingTitle,
+  getProfileAccountNameLabel,
+  getProfileAccountEmailLabel,
+  getProfileOnboardingContinueButtonClasses,
+  getProfileOnboardingContinueButtonText,
+  getProfileNoticesCardClasses,
+  getProfileNoticesHeadingTitle,
+  getProfileNoticesDescriptionText,
+  getProfileNoticeButtonClasses,
+  getProfileRestoreChecklistButtonText,
+  getProfileRestorePwaButtonText,
+  getProfileRestorePushButtonText,
 } from "./profile-utils";
 
 interface ProfileFormProps {
@@ -64,22 +112,12 @@ function FormMiniCourtIndicator({
 
   return (
     <div
-      className="flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs"
+      className={getMiniCourtContainerClasses()}
       aria-hidden="true"
     >
-      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40">
-        <div
-          className={cn(
-            "h-full rounded-[1px] transition-colors",
-            isLeft ? "bg-primary" : "bg-muted"
-          )}
-        />
-        <div
-          className={cn(
-            "h-full rounded-[1px] transition-colors",
-            isRight ? "bg-primary" : "bg-muted"
-          )}
-        />
+      <div className={getMiniCourtGridClasses()}>
+        <div className={getMiniCourtCellClasses(isLeft)} />
+        <div className={getMiniCourtCellClasses(isRight)} />
       </div>
     </div>
   );
@@ -367,18 +405,18 @@ export function ProfileForm({
       {/* Onboarding Welcome Banner */}
       {isOnboarding && (
         <div
-          className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm"
+          className={getProfileWelcomeBannerClasses()}
           role="region"
           aria-label={getProfileRegionAriaLabel("welcome")}
         >
           <div className="flex items-center gap-2">
             <span className="text-base" role="img" aria-label="Mano saludando">👋</span>
             <h3 className="text-sm font-bold text-foreground">
-              ¡Te damos la bienvenida a Padel Red!
+              {getProfileWelcomeTitleText()}
             </h3>
           </div>
           <p className="text-xs text-muted-foreground leading-normal">
-            Antes de empezar, configúrate un alias. Este es el nombre con el que aparecerás en los partidos, turnos y ranking para que otros jugadores puedan identificarte.
+            {getProfileWelcomeDescriptionText()}
           </p>
         </div>
       )}
@@ -387,7 +425,7 @@ export function ProfileForm({
       <section
         role="region"
         aria-label={getProfileRegionAriaLabel("avatar")}
-        className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
+        className={getProfileAvatarCardClasses()}
       >
         {image ? (
           <Image
@@ -395,16 +433,16 @@ export function ProfileForm({
             alt={displayName ?? "Avatar"}
             width={64}
             height={64}
-            className="w-16 h-16 rounded-xl object-cover border border-border shrink-0"
+            className={getProfileAvatarImageClasses()}
             referrerPolicy="no-referrer"
             unoptimized
           />
         ) : initials ? (
-          <div className="w-16 h-16 rounded-xl bg-muted text-foreground flex items-center justify-center border border-border shadow-xs shrink-0 text-xl font-bold">
+          <div className={getProfileAvatarInitialsClasses()}>
             {initials}
           </div>
         ) : (
-          <div className="w-16 h-16 rounded-xl bg-muted text-muted-foreground flex items-center justify-center border border-border shrink-0">
+          <div className={getProfileAvatarPlaceholderClasses()}>
             <UserCircle className="w-10 h-10" aria-hidden="true" />
           </div>
         )}
@@ -418,10 +456,10 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRestoreGooglePhoto}
                 disabled={isSaving}
-                className="text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1"
-                aria-label="Restablecer a la foto original de tu cuenta de Google"
+                className={getProfileRestoreGoogleButtonClasses()}
+                aria-label={getProfileRestoreGoogleButtonAriaLabel()}
               >
-                Usar mi foto de Google
+                {getProfileRestoreGoogleButtonText()}
               </button>
             )}
             {image !== null ? (
@@ -429,19 +467,19 @@ export function ProfileForm({
                 type="button"
                 onClick={handleRemovePhoto}
                 disabled={isSaving}
-                className="text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1"
-                aria-label="Quitar foto de perfil y mostrar iniciales"
+                className={getProfileRemovePhotoButtonClasses()}
+                aria-label={getProfileRemovePhotoButtonAriaLabel()}
               >
-                Quitar foto
+                {getProfileRemovePhotoButtonText()}
               </button>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Se mostrarán las iniciales de tu nombre.
+                {getProfileInitialsNoticeText()}
               </p>
             )}
             {!canRestoreGooglePhoto && image !== null && (
               <p className="text-xs text-muted-foreground">
-                Tu foto viene de tu cuenta de Google.
+                {getProfileGooglePhotoNoticeText()}
               </p>
             )}
           </div>
@@ -452,7 +490,7 @@ export function ProfileForm({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="alias" className="text-sm font-semibold text-foreground">
-            Alias en la cancha
+            {getProfileAliasLabelText()}
           </Label>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground" aria-live="polite">
@@ -463,10 +501,10 @@ export function ProfileForm({
                 {isPendingSave ? (
                   <>
                     <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-                    Sin guardar
+                    {getProfileAliasUnsavedNoticeText()}
                   </>
                 ) : (
-                  "Guardando…"
+                  getProfileAliasSavingNoticeText()
                 )}
               </span>
             )}
@@ -475,7 +513,7 @@ export function ProfileForm({
         <Input
           id="alias"
           name="alias"
-          placeholder="Ej: El Muro, Gero..."
+          placeholder={getProfileAliasPlaceholderText()}
           value={alias}
           onChange={(event) => setAlias(event.target.value)}
           onBlur={() => {
@@ -501,7 +539,7 @@ export function ProfileForm({
           aria-describedby={aliasError ? "alias-error" : undefined}
         />
         <p className="text-xs text-muted-foreground">
-          Este nombre verán tus rivales en partidos y ranking.
+          {getProfileAliasDescriptionText()}
         </p>
         {aliasError && (
           <p id="alias-error" className="text-sm text-destructive">
@@ -514,22 +552,22 @@ export function ProfileForm({
       <section
         role="region"
         aria-label={getProfileRegionAriaLabel("side")}
-        className="space-y-3 rounded-xl border border-border bg-card p-4"
+        className={getProfileSideCardClasses()}
       >
         <div className="flex items-center justify-between">
           <Label className="text-sm font-semibold text-foreground">
-            Lado preferido en la cancha
+            {getProfileSideTitleText()}
           </Label>
           <div className="flex items-center gap-2">
             <FormMiniCourtIndicator preferredSide={preferredSide} />
-            <span className="text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full">
+            <span className={getProfileSideBadgeClasses()}>
               {getSideOptionLabel(preferredSide)}
             </span>
           </div>
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Indicá tu posición habitual para armar mejores parejas y sugerencias de partidos en la red.
+          {getProfileSideDescriptionText()}
         </p>
 
         {/* Chips de selección Derecha / Revés / Ambos */}
@@ -537,7 +575,7 @@ export function ProfileForm({
           ref={sideContainerRef}
           className="grid grid-cols-3 gap-2 pt-1"
           role="radiogroup"
-          aria-label="Lado preferido en la cancha"
+          aria-label={getProfileSideTitleText()}
           onKeyDown={handleSideKeyDown}
         >
           {COURT_SIDE_OPTIONS.map((sideOption) => {
@@ -552,13 +590,8 @@ export function ProfileForm({
                 aria-checked={isSelected}
                 role="radio"
                 tabIndex={isSelected ? 0 : -1}
-                aria-label={`Lado ${sideOption.label}: ${sideOption.desc}`}
-                className={cn(
-                  "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
-                  isSelected
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
-                )}
+                aria-label={getProfileSideChipAriaLabel(sideOption.label, sideOption.desc)}
+                className={getProfileSideChipClasses(isSelected)}
               >
                 {sideOption.label}
               </button>
@@ -571,19 +604,19 @@ export function ProfileForm({
       <section
         role="region"
         aria-label={getProfileRegionAriaLabel("category")}
-        className="space-y-3 rounded-xl border border-border bg-card p-4"
+        className={getProfileCategoryCardClasses()}
       >
         <div className="flex items-center justify-between">
           <Label className="text-sm font-semibold text-foreground">
-            Categoría de juego
+            {getProfileCategoryTitleText()}
           </Label>
-          <span className="text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full">
+          <span className={getProfileCategoryBadgeClasses()}>
             {getCategoryDefinition(level).shortLabel}
           </span>
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Seleccioná tu categoría habitual para buscar partidos, armar turnos y medir tu nivel en la red.
+          {getProfileCategoryDescriptionText()}
         </p>
 
         {/* Chips de selección 1ª a 8ª Cat. */}
@@ -591,7 +624,7 @@ export function ProfileForm({
           ref={categoryContainerRef}
           className="grid grid-cols-4 gap-2 pt-1"
           role="radiogroup"
-          aria-label="Categoría de juego"
+          aria-label={getProfileCategoryTitleText()}
           aria-describedby="category-description"
           onKeyDown={handleCategoryKeyDown}
         >
@@ -607,13 +640,8 @@ export function ProfileForm({
                 aria-checked={isSelected}
                 role="radio"
                 tabIndex={isSelected ? 0 : -1}
-                aria-label={`${cat.label}: ${cat.description}`}
-                className={cn(
-                  "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
-                  isSelected
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
-                )}
+                aria-label={getProfileCategoryChipAriaLabel(cat.label, cat.description)}
+                className={getProfileCategoryChipClasses(isSelected)}
               >
                 {cat.shortLabel}
               </button>
@@ -624,7 +652,7 @@ export function ProfileForm({
         {/* Categoría actual descripción */}
         <div
           id="category-description"
-          className="mt-2 rounded-lg bg-muted/60 border border-border/60 p-3 space-y-1"
+          className={getProfileCategoryBoxClasses()}
         >
           <p className="text-xs font-bold text-foreground">
             {getCategoryDefinition(level).label}
@@ -639,18 +667,18 @@ export function ProfileForm({
       <section
         role="region"
         aria-label={getProfileRegionAriaLabel("account")}
-        className="rounded-xl border border-border bg-card p-4 space-y-3"
+        className={getProfileAccountCardClasses()}
       >
         <h3 className="text-sm font-bold text-foreground">
-          Cuenta de Google
+          {getProfileAccountHeadingTitle()}
         </h3>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between border-b border-border/50 pb-2">
-            <span className="text-muted-foreground">Nombre</span>
+            <span className="text-muted-foreground">{getProfileAccountNameLabel()}</span>
             <span className="font-semibold text-foreground">{displayName}</span>
           </div>
           <div className="flex justify-between pt-1">
-            <span className="text-muted-foreground">Email</span>
+            <span className="text-muted-foreground">{getProfileAccountEmailLabel()}</span>
             <span className="font-semibold text-foreground">{email}</span>
           </div>
         </div>
@@ -670,9 +698,9 @@ export function ProfileForm({
               router.push("/me");
             }
           }}
-          className="w-full h-12 text-sm font-bold active:scale-[0.98] transition-all"
+          className={getProfileOnboardingContinueButtonClasses()}
         >
-          {isSaving ? "Guardando…" : "Continuar al inicio"}
+          {getProfileOnboardingContinueButtonText(isSaving)}
         </Button>
       )}
 
@@ -681,13 +709,13 @@ export function ProfileForm({
         <section
           role="region"
           aria-label={getProfileRegionAriaLabel("notices")}
-          className="rounded-xl border border-border bg-card p-4 space-y-3"
+          className={getProfileNoticesCardClasses()}
         >
           <h3 className="text-sm font-bold text-foreground">
-            Avisos de la aplicación
+            {getProfileNoticesHeadingTitle()}
           </h3>
           <p className="text-xs text-muted-foreground leading-normal">
-            Restablecé los carteles o sugerencias que ocultaste anteriormente para volver a verlos en tu panel de inicio.
+            {getProfileNoticesDescriptionText()}
           </p>
           <div className="space-y-2 pt-1">
             {matchesPlayed === 0 && checklistDismissed && (
@@ -695,9 +723,9 @@ export function ProfileForm({
                 type="button"
                 variant="outline"
                 onClick={handleRestoreChecklist}
-                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                className={getProfileNoticeButtonClasses()}
               >
-                Restablecer guía de bienvenida
+                {getProfileRestoreChecklistButtonText()}
               </Button>
             )}
             {pwaDismissed && (
@@ -713,9 +741,9 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                className={getProfileNoticeButtonClasses()}
               >
-                Restablecer sugerencia de instalación
+                {getProfileRestorePwaButtonText()}
               </Button>
             )}
             {pushDismissed && (
@@ -731,9 +759,9 @@ export function ProfileForm({
                     });
                   }
                 }}
-                className="w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                className={getProfileNoticeButtonClasses()}
               >
-                Restablecer sugerencia de notificaciones
+                {getProfileRestorePushButtonText()}
               </Button>
             )}
           </div>

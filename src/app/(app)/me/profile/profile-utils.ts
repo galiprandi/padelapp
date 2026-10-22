@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const MIN_ALIAS_LENGTH = 2;
 export const MAX_ALIAS_LENGTH = 30;
 export const AUTOSAVE_DEBOUNCE_MS = 800;
@@ -189,4 +191,210 @@ export function getProfileSecurityDescription(): string {
 
 export function getProfileSkeletonAriaLabel(): string {
   return "Cargando formulario de perfil...";
+}
+
+export function getMiniCourtContainerClasses(): string {
+  return "flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs";
+}
+
+export function getMiniCourtGridClasses(): string {
+  return "grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40";
+}
+
+export function getMiniCourtCellClasses(isActive: boolean): string {
+  return cn("h-full rounded-[1px] transition-colors", isActive ? "bg-primary" : "bg-muted");
+}
+
+export function getProfileWelcomeBannerClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-2 shadow-sm";
+}
+
+export function getProfileWelcomeTitleText(): string {
+  return "¡Te damos la bienvenida a Padel Red!";
+}
+
+export function getProfileWelcomeDescriptionText(): string {
+  return "Antes de empezar, configúrate un alias. Este es el nombre con el que aparecerás en los partidos, turnos y ranking para que otros jugadores puedan identificarte.";
+}
+
+export function getProfileAvatarCardClasses(): string {
+  return "flex items-center gap-4 rounded-xl border border-border bg-card p-4";
+}
+
+export function getProfileAvatarImageClasses(): string {
+  return "w-16 h-16 rounded-xl object-cover border border-border shrink-0";
+}
+
+export function getProfileAvatarInitialsClasses(): string {
+  return "w-16 h-16 rounded-xl bg-muted text-foreground flex items-center justify-center border border-border shadow-xs shrink-0 text-xl font-bold";
+}
+
+export function getProfileAvatarPlaceholderClasses(): string {
+  return "w-16 h-16 rounded-xl bg-muted text-muted-foreground flex items-center justify-center border border-border shrink-0";
+}
+
+export function getProfileRestoreGoogleButtonClasses(): string {
+  return "text-xs text-primary underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1";
+}
+
+export function getProfileRestoreGoogleButtonText(): string {
+  return "Usar mi foto de Google";
+}
+
+export function getProfileRestoreGoogleButtonAriaLabel(): string {
+  return "Restablecer a la foto original de tu cuenta de Google";
+}
+
+export function getProfileRemovePhotoButtonClasses(): string {
+  return "text-xs text-muted-foreground underline underline-offset-2 hover:no-underline disabled:opacity-50 min-h-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all rounded px-1";
+}
+
+export function getProfileRemovePhotoButtonText(): string {
+  return "Quitar foto";
+}
+
+export function getProfileRemovePhotoButtonAriaLabel(): string {
+  return "Quitar foto de perfil y mostrar iniciales";
+}
+
+export function getProfileInitialsNoticeText(): string {
+  return "Se mostrarán las iniciales de tu nombre.";
+}
+
+export function getProfileGooglePhotoNoticeText(): string {
+  return "Tu foto viene de tu cuenta de Google.";
+}
+
+export function getProfileAliasLabelText(): string {
+  return "Alias en la cancha";
+}
+
+export function getProfileAliasPlaceholderText(): string {
+  return "Ej: El Muro, Gero...";
+}
+
+export function getProfileAliasDescriptionText(): string {
+  return "Este nombre verán tus rivales en partidos y ranking.";
+}
+
+export function getProfileAliasUnsavedNoticeText(): string {
+  return "Sin guardar";
+}
+
+export function getProfileAliasSavingNoticeText(): string {
+  return "Guardando…";
+}
+
+export function getProfileSideCardClasses(): string {
+  return "space-y-3 rounded-xl border border-border bg-card p-4";
+}
+
+export function getProfileSideTitleText(): string {
+  return "Lado preferido en la cancha";
+}
+
+export function getProfileSideBadgeClasses(): string {
+  return "text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full";
+}
+
+export function getProfileSideDescriptionText(): string {
+  return "Indicá tu posición habitual para armar mejores parejas y sugerencias de partidos en la red.";
+}
+
+export function getProfileSideChipClasses(isSelected: boolean): string {
+  return cn(
+    "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
+    isSelected
+      ? "bg-primary text-primary-foreground border-primary shadow-sm"
+      : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+  );
+}
+
+export function getProfileSideChipAriaLabel(label: string, desc: string): string {
+  return `Lado ${label}: ${desc}`;
+}
+
+export function getProfileCategoryCardClasses(): string {
+  return "space-y-3 rounded-xl border border-border bg-card p-4";
+}
+
+export function getProfileCategoryTitleText(): string {
+  return "Categoría de juego";
+}
+
+export function getProfileCategoryBadgeClasses(): string {
+  return "text-xs font-bold text-foreground bg-muted border border-border px-2.5 py-0.5 rounded-full";
+}
+
+export function getProfileCategoryDescriptionText(): string {
+  return "Seleccioná tu categoría habitual para buscar partidos, armar turnos y medir tu nivel en la red.";
+}
+
+export function getProfileCategoryChipClasses(isSelected: boolean): string {
+  return cn(
+    "h-10 rounded-lg text-xs font-bold transition-all border flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
+    isSelected
+      ? "bg-primary text-primary-foreground border-primary shadow-sm"
+      : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+  );
+}
+
+export function getProfileCategoryChipAriaLabel(label: string, desc: string): string {
+  return `${label}: ${desc}`;
+}
+
+export function getProfileCategoryBoxClasses(): string {
+  return "mt-2 rounded-lg bg-muted/60 border border-border/60 p-3 space-y-1";
+}
+
+export function getProfileAccountCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-3";
+}
+
+export function getProfileAccountHeadingTitle(): string {
+  return "Cuenta de Google";
+}
+
+export function getProfileAccountNameLabel(): string {
+  return "Nombre";
+}
+
+export function getProfileAccountEmailLabel(): string {
+  return "Email";
+}
+
+export function getProfileOnboardingContinueButtonClasses(): string {
+  return "w-full h-12 text-sm font-bold active:scale-[0.98] transition-all";
+}
+
+export function getProfileOnboardingContinueButtonText(isSaving: boolean): string {
+  return isSaving ? "Guardando…" : "Continuar al inicio";
+}
+
+export function getProfileNoticesCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-3";
+}
+
+export function getProfileNoticesHeadingTitle(): string {
+  return "Avisos de la aplicación";
+}
+
+export function getProfileNoticesDescriptionText(): string {
+  return "Restablecé los carteles o sugerencias que ocultaste anteriormente para volver a verlos en tu panel de inicio.";
+}
+
+export function getProfileNoticeButtonClasses(): string {
+  return "w-full h-10 text-xs font-bold border-border hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getProfileRestoreChecklistButtonText(): string {
+  return "Restablecer guía de bienvenida";
+}
+
+export function getProfileRestorePwaButtonText(): string {
+  return "Restablecer sugerencia de instalación";
+}
+
+export function getProfileRestorePushButtonText(): string {
+  return "Restablecer sugerencia de notificaciones";
 }
