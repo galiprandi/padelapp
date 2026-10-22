@@ -65,6 +65,13 @@ import {
   getStatsPanelSectionCardClasses,
   getStatsPanelSummaryCardClasses,
   getStatsPanelTopPlayerItemClasses,
+  getStatsPanelScoreBadgeClasses,
+  getStatsPanelScoreLabelText,
+  getStatsPanelProfileButtonClasses,
+  getStatsPanelProfileButtonText,
+  getStatsPanelCommunityBarContainerClasses,
+  getStatsPanelTopPlayerRankClasses,
+  getStatsPanelTopPlayerContactsClasses,
   getTopClubsHeadingTitle,
   getTopCommunitiesHeadingTitle,
   getTopConnectedHeadingTitle,
@@ -343,8 +350,8 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       </div>
                     </Link>
                     <div className="flex items-center gap-2 shrink-0">
-                      <div className="rounded-md bg-muted px-2 py-1 text-center border border-border">
-                        <p className="text-[10px] uppercase font-bold text-muted-foreground">Score</p>
+                      <div className={getStatsPanelScoreBadgeClasses()}>
+                        <p className="text-[10px] uppercase font-bold text-muted-foreground">{getStatsPanelScoreLabelText()}</p>
                         <p className="text-xs font-bold tabular-nums text-foreground">
                           {skillText}
                         </p>
@@ -353,9 +360,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                         href={`/p/${player.id}`}
                         prefetch={true}
                         aria-label={getRecommendedPlayerProfileLinkAriaLabel(name)}
-                        className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                        className={getStatsPanelProfileButtonClasses()}
                       >
-                        Perfil
+                        {getStatsPanelProfileButtonText()}
                       </Link>
                     </div>
                   </div>
@@ -504,7 +511,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       {getStatsCardCommunityMembersText(c.size)}
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className={getStatsPanelCommunityBarContainerClasses()}>
                     <div
                       className="h-full rounded-full bg-primary transition-all duration-500"
                       style={{ width: `${pct}%` }}
@@ -559,7 +566,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   prefetch={true}
                   className={getStatsPanelTopPlayerItemClasses()}
                 >
-                  <span className="text-xs font-bold text-muted-foreground w-4 tabular-nums shrink-0">
+                  <span className={getStatsPanelTopPlayerRankClasses()}>
                     {getTopPlayerRankText(i)}
                   </span>
                   <PlayerAvatar
@@ -680,7 +687,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-xs font-bold tabular-nums text-primary block">
+                    <span className={getStatsPanelTopPlayerContactsClasses()}>
                       {getTopPlayerContactsText(p.networkSize)}
                     </span>
                   </div>
@@ -760,7 +767,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       {getTopClubTurnsMatchesText(c.turns, c.matches)}
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className={getStatsPanelCommunityBarContainerClasses()}>
                     <div
                       className="h-full rounded-full bg-primary transition-all duration-500"
                       style={{ width: `${pct}%` }}

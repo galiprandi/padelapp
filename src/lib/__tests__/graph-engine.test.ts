@@ -249,6 +249,31 @@ import {
   getGraphViewSelectedNodeDetailClasses,
   getGraphViewTopFilterContainerClasses,
   getGraphViewSearchContainerClasses,
+  getNetworkScopeLabelText,
+  getNetworkScopeRadiogroupClasses,
+  getNetworkScopeButtonClasses,
+  getNetworkScopeButtonText,
+  getGraphViewFilterBarContainerClasses,
+  getGraphViewActiveCommunityBannerClasses,
+  getGraphViewEmptyNetworkNoticeClasses,
+  getGraphViewDetailPanelCardScoreClasses,
+  getGraphViewDetailPanelPublicProfileButtonClasses,
+  getGraphViewSummaryCardContainerClasses,
+  getGraphViewSummaryCardTitleText,
+  getGraphViewSummaryCardTotalText,
+  getGraphViewSummaryCardSynergyText,
+  getGraphViewConnectionItemClasses,
+  getGraphViewWinRateBadgeClasses,
+  getGraphViewProfileLinkClasses,
+  getGraphViewMutualContactsBadgeClasses,
+  getGraphViewMutualContactsBadgeText,
+  getStatsPanelScoreBadgeClasses,
+  getStatsPanelScoreLabelText,
+  getStatsPanelProfileButtonClasses,
+  getStatsPanelProfileButtonText,
+  getStatsPanelCommunityBarContainerClasses,
+  getStatsPanelTopPlayerRankClasses,
+  getStatsPanelTopPlayerContactsClasses,
   formatTimeAgo,
   getNetworkSkeletonAriaLabel,
   getNetworkSkeletonContainerClasses,
@@ -1913,6 +1938,42 @@ describe("GraphView detail panel and filter pure helper functions", () => {
     expect(getGraphViewTopFilterContainerClasses()).toContain("absolute top-3 left-3 right-3");
     expect(getGraphViewSearchContainerClasses()).toContain("flex-1 flex items-center gap-2");
   });
+
+    it("returns newly extracted UI styling and text label pure helpers for GraphView and StatsPanel", () => {
+      expect(getNetworkScopeLabelText()).toBe("Ámbito de la red");
+      expect(getNetworkScopeRadiogroupClasses()).toContain("grid grid-cols-2");
+      expect(getNetworkScopeButtonClasses(true)).toContain("bg-primary text-primary-foreground");
+      expect(getNetworkScopeButtonClasses(false)).toContain("text-muted-foreground");
+      expect(getNetworkScopeButtonText("personal")).toBe("Mi red");
+      expect(getNetworkScopeButtonText("global")).toBe("Red completa");
+
+      expect(getGraphViewFilterBarContainerClasses()).toContain("flex items-center gap-1.5");
+      expect(getGraphViewActiveCommunityBannerClasses()).toContain("flex items-center justify-between");
+      expect(getGraphViewEmptyNetworkNoticeClasses()).toContain("absolute inset-x-4 bottom-4");
+
+      expect(getGraphViewDetailPanelCardScoreClasses()).toContain("rounded-lg bg-muted px-2 py-1.5");
+      expect(getGraphViewDetailPanelPublicProfileButtonClasses()).toContain("block w-full text-center");
+
+      expect(getGraphViewSummaryCardContainerClasses()).toContain("mb-2.5 rounded-lg bg-muted");
+      expect(getGraphViewSummaryCardTitleText()).toBe("Resumen de red");
+      expect(getGraphViewSummaryCardTotalText(1)).toBe("1 conexión");
+      expect(getGraphViewSummaryCardTotalText(5)).toBe("5 conexiones");
+      expect(getGraphViewSummaryCardSynergyText("1 dupla sinérgica")).toBe("Sinergia: 1 dupla sinérgica");
+
+      expect(getGraphViewConnectionItemClasses()).toContain("flex flex-col gap-1 p-1.5");
+      expect(getGraphViewWinRateBadgeClasses()).toContain("text-[10px] font-bold px-1.5 py-0.5");
+      expect(getGraphViewProfileLinkClasses()).toContain("text-[11px] font-bold text-primary");
+      expect(getGraphViewMutualContactsBadgeClasses()).toContain("text-[10px] font-bold px-1.5 py-0.5");
+      expect(getGraphViewMutualContactsBadgeText(2)).toBe("2 en común 🤝");
+
+      expect(getStatsPanelScoreBadgeClasses()).toContain("rounded-md bg-muted px-2 py-1");
+      expect(getStatsPanelScoreLabelText()).toBe("Score");
+      expect(getStatsPanelProfileButtonClasses()).toContain("inline-flex h-8 items-center");
+      expect(getStatsPanelProfileButtonText()).toBe("Perfil");
+      expect(getStatsPanelCommunityBarContainerClasses()).toContain("h-2 w-full rounded-full");
+      expect(getStatsPanelTopPlayerRankClasses()).toContain("text-xs font-bold text-muted-foreground");
+      expect(getStatsPanelTopPlayerContactsClasses()).toContain("text-xs font-bold tabular-nums");
+    });
 });
 
 describe("GraphView Pure Helpers Extraction", () => {

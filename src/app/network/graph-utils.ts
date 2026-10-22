@@ -4093,3 +4093,110 @@ export function getStatsPanelBadgeTagClasses(badgeStyle?: string): string {
     badgeStyle,
   );
 }
+
+export function getNetworkScopeLabelText(): string {
+  return "Ámbito de la red";
+}
+
+export function getNetworkScopeRadiogroupClasses(): string {
+  return "grid grid-cols-2 gap-1.5 bg-card/95 p-1 rounded-xl border border-border shadow-sm";
+}
+
+export function getNetworkScopeButtonClasses(active: boolean): string {
+  return cn(
+    "flex h-8 items-center justify-center gap-1.5 rounded-lg text-xs font-bold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    active
+      ? "bg-primary text-primary-foreground"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+  );
+}
+
+export function getNetworkScopeButtonText(scope: "personal" | "global"): string {
+  return scope === "personal" ? "Mi red" : "Red completa";
+}
+
+export function getGraphViewFilterBarContainerClasses(): string {
+  return "flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none";
+}
+
+export function getGraphViewActiveCommunityBannerClasses(): string {
+  return "flex items-center justify-between gap-2 bg-card px-3 py-2 rounded-xl border border-border shadow-sm text-xs flex-wrap";
+}
+
+export function getGraphViewEmptyNetworkNoticeClasses(): string {
+  return "absolute inset-x-4 bottom-4 z-20 rounded-xl border border-border bg-card p-4 shadow-lg text-center space-y-3";
+}
+
+export function getGraphViewDetailPanelCardScoreClasses(): string {
+  return "rounded-lg bg-muted px-2 py-1.5 text-center border border-border";
+}
+
+export function getGraphViewDetailPanelPublicProfileButtonClasses(): string {
+  return "block w-full text-center rounded-lg border border-border bg-card px-3 py-2 text-xs font-bold text-foreground transition-colors hover:bg-muted active:scale-[0.98] mb-3";
+}
+
+export function getGraphViewSummaryCardContainerClasses(): string {
+  return "mb-2.5 rounded-lg bg-muted p-2 border border-border text-xs space-y-1";
+}
+
+export function getGraphViewSummaryCardTitleText(): string {
+  return "Resumen de red";
+}
+
+export function getGraphViewSummaryCardTotalText(count: number): string {
+  return `${count} ${count === 1 ? "conexión" : "conexiones"}`;
+}
+
+export function getGraphViewSummaryCardSynergyText(
+  synergySummary: string,
+): string {
+  return `Sinergia: ${synergySummary}`;
+}
+
+export function getGraphViewConnectionItemClasses(): string {
+  return "flex flex-col gap-1 p-1.5 rounded-lg hover:bg-muted/60 transition-colors";
+}
+
+export function getGraphViewWinRateBadgeClasses(): string {
+  return "text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0";
+}
+
+export function getGraphViewProfileLinkClasses(): string {
+  return "text-[11px] font-bold text-primary hover:underline px-1.5 py-0.5 rounded-md active:scale-[0.95] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0";
+}
+
+export function getGraphViewMutualContactsBadgeClasses(): string {
+  return "text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-muted text-foreground border border-border shrink-0";
+}
+
+export function getGraphViewMutualContactsBadgeText(count: number): string {
+  return `${count} en común 🤝`;
+}
+
+export function getStatsPanelScoreBadgeClasses(): string {
+  return "rounded-md bg-muted px-2 py-1 text-center border border-border";
+}
+
+export function getStatsPanelScoreLabelText(): string {
+  return "Score";
+}
+
+export function getStatsPanelProfileButtonClasses(): string {
+  return "inline-flex h-8 items-center justify-center rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getStatsPanelProfileButtonText(): string {
+  return "Perfil";
+}
+
+export function getStatsPanelCommunityBarContainerClasses(): string {
+  return "h-2 w-full rounded-full bg-muted overflow-hidden";
+}
+
+export function getStatsPanelTopPlayerRankClasses(): string {
+  return "text-xs font-bold text-muted-foreground w-4 tabular-nums shrink-0";
+}
+
+export function getStatsPanelTopPlayerContactsClasses(): string {
+  return "text-xs font-bold tabular-nums text-primary block";
+}
