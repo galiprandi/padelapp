@@ -2998,6 +2998,13 @@ export function getPlayCasualConfirmButtonClasses(): string {
 }
 
 /**
+ * Format CSS classes for quick join empty slot button in turn actions.
+ */
+export function getQuickJoinEmptySlotButtonClasses(): string {
+  return "h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
  * Format custom share text for turn public details ShareButton when open slots exist.
  */
 export function getTurnShareText({

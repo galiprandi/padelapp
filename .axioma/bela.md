@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-22 — QuickJoinEmptySlotButton Pure Styling Helper Extraction, Refactoring & Unit Tests (bela/turnos/quick-join-empty-slot-button-pure-helper)
 - [x] 2026-10-18 — Turn Public Details UI Styling & Share Props Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-public-details-ui-styling-and-share-props-pure-helpers)
 - [x] 2026-10-17 — Calendar iCal Filename & Add Player Search Label Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-ical-filename-and-search-label-pure-helpers)
 - [x] 2026-10-16 — Compact Date, Edit Button & Container Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/compact-date-and-edit-button-pure-helpers)
@@ -80,6 +81,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-22 - QuickJoinEmptySlotButton Pure Styling Helper Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure helper function `getQuickJoinEmptySlotButtonClasses` into `src/components/turns/turn-utils.ts` decouples action button CSS class composition (`h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) from React component render trees in `QuickJoinEmptySlotButton` (`src/components/turns/turn-actions.tsx`). Consuming this pure helper ensures strict compliance with Minimal Design System (MDS) §1.2 guidelines while preserving focus-visible ring offsets and active tactile press scaling.
+**Action:** Always extract button CSS class compositions into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-18 - Turn Public Details UI Styling & Share Props Pure Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper functions (`getTurnPublicDetailsHeaderBackLinkClasses`, `getTurnPublicDetailsBannerContainerClasses`, `getTurnPublicDetailsBannerShareButtonClasses`, `getTurnPublicDetailsInfoCardClasses`, `getTurnPublicDetailsInfoCardHeaderClasses`, `getTurnPublicDetailsInfoCardNotesClasses`, `getTurnPublicDetailsPlayerItemClasses`, `getTurnPublicDetailsEmptySlotClasses`, `getTurnPublicDetailsSuggestedContactItemClasses`, `getTurnPublicDetailsSubstituteItemClasses`, `getTurnShareData`, and `getTurnShareText`) into `src/components/turns/turn-utils.ts` decouples UI container styling compositions and share prop calculations (`type: "turn"` vs salvage message) from React render trees in `TurnPublicDetails` and `TurnShareButton` (`src/app/t/[id]/turn-public-details.tsx`). Consuming these pure helpers guarantees strict compliance with Argentine Spanish voseo conventions without exclamation marks while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid MDS container styling (`shadow-xs`).
 **Action:** Always extract card container CSS class compositions and share payload formatting logic into pure helper utilities backed by Vitest unit tests.

@@ -79,6 +79,7 @@ import {
   getPlayCasualConfirmContainerClasses,
   getPlayCasualCancelButtonClasses,
   getPlayCasualConfirmButtonClasses,
+  getQuickJoinEmptySlotButtonClasses,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -183,7 +184,7 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
       disabled={isPending}
       size="sm"
       variant="outline"
-      className="h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+      className={getQuickJoinEmptySlotButtonClasses()}
       aria-label={getQuickJoinEmptySlotAriaLabel(isPending)}
       aria-busy={isPending}
     >

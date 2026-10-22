@@ -280,6 +280,7 @@ import {
   getPlayCasualConfirmContainerClasses,
   getPlayCasualCancelButtonClasses,
   getPlayCasualConfirmButtonClasses,
+  getQuickJoinEmptySlotButtonClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1352,6 +1353,7 @@ describe("Turn action UI button and container CSS class pure helpers", () => {
     expect(getPlayCasualConfirmContainerClasses()).toContain("flex flex-col gap-2");
     expect(getPlayCasualCancelButtonClasses()).toContain("flex-1 h-10 rounded-lg");
     expect(getPlayCasualConfirmButtonClasses()).toContain("bg-emerald-600");
+    expect(getQuickJoinEmptySlotButtonClasses()).toContain("border-primary text-primary hover:bg-primary/10");
   });
 });
 
