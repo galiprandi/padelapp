@@ -32,6 +32,20 @@ import {
   getMatchPlayerSideLabel,
   getMatchPlayerAvatarAriaLabel,
   getMatchResultCardRegionAriaLabel,
+  getMatchResultCardContainerClasses,
+  getMatchResultCardHeaderClasses,
+  getMatchResultCardTitleClasses,
+  getMatchResultCardContentClasses,
+  getMatchResultCardFooterClasses,
+  getMatchQuickConfirmButtonClasses,
+  getMatchShareButtonClasses,
+  getMatchDetailLinkClasses,
+  getMatchTeamContainerClasses,
+  getMatchPlayerAvatarClasses,
+  getMatchPlayerNameClasses,
+  getMatchSideBadgeClasses,
+  getMatchScoreSegmentClasses,
+  getMatchVersusDividerClasses,
 } from "./match-result-card-utils";
 
 export interface MatchResultCardProps {
@@ -49,16 +63,16 @@ export function MatchResultCard({
     <div
       role="region"
       aria-label={getMatchResultCardRegionAriaLabel(label)}
-      className="rounded-xl border border-border bg-card shadow-xs overflow-hidden"
+      className={getMatchResultCardContainerClasses()}
     >
-      <div className="border-b border-border px-4 py-2">
-        <span className="text-xs font-semibold text-muted-foreground">
+      <div className={getMatchResultCardHeaderClasses()}>
+        <span className={getMatchResultCardTitleClasses()}>
           {label}
         </span>
       </div>
-      <div className="p-4 text-sm text-muted-foreground">{children}</div>
+      <div className={getMatchResultCardContentClasses()}>{children}</div>
       {footer ? (
-        <div className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
+        <div className={getMatchResultCardFooterClasses()}>
           {footer}
         </div>
       ) : null}
@@ -232,7 +246,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   disabled={isConfirming}
                   aria-busy={isConfirming}
                   aria-label={getMatchQuickConfirmButtonAriaLabel(match.score)}
-                  className="flex items-center gap-1 bg-primary text-primary-foreground px-2.5 h-8 rounded-lg text-xs font-semibold transition-all hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+                  className={getMatchQuickConfirmButtonClasses()}
                 >
                   {isConfirming ? (
                     <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
@@ -259,14 +273,14 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                   size="icon"
                   iconOnly
                   aria-label={getMatchShareButtonAriaLabel()}
-                  className="h-8 w-8 rounded-lg text-primary hover:bg-muted active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getMatchShareButtonClasses()}
                 />
               )}
               {showDetailLink && matchDetailUrl ? (
                 <Link
                   href={matchDetailUrl}
                   prefetch={true}
-                  className="flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+                  className={getMatchDetailLinkClasses()}
                   aria-label={getMatchDetailLinkAriaLabel(formattedDate)}
                 >
                   {getMatchDetailLinkText()}
@@ -291,22 +305,14 @@ export const MatchResultCompact = memo(function MatchResultCompact({
 
           return (
             <Fragment key={team.id}>
-              <div
-                className={cn(
-                  "grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-2 transition-colors",
-                  team.hasViewer && "bg-muted/80 font-medium",
-                )}
-              >
+              <div className={getMatchTeamContainerClasses(team.hasViewer)}>
                 <div className="flex items-center">
                   {team.players.map((player, index) => {
                     const avatarElement = (
                       <PlayerAvatar
                         name={player.name}
                         image={player.image ?? undefined}
-                        className={cn(
-                          "border-2 border-card transition-all hover:opacity-80 active:scale-[0.95]",
-                          index === 0 ? "ml-0" : "-ml-2",
-                        )}
+                        className={getMatchPlayerAvatarClasses(index)}
                         size={32}
                       />
                     );
@@ -343,10 +349,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                           <Link
                             href={`/p/${player.userId}`}
                             prefetch={true}
-                            className={cn(
-                              "truncate hover:text-primary",
-                              isViewer && "text-primary",
-                            )}
+                            className={getMatchPlayerNameClasses(isViewer)}
                           >
                             {getMatchTeamPlayerNameText(isViewer, player.name)}
                           </Link>
@@ -355,7 +358,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                         )}
                         {sideInfo && (
                           <span
-                            className="inline-flex items-center shrink-0 text-xs font-semibold px-1 py-0.5 rounded bg-muted text-muted-foreground/90 leading-none"
+                            className={getMatchSideBadgeClasses()}
                             title={sideInfo.title}
                             aria-label={sideInfo.title}
                           >
@@ -396,10 +399,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
                     return (
                       <span
                         key={`team-${team.id}-score-${setIndex}`}
-                        className={cn(
-                          "flex h-7 w-7 items-center justify-center rounded-md text-sm font-bold",
-                          segmentClass,
-                        )}
+                        className={getMatchScoreSegmentClasses(hasNumericValues, didWinSet)}
                       >
                         {rawValue ?? getMatchScorePlaceholderText()}
                       </span>
@@ -409,7 +409,7 @@ export const MatchResultCompact = memo(function MatchResultCompact({
               </div>
 
               {!isLastTeam ? (
-                <div className="flex items-center gap-2 py-0.5">
+                <div className={getMatchVersusDividerClasses()}>
                   <div className="h-px flex-1 bg-border" />
                   <span className="text-xs font-medium text-muted-foreground">
                     {getMatchVersusSeparatorText()}
