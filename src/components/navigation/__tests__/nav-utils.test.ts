@@ -53,6 +53,14 @@ import {
   getNotificationsContainerClasses,
   getNotificationsActionsBadgeClasses,
   getNotificationsListClasses,
+  getNotificationsHeadingTitleClasses,
+  getNotificationsHeadingDescriptionClasses,
+  getNotificationsSectionHeaderClasses,
+  getNotificationsSectionTitleClasses,
+  getNotificationsSkeletonHeadingTitleClasses,
+  getNotificationsSkeletonHeadingSubtitleClasses,
+  getNotificationsSkeletonSectionBadgeClasses,
+  getNotificationsSkeletonItemClasses,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -636,6 +644,46 @@ describe("nav-utils", () => {
     it("getNotificationsListClasses returns list spacing classes", () => {
       expect(getNotificationsListClasses()).toContain("space-y-2");
       expect(getNotificationsListClasses("custom-list")).toContain("custom-list");
+    });
+
+    it("getNotificationsHeadingTitleClasses returns title typography classes", () => {
+      expect(getNotificationsHeadingTitleClasses()).toContain("text-xl font-bold text-foreground");
+      expect(getNotificationsHeadingTitleClasses("custom-title")).toContain("custom-title");
+    });
+
+    it("getNotificationsHeadingDescriptionClasses returns description typography classes", () => {
+      expect(getNotificationsHeadingDescriptionClasses()).toContain("text-sm text-muted-foreground");
+      expect(getNotificationsHeadingDescriptionClasses("custom-desc")).toContain("custom-desc");
+    });
+
+    it("getNotificationsSectionHeaderClasses returns section header flex classes", () => {
+      expect(getNotificationsSectionHeaderClasses()).toContain("flex items-center gap-2");
+      expect(getNotificationsSectionHeaderClasses("custom-sec-hdr")).toContain("custom-sec-hdr");
+    });
+
+    it("getNotificationsSectionTitleClasses returns section title typography classes", () => {
+      expect(getNotificationsSectionTitleClasses()).toContain("text-sm font-bold text-foreground");
+      expect(getNotificationsSectionTitleClasses("custom-sec-title")).toContain("custom-sec-title");
+    });
+
+    it("getNotificationsSkeletonHeadingTitleClasses returns title skeleton dimension classes", () => {
+      expect(getNotificationsSkeletonHeadingTitleClasses()).toContain("h-5 w-32");
+      expect(getNotificationsSkeletonHeadingTitleClasses("custom-skel-title")).toContain("custom-skel-title");
+    });
+
+    it("getNotificationsSkeletonHeadingSubtitleClasses returns subtitle skeleton dimension classes", () => {
+      expect(getNotificationsSkeletonHeadingSubtitleClasses()).toContain("mt-1 h-4 w-48");
+      expect(getNotificationsSkeletonHeadingSubtitleClasses("custom-skel-sub")).toContain("custom-skel-sub");
+    });
+
+    it("getNotificationsSkeletonSectionBadgeClasses returns section badge skeleton dimension classes", () => {
+      expect(getNotificationsSkeletonSectionBadgeClasses()).toContain("h-5 w-8 rounded-md");
+      expect(getNotificationsSkeletonSectionBadgeClasses("custom-skel-badge")).toContain("custom-skel-badge");
+    });
+
+    it("getNotificationsSkeletonItemClasses returns card item skeleton dimension classes", () => {
+      expect(getNotificationsSkeletonItemClasses()).toContain("h-16 w-full rounded-xl");
+      expect(getNotificationsSkeletonItemClasses("custom-skel-item")).toContain("custom-skel-item");
     });
   });
 });

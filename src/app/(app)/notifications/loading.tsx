@@ -2,6 +2,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   getNotificationsSkeletonAriaLabel,
   getNotificationsSkeletonContainerClasses,
+  getNotificationsContainerClasses,
+  getNotificationsListClasses,
+  getNotificationsSectionHeaderClasses,
+  getNotificationsSkeletonHeadingTitleClasses,
+  getNotificationsSkeletonHeadingSubtitleClasses,
+  getNotificationsSkeletonSectionBadgeClasses,
+  getNotificationsSkeletonItemClasses,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsLoading() {
@@ -13,18 +20,18 @@ export default function NotificationsLoading() {
       className={getNotificationsSkeletonContainerClasses()}
     >
       <div>
-        <Skeleton className="h-5 w-32" />
-        <Skeleton className="mt-1 h-4 w-48" />
+        <Skeleton className={getNotificationsSkeletonHeadingTitleClasses()} />
+        <Skeleton className={getNotificationsSkeletonHeadingSubtitleClasses()} />
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
+      <div className={getNotificationsContainerClasses()}>
+        <div className={getNotificationsSectionHeaderClasses()}>
           <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-5 w-8 rounded-md" />
+          <Skeleton className={getNotificationsSkeletonSectionBadgeClasses()} />
         </div>
-        <div className="space-y-2">
+        <div className={getNotificationsListClasses()}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full rounded-xl" />
+            <Skeleton key={i} className={getNotificationsSkeletonItemClasses()} />
           ))}
         </div>
       </div>
