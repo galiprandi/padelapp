@@ -16,6 +16,20 @@ import {
   getMatchPlayerSideLabel,
   getMatchPlayerAvatarAriaLabel,
   getMatchResultCardRegionAriaLabel,
+  getMatchResultCardContainerClasses,
+  getMatchResultCardHeaderClasses,
+  getMatchResultCardTitleClasses,
+  getMatchResultCardContentClasses,
+  getMatchResultCardFooterClasses,
+  getMatchQuickConfirmButtonClasses,
+  getMatchShareButtonClasses,
+  getMatchDetailLinkClasses,
+  getMatchTeamContainerClasses,
+  getMatchPlayerAvatarClasses,
+  getMatchPlayerNameClasses,
+  getMatchSideBadgeClasses,
+  getMatchScoreSegmentClasses,
+  getMatchVersusDividerClasses,
 } from "../match-result-card-utils";
 
 describe("match-result-card-utils", () => {
@@ -86,5 +100,39 @@ describe("match-result-card-utils", () => {
     expect(getMatchResultCardRegionAriaLabel("Final del Torneo")).toBe(
       "Tarjeta de resultado: Final del Torneo"
     );
+  });
+
+  it("returns correct CSS classes for MatchResultCard container, header, title, content, and footer", () => {
+    expect(getMatchResultCardContainerClasses()).toContain("rounded-xl border border-border bg-card shadow-xs");
+    expect(getMatchResultCardHeaderClasses()).toContain("border-b border-border px-4 py-2");
+    expect(getMatchResultCardTitleClasses()).toContain("text-xs font-semibold text-muted-foreground");
+    expect(getMatchResultCardContentClasses()).toContain("p-4 text-sm text-muted-foreground");
+    expect(getMatchResultCardFooterClasses()).toContain("border-t border-border px-4 py-3");
+  });
+
+  it("returns correct CSS classes for quick confirm button, share button, and detail link", () => {
+    expect(getMatchQuickConfirmButtonClasses()).toContain("bg-primary text-primary-foreground");
+    expect(getMatchShareButtonClasses()).toContain("h-8 w-8 rounded-lg text-primary hover:bg-muted");
+    expect(getMatchDetailLinkClasses()).toContain("text-primary hover:underline");
+  });
+
+  it("returns correct CSS classes for team container, player avatar, player name, side badge, score segment, and versus divider", () => {
+    expect(getMatchTeamContainerClasses(true)).toContain("bg-muted/80 font-medium");
+    expect(getMatchTeamContainerClasses(false)).not.toContain("bg-muted/80");
+
+    expect(getMatchPlayerAvatarClasses(0)).toContain("ml-0");
+    expect(getMatchPlayerAvatarClasses(1)).toContain("-ml-2");
+
+    expect(getMatchPlayerNameClasses(true)).toBe("truncate hover:text-primary text-primary");
+    expect(getMatchPlayerNameClasses(false)).toBe("truncate hover:text-primary");
+
+    expect(getMatchSideBadgeClasses()).toContain("inline-flex items-center shrink-0");
+    expect(getMatchSideBadgeClasses()).toContain("bg-muted");
+
+    expect(getMatchScoreSegmentClasses(true, true)).toContain("bg-primary text-primary-foreground");
+    expect(getMatchScoreSegmentClasses(true, false)).toContain("bg-muted text-muted-foreground");
+    expect(getMatchScoreSegmentClasses(false, false)).toContain("bg-muted text-muted-foreground/60");
+
+    expect(getMatchVersusDividerClasses()).toContain("flex items-center gap-2 py-0.5");
   });
 });
