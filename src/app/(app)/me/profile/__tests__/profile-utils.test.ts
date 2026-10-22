@@ -21,6 +21,55 @@ import {
   getProfileSecurityTitle,
   getProfileSecurityDescription,
   getProfileSkeletonAriaLabel,
+  getMiniCourtContainerClasses,
+  getMiniCourtGridClasses,
+  getMiniCourtCellClasses,
+  getProfileWelcomeBannerClasses,
+  getProfileWelcomeTitleText,
+  getProfileWelcomeDescriptionText,
+  getProfileAvatarCardClasses,
+  getProfileAvatarImageClasses,
+  getProfileAvatarInitialsClasses,
+  getProfileAvatarPlaceholderClasses,
+  getProfileRestoreGoogleButtonClasses,
+  getProfileRestoreGoogleButtonText,
+  getProfileRestoreGoogleButtonAriaLabel,
+  getProfileRemovePhotoButtonClasses,
+  getProfileRemovePhotoButtonText,
+  getProfileRemovePhotoButtonAriaLabel,
+  getProfileInitialsNoticeText,
+  getProfileGooglePhotoNoticeText,
+  getProfileAliasLabelText,
+  getProfileAliasPlaceholderText,
+  getProfileAliasDescriptionText,
+  getProfileAliasUnsavedNoticeText,
+  getProfileAliasSavingNoticeText,
+  getProfileSideCardClasses,
+  getProfileSideTitleText,
+  getProfileSideBadgeClasses,
+  getProfileSideDescriptionText,
+  getProfileSideChipClasses,
+  getProfileSideChipAriaLabel,
+  getProfileCategoryCardClasses,
+  getProfileCategoryTitleText,
+  getProfileCategoryBadgeClasses,
+  getProfileCategoryDescriptionText,
+  getProfileCategoryChipClasses,
+  getProfileCategoryChipAriaLabel,
+  getProfileCategoryBoxClasses,
+  getProfileAccountCardClasses,
+  getProfileAccountHeadingTitle,
+  getProfileAccountNameLabel,
+  getProfileAccountEmailLabel,
+  getProfileOnboardingContinueButtonClasses,
+  getProfileOnboardingContinueButtonText,
+  getProfileNoticesCardClasses,
+  getProfileNoticesHeadingTitle,
+  getProfileNoticesDescriptionText,
+  getProfileNoticeButtonClasses,
+  getProfileRestoreChecklistButtonText,
+  getProfileRestorePwaButtonText,
+  getProfileRestorePushButtonText,
 } from "../profile-utils";
 
 describe("validateAlias", () => {
@@ -155,5 +204,118 @@ describe("profile region landmark and toast helpers", () => {
     expect(getProfileSecurityTitle()).toBe("Seguridad");
     expect(getProfileSecurityDescription()).toBe("Huella y Face ID para entrar más rápido");
     expect(getProfileSkeletonAriaLabel()).toBe("Cargando formulario de perfil...");
+  });
+});
+
+describe("FormMiniCourtIndicator helpers", () => {
+  it("returns mini court container, grid, and cell classes", () => {
+    expect(getMiniCourtContainerClasses()).toContain("flex items-center justify-center");
+    expect(getMiniCourtGridClasses()).toContain("grid grid-cols-2");
+    expect(getMiniCourtCellClasses(true)).toContain("bg-primary");
+    expect(getMiniCourtCellClasses(false)).toContain("bg-muted");
+  });
+});
+
+describe("Profile welcome banner helpers", () => {
+  it("returns banner container classes, title, and description text", () => {
+    expect(getProfileWelcomeBannerClasses()).toContain("rounded-xl border border-border bg-card");
+    expect(getProfileWelcomeTitleText()).toBe("¡Te damos la bienvenida a Padel Red!");
+    expect(getProfileWelcomeDescriptionText()).toContain("Antes de empezar, configúrate un alias.");
+  });
+});
+
+describe("Profile avatar section helpers", () => {
+  it("returns avatar card, image, initials, and placeholder classes", () => {
+    expect(getProfileAvatarCardClasses()).toContain("flex items-center gap-4");
+    expect(getProfileAvatarImageClasses()).toContain("w-16 h-16 rounded-xl object-cover");
+    expect(getProfileAvatarInitialsClasses()).toContain("w-16 h-16 rounded-xl bg-muted");
+    expect(getProfileAvatarPlaceholderClasses()).toContain("w-16 h-16 rounded-xl bg-muted");
+  });
+
+  it("returns restore google photo button classes, text, and ARIA label", () => {
+    expect(getProfileRestoreGoogleButtonClasses()).toContain("text-xs text-primary");
+    expect(getProfileRestoreGoogleButtonText()).toBe("Usar mi foto de Google");
+    expect(getProfileRestoreGoogleButtonAriaLabel()).toBe("Restablecer a la foto original de tu cuenta de Google");
+  });
+
+  it("returns remove photo button classes, text, and ARIA label", () => {
+    expect(getProfileRemovePhotoButtonClasses()).toContain("text-xs text-muted-foreground");
+    expect(getProfileRemovePhotoButtonText()).toBe("Quitar foto");
+    expect(getProfileRemovePhotoButtonAriaLabel()).toBe("Quitar foto de perfil y mostrar iniciales");
+  });
+
+  it("returns avatar notice strings", () => {
+    expect(getProfileInitialsNoticeText()).toBe("Se mostrarán las iniciales de tu nombre.");
+    expect(getProfileGooglePhotoNoticeText()).toBe("Tu foto viene de tu cuenta de Google.");
+  });
+});
+
+describe("Profile alias section helpers", () => {
+  it("returns alias label, placeholder, description, and status notice strings", () => {
+    expect(getProfileAliasLabelText()).toBe("Alias en la cancha");
+    expect(getProfileAliasPlaceholderText()).toBe("Ej: El Muro, Gero...");
+    expect(getProfileAliasDescriptionText()).toBe("Este nombre verán tus rivales en partidos y ranking.");
+    expect(getProfileAliasUnsavedNoticeText()).toBe("Sin guardar");
+    expect(getProfileAliasSavingNoticeText()).toBe("Guardando…");
+  });
+});
+
+describe("Profile preferred side section helpers", () => {
+  it("returns side card classes, title, badge classes, and description text", () => {
+    expect(getProfileSideCardClasses()).toContain("space-y-3 rounded-xl");
+    expect(getProfileSideTitleText()).toBe("Lado preferido en la cancha");
+    expect(getProfileSideBadgeClasses()).toContain("bg-muted border border-border");
+    expect(getProfileSideDescriptionText()).toContain("Indicá tu posición habitual");
+  });
+
+  it("returns side chip classes and ARIA labels", () => {
+    expect(getProfileSideChipClasses(true)).toContain("bg-primary text-primary-foreground");
+    expect(getProfileSideChipClasses(false)).toContain("bg-card text-muted-foreground");
+    expect(getProfileSideChipAriaLabel("Derecha", "Juego en el drive")).toBe("Lado Derecha: Juego en el drive");
+  });
+});
+
+describe("Profile playing category section helpers", () => {
+  it("returns category card classes, title, badge classes, description text, and box classes", () => {
+    expect(getProfileCategoryCardClasses()).toContain("space-y-3 rounded-xl");
+    expect(getProfileCategoryTitleText()).toBe("Categoría de juego");
+    expect(getProfileCategoryBadgeClasses()).toContain("bg-muted border border-border");
+    expect(getProfileCategoryDescriptionText()).toContain("Seleccioná tu categoría habitual");
+    expect(getProfileCategoryBoxClasses()).toContain("bg-muted/60 border border-border/60");
+  });
+
+  it("returns category chip classes and ARIA labels", () => {
+    expect(getProfileCategoryChipClasses(true)).toContain("bg-primary text-primary-foreground");
+    expect(getProfileCategoryChipClasses(false)).toContain("bg-card text-muted-foreground");
+    expect(getProfileCategoryChipAriaLabel("6ª Cat.", "Intermedio")).toBe("6ª Cat.: Intermedio");
+  });
+});
+
+describe("Profile google account section helpers", () => {
+  it("returns google account card classes, title, and label strings", () => {
+    expect(getProfileAccountCardClasses()).toContain("rounded-xl border border-border");
+    expect(getProfileAccountHeadingTitle()).toBe("Cuenta de Google");
+    expect(getProfileAccountNameLabel()).toBe("Nombre");
+    expect(getProfileAccountEmailLabel()).toBe("Email");
+  });
+});
+
+describe("Profile onboarding button helpers", () => {
+  it("returns continue button classes and saving/idle button text", () => {
+    expect(getProfileOnboardingContinueButtonClasses()).toContain("w-full h-12 text-sm font-bold");
+    expect(getProfileOnboardingContinueButtonText(true)).toBe("Guardando…");
+    expect(getProfileOnboardingContinueButtonText(false)).toBe("Continuar al inicio");
+  });
+});
+
+describe("Profile notices section helpers", () => {
+  it("returns notices card classes, heading, description, button classes, and restore button texts", () => {
+    expect(getProfileNoticesCardClasses()).toContain("rounded-xl border border-border bg-card");
+    expect(getProfileNoticesHeadingTitle()).toBe("Avisos de la aplicación");
+    expect(getProfileNoticesDescriptionText()).toContain("Restablecé los carteles o sugerencias");
+    expect(getProfileNoticeButtonClasses()).toContain("w-full h-10 text-xs font-bold");
+    expect(getProfileRestoreChecklistButtonText()).toBe("Restablecer guía de bienvenida");
+    expect(getProfileRestorePwaButtonText()).toBe("Restablecer sugerencia de instalación");
+    expect(getProfileRestorePushButtonText()).toBe("Restablecer sugerencia de notificaciones");
   });
 });

@@ -52,3 +52,23 @@ export function formatCategoryBadgeText(level?: number | null): string | null {
   if (level === undefined || level === null) return null;
   return getLevelBadgeLabel(level);
 }
+
+export function getGreetingContainerClasses(): string {
+  return "flex items-center gap-2 flex-wrap";
+}
+
+export function getGreetingTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+export function getGreetingCategoryBadgeClasses(): string {
+  return "inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground shadow-xs";
+}
+
+export function getGreetingProgressBadgeClasses(): string {
+  return "inline-flex items-center rounded-md border border-border bg-card px-2 py-0.5 text-xs font-semibold text-primary shadow-xs font-mono";
+}
+
+export function getGreetingProgressTitleText(): string {
+  return "Pasos completados en la guía de bienvenida";
+}
