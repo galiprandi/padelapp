@@ -546,6 +546,62 @@ export function getNotificationsListClasses(customClassName?: string): string {
 }
 
 /**
+ * Retorna las clases CSS para el título principal de la vista de notificaciones.
+ */
+export function getNotificationsHeadingTitleClasses(customClassName?: string): string {
+  return cn("text-xl font-bold text-foreground", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para la descripción secundaria de la vista de notificaciones.
+ */
+export function getNotificationsHeadingDescriptionClasses(customClassName?: string): string {
+  return cn("text-sm text-muted-foreground", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el encabezado de sección de acciones requeridas.
+ */
+export function getNotificationsSectionHeaderClasses(customClassName?: string): string {
+  return cn("flex items-center gap-2", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el título de la sección de acciones requeridas.
+ */
+export function getNotificationsSectionTitleClasses(customClassName?: string): string {
+  return cn("text-sm font-bold text-foreground", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del título de la vista de notificaciones.
+ */
+export function getNotificationsSkeletonHeadingTitleClasses(customClassName?: string): string {
+  return cn("h-5 w-32", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto de la descripción de la vista de notificaciones.
+ */
+export function getNotificationsSkeletonHeadingSubtitleClasses(customClassName?: string): string {
+  return cn("mt-1 h-4 w-48", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto de la insignia de acciones requeridas.
+ */
+export function getNotificationsSkeletonSectionBadgeClasses(customClassName?: string): string {
+  return cn("h-5 w-8 rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para cada tarjeta en el esqueleto de la lista de notificaciones.
+ */
+export function getNotificationsSkeletonItemClasses(customClassName?: string): string {
+  return cn("h-16 w-full rounded-xl", customClassName);
+}
+
+/**
  * Genera el objeto completo de propiedades para el enlace (<Link>) de un ítem de navegación principal.
  */
 export function getNavItemLinkProps(

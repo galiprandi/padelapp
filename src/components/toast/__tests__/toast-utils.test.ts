@@ -9,6 +9,8 @@ import {
   getToastContainerClasses,
   getToastDuration,
   getToastIconClasses,
+  getToastIconSvgClasses,
+  getToastMessageClasses,
   isErrorToast,
 } from "../toast-utils";
 
@@ -65,6 +67,18 @@ describe("toast-utils", () => {
       const actionClasses = getToastActionClasses();
       expect(actionClasses).toContain("focus-visible:ring-2");
       expect(actionClasses).toContain("active:scale-[0.98]");
+    });
+
+    it("returns toast message typography classes and accepts custom overrides", () => {
+      const classes = getToastMessageClasses();
+      expect(classes).toContain("text-xs font-semibold leading-none");
+      expect(getToastMessageClasses("custom-text")).toContain("custom-text");
+    });
+
+    it("returns toast icon svg dimension classes and accepts custom overrides", () => {
+      const classes = getToastIconSvgClasses();
+      expect(classes).toContain("h-4 w-4");
+      expect(getToastIconSvgClasses("custom-svg")).toContain("custom-svg");
     });
   });
 

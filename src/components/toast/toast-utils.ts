@@ -53,6 +53,14 @@ export function getToastActionClasses(): string {
   return "text-xs font-bold underline underline-offset-2 hover:no-underline rounded px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
 }
 
+export function getToastMessageClasses(customClassName?: string): string {
+  return cn("text-xs font-semibold leading-none", customClassName);
+}
+
+export function getToastIconSvgClasses(customClassName?: string): string {
+  return cn("h-4 w-4", customClassName);
+}
+
 export function getToastAriaAttributes(): { role: "status"; "aria-live": "polite" } {
   return {
     role: "status",

@@ -14,6 +14,8 @@ import {
   getToastContainerClasses,
   getToastDuration,
   getToastIconClasses,
+  getToastIconSvgClasses,
+  getToastMessageClasses,
   isErrorToast,
 } from "./toast-utils";
 
@@ -73,12 +75,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   >
                     <div className={getToastIconClasses(toast.options.type)}>
                       {isError ? (
-                        <AlertCircle className="h-4 w-4" />
+                        <AlertCircle className={getToastIconSvgClasses()} />
                       ) : (
-                        <Check className="h-4 w-4" />
+                        <Check className={getToastIconSvgClasses()} />
                       )}
                     </div>
-                    <span className="text-xs font-semibold leading-none">
+                    <span className={getToastMessageClasses()}>
                       {toast.message}
                     </span>
                     {toast.options.action && (

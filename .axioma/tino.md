@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-08 — Extracción de Funciones Helper Puras de Estilos e Íconos para Toast (`src/components/toast/toast-utils.ts`), Tipografía y Esqueletos de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de Componentes
 - [x] 2026-10-07 — Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt` (`src/components/pwa/push-permission-utils.ts`) y Refactorización del Componente
 - [x] 2026-10-06 — Extracción de Funciones Helper Puras `getCacheTagForDomain`, `getCacheRevalidateOptions`, `formatCacheInvalidationLogMessage` y `getCacheTagsSummary` (`src/lib/cache-tags.ts`)
 - [x] 2026-10-05 — Extracción de Funciones Helper Puras `getSpeculationDocumentPatterns`, `getSpeculationRuleGroupEagerness`, `getSpeculationRuleGroupDescription` y `formatSpeculationScriptTagAttributes` (`src/lib/speculation-rules.ts`)
@@ -77,6 +78,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-08 - Extracción de Funciones Helper Puras de Estilos para Toast, Notificaciones y Esqueletos
+**Aprendizaje:** Encapsular la composición de clases CSS para el texto del mensaje toast (`getToastMessageClasses`) e ícono SVG (`getToastIconSvgClasses`) en `src/components/toast/toast-utils.ts`, así como los títulos, descripciones, encabezados de sección y dimensiones de esqueletos de carga de notificaciones (`getNotificationsHeadingTitleClasses`, `getNotificationsHeadingDescriptionClasses`, `getNotificationsSectionHeaderClasses`, `getNotificationsSectionTitleClasses`, `getNotificationsSkeletonHeadingTitleClasses`, `getNotificationsSkeletonHeadingSubtitleClasses`, `getNotificationsSkeletonSectionBadgeClasses`, `getNotificationsSkeletonItemClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla las cadenas de clases de Tailwind de la renderización en `ToastProvider`, `NotificationsPage` y `NotificationsLoading`. Esto previene duplicaciones y permite auditar las reglas de interfaz y carga por streaming a través de pruebas unitarias puras.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` y `toast-utils.ts` al extender la vista de notificaciones o alertas toast en la aplicación.
+
 ### 2026-10-07 - Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt`
 **Aprendizaje:** Encapsular las clases CSS utilitarias del diseño interior (`getPushPermissionInnerLayoutClasses`), el contenedor de texto (`getPushPermissionTextContainerClasses`), los títulos y descripciones (`getPushPermissionTitleClasses`, `getPushPermissionDescriptionClasses`), el grupo de botones (`getPushPermissionActionGroupClasses`), y los tamaños e íconos (`getPushPermissionBellIconClasses`, `getPushPermissionActionBellIconClasses`, `getPushPermissionActionSpinnerClasses`) en `src/components/pwa/push-permission-utils.ts` mediante `cn()` desacopla las cadenas de Tailwind de la renderización del componente en `PushPermissionPrompt` (`src/components/pwa/push-permission-prompt.tsx`). Esto simplifica la mantención del aviso de permisos de notificaciones PWA y permite probar exhaustivamente las reglas de maquetación y estilos mediante unit tests rápidos e independientes.
 **Acción:** Reutilizar siempre las utilidades de `src/components/pwa/push-permission-utils.ts` al extender la interfaz de solicitud de notificaciones push del sistema.

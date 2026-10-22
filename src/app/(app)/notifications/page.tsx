@@ -20,6 +20,12 @@ import {
   getNotificationsContainerClasses,
   getNotificationsActionsBadgeClasses,
   getNotificationsListClasses,
+  getNotificationsHeadingTitleClasses,
+  getNotificationsHeadingDescriptionClasses,
+  getNotificationsSectionHeaderClasses,
+  getNotificationsSectionTitleClasses,
+  getNotificationsSkeletonSectionBadgeClasses,
+  getNotificationsSkeletonItemClasses,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsPage() {
@@ -30,10 +36,10 @@ export default function NotificationsPage() {
       className={getNotificationsHeaderClasses()}
     >
       <div>
-        <h1 className="text-xl font-bold text-foreground">
+        <h1 className={getNotificationsHeadingTitleClasses()}>
           {getNotificationsHeadingTitle()}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className={getNotificationsHeadingDescriptionClasses()}>
           {getNotificationsHeadingDescription()}
         </p>
       </div>
@@ -56,8 +62,8 @@ async function NotificationsList() {
 
   return (
     <div className={getNotificationsContainerClasses()}>
-      <div className="flex items-center gap-2">
-        <h2 className="text-sm font-bold text-foreground">
+      <div className={getNotificationsSectionHeaderClasses()}>
+        <h2 className={getNotificationsSectionTitleClasses()}>
           {getNotificationsActionsTitle()}
         </h2>
         {pendingActions.length > 0 && (
@@ -113,13 +119,13 @@ function NotificationsListSkeleton() {
       aria-label={getNotificationsSkeletonAriaLabel()}
       className={getNotificationsContainerClasses()}
     >
-      <div className="flex items-center gap-2">
+      <div className={getNotificationsSectionHeaderClasses()}>
         <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-5 w-8 rounded-md" />
+        <Skeleton className={getNotificationsSkeletonSectionBadgeClasses()} />
       </div>
       <div className={getNotificationsListClasses()}>
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-16 w-full rounded-xl" />
+          <Skeleton key={i} className={getNotificationsSkeletonItemClasses()} />
         ))}
       </div>
     </div>
