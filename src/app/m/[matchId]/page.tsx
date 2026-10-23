@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/player-avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { LocalDate } from "@/components/ui/local-date";
 import { SignInForm } from "@/components/auth/sign-in-form";
@@ -26,6 +25,51 @@ import {
   getMatchInvitationTitle,
   getMatchInvitationMetadata,
   getMatchInvitationSkeletonAriaLabel,
+  getInvitationBackButtonAriaLabel,
+  getInvitationSubheadingText,
+  getMatchInfoSectionHeaderTitle,
+  getMatchInfoModeLabel,
+  getMatchInfoSetsText,
+  getMatchInfoStatusLabel,
+  getMatchInfoClubPlaceholderText,
+  getMatchInfoCourtText,
+  getMatchInfoNotesHeaderTitle,
+  getPlayersSectionHeaderTitle,
+  getOpenSlotText,
+  getPlayerConfirmationStatusText,
+  getOrganizerBadgeText,
+  getMatchViewButtonText,
+  getSignInFormLabelForClub,
+  getOrganizerSlotRequestNoticeText,
+  getAlreadyParticipantNoticeText,
+  getInvitationBackButtonClasses,
+  getInvitationHeaderTitleClasses,
+  getInvitationSubheadingClasses,
+  getMatchInfoCardClasses,
+  getMatchInfoCardHeaderClasses,
+  getMatchInfoCardTitleClasses,
+  getMatchInfoGridClasses,
+  getMatchInfoTileClasses,
+  getMatchInfoTileHeaderClasses,
+  getMatchInfoTileValueClasses,
+  getMatchInfoClubTileClasses,
+  getMatchInfoNotesContainerClasses,
+  getMatchInfoNotesHeaderClasses,
+  getPlayersSectionClasses,
+  getPlayersSectionHeaderClasses,
+  getOpenSlotCardClasses,
+  getOpenSlotIconContainerClasses,
+  getOpenSlotTextClasses,
+  getOccupiedPlayerCardClasses,
+  getOccupiedPlayerNameClasses,
+  getOccupiedPlayerStatusTextClasses,
+  getOrganizerBadgeClasses,
+  getInvitationPrimaryButtonClasses,
+  getInvitationSignInFormClasses,
+  getInvitationNoticeContainerClasses,
+  getInvitationNoticeTextClasses,
+  getInvitationSuccessNoticeContainerClasses,
+  getInvitationSuccessNoticeTextClasses,
 } from "./match-invitation-utils";
 
 interface InvitationPageProps {
@@ -76,23 +120,23 @@ export function InvitationSkeleton() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="bg-muted border-b border-border px-4 py-3">
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+      <div className={getMatchInfoCardClasses()}>
+        <div className={getMatchInfoCardHeaderClasses()}>
+          <h2 className={getMatchInfoCardTitleClasses()}>
             <Calendar className="h-4 w-4 text-primary" />
-            Información del encuentro
+            {getMatchInfoSectionHeaderTitle()}
           </h2>
         </div>
-        <div className="grid grid-cols-2 gap-px bg-border">
-          <div className="bg-card p-4 flex flex-col gap-2">
+        <div className={getMatchInfoGridClasses()}>
+          <div className={getMatchInfoTileClasses()}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-6 w-24" />
           </div>
-          <div className="bg-card p-4 flex flex-col gap-2">
+          <div className={getMatchInfoTileClasses()}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-6 w-24" />
           </div>
-          <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
+          <div className={getMatchInfoClubTileClasses()}>
             <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
             <div className="space-y-2 flex-1">
               <Skeleton className="h-4 w-32" />
@@ -102,11 +146,11 @@ export function InvitationSkeleton() {
         </div>
       </div>
 
-      <section className="space-y-4">
+      <section className={getPlayersSectionClasses()}>
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h2 className={getPlayersSectionHeaderClasses()}>
             <Users className="h-4 w-4 text-muted-foreground" />
-            Jugadores convocados
+            {getPlayersSectionHeaderTitle()}
           </h2>
         </div>
         <div className="grid gap-6">
@@ -120,7 +164,7 @@ export function InvitationSkeleton() {
                 {Array.from({ length: 2 }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+                    className={getOccupiedPlayerCardClasses()}
                   >
                     <Skeleton className="h-10 w-10 rounded-full shrink-0" />
                     <div className="flex-1 space-y-2">
@@ -215,71 +259,73 @@ async function InvitationContent({ params }: InvitationPageProps) {
         <Link
           href={session?.user ? "/me" : "/"}
           prefetch={true}
-          aria-label="Volver"
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          aria-label={getInvitationBackButtonAriaLabel()}
+          className={getInvitationBackButtonClasses()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className={getInvitationHeaderTitleClasses()}>
             {getMatchInvitationTitle(match.matchType)}
           </h1>
-          <p className="text-sm text-muted-foreground">Invitación de Partido</p>
+          <p className={getInvitationSubheadingClasses()}>
+            {getInvitationSubheadingText()}
+          </p>
         </div>
       </div>
 
       <div
         role="region"
-        aria-label="Información del encuentro"
-        className="rounded-xl border border-border bg-card overflow-hidden"
+        aria-label={getMatchInfoSectionHeaderTitle()}
+        className={getMatchInfoCardClasses()}
       >
-        <div className="bg-muted border-b border-border px-4 py-3">
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+        <div className={getMatchInfoCardHeaderClasses()}>
+          <h2 className={getMatchInfoCardTitleClasses()}>
             <Calendar className="h-4 w-4 text-primary" />
-            Información del encuentro
+            {getMatchInfoSectionHeaderTitle()}
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-px bg-border">
-          <div className="bg-card p-4 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
+        <div className={getMatchInfoGridClasses()}>
+          <div className={getMatchInfoTileClasses()}>
+            <div className={getMatchInfoTileHeaderClasses()}>
               <Trophy className="h-3.5 w-3.5" />
-              <span className="text-xs font-semibold">Modalidad</span>
+              <span className="text-xs font-semibold">{getMatchInfoModeLabel()}</span>
             </div>
-            <p className="text-lg font-bold">{match.sets} sets</p>
+            <p className={getMatchInfoTileValueClasses()}>{getMatchInfoSetsText(match.sets)}</p>
           </div>
 
-          <div className="bg-card p-4 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
+          <div className={getMatchInfoTileClasses()}>
+            <div className={getMatchInfoTileHeaderClasses()}>
               <Clock className="h-3.5 w-3.5" />
-              <span className="text-xs font-semibold">Estado</span>
+              <span className="text-xs font-semibold">{getMatchInfoStatusLabel()}</span>
             </div>
-            <p className="text-lg font-bold">{formatStatus(match.status)}</p>
+            <p className={getMatchInfoTileValueClasses()}>{formatStatus(match.status)}</p>
           </div>
 
-          <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
+          <div className={getMatchInfoClubTileClasses()}>
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border border-border text-primary shrink-0 shadow-xs">
               <MapPin className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold truncate">
-                {match.club || "Club por definir"}
+                {match.club || getMatchInfoClubPlaceholderText()}
               </p>
               <p className="text-xs text-muted-foreground">
                 <LocalDate
                   date={match.date}
                   options={{ weekday: "long", day: "numeric", month: "long" }}
                 />
-                {match.courtNumber ? ` • Cancha ${match.courtNumber}` : ""}
+                {getMatchInfoCourtText(match.courtNumber)}
               </p>
             </div>
           </div>
         </div>
 
         {match.notes && (
-          <div className="p-4 bg-muted border-t border-border text-sm text-muted-foreground italic leading-relaxed">
-            <span className="block text-xs font-bold not-italic mb-1 text-foreground">
-              Notas del organizador
+          <div className={getMatchInfoNotesContainerClasses()}>
+            <span className={getMatchInfoNotesHeaderClasses()}>
+              {getMatchInfoNotesHeaderTitle()}
             </span>
             &ldquo;{match.notes}&rdquo;
           </div>
@@ -288,13 +334,13 @@ async function InvitationContent({ params }: InvitationPageProps) {
 
       <section
         role="region"
-        aria-label="Jugadores convocados"
-        className="space-y-4"
+        aria-label={getPlayersSectionHeaderTitle()}
+        className={getPlayersSectionClasses()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h2 className={getPlayersSectionHeaderClasses()}>
             <Users className="h-4 w-4 text-muted-foreground" />
-            Jugadores convocados
+            {getPlayersSectionHeaderTitle()}
           </h2>
         </div>
 
@@ -328,13 +374,13 @@ async function InvitationContent({ params }: InvitationPageProps) {
                       return (
                         <div
                           key={player.id}
-                          className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted p-3 text-muted-foreground"
+                          className={getOpenSlotCardClasses()}
                         >
-                          <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
+                          <div className={getOpenSlotIconContainerClasses()}>
                             <Users className="h-5 w-5 text-muted-foreground/50" />
                           </div>
-                          <p className="text-xs font-semibold italic">
-                            Cupo disponible
+                          <p className={getOpenSlotTextClasses()}>
+                            {getOpenSlotText()}
                           </p>
                         </div>
                       );
@@ -343,7 +389,7 @@ async function InvitationContent({ params }: InvitationPageProps) {
                     return (
                       <div
                         key={player.id}
-                        className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+                        className={getOccupiedPlayerCardClasses()}
                       >
                         <div className="relative">
                           <PlayerAvatar
@@ -358,25 +404,18 @@ async function InvitationContent({ params }: InvitationPageProps) {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-sm truncate leading-tight">
+                          <p className={getOccupiedPlayerNameClasses()}>
                             {name}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <p
-                              className={cn(
-                                "text-xs font-semibold",
-                                isConfirmed
-                                  ? "text-emerald-600"
-                                  : "text-muted-foreground",
-                              )}
-                            >
-                              {isConfirmed ? "Confirmado" : "Pendiente"}
+                            <p className={getOccupiedPlayerStatusTextClasses(isConfirmed)}>
+                              {getPlayerConfirmationStatusText(isConfirmed)}
                             </p>
                           </div>
                         </div>
                         {isCreator && (
-                          <span className="rounded-md bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
-                            Organizador
+                          <span className={getOrganizerBadgeClasses()}>
+                            {getOrganizerBadgeText()}
                           </span>
                         )}
                       </div>
@@ -393,29 +432,29 @@ async function InvitationContent({ params }: InvitationPageProps) {
         <div className="max-w-md mx-auto flex flex-col gap-3">
           <Button
             asChild
-            className="w-full h-12 rounded-lg text-base font-bold shadow-sm transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            className={getInvitationPrimaryButtonClasses()}
           >
             <Link href={`/match/${match.id}`} prefetch={true}>
-              Ver partido en Padel Red
+              {getMatchViewButtonText()}
             </Link>
           </Button>
 
           {!session?.user ? (
             <SignInForm
               callbackUrl={`/m/${match.id}`}
-              label={`Iniciá sesión para unirte a ${match.club ?? "el partido"}`}
-              className="w-full h-10 rounded-lg text-sm font-semibold text-muted-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              label={getSignInFormLabelForClub(match.club)}
+              className={getInvitationSignInFormClasses()}
             />
           ) : !isParticipant ? (
-            <div className="rounded-xl p-3 bg-muted border border-border text-center">
-              <p className="text-xs font-medium text-muted-foreground">
-                Para unirte, pedile al organizador tu enlace de cupo directo
+            <div className={getInvitationNoticeContainerClasses()}>
+              <p className={getInvitationNoticeTextClasses()}>
+                {getOrganizerSlotRequestNoticeText()}
               </p>
             </div>
           ) : (
-            <div className="rounded-xl p-3 bg-card border border-primary text-center shadow-sm">
-              <p className="text-xs font-bold text-primary">
-                Ya formás parte de este partido
+            <div className={getInvitationSuccessNoticeContainerClasses()}>
+              <p className={getInvitationSuccessNoticeTextClasses()}>
+                {getAlreadyParticipantNoticeText()}
               </p>
             </div>
           )}
