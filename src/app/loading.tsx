@@ -7,9 +7,24 @@ import {
   getRootLoadingHeroTextClasses,
   getRootLoadingCardClasses,
   getRootLoadingCtaClasses,
+  getRootLoadingFeaturesListClasses,
+  getRootLoadingCardContentClasses,
+  getRootLoadingFeatureCardKeys,
+  getRootLoadingHeroAvatarSkeletonClasses,
+  getRootLoadingHeroTitleSkeletonClasses,
+  getRootLoadingHeroSubtitleSkeletonClasses,
+  getRootLoadingHeroTaglineSkeletonClasses,
+  getRootLoadingCardIconSkeletonClasses,
+  getRootLoadingCardTitleSkeletonClasses,
+  getRootLoadingCardTextSkeletonClasses,
+  getRootLoadingCardSubtextSkeletonClasses,
+  getRootLoadingCtaButtonSkeletonClasses,
+  getRootLoadingCtaFooterSkeletonClasses,
 } from "@/lib/root-layout-utils";
 
 export default function RootLoading() {
+  const featureKeys = getRootLoadingFeatureCardKeys();
+
   return (
     <main
       className={getRootLoadingClasses()}
@@ -19,26 +34,26 @@ export default function RootLoading() {
       <div className={getRootLoadingInnerContainerClasses()}>
         {/* Hero Skeleton */}
         <div className={getRootLoadingHeroClasses()}>
-          <Skeleton className="h-20 w-20 rounded-2xl" />
+          <Skeleton className={getRootLoadingHeroAvatarSkeletonClasses()} />
           <div className={getRootLoadingHeroTextClasses()}>
-            <Skeleton className="h-8 w-3/4 rounded-lg" />
-            <Skeleton className="h-5 w-1/3 rounded-md" />
-            <Skeleton className="h-4 w-5/6 rounded-md" />
+            <Skeleton className={getRootLoadingHeroTitleSkeletonClasses()} />
+            <Skeleton className={getRootLoadingHeroSubtitleSkeletonClasses()} />
+            <Skeleton className={getRootLoadingHeroTaglineSkeletonClasses()} />
           </div>
         </div>
 
         {/* Features Skeleton */}
-        <div className="flex flex-col gap-3">
-          {[1, 2, 3].map((i) => (
+        <div className={getRootLoadingFeaturesListClasses()}>
+          {featureKeys.map((i) => (
             <div
               key={i}
               className={getRootLoadingCardClasses()}
             >
-              <Skeleton className="h-10 w-10 shrink-0 rounded-lg" />
-              <div className="space-y-2 flex-1 pt-1">
-                <Skeleton className="h-4 w-1/2 rounded-md" />
-                <Skeleton className="h-3 w-full rounded-md" />
-                <Skeleton className="h-3 w-4/5 rounded-md" />
+              <Skeleton className={getRootLoadingCardIconSkeletonClasses()} />
+              <div className={getRootLoadingCardContentClasses()}>
+                <Skeleton className={getRootLoadingCardTitleSkeletonClasses()} />
+                <Skeleton className={getRootLoadingCardTextSkeletonClasses()} />
+                <Skeleton className={getRootLoadingCardSubtextSkeletonClasses()} />
               </div>
             </div>
           ))}
@@ -46,9 +61,9 @@ export default function RootLoading() {
 
         {/* CTA Skeleton */}
         <div className={getRootLoadingCtaClasses()}>
-          <Skeleton className="h-12 w-full rounded-lg" />
-          <Skeleton className="h-12 w-full rounded-lg" />
-          <Skeleton className="h-3 w-2/3 mx-auto rounded-md" />
+          <Skeleton className={getRootLoadingCtaButtonSkeletonClasses()} />
+          <Skeleton className={getRootLoadingCtaButtonSkeletonClasses()} />
+          <Skeleton className={getRootLoadingCtaFooterSkeletonClasses()} />
         </div>
       </div>
     </main>

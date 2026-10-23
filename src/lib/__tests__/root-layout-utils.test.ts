@@ -9,6 +9,19 @@ import {
   getRootLoadingHeroTextClasses,
   getRootLoadingCardClasses,
   getRootLoadingCtaClasses,
+  getRootLoadingFeaturesListClasses,
+  getRootLoadingCardContentClasses,
+  getRootLoadingFeatureCardKeys,
+  getRootLoadingHeroAvatarSkeletonClasses,
+  getRootLoadingHeroTitleSkeletonClasses,
+  getRootLoadingHeroSubtitleSkeletonClasses,
+  getRootLoadingHeroTaglineSkeletonClasses,
+  getRootLoadingCardIconSkeletonClasses,
+  getRootLoadingCardTitleSkeletonClasses,
+  getRootLoadingCardTextSkeletonClasses,
+  getRootLoadingCardSubtextSkeletonClasses,
+  getRootLoadingCtaButtonSkeletonClasses,
+  getRootLoadingCtaFooterSkeletonClasses,
 } from "../root-layout-utils";
 
 describe("root-layout-utils", () => {
@@ -113,6 +126,157 @@ describe("root-layout-utils", () => {
     it("applies custom class overrides", () => {
       const classes = getRootLoadingCtaClasses("custom-cta");
       expect(classes).toContain("custom-cta");
+    });
+  });
+
+  describe("getRootLoadingFeaturesListClasses", () => {
+    it("returns feature list container classes", () => {
+      const classes = getRootLoadingFeaturesListClasses();
+      expect(classes).toContain("flex flex-col gap-3");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingFeaturesListClasses("custom-features-list");
+      expect(classes).toContain("custom-features-list");
+    });
+  });
+
+  describe("getRootLoadingCardContentClasses", () => {
+    it("returns card content container classes", () => {
+      const classes = getRootLoadingCardContentClasses();
+      expect(classes).toContain("space-y-2 flex-1 pt-1");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCardContentClasses("custom-card-content");
+      expect(classes).toContain("custom-card-content");
+    });
+  });
+
+  describe("getRootLoadingFeatureCardKeys", () => {
+    it("returns feature card keys array", () => {
+      const keys = getRootLoadingFeatureCardKeys();
+      expect(keys).toEqual([1, 2, 3]);
+    });
+  });
+
+  describe("getRootLoadingHeroAvatarSkeletonClasses", () => {
+    it("returns hero avatar skeleton classes", () => {
+      const classes = getRootLoadingHeroAvatarSkeletonClasses();
+      expect(classes).toContain("h-20 w-20 rounded-2xl");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingHeroAvatarSkeletonClasses("custom-avatar");
+      expect(classes).toContain("custom-avatar");
+    });
+  });
+
+  describe("getRootLoadingHeroTitleSkeletonClasses", () => {
+    it("returns hero title skeleton classes", () => {
+      const classes = getRootLoadingHeroTitleSkeletonClasses();
+      expect(classes).toContain("h-8 w-3/4 rounded-lg");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingHeroTitleSkeletonClasses("custom-title");
+      expect(classes).toContain("custom-title");
+    });
+  });
+
+  describe("getRootLoadingHeroSubtitleSkeletonClasses", () => {
+    it("returns hero subtitle skeleton classes", () => {
+      const classes = getRootLoadingHeroSubtitleSkeletonClasses();
+      expect(classes).toContain("h-5 w-1/3 rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingHeroSubtitleSkeletonClasses("custom-subtitle");
+      expect(classes).toContain("custom-subtitle");
+    });
+  });
+
+  describe("getRootLoadingHeroTaglineSkeletonClasses", () => {
+    it("returns hero tagline skeleton classes", () => {
+      const classes = getRootLoadingHeroTaglineSkeletonClasses();
+      expect(classes).toContain("h-4 w-5/6 rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingHeroTaglineSkeletonClasses("custom-tagline");
+      expect(classes).toContain("custom-tagline");
+    });
+  });
+
+  describe("getRootLoadingCardIconSkeletonClasses", () => {
+    it("returns card icon skeleton classes", () => {
+      const classes = getRootLoadingCardIconSkeletonClasses();
+      expect(classes).toContain("h-10 w-10 shrink-0 rounded-lg");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCardIconSkeletonClasses("custom-icon");
+      expect(classes).toContain("custom-icon");
+    });
+  });
+
+  describe("getRootLoadingCardTitleSkeletonClasses", () => {
+    it("returns card title skeleton classes", () => {
+      const classes = getRootLoadingCardTitleSkeletonClasses();
+      expect(classes).toContain("h-4 w-1/2 rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCardTitleSkeletonClasses("custom-card-title");
+      expect(classes).toContain("custom-card-title");
+    });
+  });
+
+  describe("getRootLoadingCardTextSkeletonClasses", () => {
+    it("returns card text skeleton classes", () => {
+      const classes = getRootLoadingCardTextSkeletonClasses();
+      expect(classes).toContain("h-3 w-full rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCardTextSkeletonClasses("custom-card-text");
+      expect(classes).toContain("custom-card-text");
+    });
+  });
+
+  describe("getRootLoadingCardSubtextSkeletonClasses", () => {
+    it("returns card subtext skeleton classes", () => {
+      const classes = getRootLoadingCardSubtextSkeletonClasses();
+      expect(classes).toContain("h-3 w-4/5 rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCardSubtextSkeletonClasses("custom-card-subtext");
+      expect(classes).toContain("custom-card-subtext");
+    });
+  });
+
+  describe("getRootLoadingCtaButtonSkeletonClasses", () => {
+    it("returns CTA button skeleton classes", () => {
+      const classes = getRootLoadingCtaButtonSkeletonClasses();
+      expect(classes).toContain("h-12 w-full rounded-lg");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCtaButtonSkeletonClasses("custom-cta-button");
+      expect(classes).toContain("custom-cta-button");
+    });
+  });
+
+  describe("getRootLoadingCtaFooterSkeletonClasses", () => {
+    it("returns CTA footer skeleton classes", () => {
+      const classes = getRootLoadingCtaFooterSkeletonClasses();
+      expect(classes).toContain("h-3 w-2/3 mx-auto rounded-md");
+    });
+
+    it("applies custom class overrides", () => {
+      const classes = getRootLoadingCtaFooterSkeletonClasses("custom-cta-footer");
+      expect(classes).toContain("custom-cta-footer");
     });
   });
 });

@@ -68,3 +68,94 @@ export function getRootLoadingCardClasses(customClassName?: string): string {
 export function getRootLoadingCtaClasses(customClassName?: string): string {
   return cn("flex flex-col gap-3 pt-2", customClassName);
 }
+
+/**
+ * Retorna las clases CSS para la lista de tarjetas de características en el Root Loading skeleton.
+ */
+export function getRootLoadingFeaturesListClasses(customClassName?: string): string {
+  return cn("flex flex-col gap-3", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el contenido interno de la tarjeta de característica en el Root Loading skeleton.
+ */
+export function getRootLoadingCardContentClasses(customClassName?: string): string {
+  return cn("space-y-2 flex-1 pt-1", customClassName);
+}
+
+/**
+ * Retorna la lista de identificadores numéricos de tarjetas de características para iterar en el Root Loading skeleton.
+ */
+export function getRootLoadingFeatureCardKeys(): number[] {
+  return [1, 2, 3];
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del avatar de héroe en el Root Loading skeleton.
+ */
+export function getRootLoadingHeroAvatarSkeletonClasses(customClassName?: string): string {
+  return cn("h-20 w-20 rounded-2xl", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del título de héroe en el Root Loading skeleton.
+ */
+export function getRootLoadingHeroTitleSkeletonClasses(customClassName?: string): string {
+  return cn("h-8 w-3/4 rounded-lg", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del subtítulo de héroe en el Root Loading skeleton.
+ */
+export function getRootLoadingHeroSubtitleSkeletonClasses(customClassName?: string): string {
+  return cn("h-5 w-1/3 rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del eslogan/tagline de héroe en el Root Loading skeleton.
+ */
+export function getRootLoadingHeroTaglineSkeletonClasses(customClassName?: string): string {
+  return cn("h-4 w-5/6 rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del ícono de la tarjeta de característica en el Root Loading skeleton.
+ */
+export function getRootLoadingCardIconSkeletonClasses(customClassName?: string): string {
+  return cn("h-10 w-10 shrink-0 rounded-lg", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del título de la tarjeta de característica en el Root Loading skeleton.
+ */
+export function getRootLoadingCardTitleSkeletonClasses(customClassName?: string): string {
+  return cn("h-4 w-1/2 rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del texto de la tarjeta de característica en el Root Loading skeleton.
+ */
+export function getRootLoadingCardTextSkeletonClasses(customClassName?: string): string {
+  return cn("h-3 w-full rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del subtexto de la tarjeta de característica en el Root Loading skeleton.
+ */
+export function getRootLoadingCardSubtextSkeletonClasses(customClassName?: string): string {
+  return cn("h-3 w-4/5 rounded-md", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto de un botón CTA en el Root Loading skeleton.
+ */
+export function getRootLoadingCtaButtonSkeletonClasses(customClassName?: string): string {
+  return cn("h-12 w-full rounded-lg", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el esqueleto del pie de página CTA en el Root Loading skeleton.
+ */
+export function getRootLoadingCtaFooterSkeletonClasses(customClassName?: string): string {
+  return cn("h-3 w-2/3 mx-auto rounded-md", customClassName);
+}
