@@ -2837,6 +2837,62 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for AddPlayerButton trigger button in closed state.
+ */
+export function getAddPlayerTriggerButtonClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton trigger icon badge container in closed state.
+ */
+export function getAddPlayerTriggerIconBadgeClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton expanded container card.
+ */
+export function getAddPlayerCardContainerClasses(): string {
+  return "rounded-xl border border-border bg-card overflow-hidden shadow-xs";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton search header container.
+ */
+export function getAddPlayerSearchHeaderClasses(): string {
+  return "flex items-center gap-2 p-3 border-b border-border";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton search input element.
+ */
+export function getAddPlayerSearchInputClasses(): string {
+  return "h-10 w-full pl-9 pr-9 rounded-lg bg-background border border-border text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton clear search button.
+ */
+export function getAddPlayerSearchClearButtonClasses(): string {
+  return "absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton cancel/close search button.
+ */
+export function getAddPlayerSearchCancelButtonClasses(): string {
+  return "rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for AddPlayerButton search result item button.
+ */
+export function getAddPlayerSearchResultItemClasses(): string {
+  return "w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
  * Format CSS classes for leave turn trigger button.
  */
 export function getLeaveTurnTriggerButtonClasses(): string {

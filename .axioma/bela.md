@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-23 — AddPlayerButton Pure Styling Helpers Extraction, Refactoring & Unit Tests (bela/turnos/add-player-button-pure-styling-helpers)
 - [x] 2026-10-22 — QuickJoinEmptySlotButton Pure Styling Helper Extraction, Refactoring & Unit Tests (bela/turnos/quick-join-empty-slot-button-pure-helper)
 - [x] 2026-10-18 — Turn Public Details UI Styling & Share Props Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-public-details-ui-styling-and-share-props-pure-helpers)
 - [x] 2026-10-17 — Calendar iCal Filename & Add Player Search Label Pure Helpers Extraction, Refactoring & Unit Tests (bela/turnos/calendar-ical-filename-and-search-label-pure-helpers)
@@ -81,6 +82,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-23 - AddPlayerButton Pure Styling Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure styling helper functions (`getAddPlayerTriggerButtonClasses`, `getAddPlayerTriggerIconBadgeClasses`, `getAddPlayerCardContainerClasses`, `getAddPlayerSearchHeaderClasses`, `getAddPlayerSearchInputClasses`, `getAddPlayerSearchClearButtonClasses`, `getAddPlayerSearchCancelButtonClasses`, and `getAddPlayerSearchResultItemClasses`) into `src/components/turns/turn-utils.ts` decouples UI container and search overlay CSS class compositions from React component render trees in `AddPlayerButton` (`src/components/turns/add-player-button.tsx`). Consuming these pure helpers ensures strict compliance with Minimal Design System (MDS) guidelines while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid card container styling (`shadow-xs`).
+**Action:** Always extract complex form and search trigger CSS class compositions into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-22 - QuickJoinEmptySlotButton Pure Styling Helper Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure helper function `getQuickJoinEmptySlotButtonClasses` into `src/components/turns/turn-utils.ts` decouples action button CSS class composition (`h-8 px-3 rounded-lg text-xs font-bold border-primary text-primary hover:bg-primary/10 transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`) from React component render trees in `QuickJoinEmptySlotButton` (`src/components/turns/turn-actions.tsx`). Consuming this pure helper ensures strict compliance with Minimal Design System (MDS) §1.2 guidelines while preserving focus-visible ring offsets and active tactile press scaling.
 **Action:** Always extract button CSS class compositions into pure helper utilities backed by Vitest unit tests.
