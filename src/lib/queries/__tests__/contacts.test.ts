@@ -12,6 +12,10 @@ import {
   getNetworkContactBadgeStyle,
   getNetworkContactMatchCountText,
   getNetworkContactFormattedDate,
+  isExtremeRivalOutcome,
+  determineTurnNeededCourtSide,
+  calculateCandidateProximityBonus,
+  calculateCandidateFeedbackAdjustment,
   type PadelContact,
 } from "@/lib/queries/contacts";
 
@@ -345,6 +349,100 @@ describe("Skill proximity and side preference synergy scoring rules", () => {
     const neededSide = rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
 
     expect(neededSide).toBe("LEFT");
+  });
+});
+
+describe("isExtremeRivalOutcome", () => {
+  it("returns false if rival matches are less than 2", () => {
+    expect(isExtremeRivalOutcome(1, 1)).toBe(false);
+    expect(isExtremeRivalOutcome(0, 1)).toBe(false);
+    expect(isExtremeRivalOutcome(0, 0)).toBe(false);
+  });
+
+  it("returns true for extreme candidate win rates (>85% or <15%)", () => {
+    // 9 out of 10 = 90% > 85%
+    expect(isExtremeRivalOutcome(9, 10)).toBe(true);
+    // 1 out of 10 = 10% < 15%
+    expect(isExtremeRivalOutcome(1, 10)).toBe(true);
+  });
+
+  it("returns false for balanced rival win rates (between 15% and 85%)", () => {
+    // 5 out of 10 = 50%
+    expect(isExtremeRivalOutcome(5, 10)).toBe(false);
+    // 2 out of 10 = 20%
+    expect(isExtremeRivalOutcome(2, 10)).toBe(false);
+    // 8 out of 10 = 80%
+    expect(isExtremeRivalOutcome(8, 10)).toBe(false);
+  });
+});
+
+describe("determineTurnNeededCourtSide", () => {
+  it("returns LEFT when right side players outnumber left side players", () => {
+    expect(determineTurnNeededCourtSide(2, 1)).toBe("LEFT");
+    expect(determineTurnNeededCourtSide(3, 0)).toBe("LEFT");
+  });
+
+  it("returns RIGHT when left side players outnumber right side players", () => {
+    expect(determineTurnNeededCourtSide(1, 2)).toBe("RIGHT");
+    expect(determineTurnNeededCourtSide(0, 2)).toBe("RIGHT");
+  });
+
+  it("returns null when right side and left side player counts are equal", () => {
+    expect(determineTurnNeededCourtSide(1, 1)).toBe(null);
+    expect(determineTurnNeededCourtSide(0, 0)).toBe(null);
+  });
+});
+
+describe("calculateCandidateProximityBonus", () => {
+  it("calculates proximity bonus for close skill score (diff <= 100) and matching court side", () => {
+    // skill diff = 50 -> +60, needed side match -> +40 -> total = 100
+    const bonus = calculateCandidateProximityBonus(1050, 1000, "LEFT", "LEFT");
+    expect(bonus).toBe(100);
+  });
+
+  it("calculates proximity bonus for moderate skill score diff (<= 200) without side match", () => {
+    // skill diff = 150 -> +30, side mismatch -> 0 -> total = 30
+    const bonus = calculateCandidateProximityBonus(1150, 1000, "RIGHT", "LEFT");
+    expect(bonus).toBe(30);
+  });
+
+  it("penalizes large skill score diff (> 350)", () => {
+    // skill diff = 400 -> -50, no needed side -> 0 -> total = -50
+    const bonus = calculateCandidateProximityBonus(1400, 1000, "RIGHT", null);
+    expect(bonus).toBe(-50);
+  });
+});
+
+describe("calculateCandidateFeedbackAdjustment", () => {
+  it("ignores feedback for already enrolled participants", () => {
+    const feedbackRows = [
+      { playerId: "p-01", feedback: "WEAKER" },
+      { playerId: "p-01", feedback: "WEAKER" },
+    ];
+    const participantUserIds = new Set(["p-01"]);
+    const result = calculateCandidateFeedbackAdjustment(feedbackRows, participantUserIds);
+
+    expect(result.scoreAdjustments.size).toBe(0);
+    expect(result.excludedUserIds.size).toBe(0);
+  });
+
+  it("calculates score penalties and excludes candidates with severe net negative feedback (>= 2)", () => {
+    const feedbackRows = [
+      { playerId: "candidate-1", feedback: "WEAKER" },
+      { playerId: "candidate-1", feedback: "WEAKER" },
+      { playerId: "candidate-2", feedback: "WEAKER" },
+      { playerId: "candidate-2", feedback: "STRONGER" },
+    ];
+    const participantUserIds = new Set(["p-01"]);
+    const result = calculateCandidateFeedbackAdjustment(feedbackRows, participantUserIds);
+
+    // candidate-1: netNegative = 2 -> penalty = -300, excluded
+    expect(result.scoreAdjustments.get("candidate-1")).toBe(-300);
+    expect(result.excludedUserIds.has("candidate-1")).toBe(true);
+
+    // candidate-2: netNegative = 0 -> no penalty, not excluded
+    expect(result.scoreAdjustments.has("candidate-2")).toBe(false);
+    expect(result.excludedUserIds.has("candidate-2")).toBe(false);
   });
 });
 
