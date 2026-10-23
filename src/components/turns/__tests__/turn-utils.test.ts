@@ -190,6 +190,14 @@ import {
   getAddPlayerSearchPlaceholder,
   getAddPlayerSearchResultsRegionAriaLabel,
   getAddPlayerRegionAriaLabel,
+  getAddPlayerTriggerButtonClasses,
+  getAddPlayerTriggerIconBadgeClasses,
+  getAddPlayerCardContainerClasses,
+  getAddPlayerSearchHeaderClasses,
+  getAddPlayerSearchInputClasses,
+  getAddPlayerSearchClearButtonClasses,
+  getAddPlayerSearchCancelButtonClasses,
+  getAddPlayerSearchResultItemClasses,
   getTurnFormDetailsHeaderTitle,
   getTurnFormClubLabel,
   getTurnFormClubPlaceholder,
@@ -954,6 +962,19 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("AddPlayerButton pure styling helpers", () => {
+  it("returns expected CSS classes for AddPlayerButton elements", () => {
+    expect(getAddPlayerTriggerButtonClasses()).toContain("border-dashed");
+    expect(getAddPlayerTriggerIconBadgeClasses()).toContain("text-primary");
+    expect(getAddPlayerCardContainerClasses()).toContain("shadow-xs");
+    expect(getAddPlayerSearchHeaderClasses()).toContain("border-b");
+    expect(getAddPlayerSearchInputClasses()).toContain("pl-9");
+    expect(getAddPlayerSearchClearButtonClasses()).toContain("absolute right-3");
+    expect(getAddPlayerSearchCancelButtonClasses()).toContain("p-2");
+    expect(getAddPlayerSearchResultItemClasses()).toContain("disabled:opacity-50");
   });
 });
 

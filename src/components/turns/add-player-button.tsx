@@ -23,6 +23,14 @@ import {
   getAddPlayerSearchResultsRegionAriaLabel,
   getAddPlayerRegionAriaLabel,
   getAddPlayerInputLabelText,
+  getAddPlayerTriggerButtonClasses,
+  getAddPlayerTriggerIconBadgeClasses,
+  getAddPlayerCardContainerClasses,
+  getAddPlayerSearchHeaderClasses,
+  getAddPlayerSearchInputClasses,
+  getAddPlayerSearchClearButtonClasses,
+  getAddPlayerSearchCancelButtonClasses,
+  getAddPlayerSearchResultItemClasses,
   type PlayerOption,
 } from "@/components/turns/turn-utils";
 
@@ -113,10 +121,10 @@ export function AddPlayerButton({
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3 text-foreground transition-all hover:bg-muted w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] shadow-xs"
+        className={getAddPlayerTriggerButtonClasses()}
         aria-label={getAddPlayerRegionAriaLabel()}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
+        <div className={getAddPlayerTriggerIconBadgeClasses()}>
           <UserPlus className="h-5 w-5" />
         </div>
         <div className="flex-1 text-left">
@@ -133,7 +141,7 @@ export function AddPlayerButton({
     <div
       role="region"
       aria-label={getAddPlayerRegionAriaLabel()}
-      className="rounded-xl border border-border bg-card overflow-hidden shadow-xs"
+      className={getAddPlayerCardContainerClasses()}
       onKeyDown={(e) => {
         if (e.key === "Escape") {
           setExpanded(false);
@@ -147,7 +155,7 @@ export function AddPlayerButton({
       </p>
 
       {/* Search header */}
-      <div className="flex items-center gap-2 p-3 border-b border-border">
+      <div className={getAddPlayerSearchHeaderClasses()}>
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <label htmlFor="player-search-input" className="sr-only">
@@ -162,7 +170,7 @@ export function AddPlayerButton({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={getAddPlayerSearchPlaceholder()}
             autoCapitalize="words"
-            className="h-10 w-full pl-9 pr-9 rounded-lg bg-background border border-border text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            className={getAddPlayerSearchInputClasses()}
           />
           {isSearching && (
             <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
@@ -175,7 +183,7 @@ export function AddPlayerButton({
                 inputRef.current?.focus();
               }}
               aria-label={getAddPlayerClearSearchAriaLabel()}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded active:scale-[0.95]"
+              className={getAddPlayerSearchClearButtonClasses()}
             >
               <X className="h-4 w-4" />
             </button>
@@ -187,7 +195,7 @@ export function AddPlayerButton({
             setQuery("");
             setResults([]);
           }}
-          className="rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getAddPlayerSearchCancelButtonClasses()}
           aria-label={getAddPlayerCancelSearchAriaLabel()}
         >
           <X className="h-5 w-5" />
@@ -205,7 +213,7 @@ export function AddPlayerButton({
                   onClick={() => handleAdd(player)}
                   disabled={addingId !== null}
                   aria-busy={addingId === player.id}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted active:scale-[0.98] transition-all text-left disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getAddPlayerSearchResultItemClasses()}
                   aria-label={getAddPlayerAriaLabel(player.displayName)}
                 >
                   <PlayerAvatar
