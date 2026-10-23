@@ -6,6 +6,51 @@ import {
   getMatchInvitationTitle,
   getMatchInvitationMetadata,
   getMatchInvitationSkeletonAriaLabel,
+  getInvitationBackButtonAriaLabel,
+  getInvitationSubheadingText,
+  getMatchInfoSectionHeaderTitle,
+  getMatchInfoModeLabel,
+  getMatchInfoSetsText,
+  getMatchInfoStatusLabel,
+  getMatchInfoClubPlaceholderText,
+  getMatchInfoCourtText,
+  getMatchInfoNotesHeaderTitle,
+  getPlayersSectionHeaderTitle,
+  getOpenSlotText,
+  getPlayerConfirmationStatusText,
+  getOrganizerBadgeText,
+  getMatchViewButtonText,
+  getSignInFormLabelForClub,
+  getOrganizerSlotRequestNoticeText,
+  getAlreadyParticipantNoticeText,
+  getInvitationBackButtonClasses,
+  getInvitationHeaderTitleClasses,
+  getInvitationSubheadingClasses,
+  getMatchInfoCardClasses,
+  getMatchInfoCardHeaderClasses,
+  getMatchInfoCardTitleClasses,
+  getMatchInfoGridClasses,
+  getMatchInfoTileClasses,
+  getMatchInfoTileHeaderClasses,
+  getMatchInfoTileValueClasses,
+  getMatchInfoClubTileClasses,
+  getMatchInfoNotesContainerClasses,
+  getMatchInfoNotesHeaderClasses,
+  getPlayersSectionClasses,
+  getPlayersSectionHeaderClasses,
+  getOpenSlotCardClasses,
+  getOpenSlotIconContainerClasses,
+  getOpenSlotTextClasses,
+  getOccupiedPlayerCardClasses,
+  getOccupiedPlayerNameClasses,
+  getOccupiedPlayerStatusTextClasses,
+  getOrganizerBadgeClasses,
+  getInvitationPrimaryButtonClasses,
+  getInvitationSignInFormClasses,
+  getInvitationNoticeContainerClasses,
+  getInvitationNoticeTextClasses,
+  getInvitationSuccessNoticeContainerClasses,
+  getInvitationSuccessNoticeTextClasses,
   MATCH_STATUS,
 } from "../match-invitation-utils";
 
@@ -100,6 +145,113 @@ describe("match-invitation-utils", () => {
       });
 
       expect(meta.title).toBe("Invitación a Partido en el club");
+    });
+  });
+
+  describe("text & UI labels pure helpers", () => {
+    it("getInvitationBackButtonAriaLabel returns 'Volver'", () => {
+      expect(getInvitationBackButtonAriaLabel()).toBe("Volver");
+    });
+
+    it("getInvitationSubheadingText returns 'Invitación de Partido'", () => {
+      expect(getInvitationSubheadingText()).toBe("Invitación de Partido");
+    });
+
+    it("getMatchInfoSectionHeaderTitle returns 'Información del encuentro'", () => {
+      expect(getMatchInfoSectionHeaderTitle()).toBe("Información del encuentro");
+    });
+
+    it("getMatchInfoModeLabel returns 'Modalidad'", () => {
+      expect(getMatchInfoModeLabel()).toBe("Modalidad");
+    });
+
+    it("getMatchInfoSetsText formats sets text correctly", () => {
+      expect(getMatchInfoSetsText(3)).toBe("3 sets");
+    });
+
+    it("getMatchInfoStatusLabel returns 'Estado'", () => {
+      expect(getMatchInfoStatusLabel()).toBe("Estado");
+    });
+
+    it("getMatchInfoClubPlaceholderText returns 'Club por definir'", () => {
+      expect(getMatchInfoClubPlaceholderText()).toBe("Club por definir");
+    });
+
+    it("getMatchInfoCourtText formats court number or empty string", () => {
+      expect(getMatchInfoCourtText("2")).toBe(" • Cancha 2");
+      expect(getMatchInfoCourtText(null)).toBe("");
+    });
+
+    it("getMatchInfoNotesHeaderTitle returns 'Notas del organizador'", () => {
+      expect(getMatchInfoNotesHeaderTitle()).toBe("Notas del organizador");
+    });
+
+    it("getPlayersSectionHeaderTitle returns 'Jugadores convocados'", () => {
+      expect(getPlayersSectionHeaderTitle()).toBe("Jugadores convocados");
+    });
+
+    it("getOpenSlotText returns 'Cupo disponible'", () => {
+      expect(getOpenSlotText()).toBe("Cupo disponible");
+    });
+
+    it("getPlayerConfirmationStatusText returns 'Confirmado' or 'Pendiente'", () => {
+      expect(getPlayerConfirmationStatusText(true)).toBe("Confirmado");
+      expect(getPlayerConfirmationStatusText(false)).toBe("Pendiente");
+    });
+
+    it("getOrganizerBadgeText returns 'Organizador'", () => {
+      expect(getOrganizerBadgeText()).toBe("Organizador");
+    });
+
+    it("getMatchViewButtonText returns 'Ver partido en Padel Red'", () => {
+      expect(getMatchViewButtonText()).toBe("Ver partido en Padel Red");
+    });
+
+    it("getSignInFormLabelForClub formats sign-in label appropriately", () => {
+      expect(getSignInFormLabelForClub("El Bosque")).toBe("Iniciá sesión para unirte a El Bosque");
+      expect(getSignInFormLabelForClub(null)).toBe("Iniciá sesión para unirte a el partido");
+    });
+
+    it("getOrganizerSlotRequestNoticeText returns notice text", () => {
+      expect(getOrganizerSlotRequestNoticeText()).toBe("Para unirte, pedile al organizador tu enlace de cupo directo");
+    });
+
+    it("getAlreadyParticipantNoticeText returns notice text", () => {
+      expect(getAlreadyParticipantNoticeText()).toBe("Ya formás parte de este partido");
+    });
+  });
+
+  describe("pure CSS styling class helpers", () => {
+    it("returns expected CSS class strings", () => {
+      expect(getInvitationBackButtonClasses()).toContain("bg-muted");
+      expect(getInvitationHeaderTitleClasses()).toContain("font-bold");
+      expect(getInvitationSubheadingClasses()).toContain("text-muted-foreground");
+      expect(getMatchInfoCardClasses()).toContain("border-border");
+      expect(getMatchInfoCardHeaderClasses()).toContain("bg-muted");
+      expect(getMatchInfoCardTitleClasses()).toContain("font-bold");
+      expect(getMatchInfoGridClasses()).toContain("grid-cols-2");
+      expect(getMatchInfoTileClasses()).toContain("flex-col");
+      expect(getMatchInfoTileHeaderClasses()).toContain("items-center");
+      expect(getMatchInfoTileValueClasses()).toContain("text-lg");
+      expect(getMatchInfoClubTileClasses()).toContain("col-span-2");
+      expect(getMatchInfoNotesContainerClasses()).toContain("italic");
+      expect(getMatchInfoNotesHeaderClasses()).toContain("not-italic");
+      expect(getPlayersSectionClasses()).toContain("space-y-4");
+      expect(getPlayersSectionHeaderClasses()).toContain("text-sm");
+      expect(getOpenSlotCardClasses()).toContain("border-dashed");
+      expect(getOpenSlotIconContainerClasses()).toContain("bg-background");
+      expect(getOpenSlotTextClasses()).toContain("italic");
+      expect(getOccupiedPlayerCardClasses()).toContain("bg-card");
+      expect(getOccupiedPlayerNameClasses()).toContain("font-bold");
+      expect(getOccupiedPlayerStatusTextClasses(true)).toContain("text-emerald-600");
+      expect(getOccupiedPlayerStatusTextClasses(false)).toContain("text-muted-foreground");
+      expect(getOrganizerBadgeClasses()).toContain("bg-primary");
+      expect(getInvitationPrimaryButtonClasses()).toContain("w-full");
+      expect(getInvitationSignInFormClasses()).toContain("h-10");
+      expect(getInvitationNoticeContainerClasses()).toContain("bg-muted");
+      expect(getInvitationNoticeTextClasses()).toContain("text-xs");
+      expect(getInvitationSuccessNoticeContainerClasses()).toContain("border-primary");
+      expect(getInvitationSuccessNoticeTextClasses()).toContain("text-primary");
     });
   });
 });
