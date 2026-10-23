@@ -51,6 +51,98 @@ export function calculateNetworkContactPriorityScore(
   return edgeScore;
 }
 
+/**
+ * Pure helper: checks if a candidate has an extreme rival outcome ratio (>85% or <15%)
+ * against an enrolled player for at least 2 rival matches.
+ */
+export function isExtremeRivalOutcome(
+  candidateWins: number,
+  rivalMatches: number
+): boolean {
+  if (rivalMatches < 2) return false;
+  const outcome = candidateWins / rivalMatches;
+  return outcome > 0.85 || outcome < 0.15;
+}
+
+/**
+ * Pure helper: determines which court side is needed for an open turn based on
+ * enrolled player court side counts.
+ */
+export function determineTurnNeededCourtSide(
+  rightCount: number,
+  leftCount: number
+): "RIGHT" | "LEFT" | null {
+  if (rightCount > leftCount) return "LEFT";
+  if (leftCount > rightCount) return "RIGHT";
+  return null;
+}
+
+/**
+ * Pure helper: calculates the proximity bonus score for a candidate based on skill score difference
+ * and court side preference alignment with the open turn's needed side.
+ */
+export function calculateCandidateProximityBonus(
+  candScore: number,
+  avgEnrolledSkillScore: number,
+  preferredSide: string | null | undefined,
+  neededSide: "RIGHT" | "LEFT" | null
+): number {
+  const skillDiff = Math.abs(candScore - avgEnrolledSkillScore);
+
+  let proximityScore = 0;
+  if (skillDiff <= 100) proximityScore += 60;
+  else if (skillDiff <= 200) proximityScore += 30;
+  else if (skillDiff > 350) proximityScore -= 50;
+
+  let sideScore = 0;
+  if (neededSide && preferredSide === neededSide) {
+    sideScore += 40;
+  }
+
+  return proximityScore + sideScore;
+}
+
+export interface CandidateFeedbackAdjustmentResult {
+  scoreAdjustments: Map<string, number>;
+  excludedUserIds: Set<string>;
+}
+
+/**
+ * Pure helper: aggregates post-match feedback given by enrolled turn participants,
+ * calculates candidate score penalties for net negative feedback, and flags candidates
+ * with severe net negative feedback (>= 2) for exclusion.
+ */
+export function calculateCandidateFeedbackAdjustment(
+  feedbackRows: Array<{ playerId: string; feedback: string }>,
+  participantUserIds: Set<string>
+): CandidateFeedbackAdjustmentResult {
+  const candidateFeedbackMap = new Map<string, { weakerCount: number; strongerCount: number }>();
+  for (const f of feedbackRows) {
+    if (participantUserIds.has(f.playerId)) continue;
+    const stats = candidateFeedbackMap.get(f.playerId) ?? { weakerCount: 0, strongerCount: 0 };
+    if (f.feedback === "WEAKER") stats.weakerCount++;
+    if (f.feedback === "STRONGER") stats.strongerCount++;
+    candidateFeedbackMap.set(f.playerId, stats);
+  }
+
+  const scoreAdjustments = new Map<string, number>();
+  const excludedUserIds = new Set<string>();
+
+  for (const [candidateId, fb] of candidateFeedbackMap.entries()) {
+    if (fb.weakerCount > 0) {
+      const netNegative = fb.weakerCount - fb.strongerCount;
+      if (netNegative > 0) {
+        scoreAdjustments.set(candidateId, -netNegative * 150);
+        if (netNegative >= 2) {
+          excludedUserIds.add(candidateId);
+        }
+      }
+    }
+  }
+
+  return { scoreAdjustments, excludedUserIds };
+}
+
 export interface NetworkContactSummary {
   matchCountText: string;
   recencyText: string;
@@ -356,17 +448,8 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     if (participantUserIds.has(candidateId)) continue;
 
     // Check extreme outcome exclusion
-    // Exclude rivals with outcome extreme (>85% or <15%)
-    let isExtreme = false;
-    if (edge.matchesAsRivals >= 2) {
-      const candidateWins = candidateId === edge.playerAId ? edge.winsA : edge.winsB;
-      const outcome = candidateWins / edge.matchesAsRivals;
-      if (outcome > 0.85 || outcome < 0.15) {
-        isExtreme = true;
-      }
-    }
-
-    if (isExtreme) {
+    const candidateWins = candidateId === edge.playerAId ? edge.winsA : edge.winsB;
+    if (isExtremeRivalOutcome(candidateWins, edge.matchesAsRivals)) {
       excludedUserIds.add(candidateId);
       continue;
     }
@@ -420,28 +503,13 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   }
 
   // Process feedback signal given by enrolled turn participants
-  const candidateFeedbackMap = new Map<string, { weakerCount: number; strongerCount: number }>();
-  for (const f of feedbackRows) {
-    if (participantUserIds.has(f.playerId)) continue;
-    const stats = candidateFeedbackMap.get(f.playerId) ?? { weakerCount: 0, strongerCount: 0 };
-    if (f.feedback === "WEAKER") stats.weakerCount++;
-    if (f.feedback === "STRONGER") stats.strongerCount++;
-    candidateFeedbackMap.set(f.playerId, stats);
+  const feedbackAdjustment = calculateCandidateFeedbackAdjustment(feedbackRows, participantUserIds);
+  for (const [candidateId, penalty] of feedbackAdjustment.scoreAdjustments.entries()) {
+    const currentScore = candidateScores.get(candidateId) ?? 0;
+    candidateScores.set(candidateId, currentScore + penalty);
   }
-
-  for (const [candidateId, fb] of candidateFeedbackMap.entries()) {
-    if (fb.weakerCount > 0) {
-      const netNegative = fb.weakerCount - fb.strongerCount;
-      if (netNegative > 0) {
-        const currentScore = candidateScores.get(candidateId) ?? 0;
-        // Penalize candidate score based on net negative feedback from turn participants
-        candidateScores.set(candidateId, currentScore - netNegative * 150);
-        // Exclude candidates with severe net negative feedback (>= 2)
-        if (netNegative >= 2) {
-          excludedUserIds.add(candidateId);
-        }
-      }
-    }
+  for (const excludedId of feedbackAdjustment.excludedUserIds) {
+    excludedUserIds.add(excludedId);
   }
 
   // Process Skill Proximity & Side Preference Synergy
@@ -473,25 +541,20 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
       if (s.preferredSide === "LEFT") leftCount++;
     }
 
-    const neededSide = rightCount > leftCount ? "LEFT" : leftCount > rightCount ? "RIGHT" : null;
+    const neededSide = determineTurnNeededCourtSide(rightCount, leftCount);
 
     for (const candidateId of activeCandidateIds) {
       const stats = candidateStatsMap.get(candidateId);
       const candScore = stats?.skillScore ?? 1000;
-      const skillDiff = Math.abs(candScore - avgEnrolledSkillScore);
-
-      let proximityScore = 0;
-      if (skillDiff <= 100) proximityScore += 60;
-      else if (skillDiff <= 200) proximityScore += 30;
-      else if (skillDiff > 350) proximityScore -= 50;
-
-      let sideScore = 0;
-      if (neededSide && stats?.preferredSide === neededSide) {
-        sideScore += 40;
-      }
+      const proximityBonus = calculateCandidateProximityBonus(
+        candScore,
+        avgEnrolledSkillScore,
+        stats?.preferredSide,
+        neededSide
+      );
 
       const currentScore = candidateScores.get(candidateId) ?? 0;
-      candidateScores.set(candidateId, currentScore + proximityScore + sideScore);
+      candidateScores.set(candidateId, currentScore + proximityBonus);
     }
   }
 
