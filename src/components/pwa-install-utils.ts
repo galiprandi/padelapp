@@ -106,3 +106,66 @@ export function getPwaBannerInstallButtonClasses(): string {
 export function getPwaBannerGuideButtonClasses(): string {
   return "h-8 px-3 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shrink-0";
 }
+
+/**
+ * Returns standardized CSS class string for the text container inside the PWA banner.
+ */
+export function getPwaBannerTextContainerClasses(): string {
+  return "flex-1 space-y-0.5";
+}
+
+/**
+ * Returns standardized CSS class string for the title heading inside the PWA banner.
+ */
+export function getPwaBannerTitleClasses(): string {
+  return "text-sm font-semibold text-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for the description text inside the PWA banner.
+ */
+export function getPwaBannerDescriptionClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns standardized CSS class string for the mobile icon inside the PWA banner.
+ */
+export function getPwaBannerIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Returns standardized CSS class string for the dismiss icon inside the PWA banner.
+ */
+export function getPwaBannerDismissIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Returns standardized CSS class string for the install loading spinner inside the PWA banner button.
+ */
+export function getPwaBannerButtonSpinnerClasses(): string {
+  return "h-3.5 w-3.5 animate-spin mr-1";
+}
+
+/**
+ * Returns standardized CSS class string for the download icon inside the PWA banner install button.
+ */
+export function getPwaBannerButtonIconClasses(): string {
+  return "h-3.5 w-3.5 mr-1";
+}
+
+/**
+ * Returns localized text for the guide button inside the PWA banner.
+ */
+export function getPwaBannerGuideButtonText(): string {
+  return "Ver cómo";
+}
+
+/**
+ * Returns localized text for the sidebar/footer install link button.
+ */
+export function getPwaInstallLinkText(): string {
+  return "Instalar App";
+}
