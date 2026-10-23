@@ -19,6 +19,15 @@ import {
   getPwaBannerDismissButtonClasses,
   getPwaBannerInstallButtonClasses,
   getPwaBannerGuideButtonClasses,
+  getPwaBannerTextContainerClasses,
+  getPwaBannerTitleClasses,
+  getPwaBannerDescriptionClasses,
+  getPwaBannerIconClasses,
+  getPwaBannerDismissIconClasses,
+  getPwaBannerButtonSpinnerClasses,
+  getPwaBannerButtonIconClasses,
+  getPwaBannerGuideButtonText,
+  getPwaInstallLinkText,
 } from "../pwa-install-utils";
 
 describe("pwa-install-utils", () => {
@@ -128,6 +137,21 @@ describe("pwa-install-utils", () => {
       expect(getPwaBannerDismissButtonClasses()).toContain("rounded-md p-1.5 h-8 w-8");
       expect(getPwaBannerInstallButtonClasses()).toContain("h-8 px-3 text-xs font-bold bg-primary");
       expect(getPwaBannerGuideButtonClasses()).toContain("h-8 px-3 text-xs font-bold bg-primary");
+    });
+
+    it("returns expected text container, title and description CSS classes for PWA banner", () => {
+      expect(getPwaBannerTextContainerClasses()).toBe("flex-1 space-y-0.5");
+      expect(getPwaBannerTitleClasses()).toBe("text-sm font-semibold text-foreground");
+      expect(getPwaBannerDescriptionClasses()).toBe("text-xs text-muted-foreground");
+    });
+
+    it("returns expected icon, spinner and guide button text helpers for PWA banner", () => {
+      expect(getPwaBannerIconClasses()).toBe("h-4 w-4");
+      expect(getPwaBannerDismissIconClasses()).toBe("h-4 w-4");
+      expect(getPwaBannerButtonSpinnerClasses()).toBe("h-3.5 w-3.5 animate-spin mr-1");
+      expect(getPwaBannerButtonIconClasses()).toBe("h-3.5 w-3.5 mr-1");
+      expect(getPwaBannerGuideButtonText()).toBe("Ver cómo");
+      expect(getPwaInstallLinkText()).toBe("Instalar App");
     });
   });
 });

@@ -6,6 +6,7 @@ import { usePwaInstalled } from "@/lib/hooks/use-pwa-installed";
 import {
   getPwaInstallLinkAriaLabel,
   getInstallLinkClasses,
+  getPwaInstallLinkText,
 } from "./pwa-install-utils";
 
 export function InstallLinkButton() {
@@ -16,7 +17,7 @@ export function InstallLinkButton() {
   return (
     <Button variant="ghost" className={getInstallLinkClasses()} asChild>
       <Link href="/install" prefetch={true} aria-label={getPwaInstallLinkAriaLabel()}>
-        Instalar App
+        {getPwaInstallLinkText()}
       </Link>
     </Button>
   );

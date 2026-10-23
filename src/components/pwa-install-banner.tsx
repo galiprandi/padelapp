@@ -16,13 +16,20 @@ import {
   getDismissBannerAriaLabel,
   getPwaBannerTitleText,
   getPwaBannerDescriptionText,
-  getPwaBannerIconAriaLabel,
   getPwaBannerInstallButtonText,
   getPwaBannerContainerClasses,
   getPwaBannerIconBadgeClasses,
   getPwaBannerDismissButtonClasses,
   getPwaBannerInstallButtonClasses,
   getPwaBannerGuideButtonClasses,
+  getPwaBannerTextContainerClasses,
+  getPwaBannerTitleClasses,
+  getPwaBannerDescriptionClasses,
+  getPwaBannerIconClasses,
+  getPwaBannerDismissIconClasses,
+  getPwaBannerButtonSpinnerClasses,
+  getPwaBannerButtonIconClasses,
+  getPwaBannerGuideButtonText,
 } from "./pwa-install-utils";
 
 export {
@@ -117,14 +124,14 @@ export function PwaInstallBanner() {
       className={getPwaBannerContainerClasses()}
     >
       <div className={getPwaBannerIconBadgeClasses()}>
-        <Smartphone className="h-4 w-4" aria-hidden="true" />
+        <Smartphone className={getPwaBannerIconClasses()} aria-hidden="true" />
       </div>
 
-      <div className="flex-1 space-y-0.5">
-        <h3 className="text-sm font-semibold text-foreground">
+      <div className={getPwaBannerTextContainerClasses()}>
+        <h3 className={getPwaBannerTitleClasses()}>
           {getPwaBannerTitleText()}
         </h3>
-        <p className="text-xs text-muted-foreground">
+        <p className={getPwaBannerDescriptionClasses()}>
           {getPwaBannerDescriptionText()}
         </p>
       </div>
@@ -136,7 +143,7 @@ export function PwaInstallBanner() {
         aria-label={getDismissBannerAriaLabel()}
         className={getPwaBannerDismissButtonClasses()}
       >
-        <X className="h-4 w-4" aria-hidden="true" />
+        <X className={getPwaBannerDismissIconClasses()} aria-hidden="true" />
       </Button>
 
       {deferredPrompt ? (
@@ -150,9 +157,9 @@ export function PwaInstallBanner() {
           aria-label={getInstallButtonAriaLabel(isInstalling)}
         >
           {isInstalling ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
+            <Loader2 className={getPwaBannerButtonSpinnerClasses()} aria-hidden="true" />
           ) : (
-            <Download className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+            <Download className={getPwaBannerButtonIconClasses()} aria-hidden="true" />
           )}
           {getPwaBannerInstallButtonText()}
         </Button>
@@ -164,7 +171,7 @@ export function PwaInstallBanner() {
           className={getPwaBannerGuideButtonClasses()}
         >
           <Link href="/install" prefetch={true} aria-label={getInstallGuideAriaLabel()}>
-            Ver cómo
+            {getPwaBannerGuideButtonText()}
           </Link>
         </Button>
       )}
