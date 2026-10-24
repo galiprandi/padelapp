@@ -87,6 +87,11 @@ import {
   getOpenToNetworkHelperText,
   getOpenToNetworkResultSubtitle,
   getOpenToNetworkResultDescription,
+  getOpenToNetworkIconResultClasses,
+  getOpenToNetworkCompactResultClasses,
+  getOpenToNetworkDefaultResultClasses,
+  getOpenToNetworkContainerClasses,
+  getOpenToNetworkButtonClasses,
   getWhatsAppInviteSuccessToast,
   getWhatsAppGroupInviteSuccessToast,
   getWhatsAppInviteAriaLabel,
@@ -1753,6 +1758,41 @@ describe("WhatsApp Invite pure helpers", () => {
     expect(getWhatsAppInviteButtonText()).toBe("Invitar");
     expect(getWhatsAppGroupInviteButtonText()).toBe("Grupo WhatsApp");
     expect(getFallbackWhatsAppShareUrl()).toBe("https://wa.me/");
+  });
+});
+
+describe("OpenToNetworkButton pure styling helpers", () => {
+  it("formats getOpenToNetworkIconResultClasses, getOpenToNetworkCompactResultClasses, and getOpenToNetworkDefaultResultClasses", () => {
+    expect(getOpenToNetworkIconResultClasses()).toContain("bg-emerald-500");
+    expect(getOpenToNetworkIconResultClasses("custom-icon")).toContain("custom-icon");
+
+    expect(getOpenToNetworkCompactResultClasses()).toContain("bg-emerald-100");
+    expect(getOpenToNetworkCompactResultClasses("custom-compact")).toContain("custom-compact");
+
+    expect(getOpenToNetworkDefaultResultClasses()).toContain("border-border bg-muted");
+    expect(getOpenToNetworkDefaultResultClasses("custom-default")).toContain("custom-default");
+  });
+
+  it("formats getOpenToNetworkContainerClasses across showText and isIconOnly flags", () => {
+    expect(getOpenToNetworkContainerClasses(true, false)).toContain("gap-2");
+    expect(getOpenToNetworkContainerClasses(false, false)).toContain("gap-0");
+    expect(getOpenToNetworkContainerClasses(true, true)).toContain("gap-0");
+  });
+
+  it("formats getOpenToNetworkButtonClasses across icon, variant, cooldown, and custom className states", () => {
+    const defaultBtn = getOpenToNetworkButtonClasses({});
+    expect(defaultBtn).toContain("w-full");
+    expect(defaultBtn).toContain("font-bold");
+
+    const iconBtn = getOpenToNetworkButtonClasses({ isIconOnly: true });
+    expect(iconBtn).not.toContain("w-full");
+
+    const cooldownBtn = getOpenToNetworkButtonClasses({ isOnCooldown: true });
+    expect(cooldownBtn).toContain("cursor-not-allowed");
+    expect(cooldownBtn).not.toContain("font-bold");
+
+    const customBtn = getOpenToNetworkButtonClasses({ className: "custom-class" });
+    expect(customBtn).toContain("custom-class");
   });
 });
 

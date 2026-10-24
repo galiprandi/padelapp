@@ -19,6 +19,11 @@ import {
   getOpenToNetworkHelperText,
   getOpenToNetworkResultSubtitle,
   getOpenToNetworkResultDescription,
+  getOpenToNetworkIconResultClasses,
+  getOpenToNetworkCompactResultClasses,
+  getOpenToNetworkDefaultResultClasses,
+  getOpenToNetworkContainerClasses,
+  getOpenToNetworkButtonClasses,
 } from "@/components/turns/turn-utils";
 
 interface OpenToNetworkButtonProps {
@@ -106,7 +111,7 @@ export function OpenToNetworkButton({
           role="status"
           aria-live="polite"
           aria-label={resultAriaLabel}
-          className={cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-xs", className)}
+          className={getOpenToNetworkIconResultClasses(className)}
         >
           <Check className="h-5 w-5" />
         </div>
@@ -118,7 +123,7 @@ export function OpenToNetworkButton({
           role="status"
           aria-live="polite"
           aria-label={resultAriaLabel}
-          className={cn("flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 shadow-xs", className)}
+          className={getOpenToNetworkCompactResultClasses(className)}
         >
           <Check className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate">
@@ -132,7 +137,7 @@ export function OpenToNetworkButton({
         role="status"
         aria-live="polite"
         aria-label={resultAriaLabel}
-        className={cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm shadow-xs", className)}
+        className={getOpenToNetworkDefaultResultClasses(className)}
       >
         <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
           <Check className="h-4 w-4" />
@@ -168,20 +173,14 @@ export function OpenToNetworkButton({
     <div
       role="region"
       aria-label={getOpenToNetworkRegionAriaLabel()}
-      className={cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0")}
+      className={getOpenToNetworkContainerClasses(showText, isIconOnly)}
     >
       <Button
         onClick={handleClick}
         disabled={isPending || isOnCooldown}
         variant={isOnCooldown ? "outline" : variant}
         size={size}
-        className={cn(
-          !isIconOnly && "w-full",
-          variant === "default" && !isOnCooldown && "font-bold",
-          isOnCooldown && "text-muted-foreground border-border bg-muted cursor-not-allowed",
-          "transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-          className,
-        )}
+        className={getOpenToNetworkButtonClasses({ isIconOnly, variant, isOnCooldown, className })}
         aria-busy={isPending}
         aria-label={computedAriaLabel}
       >
