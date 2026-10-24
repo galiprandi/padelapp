@@ -13,6 +13,7 @@ import {
   getSwapSuccessToast,
   getSwapErrorToast,
   getSwapModeStatusAriaLabel,
+  getSwapModeBannerTitle,
   getSwapModeCancelAriaLabel,
   getMatchTeamsRegionAriaLabel,
   getPlayerManageAriaLabel,
@@ -98,7 +99,11 @@ describe("match-players-manager-utils", () => {
     });
   });
 
-  describe("Accessibility ARIA labels", () => {
+  describe("Accessibility ARIA labels and banner titles", () => {
+    it("returns correct swap mode banner title", () => {
+      expect(getSwapModeBannerTitle()).toBe("Modo intercambio activo");
+    });
+
     it("returns correct swap mode status ARIA label", () => {
       expect(getSwapModeStatusAriaLabel()).toBe(
         "Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar."

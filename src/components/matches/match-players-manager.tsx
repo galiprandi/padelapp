@@ -25,6 +25,7 @@ import {
   getSwapSuccessToast,
   getSwapErrorToast,
   getSwapModeStatusAriaLabel,
+  getSwapModeBannerTitle,
   getSwapModeCancelAriaLabel,
   getMatchTeamsRegionAriaLabel,
   getPlayerManageAriaLabel,
@@ -238,7 +239,7 @@ export function MatchPlayersManager({ matchId, creatorId, teams }: MatchPlayersM
         >
           <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-xs">
             <ArrowUpDown className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="text-xs font-bold">Modo intercambio activo</span>
+            <span className="text-xs font-bold">{getSwapModeBannerTitle()}</span>
             <Button
               size="icon"
               variant="ghost"
