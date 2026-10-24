@@ -10,6 +10,12 @@ import {
   getAppErrorContainerClasses,
   getErrorIconContainerClasses,
   getErrorActionButtonClasses,
+  getErrorRetryButtonText,
+  getErrorHomeButtonText,
+  getErrorHeadingTitleClasses,
+  getErrorMessageDescriptionClasses,
+  getErrorCardContentClasses,
+  getErrorActionGroupClasses,
   formatErrorDetails,
 } from "../error-utils";
 
@@ -139,6 +145,76 @@ describe("error-utils", () => {
     it("appends custom class names if provided", () => {
       const classes = getErrorIconContainerClasses("custom-icon-bg");
       expect(classes).toContain("custom-icon-bg");
+    });
+  });
+
+  describe("getErrorRetryButtonText", () => {
+    it("returns localized Spanish label for retry button", () => {
+      expect(getErrorRetryButtonText()).toBe("Reintentar");
+    });
+  });
+
+  describe("getErrorHomeButtonText", () => {
+    it("returns localized Spanish label for home button", () => {
+      expect(getErrorHomeButtonText()).toBe("Inicio");
+    });
+  });
+
+  describe("getErrorHeadingTitleClasses", () => {
+    it("returns font weight and color typography classes for error heading", () => {
+      const classes = getErrorHeadingTitleClasses();
+      expect(classes).toContain("text-lg");
+      expect(classes).toContain("font-bold");
+      expect(classes).toContain("text-foreground");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorHeadingTitleClasses("text-xl");
+      expect(classes).toContain("text-xl");
+    });
+  });
+
+  describe("getErrorMessageDescriptionClasses", () => {
+    it("returns text size and muted color classes for error message description", () => {
+      const classes = getErrorMessageDescriptionClasses();
+      expect(classes).toContain("text-sm");
+      expect(classes).toContain("text-muted-foreground");
+      expect(classes).toContain("max-w-xs");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorMessageDescriptionClasses("max-w-sm");
+      expect(classes).toContain("max-w-sm");
+    });
+  });
+
+  describe("getErrorCardContentClasses", () => {
+    it("returns layout and alignment classes for error card inner content", () => {
+      const classes = getErrorCardContentClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("flex-col");
+      expect(classes).toContain("items-center");
+      expect(classes).toContain("text-center");
+      expect(classes).toContain("max-w-md");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorCardContentClasses("custom-card-content");
+      expect(classes).toContain("custom-card-content");
+    });
+  });
+
+  describe("getErrorActionGroupClasses", () => {
+    it("returns gap and padding top classes for error action buttons container", () => {
+      const classes = getErrorActionGroupClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("gap-2");
+      expect(classes).toContain("pt-2");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorActionGroupClasses("pt-4");
+      expect(classes).toContain("pt-4");
     });
   });
 

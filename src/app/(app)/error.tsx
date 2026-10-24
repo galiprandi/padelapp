@@ -9,6 +9,11 @@ import {
   getAppErrorContainerClasses,
   getErrorIconContainerClasses,
   getErrorActionButtonClasses,
+  getErrorRetryButtonText,
+  getErrorHomeButtonText,
+  getErrorHeadingTitleClasses,
+  getErrorMessageDescriptionClasses,
+  getErrorActionGroupClasses,
 } from "@/lib/error-utils";
 
 export default function AppError({
@@ -38,12 +43,12 @@ export default function AppError({
         <AlertCircle className="h-6 w-6 text-destructive" aria-hidden="true" />
       </div>
       <div className="space-y-1">
-        <h1 className="text-lg font-bold text-foreground">{details.title}</h1>
-        <p className="text-sm text-muted-foreground max-w-xs">
+        <h1 className={getErrorHeadingTitleClasses()}>{details.title}</h1>
+        <p className={getErrorMessageDescriptionClasses()}>
           {details.message}
         </p>
       </div>
-      <div className="flex gap-2">
+      <div className={getErrorActionGroupClasses()}>
         <Button
           onClick={reset}
           variant="default"
@@ -52,7 +57,7 @@ export default function AppError({
           className={getErrorActionButtonClasses()}
         >
           <RotateCw className="mr-1.5 h-4 w-4" aria-hidden="true" />
-          Reintentar
+          {getErrorRetryButtonText()}
         </Button>
         <Button
           asChild
@@ -66,7 +71,7 @@ export default function AppError({
             aria-label={details.homeAriaLabel}
           >
             <Home className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Inicio
+            {getErrorHomeButtonText()}
           </Link>
         </Button>
       </div>

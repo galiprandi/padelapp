@@ -9,6 +9,12 @@ import {
   getRootErrorContainerClasses,
   getErrorIconContainerClasses,
   getErrorActionButtonClasses,
+  getErrorRetryButtonText,
+  getErrorHomeButtonText,
+  getErrorHeadingTitleClasses,
+  getErrorMessageDescriptionClasses,
+  getErrorCardContentClasses,
+  getErrorActionGroupClasses,
 } from "@/lib/error-utils";
 
 export default function RootError({
@@ -33,17 +39,17 @@ export default function RootError({
       aria-label={details.regionAriaLabel}
       className={getRootErrorContainerClasses()}
     >
-      <div className="flex flex-col items-center justify-center gap-4 text-center max-w-md mx-auto">
+      <div className={getErrorCardContentClasses()}>
         <div className={getErrorIconContainerClasses()}>
           <AlertCircle className="h-6 w-6 text-destructive" aria-hidden="true" />
         </div>
         <div className="space-y-1">
-          <h1 className="text-lg font-bold text-foreground">{details.title}</h1>
-          <p className="text-sm text-muted-foreground max-w-xs">
+          <h1 className={getErrorHeadingTitleClasses()}>{details.title}</h1>
+          <p className={getErrorMessageDescriptionClasses()}>
             {details.message}
           </p>
         </div>
-        <div className="flex gap-2 pt-2">
+        <div className={getErrorActionGroupClasses()}>
           <Button
             onClick={reset}
             variant="default"
@@ -52,7 +58,7 @@ export default function RootError({
             className={getErrorActionButtonClasses()}
           >
             <RotateCw className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Reintentar
+            {getErrorRetryButtonText()}
           </Button>
           <Button
             asChild
@@ -66,7 +72,7 @@ export default function RootError({
               aria-label={details.homeAriaLabel}
             >
               <Home className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              Inicio
+              {getErrorHomeButtonText()}
             </Link>
           </Button>
         </div>
