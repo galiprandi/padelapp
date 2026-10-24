@@ -12,6 +12,9 @@ import {
   getNetworkPageTabButtonClasses,
   getNetworkPageTabAriaLabel,
   getNetworkPageRegionAriaLabel,
+  getNetworkPageTabListAriaLabel,
+  getNetworkPageStatsTabLabel,
+  getNetworkPageGraphTabLabel,
 } from "./graph-utils";
 import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 
@@ -36,21 +39,21 @@ export function NetworkPageClient({ metrics, graphData, viewerId, playersLikeYou
       {/* Tab bar */}
       <div
         role="tablist"
-        aria-label="Pestañas de la red de contactos"
+        aria-label={getNetworkPageTabListAriaLabel()}
         className={getNetworkPageTabBarClasses()}
       >
         <TabButton
           active={tab === "stats"}
           onClick={() => setTab("stats")}
           icon={BarChart3}
-          label="Métricas"
+          label={getNetworkPageStatsTabLabel()}
           tab="stats"
         />
         <TabButton
           active={tab === "graph"}
           onClick={() => setTab("graph")}
           icon={NetworkIcon}
-          label="Grafo"
+          label={getNetworkPageGraphTabLabel()}
           tab="graph"
         />
       </div>

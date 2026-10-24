@@ -4200,3 +4200,43 @@ export function getStatsPanelTopPlayerRankClasses(): string {
 export function getStatsPanelTopPlayerContactsClasses(): string {
   return "text-xs font-bold tabular-nums text-primary block";
 }
+
+export function getNetworkErrorResetButtonText(): string {
+  return "Reintentar";
+}
+
+export function getNetworkErrorHomeButtonText(): string {
+  return "Inicio";
+}
+
+export function getNetworkErrorIconBadgeClasses(): string {
+  return "flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10";
+}
+
+export function getNetworkErrorTitleClasses(): string {
+  return "text-lg font-bold text-foreground";
+}
+
+export function getNetworkErrorDescriptionClasses(): string {
+  return "text-sm text-muted-foreground max-w-xs";
+}
+
+export function getNetworkErrorActionGroupClasses(): string {
+  return "flex gap-2";
+}
+
+export function getNetworkErrorButtonClasses(): string {
+  return "active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getNetworkPageTabListAriaLabel(): string {
+  return "Pestañas de la red de contactos";
+}
+
+export function getNetworkPageStatsTabLabel(): string {
+  return "Métricas";
+}
+
+export function getNetworkPageGraphTabLabel(): string {
+  return "Grafo";
+}
