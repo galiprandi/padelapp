@@ -2837,6 +2837,65 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for OpenToNetworkButton icon result state container.
+ */
+export function getOpenToNetworkIconResultClasses(className?: string): string {
+  return cn("flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-xs", className);
+}
+
+/**
+ * Format CSS classes for OpenToNetworkButton compact result state container.
+ */
+export function getOpenToNetworkCompactResultClasses(className?: string): string {
+  return cn(
+    "flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 shadow-xs",
+    className
+  );
+}
+
+/**
+ * Format CSS classes for OpenToNetworkButton default result state container.
+ */
+export function getOpenToNetworkDefaultResultClasses(className?: string): string {
+  return cn("w-full rounded-lg border border-border bg-muted px-4 py-3 text-sm shadow-xs", className);
+}
+
+/**
+ * Format CSS classes for OpenToNetworkButton outer region container.
+ */
+export function getOpenToNetworkContainerClasses(
+  showText?: boolean,
+  isIconOnly?: boolean
+): string {
+  return cn("flex flex-col gap-2", !showText && "gap-0", isIconOnly && "gap-0");
+}
+
+export interface OpenToNetworkButtonClassesOptions {
+  isIconOnly?: boolean;
+  variant?: string;
+  isOnCooldown?: boolean;
+  className?: string;
+}
+
+/**
+ * Format CSS classes for OpenToNetworkButton interactive button.
+ */
+export function getOpenToNetworkButtonClasses({
+  isIconOnly = false,
+  variant = "default",
+  isOnCooldown = false,
+  className,
+}: OpenToNetworkButtonClassesOptions = {}): string {
+  return cn(
+    !isIconOnly && "w-full",
+    variant === "default" && !isOnCooldown && "font-bold",
+    isOnCooldown && "text-muted-foreground border-border bg-muted cursor-not-allowed",
+    "transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    className
+  );
+}
+
+/**
  * Format CSS classes for AddPlayerButton trigger button in closed state.
  */
 export function getAddPlayerTriggerButtonClasses(): string {
