@@ -55,6 +55,10 @@ export function getSwapModeStatusAriaLabel(): string {
   return "Modo intercambio activo. Seleccioná otro jugador o presioná Escape para cancelar.";
 }
 
+export function getSwapModeBannerTitle(): string {
+  return "Modo intercambio activo";
+}
+
 export function getSwapModeCancelAriaLabel(): string {
   return "Cancelar intercambio de posición";
 }
