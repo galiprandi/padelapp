@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-09 — Extracción de Funciones Helper Puras de Etiquetas de Botones, Tipografía y Maquetación de Tarjetas de Error (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-08 — Extracción de Funciones Helper Puras de Estilos e Íconos para Toast (`src/components/toast/toast-utils.ts`), Tipografía y Esqueletos de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de Componentes
 - [x] 2026-10-07 — Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt` (`src/components/pwa/push-permission-utils.ts`) y Refactorización del Componente
 - [x] 2026-10-06 — Extracción de Funciones Helper Puras `getCacheTagForDomain`, `getCacheRevalidateOptions`, `formatCacheInvalidationLogMessage` y `getCacheTagsSummary` (`src/lib/cache-tags.ts`)
@@ -78,6 +79,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-09 - Extracción de Funciones Helper Puras de Etiquetas, Tipografía y Maquetación para Fronteras de Error
+**Aprendizaje:** Encapsular las etiquetas localizadas en español argentino (`getErrorRetryButtonText`, `getErrorHomeButtonText`), la composición de clases CSS para tipografías de títulos y descripciones (`getErrorHeadingTitleClasses`, `getErrorMessageDescriptionClasses`), y la estructura de maquetación del contenido interior y grupos de botones de acción (`getErrorCardContentClasses`, `getErrorActionGroupClasses`) en `src/lib/error-utils.ts` mediante `cn()` desacopla la renderización de `RootError` (`src/app/error.tsx`) y `AppError` (`src/app/(app)/error.tsx`). Esto unifica el diseño visual y comportamiento accesible de las pantallas de error en toda la app y permite verificar sus reglas de maquetación y estilos mediante unit tests puros y aislados.
+**Acción:** Reutilizar siempre las utilidades de `src/lib/error-utils.ts` al crear o refactorizar fronteras de error (`error.tsx`) en el App Router.
+
 ### 2026-10-08 - Extracción de Funciones Helper Puras de Estilos para Toast, Notificaciones y Esqueletos
 **Aprendizaje:** Encapsular la composición de clases CSS para el texto del mensaje toast (`getToastMessageClasses`) e ícono SVG (`getToastIconSvgClasses`) en `src/components/toast/toast-utils.ts`, así como los títulos, descripciones, encabezados de sección y dimensiones de esqueletos de carga de notificaciones (`getNotificationsHeadingTitleClasses`, `getNotificationsHeadingDescriptionClasses`, `getNotificationsSectionHeaderClasses`, `getNotificationsSectionTitleClasses`, `getNotificationsSkeletonHeadingTitleClasses`, `getNotificationsSkeletonHeadingSubtitleClasses`, `getNotificationsSkeletonSectionBadgeClasses`, `getNotificationsSkeletonItemClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla las cadenas de clases de Tailwind de la renderización en `ToastProvider`, `NotificationsPage` y `NotificationsLoading`. Esto previene duplicaciones y permite auditar las reglas de interfaz y carga por streaming a través de pruebas unitarias puras.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` y `toast-utils.ts` al extender la vista de notificaciones o alertas toast en la aplicación.

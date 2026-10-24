@@ -89,6 +89,51 @@ export function getErrorIconContainerClasses(customClassName?: string): string {
 }
 
 /**
+ * Retorna el texto localizado para el botón de reintento en vistas de error.
+ */
+export function getErrorRetryButtonText(): string {
+  return "Reintentar";
+}
+
+/**
+ * Retorna el texto localizado para el botón de retorno al inicio en vistas de error.
+ */
+export function getErrorHomeButtonText(): string {
+  return "Inicio";
+}
+
+/**
+ * Retorna las clases CSS para la tipografía del título principal en tarjetas de error.
+ */
+export function getErrorHeadingTitleClasses(customClassName?: string): string {
+  return cn("text-lg font-bold text-foreground", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para la tipografía de la descripción de mensaje en tarjetas de error.
+ */
+export function getErrorMessageDescriptionClasses(customClassName?: string): string {
+  return cn("text-sm text-muted-foreground max-w-xs", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el contenedor interior centrado de la tarjeta de error.
+ */
+export function getErrorCardContentClasses(customClassName?: string): string {
+  return cn(
+    "flex flex-col items-center justify-center gap-4 text-center max-w-md mx-auto",
+    customClassName,
+  );
+}
+
+/**
+ * Retorna las clases CSS para el grupo de botones de acción en tarjetas de error.
+ */
+export function getErrorActionGroupClasses(customClassName?: string): string {
+  return cn("flex gap-2 pt-2", customClassName);
+}
+
+/**
  * Retorna las clases CSS para los botones de acción (reintentar / ir al inicio) en pantallas de error,
  * aplicando respuesta táctil al toque y anillos de foco accesibles.
  */
