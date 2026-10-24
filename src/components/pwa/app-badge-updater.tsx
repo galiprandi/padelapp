@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { updateAppBadge, getAppBadgeAriaAttributes } from "./pwa-utils";
+import {
+  updateAppBadge,
+  getAppBadgeAriaAttributes,
+  getAppBadgeUpdaterContainerClasses,
+} from "./pwa-utils";
 
 /**
  * Sets the app icon badge (Badging API) to the given count.
@@ -17,5 +21,10 @@ export function AppBadgeUpdater({ count }: { count: number }) {
     void updateAppBadge(count);
   }, [count]);
 
-  return <div className="sr-only" {...getAppBadgeAriaAttributes(count)} />;
+  return (
+    <div
+      className={getAppBadgeUpdaterContainerClasses()}
+      {...getAppBadgeAriaAttributes(count)}
+    />
+  );
 }

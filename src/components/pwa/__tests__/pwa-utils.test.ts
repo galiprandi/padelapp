@@ -10,6 +10,9 @@ import {
   formatAppBadgeAriaLabel,
   getAppBadgeAriaAttributes,
   getPwaRegistrarAriaLabel,
+  getPwaRegistrarContainerClasses,
+  getAppBadgeUpdaterContainerClasses,
+  getPwaRegistrarProps,
   getPwaRegistrarSuccessLogMessage,
   getPwaRegistrarErrorWarnMessage,
 } from "../pwa-utils";
@@ -184,6 +187,28 @@ describe("pwa-utils", () => {
   describe("getPwaRegistrarAriaLabel", () => {
     it("returns expected region landmark ARIA label for Service Worker registrar", () => {
       expect(getPwaRegistrarAriaLabel()).toBe("Registro de Service Worker PWA");
+    });
+  });
+
+  describe("getPwaRegistrarContainerClasses", () => {
+    it("returns sr-only class for screen reader hidden PWA registrar", () => {
+      expect(getPwaRegistrarContainerClasses()).toBe("sr-only");
+    });
+  });
+
+  describe("getAppBadgeUpdaterContainerClasses", () => {
+    it("returns sr-only class for screen reader hidden app badge updater", () => {
+      expect(getAppBadgeUpdaterContainerClasses()).toBe("sr-only");
+    });
+  });
+
+  describe("getPwaRegistrarProps", () => {
+    it("returns correct props object for PwaRegistrar region landmark", () => {
+      expect(getPwaRegistrarProps()).toEqual({
+        className: "sr-only",
+        role: "region",
+        "aria-label": "Registro de Service Worker PWA",
+      });
     });
   });
 
