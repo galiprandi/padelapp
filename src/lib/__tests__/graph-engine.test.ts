@@ -411,6 +411,16 @@ import {
   aggregateTopClubsActivity,
   sortRecommendedCandidatesBySkillDiff,
   calculateSelectedNodeGraphMetrics,
+  getNetworkErrorResetButtonText,
+  getNetworkErrorHomeButtonText,
+  getNetworkErrorIconBadgeClasses,
+  getNetworkErrorTitleClasses,
+  getNetworkErrorDescriptionClasses,
+  getNetworkErrorActionGroupClasses,
+  getNetworkErrorButtonClasses,
+  getNetworkPageTabListAriaLabel,
+  getNetworkPageStatsTabLabel,
+  getNetworkPageGraphTabLabel,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -1709,6 +1719,27 @@ describe("calculateNetworkRoleInfo", () => {
     const res = calculateNetworkRoleInfo(nodes, links, "p-02");
     expect(res.roleLabel).toBe("Miembro activo 🎾");
     expect(res.badgeStyle).toContain("bg-emerald-100");
+  });
+});
+
+describe("Network Error and Network Page Client pure helpers", () => {
+  it("returns expected button labels for NetworkError", () => {
+    expect(getNetworkErrorResetButtonText()).toBe("Reintentar");
+    expect(getNetworkErrorHomeButtonText()).toBe("Inicio");
+  });
+
+  it("returns expected styling classes for NetworkError elements", () => {
+    expect(getNetworkErrorIconBadgeClasses()).toContain("bg-destructive/10");
+    expect(getNetworkErrorTitleClasses()).toContain("text-lg font-bold");
+    expect(getNetworkErrorDescriptionClasses()).toContain("text-sm text-muted-foreground");
+    expect(getNetworkErrorActionGroupClasses()).toBe("flex gap-2");
+    expect(getNetworkErrorButtonClasses()).toContain("active:scale-[0.98]");
+  });
+
+  it("returns expected ARIA and tab labels for NetworkPageClient", () => {
+    expect(getNetworkPageTabListAriaLabel()).toBe("Pestañas de la red de contactos");
+    expect(getNetworkPageStatsTabLabel()).toBe("Métricas");
+    expect(getNetworkPageGraphTabLabel()).toBe("Grafo");
   });
 });
 
