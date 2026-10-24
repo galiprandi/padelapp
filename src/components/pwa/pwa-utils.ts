@@ -111,6 +111,31 @@ export function getPwaRegistrarAriaLabel(): string {
 }
 
 /**
+ * Returns standardized CSS container classes for screen-reader hidden PWA components.
+ */
+export function getPwaRegistrarContainerClasses(): string {
+  return "sr-only";
+}
+
+/**
+ * Returns standardized CSS container classes for the AppBadgeUpdater component.
+ */
+export function getAppBadgeUpdaterContainerClasses(): string {
+  return "sr-only";
+}
+
+/**
+ * Returns complete props object for the PwaRegistrar screen-reader region landmark container.
+ */
+export function getPwaRegistrarProps() {
+  return {
+    className: getPwaRegistrarContainerClasses(),
+    role: "region" as const,
+    "aria-label": getPwaRegistrarAriaLabel(),
+  };
+}
+
+/**
  * Formats a debug log message when Service Worker registration succeeds.
  */
 export function getPwaRegistrarSuccessLogMessage(scope?: string): string {

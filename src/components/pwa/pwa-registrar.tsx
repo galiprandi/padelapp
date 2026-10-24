@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import {
   isServiceWorkerSupported,
   getServiceWorkerRegistrationUrl,
-  getPwaRegistrarAriaLabel,
+  getPwaRegistrarProps,
   getPwaRegistrarErrorWarnMessage,
 } from "./pwa-utils";
 
@@ -21,11 +21,5 @@ export function PwaRegistrar() {
       });
   }, []);
 
-  return (
-    <div
-      className="sr-only"
-      role="region"
-      aria-label={getPwaRegistrarAriaLabel()}
-    />
-  );
+  return <div {...getPwaRegistrarProps()} />;
 }
