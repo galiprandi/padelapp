@@ -2837,6 +2837,114 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for turn form outer container layout.
+ */
+export function getTurnFormContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for turn form header back link.
+ */
+export function getTurnFormHeaderBackLinkClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+/**
+ * Format CSS classes for turn form header title.
+ */
+export function getTurnFormHeaderTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+/**
+ * Format CSS classes for turn form header description.
+ */
+export function getTurnFormHeaderDescriptionClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for turn form card container.
+ */
+export function getTurnFormCardClasses(): string {
+  return "rounded-xl border border-border bg-card shadow-xs";
+}
+
+/**
+ * Format CSS classes for turn form card header bar.
+ */
+export function getTurnFormCardHeaderClasses(): string {
+  return "p-4 border-b border-border";
+}
+
+/**
+ * Format CSS classes for turn form card header title.
+ */
+export function getTurnFormCardHeaderTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Format CSS classes for turn form card body content container.
+ */
+export function getTurnFormCardContentClasses(): string {
+  return "p-6 flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for turn form input group container.
+ */
+export function getTurnFormGroupClasses(): string {
+  return "flex flex-col gap-1.5";
+}
+
+/**
+ * Format CSS classes for turn form label element.
+ */
+export function getTurnFormLabelClasses(): string {
+  return "text-sm font-semibold text-foreground";
+}
+
+/**
+ * Format CSS classes for duration selection radio option button depending on selection state.
+ */
+export function getTurnFormDurationRadioClasses(isSelected: boolean): string {
+  return cn(
+    "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isSelected
+      ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+      : "bg-card border-border text-muted-foreground hover:bg-muted"
+  );
+}
+
+/**
+ * Format CSS classes for max players selection radio option button depending on selection state.
+ */
+export function getTurnFormPlayerRadioClasses(isSelected: boolean): string {
+  return cn(
+    "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    isSelected
+      ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
+      : "bg-card border-border text-muted-foreground hover:bg-muted"
+  );
+}
+
+/**
+ * Format CSS classes for notes textarea element in turn creation and edit forms.
+ */
+export function getTurnFormTextareaClasses(): string {
+  return "min-h-[100px] rounded-lg resize-none";
+}
+
+/**
+ * Format CSS classes for submit action button in turn creation and edit forms.
+ */
+export function getTurnFormSubmitButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-bold text-base shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
  * Format CSS classes for OpenToNetworkButton icon result state container.
  */
 export function getOpenToNetworkIconResultClasses(className?: string): string {

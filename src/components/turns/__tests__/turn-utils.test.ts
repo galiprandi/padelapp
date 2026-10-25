@@ -294,6 +294,20 @@ import {
   getPlayCasualCancelButtonClasses,
   getPlayCasualConfirmButtonClasses,
   getQuickJoinEmptySlotButtonClasses,
+  getTurnFormContainerClasses,
+  getTurnFormHeaderBackLinkClasses,
+  getTurnFormHeaderTitleClasses,
+  getTurnFormHeaderDescriptionClasses,
+  getTurnFormCardClasses,
+  getTurnFormCardHeaderClasses,
+  getTurnFormCardHeaderTitleClasses,
+  getTurnFormCardContentClasses,
+  getTurnFormGroupClasses,
+  getTurnFormLabelClasses,
+  getTurnFormDurationRadioClasses,
+  getTurnFormPlayerRadioClasses,
+  getTurnFormTextareaClasses,
+  getTurnFormSubmitButtonClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -967,6 +981,49 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Turn form pure styling helpers", () => {
+  it("formats getTurnFormContainerClasses, getTurnFormHeaderBackLinkClasses, getTurnFormHeaderTitleClasses, and getTurnFormHeaderDescriptionClasses", () => {
+    expect(getTurnFormContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getTurnFormHeaderBackLinkClasses()).toContain("h-10 w-10");
+    expect(getTurnFormHeaderBackLinkClasses()).toContain("active:scale-[0.98]");
+    expect(getTurnFormHeaderTitleClasses()).toContain("text-xl font-bold");
+    expect(getTurnFormHeaderDescriptionClasses()).toContain("text-sm text-muted-foreground");
+  });
+
+  it("formats getTurnFormCardClasses, getTurnFormCardHeaderClasses, getTurnFormCardHeaderTitleClasses, getTurnFormCardContentClasses, getTurnFormGroupClasses, and getTurnFormLabelClasses", () => {
+    expect(getTurnFormCardClasses()).toContain("rounded-xl border border-border bg-card shadow-xs");
+    expect(getTurnFormCardHeaderClasses()).toContain("p-4 border-b border-border");
+    expect(getTurnFormCardHeaderTitleClasses()).toContain("text-sm font-bold text-foreground");
+    expect(getTurnFormCardContentClasses()).toContain("p-6 flex flex-col gap-6");
+    expect(getTurnFormGroupClasses()).toBe("flex flex-col gap-1.5");
+    expect(getTurnFormLabelClasses()).toBe("text-sm font-semibold text-foreground");
+  });
+
+  it("formats getTurnFormDurationRadioClasses and getTurnFormPlayerRadioClasses across selected and unselected states", () => {
+    const selectedDuration = getTurnFormDurationRadioClasses(true);
+    expect(selectedDuration).toContain("bg-primary");
+    expect(selectedDuration).toContain("text-primary-foreground");
+
+    const unselectedDuration = getTurnFormDurationRadioClasses(false);
+    expect(unselectedDuration).toContain("bg-card");
+    expect(unselectedDuration).toContain("text-muted-foreground");
+
+    const selectedPlayer = getTurnFormPlayerRadioClasses(true);
+    expect(selectedPlayer).toContain("bg-primary");
+    expect(selectedPlayer).toContain("justify-between");
+
+    const unselectedPlayer = getTurnFormPlayerRadioClasses(false);
+    expect(unselectedPlayer).toContain("bg-card");
+    expect(unselectedPlayer).toContain("justify-between");
+  });
+
+  it("formats getTurnFormTextareaClasses and getTurnFormSubmitButtonClasses", () => {
+    expect(getTurnFormTextareaClasses()).toBe("min-h-[100px] rounded-lg resize-none");
+    expect(getTurnFormSubmitButtonClasses()).toContain("w-full h-12 rounded-lg font-bold");
+    expect(getTurnFormSubmitButtonClasses()).toContain("active:scale-[0.98]");
   });
 });
 

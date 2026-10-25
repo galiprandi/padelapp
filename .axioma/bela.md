@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-25 — Turn Form Pure Styling Helpers Extraction, Refactoring & Unit Tests (bela/turnos/turn-form-pure-styling-helpers)
 - [x] 2026-10-24 — OpenToNetworkButton Pure Styling Helpers Extraction, Refactoring & Unit Tests (bela/turnos/open-to-network-button-pure-styling-helpers)
 - [x] 2026-10-23 — AddPlayerButton Pure Styling Helpers Extraction, Refactoring & Unit Tests (bela/turnos/add-player-button-pure-styling-helpers)
 - [x] 2026-10-22 — QuickJoinEmptySlotButton Pure Styling Helper Extraction, Refactoring & Unit Tests (bela/turnos/quick-join-empty-slot-button-pure-helper)
@@ -83,6 +84,10 @@
 - [x] 2026-07-31 — Spanish Dynamic Turn Notification Relative Date Formatting (bela/turnos/dynamic-relative-dates)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-25 - Turn Form Pure Styling Helpers Extraction, Refactoring & Unit Tests
+**Learning:** Extracting pure UI styling helper functions (`getTurnFormContainerClasses`, `getTurnFormHeaderBackLinkClasses`, `getTurnFormHeaderTitleClasses`, `getTurnFormHeaderDescriptionClasses`, `getTurnFormCardClasses`, `getTurnFormCardHeaderClasses`, `getTurnFormCardHeaderTitleClasses`, `getTurnFormCardContentClasses`, `getTurnFormGroupClasses`, `getTurnFormLabelClasses`, `getTurnFormDurationRadioClasses`, `getTurnFormPlayerRadioClasses`, `getTurnFormTextareaClasses`, and `getTurnFormSubmitButtonClasses`) into `src/components/turns/turn-utils.ts` decouples form container layout, header styling, input group compositions, radiogroup option state styles, and submit button CSS class compositions from React component render trees in `NewTurnPage` (`src/app/(app)/turnos/nuevo/page.tsx`) and `EditTurnForm` (`src/app/(app)/turnos/[id]/editar/edit-form.tsx`). Consuming these pure helpers ensures strict compliance with Minimal Design System (MDS) guidelines while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid card container styling (`shadow-xs`).
+**Action:** Always extract form container, input group, and button CSS class compositions into pure helper utilities backed by Vitest unit tests.
+
 ## 2026-10-24 - OpenToNetworkButton Pure Styling Helpers Extraction, Refactoring & Unit Tests
 **Learning:** Extracting pure UI styling helper functions (`getOpenToNetworkIconResultClasses`, `getOpenToNetworkCompactResultClasses`, `getOpenToNetworkDefaultResultClasses`, `getOpenToNetworkContainerClasses`, and `getOpenToNetworkButtonClasses`) into `src/components/turns/turn-utils.ts` decouples action button CSS class compositions, result status container styles, and outer region landmark container classes from React component render trees in `OpenToNetworkButton` (`src/components/turns/open-to-network-button.tsx`). Consuming these pure helpers ensures strict compliance with Minimal Design System (MDS) guidelines while preserving focus-visible ring offsets (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background`), active tactile press scaling (`active:scale-[0.98] transition-all`), and solid card/status container styling (`shadow-xs`).
 **Action:** Always extract action trigger button and result feedback CSS class compositions into pure helper utilities backed by Vitest unit tests.
