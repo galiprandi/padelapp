@@ -1,10 +1,16 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-10-02
+## Última actualización: 2026-10-03
 
 ## Estado actual
 
 ### Completado
+- Phase 56 (Graph Engine, Match Edge Update, Player Side Stats & Turn Co-Inscription Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-03 — Hecho: Extraídas las funciones puras `edgeKey` y `calculateMatchEdgeUpdates` en `src/lib/graph/update.ts`.
+  - [x] 2026-10-03 — Hecho: Extraídas las funciones puras `calculateAdjustedFeedbackScore` y `calculatePlayerSideWinsAndRates` en `src/lib/graph/engine.ts`.
+  - [x] 2026-10-03 — Hecho: Extraída la función pura `calculateTurnPairEnrollees` en `src/lib/graph/turn-edges.ts`.
+  - [x] 2026-10-03 — Hecho: Refactorizadas `updateEdgesForMatch`, `applyFeedbackToScore`, `computePlayerSideStats` y `rebuildTurnEdges` para consumir las funciones puras de cálculo extraídas.
+  - [x] 2026-10-03 — Hecho: Pruebas unitarias extendidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 55 (NetworkSkeleton Layout & Styling Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-02 — Hecho: Extraídas las funciones puras `getNetworkSkeletonContainerClasses`, `getNetworkSkeletonTabBarClasses`, `getNetworkSkeletonActiveTabButtonClasses`, `getNetworkSkeletonInactiveTabButtonClasses`, `getNetworkSkeletonContentClasses`, `getNetworkSkeletonBackButtonClasses`, `getNetworkSkeletonCardClasses`, `getNetworkSkeletonGridTwoColsClasses` y `getNetworkSkeletonGridThreeColsClasses` en `src/app/network/graph-utils.ts`.
   - [x] 2026-10-02 — Hecho: Refactorizado `NetworkSkeleton` (`src/app/network/network-skeleton.tsx`) para consumir las funciones puras de diseño y estructura extraídas.

@@ -1,9 +1,78 @@
 import { db } from "@/db";
 import { playerEdges, turnPlayers, turnSubstitutes } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
+import { edgeKey } from "./update";
 
-function edgeKey(a: string, b: string): [string, string] {
-  return a < b ? [a, b] : [b, a];
+export interface TurnEnrolleeInput {
+  turnId: string;
+  userId: string;
+  joinedAt: Date;
+}
+
+export interface AggregatedTurnEdge {
+  playerAId: string;
+  playerBId: string;
+  turnsTogether: number;
+  lastTurnAt: Date;
+}
+
+/**
+ * Pure helper: aggregates turn co-inscription count and lastTurnAt timestamp
+ * for pairs of enrollees across historical turn records without database side effects.
+ */
+export function calculateTurnPairEnrollees(
+  allPlayers: TurnEnrolleeInput[],
+  allSubstitutes: TurnEnrolleeInput[],
+): AggregatedTurnEdge[] {
+  const turnEnrollees = new Map<string, { userId: string; joinedAt: Date }[]>();
+  for (const p of allPlayers) {
+    let list = turnEnrollees.get(p.turnId);
+    if (!list) {
+      list = [];
+      turnEnrollees.set(p.turnId, list);
+    }
+    list.push({ userId: p.userId, joinedAt: p.joinedAt });
+  }
+  for (const s of allSubstitutes) {
+    let list = turnEnrollees.get(s.turnId);
+    if (!list) {
+      list = [];
+      turnEnrollees.set(s.turnId, list);
+    }
+    list.push({ userId: s.userId, joinedAt: s.joinedAt });
+  }
+
+  const edgeAgg = new Map<string, AggregatedTurnEdge>();
+
+  for (const list of turnEnrollees.values()) {
+    if (list.length < 2) continue;
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const [min, max] = edgeKey(list[i].userId, list[j].userId);
+        const key = `${min}|${max}`;
+        const existing = edgeAgg.get(key);
+        const turnDate =
+          list[i].joinedAt > list[j].joinedAt
+            ? list[i].joinedAt
+            : list[j].joinedAt;
+        if (existing) {
+          existing.turnsTogether += 1;
+          if (turnDate > existing.lastTurnAt) {
+            existing.lastTurnAt = turnDate;
+          }
+        } else {
+          edgeAgg.set(key, {
+            playerAId: min,
+            playerBId: max,
+            turnsTogether: 1,
+            lastTurnAt: turnDate,
+          });
+        }
+      }
+    }
+  }
+
+  return Array.from(edgeAgg.values());
 }
 
 /**
@@ -107,61 +176,11 @@ export async function rebuildTurnEdges(): Promise<void> {
       .from(turnSubstitutes),
   ]);
 
-  // Group enrollees by turnId
-  const turnEnrollees = new Map<string, { userId: string; joinedAt: Date }[]>();
-  for (const p of allPlayers) {
-    let list = turnEnrollees.get(p.turnId);
-    if (!list) {
-      list = [];
-      turnEnrollees.set(p.turnId, list);
-    }
-    list.push({ userId: p.userId, joinedAt: p.joinedAt });
-  }
-  for (const s of allSubstitutes) {
-    let list = turnEnrollees.get(s.turnId);
-    if (!list) {
-      list = [];
-      turnEnrollees.set(s.turnId, list);
-    }
-    list.push({ userId: s.userId, joinedAt: s.joinedAt });
-  }
-
-  // Aggregate edge counts and lastTurnAt per pair across all turns
-  const edgeAgg = new Map<
-    string,
-    { playerAId: string; playerBId: string; turnsTogether: number; lastTurnAt: Date }
-  >();
-
-  for (const list of turnEnrollees.values()) {
-    if (list.length < 2) continue;
-    for (let i = 0; i < list.length; i++) {
-      for (let j = i + 1; j < list.length; j++) {
-        const [min, max] = edgeKey(list[i].userId, list[j].userId);
-        const key = `${min}|${max}`;
-        const existing = edgeAgg.get(key);
-        const turnDate = list[i].joinedAt > list[j].joinedAt
-          ? list[i].joinedAt
-          : list[j].joinedAt;
-        if (existing) {
-          existing.turnsTogether += 1;
-          if (turnDate > existing.lastTurnAt) {
-            existing.lastTurnAt = turnDate;
-          }
-        } else {
-          edgeAgg.set(key, {
-            playerAId: min,
-            playerBId: max,
-            turnsTogether: 1,
-            lastTurnAt: turnDate,
-          });
-        }
-      }
-    }
-  }
+  const edgeAgg = calculateTurnPairEnrollees(allPlayers, allSubstitutes);
 
   // Upsert aggregated edges. Only touches turnsTogether/lastTurnAt — does NOT
   // zero out match-based fields (those are rebuilt separately by updateEdgesForMatch).
-  for (const agg of edgeAgg.values()) {
+  for (const agg of edgeAgg) {
     const existing = await db
       .select()
       .from(playerEdges)

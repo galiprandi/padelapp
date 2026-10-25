@@ -168,25 +168,23 @@ export async function computeCommunities(): Promise<Map<string, number>> {
 // Compute player side preferences and win rates
 // ---------------------------------------------------------------------------
 
-export async function computePlayerSideStats(userId: string): Promise<{
+export interface PlayerSideMatchesInput {
+  side: "RIGHT" | "LEFT" | null;
+  position: number;
+  matchScore: string | null;
+}
+
+/**
+ * Pure helper: calculates player court side preference (RIGHT/LEFT) and win rates
+ * for each side based on confirmed match history without database side effects.
+ */
+export function calculatePlayerSideWinsAndRates(
+  playersWithMatches: PlayerSideMatchesInput[],
+): {
   preferredSide: "RIGHT" | "LEFT" | null;
   winRateRight: number | null;
   winRateLeft: number | null;
-}> {
-  const { matchPlayers: mpTable, matches: matchTable } =
-    await import("@/db/schema");
-
-  const playersWithMatches = await db
-    .select({
-      side: mpTable.side,
-      position: mpTable.position,
-      matchScore: matchTable.score,
-      matchStatus: matchTable.status,
-    })
-    .from(mpTable)
-    .innerJoin(matchTable, eq(mpTable.matchId, matchTable.id))
-    .where(and(eq(mpTable.userId, userId), eq(matchTable.status, "CONFIRMED")));
-
+} {
   const rightMatches = playersWithMatches.filter((p) => p.side === "RIGHT");
   const leftMatches = playersWithMatches.filter((p) => p.side === "LEFT");
 
@@ -222,6 +220,28 @@ export async function computePlayerSideStats(userId: string): Promise<{
   return { preferredSide, winRateRight, winRateLeft };
 }
 
+export async function computePlayerSideStats(userId: string): Promise<{
+  preferredSide: "RIGHT" | "LEFT" | null;
+  winRateRight: number | null;
+  winRateLeft: number | null;
+}> {
+  const { matchPlayers: mpTable, matches: matchTable } =
+    await import("@/db/schema");
+
+  const playersWithMatches = await db
+    .select({
+      side: mpTable.side,
+      position: mpTable.position,
+      matchScore: matchTable.score,
+      matchStatus: matchTable.status,
+    })
+    .from(mpTable)
+    .innerJoin(matchTable, eq(mpTable.matchId, matchTable.id))
+    .where(and(eq(mpTable.userId, userId), eq(matchTable.status, "CONFIRMED")));
+
+  return calculatePlayerSideWinsAndRates(playersWithMatches);
+}
+
 // ---------------------------------------------------------------------------
 // Network size
 // ---------------------------------------------------------------------------
@@ -241,15 +261,14 @@ export async function computeNetworkSize(userId: string): Promise<number> {
 // Apply feedback signal to skill score
 // ---------------------------------------------------------------------------
 
-export async function applyFeedbackToScore(
-  userId: string,
+/**
+ * Pure helper: calculates adjusted skill score based on organizer feedback signals
+ * without database side effects.
+ */
+export function calculateAdjustedFeedbackScore(
+  feedbacks: Array<{ feedback: string }>,
   currentScore: number,
-): Promise<number> {
-  const feedbacks = await db
-    .select()
-    .from(matchPlayerFeedback)
-    .where(eq(matchPlayerFeedback.playerId, userId));
-
+): number {
   if (feedbacks.length === 0) return currentScore;
 
   const strongerCount = feedbacks.filter(
@@ -265,4 +284,16 @@ export async function applyFeedbackToScore(
 
   const adjustedScore = currentScore + feedbackSignal * 100 * feedbackWeight;
   return Math.round(adjustedScore);
+}
+
+export async function applyFeedbackToScore(
+  userId: string,
+  currentScore: number,
+): Promise<number> {
+  const feedbacks = await db
+    .select()
+    .from(matchPlayerFeedback)
+    .where(eq(matchPlayerFeedback.playerId, userId));
+
+  return calculateAdjustedFeedbackScore(feedbacks, currentScore);
 }
