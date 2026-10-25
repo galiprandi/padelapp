@@ -9,6 +9,13 @@ import {
   getBottomNavAriaAttributes,
   getBottomNavSkeletonAriaLabel,
   getCatalogSkeletonAriaLabel,
+  getCatalogSkeletonContainerClasses,
+  getCatalogSkeletonLayoutClasses,
+  getCatalogSkeletonSidebarClasses,
+  getCatalogSkeletonSidebarStickyClasses,
+  getCatalogSkeletonMainContentClasses,
+  getCatalogSkeletonHeaderClasses,
+  getCatalogSkeletonSectionCardClasses,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
@@ -170,9 +177,44 @@ describe("nav-utils", () => {
     });
   });
 
-  describe("getCatalogSkeletonAriaLabel", () => {
-    it("returns Spanish screen reader label for loading catalog skeleton", () => {
+  describe("Catalog Skeleton Helpers", () => {
+    it("getCatalogSkeletonAriaLabel returns Spanish screen reader label for loading catalog skeleton", () => {
       expect(getCatalogSkeletonAriaLabel()).toBe("Cargando catálogo de componentes de Padel Red");
+    });
+
+    it("getCatalogSkeletonContainerClasses returns container styling classes", () => {
+      expect(getCatalogSkeletonContainerClasses()).toContain("min-h-screen bg-background p-6");
+      expect(getCatalogSkeletonContainerClasses("custom-container")).toContain("custom-container");
+    });
+
+    it("getCatalogSkeletonLayoutClasses returns layout flex classes", () => {
+      expect(getCatalogSkeletonLayoutClasses()).toContain("mx-auto flex gap-12 max-w-none");
+      expect(getCatalogSkeletonLayoutClasses("custom-layout")).toContain("custom-layout");
+    });
+
+    it("getCatalogSkeletonSidebarClasses returns sidebar classes", () => {
+      expect(getCatalogSkeletonSidebarClasses()).toContain("w-64 shrink-0 hidden lg:block");
+      expect(getCatalogSkeletonSidebarClasses("custom-sidebar")).toContain("custom-sidebar");
+    });
+
+    it("getCatalogSkeletonSidebarStickyClasses returns sticky sidebar classes", () => {
+      expect(getCatalogSkeletonSidebarStickyClasses()).toContain("sticky top-6 space-y-6");
+      expect(getCatalogSkeletonSidebarStickyClasses("custom-sticky")).toContain("custom-sticky");
+    });
+
+    it("getCatalogSkeletonMainContentClasses returns main content area classes", () => {
+      expect(getCatalogSkeletonMainContentClasses()).toContain("flex-1 min-w-0");
+      expect(getCatalogSkeletonMainContentClasses("custom-main")).toContain("custom-main");
+    });
+
+    it("getCatalogSkeletonHeaderClasses returns main header classes", () => {
+      expect(getCatalogSkeletonHeaderClasses()).toContain("mb-12 space-y-2");
+      expect(getCatalogSkeletonHeaderClasses("custom-header")).toContain("custom-header");
+    });
+
+    it("getCatalogSkeletonSectionCardClasses returns section card styling classes", () => {
+      expect(getCatalogSkeletonSectionCardClasses()).toContain("p-6 border border-border rounded-xl bg-card space-y-2");
+      expect(getCatalogSkeletonSectionCardClasses("custom-card")).toContain("custom-card");
     });
   });
 
