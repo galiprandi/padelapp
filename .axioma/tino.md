@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-10 — Extracción de Funciones Helper Puras de Maquetación y Estilos para el Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`) y Refactorización de `CatalogSkeleton` y `CatalogError`
 - [x] 2026-10-09 — Extracción de Funciones Helper Puras de Etiquetas de Botones, Tipografía y Maquetación de Tarjetas de Error (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-08 — Extracción de Funciones Helper Puras de Estilos e Íconos para Toast (`src/components/toast/toast-utils.ts`), Tipografía y Esqueletos de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de Componentes
 - [x] 2026-10-07 — Extracción de Funciones Helper Puras de Maquetación y Estilos en `PushPermissionPrompt` (`src/components/pwa/push-permission-utils.ts`) y Refactorización del Componente
@@ -79,6 +80,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-10 - Extracción de Funciones Helper Puras de Maquetación y Estilos para Esqueleto del Catálogo y Frontera de Error
+**Aprendizaje:** Encapsular las clases CSS de maquetación de dos columnas, la barra lateral sticky y las tarjetas de sección del esqueleto de carga del catálogo (`getCatalogSkeletonContainerClasses`, `getCatalogSkeletonLayoutClasses`, `getCatalogSkeletonSidebarClasses`, `getCatalogSkeletonSidebarStickyClasses`, `getCatalogSkeletonMainContentClasses`, `getCatalogSkeletonHeaderClasses`, `getCatalogSkeletonSectionCardClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla la maquetación visual de la renderización del componente React en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Asimismo, refactorizar `CatalogError` (`src/app/catalog/error.tsx`) para consumir las utilidades puras de `src/lib/error-utils.ts` asegura coherencia estilística e interfaz accesible en pantallas de error sin tocar archivos auto-generados.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` y `error-utils.ts` al extender el catálogo de componentes o construir esqueletos y vistas de error.
+
 ### 2026-10-09 - Extracción de Funciones Helper Puras de Etiquetas, Tipografía y Maquetación para Fronteras de Error
 **Aprendizaje:** Encapsular las etiquetas localizadas en español argentino (`getErrorRetryButtonText`, `getErrorHomeButtonText`), la composición de clases CSS para tipografías de títulos y descripciones (`getErrorHeadingTitleClasses`, `getErrorMessageDescriptionClasses`), y la estructura de maquetación del contenido interior y grupos de botones de acción (`getErrorCardContentClasses`, `getErrorActionGroupClasses`) en `src/lib/error-utils.ts` mediante `cn()` desacopla la renderización de `RootError` (`src/app/error.tsx`) y `AppError` (`src/app/(app)/error.tsx`). Esto unifica el diseño visual y comportamiento accesible de las pantallas de error en toda la app y permite verificar sus reglas de maquetación y estilos mediante unit tests puros y aislados.
 **Acción:** Reutilizar siempre las utilidades de `src/lib/error-utils.ts` al crear o refactorizar fronteras de error (`error.tsx`) en el App Router.

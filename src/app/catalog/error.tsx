@@ -4,7 +4,16 @@ import { AlertCircle, RotateCw, Home } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { formatErrorDetails } from "@/lib/error-utils";
+import {
+  formatErrorDetails,
+  getErrorIconContainerClasses,
+  getErrorHeadingTitleClasses,
+  getErrorMessageDescriptionClasses,
+  getErrorActionGroupClasses,
+  getErrorActionButtonClasses,
+  getErrorRetryButtonText,
+  getErrorHomeButtonText,
+} from "@/lib/error-utils";
 
 export default function CatalogError({
   error,
@@ -30,31 +39,31 @@ export default function CatalogError({
       aria-label={details.regionAriaLabel}
       className={details.containerClasses}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
+      <div className={getErrorIconContainerClasses()}>
         <AlertCircle className="h-6 w-6 text-destructive" aria-hidden="true" />
       </div>
       <div className="space-y-1">
-        <h1 className="text-lg font-bold text-foreground">{details.title}</h1>
-        <p className="text-sm text-muted-foreground max-w-xs">
+        <h1 className={getErrorHeadingTitleClasses()}>{details.title}</h1>
+        <p className={getErrorMessageDescriptionClasses()}>
           {details.message}
         </p>
       </div>
-      <div className="flex gap-2">
+      <div className={getErrorActionGroupClasses()}>
         <Button
           onClick={reset}
           variant="default"
           size="sm"
           aria-label={details.retryAriaLabel}
-          className="active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getErrorActionButtonClasses()}
         >
           <RotateCw className="mr-1.5 h-4 w-4" aria-hidden="true" />
-          Reintentar
+          {getErrorRetryButtonText()}
         </Button>
         <Button
           asChild
           variant="outline"
           size="sm"
-          className="active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getErrorActionButtonClasses()}
         >
           <Link
             href="/me"
@@ -62,7 +71,7 @@ export default function CatalogError({
             aria-label={details.homeAriaLabel}
           >
             <Home className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Ir al inicio
+            {getErrorHomeButtonText()}
           </Link>
         </Button>
       </div>

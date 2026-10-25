@@ -1,5 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getCatalogSkeletonAriaLabel } from "@/components/navigation/nav-utils";
+import {
+  getCatalogSkeletonAriaLabel,
+  getCatalogSkeletonContainerClasses,
+  getCatalogSkeletonLayoutClasses,
+  getCatalogSkeletonSidebarClasses,
+  getCatalogSkeletonSidebarStickyClasses,
+  getCatalogSkeletonMainContentClasses,
+  getCatalogSkeletonHeaderClasses,
+  getCatalogSkeletonSectionCardClasses,
+} from "@/components/navigation/nav-utils";
 
 export function CatalogSkeleton() {
   return (
@@ -7,12 +16,12 @@ export function CatalogSkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getCatalogSkeletonAriaLabel()}
-      className="min-h-screen bg-background p-6"
+      className={getCatalogSkeletonContainerClasses()}
     >
-      <div className="mx-auto flex gap-12 max-w-none">
+      <div className={getCatalogSkeletonLayoutClasses()}>
         {/* Sidebar skeleton (desktop) */}
-        <aside className="w-64 shrink-0 hidden lg:block">
-          <div className="sticky top-6 space-y-6">
+        <aside className={getCatalogSkeletonSidebarClasses()}>
+          <div className={getCatalogSkeletonSidebarStickyClasses()}>
             <div className="space-y-3">
               <Skeleton className="h-4 w-12" />
               <div className="flex bg-muted rounded-xl p-1 border border-border">
@@ -33,8 +42,8 @@ export function CatalogSkeleton() {
         </aside>
 
         {/* Main Content skeleton */}
-        <div className="flex-1 min-w-0">
-          <header className="mb-12 space-y-2">
+        <div className={getCatalogSkeletonMainContentClasses()}>
+          <header className={getCatalogSkeletonHeaderClasses()}>
             <Skeleton className="h-7 w-64" />
             <Skeleton className="h-4 w-96" />
           </header>
@@ -43,7 +52,7 @@ export function CatalogSkeleton() {
             {/* Encabezados section skeleton */}
             <div className="space-y-6">
               <Skeleton className="h-5 w-32" />
-              <div className="p-6 border border-border rounded-xl bg-card space-y-2">
+              <div className={getCatalogSkeletonSectionCardClasses()}>
                 <Skeleton className="h-7 w-48" />
                 <Skeleton className="h-4 w-64" />
               </div>

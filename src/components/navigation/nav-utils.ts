@@ -75,6 +75,72 @@ export function getCatalogSkeletonAriaLabel(): string {
 }
 
 /**
+ * Genera las clases CSS para el contenedor exterior del esqueleto de carga del catálogo.
+ */
+export function getCatalogSkeletonContainerClasses(
+  customClassName?: string,
+): string {
+  return cn("min-h-screen bg-background p-6", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la maquetación flex de dos columnas del esqueleto del catálogo.
+ */
+export function getCatalogSkeletonLayoutClasses(
+  customClassName?: string,
+): string {
+  return cn("mx-auto flex gap-12 max-w-none", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la barra lateral (sidebar) del esqueleto del catálogo en pantallas de escritorio.
+ */
+export function getCatalogSkeletonSidebarClasses(
+  customClassName?: string,
+): string {
+  return cn("w-64 shrink-0 hidden lg:block", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el contenedor sticky de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarStickyClasses(
+  customClassName?: string,
+): string {
+  return cn("sticky top-6 space-y-6", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el área de contenido principal en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonMainContentClasses(
+  customClassName?: string,
+): string {
+  return cn("flex-1 min-w-0", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el encabezado del área principal en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonHeaderClasses(
+  customClassName?: string,
+): string {
+  return cn("mb-12 space-y-2", customClassName);
+}
+
+/**
+ * Genera las clases CSS para las tarjetas de sección en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSectionCardClasses(
+  customClassName?: string,
+): string {
+  return cn(
+    "p-6 border border-border rounded-xl bg-card space-y-2",
+    customClassName,
+  );
+}
+
+/**
  * Retorna la lista de ítems principales de navegación de la aplicación.
  */
 export function getNavItems(): NavItem[] {
