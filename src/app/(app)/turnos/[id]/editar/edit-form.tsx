@@ -29,6 +29,17 @@ import {
   getTurnFormSubmitButtonText,
   formatDurationOptionLabel,
   formatPlayerOptionLabel,
+  getTurnFormContainerClasses,
+  getTurnFormCardClasses,
+  getTurnFormCardHeaderClasses,
+  getTurnFormCardHeaderTitleClasses,
+  getTurnFormCardContentClasses,
+  getTurnFormGroupClasses,
+  getTurnFormLabelClasses,
+  getTurnFormDurationRadioClasses,
+  getTurnFormPlayerRadioClasses,
+  getTurnFormTextareaClasses,
+  getTurnFormSubmitButtonClasses,
 } from "@/components/turns/turn-utils";
 
 const DURATION_OPTIONS = [
@@ -102,26 +113,26 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className={getTurnFormContainerClasses()}>
       <div
         role="region"
         aria-label={getTurnFormRegionAriaLabel("edit")}
-        className="rounded-xl border border-border bg-card shadow-xs"
+        className={getTurnFormCardClasses()}
       >
-        <div className="p-4 border-b border-border">
+        <div className={getTurnFormCardHeaderClasses()}>
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-bold text-foreground">
+            <h2 className={getTurnFormCardHeaderTitleClasses()}>
               {getTurnFormDetailsHeaderTitle()}
             </h2>
           </div>
         </div>
-        <div className="p-6 flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5">
+        <div className={getTurnFormCardContentClasses()}>
+          <div className={getTurnFormGroupClasses()}>
             <Label
               htmlFor="club"
               requiredIndicator="*"
-              className="text-sm font-semibold"
+              className={getTurnFormLabelClasses()}
             >
               {getTurnFormClubLabel()}
             </Label>
@@ -137,11 +148,11 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
+            <div className={getTurnFormGroupClasses()}>
               <Label
                 htmlFor="date"
                 requiredIndicator="*"
-                className="text-sm font-semibold"
+                className={getTurnFormLabelClasses()}
               >
                 {getTurnFormDateLabel()}
               </Label>
@@ -155,11 +166,11 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                 className="h-10 rounded-lg animate-none"
               />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className={getTurnFormGroupClasses()}>
               <Label
                 htmlFor="time"
                 requiredIndicator="*"
-                className="text-sm font-semibold"
+                className={getTurnFormLabelClasses()}
               >
                 {getTurnFormTimeLabel()}
               </Label>
@@ -178,7 +189,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
           <div className="flex flex-col gap-3">
             <Label
               id="duration-label"
-              className="text-sm font-semibold flex items-center gap-2"
+              className={cn("flex items-center gap-2", getTurnFormLabelClasses())}
             >
               <Clock className="h-4 w-4" />
               {getTurnFormDurationTurnLabel()}
@@ -209,12 +220,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                     aria-checked={isSelected}
                     tabIndex={isSelected ? 0 : -1}
                     onClick={() => setFormData({ ...formData, duration: option.value })}
-                    className={cn(
-                      "flex items-center justify-center h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                      isSelected
-                        ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-card border-border text-muted-foreground hover:bg-muted"
-                    )}
+                    className={getTurnFormDurationRadioClasses(isSelected)}
                   >
                     {option.label}
                   </button>
@@ -226,7 +232,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
           <div className="flex flex-col gap-3">
             <Label
               id="players-label"
-              className="text-sm font-semibold flex items-center gap-2"
+              className={cn("flex items-center gap-2", getTurnFormLabelClasses())}
             >
               <Check className="h-4 w-4" />
               {getTurnFormPlayersLabel()}
@@ -257,12 +263,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
                     aria-checked={isSelected}
                     tabIndex={isSelected ? 0 : -1}
                     onClick={() => setFormData({ ...formData, maxPlayers: option.value })}
-                    className={cn(
-                      "flex items-center justify-between px-4 h-12 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                      isSelected
-                        ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-card border-border text-muted-foreground hover:bg-muted"
-                    )}
+                    className={getTurnFormPlayerRadioClasses(isSelected)}
                   >
                     <span>{option.label}</span>
                     {isSelected && <Check className="h-4 w-4 shrink-0" />}
@@ -272,9 +273,9 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className={getTurnFormGroupClasses()}>
             <div className="flex justify-between items-center">
-              <Label htmlFor="notes" className="text-sm font-semibold flex items-center gap-2">
+              <Label htmlFor="notes" className={cn("flex items-center gap-2", getTurnFormLabelClasses())}>
                 <Info className="h-4 w-4" />
                 {getTurnFormNotesLabel()}
               </Label>
@@ -288,7 +289,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
               placeholder={getTurnFormNotesPlaceholder("edit")}
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="min-h-[100px] rounded-lg resize-none animate-none"
+              className={cn(getTurnFormTextareaClasses(), "animate-none")}
             />
           </div>
         </div>
@@ -296,7 +297,7 @@ export function EditTurnForm({ id, initialTurn }: EditTurnFormProps) {
 
       <Button
         type="submit"
-        className="w-full h-12 text-base font-bold rounded-lg shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getTurnFormSubmitButtonClasses()}
         disabled={isPending}
         aria-busy={isPending}
         aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "edit", isPending })}

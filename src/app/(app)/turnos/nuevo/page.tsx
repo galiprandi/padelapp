@@ -33,6 +33,20 @@ import {
   getTurnBackButtonAriaLabel,
   formatDurationOptionLabel,
   formatPlayerOptionLabel,
+  getTurnFormContainerClasses,
+  getTurnFormHeaderBackLinkClasses,
+  getTurnFormHeaderTitleClasses,
+  getTurnFormHeaderDescriptionClasses,
+  getTurnFormCardClasses,
+  getTurnFormCardHeaderClasses,
+  getTurnFormCardHeaderTitleClasses,
+  getTurnFormCardContentClasses,
+  getTurnFormGroupClasses,
+  getTurnFormLabelClasses,
+  getTurnFormDurationRadioClasses,
+  getTurnFormPlayerRadioClasses,
+  getTurnFormTextareaClasses,
+  getTurnFormSubmitButtonClasses,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
@@ -106,46 +120,46 @@ export default function NewTurnPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={getTurnFormContainerClasses()}>
       <div className="flex items-center gap-4">
         <Link
           href="/turnos"
           prefetch={true}
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getTurnFormHeaderBackLinkClasses()}
           aria-label={getTurnBackButtonAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className={getTurnFormHeaderTitleClasses()}>
             {getNewTurnHeadingTitle()}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className={getTurnFormHeaderDescriptionClasses()}>
             {getNewTurnHeadingDescription()}
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className={getTurnFormContainerClasses()}>
         <div
           role="region"
           aria-label={getTurnFormRegionAriaLabel("create")}
-          className="rounded-xl border border-border bg-card shadow-xs"
+          className={getTurnFormCardClasses()}
         >
-          <div className="p-4 border-b border-border">
+          <div className={getTurnFormCardHeaderClasses()}>
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-primary" />
-              <h2 className="text-sm font-bold text-foreground">
+              <h2 className={getTurnFormCardHeaderTitleClasses()}>
                 {getTurnFormDetailsHeaderTitle()}
               </h2>
             </div>
           </div>
-          <div className="p-6 flex flex-col gap-6">
-            <div className="flex flex-col gap-1.5">
+          <div className={getTurnFormCardContentClasses()}>
+            <div className={getTurnFormGroupClasses()}>
               <Label
                 htmlFor="club"
                 requiredIndicator="*"
-                className="text-sm font-semibold text-foreground"
+                className={getTurnFormLabelClasses()}
               >
                 {getTurnFormClubLabel()}
               </Label>
@@ -161,11 +175,11 @@ export default function NewTurnPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
+              <div className={getTurnFormGroupClasses()}>
                 <Label
                   htmlFor="date"
                   requiredIndicator="*"
-                  className="text-sm font-semibold text-foreground"
+                  className={getTurnFormLabelClasses()}
                 >
                   {getTurnFormDateLabel()}
                 </Label>
@@ -181,11 +195,11 @@ export default function NewTurnPage() {
                   className="h-12 rounded-lg"
                 />
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className={getTurnFormGroupClasses()}>
                 <Label
                   htmlFor="time"
                   requiredIndicator="*"
-                  className="text-sm font-semibold text-foreground"
+                  className={getTurnFormLabelClasses()}
                 >
                   {getTurnFormTimeLabel()}
                 </Label>
@@ -204,7 +218,7 @@ export default function NewTurnPage() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Label id="duration-label" className="text-sm font-semibold text-foreground">
+              <Label id="duration-label" className={getTurnFormLabelClasses()}>
                 {getTurnFormDurationLabel()}
               </Label>
               <div
@@ -235,12 +249,7 @@ export default function NewTurnPage() {
                       onClick={() =>
                         setFormData({ ...formData, duration: option.value })
                       }
-                      className={cn(
-                        "flex h-12 items-center justify-center rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                          : "bg-card border-border text-muted-foreground hover:bg-muted",
-                      )}
+                      className={getTurnFormDurationRadioClasses(isSelected)}
                     >
                       {option.label}
                     </button>
@@ -250,7 +259,7 @@ export default function NewTurnPage() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Label id="players-label" className="text-sm font-semibold text-foreground">
+              <Label id="players-label" className={getTurnFormLabelClasses()}>
                 {getTurnFormPlayersLabel()}
               </Label>
               <div
@@ -281,12 +290,7 @@ export default function NewTurnPage() {
                       onClick={() =>
                         setFormData({ ...formData, maxPlayers: option.value })
                       }
-                      className={cn(
-                        "flex h-12 items-center justify-between px-3 rounded-lg border text-sm font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                          : "bg-card border-border text-muted-foreground hover:bg-muted",
-                      )}
+                      className={getTurnFormPlayerRadioClasses(isSelected)}
                     >
                       <span>{option.label}</span>
                       {isSelected && <Check className="h-4 w-4 shrink-0" />}
@@ -296,11 +300,11 @@ export default function NewTurnPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className={getTurnFormGroupClasses()}>
               <div className="flex justify-between items-center">
                 <Label
                   htmlFor="notes"
-                  className="text-sm font-semibold text-foreground"
+                  className={getTurnFormLabelClasses()}
                 >
                   {getTurnFormNotesLabel()}
                 </Label>
@@ -316,7 +320,7 @@ export default function NewTurnPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, notes: e.target.value })
                 }
-                className="min-h-[100px] rounded-lg resize-none"
+                className={getTurnFormTextareaClasses()}
               />
             </div>
           </div>
@@ -324,7 +328,7 @@ export default function NewTurnPage() {
 
         <Button
           type="submit"
-          className="w-full h-12 rounded-lg font-bold text-base shadow-xs transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getTurnFormSubmitButtonClasses()}
           disabled={isPending}
           aria-busy={isPending}
           aria-label={getTurnFormSubmitButtonAriaLabel({ mode: "create", isPending })}
