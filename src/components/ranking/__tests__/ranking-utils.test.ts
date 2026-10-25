@@ -65,6 +65,8 @@ import {
   getRankingBreakdownButtonClasses,
   getRankingBreakdownContainerClasses,
   getRankingDecayBannerClasses,
+  getUserRankingBannerContainerClasses,
+  getUserRankingCardContainerClasses,
   getRankingInfoContainerClasses,
   getRankingInfoHeaderButtonClasses,
   getPendingConfirmationsContainerClasses,
@@ -656,6 +658,14 @@ describe("Ranking Helpers", () => {
       expect(getRankingBreakdownButtonClasses()).toContain("w-full flex items-center");
       expect(getRankingBreakdownContainerClasses()).toContain("bg-muted border border-border");
       expect(getRankingDecayBannerClasses()).toContain("mt-3 pt-3 border-t");
+    });
+
+    it("getUserRankingBannerContainerClasses and getUserRankingCardContainerClasses return expected container styling", () => {
+      expect(getUserRankingBannerContainerClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getUserRankingBannerContainerClasses("custom-banner")).toContain("custom-banner");
+
+      expect(getUserRankingCardContainerClasses()).toContain("flex flex-col rounded-xl border border-border bg-card");
+      expect(getUserRankingCardContainerClasses("custom-card")).toContain("custom-card");
     });
 
     it("getRankingInfoContainerClasses and getRankingInfoHeaderButtonClasses return expected styling", () => {

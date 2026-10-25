@@ -24,6 +24,8 @@ import {
   getRankingBreakdownContainerClasses,
   getRankingDecayBannerClasses,
   getRankingDeltaClasses,
+  getUserRankingBannerContainerClasses,
+  getUserRankingCardContainerClasses,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -234,7 +236,7 @@ export function UserRankingBanner({
     <div
       role="region"
       aria-label={summaryAriaLabel}
-      className={cn("rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs", className)}
+      className={getUserRankingBannerContainerClasses(className)}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -341,10 +343,7 @@ export function UserRankingCard({
     <div
       role="region"
       aria-label={summaryAriaLabel}
-      className={cn(
-        "flex flex-col rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs",
-        className,
-      )}
+      className={getUserRankingCardContainerClasses(className)}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -403,7 +402,7 @@ export function UserRankingCard({
         </div>
       </div>
       {decayText && (
-        <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted -mx-4 -mb-4 p-3 rounded-b-xl border-t-0">
+        <div className={getRankingDecayBannerClasses()}>
           <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" />
           <span>{decayText}</span>
         </div>
