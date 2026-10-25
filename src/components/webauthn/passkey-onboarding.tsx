@@ -15,9 +15,11 @@ import {
 } from "@/lib/webauthn/actions";
 import {
   getPasskeyErrorMessage,
+  getPasskeyOnboardingContainerClasses,
   getPasskeyOnboardingDescription,
   getPasskeyOnboardingDismissAriaLabel,
   getPasskeyOnboardingDismissButtonClasses,
+  getPasskeyOnboardingIconBadgeClasses,
   getPasskeyOnboardingLaterAriaLabel,
   getPasskeyOnboardingLaterButtonClasses,
   getPasskeyOnboardingLaterLabel,
@@ -135,7 +137,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
     <div
       role="region"
       aria-label={getPasskeyOnboardingRegionAriaLabel()}
-      className="relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+      className={getPasskeyOnboardingContainerClasses()}
     >
       <Button
         variant="ghost"
@@ -148,7 +150,7 @@ export function PasskeyOnboarding({ hasPasskeys }: PasskeyOnboardingProps) {
       </Button>
 
       <div className="flex items-start gap-3 pr-6">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs">
+        <div className={getPasskeyOnboardingIconBadgeClasses()}>
           <Fingerprint className="h-5 w-5 text-primary" aria-hidden="true" />
         </div>
         <div className="space-y-1">

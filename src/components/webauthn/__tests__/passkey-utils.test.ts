@@ -41,6 +41,19 @@ import {
   getPasskeyOnboardingLaterButtonClasses,
   getSecurityPageBackLinkClasses,
   getSecurityRegionAriaLabel,
+  getPasskeyUnsupportedContainerClasses,
+  getPasskeyUnsupportedIconBadgeClasses,
+  getPasskeyManagerCardContainerClasses,
+  getPasskeyManagerHeaderIconBadgeClasses,
+  getPasskeyNicknameInputClasses,
+  getPasskeyOnboardingContainerClasses,
+  getPasskeyOnboardingIconBadgeClasses,
+  getSecurityMainContainerClasses,
+  getSecuritySkeletonContainerClasses,
+  getSecuritySkeletonIconBadgeClasses,
+  getSecuritySkeletonTitleClasses,
+  getSecuritySkeletonSubtitleClasses,
+  getSecuritySkeletonInputClasses,
 } from "../passkey-utils";
 
 describe("passkey-utils", () => {
@@ -217,6 +230,22 @@ describe("passkey-utils", () => {
       expect(getPasskeyOnboardingRegisterButtonClasses()).toContain("flex-1");
       expect(getPasskeyOnboardingLaterButtonClasses()).toContain("text-xs");
       expect(getSecurityPageBackLinkClasses()).toContain("h-10 w-10");
+    });
+
+    it("returns correct layout and skeleton container classes for passkey and security components", () => {
+      expect(getPasskeyUnsupportedContainerClasses()).toContain("bg-card");
+      expect(getPasskeyUnsupportedIconBadgeClasses()).toContain("text-muted-foreground");
+      expect(getPasskeyManagerCardContainerClasses()).toContain("rounded-xl");
+      expect(getPasskeyManagerHeaderIconBadgeClasses()).toContain("text-foreground");
+      expect(getPasskeyNicknameInputClasses()).toContain("focus-visible:ring-2");
+      expect(getPasskeyOnboardingContainerClasses()).toContain("relative");
+      expect(getPasskeyOnboardingIconBadgeClasses()).toContain("bg-muted");
+      expect(getSecurityMainContainerClasses()).toBe("flex flex-col gap-6");
+      expect(getSecuritySkeletonContainerClasses()).toContain("border");
+      expect(getSecuritySkeletonIconBadgeClasses()).toBe("h-10 w-10 rounded-lg");
+      expect(getSecuritySkeletonTitleClasses()).toBe("h-4 w-32");
+      expect(getSecuritySkeletonSubtitleClasses()).toBe("h-3 w-48");
+      expect(getSecuritySkeletonInputClasses()).toBe("h-10 w-full rounded-lg");
     });
   });
 });

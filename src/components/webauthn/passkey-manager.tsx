@@ -24,10 +24,13 @@ import {
   getPasskeyDeleteSuccessToast,
   getPasskeyErrorMessage,
   getPasskeyItemContainerClasses,
+  getPasskeyManagerCardContainerClasses,
   getPasskeyManagerDescription,
+  getPasskeyManagerHeaderIconBadgeClasses,
   getPasskeyManagerRegionAriaLabel,
   getPasskeyManagerTitle,
   getPasskeyNicknameAriaLabel,
+  getPasskeyNicknameInputClasses,
   getPasskeyNicknameLabel,
   getPasskeyNicknamePlaceholder,
   getPasskeyRegisterActionAriaLabel,
@@ -36,7 +39,9 @@ import {
   getPasskeyRegisterButtonText,
   getPasskeyRegisterErrorFallbackMessage,
   getPasskeyRegisterSuccessToast,
+  getPasskeyUnsupportedContainerClasses,
   getPasskeyUnsupportedDescription,
+  getPasskeyUnsupportedIconBadgeClasses,
   sanitizePasskeyNickname,
 } from "./passkey-utils";
 
@@ -73,10 +78,10 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
       <div
         role="region"
         aria-label={getPasskeyManagerRegionAriaLabel()}
-        className="rounded-xl border border-border bg-card p-4 shadow-xs"
+        className={getPasskeyUnsupportedContainerClasses()}
       >
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border">
+          <div className={getPasskeyUnsupportedIconBadgeClasses()}>
             <Fingerprint className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="space-y-1">
@@ -138,10 +143,10 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
     <div
       role="region"
       aria-label={getPasskeyManagerRegionAriaLabel()}
-      className="rounded-xl border border-border bg-card p-4 shadow-xs"
+      className={getPasskeyManagerCardContainerClasses()}
     >
       <div className="flex items-start gap-3 mb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs">
+        <div className={getPasskeyManagerHeaderIconBadgeClasses()}>
           <Fingerprint className="h-5 w-5 text-primary" aria-hidden="true" />
         </div>
         <div className="flex-1 space-y-1">
@@ -173,7 +178,7 @@ export function PasskeyManager({ initialPasskeys }: PasskeyManagerProps) {
           maxLength={30}
           disabled={isRegistering}
           aria-label={getPasskeyNicknameAriaLabel()}
-          className="h-10 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getPasskeyNicknameInputClasses()}
         />
       </div>
 
