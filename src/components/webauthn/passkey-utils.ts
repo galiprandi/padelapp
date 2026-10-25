@@ -205,3 +205,55 @@ export function getSecurityPageBackLinkClasses(): string {
 export function getSecurityRegionAriaLabel(): string {
   return "Configuración de seguridad y acceso biométrico";
 }
+
+export function getPasskeyUnsupportedContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getPasskeyUnsupportedIconBadgeClasses(): string {
+  return "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border";
+}
+
+export function getPasskeyManagerCardContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getPasskeyManagerHeaderIconBadgeClasses(): string {
+  return "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs";
+}
+
+export function getPasskeyNicknameInputClasses(): string {
+  return "h-10 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getPasskeyOnboardingContainerClasses(): string {
+  return "relative flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getPasskeyOnboardingIconBadgeClasses(): string {
+  return "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border shadow-xs";
+}
+
+export function getSecurityMainContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+export function getSecuritySkeletonContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getSecuritySkeletonIconBadgeClasses(): string {
+  return "h-10 w-10 rounded-lg";
+}
+
+export function getSecuritySkeletonTitleClasses(): string {
+  return "h-4 w-32";
+}
+
+export function getSecuritySkeletonSubtitleClasses(): string {
+  return "h-3 w-48";
+}
+
+export function getSecuritySkeletonInputClasses(): string {
+  return "h-10 w-full rounded-lg";
+}

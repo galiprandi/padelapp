@@ -7,12 +7,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import {
+  getSecurityMainContainerClasses,
   getSecurityPageBackAriaLabel,
   getSecurityPageBackLinkClasses,
   getSecurityPageHeadingDescription,
   getSecurityPageHeadingTitle,
   getSecurityRegionAriaLabel,
   getSecuritySkeletonAriaLabel,
+  getSecuritySkeletonContainerClasses,
+  getSecuritySkeletonIconBadgeClasses,
+  getSecuritySkeletonInputClasses,
+  getSecuritySkeletonSubtitleClasses,
+  getSecuritySkeletonTitleClasses,
 } from "@/components/webauthn/passkey-utils";
 
 export default function SecurityPage() {
@@ -20,7 +26,7 @@ export default function SecurityPage() {
     <main
       role="region"
       aria-label={getSecurityRegionAriaLabel()}
-      className="flex flex-col gap-6"
+      className={getSecurityMainContainerClasses()}
     >
       <div className="flex items-center gap-4">
         <Link
@@ -64,16 +70,16 @@ function SecuritySkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getSecuritySkeletonAriaLabel()}
-      className="rounded-xl border border-border bg-card p-4 shadow-xs"
+      className={getSecuritySkeletonContainerClasses()}
     >
       <div className="flex items-start gap-3 mb-4">
-        <Skeleton className="h-10 w-10 rounded-lg" />
+        <Skeleton className={getSecuritySkeletonIconBadgeClasses()} />
         <div className="flex-1 space-y-1">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-3 w-48" />
+          <Skeleton className={getSecuritySkeletonTitleClasses()} />
+          <Skeleton className={getSecuritySkeletonSubtitleClasses()} />
         </div>
       </div>
-      <Skeleton className="h-10 w-full rounded-lg" />
+      <Skeleton className={getSecuritySkeletonInputClasses()} />
     </div>
   );
 }
