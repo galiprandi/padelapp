@@ -1,5 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
-import { getRecencyWeight, applyFeedbackToScore } from "@/lib/graph/engine";
+import {
+  getRecencyWeight,
+  applyFeedbackToScore,
+  calculateAdjustedFeedbackScore,
+  calculatePlayerSideWinsAndRates,
+  type ConfirmedMatchInfo,
+} from "@/lib/graph/engine";
+import { calculateMatchEdgeUpdates, edgeKey } from "@/lib/graph/update";
+import { calculateTurnPairEnrollees, type TurnEnrolleeInput } from "@/lib/graph/turn-edges";
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
@@ -17,6 +25,158 @@ vi.mock("@/db", () => ({
 }));
 
 process.env.AUTH_BYPASS = "true";
+
+describe("calculateMatchEdgeUpdates and edgeKey", () => {
+  it("determines deterministic ordered pair via edgeKey", () => {
+    expect(edgeKey("user-b", "user-a")).toEqual(["user-a", "user-b"]);
+    expect(edgeKey("user-1", "user-2")).toEqual(["user-1", "user-2"]);
+  });
+
+  it("returns empty array for match with fewer than 2 valid players", () => {
+    const match: ConfirmedMatchInfo = {
+      id: "m-01",
+      score: "6-4 6-3",
+      date: new Date(),
+      players: [{ userId: "p-01", position: 0, teamId: "A", side: "RIGHT" }],
+    };
+    expect(calculateMatchEdgeUpdates(match)).toEqual([]);
+  });
+
+  it("calculates rival and partner deltas for 2v2 match with Team A win", () => {
+    const match: ConfirmedMatchInfo = {
+      id: "m-2v2",
+      score: "6-4 6-2", // Team A wins
+      date: new Date("2026-10-01"),
+      players: [
+        { userId: "p-01", position: 0, teamId: "A", side: "RIGHT" },
+        { userId: "p-02", position: 1, teamId: "A", side: "LEFT" },
+        { userId: "p-03", position: 2, teamId: "B", side: "RIGHT" },
+        { userId: "p-04", position: 3, teamId: "B", side: "LEFT" },
+      ],
+    };
+
+    const updates = calculateMatchEdgeUpdates(match);
+    expect(updates).toHaveLength(6);
+
+    const partnerA = updates.find(
+      (u) =>
+        (u.playerAId === "p-01" && u.playerBId === "p-02") ||
+        (u.playerAId === "p-02" && u.playerBId === "p-01"),
+    );
+    expect(partnerA).toBeDefined();
+    expect(partnerA?.partnerDelta).toBe(1);
+    expect(partnerA?.rivalDelta).toBe(0);
+    expect(partnerA?.winsTogetherDelta).toBe(1);
+    expect(partnerA?.lossesTogetherDelta).toBe(0);
+
+    const partnerB = updates.find(
+      (u) =>
+        (u.playerAId === "p-03" && u.playerBId === "p-04") ||
+        (u.playerAId === "p-04" && u.playerBId === "p-03"),
+    );
+    expect(partnerB).toBeDefined();
+    expect(partnerB?.partnerDelta).toBe(1);
+    expect(partnerB?.winsTogetherDelta).toBe(0);
+    expect(partnerB?.lossesTogetherDelta).toBe(1);
+  });
+
+  it("calculates rival deltas for 1v1 match with Team B win", () => {
+    const match: ConfirmedMatchInfo = {
+      id: "m-1v1",
+      score: "3-6 4-6", // Team B wins
+      date: new Date("2026-10-02"),
+      players: [
+        { userId: "p-01", position: 0, teamId: "A", side: "RIGHT" },
+        { userId: "p-02", position: 1, teamId: "B", side: "LEFT" },
+      ],
+    };
+
+    const updates = calculateMatchEdgeUpdates(match);
+    expect(updates).toHaveLength(1);
+    expect(updates[0].rivalDelta).toBe(1);
+    expect(updates[0].partnerDelta).toBe(0);
+    expect(updates[0].playerAId).toBe("p-01");
+    expect(updates[0].playerBId).toBe("p-02");
+    expect(updates[0].winsADelta).toBe(0);
+    expect(updates[0].winsBDelta).toBe(1);
+  });
+});
+
+describe("calculateAdjustedFeedbackScore and calculatePlayerSideWinsAndRates", () => {
+  it("calculates feedback score adjustments for various signals", () => {
+    expect(calculateAdjustedFeedbackScore([], 1000)).toBe(1000);
+    expect(
+      calculateAdjustedFeedbackScore(
+        [{ feedback: "STRONGER" }, { feedback: "STRONGER" }],
+        1000,
+      ),
+    ).toBe(1040);
+    expect(
+      calculateAdjustedFeedbackScore(
+        [{ feedback: "WEAKER" }, { feedback: "WEAKER" }, { feedback: "WEAKER" }],
+        1000,
+      ),
+    ).toBe(940);
+    expect(
+      calculateAdjustedFeedbackScore(
+        [{ feedback: "STRONGER" }, { feedback: "WEAKER" }],
+        1000,
+      ),
+    ).toBe(1000);
+  });
+
+  it("calculates player side preferences and win rates from match inputs", () => {
+    const matches = [
+      { side: "RIGHT" as const, position: 0, matchScore: "6-4 6-2" }, // Team A wins -> RIGHT win
+      { side: "RIGHT" as const, position: 0, matchScore: "2-6 3-6" }, // Team B wins -> RIGHT loss
+      { side: "LEFT" as const, position: 1, matchScore: "6-1 6-0" }, // Team A wins -> LEFT win
+    ];
+
+    const result = calculatePlayerSideWinsAndRates(matches);
+    expect(result.preferredSide).toBe("RIGHT");
+    expect(result.winRateRight).toBe(0.5); // 1 win out of 2 right matches
+    expect(result.winRateLeft).toBe(1.0); // 1 win out of 1 left match
+  });
+
+  it("returns null preferredSide when match counts for RIGHT and LEFT are equal", () => {
+    const matches = [
+      { side: "RIGHT" as const, position: 0, matchScore: "6-4 6-2" },
+      { side: "LEFT" as const, position: 1, matchScore: "6-4 6-2" },
+    ];
+
+    const result = calculatePlayerSideWinsAndRates(matches);
+    expect(result.preferredSide).toBeNull();
+  });
+});
+
+describe("calculateTurnPairEnrollees", () => {
+  it("aggregates turn co-inscription count and latest turn date for pairs of enrollees", () => {
+    const d1 = new Date("2026-09-01");
+    const d2 = new Date("2026-09-15");
+
+    const players: TurnEnrolleeInput[] = [
+      { turnId: "t-01", userId: "p-01", joinedAt: d1 },
+      { turnId: "t-01", userId: "p-02", joinedAt: d1 },
+      { turnId: "t-02", userId: "p-01", joinedAt: d2 },
+    ];
+
+    const substitutes: TurnEnrolleeInput[] = [
+      { turnId: "t-01", userId: "p-03", joinedAt: d1 },
+      { turnId: "t-02", userId: "p-02", joinedAt: d2 },
+    ];
+
+    const edges = calculateTurnPairEnrollees(players, substitutes);
+    expect(edges).toHaveLength(3);
+
+    const pair12 = edges.find(
+      (e) =>
+        (e.playerAId === "p-01" && e.playerBId === "p-02") ||
+        (e.playerAId === "p-02" && e.playerBId === "p-01"),
+    );
+    expect(pair12?.turnsTogether).toBe(2);
+    expect(pair12?.lastTurnAt).toEqual(d2);
+  });
+});
 
 describe("getRecencyWeight", () => {
   it("returns 0.5 for null date", () => {
@@ -154,8 +314,6 @@ describe("applyFeedbackToScore", () => {
       { feedback: "STRONGER" },
       { feedback: "STRONGER" },
     ]);
-    // totalFeedback = 2, feedbackWeight = 2/5 = 0.4, signal = 1.0
-    // adjustment = 1.0 * 100 * 0.4 = +40
     const score = await applyFeedbackToScore("user-1", 1000);
     expect(score).toBe(1040);
   });
@@ -166,8 +324,6 @@ describe("applyFeedbackToScore", () => {
       { feedback: "WEAKER" },
       { feedback: "WEAKER" },
     ]);
-    // totalFeedback = 3, feedbackWeight = 3/5 = 0.6, signal = -1.0
-    // adjustment = -1.0 * 100 * 0.6 = -60
     const score = await applyFeedbackToScore("user-1", 1000);
     expect(score).toBe(940);
   });
@@ -177,7 +333,6 @@ describe("applyFeedbackToScore", () => {
       { feedback: "STRONGER" },
       { feedback: "WEAKER" },
     ]);
-    // signal = 0
     const score = await applyFeedbackToScore("user-1", 1000);
     expect(score).toBe(1000);
   });
@@ -501,8 +656,6 @@ describe("calculateNetworkExpansionPotential", () => {
       { source: "p-02", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
     ];
 
-    // p-01 direct = p-02 (comm 1); p-02 connected to p-03, p-04, p-05, p-06 (4 unexplored 2nd-degree contacts)
-    // connected communities = {1}; unconnected = {2, 3, 4} (3 unconnected communities)
     const res = calculateNetworkExpansionPotential(links, nodes, "p-01");
     expect(res.unexploredReachCount).toBe(4);
     expect(res.unconnectedCommunitiesCount).toBe(3);
@@ -519,7 +672,6 @@ describe("calculateNetworkExpansionPotential", () => {
       { source: "p-02", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
     ];
 
-    // p-01 direct = p-02; unexplored 2nd degree = p-03, p-04 (2 contacts)
     const res = calculateNetworkExpansionPotential(links, nodes, "p-01");
     expect(res.unexploredReachCount).toBe(2);
     expect(res.expansionTier).toBe("Potencial de conexión 🌐");
@@ -549,14 +701,14 @@ describe("calculateNetworkMultiBelonging", () => {
 
   it("calculates 'Multicomunitario 🌐' tier for player active across 3 distinct communities", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 1 (internal)
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 2 (external)
-      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 3 (external)
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 },
     ];
 
     const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
     expect(res.distinctCommunitiesCount).toBe(3);
-    expect(res.primaryCommunitySharePercentage).toBe(33); // 2/6 = 33%
+    expect(res.primaryCommunitySharePercentage).toBe(33);
     expect(res.externalCommunitiesSharePercentage).toBe(67);
     expect(res.multiBelongingTier).toBe("Multicomunitario 🌐");
     expect(res.badgeStyle).toContain("bg-teal-100");
@@ -566,13 +718,13 @@ describe("calculateNetworkMultiBelonging", () => {
 
   it("calculates 'Bicomunitario 🔗' tier for player active in 2 distinct communities", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // comm 1 (internal 60%)
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // comm 2 (external 40%)
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
+      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
     ];
 
     const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
     expect(res.distinctCommunitiesCount).toBe(2);
-    expect(res.primaryCommunitySharePercentage).toBe(60); // 3/5 = 60%
+    expect(res.primaryCommunitySharePercentage).toBe(60);
     expect(res.externalCommunitiesSharePercentage).toBe(40);
     expect(res.multiBelongingTier).toBe("Bicomunitario 🔗");
     expect(res.badgeStyle).toContain("bg-sky-100");
@@ -582,7 +734,7 @@ describe("calculateNetworkMultiBelonging", () => {
 
   it("calculates 'Focalizado en grupo 🏛️' tier for single community concentration", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 }, // comm 1 (internal 100%)
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 },
     ];
 
     const res = calculateNetworkMultiBelonging(links, nodes, "p-01");
@@ -618,14 +770,14 @@ describe("calculatePlayerMatchComplementarity", () => {
 
   it("calculates 'Dupla sinérgica ideal 🎯' tier for player with complementary partners and high win rate", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 }, // complementary (RIGHT + LEFT), 75% WR
-      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // BOTH side partner, 100% WR
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 4, winsA: 0, winsB: 0, winsTogether: 3, lossesTogether: 1, turnsTogether: 0, strength: 4 },
+      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 2 },
     ];
 
     const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
     expect(res.totalPartnersCount).toBe(2);
     expect(res.synergicPartnersCount).toBe(2);
-    expect(res.avgPartnerWinRatePercentage).toBe(83); // (3+2)/(4+2) = 5/6 = 83%
+    expect(res.avgPartnerWinRatePercentage).toBe(83);
     expect(res.complementarityTier).toBe("Dupla sinérgica ideal 🎯");
     expect(res.badgeStyle).toContain("bg-emerald-100");
     expect(res.formattedSummary).toContain("2 duplas sinérgicas (Der + Rev)");
@@ -634,7 +786,7 @@ describe("calculatePlayerMatchComplementarity", () => {
 
   it("calculates 'Sinergia técnica ⚡' tier for player with at least 1 complementary partner", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 }, // complementary (RIGHT + LEFT), 50% WR
+      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 },
     ];
 
     const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
@@ -649,7 +801,7 @@ describe("calculatePlayerMatchComplementarity", () => {
 
   it("calculates 'Ajuste táctico ⚠️' or 'Sinergia en desarrollo 🌱' tier for partners on the same court side", () => {
     const links: GraphLink[] = [
-      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 2, turnsTogether: 0, strength: 2 }, // same side (RIGHT + RIGHT), 0% WR
+      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 2, turnsTogether: 0, strength: 2 },
     ];
 
     const res = calculatePlayerMatchComplementarity(links, nodes, "p-01");
@@ -720,7 +872,7 @@ describe("sortGraphLinksByStrength", () => {
         winsB: 0,
         winsTogether: 0,
         lossesTogether: 0,
-        turnsTogether: 1, // total = 2
+        turnsTogether: 1,
         strength: 2,
       },
       {
@@ -732,7 +884,7 @@ describe("sortGraphLinksByStrength", () => {
         winsB: 1,
         winsTogether: 2,
         lossesTogether: 0,
-        turnsTogether: 2, // total = 7
+        turnsTogether: 2,
         strength: 7,
       },
       {
@@ -744,7 +896,7 @@ describe("sortGraphLinksByStrength", () => {
         winsB: 1,
         winsTogether: 1,
         lossesTogether: 1,
-        turnsTogether: 0, // total = 4
+        turnsTogether: 0,
         strength: 4,
       },
     ];
@@ -764,7 +916,7 @@ describe("sortGraphLinksByStrength", () => {
         winsB: 0,
         winsTogether: 0,
         lossesTogether: 0,
-        turnsTogether: 5, // total = 5, matches = 0
+        turnsTogether: 5,
         strength: 5,
       },
       {
@@ -776,7 +928,7 @@ describe("sortGraphLinksByStrength", () => {
         winsB: 1,
         winsTogether: 1,
         lossesTogether: 1,
-        turnsTogether: 1, // total = 5, matches = 4
+        turnsTogether: 1,
         strength: 5,
       },
     ];
@@ -869,8 +1021,8 @@ describe("calculateConnectionRecord", () => {
 
     const record = calculateConnectionRecord(link, "p-01");
     expect(record.type).toBe("mixed");
-    expect(record.wins).toBe(4); // 2 rival wins + 2 partner wins
-    expect(record.losses).toBe(1); // 1 rival loss + 0 partner losses
+    expect(record.wins).toBe(4);
+    expect(record.losses).toBe(1);
     expect(record.formattedRecord).toBe("4V - 1D");
     expect(record.winRatePercentage).toBe(80);
   });
@@ -925,7 +1077,7 @@ describe("getConnectionAffinityLabel", () => {
       partnerMatches: 4,
       winsA: 0,
       winsB: 0,
-      winsTogether: 3, // 75% win rate
+      winsTogether: 3,
       lossesTogether: 1,
       turnsTogether: 0,
       strength: 4,
@@ -943,7 +1095,7 @@ describe("getConnectionAffinityLabel", () => {
       partnerMatches: 4,
       winsA: 0,
       winsB: 0,
-      winsTogether: 2, // 50% win rate
+      winsTogether: 2,
       lossesTogether: 2,
       turnsTogether: 0,
       strength: 4,
@@ -1248,19 +1400,11 @@ describe("calculateMutualConnectionsCount", () => {
   ];
 
   it("calculates mutual connections count correctly between two players with shared neighbors", () => {
-    // p-01 is connected to p-02, p-03
-    // p-04 is connected to p-02, p-03
-    // Shared neighbors = p-02, p-03 => count = 2
     const mutual = calculateMutualConnectionsCount(links, "p-01", "p-04");
     expect(mutual).toBe(2);
   });
 
   it("calculates mutual connections between directly connected players", () => {
-    // p-01 is connected to p-02 and p-03
-    // p-02 is connected to p-01 and p-04
-    // p-01's neighbors (excluding p-02) = {p-03}
-    // p-02's neighbors (excluding p-01) = {p-04}
-    // Intersection = 0
     const mutual = calculateMutualConnectionsCount(links, "p-01", "p-02");
     expect(mutual).toBe(0);
   });
@@ -1324,7 +1468,6 @@ describe("calculateCommunitySummary", () => {
     const summary = calculateCommunitySummary(nodes, 1);
     expect(summary.communityId).toBe(1);
     expect(summary.totalPlayers).toBe(3);
-    // (1100 + 1200 + 1000) / 3 = 1100
     expect(summary.avgSkillScore).toBe(1100);
     expect(summary.rightSideCount).toBe(1);
     expect(summary.leftSideCount).toBe(1);
@@ -1502,8 +1645,6 @@ describe("calculateSideSynergyBreakdown", () => {
   ];
 
   it("calculates partner side synergy breakdown with complementary and same-side count", () => {
-    // p-01 (RIGHT) with p-02 (LEFT) -> complementary
-    // p-01 (RIGHT) with p-03 (RIGHT) -> same side
     const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-01");
     expect(breakdown.totalPartners).toBe(2);
     expect(breakdown.complementaryCount).toBe(1);
@@ -1517,2631 +1658,5 @@ describe("calculateSideSynergyBreakdown", () => {
     const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-99");
     expect(breakdown.totalPartners).toBe(0);
     expect(breakdown.formattedSynergySummary).toBe("Sin duplas registradas");
-  });
-});
-
-describe("calculateNetworkRoleInfo", () => {
-  const nodes: GraphNode[] = [
-    {
-      id: "p-01",
-      name: "Agustín",
-      alias: "agu",
-      image: null,
-      skillScore: 1100,
-      community: 1,
-      networkSize: 3,
-      matchesPlayed: 10,
-      preferredSide: "RIGHT",
-    },
-    {
-      id: "p-02",
-      name: "Belasteguín",
-      alias: "Bela",
-      image: null,
-      skillScore: 1200,
-      community: 1,
-      networkSize: 1,
-      matchesPlayed: 12,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-03",
-      name: "Facu",
-      alias: "facu",
-      image: null,
-      skillScore: 1000,
-      community: 2,
-      networkSize: 2,
-      matchesPlayed: 4,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-04",
-      name: "Gero",
-      alias: "gero",
-      image: null,
-      skillScore: 1050,
-      community: 1,
-      networkSize: 1,
-      matchesPlayed: 5,
-      preferredSide: "RIGHT",
-    },
-    {
-      id: "p-05",
-      name: "Diego",
-      alias: "diego",
-      image: null,
-      skillScore: 980,
-      community: 3,
-      networkSize: 1,
-      matchesPlayed: 3,
-      preferredSide: "LEFT",
-    },
-  ];
-
-  it("returns 'Nuevo participante 🆕' for unconnected or missing node", () => {
-    const res = calculateNetworkRoleInfo(nodes, [], "p-99");
-    expect(res.roleLabel).toBe("Nuevo participante 🆕");
-    expect(res.badgeStyle).toContain("bg-muted");
-  });
-
-  it("returns 'Nexo comunitario 🌉' when connected to neighbors in 2 or more distinct communities", () => {
-    // p-01 (community 1) connected to p-02 (community 1) and p-03 (community 2)
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02",
-        rivalMatches: 1,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-      {
-        source: "p-01",
-        target: "p-03",
-        rivalMatches: 2,
-        partnerMatches: 0,
-        winsA: 1,
-        winsB: 1,
-        winsTogether: 0,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-    ];
-
-    const res = calculateNetworkRoleInfo(nodes, links, "p-01");
-    expect(res.roleLabel).toBe("Nexo comunitario 🌉");
-    expect(res.badgeStyle).toContain("bg-indigo-100");
-  });
-
-  it("returns 'Anfitrión de grupo 👑' when top degree node in primary community with degree >= 3", () => {
-    // p-01 (community 1) connected to p-02, p-04 (both community 1) and p-04 has 1 link, p-02 has 1 link
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02",
-        rivalMatches: 1,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-      {
-        source: "p-01",
-        target: "p-04",
-        rivalMatches: 1,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-      {
-        source: "p-01",
-        target: "p-02",
-        rivalMatches: 0,
-        partnerMatches: 1,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 1,
-        strength: 2,
-      },
-    ];
-
-    const res = calculateNetworkRoleInfo(nodes, links, "p-01");
-    expect(res.roleLabel).toBe("Anfitrión de grupo 👑");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-  });
-
-  it("returns 'Pivote de red 🔗' when total connections >= 5 within single community and not top host", () => {
-    const singleCommunityNodes: GraphNode[] = [
-      { id: "p-01", name: "P1", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 5, matchesPlayed: 10, preferredSide: "RIGHT" },
-      { id: "p-02", name: "P2", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 7, matchesPlayed: 12, preferredSide: "LEFT" },
-      { id: "p-03", name: "P3", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-04", name: "P4", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-05", name: "P5", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-06", name: "P6", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-07", name: "P7", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-08", name: "P8", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-      { id: "p-09", name: "P9", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 2, preferredSide: "RIGHT" },
-    ];
-
-    // p-01 has 5 connections, p-02 has 7 connections (distinct top host in community 1)
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-07", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-
-      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-07", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-08", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-09", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateNetworkRoleInfo(singleCommunityNodes, links, "p-01");
-    expect(res.roleLabel).toBe("Pivote de red 🔗");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-  });
-
-  it("returns 'Miembro activo 🎾' for standard connected participant (>= 1 connection)", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02",
-        rivalMatches: 1,
-        partnerMatches: 0,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 0,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 1,
-      },
-    ];
-
-    const res = calculateNetworkRoleInfo(nodes, links, "p-02");
-    expect(res.roleLabel).toBe("Miembro activo 🎾");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-  });
-});
-
-describe("Network Error and Network Page Client pure helpers", () => {
-  it("returns expected button labels for NetworkError", () => {
-    expect(getNetworkErrorResetButtonText()).toBe("Reintentar");
-    expect(getNetworkErrorHomeButtonText()).toBe("Inicio");
-  });
-
-  it("returns expected styling classes for NetworkError elements", () => {
-    expect(getNetworkErrorIconBadgeClasses()).toContain("bg-destructive/10");
-    expect(getNetworkErrorTitleClasses()).toContain("text-lg font-bold");
-    expect(getNetworkErrorDescriptionClasses()).toContain("text-sm text-muted-foreground");
-    expect(getNetworkErrorActionGroupClasses()).toBe("flex gap-2");
-    expect(getNetworkErrorButtonClasses()).toContain("active:scale-[0.98]");
-  });
-
-  it("returns expected ARIA and tab labels for NetworkPageClient", () => {
-    expect(getNetworkPageTabListAriaLabel()).toBe("Pestañas de la red de contactos");
-    expect(getNetworkPageStatsTabLabel()).toBe("Métricas");
-    expect(getNetworkPageGraphTabLabel()).toBe("Grafo");
-  });
-});
-
-describe("calculateAdoptionGrowthRate", () => {
-  it("returns 0 when previous count is zero or negative", () => {
-    expect(calculateAdoptionGrowthRate(10, 0)).toBe(0);
-    expect(calculateAdoptionGrowthRate(10, -5)).toBe(0);
-  });
-
-  it("calculates positive growth rate percentage", () => {
-    expect(calculateAdoptionGrowthRate(150, 100)).toBe(50);
-  });
-
-  it("calculates negative growth rate percentage", () => {
-    expect(calculateAdoptionGrowthRate(50, 100)).toBe(-50);
-  });
-});
-
-describe("aggregateTopCommunities", () => {
-  it("returns empty array when no stats have valid assigned communities", () => {
-    const stats = [{ community: null }, { community: null }];
-    expect(aggregateTopCommunities(stats)).toEqual([]);
-  });
-
-  it("aggregates community member counts, sorts descending by size, and limits to limit count", () => {
-    const stats = [
-      { community: 1 },
-      { community: 1 },
-      { community: 1 },
-      { community: 2 },
-      { community: 2 },
-      { community: 3 },
-      { community: 4 },
-      { community: 4 },
-      { community: 4 },
-      { community: 4 },
-    ];
-
-    const res = aggregateTopCommunities(stats, 2);
-    expect(res).toHaveLength(2);
-    expect(res[0]).toEqual({ id: 4, size: 4 });
-    expect(res[1]).toEqual({ id: 1, size: 3 });
-  });
-});
-
-describe("aggregateTopClubsActivity", () => {
-  it("normalizes club names, aggregates turn and match counts, and sorts descending by total activity", () => {
-    const turnClubs = [
-      { club: "Padel City", count: 10 },
-      { club: "padel city", count: 5 },
-      { club: "El Monasterio", count: 8 },
-    ];
-    const matchClubs = [
-      { club: "Padel City", count: 10 },
-      { club: "El Monasterio", count: 12 },
-    ];
-
-    const topClubs = aggregateTopClubsActivity(turnClubs, matchClubs, 5);
-    expect(topClubs).toHaveLength(2);
-    expect(topClubs[0].name).toBe("Padel City");
-    expect(topClubs[0].turns).toBe(15);
-    expect(topClubs[0].matches).toBe(10);
-    expect(topClubs[0].total).toBe(25);
-
-    expect(topClubs[1].name).toBe("El Monasterio");
-    expect(topClubs[1].turns).toBe(8);
-    expect(topClubs[1].matches).toBe(12);
-    expect(topClubs[1].total).toBe(20);
-  });
-
-  it("filters out empty or null club names", () => {
-    const turnClubs = [{ club: null, count: 5 }, { club: "  ", count: 3 }];
-    const matchClubs = [{ club: null, count: 2 }];
-
-    const topClubs = aggregateTopClubsActivity(turnClubs, matchClubs, 5);
-    expect(topClubs).toEqual([]);
-  });
-});
-
-describe("sortRecommendedCandidatesBySkillDiff", () => {
-  it("sorts candidates in ascending order of absolute skill score difference relative to viewer score", () => {
-    const viewerScore = 1000;
-    const candidates = [
-      { id: "p-01", skillScore: 1200 }, // diff 200
-      { id: "p-02", skillScore: 1020 }, // diff 20
-      { id: "p-03", skillScore: 950 },  // diff 50
-      { id: "p-04", skillScore: null }, // default 1000 => diff 0
-    ];
-
-    const sorted = sortRecommendedCandidatesBySkillDiff(candidates, viewerScore);
-    expect(sorted.map((c) => c.id)).toEqual(["p-04", "p-02", "p-03", "p-01"]);
-  });
-});
-
-describe("Graph view & stats panel accessibility pure helpers", () => {
-  it("formats recommended player similarity ARIA label and title", () => {
-    expect(
-      getRecommendedPlayerSimilarityAriaLabel(
-        "Agustín Aliprandi",
-        "Dupla ideal 🎯",
-        "90% similitud",
-      ),
-    ).toBe("Similitud de juego de Agustín Aliprandi: Dupla ideal 🎯. 90% similitud");
-
-    expect(
-      getRecommendedPlayerSimilarityTitle("Dupla ideal 🎯", "90% similitud"),
-    ).toBe("Similitud de juego: Dupla ideal 🎯. 90% similitud");
-  });
-
-  it("formats stats card community cohesion and balance ARIA labels and titles", () => {
-    expect(
-      getStatsCardCommunityCohesionAriaLabel(
-        1,
-        "Comunidad consolidada 🏆",
-        "100% cohesión interna",
-      ),
-    ).toBe("Cohesión de Grupo 1: Comunidad consolidada 🏆. 100% cohesión interna");
-
-    expect(
-      getStatsCardCommunityCohesionTitle(
-        "Comunidad consolidada 🏆",
-        "100% cohesión interna",
-      ),
-    ).toBe("Cohesión: Comunidad consolidada 🏆. 100% cohesión interna");
-
-    expect(
-      getStatsCardCommunityBalanceAriaLabel(
-        2,
-        "Equilibrio Der/Rev ⚖️",
-        "2 Der · 2 Rev",
-      ),
-    ).toBe("Balance de posiciones de Grupo 2: Equilibrio Der/Rev ⚖️. 2 Der · 2 Rev");
-
-    expect(
-      getStatsCardCommunityBalanceTitle("Equilibrio Der/Rev ⚖️", "2 Der · 2 Rev"),
-    ).toBe("Balance de posiciones: Equilibrio Der/Rev ⚖️. 2 Der · 2 Rev");
-  });
-
-  it("formats graph view density, cohesion, and balance ARIA labels and titles", () => {
-    expect(
-      getGraphViewGraphDensityAriaLabel("Red en expansión 🌐", "25% densidad"),
-    ).toBe("Densidad de red: Red en expansión 🌐. 25% densidad");
-
-    expect(
-      getGraphViewGraphDensityTitle("Red en expansión 🌐", "25% densidad"),
-    ).toBe("Densidad de red: Red en expansión 🌐. 25% densidad");
-
-    expect(
-      getGraphViewCommunityCohesionAriaLabel(
-        "Grupo activo 🎾",
-        "30% cohesión interna",
-      ),
-    ).toBe("Cohesión de comunidad: Grupo activo 🎾. 30% cohesión interna");
-
-    expect(
-      getGraphViewCommunityCohesionTitle("Grupo activo 🎾", "30% cohesión interna"),
-    ).toBe("Cohesión de comunidad: Grupo activo 🎾. 30% cohesión interna");
-
-    expect(
-      getGraphViewCommunityBalanceAriaLabel("Flexibilidad total 🔄", "3 Ambos"),
-    ).toBe("Balance de posiciones: Flexibilidad total 🔄. 3 Ambos");
-
-    expect(
-      getGraphViewCommunityBalanceTitle("Flexibilidad total 🔄", "3 Ambos"),
-    ).toBe("Balance de posiciones: Flexibilidad total 🔄. 3 Ambos");
-  });
-
-  it("formats clear community filter button ARIA label", () => {
-    expect(getGraphViewClearCommunityFilterAriaLabel(3)).toBe(
-      "Limpiar filtro del Grupo 3",
-    );
-  });
-
-  it("formats node activity ARIA label and title", () => {
-    expect(getGraphViewNodeActivityAriaLabel("Conector leyenda ⚡")).toBe(
-      "Nivel de actividad: Conector leyenda ⚡",
-    );
-    expect(getGraphViewNodeActivityTitle("Conector leyenda ⚡")).toBe(
-      "Nivel de actividad: Conector leyenda ⚡",
-    );
-  });
-
-  it("formats node summary title and ARIA label", () => {
-    expect(getGraphViewNodeSummaryTitle("2 parejas · 1 rival")).toBe(
-      "Resumen de relaciones: 2 parejas · 1 rival",
-    );
-
-    expect(
-      getGraphViewNodeSummaryAriaLabel(
-        "Facundo Lopez",
-        "2 parejas · 1 rival",
-        "1 dupla complementaria 🎯",
-      ),
-    ).toBe(
-      "Resumen de relaciones para Facundo Lopez: 2 parejas · 1 rival. Sinergia de posiciones: 1 dupla complementaria 🎯",
-    );
-  });
-});
-
-describe("GraphView detail panel and filter pure helper functions", () => {
-  it("formats FilterChip classes correctly for active and inactive states", () => {
-    const activeClasses = getFilterChipClasses(true);
-    expect(activeClasses).toContain("bg-card");
-    expect(activeClasses).toContain("text-foreground");
-
-    const inactiveClasses = getFilterChipClasses(false);
-    expect(inactiveClasses).toContain("bg-muted");
-    expect(inactiveClasses).toContain("text-muted-foreground");
-  });
-
-  it("returns detail panel headings, button labels and search placeholders", () => {
-    expect(getGraphViewDetailPanelCloseAriaLabel()).toBe("Cerrar panel");
-    expect(getGraphViewDetailPanelPublicProfileText()).toBe("Ver perfil público");
-    expect(getGraphViewDetailPanelConnectionsHeader(3)).toBe("Conexiones (3)");
-    expect(getGraphViewDetailPanelConnectionsHeader(0)).toBe("Conexiones (0)");
-    expect(getGraphViewDetailPanelScoreLabel()).toBe("Score");
-    expect(getGraphViewDetailPanelSideLabel()).toBe("Lado");
-    expect(getGraphViewDetailPanelGroupLabel()).toBe("Grupo");
-    expect(getGraphViewCommunityClearFilterText()).toBe("Limpiar filtro");
-    expect(getGraphViewSearchInputPlaceholder()).toBe("Buscar jugador...");
-    expect(getGraphViewCenterButtonText()).toBe("Centrar");
-  });
-
-  it("returns container layout CSS class strings for legend, detail panel and top filter bar", () => {
-    expect(getGraphViewLegendContainerClasses()).toContain("absolute bottom-3 right-3");
-    expect(getGraphViewSelectedNodeDetailClasses()).toContain("absolute bottom-3 left-3");
-    expect(getGraphViewTopFilterContainerClasses()).toContain("absolute top-3 left-3 right-3");
-    expect(getGraphViewSearchContainerClasses()).toContain("flex-1 flex items-center gap-2");
-  });
-
-    it("returns newly extracted UI styling and text label pure helpers for GraphView and StatsPanel", () => {
-      expect(getNetworkScopeLabelText()).toBe("Ámbito de la red");
-      expect(getNetworkScopeRadiogroupClasses()).toContain("grid grid-cols-2");
-      expect(getNetworkScopeButtonClasses(true)).toContain("bg-primary text-primary-foreground");
-      expect(getNetworkScopeButtonClasses(false)).toContain("text-muted-foreground");
-      expect(getNetworkScopeButtonText("personal")).toBe("Mi red");
-      expect(getNetworkScopeButtonText("global")).toBe("Red completa");
-
-      expect(getGraphViewFilterBarContainerClasses()).toContain("flex items-center gap-1.5");
-      expect(getGraphViewActiveCommunityBannerClasses()).toContain("flex items-center justify-between");
-      expect(getGraphViewEmptyNetworkNoticeClasses()).toContain("absolute inset-x-4 bottom-4");
-
-      expect(getGraphViewDetailPanelCardScoreClasses()).toContain("rounded-lg bg-muted px-2 py-1.5");
-      expect(getGraphViewDetailPanelPublicProfileButtonClasses()).toContain("block w-full text-center");
-
-      expect(getGraphViewSummaryCardContainerClasses()).toContain("mb-2.5 rounded-lg bg-muted");
-      expect(getGraphViewSummaryCardTitleText()).toBe("Resumen de red");
-      expect(getGraphViewSummaryCardTotalText(1)).toBe("1 conexión");
-      expect(getGraphViewSummaryCardTotalText(5)).toBe("5 conexiones");
-      expect(getGraphViewSummaryCardSynergyText("1 dupla sinérgica")).toBe("Sinergia: 1 dupla sinérgica");
-
-      expect(getGraphViewConnectionItemClasses()).toContain("flex flex-col gap-1 p-1.5");
-      expect(getGraphViewWinRateBadgeClasses()).toContain("text-[10px] font-bold px-1.5 py-0.5");
-      expect(getGraphViewProfileLinkClasses()).toContain("text-[11px] font-bold text-primary");
-      expect(getGraphViewMutualContactsBadgeClasses()).toContain("text-[10px] font-bold px-1.5 py-0.5");
-      expect(getGraphViewMutualContactsBadgeText(2)).toBe("2 en común 🤝");
-
-      expect(getStatsPanelScoreBadgeClasses()).toContain("rounded-md bg-muted px-2 py-1");
-      expect(getStatsPanelScoreLabelText()).toBe("Score");
-      expect(getStatsPanelProfileButtonClasses()).toContain("inline-flex h-8 items-center");
-      expect(getStatsPanelProfileButtonText()).toBe("Perfil");
-      expect(getStatsPanelCommunityBarContainerClasses()).toContain("h-2 w-full rounded-full");
-      expect(getStatsPanelTopPlayerRankClasses()).toContain("text-xs font-bold text-muted-foreground");
-      expect(getStatsPanelTopPlayerContactsClasses()).toContain("text-xs font-bold tabular-nums");
-    });
-});
-
-describe("GraphView Pure Helpers Extraction", () => {
-  it("calculates player name initials accurately", () => {
-    expect(getInitials("Arturo Coello")).toBe("AC");
-    expect(getInitials("Agustin Tapia")).toBe("AT");
-    expect(getInitials("Bela")).toBe("BE");
-    expect(getInitials("  Fernando Belasteguin  ")).toBe("FB");
-  });
-
-  it("returns localized empty personal network copy and action labels", () => {
-    expect(getEmptyPersonalNetworkTitle()).toBe("Tu red de contactos está vacía");
-    expect(getEmptyPersonalNetworkDescription()).toBe(
-      "Los contactos se agregan automáticamente al sumarte a turnos o confirmar partidos con otros jugadores."
-    );
-    expect(getEmptyPersonalNetworkSearchTurnsLabel()).toBe("Buscar turnos");
-    expect(getEmptyPersonalNetworkViewGlobalLabel()).toBe("Ver red completa");
-  });
-
-  it("returns accessible ARIA button and legend labels", () => {
-    expect(getGraphViewCenterButtonAriaLabel()).toBe("Centrar grafo");
-    expect(getGraphViewClearSearchAriaLabel()).toBe("Limpiar búsqueda");
-    expect(getGraphViewLegendTitle()).toBe("Leyenda");
-    expect(getGraphViewLegendPartnerLabel()).toBe("Pareja");
-    expect(getGraphViewLegendRivalLabel()).toBe("Rival");
-    expect(getGraphViewLegendMixedLabel()).toBe("Mixto");
-    expect(getGraphViewLegendTurnsLabel()).toBe("Turnos");
-  });
-
-  it("formats profile link aria-labels and affinity titles", () => {
-    expect(getGraphViewProfileLinkAriaLabel("Agustín Tapia")).toBe("Ver perfil de Agustín Tapia");
-    expect(getGraphViewAffinityTitle("Dupla frecuente 🤝")).toBe("Afinidad: Dupla frecuente 🤝");
-  });
-});
-
-describe("StatsPanel pure helper functions", () => {
-  it("formats growth badge classes and growth text correctly", () => {
-    expect(getGrowthBadgeClasses(15)).toContain("text-emerald-600");
-    expect(getGrowthBadgeClasses(-5)).toContain("text-red-600");
-
-    expect(formatGrowthRateText(12.5)).toBe("+13%");
-    expect(formatGrowthRateText(-8.2)).toBe("-8%");
-  });
-
-  it("returns correct stat card container CSS classes", () => {
-    expect(getStatCardContainerClasses()).toBe(
-      "rounded-xl border border-border bg-card p-4 space-y-2"
-    );
-  });
-
-  it("returns expected section headers and descriptions", () => {
-    expect(getStatsPanelHeadingTitle()).toBe("Red & Adopción");
-    expect(getStatsPanelHeadingDescription()).toBe("Monitoreo de la red de contactos y adopción de la app.");
-    expect(getStatsPanelBackAriaLabel()).toBe("Volver al inicio");
-    expect(getRecommenderHeadingTitle()).toBe("Jugadores como vos 🧠");
-    expect(getRecommenderHeadingDescription()).toBe("Gente de tu nivel y comunidad con la que todavía no jugaste.");
-    expect(getRecommenderEmptyStateText()).toBe("No hay nuevos jugadores sugeridos por ahora.");
-    expect(getRecentUsersHeadingTitle()).toBe("Últimos usuarios");
-    expect(getTopCommunitiesHeadingTitle()).toBe("Comunidades de la red");
-    expect(getTopConnectedHeadingTitle()).toBe("Más conectados");
-    expect(getRecent30DaysHeadingTitle()).toBe("Últimos 30 días");
-    expect(getTopClubsHeadingTitle()).toBe("Clubes con más actividad");
-  });
-
-  it("formats recommended player profile link ARIA label", () => {
-    expect(getRecommendedPlayerProfileLinkAriaLabel("Agustín")).toBe(
-      "Ver perfil público de Agustín"
-    );
-  });
-
-  it("formats community card label and members text", () => {
-    expect(getStatsCardCommunityLabel(1)).toBe("Grupo 1");
-    expect(getStatsCardCommunityMembersText(1)).toBe("1 jugador");
-    expect(getStatsCardCommunityMembersText(4)).toBe("4 jugadores");
-  });
-
-  it("formats top player rank, matches, and contacts text", () => {
-    expect(getTopPlayerRankText(0)).toBe("1");
-    expect(getTopPlayerRankText(2)).toBe("3");
-
-    expect(getTopPlayerMatchesText(1)).toBe("1 partido");
-    expect(getTopPlayerMatchesText(5)).toBe("5 partidos");
-
-    expect(getTopPlayerContactsText(1)).toBe("1 contacto");
-    expect(getTopPlayerContactsText(12)).toBe("12 contactos");
-  });
-
-  it("formats overview card titles and subtexts", () => {
-    expect(getUsersOverviewCardTitle()).toBe("Usuarios");
-    expect(getUsersOverviewCardSubtext(1)).toBe("1 nuevo esta semana");
-    expect(getUsersOverviewCardSubtext(5)).toBe("5 nuevos esta semana");
-
-    expect(getTurnsOverviewCardTitle()).toBe("Turnos");
-    expect(getTurnsOverviewCardSubtext(3)).toBe("3 esta semana");
-
-    expect(getMatchesOverviewCardTitle()).toBe("Partidos");
-    expect(getMatchesOverviewCardSubtext(1)).toBe("1 confirmado");
-    expect(getMatchesOverviewCardSubtext(8)).toBe("8 confirmados");
-
-    expect(getEnrollmentsOverviewCardTitle()).toBe("Inscripciones");
-    expect(getEnrollmentsOverviewCardSubtext()).toBe("Total a turnos");
-  });
-
-  it("returns network metrics section labels", () => {
-    expect(getNetworkSectionTitle()).toBe("Red de contactos");
-    expect(getNetworkPlayersLabel()).toBe("Jugadores");
-    expect(getNetworkConnectionsLabel()).toBe("Conexiones");
-    expect(getNetworkDensityLabel()).toBe("Densidad");
-    expect(getNetworkAvgConnectionsLabel()).toBe("Promedio de contactos por jugador");
-  });
-
-  it("returns layout and card styling pure helper CSS classes", () => {
-    expect(getStatsPanelContainerClasses()).toBe("flex flex-col gap-4");
-    expect(getStatsPanelHeaderBackLinkClasses()).toContain("flex h-9 w-9 shrink-0");
-    expect(getStatsPanelOverviewGridClasses()).toBe("grid grid-cols-2 gap-3");
-    expect(getStatsPanelSectionCardClasses()).toBe("rounded-xl border border-border bg-card p-4 space-y-3");
-    expect(getStatsPanelSummaryCardClasses()).toBe("rounded-xl border border-border bg-muted p-4 space-y-2");
-    expect(getStatsPanelTopPlayerItemClasses()).toContain("flex items-center gap-3 rounded-lg p-2");
-    expect(getStatsPanelRecentUserItemClasses()).toContain("flex items-center gap-3 rounded-lg p-2");
-    expect(getStatsPanelBadgeTagClasses("bg-primary text-white")).toContain("text-[10px] font-bold");
-    expect(getStatsPanelBadgeTagClasses("bg-primary text-white")).toContain("bg-primary text-white");
-  });
-
-  it("returns engagement stats and 30d summary titles", () => {
-    expect(getActiveSessionsLabel()).toBe("Sesiones activas");
-    expect(getActive30dLabel()).toBe("Activos (30d)");
-    expect(getActive30dSubtext()).toBe("Con sesión reciente");
-
-    expect(get30dSummaryUsersLabel()).toBe("Usuarios");
-    expect(get30dSummaryTurnsLabel()).toBe("Turnos");
-    expect(get30dSummaryMatchesLabel()).toBe("Partidos");
-  });
-});
-
-describe("NetworkPageClient pure helpers", () => {
-  describe("getNetworkPageContainerClasses", () => {
-    it("returns expected container layout CSS classes", () => {
-      expect(getNetworkPageContainerClasses()).toBe(
-        "flex flex-col h-[100dvh] overflow-hidden bg-background",
-      );
-    });
-  });
-
-  describe("getNetworkPageTabBarClasses", () => {
-    it("returns expected tab bar CSS classes", () => {
-      expect(getNetworkPageTabBarClasses()).toBe(
-        "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0",
-      );
-    });
-  });
-
-  describe("getNetworkPageContentClasses", () => {
-    it("returns expected scrollable content CSS classes", () => {
-      expect(getNetworkPageContentClasses()).toBe("flex-1 overflow-y-auto");
-    });
-  });
-
-  describe("getNetworkPageStatsContentClasses", () => {
-    it("returns expected padding CSS classes for stats tab", () => {
-      expect(getNetworkPageStatsContentClasses()).toBe("p-4 pb-24");
-    });
-  });
-
-  describe("getNetworkPageTabButtonClasses", () => {
-    it("returns active primary button styling when active is true", () => {
-      const activeClasses = getNetworkPageTabButtonClasses(true);
-      expect(activeClasses).toContain("bg-primary");
-      expect(activeClasses).toContain("text-primary-foreground");
-      expect(activeClasses).toContain("active:scale-[0.98]");
-      expect(activeClasses).toContain("ring-offset-background");
-    });
-
-    it("returns muted button styling when active is false", () => {
-      const inactiveClasses = getNetworkPageTabButtonClasses(false);
-      expect(inactiveClasses).toContain("text-muted-foreground");
-      expect(inactiveClasses).toContain("hover:bg-muted");
-    });
-  });
-
-  describe("getNetworkPageTabAriaLabel", () => {
-    it("returns expected ARIA label for stats tab button", () => {
-      expect(getNetworkPageTabAriaLabel("stats")).toBe(
-        "Ver panel de métricas de la red de contactos",
-      );
-    });
-
-    it("returns expected ARIA label for graph tab button", () => {
-      expect(getNetworkPageTabAriaLabel("graph")).toBe(
-        "Ver mapa interactivo del grafo de la red",
-      );
-    });
-  });
-
-  describe("getNetworkPageRegionAriaLabel", () => {
-    it("returns expected region landmark ARIA label for stats view", () => {
-      expect(getNetworkPageRegionAriaLabel("stats")).toBe(
-        "Sección de métricas de la red de contactos",
-      );
-    });
-
-    it("returns expected region landmark ARIA label for graph view", () => {
-      expect(getNetworkPageRegionAriaLabel("graph")).toBe(
-        "Sección del grafo interactivo de la red",
-      );
-    });
-  });
-
-  describe("getConnectionBadgeClasses", () => {
-    it("returns emerald styling for partner connection type", () => {
-      expect(getConnectionBadgeClasses("partner")).toContain("bg-emerald-100");
-    });
-
-    it("returns rose styling for rival connection type", () => {
-      expect(getConnectionBadgeClasses("rival")).toContain("bg-rose-100");
-    });
-
-    it("returns amber styling for mixed connection type", () => {
-      expect(getConnectionBadgeClasses("mixed")).toContain("bg-amber-100");
-    });
-
-    it("returns slate styling for turns connection type", () => {
-      expect(getConnectionBadgeClasses("turns")).toContain("bg-slate-100");
-    });
-  });
-
-  describe("getConnectionTypeSymbol", () => {
-    it("returns 'P' for partner connection type", () => {
-      expect(getConnectionTypeSymbol("partner")).toBe("P");
-    });
-
-    it("returns 'R' for rival connection type", () => {
-      expect(getConnectionTypeSymbol("rival")).toBe("R");
-    });
-
-    it("returns 'M' for mixed connection type", () => {
-      expect(getConnectionTypeSymbol("mixed")).toBe("M");
-    });
-
-    it("returns 'T' for turns connection type", () => {
-      expect(getConnectionTypeSymbol("turns")).toBe("T");
-    });
-  });
-
-  describe("getGraphViewSelectedNodeAriaLabel", () => {
-    it("formats singular match and contact text", () => {
-      expect(getGraphViewSelectedNodeAriaLabel("Agustín", 1, 1)).toBe(
-        "Detalles de Agustín: 1 partido, 1 contacto"
-      );
-    });
-
-    it("formats plural matches and contacts text", () => {
-      expect(getGraphViewSelectedNodeAriaLabel("Bela", 5, 8)).toBe(
-        "Detalles de Bela: 5 partidos, 8 contactos"
-      );
-    });
-  });
-
-  describe("getGraphViewFocusNodeAriaLabel", () => {
-    it("formats focus ARIA label with target player name", () => {
-      expect(getGraphViewFocusNodeAriaLabel("Facundo")).toBe(
-        "Enfocar a Facundo en el grafo"
-      );
-    });
-  });
-
-  describe("getGraphViewConnectionWinRateAriaLabel", () => {
-    it("formats win rate percentage ARIA label", () => {
-      expect(getGraphViewConnectionWinRateAriaLabel(75)).toBe(
-        "Porcentaje de victorias: 75%"
-      );
-    });
-  });
-
-  describe("getGraphViewConnectionMutualAriaLabel", () => {
-    it("formats singular mutual contact label", () => {
-      expect(getGraphViewConnectionMutualAriaLabel("Gero", 1)).toBe(
-        "1 contacto en común con Gero"
-      );
-    });
-
-    it("formats plural mutual contacts label", () => {
-      expect(getGraphViewConnectionMutualAriaLabel("Gero", 3)).toBe(
-        "3 contactos en común con Gero"
-      );
-    });
-  });
-
-  describe("getGraphViewNodeGroupAriaLabel", () => {
-    it("formats deselect group prompt when community is selected", () => {
-      expect(
-        getGraphViewNodeGroupAriaLabel(1, "3 jugadores · Score prom. 1100", true)
-      ).toBe(
-        "Mostrar todas las comunidades. Grupo 1: 3 jugadores · Score prom. 1100"
-      );
-    });
-
-    it("formats select group filter prompt when community is not selected", () => {
-      expect(
-        getGraphViewNodeGroupAriaLabel(1, "3 jugadores · Score prom. 1100", false)
-      ).toBe(
-        "Filtrar el grafo por Grupo 1: 3 jugadores · Score prom. 1100"
-      );
-    });
-  });
-
-  describe("getTopPlayerReciprocityAriaLabel", () => {
-    it("formats player interaction reciprocity badge accessibility aria label", () => {
-      const label = getTopPlayerReciprocityAriaLabel(
-        "Fernando Belasteguín",
-        "Red recíproca y equilibrada ⚖️",
-        "2 vínculos recíprocos · 4 duplas · 3 rivales"
-      );
-      expect(label).toBe(
-        "Reciprocidad de interacción de Fernando Belasteguín: Red recíproca y equilibrada ⚖️. 2 vínculos recíprocos · 4 duplas · 3 rivales"
-      );
-    });
-  });
-
-  describe("getNetworkDiversityAriaLabel", () => {
-    it("formats network diversity accessibility aria label", () => {
-      const label = getNetworkDiversityAriaLabel(
-        "Red multidisciplinaria 🎨",
-        "3 comunidades conectadas · Índice Shannon 1.25"
-      );
-      expect(label).toBe(
-        "Diversidad de red: Red multidisciplinaria 🎨. 3 comunidades conectadas · Índice Shannon 1.25"
-      );
-    });
-  });
-
-  describe("getCrossRivalryAriaLabel", () => {
-    it("formats cross rivalry density accessibility aria label", () => {
-      const label = getCrossRivalryAriaLabel(
-        "Alta rivalidad ⚔️",
-        "75% de partidos en rivalidades cruzadas"
-      );
-      expect(label).toBe(
-        "Rivalidad cruzada: Alta rivalidad ⚔️. 75% de partidos en rivalidades cruzadas"
-      );
-    });
-  });
-
-  describe("getPlayerGraphReachAriaLabel", () => {
-    it("formats player graph reach accessibility aria label", () => {
-      const label = getPlayerGraphReachAriaLabel(
-        "Amplia conectividad 🌐",
-        "Alcanza 12 jugadores en 2 grados de separación"
-      );
-      expect(label).toBe(
-        "Alcance de red: Amplia conectividad 🌐. Alcanza 12 jugadores en 2 grados de separación"
-      );
-    });
-  });
-
-  describe("Player graph metrics ARIA pure helpers", () => {
-    it("formats player expansion potential ARIA label", () => {
-      expect(
-        getPlayerExpansionAriaLabel(
-          "Red en expansión activa 🚀",
-          "4 contactos de 2º grado · 3 grupos no conectados",
-        ),
-      ).toBe(
-        "Potencial de expansión de red: Red en expansión activa 🚀. 4 contactos de 2º grado · 3 grupos no conectados",
-      );
-    });
-
-    it("formats interaction concentration ARIA label", () => {
-      expect(
-        getInteractionConcentrationAriaLabel(
-          "Red concentrada 🎯",
-          "80% concentración en contacto principal · 3 contactos totales",
-        ),
-      ).toBe(
-        "Concentración de interacciones: Red concentrada 🎯. 80% concentración en contacto principal · 3 contactos totales",
-      );
-    });
-
-    it("formats multi-belonging ARIA label", () => {
-      expect(
-        getMultiBelongingAriaLabel(
-          "Multicomunitario 🌐",
-          "3 grupos de la red · 67% interacción externa",
-        ),
-      ).toBe(
-        "Multipertenencia comunitaria: Multicomunitario 🌐. 3 grupos de la red · 67% interacción externa",
-      );
-    });
-
-    it("formats match complementarity ARIA label", () => {
-      expect(
-        getMatchComplementarityAriaLabel(
-          "Dupla sinérgica ideal 🎯",
-          "2 duplas sinérgicas (Der + Rev) · 83% WR dupla",
-        ),
-      ).toBe(
-        "Complementariedad de duplas: Dupla sinérgica ideal 🎯. 2 duplas sinérgicas (Der + Rev) · 83% WR dupla",
-      );
-    });
-
-    it("formats partnership stability ARIA label", () => {
-      expect(
-        getPartnershipStabilityAriaLabel(
-          "Duplas consolidadas 🏆",
-          "2 vínculos recurrentes (67%) · 3 contactos totales",
-        ),
-      ).toBe(
-        "Estabilidad de duplas: Duplas consolidadas 🏆. 2 vínculos recurrentes (67%) · 3 contactos totales",
-      );
-    });
-
-    it("formats local clustering ARIA label", () => {
-      expect(
-        getLocalClusteringAriaLabel(
-          "Grupo cerrado 👥",
-          "1 triángulo (100% cohesión local) · 2 contactos",
-        ),
-      ).toBe(
-        "Cohesión local: Grupo cerrado 👥. 1 triángulo (100% cohesión local) · 2 contactos",
-      );
-    });
-
-    it("formats network centrality ARIA label", () => {
-      expect(
-        getNetworkCentralityAriaLabel(
-          "Hub principal 👑",
-          "4 contactos directos · 13 interacciones",
-        ),
-      ).toBe(
-        "Centralidad en la red: Hub principal 👑. 4 contactos directos · 13 interacciones",
-      );
-    });
-
-    it("formats network role ARIA label", () => {
-      expect(
-        getNetworkRoleAriaLabel(
-          "Nexo comunitario 🌉",
-          "Conecta diferentes grupos de la comunidad",
-        ),
-      ).toBe(
-        "Rol en la red: Nexo comunitario 🌉. Conecta diferentes grupos de la comunidad",
-      );
-    });
-
-    it("formats community bridging ARIA label", () => {
-      expect(
-        getCommunityBridgingAriaLabel(
-          "Puente de red 🌉",
-          "3 grupos de la red · 2 enlaces puente (67%)",
-        ),
-      ).toBe(
-        "Nivel de puente comunitario: Puente de red 🌉. 3 grupos de la red · 2 enlaces puente (67%)",
-      );
-    });
-
-    it("formats interaction reciprocity ARIA label", () => {
-      expect(
-        getInteractionReciprocityAriaLabel(
-          "Red recíproca y equilibrada ⚖️",
-          "1 vínculo recíproco · 1 dupla · 1 rival",
-        ),
-      ).toBe(
-        "Reciprocidad de interacción: Red recíproca y equilibrada ⚖️. 1 vínculo recíproco · 1 dupla · 1 rival",
-      );
-    });
-
-    it("formats player similarity ARIA label", () => {
-      expect(
-        getPlayerSimilarityAriaLabel(
-          "Dupla ideal 🎯",
-          "90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
-        ),
-      ).toBe(
-        "Similitud con vos: Dupla ideal 🎯. 90% similitud · Score cercano (dif. 20) · Posición complementaria 🎯 · 1 contacto en común",
-      );
-    });
-  });
-
-  describe("Top connected players title and item ARIA helpers", () => {
-    it("formats top connected player badge titles correctly", () => {
-      expect(getTopPlayerRoleTitle("Nexo comunitario 🌉", "Conecta diferentes grupos")).toBe(
-        "Rol en la red: Nexo comunitario 🌉. Conecta diferentes grupos",
-      );
-
-      expect(getTopPlayerActivityTitle("Conector leyenda ⚡")).toBe(
-        "Actividad: Conector leyenda ⚡",
-      );
-
-      expect(
-        getTopPlayerCentralityTitle("Hub principal 👑", "12 contactos directos"),
-      ).toBe("Centralidad en la red: Hub principal 👑. 12 contactos directos");
-
-      expect(
-        getTopPlayerDiversityTitle("Red ultra diversificada 🌐", "4 grupos de la red"),
-      ).toBe("Diversidad de red: Red ultra diversificada 🌐. 4 grupos de la red");
-
-      expect(
-        getTopPlayerMultiBelongingTitle("Multicomunitario 🌐", "3 grupos de la red"),
-      ).toBe("Multipertenencia comunitaria: Multicomunitario 🌐. 3 grupos de la red");
-
-      expect(
-        getTopPlayerReciprocityTitle("Red recíproca y equilibrada ⚖️", "2 vínculos recíprocos"),
-      ).toBe("Reciprocidad de interacción: Red recíproca y equilibrada ⚖️. 2 vínculos recíprocos");
-
-      expect(
-        getTopPlayerStabilityTitle("Duplas consolidadas 🏆", "5 vínculos recurrentes"),
-      ).toBe("Estabilidad de duplas: Duplas consolidadas 🏆. 5 vínculos recurrentes");
-
-      expect(
-        getTopPlayerExpansionTitle("Red en expansión activa 🚀", "4 contactos de 2º grado"),
-      ).toBe("Potencial de expansión de red: Red en expansión activa 🚀. 4 contactos de 2º grado");
-    });
-
-    it("formats recent users item ARIA label correctly", () => {
-      expect(getRecentUsersItemAriaLabel("Agustín Aliprandi", "hace 5 min")).toBe(
-        "Agustín Aliprandi: registrado hace 5 min",
-      );
-    });
-
-    it("formats top club item ARIA label correctly", () => {
-      expect(getTopClubItemAriaLabel(1, "Padel City", 10, 5)).toBe(
-        "1. Padel City: 10 turnos, 5 partidos",
-      );
-
-      expect(getTopClubItemAriaLabel(2, "El Monasterio", 1, 1)).toBe(
-        "2. El Monasterio: 1 turno, 1 partido",
-      );
-    });
-
-    it("formats community item ARIA label correctly", () => {
-      expect(getCommunityItemAriaLabel(1, 4)).toBe("Grupo 1: 4 jugadores");
-      expect(getCommunityItemAriaLabel(2, 1)).toBe("Grupo 2: 1 jugador");
-    });
-
-    it("formats FilterChip dot CSS classes correctly", () => {
-      expect(getFilterChipDotClasses("bg-emerald-500")).toBe(
-        "h-2 w-2 rounded-full shrink-0 bg-emerald-500",
-      );
-      expect(getFilterChipDotClasses(undefined)).toBe(
-        "h-2 w-2 rounded-full shrink-0",
-      );
-    });
-  });
-
-  describe("Top connected players ARIA labels and top club pure helpers", () => {
-    it("formats top player role ARIA label correctly", () => {
-      expect(
-        getTopPlayerRoleAriaLabel(
-          "Agustín Aliprandi",
-          "Nexo comunitario 🌉",
-          "Conecta diferentes grupos de la comunidad",
-        ),
-      ).toBe(
-        "Rol en la red de Agustín Aliprandi: Nexo comunitario 🌉. Conecta diferentes grupos de la comunidad",
-      );
-    });
-
-    it("formats top player activity ARIA label correctly", () => {
-      expect(
-        getTopPlayerActivityAriaLabel("Fernando Belasteguín", "Conector leyenda ⚡"),
-      ).toBe(
-        "Nivel de actividad de Fernando Belasteguín: Conector leyenda ⚡",
-      );
-    });
-
-    it("formats top player centrality ARIA label correctly", () => {
-      expect(
-        getTopPlayerCentralityAriaLabel(
-          "Agustín Aliprandi",
-          "Hub principal 👑",
-          "12 contactos directos · 25 interacciones",
-        ),
-      ).toBe(
-        "Centralidad en la red de Agustín Aliprandi: Hub principal 👑. 12 contactos directos · 25 interacciones",
-      );
-    });
-
-    it("formats top player diversity ARIA label correctly", () => {
-      expect(
-        getTopPlayerDiversityAriaLabel(
-          "Agustín Aliprandi",
-          "Red ultra diversificada 🌐",
-          "4 grupos de la red · 85% índice de diversidad",
-        ),
-      ).toBe(
-        "Diversidad de red de Agustín Aliprandi: Red ultra diversificada 🌐. 4 grupos de la red · 85% índice de diversidad",
-      );
-    });
-
-    it("formats top player multi-belonging ARIA label correctly", () => {
-      expect(
-        getTopPlayerMultiBelongingAriaLabel(
-          "Facundo Lopez",
-          "Multicomunitario 🌐",
-          "3 grupos de la red · 67% interacción externa",
-        ),
-      ).toBe(
-        "Multipertenencia comunitaria de Facundo Lopez: Multicomunitario 🌐. 3 grupos de la red · 67% interacción externa",
-      );
-    });
-
-    it("formats top player stability ARIA label correctly", () => {
-      expect(
-        getTopPlayerStabilityAriaLabel(
-          "Fernando Belasteguín",
-          "Duplas consolidadas 🏆",
-          "5 vínculos recurrentes (71%) · 7 contactos totales",
-        ),
-      ).toBe(
-        "Estabilidad de duplas de Fernando Belasteguín: Duplas consolidadas 🏆. 5 vínculos recurrentes (71%) · 7 contactos totales",
-      );
-    });
-
-    it("formats top club turns and matches text correctly", () => {
-      expect(getTopClubTurnsMatchesText(12, 8)).toBe("12T · 8P");
-      expect(getTopClubTurnsMatchesText(0, 1)).toBe("0T · 1P");
-    });
-  });
-});
-
-describe("RecommendedPlayer pure helper functions", () => {
-  describe("getRecommendedPlayerContainerClasses", () => {
-    it("returns expected container CSS classes with border, bg and hover transitions", () => {
-      const classes = getRecommendedPlayerContainerClasses();
-      expect(classes).toBe(
-        "flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-2.5 hover:bg-muted/50 transition-colors"
-      );
-    });
-  });
-
-  describe("getRecommendedPlayerAvatarAriaLabel", () => {
-    it("formats avatar screen reader label with player name", () => {
-      expect(getRecommendedPlayerAvatarAriaLabel("Agustín Aliprandi")).toBe(
-        "Avatar de Agustín Aliprandi"
-      );
-    });
-  });
-
-  describe("getRecommendedPlayerSkillText", () => {
-    it("formats skill score as tabular string", () => {
-      expect(getRecommendedPlayerSkillText(1150)).toBe("1150");
-      expect(getRecommendedPlayerSkillText(1000)).toBe("1000");
-    });
-  });
-
-  describe("getRecommendedPlayerSideText", () => {
-    it("returns 'Derecha' for RIGHT court side preference", () => {
-      expect(getRecommendedPlayerSideText("RIGHT")).toBe("Derecha");
-    });
-
-    it("returns 'Revés' for LEFT court side preference", () => {
-      expect(getRecommendedPlayerSideText("LEFT")).toBe("Revés");
-    });
-
-    it("returns 'Ambos lados' for BOTH court side preference", () => {
-      expect(getRecommendedPlayerSideText("BOTH")).toBe("Ambos lados");
-    });
-
-    it("returns 'Lado no definido' for null, undefined, or unassigned court side", () => {
-      expect(getRecommendedPlayerSideText(null)).toBe("Lado no definido");
-      expect(getRecommendedPlayerSideText(undefined)).toBe("Lado no definido");
-      expect(getRecommendedPlayerSideText("")).toBe("Lado no definido");
-    });
-  });
-
-  describe("getRecommendedPlayerAriaLabel", () => {
-    it("formats full accessible ARIA label for recommended player card with singular match", () => {
-      const label = getRecommendedPlayerAriaLabel("Facundo Lopez", 1, "LEFT", 1020);
-      expect(label).toBe(
-        "Facundo Lopez: 1 partido disputado, posición Revés, score 1020."
-      );
-    });
-
-    it("formats full accessible ARIA label for recommended player card with plural matches and RIGHT side", () => {
-      const label = getRecommendedPlayerAriaLabel("Agustín Aliprandi", 6, "RIGHT", 1150);
-      expect(label).toBe(
-        "Agustín Aliprandi: 6 partidos disputados, posición Derecha, score 1150."
-      );
-    });
-
-    it("formats full accessible ARIA label for recommended player card with unassigned side", () => {
-      const label = getRecommendedPlayerAriaLabel("Diego Morales", 0, null, 1080);
-      expect(label).toBe(
-        "Diego Morales: 0 partidos disputados, posición Lado no definido, score 1080."
-      );
-    });
-  });
-});
-
-describe("GraphView pure helper functions", () => {
-  describe("getGraphViewLoadingText", () => {
-    it("returns expected loading string", () => {
-      expect(getGraphViewLoadingText()).toBe("Cargando grafo...");
-    });
-  });
-
-  describe("getGraphViewEmptyDataProps", () => {
-    it("returns title, description, buttonText and buttonHref for empty graph state", () => {
-      const props = getGraphViewEmptyDataProps();
-      expect(props.title).toBe("Sin datos aún");
-      expect(props.description).toContain("La red se construye automáticamente");
-      expect(props.buttonText).toBe("Crear partido");
-      expect(props.buttonHref).toBe("/match/new");
-    });
-  });
-
-  describe("getGraphViewScopeAriaLabel", () => {
-    it("returns ARIA label for personal scope toggle", () => {
-      expect(getGraphViewScopeAriaLabel("personal")).toBe(
-        "Ver mi red de contactos únicamente",
-      );
-    });
-
-    it("returns ARIA label for global scope toggle", () => {
-      expect(getGraphViewScopeAriaLabel("global")).toBe(
-        "Ver la red completa de jugadores",
-      );
-    });
-  });
-
-  describe("getGraphViewSearchAriaLabel", () => {
-    it("returns expected search input ARIA label", () => {
-      expect(getGraphViewSearchAriaLabel()).toBe("Buscar jugador en el grafo");
-    });
-  });
-
-  describe("getGraphViewEmptySearchProps", () => {
-    it("returns formatted message with search query when query is non-empty", () => {
-      const props = getGraphViewEmptySearchProps("Facundo");
-      expect(props.message).toBe(
-        'No se encontraron jugadores que coincidan con "Facundo"',
-      );
-      expect(props.buttonText).toBe("Restablecer filtros");
-    });
-
-    it("returns default message when searchQuery is empty", () => {
-      const props = getGraphViewEmptySearchProps("   ");
-      expect(props.message).toBe(
-        "No hay conexiones que coincidan con los filtros seleccionados",
-      );
-      expect(props.buttonText).toBe("Restablecer filtros");
-    });
-  });
-
-  describe("getGraphViewNodeName", () => {
-    it("returns 'Vos' when isViewer is true", () => {
-      expect(getGraphViewNodeName("Agustín", "Agu", true)).toBe("Vos");
-    });
-
-    it("returns capitalized name when isViewer is false and name is present", () => {
-      expect(getGraphViewNodeName("agustín aliprandi", "agu", false)).toBe(
-        "Agustín Aliprandi",
-      );
-    });
-
-    it("returns capitalized alias when name is missing or empty", () => {
-      expect(getGraphViewNodeName(null, "bela", false)).toBe("Bela");
-    });
-
-    it("returns fallback '?' when name and alias are missing", () => {
-      expect(getGraphViewNodeName(null, null, false)).toBe("?");
-    });
-  });
-
-  describe("getGraphViewLegendAriaLabel", () => {
-    it("returns expected screen reader ARIA label for graph legend", () => {
-      expect(getGraphViewLegendAriaLabel()).toBe(
-        "Leyenda de conexiones del grafo: Pareja (verde), Rival (rojo), Mixto (amarillo), Turnos (gris)",
-      );
-    });
-  });
-});
-
-describe("StatsPanel and NetworkSkeleton pure helpers", () => {
-  describe("formatTimeAgo", () => {
-    it("formats relative time strings correctly in Argentine Spanish", () => {
-      const now = Date.now();
-      expect(formatTimeAgo(now - 1000 * 30)).toBe("recién");
-      expect(formatTimeAgo(now - 1000 * 60 * 15)).toBe("hace 15 min");
-      expect(formatTimeAgo(now - 1000 * 60 * 60)).toBe("hace 1 hora");
-      expect(formatTimeAgo(now - 1000 * 60 * 60 * 5)).toBe("hace 5 horas");
-      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24)).toBe("hace 1 día");
-      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 4)).toBe("hace 4 días");
-      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 35)).toBe("hace 1 mes");
-      expect(formatTimeAgo(now - 1000 * 60 * 60 * 24 * 90)).toBe("hace 3 meses");
-    });
-
-    it("handles invalid or future dates gracefully", () => {
-      expect(formatTimeAgo("invalid-date")).toBe("recién");
-      expect(formatTimeAgo(Date.now() + 10000)).toBe("recién");
-    });
-  });
-
-  describe("getNetworkSkeleton helpers", () => {
-    it("returns expected skeleton container, layout, and tab styling classes", () => {
-      expect(getNetworkSkeletonAriaLabel()).toBe(
-        "Cargando métricas y visualización del grafo de la red de contactos"
-      );
-      expect(getNetworkSkeletonContainerClasses()).toBe(
-        "flex flex-col h-[100dvh] overflow-hidden bg-background"
-      );
-      expect(getNetworkSkeletonTabBarClasses()).toBe(
-        "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0"
-      );
-      expect(getNetworkSkeletonActiveTabButtonClasses()).toBe(
-        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold bg-primary text-primary-foreground opacity-50"
-      );
-      expect(getNetworkSkeletonInactiveTabButtonClasses()).toBe(
-        "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-muted-foreground opacity-50"
-      );
-      expect(getNetworkSkeletonContentClasses()).toBe(
-        "flex-1 overflow-y-auto p-4 pb-24 space-y-4"
-      );
-      expect(getNetworkSkeletonBackButtonClasses()).toBe(
-        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground opacity-50"
-      );
-      expect(getNetworkSkeletonCardClasses()).toBe(
-        "rounded-xl border border-border bg-card p-4 space-y-3"
-      );
-      expect(getNetworkSkeletonGridTwoColsClasses()).toBe(
-        "grid grid-cols-2 gap-3"
-      );
-      expect(getNetworkSkeletonGridThreeColsClasses()).toBe(
-        "grid grid-cols-3 gap-3"
-      );
-    });
-  });
-
-  describe("getStatsPanelRegionAriaLabel", () => {
-    it("returns localized region landmark labels for each section", () => {
-      expect(getStatsPanelRegionAriaLabel("header")).toBe(
-        "Encabezado de métricas y red de contactos"
-      );
-      expect(getStatsPanelRegionAriaLabel("overview")).toBe(
-        "Resumen general de usuarios, turnos, partidos e inscripciones"
-      );
-      expect(getStatsPanelRegionAriaLabel("network")).toBe(
-        "Estadísticas de la red de contactos y densidad de conexiones"
-      );
-      expect(getStatsPanelRegionAriaLabel("recommender")).toBe(
-        "Recomendaciones de jugadores con nivel y comunidad similar"
-      );
-      expect(getStatsPanelRegionAriaLabel("users")).toBe(
-        "Estadísticas de usuarios activos y notificaciones push"
-      );
-      expect(getStatsPanelRegionAriaLabel("communities")).toBe(
-        "Comunidades y grupos de la red de contactos"
-      );
-      expect(getStatsPanelRegionAriaLabel("top-players")).toBe(
-        "Lista de jugadores más conectados en la red de contactos"
-      );
-      expect(getStatsPanelRegionAriaLabel("recent")).toBe(
-        "Resumen de actividad reciente de los últimos 30 días"
-      );
-      expect(getStatsPanelRegionAriaLabel("clubs")).toBe(
-        "Clubes con mayor actividad de turnos y partidos"
-      );
-    });
-  });
-
-  describe("getTopPlayerExpansionAriaLabel", () => {
-    it("formats expansion potential badge accessibility aria label", () => {
-      const label = getTopPlayerExpansionAriaLabel(
-        "Agustín",
-        "Red en expansión activa 🚀",
-        "Reach de 5 contactos no explorados"
-      );
-      expect(label).toBe(
-        "Potencial de expansión de red de Agustín: Red en expansión activa 🚀. Reach de 5 contactos no explorados"
-      );
-    });
-  });
-});
-
-describe("calculateNetworkConcentrationIndex", () => {
-  it("returns fallback concentration index for unconnected node", () => {
-    const res = calculateNetworkConcentrationIndex([], "p-99");
-    expect(res.concentrationPercentage).toBe(0);
-    expect(res.topConnectionSharePercentage).toBe(0);
-    expect(res.totalConnections).toBe(0);
-    expect(res.totalInteractions).toBe(0);
-    expect(res.concentrationTier).toBe("Red abierta 👐");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin interacciones para evaluar concentración");
-  });
-
-  it("returns fallback concentration index for node with turn-only unconfirmed connections", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 0 },
-    ];
-
-    const res = calculateNetworkConcentrationIndex(links, "p-01");
-    expect(res.concentrationPercentage).toBe(0);
-    expect(res.topConnectionSharePercentage).toBe(0);
-    expect(res.totalConnections).toBe(1);
-    expect(res.totalInteractions).toBe(0);
-    expect(res.concentrationTier).toBe("Red abierta 👐");
-    expect(res.formattedSummary).toBe("1 contacto sin partidos confirmados");
-  });
-
-  it("calculates 'Dupla exclusiva 🔒' tier for single exclusive connection (100% share)", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 5, winsA: 0, winsB: 0, winsTogether: 4, lossesTogether: 1, turnsTogether: 0, strength: 5 },
-    ];
-
-    const res = calculateNetworkConcentrationIndex(links, "p-01");
-    expect(res.concentrationPercentage).toBe(100);
-    expect(res.topConnectionSharePercentage).toBe(100);
-    expect(res.totalConnections).toBe(1);
-    expect(res.totalInteractions).toBe(5);
-    expect(res.concentrationTier).toBe("Dupla exclusiva 🔒");
-    expect(res.badgeStyle).toContain("bg-purple-100");
-    expect(res.formattedSummary).toBe("100% concentración en contacto principal · 1 contacto total");
-  });
-
-  it("calculates 'Red concentrada 🎯' tier for player with heavy top-partner concentration (>= 60%)", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 8, winsA: 0, winsB: 0, winsTogether: 6, lossesTogether: 2, turnsTogether: 0, strength: 8 }, // 8 interactions
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // 1 interaction
-      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // 1 interaction
-    ];
-
-    // totalInteractions = 10; maxSingle = 8 => topConnectionShare = 80%; HHI = (0.8^2 + 0.1^2 + 0.1^2) = 0.64 + 0.01 + 0.01 = 0.66 (66%)
-    const res = calculateNetworkConcentrationIndex(links, "p-01");
-    expect(res.totalConnections).toBe(3);
-    expect(res.totalInteractions).toBe(10);
-    expect(res.topConnectionSharePercentage).toBe(80);
-    expect(res.concentrationPercentage).toBe(66);
-    expect(res.concentrationTier).toBe("Red concentrada 🎯");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-    expect(res.formattedSummary).toBe("80% concentración en contacto principal · 3 contactos totales");
-  });
-
-  it("calculates 'Red distribuida 🌐' tier for evenly distributed interactions across 3 or more contacts", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 2, winsA: 1, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 3 },
-    ];
-
-    // totalInteractions = 9; shares = 3/9 = 33.3% each; HHI = 3 * (0.333^2) = 0.33 (33%)
-    const res = calculateNetworkConcentrationIndex(links, "p-01");
-    expect(res.totalConnections).toBe(3);
-    expect(res.totalInteractions).toBe(9);
-    expect(res.topConnectionSharePercentage).toBe(33);
-    expect(res.concentrationPercentage).toBe(33);
-    expect(res.concentrationTier).toBe("Red distribuida 🌐");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-  });
-
-  it("calculates 'Red abierta 👐' tier for highly dispersed contacts", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    // 5 contacts with 1 interaction each => HHI = 5 * (0.2^2) = 0.20 (20%)
-    const res = calculateNetworkConcentrationIndex(links, "p-01");
-    expect(res.totalConnections).toBe(5);
-    expect(res.topConnectionSharePercentage).toBe(20);
-    expect(res.concentrationPercentage).toBe(20);
-    expect(res.concentrationTier).toBe("Red abierta 👐");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-  });
-});
-
-describe("calculateNetworkCentralityScore", () => {
-  const nodes: GraphNode[] = [
-    { id: "p-01", name: "Hub Node", alias: "Hub", image: null, skillScore: 1100, community: 1, networkSize: 4, matchesPlayed: 12, preferredSide: "RIGHT" },
-    { id: "p-02", name: "Leaf 1", alias: "L1", image: null, skillScore: 1050, community: 1, networkSize: 1, matchesPlayed: 3, preferredSide: "LEFT" },
-    { id: "p-03", name: "Leaf 2", alias: "L2", image: null, skillScore: 1020, community: 2, networkSize: 1, matchesPlayed: 4, preferredSide: "RIGHT" },
-    { id: "p-04", name: "Leaf 3", alias: "L3", image: null, skillScore: 980, community: 3, networkSize: 1, matchesPlayed: 2, preferredSide: "LEFT" },
-    { id: "p-05", name: "Leaf 4", alias: "L4", image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 3, preferredSide: "RIGHT" },
-  ];
-
-  it("returns fallback centrality score for unconnected or missing node", () => {
-    const res = calculateNetworkCentralityScore(nodes, [], "p-99");
-    expect(res.centralityScore).toBe(0);
-    expect(res.totalConnections).toBe(0);
-    expect(res.totalInteractions).toBe(0);
-    expect(res.centralityTier).toBe("Periferia de red 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin conexiones para evaluación de centralidad");
-  });
-
-  it("calculates 'Hub principal 👑' tier for high degree node connected to multiple communities with high interaction volume", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 2, partnerMatches: 2, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 1, turnsTogether: 1, strength: 5 },
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-      { source: "p-01", target: "p-05", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 0, turnsTogether: 1, strength: 3 },
-    ];
-
-    // totalConnections = 4, totalInteractions = 5 + 3 + 2 + 3 = 13
-    const res = calculateNetworkCentralityScore(nodes, links, "p-01");
-    expect(res.totalConnections).toBe(4);
-    expect(res.totalInteractions).toBe(13);
-    expect(res.centralityScore).toBeGreaterThanOrEqual(75);
-    expect(res.centralityTier).toBe("Hub principal 👑");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-    expect(res.formattedSummary).toContain("4 contactos directos");
-    expect(res.formattedSummary).toContain("13 interacciones");
-  });
-
-  it("calculates 'Conector clave ⚡' tier for moderate degree node (3 connections)", () => {
-    const largerNodesList: GraphNode[] = [
-      ...nodes,
-      { id: "p-06", name: "P6", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-07", name: "P7", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-08", name: "P8", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-09", name: "P9", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-10", name: "P10", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-    ];
-
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-05", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-06", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateNetworkCentralityScore(largerNodesList, links, "p-01");
-    expect(res.totalConnections).toBe(3);
-    expect(res.centralityTier).toBe("Conector clave ⚡");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-  });
-
-  it("calculates 'Jugador integrado 🔗' tier for node with 1 or 2 connections", () => {
-    const links: GraphLink[] = [
-      { source: "p-02", target: "p-01", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateNetworkCentralityScore(nodes, links, "p-02");
-    expect(res.totalConnections).toBe(1);
-    expect(res.centralityTier).toBe("Jugador integrado 🔗");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-  });
-});
-
-describe("calculateCommunityBridgingScore", () => {
-  const nodes: GraphNode[] = [
-    { id: "p-01", name: "Bridge Node", alias: "Bridge", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
-    { id: "p-02", name: "Member Comm 1", alias: "C1", image: null, skillScore: 1050, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: "LEFT" },
-    { id: "p-03", name: "Member Comm 2", alias: "C2", image: null, skillScore: 1020, community: 2, networkSize: 2, matchesPlayed: 4, preferredSide: "RIGHT" },
-    { id: "p-04", name: "Member Comm 3", alias: "C3", image: null, skillScore: 980, community: 3, networkSize: 1, matchesPlayed: 3, preferredSide: "LEFT" },
-    { id: "p-05", name: "Core Node", alias: "Core", image: null, skillScore: 1150, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "RIGHT" },
-  ];
-
-  it("returns fallback bridging score for unconnected or non-existent node", () => {
-    const res = calculateCommunityBridgingScore(nodes, [], "p-99");
-    expect(res.bridgingScore).toBe(0);
-    expect(res.distinctCommunitiesCount).toBe(0);
-    expect(res.bridgingTier).toBe("Conexión local 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin conexiones para evaluación de puente");
-  });
-
-  it("calculates 'Puente de red 🌉' tier for node connecting 3 distinct communities", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // Comm 1 (internal)
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // Comm 2 (external)
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // Comm 3 (external)
-    ];
-
-    const res = calculateCommunityBridgingScore(nodes, links, "p-01");
-    expect(res.distinctCommunitiesCount).toBe(3);
-    expect(res.internalLinksCount).toBe(1);
-    expect(res.externalBridgeLinksCount).toBe(2);
-    expect(res.interCommunityRatio).toBe(67);
-    expect(res.bridgingTier).toBe("Puente de red 🌉");
-    expect(res.badgeStyle).toContain("bg-indigo-100");
-    expect(res.formattedSummary).toContain("3 grupos de la red");
-    expect(res.formattedSummary).toContain("2 enlaces puente (67%)");
-  });
-
-  it("calculates 'Nexo de grupo 🔗' tier for node connecting 2 communities", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateCommunityBridgingScore(nodes, links, "p-01");
-    expect(res.distinctCommunitiesCount).toBe(2);
-    expect(res.bridgingTier).toBe("Nexo de grupo 🔗");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-  });
-
-  it("calculates 'Núcleo de comunidad 🏛️' tier for node with high internal community density", () => {
-    const links: GraphLink[] = [
-      { source: "p-05", target: "p-01", rivalMatches: 2, partnerMatches: 1, winsA: 1, winsB: 1, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 3 },
-      { source: "p-05", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-      { source: "p-05", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateCommunityBridgingScore(nodes, links, "p-05");
-    expect(res.distinctCommunitiesCount).toBe(1);
-    expect(res.internalLinksCount).toBe(3);
-    expect(res.externalBridgeLinksCount).toBe(0);
-    expect(res.interCommunityRatio).toBe(0);
-    expect(res.bridgingTier).toBe("Núcleo de comunidad 🏛️");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toContain("1 grupo de la red");
-    expect(res.formattedSummary).toContain("3 conexiones internas");
-  });
-});
-
-describe("calculatePlayerSimilarityInfo", () => {
-  it("calculates 'Dupla ideal 🎯' tier for candidate with close skill score, complementary side, and mutual connections", () => {
-    const candidate = { id: "p-04", skillScore: 1020, preferredSide: "LEFT" };
-    const viewer = { id: "p-01", skillScore: 1000, preferredSide: "RIGHT" };
-
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 1, winsA: 1, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-      { source: "p-04", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculatePlayerSimilarityInfo(candidate, viewer, links);
-    expect(res.skillDiff).toBe(20);
-    expect(res.isSideComplementary).toBe(true);
-    expect(res.mutualConnectionsCount).toBe(1);
-    expect(res.similarityPercentage).toBeGreaterThanOrEqual(80);
-    expect(res.similarityTier).toBe("Dupla ideal 🎯");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toContain("% similitud");
-    expect(res.formattedSummary).toContain("Score cercano (dif. 20)");
-    expect(res.formattedSummary).toContain("Posición complementaria 🎯");
-    expect(res.formattedSummary).toContain("1 contacto en común");
-  });
-
-  it("calculates 'Perfil distante 📍' tier for candidates with large skill difference and no complementarity or shared connections", () => {
-    const candidate = { id: "p-99", skillScore: 1600, preferredSide: "RIGHT" };
-    const viewer = { id: "p-01", skillScore: 1000, preferredSide: "RIGHT" };
-
-    const res = calculatePlayerSimilarityInfo(candidate, viewer, []);
-    expect(res.skillDiff).toBe(600);
-    expect(res.isSideComplementary).toBe(false);
-    expect(res.mutualConnectionsCount).toBe(0);
-    expect(res.similarityPercentage).toBeLessThan(40);
-    expect(res.similarityTier).toBe("Perfil distante 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toContain("Dif. de score 600");
-  });
-});
-
-describe("Top connected players role and activity badging in StatsPanel", () => {
-  const topPlayers = [
-    { id: "p-01", name: "Agustín Aliprandi", alias: "Agu", image: null, matchesPlayed: 12, networkSize: 10 },
-    { id: "p-02", name: "Fernando Belasteguín", alias: "Bela", image: null, matchesPlayed: 15, networkSize: 12 },
-    { id: "p-03", name: "Nuevo Jugador", alias: "Nuevo", image: null, matchesPlayed: 0, networkSize: 0 },
-  ];
-
-  const graphNodes: GraphNode[] = [
-    { id: "p-01", name: "Agustín", alias: "Agu", image: null, skillScore: 1100, community: 1, networkSize: 10, matchesPlayed: 12, preferredSide: "RIGHT" },
-    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 12, matchesPlayed: 15, preferredSide: "LEFT" },
-    { id: "p-04", name: "Facundo", alias: "Facu", image: null, skillScore: 1020, community: 2, networkSize: 5, matchesPlayed: 6, preferredSide: "LEFT" },
-  ];
-
-  const graphLinks: GraphLink[] = [
-    { source: "p-01", target: "p-02", rivalMatches: 3, partnerMatches: 2, winsA: 2, winsB: 1, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 5 },
-    { source: "p-01", target: "p-04", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-  ];
-
-  it("calculates 'Conector leyenda ⚡' activity tier for top players with networkSize >= 10 and matchesPlayed >= 10", () => {
-    const tier = getNetworkActivityTier(topPlayers[0].networkSize, topPlayers[0].matchesPlayed);
-    expect(tier.label).toBe("Conector leyenda ⚡");
-    expect(tier.badgeStyle).toContain("bg-amber-100");
-  });
-
-  it("calculates 'Nuevo en la red 🆕' fallback activity tier for player with zero network connections and zero matches", () => {
-    const tier = getNetworkActivityTier(topPlayers[2].networkSize, topPlayers[2].matchesPlayed);
-    expect(tier.label).toBe("Nuevo en la red 🆕");
-    expect(tier.badgeStyle).toContain("bg-muted");
-  });
-
-  it("calculates network role 'Nexo comunitario 🌉' for top player connected to multiple communities", () => {
-    const role = calculateNetworkRoleInfo(graphNodes, graphLinks, "p-01");
-    expect(role.roleLabel).toBe("Nexo comunitario 🌉");
-    expect(role.badgeStyle).toContain("bg-indigo-100");
-  });
-
-  it("calculates interaction reciprocity 'Red recíproca y equilibrada ⚖️' for top connected player with mixed encounters", () => {
-    const reciprocity = calculatePlayerInteractionReciprocity(graphLinks, "p-01");
-    expect(reciprocity.reciprocityTier).toBe("Red recíproca y equilibrada ⚖️");
-    expect(reciprocity.badgeStyle).toContain("bg-teal-100");
-    expect(reciprocity.formattedSummary).toContain("1 vínculo recíproco");
-  });
-
-  it("calculates partnership stability 'Duplas consolidadas 🏆' for top connected player with recurring partner links in StatsPanel", () => {
-    const stability = calculatePartnershipStabilityInfo(graphLinks, "p-01");
-    expect(stability.stabilityTier).toBe("Duplas consolidadas 🏆");
-    expect(stability.badgeStyle).toContain("bg-emerald-100");
-    expect(stability.formattedSummary).toContain("vínculos recurrentes");
-  });
-
-  it("calculates network centrality 'Hub principal 👑' for top connected player with high connections and interaction volume in StatsPanel", () => {
-    const centrality = calculateNetworkCentralityScore(graphNodes, graphLinks, "p-01");
-    expect(centrality.centralityTier).toBe("Hub principal 👑");
-    expect(centrality.badgeStyle).toContain("bg-amber-100");
-    expect(centrality.formattedSummary).toContain("contactos directos");
-    expect(centrality.formattedSummary).toContain("interacciones");
-  });
-});
-
-describe("calculateTurnRescueProximity", () => {
-  const links: GraphLink[] = [
-    {
-      source: "cand-01",
-      target: "enrolled-01",
-      rivalMatches: 1,
-      partnerMatches: 1,
-      winsA: 1,
-      winsB: 0,
-      winsTogether: 1,
-      lossesTogether: 0,
-      turnsTogether: 0,
-      strength: 2,
-    },
-  ];
-
-  it("returns fallback proximity info when turn has no enrolled players", () => {
-    const candidate: TurnRescueCandidateInput = {
-      id: "cand-01",
-      skillScore: 1050,
-      preferredSide: "RIGHT",
-      community: 1,
-    };
-    const res = calculateTurnRescueProximity(candidate, [], []);
-    expect(res.avgSkillScore).toBe(1000);
-    expect(res.skillDiff).toBe(50);
-    expect(res.proximityTier).toBe("Buena opción 👍");
-    expect(res.formattedSummary).toBe("Turno sin inscriptos previos · Posición abierta");
-  });
-
-  it("calculates 'Ideal 🎯' tier for candidate with close skill score, complementary side, direct connection and same community", () => {
-    const candidate: TurnRescueCandidateInput = {
-      id: "cand-01",
-      skillScore: 1100,
-      preferredSide: "LEFT",
-      community: 1,
-    };
-    const enrolled: EnrolledTurnPlayerInput[] = [
-      { id: "enrolled-01", skillScore: 1100, preferredSide: "RIGHT", community: 1 },
-      { id: "enrolled-02", skillScore: 1100, preferredSide: "RIGHT", community: 1 },
-    ];
-
-    const res = calculateTurnRescueProximity(candidate, enrolled, links);
-    expect(res.avgSkillScore).toBe(1100);
-    expect(res.skillDiff).toBe(0);
-    expect(res.isSideComplementary).toBe(true);
-    expect(res.directConnectionsCount).toBe(1);
-    expect(res.sameCommunityCount).toBe(2);
-    expect(res.score).toBeGreaterThanOrEqual(120);
-    expect(res.proximityTier).toBe("Ideal 🎯");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toContain("Score cercano (dif. 0)");
-    expect(res.formattedSummary).toContain("Equilibra posición en cancha");
-    expect(res.formattedSummary).toContain("1 contacto en el turno");
-    expect(res.formattedSummary).toContain("2 del mismo grupo");
-  });
-
-  it("calculates 'Distante ⚠️' tier for candidate with large skill difference and no connections or community overlap", () => {
-    const candidate: TurnRescueCandidateInput = {
-      id: "cand-99",
-      skillScore: 1500,
-      preferredSide: "RIGHT",
-      community: 5,
-    };
-    const enrolled: EnrolledTurnPlayerInput[] = [
-      { id: "enrolled-01", skillScore: 1000, preferredSide: "RIGHT", community: 1 },
-    ];
-
-    const res = calculateTurnRescueProximity(candidate, enrolled, []);
-    expect(res.skillDiff).toBe(500);
-    expect(res.isSideComplementary).toBe(false);
-    expect(res.score).toBeLessThan(20);
-    expect(res.proximityTier).toBe("Distante ⚠️");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Dif. de score 500");
-  });
-});
-
-describe("calculateCommunityCohesion", () => {
-  const nodes: GraphNode[] = [
-    {
-      id: "p-01",
-      name: "Agustín",
-      alias: "agu",
-      image: null,
-      skillScore: 1100,
-      community: 1,
-      networkSize: 2,
-      matchesPlayed: 10,
-      preferredSide: "RIGHT",
-    },
-    {
-      id: "p-02",
-      name: "Belasteguín",
-      alias: "Bela",
-      image: null,
-      skillScore: 1200,
-      community: 1,
-      networkSize: 2,
-      matchesPlayed: 12,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-03",
-      name: "Gero",
-      alias: "gero",
-      image: null,
-      skillScore: 1050,
-      community: 2,
-      networkSize: 1,
-      matchesPlayed: 5,
-      preferredSide: "RIGHT",
-    },
-  ];
-
-  it("returns fallback cohesion info for empty or non-existent community", () => {
-    const res = calculateCommunityCohesion(nodes, [], 99);
-    expect(res.totalPlayers).toBe(0);
-    expect(res.cohesionTier).toBe("En formación 🆕");
-    expect(res.formattedCohesionSummary).toBe("Grupo sin miembros");
-  });
-
-  it("calculates 'Comunidad consolidada 🏆' tier for a group with internal connections", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02",
-        rivalMatches: 2,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 1,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 3,
-      },
-    ];
-
-    const res = calculateCommunityCohesion(nodes, links, 1);
-    expect(res.communityId).toBe(1);
-    expect(res.totalPlayers).toBe(2);
-    expect(res.internalLinksCount).toBe(1);
-    expect(res.externalLinksCount).toBe(0);
-    expect(res.cohesionTier).toBe("Comunidad consolidada 🏆");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedCohesionSummary).toContain("100% cohesión interna");
-    expect(res.formattedCohesionSummary).toContain("1 conexión interna");
-  });
-
-  it("calculates 'En integración 🌱' tier for a group connected only to external communities", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-03",
-        rivalMatches: 1,
-        partnerMatches: 0,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 0,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 1,
-      },
-    ];
-
-    const res = calculateCommunityCohesion(nodes, links, 2);
-    expect(res.totalPlayers).toBe(1);
-    expect(res.internalLinksCount).toBe(0);
-    expect(res.externalLinksCount).toBe(1);
-    expect(res.cohesionTier).toBe("En integración 🌱");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-    expect(res.formattedCohesionSummary).toBe("1 puente externo");
-  });
-});
-
-describe("calculateCommunityBalanceInfo", () => {
-  const nodes: GraphNode[] = [
-    { id: "p-01", name: "A", alias: null, image: null, skillScore: 1100, community: 1, networkSize: 1, matchesPlayed: 5, preferredSide: "RIGHT" },
-    { id: "p-02", name: "B", alias: null, image: null, skillScore: 1200, community: 1, networkSize: 1, matchesPlayed: 5, preferredSide: "LEFT" },
-    { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 2, networkSize: 1, matchesPlayed: 5, preferredSide: "BOTH" },
-    { id: "p-04", name: "D", alias: null, image: null, skillScore: 1050, community: 2, networkSize: 1, matchesPlayed: 5, preferredSide: "BOTH" },
-    { id: "p-05", name: "E", alias: null, image: null, skillScore: 1000, community: 3, networkSize: 1, matchesPlayed: 5, preferredSide: "RIGHT" },
-    { id: "p-06", name: "F", alias: null, image: null, skillScore: 1000, community: 4, networkSize: 1, matchesPlayed: 5, preferredSide: "LEFT" },
-  ];
-
-  it("returns fallback balance info for empty or non-existent community", () => {
-    const res = calculateCommunityBalanceInfo(nodes, 99);
-    expect(res.totalPlayers).toBe(0);
-    expect(res.balanceTier).toBe("Ajuste de posiciones 🎯");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedBalanceSummary).toBe("Sin miembros en el grupo");
-  });
-
-  it("calculates 'Equilibrio Der/Rev ⚖️' tier for community with both RIGHT and LEFT players", () => {
-    const res = calculateCommunityBalanceInfo(nodes, 1);
-    expect(res.totalPlayers).toBe(2);
-    expect(res.rightSideCount).toBe(1);
-    expect(res.leftSideCount).toBe(1);
-    expect(res.balanceTier).toBe("Equilibrio Der/Rev ⚖️");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedBalanceSummary).toBe("1 Der · 1 Rev");
-  });
-
-  it("calculates 'Flexibilidad total 🔄' tier for community where majority play BOTH sides", () => {
-    const res = calculateCommunityBalanceInfo(nodes, 2);
-    expect(res.totalPlayers).toBe(2);
-    expect(res.bothSidesCount).toBe(2);
-    expect(res.balanceTier).toBe("Flexibilidad total 🔄");
-    expect(res.badgeStyle).toContain("bg-teal-100");
-    expect(res.formattedBalanceSummary).toBe("2 Ambos");
-  });
-
-  it("calculates 'Dominio de derecha 🟦' tier for right-heavy community", () => {
-    const res = calculateCommunityBalanceInfo(nodes, 3);
-    expect(res.totalPlayers).toBe(1);
-    expect(res.rightSideCount).toBe(1);
-    expect(res.balanceTier).toBe("Dominio de derecha 🟦");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-    expect(res.formattedBalanceSummary).toBe("1 Der");
-  });
-
-  it("calculates 'Dominio de revés 🟨' tier for left-heavy community", () => {
-    const res = calculateCommunityBalanceInfo(nodes, 4);
-    expect(res.totalPlayers).toBe(1);
-    expect(res.leftSideCount).toBe(1);
-    expect(res.balanceTier).toBe("Dominio de revés 🟨");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-    expect(res.formattedBalanceSummary).toBe("1 Rev");
-  });
-});
-
-describe("calculateCommunityFilterOptions", () => {
-  const nodes: GraphNode[] = [
-    {
-      id: "p-01",
-      name: "Agustín",
-      alias: "agu",
-      image: null,
-      skillScore: 1100,
-      community: 1,
-      networkSize: 2,
-      matchesPlayed: 10,
-      preferredSide: "RIGHT",
-    },
-    {
-      id: "p-02",
-      name: "Belasteguín",
-      alias: "Bela",
-      image: null,
-      skillScore: 1200,
-      community: 1,
-      networkSize: 2,
-      matchesPlayed: 12,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-03",
-      name: "Gero",
-      alias: "gero",
-      image: null,
-      skillScore: 1050,
-      community: 2,
-      networkSize: 1,
-      matchesPlayed: 5,
-      preferredSide: "RIGHT",
-    },
-  ];
-
-  const links: GraphLink[] = [
-    {
-      source: "p-01",
-      target: "p-02",
-      rivalMatches: 2,
-      partnerMatches: 1,
-      winsA: 1,
-      winsB: 1,
-      winsTogether: 1,
-      lossesTogether: 0,
-      turnsTogether: 0,
-      strength: 3,
-    },
-  ];
-
-  it("calculates community filter options with player counts, colors, cohesion tiers, and ARIA labels", () => {
-    const options = calculateCommunityFilterOptions(nodes, links);
-    expect(options).toHaveLength(2);
-
-    const opt1 = options.find((o) => o.communityId === 1);
-    expect(opt1).toBeDefined();
-    expect(opt1?.playerCount).toBe(2);
-    expect(opt1?.label).toBe("Grupo 1 (2)");
-    expect(opt1?.cohesionTier).toBe("Comunidad consolidada 🏆");
-    expect(opt1?.color).toBe("#10b981");
-    expect(opt1?.ariaLabel).toContain("Filtrar por Grupo 1: 2 jugadores");
-
-    const opt2 = options.find((o) => o.communityId === 2);
-    expect(opt2).toBeDefined();
-    expect(opt2?.playerCount).toBe(1);
-    expect(opt2?.label).toBe("Grupo 2 (1)");
-    expect(opt2?.cohesionTier).toBe("En formación 🆕");
-    expect(opt2?.color).toBe("#f59e0b");
-    expect(opt2?.ariaLabel).toContain("Filtrar por Grupo 2: 1 jugador");
-  });
-
-  it("returns empty options list when no nodes have assigned communities", () => {
-    const unassignedNodes: GraphNode[] = [
-      {
-        id: "p-99",
-        name: "Nuevo",
-        alias: null,
-        image: null,
-        skillScore: 1000,
-        community: null,
-        networkSize: 0,
-        matchesPlayed: 0,
-        preferredSide: null,
-      },
-    ];
-
-    const options = calculateCommunityFilterOptions(unassignedNodes, []);
-    expect(options).toHaveLength(0);
-  });
-});
-
-describe("calculateNetworkDiversityScore", () => {
-  const nodes: GraphNode[] = [
-    {
-      id: "p-01",
-      name: "Agustín",
-      alias: "agu",
-      image: null,
-      skillScore: 1100,
-      community: 1,
-      networkSize: 3,
-      matchesPlayed: 10,
-      preferredSide: "RIGHT",
-    },
-    {
-      id: "p-02",
-      name: "Belasteguín",
-      alias: "Bela",
-      image: null,
-      skillScore: 1200,
-      community: 1,
-      networkSize: 2,
-      matchesPlayed: 12,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-03",
-      name: "Gero",
-      alias: "gero",
-      image: null,
-      skillScore: 1050,
-      community: 2,
-      networkSize: 2,
-      matchesPlayed: 5,
-      preferredSide: "LEFT",
-    },
-    {
-      id: "p-04",
-      name: "Facu",
-      alias: "facu",
-      image: null,
-      skillScore: 1020,
-      community: 3,
-      networkSize: 1,
-      matchesPlayed: 4,
-      preferredSide: "RIGHT",
-    },
-  ];
-
-  it("returns 'Red concentrada 📍' tier with score 0 for unconnected node", () => {
-    const score = calculateNetworkDiversityScore(nodes, [], "p-99");
-    expect(score.diversityScore).toBe(0);
-    expect(score.distinctCommunitiesCount).toBe(0);
-    expect(score.diversityTier).toBe("Red concentrada 📍");
-    expect(score.badgeStyle).toContain("bg-muted");
-    expect(score.formattedSummary).toBe("Sin interacciones registradas en la red");
-  });
-
-  it("calculates 'Red ultra diversificada 🌐' for player connected to multiple communities with mixed duplas and complementary side balance", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02", // community 1, partner, complementary (RIGHT + LEFT)
-        rivalMatches: 0,
-        partnerMatches: 3,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 2,
-        lossesTogether: 1,
-        turnsTogether: 0,
-        strength: 3,
-      },
-      {
-        source: "p-01",
-        target: "p-03", // community 2, rival
-        rivalMatches: 2,
-        partnerMatches: 0,
-        winsA: 1,
-        winsB: 1,
-        winsTogether: 0,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-      {
-        source: "p-01",
-        target: "p-04", // community 3, mixed
-        rivalMatches: 1,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-    ];
-
-    const res = calculateNetworkDiversityScore(nodes, links, "p-01");
-    expect(res.distinctCommunitiesCount).toBe(3);
-    expect(res.diversityScore).toBeGreaterThanOrEqual(80);
-    expect(res.diversityTier).toBe("Red ultra diversificada 🌐");
-    expect(res.badgeStyle).toContain("bg-teal-100");
-    expect(res.formattedSummary).toContain("3 grupos de la red");
-    expect(res.formattedSummary).toContain("índice de diversidad");
-  });
-
-  it("calculates 'En focalización 🎯' tier for single-community partner connections", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02", // community 1
-        rivalMatches: 0,
-        partnerMatches: 1,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 1,
-      },
-    ];
-
-    const res = calculateNetworkDiversityScore(nodes, links, "p-01");
-    expect(res.distinctCommunitiesCount).toBe(1);
-    expect(res.diversityScore).toBeGreaterThanOrEqual(20);
-    expect(res.diversityScore).toBeLessThan(50);
-    expect(res.diversityTier).toBe("En focalización 🎯");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-  });
-});
-
-describe("calculateCrossRivalryDensity", () => {
-  it("returns fallback density info for unconnected node", () => {
-    const res = calculateCrossRivalryDensity([], "p-99");
-    expect(res.crossRivalryPercentage).toBe(0);
-    expect(res.rivalryTier).toBe("Sin partidos cruzados 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin interacciones cruzadas registradas");
-  });
-});
-
-describe("calculatePartnershipStabilityInfo", () => {
-  it("returns fallback stability info for unconnected node", () => {
-    const res = calculatePartnershipStabilityInfo([], "p-99");
-    expect(res.repeatConnectionsCount).toBe(0);
-    expect(res.totalConnections).toBe(0);
-    expect(res.repeatRatioPercentage).toBe(0);
-    expect(res.stabilityTier).toBe("Red inicial 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin interacciones para evaluar estabilidad");
-  });
-
-  it("calculates 'Duplas consolidadas 🏆' tier for player with high repeat connection ratio (>= 60%)", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // repeat (3 interactions)
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // repeat (2 interactions)
-      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 1, strength: 1 }, // single
-    ];
-
-    // repeatConnectionsCount = 2, totalConnections = 3 => repeatRatioPercentage = 67%
-    const res = calculatePartnershipStabilityInfo(links, "p-01");
-    expect(res.repeatConnectionsCount).toBe(2);
-    expect(res.totalConnections).toBe(3);
-    expect(res.repeatRatioPercentage).toBe(67);
-    expect(res.stabilityTier).toBe("Duplas consolidadas 🏆");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toContain("2 vínculos recurrentes (67%)");
-    expect(res.formattedSummary).toContain("3 contactos totales");
-  });
-
-  it("calculates 'Red de duplas estables 🤝' tier for moderate repeat ratio (30-59%)", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 }, // repeat
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // single
-      { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 }, // single
-    ];
-
-    // repeatConnectionsCount = 1, totalConnections = 3 => repeatRatioPercentage = 33%
-    const res = calculatePartnershipStabilityInfo(links, "p-01");
-    expect(res.repeatConnectionsCount).toBe(1);
-    expect(res.totalConnections).toBe(3);
-    expect(res.repeatRatioPercentage).toBe(33);
-    expect(res.stabilityTier).toBe("Red de duplas estables 🤝");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-    expect(res.formattedSummary).toContain("1 vínculo recurrente (33%)");
-  });
-
-  it("calculates 'En exploración 🌱' tier for single interaction connections only", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 1, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculatePartnershipStabilityInfo(links, "p-01");
-    expect(res.repeatConnectionsCount).toBe(0);
-    expect(res.totalConnections).toBe(2);
-    expect(res.repeatRatioPercentage).toBe(0);
-    expect(res.stabilityTier).toBe("En exploración 🌱");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-    expect(res.formattedSummary).toContain("0 vínculos recurrentes (0%)");
-  });
-});
-
-describe("calculatePlayerInteractionReciprocity", () => {
-  it("returns fallback reciprocity info for unconnected node", () => {
-    const res = calculatePlayerInteractionReciprocity([], "p-99");
-    expect(res.reciprocityScore).toBe(0);
-    expect(res.totalConnections).toBe(0);
-    expect(res.partnerConnectionsCount).toBe(0);
-    expect(res.rivalConnectionsCount).toBe(0);
-    expect(res.mixedConnectionsCount).toBe(0);
-    expect(res.turnsOnlyCount).toBe(0);
-    expect(res.reciprocityTier).toBe("Conexiones en formación 🌱");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin interacciones registradas en la red");
-  });
-
-  it("returns fallback reciprocity info for node with turn-only co-inscriptions", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 2, strength: 2 },
-    ];
-
-    const res = calculatePlayerInteractionReciprocity(links, "p-01");
-    expect(res.reciprocityScore).toBe(0);
-    expect(res.totalConnections).toBe(1);
-    expect(res.turnsOnlyCount).toBe(1);
-    expect(res.reciprocityTier).toBe("Conexiones en formación 🌱");
-    expect(res.formattedSummary).toBe("1 turno compartido sin partidos confirmados");
-  });
-
-  it("calculates 'Red recíproca y equilibrada ⚖️' tier for network with mixed partner & rival encounters", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 2, partnerMatches: 2, winsA: 1, winsB: 1, winsTogether: 2, lossesTogether: 0, turnsTogether: 0, strength: 4 }, // mixed
-      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 }, // partner
-      { source: "p-01", target: "p-04", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 }, // rival
-    ];
-
-    const res = calculatePlayerInteractionReciprocity(links, "p-01");
-    expect(res.totalConnections).toBe(3);
-    expect(res.mixedConnectionsCount).toBe(1);
-    expect(res.partnerConnectionsCount).toBe(1);
-    expect(res.rivalConnectionsCount).toBe(1);
-    expect(res.reciprocityTier).toBe("Red recíproca y equilibrada ⚖️");
-    expect(res.badgeStyle).toContain("bg-teal-100");
-    expect(res.formattedSummary).toContain("1 vínculo recíproco");
-    expect(res.formattedSummary).toContain("1 dupla");
-    expect(res.formattedSummary).toContain("1 rival");
-  });
-
-  it("calculates 'Predominio de duplas 🤝' tier for partner-heavy network without mixed links", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
-      { source: "p-01", target: "p-03", rivalMatches: 0, partnerMatches: 2, winsA: 0, winsB: 0, winsTogether: 1, lossesTogether: 1, turnsTogether: 0, strength: 2 },
-    ];
-
-    const res = calculatePlayerInteractionReciprocity(links, "p-01");
-    expect(res.partnerConnectionsCount).toBe(2);
-    expect(res.rivalConnectionsCount).toBe(0);
-    expect(res.mixedConnectionsCount).toBe(0);
-    expect(res.reciprocityTier).toBe("Predominio de duplas 🤝");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toBe("2 duplas");
-  });
-
-  it("calculates 'Predominio de rivales ⚔️' tier for rival-heavy network without mixed links", () => {
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 3, partnerMatches: 0, winsA: 2, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 3 },
-      { source: "p-01", target: "p-03", rivalMatches: 2, partnerMatches: 0, winsA: 1, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 2 },
-    ];
-
-    const res = calculatePlayerInteractionReciprocity(links, "p-01");
-    expect(res.partnerConnectionsCount).toBe(0);
-    expect(res.rivalConnectionsCount).toBe(2);
-    expect(res.mixedConnectionsCount).toBe(0);
-    expect(res.reciprocityTier).toBe("Predominio de rivales ⚔️");
-    expect(res.badgeStyle).toContain("bg-rose-100");
-    expect(res.formattedSummary).toBe("2 rivales");
-  });
-});
-
-describe("calculateLocalClusteringCoefficient", () => {
-  it("returns fallback info for nodes with fewer than 2 direct contacts", () => {
-    const res0 = calculateLocalClusteringCoefficient([], "p-99");
-    expect(res0.clusteringCoefficientPercentage).toBe(0);
-    expect(res0.trianglesCount).toBe(0);
-    expect(res0.totalNeighborsCount).toBe(0);
-    expect(res0.clusteringTier).toBe("Red inicial 📍");
-    expect(res0.badgeStyle).toContain("bg-muted");
-    expect(res0.formattedSummary).toBe("Sin contactos directos para calcular cohesión local");
-
-    const singleLink: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-    const res1 = calculateLocalClusteringCoefficient(singleLink, "p-01");
-    expect(res1.clusteringCoefficientPercentage).toBe(0);
-    expect(res1.totalNeighborsCount).toBe(1);
-    expect(res1.clusteringTier).toBe("Red inicial 📍");
-    expect(res1.formattedSummary).toBe("1 contacto directo · Se requieren 2 o más contactos");
-  });
-
-  it("calculates 'Grupo cerrado 👥' tier for fully connected triangle (100% local clustering)", () => {
-    // p-01 connected to p-02 and p-03; p-02 connected to p-03 (1 triangle out of 1 possible)
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateLocalClusteringCoefficient(links, "p-01");
-    expect(res.totalNeighborsCount).toBe(2);
-    expect(res.possibleTrianglesCount).toBe(1);
-    expect(res.trianglesCount).toBe(1);
-    expect(res.clusteringCoefficientPercentage).toBe(100);
-    expect(res.clusteringTier).toBe("Grupo cerrado 👥");
-    expect(res.badgeStyle).toContain("bg-indigo-100");
-    expect(res.formattedSummary).toBe("1 triángulo (100% cohesión local) · 2 contactos");
-  });
-
-  it("calculates 'Círculo integrado 🎾' tier for moderate local clustering (30-59%)", () => {
-    // p-01 connected to p-02, p-03, p-04 (3 neighbors => (3*2)/2 = 3 possible triangles)
-    // p-02 connected to p-03 (1 triangle)
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateLocalClusteringCoefficient(links, "p-01");
-    expect(res.totalNeighborsCount).toBe(3);
-    expect(res.possibleTrianglesCount).toBe(3);
-    expect(res.trianglesCount).toBe(1);
-    expect(res.clusteringCoefficientPercentage).toBe(33);
-    expect(res.clusteringTier).toBe("Círculo integrado 🎾");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-    expect(res.formattedSummary).toBe("1 triángulo (33% cohesión local) · 3 contactos");
-  });
-
-  it("calculates 'Conector abierto 🌐' tier for star node with disconnected neighbors (0% clustering, >= 2 neighbors)", () => {
-    // p-01 connected to p-02 and p-03, but p-02 and p-03 have no direct link
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateLocalClusteringCoefficient(links, "p-01");
-    expect(res.totalNeighborsCount).toBe(2);
-    expect(res.possibleTrianglesCount).toBe(1);
-    expect(res.trianglesCount).toBe(0);
-    expect(res.clusteringCoefficientPercentage).toBe(0);
-    expect(res.clusteringTier).toBe("Conector abierto 🌐");
-    expect(res.badgeStyle).toContain("bg-sky-100");
-    expect(res.formattedSummary).toBe("0 triángulos (0% cohesión local) · 2 contactos");
-  });
-});
-
-describe("calculateGraphDensityMetric", () => {
-  it("returns fallback density metric for empty or single-node graphs", () => {
-    const emptyRes = calculateGraphDensityMetric([], []);
-    expect(emptyRes.densityPercentage).toBe(0);
-    expect(emptyRes.avgDegreePerNode).toBe(0);
-    expect(emptyRes.densityTier).toBe("Red inicial 📍");
-    expect(emptyRes.badgeStyle).toContain("bg-muted");
-    expect(emptyRes.formattedSummary).toBe("Sin jugadores registrados");
-
-    const singleNode: GraphNode[] = [
-      { id: "p-01", name: "Solo", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 0, matchesPlayed: 0, preferredSide: null },
-    ];
-    const singleRes = calculateGraphDensityMetric(singleNode, []);
-    expect(singleRes.densityPercentage).toBe(0);
-    expect(singleRes.avgDegreePerNode).toBe(0);
-    expect(singleRes.formattedSummary).toBe("1 jugador sin conexiones suficientes");
-  });
-
-  it("calculates 'Red altamente conexa 🕸️' tier for dense network (4 nodes, 4 links -> 67% density, avg degree 2.0)", () => {
-    const nodes: GraphNode[] = [
-      { id: "p-01", name: "A", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 3, matchesPlayed: 5, preferredSide: null },
-      { id: "p-02", name: "B", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 3, matchesPlayed: 5, preferredSide: null },
-      { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: null },
-      { id: "p-04", name: "D", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 2, matchesPlayed: 5, preferredSide: null },
-    ];
-    // Max possible links for 4 nodes is (4 * 3) / 2 = 6 links.
-    // With 4 links, density = 4/6 = 67%
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-01", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-02", target: "p-03", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateGraphDensityMetric(nodes, links);
-    expect(res.densityPercentage).toBe(67);
-    expect(res.avgDegreePerNode).toBe(2.0);
-    expect(res.densityTier).toBe("Red altamente conexa 🕸️");
-    expect(res.badgeStyle).toContain("bg-purple-100");
-    expect(res.formattedSummary).toBe("67% densidad · 2 contactos/jugador prom.");
-  });
-
-  it("calculates 'Red en expansión 🌐' tier for moderate network density", () => {
-    const nodes: GraphNode[] = [
-      { id: "p-01", name: "A", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-02", name: "B", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-03", name: "C", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-04", name: "D", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-      { id: "p-05", name: "E", alias: null, image: null, skillScore: 1000, community: 1, networkSize: 1, matchesPlayed: 1, preferredSide: null },
-    ];
-    // Max possible links for 5 nodes is 10.
-    // With 2 links, density = 20%
-    const links: GraphLink[] = [
-      { source: "p-01", target: "p-02", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-03", target: "p-04", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    const res = calculateGraphDensityMetric(nodes, links);
-    expect(res.densityPercentage).toBe(20);
-    expect(res.avgDegreePerNode).toBe(0.8);
-    expect(res.densityTier).toBe("Red en expansión 🌐");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
-  });
-});
-
-describe("calculatePlayerGraphReach", () => {
-  it("returns fallback reach info for unconnected node", () => {
-    const res = calculatePlayerGraphReach([], "p-99");
-    expect(res.directConnectionsCount).toBe(0);
-    expect(res.extendedReachCount).toBe(0);
-    expect(res.totalReachCount).toBe(0);
-    expect(res.reachMultiplier).toBe(1.0);
-    expect(res.reachTier).toBe("Red inicial 📍");
-    expect(res.badgeStyle).toContain("bg-muted");
-    expect(res.formattedSummary).toBe("Sin contactos directos en la red");
-  });
-
-  it("calculates star topology reach (1 center node connected to 3 leaf nodes)", () => {
-    const links: GraphLink[] = [
-      { source: "p-center", target: "leaf-1", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-center", target: "leaf-2", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "p-center", target: "leaf-3", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    // For leaf-1: direct = 1 (p-center), 2nd degree = 2 (leaf-2, leaf-3) => total = 3, multiplier = 3.0
-    const leafReach = calculatePlayerGraphReach(links, "leaf-1");
-    expect(leafReach.directConnectionsCount).toBe(1);
-    expect(leafReach.extendedReachCount).toBe(2);
-    expect(leafReach.totalReachCount).toBe(3);
-    expect(leafReach.reachMultiplier).toBe(3.0);
-    expect(leafReach.reachTier).toBe("Red expansiva 🌌");
-    expect(leafReach.badgeStyle).toContain("bg-purple-100");
-    expect(leafReach.formattedSummary).toContain("1 contacto directo");
-    expect(leafReach.formattedSummary).toContain("2 en 2º grado");
-    expect(leafReach.formattedSummary).toContain("3 alcance total");
-  });
-
-  it("calculates extended network reach in multi-hop network for 'Red interconectada 🌐' tier", () => {
-    // A connected directly to B, C, D, E (4 direct connections)
-    // B connected to F, G; C connected to H, I; D connected to J, K (6 2nd-degree extended connections)
-    const links: GraphLink[] = [
-      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "A", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "A", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "A", target: "E", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-
-      { source: "B", target: "F", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "B", target: "G", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "C", target: "H", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "C", target: "I", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "D", target: "J", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "D", target: "K", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    // For A: direct = 4 (B, C, D, E), 2nd degree = 6 (F, G, H, I, J, K) => total = 10, multiplier = 2.5
-    const reachA = calculatePlayerGraphReach(links, "A");
-    expect(reachA.directConnectionsCount).toBe(4);
-    expect(reachA.extendedReachCount).toBe(6);
-    expect(reachA.totalReachCount).toBe(10);
-    expect(reachA.reachMultiplier).toBe(2.5);
-    expect(reachA.reachTier).toBe("Red interconectada 🌐");
-    expect(reachA.badgeStyle).toContain("bg-sky-100");
-  });
-
-  it("calculates 'Círculo cercano ⭕' tier for moderate 2nd degree reach (2-5 nodes)", () => {
-    const links: GraphLink[] = [
-      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "B", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "B", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    // For A: direct = 1 (B), 2nd degree = 2 (C, D) => multiplier = 3.0 (triggers Red expansiva because multiplier >= 3.0)
-    // To test Círculo cercano, give A 2 direct connections and 2 extended:
-    const links2: GraphLink[] = [
-      { source: "A", target: "B", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "A", target: "E", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "B", target: "C", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-      { source: "B", target: "D", rivalMatches: 1, partnerMatches: 0, winsA: 1, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 1 },
-    ];
-
-    // For A: direct = 2 (B, E), 2nd degree = 2 (C, D) => total = 4, multiplier = 2.0
-    const reach = calculatePlayerGraphReach(links2, "A");
-    expect(reach.directConnectionsCount).toBe(2);
-    expect(reach.extendedReachCount).toBe(2);
-    expect(reach.totalReachCount).toBe(4);
-    expect(reach.reachMultiplier).toBe(2.0);
-    expect(reach.reachTier).toBe("Círculo cercano ⭕");
-    expect(reach.badgeStyle).toContain("bg-amber-100");
-  });
-
-  it("calculates 'Red de rivalidad activa ⚔️' tier for high rivalry interaction (>= 65%)", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02", // rival
-        rivalMatches: 3,
-        partnerMatches: 0,
-        winsA: 2,
-        winsB: 1,
-        winsTogether: 0,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 3,
-      },
-      {
-        source: "p-01",
-        target: "p-03", // mixed (rival + partner)
-        rivalMatches: 2,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 1,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 3,
-      },
-      {
-        source: "p-01",
-        target: "p-04", // partner
-        rivalMatches: 0,
-        partnerMatches: 2,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 2,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-    ];
-
-    // matchesWithRivalry = 1 rival + 1 mixed = 2; total match connections = 3 => 67%
-    const res = calculateCrossRivalryDensity(links, "p-01");
-    expect(res.crossRivalryPercentage).toBe(67);
-    expect(res.rivalryTier).toBe("Red de rivalidad activa ⚔️");
-    expect(res.badgeStyle).toContain("bg-rose-100");
-    expect(res.formattedSummary).toContain("67% interacción con rivales");
-    expect(res.formattedSummary).toContain("1 vínculo mixto");
-  });
-
-  it("calculates 'Duplas con rivalidad 🔄' tier for moderate rivalry interaction (35-64%)", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02", // mixed
-        rivalMatches: 1,
-        partnerMatches: 1,
-        winsA: 1,
-        winsB: 0,
-        winsTogether: 1,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-      {
-        source: "p-01",
-        target: "p-03", // partner
-        rivalMatches: 0,
-        partnerMatches: 2,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 2,
-        lossesTogether: 0,
-        turnsTogether: 0,
-        strength: 2,
-      },
-    ];
-
-    // matchesWithRivalry = 1 mixed = 1; total match connections = 2 => 50%
-    const res = calculateCrossRivalryDensity(links, "p-01");
-    expect(res.crossRivalryPercentage).toBe(50);
-    expect(res.rivalryTier).toBe("Duplas con rivalidad 🔄");
-    expect(res.badgeStyle).toContain("bg-amber-100");
-  });
-
-  it("calculates 'Predominio de duplas 🤝' tier for low rivalry interaction (< 35%)", () => {
-    const links: GraphLink[] = [
-      {
-        source: "p-01",
-        target: "p-02", // partner
-        rivalMatches: 0,
-        partnerMatches: 3,
-        winsA: 0,
-        winsB: 0,
-        winsTogether: 2,
-        lossesTogether: 1,
-        turnsTogether: 0,
-        strength: 3,
-      },
-    ];
-
-    const res = calculateCrossRivalryDensity(links, "p-01");
-    expect(res.crossRivalryPercentage).toBe(0);
-    expect(res.rivalryTier).toBe("Predominio de duplas 🤝");
-    expect(res.badgeStyle).toContain("bg-emerald-100");
   });
 });

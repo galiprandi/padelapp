@@ -4,16 +4,32 @@ import { eq, and, sql } from "drizzle-orm";
 import { getMatchWinner } from "@/lib/utils";
 import type { ConfirmedMatchInfo } from "./engine";
 
-function edgeKey(a: string, b: string): [string, string] {
+export interface MatchEdgeUpdate {
+  playerAId: string;
+  playerBId: string;
+  rivalDelta: number;
+  partnerDelta: number;
+  winsADelta: number;
+  winsBDelta: number;
+  winsTogetherDelta: number;
+  lossesTogetherDelta: number;
+}
+
+export function edgeKey(a: string, b: string): [string, string] {
   return a < b ? [a, b] : [b, a];
 }
 
-export async function updateEdgesForMatch(match: ConfirmedMatchInfo): Promise<void> {
+/**
+ * Pure helper: calculates graph edge deltas for a confirmed match
+ * without database side effects.
+ */
+export function calculateMatchEdgeUpdates(
+  match: ConfirmedMatchInfo,
+): MatchEdgeUpdate[] {
   const players = match.players.filter((p) => p.userId !== null);
-  if (players.length < 2) return;
+  if (players.length < 2) return [];
 
   const winner = getMatchWinner(match.score);
-  const matchDate = match.date;
 
   const totalPlayers = players.length;
   const teamOf = (pos: number) =>
@@ -25,16 +41,7 @@ export async function updateEdgesForMatch(match: ConfirmedMatchInfo): Promise<vo
   const teamAWon = winner === "A";
   const teamBWon = winner === "B";
 
-  const updates: Array<{
-    playerAId: string;
-    playerBId: string;
-    rivalDelta: number;
-    partnerDelta: number;
-    winsADelta: number;
-    winsBDelta: number;
-    winsTogetherDelta: number;
-    lossesTogetherDelta: number;
-  }> = [];
+  const updates: MatchEdgeUpdate[] = [];
 
   for (const a of teamA) {
     for (const b of teamB) {
@@ -71,6 +78,17 @@ export async function updateEdgesForMatch(match: ConfirmedMatchInfo): Promise<vo
       }
     }
   }
+
+  return updates;
+}
+
+export async function updateEdgesForMatch(
+  match: ConfirmedMatchInfo,
+): Promise<void> {
+  const updates = calculateMatchEdgeUpdates(match);
+  if (updates.length === 0) return;
+
+  const matchDate = match.date;
 
   for (const u of updates) {
     const existing = await db
