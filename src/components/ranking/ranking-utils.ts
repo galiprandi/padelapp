@@ -718,6 +718,23 @@ export function getRankingBreakdownContainerClasses(): string {
 }
 
 /**
+ * Returns Tailwind class names for user ranking summary banner container
+ */
+export function getUserRankingBannerContainerClasses(className?: string): string {
+  return cn("rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs", className);
+}
+
+/**
+ * Returns Tailwind class names for user ranking position card container
+ */
+export function getUserRankingCardContainerClasses(className?: string): string {
+  return cn(
+    "flex flex-col rounded-xl border border-border bg-card p-4 overflow-hidden shadow-xs",
+    className
+  );
+}
+
+/**
  * Returns Tailwind class names for ranking decay banner container
  */
 export function getRankingDecayBannerClasses(): string {
