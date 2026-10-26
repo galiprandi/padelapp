@@ -568,7 +568,9 @@ describe("convertEdgesToGraphLinks", () => {
       },
     ];
 
-    const links = convertEdgesToGraphLinks(edges as any);
+    const links = convertEdgesToGraphLinks(
+      edges as unknown as Parameters<typeof convertEdgesToGraphLinks>[0]
+    );
     expect(links).toHaveLength(1);
     expect(links[0]).toEqual({
       source: "p-01",
@@ -598,7 +600,9 @@ describe("formatEnrolledPlayersInput", () => {
       },
     ];
 
-    const formatted = formatEnrolledPlayersInput(stats as any);
+    const formatted = formatEnrolledPlayersInput(
+      stats as unknown as Parameters<typeof formatEnrolledPlayersInput>[0]
+    );
     expect(formatted).toEqual([
       {
         id: "p-01",
@@ -628,8 +632,24 @@ describe("buildTurnNetworkContactsList", () => {
     ]);
 
     const candidateStatsMap = new Map([
-      ["cand-1", { userId: "cand-1", skillScore: 1000, preferredSide: "RIGHT", community: 1 } as any],
-      ["cand-2", { userId: "cand-2", skillScore: 1050, preferredSide: "LEFT", community: 1 } as any],
+      [
+        "cand-1",
+        {
+          userId: "cand-1",
+          skillScore: 1000,
+          preferredSide: "RIGHT",
+          community: 1,
+        } as unknown as Parameters<typeof buildTurnNetworkContactsList>[3] extends Map<string, infer V> ? V : never,
+      ],
+      [
+        "cand-2",
+        {
+          userId: "cand-2",
+          skillScore: 1050,
+          preferredSide: "LEFT",
+          community: 1,
+        } as unknown as Parameters<typeof buildTurnNetworkContactsList>[3] extends Map<string, infer V> ? V : never,
+      ],
     ]);
 
     const enrolledPlayersInput = [
