@@ -143,6 +143,107 @@ export function calculateCandidateFeedbackAdjustment(
   return { scoreAdjustments, excludedUserIds };
 }
 
+/**
+ * Pure helper: converts raw database playerEdges into GraphLink structures.
+ */
+export function convertEdgesToGraphLinks(
+  edges: Array<typeof playerEdges.$inferSelect>
+): GraphLink[] {
+  return edges.map((e) => ({
+    source: e.playerAId,
+    target: e.playerBId,
+    rivalMatches: e.matchesAsRivals,
+    partnerMatches: e.matchesAsPartners,
+    winsA: e.winsA,
+    winsB: e.winsB,
+    winsTogether: e.winsTogether,
+    lossesTogether: e.lossesTogether,
+    turnsTogether: e.turnsTogether,
+    strength: e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether,
+  }));
+}
+
+/**
+ * Pure helper: formats raw playerGraphStats rows for enrolled turn players
+ * into structured proximity calculation inputs.
+ */
+export function formatEnrolledPlayersInput(
+  enrolledStats: Array<typeof playerGraphStats.$inferSelect>
+): Array<{
+  id: string;
+  skillScore: number | null;
+  preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+  community: number | null;
+}> {
+  return enrolledStats.map((s) => ({
+    id: s.userId,
+    skillScore: s.skillScore,
+    preferredSide: s.preferredSide,
+    community: s.community,
+  }));
+}
+
+/**
+ * Pure helper: maps candidate users, candidate scores, direct match stats, and proximity calculations
+ * into a sorted PadelContact list ordered by recommendation score descending.
+ */
+export function buildTurnNetworkContactsList(
+  candidatesData: Array<{
+    id: string;
+    displayName: string;
+    alias: string | null;
+    image: string | null;
+  }>,
+  candidateScores: Map<string, number>,
+  candidateDirectMatches: Map<string, { lastMatchAt: Date; matchesTogether: number }>,
+  candidateStatsMap: Map<string, typeof playerGraphStats.$inferSelect>,
+  enrolledPlayersInput: Array<{
+    id: string;
+    skillScore: number | null;
+    preferredSide: "RIGHT" | "LEFT" | "BOTH" | null | string;
+    community: number | null;
+  }>,
+  graphLinks: GraphLink[]
+): PadelContact[] {
+  const mappedContacts: Array<PadelContact & { score: number }> = candidatesData.map((u) => {
+    const directInfo = candidateDirectMatches.get(u.id);
+    const score = candidateScores.get(u.id) ?? 0;
+    const stats = candidateStatsMap.get(u.id);
+
+    const proximity = calculateTurnRescueProximity(
+      {
+        id: u.id,
+        skillScore: stats?.skillScore ?? 1000,
+        preferredSide: stats?.preferredSide ?? null,
+        community: stats?.community ?? null,
+      },
+      enrolledPlayersInput,
+      graphLinks
+    );
+
+    return {
+      id: u.id,
+      displayName: u.displayName,
+      alias: u.alias,
+      image: u.image,
+      lastMatchAt: directInfo?.lastMatchAt ?? new Date(0),
+      matchesTogether: directInfo?.matchesTogether ?? 0,
+      proximityTier: proximity.proximityTier,
+      proximitySummary: proximity.formattedSummary,
+      badgeStyle: proximity.badgeStyle,
+      score,
+    };
+  });
+
+  mappedContacts.sort((a, b) => b.score - a.score);
+
+  return mappedContacts.map((contact) => {
+    const { score, ...rest } = contact;
+    void score;
+    return rest;
+  });
+}
+
 export interface NetworkContactSummary {
   matchCountText: string;
   recencyText: string;
@@ -569,25 +670,8 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
   if (finalCandidateIds.length === 0) return [];
 
   // Convert edges to GraphLink structure for proximity calculation
-  const graphLinks: GraphLink[] = edges.map((e) => ({
-    source: e.playerAId,
-    target: e.playerBId,
-    rivalMatches: e.matchesAsRivals,
-    partnerMatches: e.matchesAsPartners,
-    winsA: e.winsA,
-    winsB: e.winsB,
-    winsTogether: e.winsTogether,
-    lossesTogether: e.lossesTogether,
-    turnsTogether: e.turnsTogether,
-    strength: e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether,
-  }));
-
-  const enrolledPlayersInput = enrolledStats.map((s) => ({
-    id: s.userId,
-    skillScore: s.skillScore,
-    preferredSide: s.preferredSide,
-    community: s.community,
-  }));
+  const graphLinks = convertEdgesToGraphLinks(edges);
+  const enrolledPlayersInput = formatEnrolledPlayersInput(enrolledStats);
 
   // Fetch candidate stats for proximity calculation
   const candidateStatsRows = await db
@@ -609,45 +693,14 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     .where(inArray(users.id, finalCandidateIds));
 
   // 6. Map to PadelContact and sort by score
-  const mappedContacts: Array<PadelContact & { score: number }> = candidatesData.map((u) => {
-    const directInfo = candidateDirectMatches.get(u.id);
-    const score = candidateScores.get(u.id) ?? 0;
-    const stats = candidateStatsMap.get(u.id);
-
-    const proximity = calculateTurnRescueProximity(
-      {
-        id: u.id,
-        skillScore: stats?.skillScore ?? 1000,
-        preferredSide: stats?.preferredSide ?? null,
-        community: stats?.community ?? null,
-      },
-      enrolledPlayersInput,
-      graphLinks,
-    );
-
-    return {
-      id: u.id,
-      displayName: u.displayName,
-      alias: u.alias,
-      image: u.image,
-      lastMatchAt: directInfo?.lastMatchAt ?? new Date(0),
-      matchesTogether: directInfo?.matchesTogether ?? 0,
-      proximityTier: proximity.proximityTier,
-      proximitySummary: proximity.formattedSummary,
-      badgeStyle: proximity.badgeStyle,
-      score,
-    };
-  });
-
-  // Sort by recommendation score descending
-  mappedContacts.sort((a, b) => b.score - a.score);
-
-  // Return the sorted contacts without the score field
-  return mappedContacts.map((contact) => {
-    const { score, ...rest } = contact;
-    void score;
-    return rest;
-  });
+  return buildTurnNetworkContactsList(
+    candidatesData,
+    candidateScores,
+    candidateDirectMatches,
+    candidateStatsMap,
+    enrolledPlayersInput,
+    graphLinks
+  );
 }
 
 type ContactMatchPlayer = {
