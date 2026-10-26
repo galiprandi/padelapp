@@ -16,6 +16,9 @@ import {
   determineTurnNeededCourtSide,
   calculateCandidateProximityBonus,
   calculateCandidateFeedbackAdjustment,
+  convertEdgesToGraphLinks,
+  formatEnrolledPlayersInput,
+  buildTurnNetworkContactsList,
   type PadelContact,
 } from "@/lib/queries/contacts";
 
@@ -541,6 +544,127 @@ describe("getNetworkContactFormattedDate", () => {
     expect(getNetworkContactFormattedDate(undefined)).toBe("");
     expect(getNetworkContactFormattedDate("invalid-date")).toBe("");
     expect(getNetworkContactFormattedDate(new Date(0))).toBe("");
+  });
+});
+
+describe("convertEdgesToGraphLinks", () => {
+  it("converts playerEdges into GraphLink objects", () => {
+    const edges = [
+      {
+        id: "e1",
+        playerAId: "p-01",
+        playerBId: "p-02",
+        matchesAsRivals: 3,
+        matchesAsPartners: 2,
+        winsA: 2,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 1,
+        turnsTogether: 4,
+        lastMatchAt: new Date(),
+        lastTurnAt: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    const links = convertEdgesToGraphLinks(edges as any);
+    expect(links).toHaveLength(1);
+    expect(links[0]).toEqual({
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 3,
+      partnerMatches: 2,
+      winsA: 2,
+      winsB: 1,
+      winsTogether: 1,
+      lossesTogether: 1,
+      turnsTogether: 4,
+      strength: 9,
+    });
+  });
+});
+
+describe("formatEnrolledPlayersInput", () => {
+  it("formats playerGraphStats for enrolled players into proximity calculation input", () => {
+    const stats = [
+      {
+        userId: "p-01",
+        skillScore: 1100,
+        preferredSide: "RIGHT",
+        community: 1,
+        networkSize: 5,
+        updatedAt: new Date(),
+      },
+    ];
+
+    const formatted = formatEnrolledPlayersInput(stats as any);
+    expect(formatted).toEqual([
+      {
+        id: "p-01",
+        skillScore: 1100,
+        preferredSide: "RIGHT",
+        community: 1,
+      },
+    ]);
+  });
+});
+
+describe("buildTurnNetworkContactsList", () => {
+  it("builds and ranks candidates by recommendation score descending", () => {
+    const candidatesData = [
+      { id: "cand-1", displayName: "Candidate One", alias: "C1", image: null },
+      { id: "cand-2", displayName: "Candidate Two", alias: "C2", image: null },
+    ];
+
+    const candidateScores = new Map([
+      ["cand-1", 100],
+      ["cand-2", 200],
+    ]);
+
+    const candidateDirectMatches = new Map([
+      ["cand-1", { lastMatchAt: new Date("2026-05-01"), matchesTogether: 2 }],
+      ["cand-2", { lastMatchAt: new Date("2026-06-01"), matchesTogether: 4 }],
+    ]);
+
+    const candidateStatsMap = new Map([
+      ["cand-1", { userId: "cand-1", skillScore: 1000, preferredSide: "RIGHT", community: 1 } as any],
+      ["cand-2", { userId: "cand-2", skillScore: 1050, preferredSide: "LEFT", community: 1 } as any],
+    ]);
+
+    const enrolledPlayersInput = [
+      { id: "enrolled-1", skillScore: 1000, preferredSide: "RIGHT", community: 1 },
+    ];
+
+    const graphLinks = [
+      {
+        source: "cand-1",
+        target: "enrolled-1",
+        rivalMatches: 1,
+        partnerMatches: 1,
+        winsA: 1,
+        winsB: 0,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        strength: 2,
+      },
+    ];
+
+    const list = buildTurnNetworkContactsList(
+      candidatesData,
+      candidateScores,
+      candidateDirectMatches,
+      candidateStatsMap,
+      enrolledPlayersInput,
+      graphLinks
+    );
+
+    expect(list).toHaveLength(2);
+    // cand-2 has higher score (200), so it comes first
+    expect(list[0].id).toBe("cand-2");
+    expect(list[1].id).toBe("cand-1");
+    expect(list[0].displayName).toBe("Candidate Two");
   });
 });
 

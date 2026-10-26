@@ -517,6 +517,11 @@ import {
   getGrowthBadgeClasses,
   formatGrowthRateText,
   getStatCardContainerClasses,
+  getStatCardHeaderClasses,
+  getStatCardLabelClasses,
+  getStatCardValueGroupClasses,
+  getStatCardValueClasses,
+  getStatCardSubtextClasses,
   getStatsPanelHeadingTitle,
   getStatsPanelHeadingDescription,
   getStatsPanelBackAriaLabel,
@@ -1548,6 +1553,16 @@ describe("calculateNodeConnectionSummary", () => {
     expect(summary.totalConnections).toBe(0);
     expect(summary.overallPartnerWinRate).toBeNull();
     expect(summary.formattedSummary).toBe("Sin conexiones directas");
+  });
+});
+
+describe("StatCard styling pure helpers", () => {
+  it("returns correct CSS class strings for StatCard elements", () => {
+    expect(getStatCardHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getStatCardLabelClasses()).toBe("text-xs font-semibold text-muted-foreground");
+    expect(getStatCardValueGroupClasses()).toBe("flex items-baseline gap-2");
+    expect(getStatCardValueClasses()).toBe("text-2xl font-bold tabular-nums text-foreground");
+    expect(getStatCardSubtextClasses()).toBe("text-xs text-muted-foreground");
   });
 });
 

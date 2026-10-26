@@ -45,6 +45,11 @@ import {
   getRecommenderHeadingDescription,
   getRecommenderHeadingTitle,
   getStatCardContainerClasses,
+  getStatCardHeaderClasses,
+  getStatCardLabelClasses,
+  getStatCardValueGroupClasses,
+  getStatCardValueClasses,
+  getStatCardSubtextClasses,
   getRecommendedPlayerSimilarityAriaLabel,
   getRecommendedPlayerSimilarityTitle,
   getStatsCardCommunityBalanceAriaLabel,
@@ -139,17 +144,17 @@ function StatCard({
 }) {
   return (
     <div className={getStatCardContainerClasses()}>
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
+      <div className={getStatCardHeaderClasses()}>
+        <span className={getStatCardLabelClasses()}>{label}</span>
         <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
       </div>
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold tabular-nums text-foreground">
+      <div className={getStatCardValueGroupClasses()}>
+        <span className={getStatCardValueClasses()}>
           {value}
         </span>
         {growth !== undefined && <GrowthBadge rate={growth} />}
       </div>
-      {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
+      {sub && <p className={getStatCardSubtextClasses()}>{sub}</p>}
     </div>
   );
 }

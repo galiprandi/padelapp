@@ -3380,6 +3380,26 @@ export function getStatCardContainerClasses(): string {
   return "rounded-xl border border-border bg-card p-4 space-y-2";
 }
 
+export function getStatCardHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+export function getStatCardLabelClasses(): string {
+  return "text-xs font-semibold text-muted-foreground";
+}
+
+export function getStatCardValueGroupClasses(): string {
+  return "flex items-baseline gap-2";
+}
+
+export function getStatCardValueClasses(): string {
+  return "text-2xl font-bold tabular-nums text-foreground";
+}
+
+export function getStatCardSubtextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
 export function getStatsPanelHeadingTitle(): string {
   return "Red & Adopción";
 }
