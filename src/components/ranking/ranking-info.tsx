@@ -11,10 +11,24 @@ import {
   getRankingFormulaText,
   getRankingInfoContainerClasses,
   getRankingInfoHeaderButtonClasses,
+  getRankingRulesContentClasses,
+  getRankingRulesFormulaBoxClasses,
+  getRankingRulesBasePointsDescription,
+  getRankingRulesPointsBulletTexts,
+  getRankingRulesPenaltiesDescription,
+  getRankingRulesPenaltiesBulletTexts,
+  getRankingRulesDecayDescription,
+  getRankingRulesDecayBulletTexts,
+  getRankingRulesTiebreakDescription,
+  getRankingRulesTiebreakOrderedTexts,
 } from "./ranking-utils";
 
 export function RankingInfo() {
   const [isOpen, setIsOpen] = useState(false);
+  const pointsBullets = getRankingRulesPointsBulletTexts();
+  const penaltiesBullets = getRankingRulesPenaltiesBulletTexts();
+  const decayBullets = getRankingRulesDecayBulletTexts();
+  const tiebreakOrdered = getRankingRulesTiebreakOrderedTexts();
 
   return (
     <div
@@ -54,7 +68,7 @@ export function RankingInfo() {
           id="ranking-rules-content"
           role="region"
           aria-label={getRankingRegionAriaLabel("rules-detail")}
-          className="border-t border-border p-4 space-y-4 bg-card text-sm"
+          className={getRankingRulesContentClasses()}
         >
           {/* Fórmulas */}
           <div className="space-y-2">
@@ -63,15 +77,15 @@ export function RankingInfo() {
               <span>{getRankingRulesSectionTitle("points")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Todos los jugadores inician con <strong>1000 puntos base</strong>. Tu puntaje se actualiza con cada partido confirmado bajo la siguiente fórmula:
+              {getRankingRulesBasePointsDescription()}
             </p>
-            <div className="rounded-lg bg-muted border border-border p-2.5 text-xs font-mono text-foreground space-y-1">
+            <div className={getRankingRulesFormulaBoxClasses()}>
               <div>{getRankingFormulaText()}</div>
             </div>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">
-              <li><strong className="text-foreground">Victorias:</strong> +15 puntos por cada partido ganado.</li>
-              <li><strong className="text-foreground">Racha de victorias:</strong> +5 puntos adicionales por cada partido consecutivo ganado.</li>
-              <li><strong className="text-foreground">Bonus de sets:</strong> +2 puntos por set ganado en partidos ganados; +1 punto por set ganado en partidos perdidos.</li>
+              <li><strong className="text-foreground">Victorias:</strong> {pointsBullets.wins}</li>
+              <li><strong className="text-foreground">Racha de victorias:</strong> {pointsBullets.streak}</li>
+              <li><strong className="text-foreground">Bonus de sets:</strong> {pointsBullets.sets}</li>
             </ul>
           </div>
 
@@ -82,11 +96,11 @@ export function RankingInfo() {
               <span>{getRankingRulesSectionTitle("penalties")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              La asistencia y puntualidad son clave. No cumplir con el compromiso aplica penalizaciones directas a tu puntaje total:
+              {getRankingRulesPenaltiesDescription()}
             </p>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">
-              <li><strong className="text-foreground">Llegada Tarde (LATE):</strong> -10 puntos.</li>
-              <li><strong className="text-foreground">Ausencia sin aviso (NO_SHOW):</strong> -25 puntos.</li>
+              <li><strong className="text-foreground">Llegada Tarde (LATE):</strong> {penaltiesBullets.late}</li>
+              <li><strong className="text-foreground">Ausencia sin aviso (NO_SHOW):</strong> {penaltiesBullets.noShow}</li>
             </ul>
           </div>
 
@@ -97,11 +111,11 @@ export function RankingInfo() {
               <span>{getRankingRulesSectionTitle("decay")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Para mantener el ranking activo, se aplica un decay (reducción) temporal a los jugadores inactivos:
+              {getRankingRulesDecayDescription()}
             </p>
             <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1 pl-1">
-              <li><strong className="text-foreground">Más de 60 días sin jugar:</strong> El puntaje total se reduce a la mitad (×0.5).</li>
-              <li><strong className="text-foreground">Más de 120 días sin jugar:</strong> El puntaje total se reduce a la cuarta parte (×0.25).</li>
+              <li><strong className="text-foreground">Más de 60 días sin jugar:</strong> {decayBullets.sixtyDays}</li>
+              <li><strong className="text-foreground">Más de 120 días sin jugar:</strong> {decayBullets.hundredTwentyDays}</li>
             </ul>
           </div>
 
@@ -112,12 +126,12 @@ export function RankingInfo() {
               <span>{getRankingRulesSectionTitle("tiebreak")}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Si dos o más jugadores tienen los mismos puntos, sus posiciones se definen aplicando en orden el siguiente criterio jerárquico:
+              {getRankingRulesTiebreakDescription()}
             </p>
             <ol className="list-decimal list-inside text-xs text-muted-foreground space-y-1 pl-1">
-              <li><strong className="text-foreground">Índice de Asistencia (Reputación):</strong> Quien tenga mayor porcentaje de asistencia/confirmación.</li>
-              <li><strong className="text-foreground">Total de Victorias:</strong> Quien tenga más partidos ganados en total.</li>
-              <li><strong className="text-foreground">Recencia:</strong> Quien haya jugado su partido más reciente en la fecha más cercana.</li>
+              <li><strong className="text-foreground">Índice de Asistencia (Reputación):</strong> {tiebreakOrdered.attendance}</li>
+              <li><strong className="text-foreground">Total de Victorias:</strong> {tiebreakOrdered.wins}</li>
+              <li><strong className="text-foreground">Recencia:</strong> {tiebreakOrdered.recency}</li>
             </ol>
           </div>
         </div>

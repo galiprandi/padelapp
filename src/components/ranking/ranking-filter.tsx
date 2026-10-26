@@ -20,6 +20,7 @@ import {
   getRankingFilterClearButtonText,
   getRankingFilterRadiogroupClasses,
   getRankingFilterTabButtonClasses,
+  getRankingFilterContainerClasses,
 } from "./ranking-utils";
 
 interface RankingPlayer {
@@ -60,7 +61,7 @@ export function RankingFilter({ players, viewerId, query }: RankingFilterProps) 
     <div
       role="region"
       aria-label={getRankingRegionAriaLabel("filter")}
-      className="space-y-6"
+      className={getRankingFilterContainerClasses()}
     >
       {!query && (
         <div className="flex flex-col gap-1.5">
