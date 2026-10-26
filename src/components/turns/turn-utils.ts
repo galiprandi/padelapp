@@ -2837,6 +2837,170 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for turn filter section container.
+ */
+export function getTurnFilterContainerClasses(): string {
+  return "flex flex-col gap-4";
+}
+
+/**
+ * Format CSS classes for turn filter radiogroup container.
+ */
+export function getTurnFilterRadiogroupClasses(): string {
+  return "grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs border border-border";
+}
+
+/**
+ * Format CSS classes for turn filter header container.
+ */
+export function getTurnFilterHeaderContainerClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for turn filter header title.
+ */
+export function getTurnFilterHeaderTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Format CSS classes for turn filter badge.
+ */
+export function getTurnFilterBadgeClasses(): string {
+  return "rounded-md bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for turn filter primary action button in empty state.
+ */
+export function getTurnFilterPrimaryButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Format CSS classes for turn filter outline action button in empty state.
+ */
+export function getTurnFilterOutlineButtonClasses(): string {
+  return "w-full h-12 rounded-lg font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Format CSS classes for add-to-calendar trigger button.
+ */
+export function getCalendarTriggerButtonClasses(open: boolean): string {
+  return cn(
+    "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    open && "border-primary text-primary bg-muted"
+  );
+}
+
+/**
+ * Format CSS classes for add-to-calendar options container.
+ */
+export function getCalendarOptionsContainerClasses(): string {
+  return "mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150 shadow-xs";
+}
+
+/**
+ * Format CSS classes for add-to-calendar option button.
+ */
+export function getCalendarOptionButtonClasses(): string {
+  return "h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for share button in leave turn full slot card.
+ */
+export function getLeaveTurnWasFullShareButtonClasses(): string {
+  return "w-full h-10 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Format CSS classes for turn card action row container.
+ */
+export function getTurnCardActionsContainerClasses(): string {
+  return "relative z-10 flex items-stretch gap-2";
+}
+
+/**
+ * Format CSS classes for turn card header flex layout.
+ */
+export function getTurnCardHeaderContainerClasses(): string {
+  return "flex items-center gap-3";
+}
+
+/**
+ * Format CSS classes for turn card content flex item.
+ */
+export function getTurnCardContentContainerClasses(): string {
+  return "flex-1 overflow-hidden";
+}
+
+/**
+ * Format CSS classes for turn card club title container.
+ */
+export function getTurnCardTitleContainerClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Format CSS classes for turn card club title text.
+ */
+export function getTurnCardClubTitleClasses(): string {
+  return "truncate text-sm font-semibold text-foreground";
+}
+
+/**
+ * Format CSS classes for turn card metadata row container.
+ */
+export function getTurnCardMetaContainerClasses(): string {
+  return "mt-1 flex items-center gap-3 text-xs text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for turn card metadata item flex container.
+ */
+export function getTurnCardMetaItemClasses(): string {
+  return "flex items-center gap-1";
+}
+
+/**
+ * Format CSS classes for turn card substitutes count text.
+ */
+export function getTurnCardSubstitutesTextClasses(): string {
+  return "text-muted-foreground/70";
+}
+
+/**
+ * Format CSS classes for turn card contact player dot badge.
+ */
+export function getTurnCardContactDotClasses(): string {
+  return "h-1.5 w-1.5 rounded-full bg-primary shrink-0";
+}
+
+/**
+ * Format CSS classes for turn card status badge container.
+ */
+export function getTurnCardStatusBadgeContainerClasses(): string {
+  return "shrink-0";
+}
+
+/**
+ * Format CSS classes for turn card open-to-network salvage button wrapper.
+ */
+export function getTurnCardSalvageWrapperClasses(): string {
+  return "flex-1";
+}
+
+/**
+ * Format CSS classes for turn card share button wrapper.
+ */
+export function getTurnCardShareButtonClasses(): string {
+  return "flex-1";
+}
+
+/**
  * Format CSS classes for turn form outer container layout.
  */
 export function getTurnFormContainerClasses(): string {

@@ -29,6 +29,7 @@ import {
   getLeaveTurnWasFullCardClasses,
   getLeaveTurnCancelButtonClasses,
   getLeaveTurnConfirmButtonClasses,
+  getLeaveTurnWasFullShareButtonClasses,
 } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
@@ -112,7 +113,7 @@ export function LeaveTurnButton({
             text={getWasFullShareText(club)}
             url={createMagicLink({ resource: "turn", identifier: turnId }).url}
             variant="outline"
-            className="w-full h-10 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+            className={getLeaveTurnWasFullShareButtonClasses()}
           />
         </div>
       )}
