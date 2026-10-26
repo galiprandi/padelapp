@@ -14,6 +14,10 @@ import {
   getSpeculationRuleGroupDescription,
   formatSpeculationScriptTagAttributes,
   formatSpeculationRulesScript,
+  getSpeculationRulesTotalTargetsCount,
+  hasSpeculationDocumentRules,
+  formatSpeculationRuleGroupLogMessage,
+  getSpeculationRulesScriptId,
   PRIMARY_SPECULATION_URLS,
   SECONDARY_SPECULATION_URLS,
   DYNAMIC_SPECULATION_PATTERNS,
@@ -133,6 +137,76 @@ describe("getSpeculationRuleGroupsCount", () => {
   it("debe retornar 0 si la configuración o el arreglo de prerender no es válido", () => {
     expect(getSpeculationRuleGroupsCount(undefined)).toBe(0);
     expect(getSpeculationRuleGroupsCount({ prerender: [] })).toBe(0);
+  });
+});
+
+describe("getSpeculationRulesTotalTargetsCount", () => {
+  it("debe retornar la cantidad total acumulada de destinos para la configuración por defecto", () => {
+    const defaultConfig = getSpeculationRulesConfig();
+    const totalTargets = getSpeculationRulesTotalTargetsCount(defaultConfig);
+
+    const expectedTotal =
+      PRIMARY_SPECULATION_URLS.length +
+      SECONDARY_SPECULATION_URLS.length +
+      DYNAMIC_SPECULATION_PATTERNS.length;
+
+    expect(totalTargets).toBe(expectedTotal);
+  });
+
+  it("debe retornar 0 si la configuración o el arreglo de prerender no es válido", () => {
+    expect(getSpeculationRulesTotalTargetsCount(undefined)).toBe(0);
+    expect(getSpeculationRulesTotalTargetsCount({ prerender: [] })).toBe(0);
+  });
+});
+
+describe("hasSpeculationDocumentRules", () => {
+  it("debe retornar true para la configuración por defecto que incluye reglas de documento", () => {
+    const defaultConfig = getSpeculationRulesConfig();
+    expect(hasSpeculationDocumentRules(defaultConfig)).toBe(true);
+  });
+
+  it("debe retornar false para configuraciones personalizadas sin reglas de documento", () => {
+    const customConfig = getSpeculationRulesConfig(["/me", "/turnos"], "eager");
+    expect(hasSpeculationDocumentRules(customConfig)).toBe(false);
+  });
+
+  it("debe retornar false si la configuración o el arreglo de prerender no es válido", () => {
+    expect(hasSpeculationDocumentRules(undefined)).toBe(false);
+    expect(hasSpeculationDocumentRules({ prerender: [] })).toBe(false);
+  });
+});
+
+describe("formatSpeculationRuleGroupLogMessage", () => {
+  it("debe formatear un mensaje de log con el prefijo [SpeculationRules] para grupos de tipo 'list'", () => {
+    const listGroup: SpeculationListRuleGroup = {
+      source: "list",
+      urls: ["/me", "/turnos"],
+      eagerness: "eager",
+    };
+
+    expect(formatSpeculationRuleGroupLogMessage(listGroup)).toBe(
+      "[SpeculationRules] Prerenderizado de lista (2 URLs, avidez: eager)",
+    );
+  });
+
+  it("debe formatear un mensaje de log para grupos de tipo 'document'", () => {
+    const docGroup: SpeculationDocumentRuleGroup = {
+      source: "document",
+      where: {
+        or: [{ href_matches: "/t/*" }, { href_matches: "/m/*" }],
+      },
+      eagerness: "moderate",
+    };
+
+    expect(formatSpeculationRuleGroupLogMessage(docGroup)).toBe(
+      "[SpeculationRules] Prerenderizado por documento (2 patrones, avidez: moderate)",
+    );
+  });
+});
+
+describe("getSpeculationRulesScriptId", () => {
+  it("debe retornar el id estandarizado 'speculation-rules-script'", () => {
+    expect(getSpeculationRulesScriptId()).toBe("speculation-rules-script");
   });
 });
 
