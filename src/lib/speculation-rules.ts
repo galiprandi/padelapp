@@ -104,6 +104,46 @@ export function getSpeculationRuleGroupsCount(
 }
 
 /**
+ * Retorna la cantidad total acumulada de destinos (URLs y patrones de documento) en todos los grupos de reglas.
+ */
+export function getSpeculationRulesTotalTargetsCount(
+  config?: SpeculationRulesConfig,
+): number {
+  if (!config || !Array.isArray(config.prerender)) return 0;
+  return config.prerender.reduce((total, group) => {
+    const summary = getSpeculationRuleGroupSummary(group);
+    return total + summary.count;
+  }, 0);
+}
+
+/**
+ * Evalúa si una configuración de Speculation Rules posee al menos un grupo de reglas basadas en documento.
+ */
+export function hasSpeculationDocumentRules(
+  config?: SpeculationRulesConfig,
+): boolean {
+  if (!config || !Array.isArray(config.prerender)) return false;
+  return config.prerender.some((group) => group.source === "document");
+}
+
+/**
+ * Formatea un mensaje de registro/log para telemetría de un grupo de reglas de especulación.
+ */
+export function formatSpeculationRuleGroupLogMessage(
+  group: SpeculationRuleGroup,
+): string {
+  const description = getSpeculationRuleGroupDescription(group);
+  return `[SpeculationRules] ${description}`;
+}
+
+/**
+ * Retorna el identificador estandarizado para el elemento de script de Speculation Rules en el DOM.
+ */
+export function getSpeculationRulesScriptId(): string {
+  return "speculation-rules-script";
+}
+
+/**
  * Retorna la lista de patrones de documentos dinámicos configurados para prerenderizado especulativo.
  */
 export function getSpeculationDocumentPatterns(): string[] {
