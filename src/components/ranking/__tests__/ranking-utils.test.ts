@@ -74,6 +74,17 @@ import {
   getPendingMatchConfirmButtonClasses,
   getPendingMatchResultButtonClasses,
   getPendingMatchDetailButtonClasses,
+  getRankingRulesBasePointsDescription,
+  getRankingRulesPointsBulletTexts,
+  getRankingRulesPenaltiesDescription,
+  getRankingRulesPenaltiesBulletTexts,
+  getRankingRulesDecayDescription,
+  getRankingRulesDecayBulletTexts,
+  getRankingRulesTiebreakDescription,
+  getRankingRulesTiebreakOrderedTexts,
+  getRankingRulesContentClasses,
+  getRankingRulesFormulaBoxClasses,
+  getRankingFilterContainerClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -690,6 +701,43 @@ describe("Ranking Helpers", () => {
       const detailClasses = getPendingMatchDetailButtonClasses();
       expect(detailClasses).toContain("h-9 w-9");
       expect(detailClasses).toContain("bg-card");
+    });
+
+    it("getRankingRulesBasePointsDescription, getRankingRulesPointsBulletTexts, getRankingRulesPenaltiesDescription, getRankingRulesPenaltiesBulletTexts", () => {
+      expect(getRankingRulesBasePointsDescription()).toContain("1000 puntos base");
+
+      const pointsBullets = getRankingRulesPointsBulletTexts();
+      expect(pointsBullets.wins).toContain("+15 puntos");
+      expect(pointsBullets.streak).toContain("+5 puntos");
+      expect(pointsBullets.sets).toContain("+2 puntos");
+
+      expect(getRankingRulesPenaltiesDescription()).toContain("asistencia y puntualidad");
+
+      const penaltiesBullets = getRankingRulesPenaltiesBulletTexts();
+      expect(penaltiesBullets.late).toBe("-10 puntos.");
+      expect(penaltiesBullets.noShow).toBe("-25 puntos.");
+    });
+
+    it("getRankingRulesDecayDescription, getRankingRulesDecayBulletTexts, getRankingRulesTiebreakDescription, getRankingRulesTiebreakOrderedTexts", () => {
+      expect(getRankingRulesDecayDescription()).toContain("decay (reducción) temporal");
+
+      const decayBullets = getRankingRulesDecayBulletTexts();
+      expect(decayBullets.sixtyDays).toContain("se reduce a la mitad");
+      expect(decayBullets.hundredTwentyDays).toContain("se reduce a la cuarta parte");
+
+      expect(getRankingRulesTiebreakDescription()).toContain("criterio jerárquico");
+
+      const tiebreakOrdered = getRankingRulesTiebreakOrderedTexts();
+      expect(tiebreakOrdered.attendance).toContain("porcentaje de asistencia");
+      expect(tiebreakOrdered.wins).toContain("partidos ganados en total");
+      expect(tiebreakOrdered.recency).toContain("fecha más cercana");
+    });
+
+    it("getRankingRulesContentClasses, getRankingRulesFormulaBoxClasses, and getRankingFilterContainerClasses return expected styling", () => {
+      expect(getRankingRulesContentClasses()).toContain("border-t border-border p-4");
+      expect(getRankingRulesFormulaBoxClasses()).toContain("rounded-lg bg-muted border");
+      expect(getRankingRulesFormulaBoxClasses()).toContain("font-mono");
+      expect(getRankingFilterContainerClasses()).toBe("space-y-6");
     });
   });
 });

@@ -789,3 +789,108 @@ export function getPendingMatchResultButtonClasses(): string {
 export function getPendingMatchDetailButtonClasses(): string {
   return "flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
 }
+
+/**
+ * Returns description text for base ranking points
+ */
+export function getRankingRulesBasePointsDescription(): string {
+  return "Todos los jugadores inician con 1000 puntos base. Tu puntaje se actualiza con cada partido confirmado bajo la siguiente fórmula:";
+}
+
+/**
+ * Returns bullet point texts for ranking points breakdown
+ */
+export function getRankingRulesPointsBulletTexts(): {
+  wins: string;
+  streak: string;
+  sets: string;
+} {
+  return {
+    wins: "+15 puntos por cada partido ganado.",
+    streak: "+5 puntos adicionales por cada partido consecutivo ganado.",
+    sets: "+2 puntos por set ganado en partidos ganados; +1 punto por set ganado en partidos perdidos.",
+  };
+}
+
+/**
+ * Returns description text for attendance penalties
+ */
+export function getRankingRulesPenaltiesDescription(): string {
+  return "La asistencia y puntualidad son clave. No cumplir con el compromiso aplica penalizaciones directas a tu puntaje total:";
+}
+
+/**
+ * Returns bullet point texts for attendance penalties
+ */
+export function getRankingRulesPenaltiesBulletTexts(): {
+  late: string;
+  noShow: string;
+} {
+  return {
+    late: "-10 puntos.",
+    noShow: "-25 puntos.",
+  };
+}
+
+/**
+ * Returns description text for inactivity decay
+ */
+export function getRankingRulesDecayDescription(): string {
+  return "Para mantener el ranking activo, se aplica un decay (reducción) temporal a los jugadores inactivos:";
+}
+
+/**
+ * Returns bullet point texts for inactivity decay
+ */
+export function getRankingRulesDecayBulletTexts(): {
+  sixtyDays: string;
+  hundredTwentyDays: string;
+} {
+  return {
+    sixtyDays: "El puntaje total se reduce a la mitad (×0.5).",
+    hundredTwentyDays: "El puntaje total se reduce a la cuarta parte (×0.25).",
+  };
+}
+
+/**
+ * Returns description text for tiebreak criteria
+ */
+export function getRankingRulesTiebreakDescription(): string {
+  return "Si dos o más jugadores tienen los mismos puntos, sus posiciones se definen aplicando en orden el siguiente criterio jerárquico:";
+}
+
+/**
+ * Returns ordered list item texts for tiebreak criteria
+ */
+export function getRankingRulesTiebreakOrderedTexts(): {
+  attendance: string;
+  wins: string;
+  recency: string;
+} {
+  return {
+    attendance: "Quien tenga mayor porcentaje de asistencia/confirmación.",
+    wins: "Quien tenga más partidos ganados en total.",
+    recency: "Quien haya jugado su partido más reciente en la fecha más cercana.",
+  };
+}
+
+/**
+ * Returns Tailwind class names for ranking rules detail content container
+ */
+export function getRankingRulesContentClasses(): string {
+  return "border-t border-border p-4 space-y-4 bg-card text-sm";
+}
+
+/**
+ * Returns Tailwind class names for ranking rules formula display box
+ */
+export function getRankingRulesFormulaBoxClasses(): string {
+  return "rounded-lg bg-muted border border-border p-2.5 text-xs font-mono text-foreground space-y-1";
+}
+
+/**
+ * Returns Tailwind class names for ranking filter root container
+ */
+export function getRankingFilterContainerClasses(): string {
+  return "space-y-6";
+}
