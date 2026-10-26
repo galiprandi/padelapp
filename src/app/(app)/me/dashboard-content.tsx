@@ -65,6 +65,48 @@ import {
   getRecommendedTurnsRegionAriaLabel,
   getRecentResultsRegionAriaLabel,
   formatRecentFormAriaLabel,
+  getDashboardCreateTurnCtaClasses,
+  getDashboardIncompleteProfileContainerClasses,
+  getDashboardIncompleteProfileButtonClasses,
+  getDashboardInviteFriendsContainerClasses,
+  getDashboardStatsCardClasses,
+  getDashboardHeroActivityContainerClasses,
+  getDashboardPendingAttendanceItemClasses,
+  getDashboardSubstituteItemClasses,
+  getDashboardOpenSlotBadgeClasses,
+  getDashboardEmptyAgendaContainerClasses,
+  getCreateFirstTurnTitleText,
+  getCreateFirstTurnDescriptionText,
+  getIncompleteProfileTitleText,
+  getIncompleteProfileDescriptionText,
+  getIncompleteProfileButtonText,
+  getInviteFriendsTitleText,
+  getInviteFriendsDescriptionText,
+  getInviteFriendsShareTitleText,
+  getInviteFriendsShareText,
+  getInviteFriendsShareSuccessToastText,
+  getInviteFriendsShareCopyToastText,
+  getDashboardHeroIncompleteTurnTitleText,
+  getDashboardHeroNextActivityTitleText,
+  getDashboardHeroMatchLabelText,
+  getDashboardOpenToNetworkButtonLabel,
+  getDashboardPendingActionsTitleText,
+  getDashboardPendingAttendanceTitleText,
+  getDashboardAgendaTitleText,
+  getDashboardSeeAllText,
+  getDashboardSeeAllPendingAriaLabel,
+  getDashboardSeeAllAgendaAriaLabel,
+  getDashboardEmptyAgendaTitleText,
+  getDashboardEmptyAgendaDescriptionText,
+  getDashboardEmptyAgendaExploreButtonText,
+  getDashboardEmptyAgendaCreateButtonText,
+  getDashboardNoMoreActivitiesText,
+  getDashboardSubstituteTitleText,
+  getDashboardRecommendedTitleText,
+  getDashboardRecentResultsTitleText,
+  getDashboardEmptyRecentResultsTitleText,
+  getDashboardEmptyRecentResultsDescriptionText,
+  getDashboardEmptyRecentResultsButtonText,
   type DashboardTurn,
 } from "./dashboard-utils";
 
@@ -170,7 +212,7 @@ export default async function DashboardContent() {
             <Link
               href="/turnos/nuevo"
               prefetch={true}
-              className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+              className={getDashboardCreateTurnCtaClasses()}
               aria-label={getCreateFirstTurnAriaLabel()}
             >
               <div className="flex items-center gap-3">
@@ -179,10 +221,10 @@ export default async function DashboardContent() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-sm font-bold text-foreground">
-                    Creá tu primer turno
+                    {getCreateFirstTurnTitleText()}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Armá un turno, compartilo por WhatsApp y jugá.
+                    {getCreateFirstTurnDescriptionText()}
                   </p>
                 </div>
               </div>
@@ -199,23 +241,22 @@ export default async function DashboardContent() {
           <div
             role="region"
             aria-label={getIncompleteProfileRegionAriaLabel()}
-            className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs"
+            className={getDashboardIncompleteProfileContainerClasses()}
           >
             <div className="flex items-center gap-3">
               <UserCheck className="h-5 w-5 text-amber-800 dark:text-amber-200" aria-hidden="true" />
               <h2 className="text-sm font-bold text-amber-900 dark:text-amber-100">
-                Completá tu perfil de jugador
+                {getIncompleteProfileTitleText()}
               </h2>
             </div>
             <p className="text-xs text-amber-800 dark:text-amber-200 leading-normal">
-              Elegí tu alias en la cancha para que otros
-              jugadores te reconozcan en los partidos y ranking.
+              {getIncompleteProfileDescriptionText()}
             </p>
             <Button
-              className="w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getDashboardIncompleteProfileButtonClasses()}
               asChild
             >
-              <Link href="/me/profile" prefetch={true}>Configurar mi perfil</Link>
+              <Link href="/me/profile" prefetch={true}>{getIncompleteProfileButtonText()}</Link>
             </Button>
           </div>
         )
@@ -229,25 +270,25 @@ export default async function DashboardContent() {
         <div
           role="region"
           aria-label={getInviteFriendsRegionAriaLabel()}
-          className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+          className={getDashboardInviteFriendsContainerClasses()}
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-primary border border-border shadow-xs">
             <UserPlus className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="flex-1 min-w-0 space-y-0.5">
             <p className="text-sm font-bold text-foreground">
-              Invitar amigos
+              {getInviteFriendsTitleText()}
             </p>
             <p className="text-xs text-muted-foreground">
-              Recomendá Padel Red a tu grupo de pádel. Es gratis.
+              {getInviteFriendsDescriptionText()}
             </p>
           </div>
           <ShareButton
             url="https://padelred.app?from=whatsapp"
-            title="Padel Red"
-            text="Turnos de pádel que no se cancelan. Entrá y organizá los turnos del club — es gratis: padelred.app"
-            successMessage="Link copiado"
-            copyMessage="Link copiado al portapapeles"
+            title={getInviteFriendsShareTitleText()}
+            text={getInviteFriendsShareText()}
+            successMessage={getInviteFriendsShareSuccessToastText()}
+            copyMessage={getInviteFriendsShareCopyToastText()}
             iconOnly
             variant="outline"
             className="shrink-0"
@@ -266,7 +307,7 @@ export default async function DashboardContent() {
           <Link
             href="/ranking"
             prefetch={true}
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            className={getDashboardStatsCardClasses()}
             aria-label={getRankingStatAriaLabel(user.rankingPosition)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
@@ -279,7 +320,7 @@ export default async function DashboardContent() {
           <Link
             href="/match"
             prefetch={true}
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            className={getDashboardStatsCardClasses()}
             aria-label={getMatchesStatAriaLabel(user.matchesPlayed)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
@@ -292,7 +333,7 @@ export default async function DashboardContent() {
           <Link
             href="/ranking"
             prefetch={true}
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            className={getDashboardStatsCardClasses()}
             aria-label={getWinsStatAriaLabel(user.wins)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
@@ -303,7 +344,7 @@ export default async function DashboardContent() {
           <Link
             href="/ranking"
             prefetch={true}
-            className="group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+            className={getDashboardStatsCardClasses()}
             aria-label={getReputationStatAriaLabel(user.attendanceScore)}
           >
             <span className="text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors">
@@ -335,12 +376,7 @@ export default async function DashboardContent() {
           <section
             role="region"
             aria-label={getHeroActivityRegionAriaLabel(isIncompleteTurn)}
-            className={cn(
-              "space-y-3 rounded-xl border p-4 shadow-xs",
-              isIncompleteTurn
-                ? "border-amber-500 bg-card"
-                : "border-border bg-card",
-            )}
+            className={getDashboardHeroActivityContainerClasses(isIncompleteTurn)}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -350,7 +386,9 @@ export default async function DashboardContent() {
                   <Activity className="h-4 w-4 text-primary" aria-hidden="true" />
                 )}
                 <h2 className="text-sm font-bold text-foreground">
-                  {isIncompleteTurn ? "Turno incompleto" : "Próxima actividad"}
+                  {isIncompleteTurn
+                    ? getDashboardHeroIncompleteTurnTitleText()
+                    : getDashboardHeroNextActivityTitleText()}
                 </h2>
               </div>
               {isIncompleteTurn && turnData && (
@@ -374,7 +412,7 @@ export default async function DashboardContent() {
                     club={(heroActivity.data as { club: string }).club}
                     lastNetworkNotificationAt={(heroActivity.data as { lastNetworkNotificationAt?: Date | null }).lastNetworkNotificationAt}
                     variant="default"
-                    label="Salvar turno: Notificar a mi red"
+                    label={getDashboardOpenToNetworkButtonLabel()}
                     className="h-10 bg-amber-500 hover:bg-amber-600"
                   />
                 )}
@@ -383,7 +421,7 @@ export default async function DashboardContent() {
               <MatchResultCompact
                 match={heroActivity.data as MatchResultCompactMatch}
                 detailUrl={`/match/${heroActivity.id}`}
-                label="Partido inminente"
+                label={getDashboardHeroMatchLabelText()}
                 viewerId={viewerId}
               />
             )}
@@ -397,7 +435,7 @@ export default async function DashboardContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">
-                Acciones pendientes
+                {getDashboardPendingActionsTitleText()}
               </h2>
               <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground shadow-xs">
                 {pendingActionMatches.length}
@@ -408,9 +446,9 @@ export default async function DashboardContent() {
                 href="/notifications"
                 prefetch={true}
                 className="flex items-center text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
-                aria-label="Ver todas las acciones pendientes"
+                aria-label={getDashboardSeeAllPendingAriaLabel()}
               >
-                Ver todas <ChevronRight className="h-3 w-3" aria-hidden="true" />
+                {getDashboardSeeAllText()} <ChevronRight className="h-3 w-3" aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -440,7 +478,7 @@ export default async function DashboardContent() {
         <section role="region" aria-label={getPendingAttendanceRegionAriaLabel()} className="space-y-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
-              Marcar asistencia
+              {getDashboardPendingAttendanceTitleText()}
             </h2>
             <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold shadow-xs">
               {pendingAttendance.length}
@@ -452,7 +490,7 @@ export default async function DashboardContent() {
                 key={match.id}
                 href={`/match/${match.id}/result`}
                 prefetch={true}
-                className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
+                className={getDashboardPendingAttendanceItemClasses()}
               >
                 <div className="flex flex-col gap-0.5 min-w-0">
                   <span className="text-sm font-semibold text-foreground truncate">
@@ -477,14 +515,14 @@ export default async function DashboardContent() {
       {/* My Agenda */}
       <section role="region" aria-label={getAgendaRegionAriaLabel()} className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground">Mi Agenda</h2>
+          <h2 className="text-sm font-bold text-foreground">{getDashboardAgendaTitleText()}</h2>
           <Link
             href="/turnos"
             prefetch={true}
             className="flex items-center text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
-            aria-label="Ver todos los turnos en agenda"
+            aria-label={getDashboardSeeAllAgendaAriaLabel()}
           >
-            Ver todos <ChevronRight className="h-3 w-3" aria-hidden="true" />
+            {getDashboardSeeAllText()} <ChevronRight className="h-3 w-3" aria-hidden="true" />
           </Link>
         </div>
         <div className="space-y-3">
@@ -521,23 +559,23 @@ export default async function DashboardContent() {
           ) : !heroActivity ? (
             <EmptyState
               icon={CalendarDays}
-              title="Tu agenda está vacía"
-              description="Sumate a un turno abierto o creá un partido con amigos."
+              title={getDashboardEmptyAgendaTitleText()}
+              description={getDashboardEmptyAgendaDescriptionText()}
               action={
                 <div className="flex flex-col gap-2 w-full">
                   <Button className="w-full h-12" asChild>
-                    <Link href="/turnos" prefetch={true}>Explorar turnos</Link>
+                    <Link href="/turnos" prefetch={true}>{getDashboardEmptyAgendaExploreButtonText()}</Link>
                   </Button>
                   <Button variant="outline" className="w-full h-12" asChild>
-                    <Link href="/turnos/nuevo" prefetch={true}>Crear un turno</Link>
+                    <Link href="/turnos/nuevo" prefetch={true}>{getDashboardEmptyAgendaCreateButtonText()}</Link>
                   </Button>
                 </div>
               }
             />
           ) : (
-            <div className="rounded-xl border border-dashed border-border p-8 flex flex-col items-center justify-center text-center">
+            <div className={getDashboardEmptyAgendaContainerClasses()}>
               <p className="text-xs text-muted-foreground">
-                No hay más actividades programadas.
+                {getDashboardNoMoreActivitiesText()}
               </p>
             </div>
           )}
@@ -548,7 +586,7 @@ export default async function DashboardContent() {
       {mySubstituteTurns.length > 0 && (
         <section role="region" aria-label={getSubstituteTurnsRegionAriaLabel()} className="space-y-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-foreground">Soy suplente</h2>
+            <h2 className="text-sm font-bold text-foreground">{getDashboardSubstituteTitleText()}</h2>
             <span className="rounded-md bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 px-1.5 py-0.5 text-xs font-bold shadow-xs">
               {mySubstituteTurns.length}
             </span>
@@ -561,7 +599,7 @@ export default async function DashboardContent() {
                   key={turn.id}
                   href={`/t/${turn.id}`}
                   prefetch={true}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs"
+                  className={getDashboardSubstituteItemClasses()}
                 >
                   <div className="flex flex-col gap-0.5 min-w-0">
                     <span className="text-sm font-semibold text-foreground truncate">
@@ -583,7 +621,7 @@ export default async function DashboardContent() {
                     </span>
                   </div>
                   {hasOpenSlot ? (
-                    <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0 shadow-xs">
+                    <span className={getDashboardOpenSlotBadgeClasses()}>
                       {getOpenSlotBadgeText()}
                     </span>
                   ) : (
@@ -600,7 +638,7 @@ export default async function DashboardContent() {
       {recommendedTurns.length > 0 && (
         <section role="region" aria-label={getRecommendedTurnsRegionAriaLabel()} className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">
-            Turnos disponibles
+            {getDashboardRecommendedTitleText()}
           </h2>
           <div className="space-y-2">
             {recommendedTurns.map((turn) => (
@@ -624,7 +662,7 @@ export default async function DashboardContent() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-foreground">
-              Últimos resultados
+              {getDashboardRecentResultsTitleText()}
             </h2>
             {recentForm.length > 0 && (
               <div
@@ -658,11 +696,11 @@ export default async function DashboardContent() {
           ) : (
             <EmptyState
               icon={Trophy}
-              title="Sin resultados todavía"
-              description="Cuando registres un marcador, vas a verlo acá."
+              title={getDashboardEmptyRecentResultsTitleText()}
+              description={getDashboardEmptyRecentResultsDescriptionText()}
               action={
                 <Button variant="secondary" className="w-full" asChild>
-                  <Link href="/match" prefetch={true}>Ver historial</Link>
+                  <Link href="/match" prefetch={true}>{getDashboardEmptyRecentResultsButtonText()}</Link>
                 </Button>
               }
             />

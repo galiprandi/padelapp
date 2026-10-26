@@ -1,4 +1,4 @@
-import { getMatchWinner } from "@/lib/utils";
+import { cn, getMatchWinner } from "@/lib/utils";
 
 export interface DashboardMatchPlayer {
   position: number;
@@ -206,4 +206,175 @@ export function getRecentResultsRegionAriaLabel(): string {
 export function formatRecentFormAriaLabel(results: ("W" | "L")[]): string {
   const formatted = results.map((r) => (r === "W" ? "G" : "P")).join(", ");
   return `Forma reciente: ${formatted}`;
+}
+
+export function getDashboardCreateTurnCtaClasses(): string {
+  return "flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getDashboardIncompleteProfileContainerClasses(): string {
+  return "flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-100 dark:bg-amber-950 dark:border-amber-800 p-4 shadow-xs";
+}
+
+export function getDashboardIncompleteProfileButtonClasses(): string {
+  return "w-full h-10 bg-amber-500 text-primary-foreground hover:bg-amber-600 text-xs font-bold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getDashboardInviteFriendsContainerClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getDashboardStatsCardClasses(): string {
+  return "group flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getDashboardHeroActivityContainerClasses(isIncompleteTurn: boolean): string {
+  return cn(
+    "space-y-3 rounded-xl border p-4 shadow-xs",
+    isIncompleteTurn ? "border-amber-500 bg-card" : "border-border bg-card",
+  );
+}
+
+export function getDashboardPendingAttendanceItemClasses(): string {
+  return "flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs";
+}
+
+export function getDashboardSubstituteItemClasses(): string {
+  return "flex items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-card p-3 transition-all hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs";
+}
+
+export function getDashboardOpenSlotBadgeClasses(): string {
+  return "rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800 px-2 py-1 text-xs font-bold shrink-0 shadow-xs";
+}
+
+export function getDashboardEmptyAgendaContainerClasses(): string {
+  return "rounded-xl border border-dashed border-border p-8 flex flex-col items-center justify-center text-center";
+}
+
+export function getCreateFirstTurnTitleText(): string {
+  return "Creá tu primer turno";
+}
+
+export function getCreateFirstTurnDescriptionText(): string {
+  return "Armá un turno, compartilo por WhatsApp y jugá.";
+}
+
+export function getIncompleteProfileTitleText(): string {
+  return "Completá tu perfil de jugador";
+}
+
+export function getIncompleteProfileDescriptionText(): string {
+  return "Elegí tu alias en la cancha para que otros jugadores te reconozcan en los partidos y ranking.";
+}
+
+export function getIncompleteProfileButtonText(): string {
+  return "Configurar mi perfil";
+}
+
+export function getInviteFriendsTitleText(): string {
+  return "Invitar amigos";
+}
+
+export function getInviteFriendsDescriptionText(): string {
+  return "Recomendá Padel Red a tu grupo de pádel. Es gratis.";
+}
+
+export function getInviteFriendsShareTitleText(): string {
+  return "Padel Red";
+}
+
+export function getInviteFriendsShareText(): string {
+  return "Turnos de pádel que no se cancelan. Entrá y organizá los turnos del club — es gratis: padelred.app";
+}
+
+export function getInviteFriendsShareSuccessToastText(): string {
+  return "Link copiado";
+}
+
+export function getInviteFriendsShareCopyToastText(): string {
+  return "Link copiado al portapapeles";
+}
+
+export function getDashboardHeroIncompleteTurnTitleText(): string {
+  return "Turno incompleto";
+}
+
+export function getDashboardHeroNextActivityTitleText(): string {
+  return "Próxima actividad";
+}
+
+export function getDashboardHeroMatchLabelText(): string {
+  return "Partido inminente";
+}
+
+export function getDashboardOpenToNetworkButtonLabel(): string {
+  return "Salvar turno: Notificar a mi red";
+}
+
+export function getDashboardPendingActionsTitleText(): string {
+  return "Acciones pendientes";
+}
+
+export function getDashboardPendingAttendanceTitleText(): string {
+  return "Marcar asistencia";
+}
+
+export function getDashboardAgendaTitleText(): string {
+  return "Mi Agenda";
+}
+
+export function getDashboardSeeAllText(): string {
+  return "Ver todos";
+}
+
+export function getDashboardSeeAllPendingAriaLabel(): string {
+  return "Ver todas las acciones pendientes";
+}
+
+export function getDashboardSeeAllAgendaAriaLabel(): string {
+  return "Ver todos los turnos en agenda";
+}
+
+export function getDashboardEmptyAgendaTitleText(): string {
+  return "Tu agenda está vacía";
+}
+
+export function getDashboardEmptyAgendaDescriptionText(): string {
+  return "Sumate a un turno abierto o creá un partido con amigos.";
+}
+
+export function getDashboardEmptyAgendaExploreButtonText(): string {
+  return "Explorar turnos";
+}
+
+export function getDashboardEmptyAgendaCreateButtonText(): string {
+  return "Crear un turno";
+}
+
+export function getDashboardNoMoreActivitiesText(): string {
+  return "No hay más actividades programadas.";
+}
+
+export function getDashboardSubstituteTitleText(): string {
+  return "Soy suplente";
+}
+
+export function getDashboardRecommendedTitleText(): string {
+  return "Turnos disponibles";
+}
+
+export function getDashboardRecentResultsTitleText(): string {
+  return "Últimos resultados";
+}
+
+export function getDashboardEmptyRecentResultsTitleText(): string {
+  return "Sin resultados todavía";
+}
+
+export function getDashboardEmptyRecentResultsDescriptionText(): string {
+  return "Cuando registres un marcador, vas a verlo acá.";
+}
+
+export function getDashboardEmptyRecentResultsButtonText(): string {
+  return "Ver historial";
 }

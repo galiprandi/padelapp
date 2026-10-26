@@ -26,6 +26,48 @@ import {
   getRecommendedTurnsRegionAriaLabel,
   getRecentResultsRegionAriaLabel,
   formatRecentFormAriaLabel,
+  getDashboardCreateTurnCtaClasses,
+  getDashboardIncompleteProfileContainerClasses,
+  getDashboardIncompleteProfileButtonClasses,
+  getDashboardInviteFriendsContainerClasses,
+  getDashboardStatsCardClasses,
+  getDashboardHeroActivityContainerClasses,
+  getDashboardPendingAttendanceItemClasses,
+  getDashboardSubstituteItemClasses,
+  getDashboardOpenSlotBadgeClasses,
+  getDashboardEmptyAgendaContainerClasses,
+  getCreateFirstTurnTitleText,
+  getCreateFirstTurnDescriptionText,
+  getIncompleteProfileTitleText,
+  getIncompleteProfileDescriptionText,
+  getIncompleteProfileButtonText,
+  getInviteFriendsTitleText,
+  getInviteFriendsDescriptionText,
+  getInviteFriendsShareTitleText,
+  getInviteFriendsShareText,
+  getInviteFriendsShareSuccessToastText,
+  getInviteFriendsShareCopyToastText,
+  getDashboardHeroIncompleteTurnTitleText,
+  getDashboardHeroNextActivityTitleText,
+  getDashboardHeroMatchLabelText,
+  getDashboardOpenToNetworkButtonLabel,
+  getDashboardPendingActionsTitleText,
+  getDashboardPendingAttendanceTitleText,
+  getDashboardAgendaTitleText,
+  getDashboardSeeAllText,
+  getDashboardSeeAllPendingAriaLabel,
+  getDashboardSeeAllAgendaAriaLabel,
+  getDashboardEmptyAgendaTitleText,
+  getDashboardEmptyAgendaDescriptionText,
+  getDashboardEmptyAgendaExploreButtonText,
+  getDashboardEmptyAgendaCreateButtonText,
+  getDashboardNoMoreActivitiesText,
+  getDashboardSubstituteTitleText,
+  getDashboardRecommendedTitleText,
+  getDashboardRecentResultsTitleText,
+  getDashboardEmptyRecentResultsTitleText,
+  getDashboardEmptyRecentResultsDescriptionText,
+  getDashboardEmptyRecentResultsButtonText,
   type DashboardMatch,
   type DashboardTurn,
 } from "../dashboard-utils";
@@ -303,6 +345,55 @@ describe("dashboard-utils", () => {
 
     it("formats recent form aria label correctly", () => {
       expect(formatRecentFormAriaLabel(["W", "L", "W"])).toBe("Forma reciente: G, P, G");
+    });
+
+    it("returns correct CSS class strings for dashboard containers and cards", () => {
+      expect(getDashboardCreateTurnCtaClasses()).toContain("flex items-center justify-between");
+      expect(getDashboardIncompleteProfileContainerClasses()).toContain("bg-amber-100");
+      expect(getDashboardIncompleteProfileButtonClasses()).toContain("bg-amber-500");
+      expect(getDashboardInviteFriendsContainerClasses()).toContain("flex items-center");
+      expect(getDashboardStatsCardClasses()).toContain("group flex flex-col");
+      expect(getDashboardHeroActivityContainerClasses(true)).toContain("border-amber-500");
+      expect(getDashboardHeroActivityContainerClasses(false)).toContain("border-border");
+      expect(getDashboardPendingAttendanceItemClasses()).toContain("border-amber-300");
+      expect(getDashboardSubstituteItemClasses()).toContain("border-amber-300");
+      expect(getDashboardOpenSlotBadgeClasses()).toContain("bg-emerald-100");
+      expect(getDashboardEmptyAgendaContainerClasses()).toContain("border-dashed");
+    });
+
+    it("returns localized UI title and description strings", () => {
+      expect(getCreateFirstTurnTitleText()).toBe("Creá tu primer turno");
+      expect(getCreateFirstTurnDescriptionText()).toBe("Armá un turno, compartilo por WhatsApp y jugá.");
+      expect(getIncompleteProfileTitleText()).toBe("Completá tu perfil de jugador");
+      expect(getIncompleteProfileDescriptionText()).toContain("Elegí tu alias");
+      expect(getIncompleteProfileButtonText()).toBe("Configurar mi perfil");
+      expect(getInviteFriendsTitleText()).toBe("Invitar amigos");
+      expect(getInviteFriendsDescriptionText()).toContain("Recomendá Padel Red");
+      expect(getInviteFriendsShareTitleText()).toBe("Padel Red");
+      expect(getInviteFriendsShareText()).toContain("Turnos de pádel que no se cancelan");
+      expect(getInviteFriendsShareSuccessToastText()).toBe("Link copiado");
+      expect(getInviteFriendsShareCopyToastText()).toBe("Link copiado al portapapeles");
+      expect(getDashboardHeroIncompleteTurnTitleText()).toBe("Turno incompleto");
+      expect(getDashboardHeroNextActivityTitleText()).toBe("Próxima actividad");
+      expect(getDashboardHeroMatchLabelText()).toBe("Partido inminente");
+      expect(getDashboardOpenToNetworkButtonLabel()).toBe("Salvar turno: Notificar a mi red");
+      expect(getDashboardPendingActionsTitleText()).toBe("Acciones pendientes");
+      expect(getDashboardPendingAttendanceTitleText()).toBe("Marcar asistencia");
+      expect(getDashboardAgendaTitleText()).toBe("Mi Agenda");
+      expect(getDashboardSeeAllText()).toBe("Ver todos");
+      expect(getDashboardSeeAllPendingAriaLabel()).toBe("Ver todas las acciones pendientes");
+      expect(getDashboardSeeAllAgendaAriaLabel()).toBe("Ver todos los turnos en agenda");
+      expect(getDashboardEmptyAgendaTitleText()).toBe("Tu agenda está vacía");
+      expect(getDashboardEmptyAgendaDescriptionText()).toContain("Sumate a un turno");
+      expect(getDashboardEmptyAgendaExploreButtonText()).toBe("Explorar turnos");
+      expect(getDashboardEmptyAgendaCreateButtonText()).toBe("Crear un turno");
+      expect(getDashboardNoMoreActivitiesText()).toBe("No hay más actividades programadas.");
+      expect(getDashboardSubstituteTitleText()).toBe("Soy suplente");
+      expect(getDashboardRecommendedTitleText()).toBe("Turnos disponibles");
+      expect(getDashboardRecentResultsTitleText()).toBe("Últimos resultados");
+      expect(getDashboardEmptyRecentResultsTitleText()).toBe("Sin resultados todavía");
+      expect(getDashboardEmptyRecentResultsDescriptionText()).toContain("Cuando registres un marcador");
+      expect(getDashboardEmptyRecentResultsButtonText()).toBe("Ver historial");
     });
   });
 });
