@@ -42,6 +42,18 @@ import {
   getTurnCardContactPlayersClasses,
   getTurnCardOpenSlotsBadgeClasses,
   getTurnCardQuickJoinButtonClasses,
+  getTurnCardActionsContainerClasses,
+  getTurnCardHeaderContainerClasses,
+  getTurnCardContentContainerClasses,
+  getTurnCardTitleContainerClasses,
+  getTurnCardClubTitleClasses,
+  getTurnCardMetaContainerClasses,
+  getTurnCardMetaItemClasses,
+  getTurnCardSubstitutesTextClasses,
+  getTurnCardContactDotClasses,
+  getTurnCardStatusBadgeContainerClasses,
+  getTurnCardSalvageWrapperClasses,
+  getTurnCardShareButtonClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -167,7 +179,7 @@ export function TurnCard({
         className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
         aria-label={getTurnCardDetailLinkAriaLabel(turn.club)}
       />
-        <div className="flex items-center gap-3">
+        <div className={getTurnCardHeaderContainerClasses()}>
           {/* Date */}
           <div className={getTurnCardDateContainerClasses()}>
             <span className="text-xs font-bold text-muted-foreground leading-none">
@@ -179,9 +191,9 @@ export function TurnCard({
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-hidden">
-            <div className="flex items-center gap-2">
-              <p className="truncate text-sm font-semibold text-foreground">
+          <div className={getTurnCardContentContainerClasses()}>
+            <div className={getTurnCardTitleContainerClasses()}>
+              <p className={getTurnCardClubTitleClasses()}>
                 {turn.club}
               </p>
               {isTodayDate && <Badge variant="success">{getTodayBadgeText()}</Badge>}
@@ -193,16 +205,16 @@ export function TurnCard({
               )}
             </div>
 
-            <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
+            <div className={getTurnCardMetaContainerClasses()}>
+              <span className={getTurnCardMetaItemClasses()}>
                 <Clock className="h-3 w-3" />
                 <LocalTime date={turn.date} />
               </span>
-              <span className="flex items-center gap-1">
+              <span className={getTurnCardMetaItemClasses()}>
                 <Users className="h-3 w-3" />
                 {turn.players.length}/{turn.maxPlayers}
                 {turn.substitutes && turn.substitutes.length > 0 && (
-                  <span className="text-muted-foreground/70">
+                  <span className={getTurnCardSubstitutesTextClasses()}>
                     {getTurnCardSubstitutesText(turn.substitutes.length)}
                   </span>
                 )}
@@ -214,7 +226,7 @@ export function TurnCard({
                 className={getTurnCardContactPlayersClasses()}
                 aria-label={getTurnCardContactPlayersAriaLabel(contactPlayers)}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
+                <span className={getTurnCardContactDotClasses()} aria-hidden="true" />
                 <span className="truncate">
                   {formatContactPlayersSummary(contactPlayers)}
                 </span>
@@ -223,7 +235,7 @@ export function TurnCard({
           </div>
 
           {/* Status badge */}
-          <div className="shrink-0">
+          <div className={getTurnCardStatusBadgeContainerClasses()}>
             {isCreator ? (
               <Badge
                 variant="primary"
@@ -265,9 +277,9 @@ export function TurnCard({
 
         {/* Actions row */}
         {(isJoined || isCreator || isSubstitute || canJoin) && (
-          <div className="relative z-10 flex items-stretch gap-2">
+          <div className={getTurnCardActionsContainerClasses()}>
             {(isJoined || isCreator) && openSlots > 0 && (
-              <div className="flex-1">
+              <div className={getTurnCardSalvageWrapperClasses()}>
                 <OpenToNetworkButton
                   turnId={turn.id}
                   club={turn.club}
@@ -305,7 +317,7 @@ export function TurnCard({
               variant="default"
               size="sm"
               iconOnly={false}
-              className="flex-1"
+              className={getTurnCardShareButtonClasses()}
             />
 
             {canJoin && (

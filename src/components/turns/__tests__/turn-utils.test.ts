@@ -308,6 +308,29 @@ import {
   getTurnFormPlayerRadioClasses,
   getTurnFormTextareaClasses,
   getTurnFormSubmitButtonClasses,
+  getTurnFilterContainerClasses,
+  getTurnFilterRadiogroupClasses,
+  getTurnFilterHeaderContainerClasses,
+  getTurnFilterHeaderTitleClasses,
+  getTurnFilterBadgeClasses,
+  getTurnFilterPrimaryButtonClasses,
+  getTurnFilterOutlineButtonClasses,
+  getCalendarTriggerButtonClasses,
+  getCalendarOptionsContainerClasses,
+  getCalendarOptionButtonClasses,
+  getLeaveTurnWasFullShareButtonClasses,
+  getTurnCardActionsContainerClasses,
+  getTurnCardHeaderContainerClasses,
+  getTurnCardContentContainerClasses,
+  getTurnCardTitleContainerClasses,
+  getTurnCardClubTitleClasses,
+  getTurnCardMetaContainerClasses,
+  getTurnCardMetaItemClasses,
+  getTurnCardSubstitutesTextClasses,
+  getTurnCardContactDotClasses,
+  getTurnCardStatusBadgeContainerClasses,
+  getTurnCardSalvageWrapperClasses,
+  getTurnCardShareButtonClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -981,6 +1004,59 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("turn filter pure styling helpers", () => {
+  it("returns correct CSS classes for turn filter components", () => {
+    expect(getTurnFilterContainerClasses()).toBe("flex flex-col gap-4");
+    expect(getTurnFilterRadiogroupClasses()).toBe("grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl shadow-xs border border-border");
+    expect(getTurnFilterHeaderContainerClasses()).toBe("flex items-center justify-between");
+    expect(getTurnFilterHeaderTitleClasses()).toBe("text-sm font-bold text-foreground");
+    expect(getTurnFilterBadgeClasses()).toBe("rounded-md bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground");
+    expect(getTurnFilterPrimaryButtonClasses()).toContain("w-full h-12 rounded-lg font-bold");
+    expect(getTurnFilterOutlineButtonClasses()).toContain("w-full h-12 rounded-lg font-bold");
+  });
+});
+
+describe("add-to-calendar pure styling helpers", () => {
+  it("returns correct CSS classes for calendar trigger button when closed", () => {
+    const classes = getCalendarTriggerButtonClasses(false);
+    expect(classes).toContain("w-full h-10 font-bold");
+    expect(classes).not.toContain("border-primary text-primary bg-muted");
+  });
+
+  it("returns correct CSS classes for calendar trigger button when open", () => {
+    const classes = getCalendarTriggerButtonClasses(true);
+    expect(classes).toContain("border-primary text-primary bg-muted");
+  });
+
+  it("returns correct CSS classes for calendar options container and buttons", () => {
+    expect(getCalendarOptionsContainerClasses()).toBe("mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150 shadow-xs");
+    expect(getCalendarOptionButtonClasses()).toBe("h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background");
+  });
+});
+
+describe("leave turn full share button pure styling helper", () => {
+  it("returns correct CSS classes for share button when turn was full", () => {
+    expect(getLeaveTurnWasFullShareButtonClasses()).toBe("w-full h-10 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all");
+  });
+});
+
+describe("turn card pure styling helpers", () => {
+  it("returns correct CSS classes for turn card layout elements", () => {
+    expect(getTurnCardActionsContainerClasses()).toBe("relative z-10 flex items-stretch gap-2");
+    expect(getTurnCardHeaderContainerClasses()).toBe("flex items-center gap-3");
+    expect(getTurnCardContentContainerClasses()).toBe("flex-1 overflow-hidden");
+    expect(getTurnCardTitleContainerClasses()).toBe("flex items-center gap-2");
+    expect(getTurnCardClubTitleClasses()).toBe("truncate text-sm font-semibold text-foreground");
+    expect(getTurnCardMetaContainerClasses()).toBe("mt-1 flex items-center gap-3 text-xs text-muted-foreground");
+    expect(getTurnCardMetaItemClasses()).toBe("flex items-center gap-1");
+    expect(getTurnCardSubstitutesTextClasses()).toBe("text-muted-foreground/70");
+    expect(getTurnCardContactDotClasses()).toBe("h-1.5 w-1.5 rounded-full bg-primary shrink-0");
+    expect(getTurnCardStatusBadgeContainerClasses()).toBe("shrink-0");
+    expect(getTurnCardSalvageWrapperClasses()).toBe("flex-1");
+    expect(getTurnCardShareButtonClasses()).toBe("flex-1");
   });
 });
 

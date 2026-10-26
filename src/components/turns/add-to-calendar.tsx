@@ -19,6 +19,9 @@ import {
   getIcsButtonText,
   getIcsButtonAriaLabel,
   getIcsDownloadFilename,
+  getCalendarTriggerButtonClasses,
+  getCalendarOptionsContainerClasses,
+  getCalendarOptionButtonClasses,
 } from "./turn-utils";
 
 interface AddToCalendarButtonProps {
@@ -93,10 +96,7 @@ export function AddToCalendarButton({
         onClick={() => setOpen(!open)}
         variant="outline"
         size="sm"
-        className={cn(
-          "w-full h-10 font-bold active:scale-[0.98] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-          open && "border-primary text-primary bg-muted",
-        )}
+        className={getCalendarTriggerButtonClasses(open)}
         aria-label={getCalendarButtonAriaLabel()}
         aria-expanded={open}
         aria-controls={`calendar-options-${turnId}`}
@@ -110,7 +110,7 @@ export function AddToCalendarButton({
           id={`calendar-options-${turnId}`}
           role="region"
           aria-label={getCalendarOptionsAriaLabel(club)}
-          className="mt-2 p-3 bg-muted border border-border rounded-lg flex flex-col gap-2 transition-all duration-150 shadow-xs"
+          className={getCalendarOptionsContainerClasses()}
         >
           <p className="text-xs font-semibold text-muted-foreground text-center">
             {getCalendarHeaderPromptText()}
@@ -120,7 +120,7 @@ export function AddToCalendarButton({
               onClick={handleGoogleCalendar}
               variant="secondary"
               size="sm"
-              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getCalendarOptionButtonClasses()}
               aria-label={getGoogleButtonAriaLabel()}
             >
               <Calendar className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
@@ -130,7 +130,7 @@ export function AddToCalendarButton({
               onClick={handleIcsDownload}
               variant="secondary"
               size="sm"
-              className="h-9 font-bold bg-card border border-border hover:bg-muted active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getCalendarOptionButtonClasses()}
               aria-label={getIcsButtonAriaLabel()}
             >
               <Download className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
