@@ -227,3 +227,64 @@ export function getPublicProfileEmptyStateProps(): {
     description: "Este jugador aún no tiene partidos confirmados.",
   };
 }
+
+export function getPublicProfileMainClasses(): string {
+  return "mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen";
+}
+
+export function getPublicProfileHeaderClasses(): string {
+  return "flex items-center gap-4";
+}
+
+export function getPublicProfileBackButtonClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getPublicProfileHeaderSkeletonClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs";
+}
+
+export function getPublicProfileAvatarBadgeClasses(): string {
+  return "border-border bg-muted text-muted-foreground font-bold px-2.5 py-0.5 text-xs shadow-xs";
+}
+
+export function getPublicProfileStreakBadgeClasses(): string {
+  return "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs shadow-xs";
+}
+
+export function getPublicProfileStatCardClasses(): string {
+  return "flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getPublicProfileNetworkCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs";
+}
+
+export function getPublicProfileNetworkBadgeClasses(): string {
+  return "font-bold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs";
+}
+
+export function getPublicProfileH2HCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs";
+}
+
+export function getPublicProfileH2HResultClasses(isViewerWinner: boolean): string {
+  return cn(
+    "text-xs font-bold",
+    isViewerWinner
+      ? "text-emerald-600 dark:text-emerald-400"
+      : "text-rose-600 dark:text-rose-400"
+  );
+}
+
+export function getPublicProfileMiniCourtContainerClasses(): string {
+  return "flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs";
+}
+
+export function getPublicProfileMiniCourtGridClasses(): string {
+  return "grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40";
+}
+
+export function getPublicProfileShareButtonClasses(): string {
+  return "h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}

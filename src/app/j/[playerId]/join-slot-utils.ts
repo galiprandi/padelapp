@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const MATCH_STATUS = {
   PENDING: "PENDING",
   CONFIRMED: "CONFIRMED",
@@ -217,4 +219,60 @@ export function formatSlotPositionText(position: number): string {
 
 export function getSignInFormLabelForMatch(club: string | null): string {
   return `Iniciá sesión para unirte a ${club ?? "el partido"}`;
+}
+
+export function getJoinSlotMainClasses(): string {
+  return "mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48";
+}
+
+export function getJoinSlotHeaderClasses(): string {
+  return "flex items-center gap-4";
+}
+
+export function getJoinSlotBackButtonClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getJoinSlotInvitationCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+export function getJoinSlotMatchCardClasses(): string {
+  return "rounded-xl border-border bg-card overflow-hidden shadow-xs";
+}
+
+export function getJoinSlotSlotItemClasses(isViewer: boolean): string {
+  return cn(
+    "flex items-center gap-3 rounded-xl p-3 border",
+    isViewer
+      ? "bg-card border-primary font-semibold shadow-xs"
+      : "bg-card border-border shadow-xs"
+  );
+}
+
+export function getJoinSlotSlotNameClasses(isOccupied: boolean): string {
+  return cn(
+    "text-sm font-bold truncate leading-tight",
+    isOccupied ? "text-foreground" : "text-muted-foreground italic"
+  );
+}
+
+export function getJoinSlotHelperWarningClasses(): string {
+  return "flex items-center gap-3 rounded-lg bg-card p-3 text-destructive border border-destructive shadow-xs";
+}
+
+export function getJoinSlotFooterContainerClasses(): string {
+  return "fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50";
+}
+
+export function getJoinSlotFooterIconBadgeClasses(): string {
+  return "h-12 w-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0 shadow-xs";
+}
+
+export function getJoinSlotAlreadyJoinedButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getJoinSlotDetailLinkClasses(): string {
+  return "block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-sm";
 }

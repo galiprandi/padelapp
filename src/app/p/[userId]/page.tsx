@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { cn, getLevelBadgeLabel } from "@/lib/utils";
+import { getLevelBadgeLabel } from "@/lib/utils";
 import {
   getCachedHeadToHeadStats,
   getCachedPublicProfileUser,
@@ -65,6 +65,20 @@ import {
   getPublicProfileLastMatchLabel,
   getPublicProfileMatchHistoryHeadingText,
   getPublicProfileEmptyStateProps,
+  getPublicProfileMainClasses,
+  getPublicProfileHeaderClasses,
+  getPublicProfileBackButtonClasses,
+  getPublicProfileHeaderSkeletonClasses,
+  getPublicProfileAvatarBadgeClasses,
+  getPublicProfileStreakBadgeClasses,
+  getPublicProfileStatCardClasses,
+  getPublicProfileNetworkCardClasses,
+  getPublicProfileNetworkBadgeClasses,
+  getPublicProfileH2HCardClasses,
+  getPublicProfileH2HResultClasses,
+  getPublicProfileMiniCourtContainerClasses,
+  getPublicProfileMiniCourtGridClasses,
+  getPublicProfileShareButtonClasses,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -77,11 +91,11 @@ export default function PublicProfilePage({
   searchParams,
 }: PublicProfilePageProps) {
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen">
-      <div className="flex items-center gap-4">
+    <div className={getPublicProfileMainClasses()}>
+      <div className={getPublicProfileHeaderClasses()}>
         <Suspense
           fallback={
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs">
+            <div className={getPublicProfileHeaderSkeletonClasses()}>
               <ChevronLeft className="h-5 w-5" />
             </div>
           }
@@ -117,7 +131,7 @@ async function DynamicBackButton({
       href={backUrl}
       prefetch={true}
       aria-label={getPublicProfileBackAriaLabel()}
-      className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border shadow-xs transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+      className={getPublicProfileBackButtonClasses()}
     >
       <ChevronLeft className="h-5 w-5" />
     </Link>
@@ -211,18 +225,18 @@ async function PublicProfileContent({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+                  className={getPublicProfileShareButtonClasses()}
                 />
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <Badge variant="outline" className="border-border bg-muted text-muted-foreground font-bold px-2.5 py-0.5 text-xs shadow-xs">
+              <Badge variant="outline" className={getPublicProfileAvatarBadgeClasses()}>
                 {getLevelBadgeLabel(user.level)}
               </Badge>
               {currentStreak >= 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800 font-bold px-3 py-0.5 text-xs shadow-xs"
+                  className={getPublicProfileStreakBadgeClasses()}
                 >
                   {getStreakBadgeText(currentStreak)}
                 </Badge>
@@ -244,7 +258,7 @@ async function PublicProfileContent({
 
         <div className="grid grid-cols-2 gap-3">
           <div
-            className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs"
+            className={getPublicProfileStatCardClasses()}
             aria-label={getWinRateAriaLabel(winRate, user.matchesPlayed)}
           >
             <div className="text-xs font-bold text-muted-foreground">
@@ -260,7 +274,7 @@ async function PublicProfileContent({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-xs">
+          <div className={getPublicProfileStatCardClasses()}>
             <div className="text-xs font-bold text-muted-foreground">
               {getPublicProfileRecentFormLabel()}
             </div>
@@ -291,7 +305,7 @@ async function PublicProfileContent({
         <section
           role="region"
           aria-label={getNetworkPositionRegionAriaLabel()}
-          className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
+          className={getPublicProfileNetworkCardClasses()}
         >
           <h3 className="text-xs font-bold text-muted-foreground">
             Red y Posición
@@ -355,7 +369,7 @@ async function PublicProfileContent({
                       </span>
                     </Link>
                   </div>
-                  <span className="font-bold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs">
+                  <span className={getPublicProfileNetworkBadgeClasses()}>
                     {formatPartnerWinsText(networkStats.successfulPartner.wins)}
                   </span>
                 </div>
@@ -381,7 +395,7 @@ async function PublicProfileContent({
                       </span>
                     </Link>
                   </div>
-                  <span className="font-bold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs">
+                  <span className={getPublicProfileNetworkBadgeClasses()}>
                     {formatRivalMatchesText(networkStats.frequentRival.matches)}
                   </span>
                 </div>
@@ -394,7 +408,7 @@ async function PublicProfileContent({
           <section
             role="region"
             aria-label={getHeadToHeadRegionAriaLabel()}
-            className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs"
+            className={getPublicProfileH2HCardClasses()}
           >
             <h3 className="text-xs font-bold text-muted-foreground">
               {getPublicProfileHeadToHeadHeadingText()}
@@ -439,11 +453,8 @@ async function PublicProfileContent({
                     {getPublicProfileLastMatchLabel()}
                   </span>
                   <span
-                    className={cn(
-                      "text-xs font-bold",
+                    className={getPublicProfileH2HResultClasses(
                       h2h.lastMatch.winner === h2h.lastMatch.viewerTeam
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-rose-600 dark:text-rose-400",
                     )}
                   >
                     {formatH2HLastMatchResultText(
@@ -514,10 +525,10 @@ function MiniCourtIndicator({
 
   return (
     <div
-      className="flex items-center justify-center shrink-0 w-10 h-7 rounded border border-border bg-card p-1 shadow-xs"
+      className={getPublicProfileMiniCourtContainerClasses()}
       aria-hidden="true"
     >
-      <div className="grid grid-cols-2 gap-0.5 w-full h-full rounded-[2px] overflow-hidden border border-border/80 bg-muted/40">
+      <div className={getPublicProfileMiniCourtGridClasses()}>
         {/* Left side (Revés) */}
         <div className={getMiniCourtIndicatorClasses(isLeft)} />
         {/* Right side (Derecha) */}

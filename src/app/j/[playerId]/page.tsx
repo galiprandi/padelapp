@@ -37,6 +37,18 @@ import {
   getJoinSlotViewMatchDetailsText,
   formatSlotPositionText,
   getSignInFormLabelForMatch,
+  getJoinSlotMainClasses,
+  getJoinSlotHeaderClasses,
+  getJoinSlotBackButtonClasses,
+  getJoinSlotInvitationCardClasses,
+  getJoinSlotMatchCardClasses,
+  getJoinSlotSlotItemClasses,
+  getJoinSlotSlotNameClasses,
+  getJoinSlotHelperWarningClasses,
+  getJoinSlotFooterContainerClasses,
+  getJoinSlotFooterIconBadgeClasses,
+  getJoinSlotAlreadyJoinedButtonClasses,
+  getJoinSlotDetailLinkClasses,
 } from "./join-slot-utils";
 
 interface JoinSlotPageProps {
@@ -45,16 +57,16 @@ interface JoinSlotPageProps {
 
 export default function JoinSlotPage({ params }: JoinSlotPageProps) {
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48">
+    <main className={getJoinSlotMainClasses()}>
       <header
         role="region"
         aria-label={getJoinSlotRegionAriaLabel("header")}
-        className="flex items-center gap-4"
+        className={getJoinSlotHeaderClasses()}
       >
         <Link
           href="/me"
           prefetch={true}
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getJoinSlotBackButtonClasses()}
           aria-label={getJoinSlotBackAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
@@ -190,7 +202,7 @@ async function JoinSlotContent({
       <section
         role="region"
         aria-label={getJoinSlotRegionAriaLabel("invitation")}
-        className="rounded-xl border border-border bg-card p-4 shadow-xs"
+        className={getJoinSlotInvitationCardClasses()}
       >
         <div className="flex items-center gap-3">
           <PlayerAvatar
@@ -213,7 +225,7 @@ async function JoinSlotContent({
       <Card
         role="region"
         aria-label={getJoinSlotRegionAriaLabel("match-detail")}
-        className="rounded-xl border-border bg-card overflow-hidden shadow-xs"
+        className={getJoinSlotMatchCardClasses()}
       >
         <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
           <CardTitle className="text-xs font-bold text-muted-foreground">
@@ -300,12 +312,7 @@ async function JoinSlotContent({
                     return (
                       <div
                         key={slot.id}
-                        className={cn(
-                          "flex items-center gap-3 rounded-xl p-3 border",
-                          isViewer
-                            ? "bg-card border-primary font-semibold shadow-xs"
-                            : "bg-card border-border shadow-xs",
-                        )}
+                        className={getJoinSlotSlotItemClasses(isViewer)}
                       >
                         <PlayerAvatar
                           name={name}
@@ -317,14 +324,7 @@ async function JoinSlotContent({
                           )}
                         />
                         <div className="flex-1 min-w-0">
-                          <p
-                            className={cn(
-                              "text-sm font-bold truncate leading-tight",
-                              isOccupied
-                                ? "text-foreground"
-                                : "text-muted-foreground italic",
-                            )}
-                          >
+                          <p className={getJoinSlotSlotNameClasses(isOccupied)}>
                             {name}
                           </p>
                           <p className="text-xs text-muted-foreground mt-0.5">
@@ -355,12 +355,12 @@ async function JoinSlotContent({
       <footer
         role="region"
         aria-label={getJoinSlotRegionAriaLabel("footer")}
-        className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50"
+        className={getJoinSlotFooterContainerClasses()}
       >
         <div className="max-w-md mx-auto">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0 shadow-xs">
+              <div className={getJoinSlotFooterIconBadgeClasses()}>
                 <UserCheck className="h-6 w-6" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
@@ -374,7 +374,7 @@ async function JoinSlotContent({
             </div>
 
             {helperMessage && (
-              <div className="flex items-center gap-3 rounded-lg bg-card p-3 text-destructive border border-destructive shadow-xs">
+              <div className={getJoinSlotHelperWarningClasses()}>
                 <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <p className="text-xs font-bold">{helperMessage}</p>
               </div>
@@ -391,7 +391,7 @@ async function JoinSlotContent({
                 <Button
                   asChild
                   variant="secondary"
-                  className="w-full h-12 rounded-lg text-base font-bold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                  className={getJoinSlotAlreadyJoinedButtonClasses()}
                 >
                   <Link href={`/match/${match.id}`} prefetch={true}>
                     {getJoinSlotAlreadyJoinedButtonText()}
@@ -409,7 +409,7 @@ async function JoinSlotContent({
               <Link
                 href={`/match/${match.id}`}
                 prefetch={true}
-                className="block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-sm"
+                className={getJoinSlotDetailLinkClasses()}
               >
                 {getJoinSlotViewMatchDetailsText()}
               </Link>
