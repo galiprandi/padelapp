@@ -397,6 +397,115 @@ export function calculateCommunitySummary(
   };
 }
 
+export interface FilterGraphDataInput {
+  nodes: GraphNode[];
+  links: GraphLink[];
+}
+
+export type LinkFilterType = "all" | "partner" | "rival" | "mixed" | "turns";
+
+/**
+ * Purely filters graph nodes and links given base graph data, search query string,
+ * link type filter, and selected community cluster ID.
+ */
+export function filterGraphData(
+  baseGraphData: FilterGraphDataInput,
+  searchQuery: string,
+  linkFilter: LinkFilterType,
+  selectedCommunity: number | null,
+): FilterGraphDataInput {
+  const communityData = filterNodesAndLinksByCommunity(
+    baseGraphData.nodes,
+    baseGraphData.links,
+    selectedCommunity,
+  );
+
+  const trimmedSearch = searchQuery.trim();
+  if (!trimmedSearch && linkFilter === "all") return communityData;
+
+  const query = normalizeSearchQuery(trimmedSearch);
+  const matchingNodes = new Set(
+    communityData.nodes
+      .filter((n) => {
+        if (!query) return true;
+        return (
+          normalizeSearchQuery(n.name || "").includes(query) ||
+          (n.alias ? normalizeSearchQuery(n.alias).includes(query) : false)
+        );
+      })
+      .map((n) => n.id),
+  );
+
+  // If searching, also include connected nodes
+  if (query && matchingNodes.size > 0) {
+    for (const link of communityData.links) {
+      const sourceId = linkNodeId(link.source);
+      const targetId = linkNodeId(link.target);
+      if (matchingNodes.has(sourceId)) matchingNodes.add(targetId);
+      if (matchingNodes.has(targetId)) matchingNodes.add(sourceId);
+    }
+  }
+
+  const filteredLinks = communityData.links.filter((link) => {
+    const sourceId = linkNodeId(link.source);
+    const targetId = linkNodeId(link.target);
+
+    // Node filter
+    if (query && !matchingNodes.has(sourceId) && !matchingNodes.has(targetId)) {
+      return false;
+    }
+
+    // Link type filter
+    if (linkFilter !== "all") {
+      const isPartner = link.partnerMatches > 0 && link.rivalMatches === 0;
+      const isRival = link.rivalMatches > 0 && link.partnerMatches === 0;
+      const isTurns =
+        link.turnsTogether > 0 &&
+        link.partnerMatches === 0 &&
+        link.rivalMatches === 0;
+      if (linkFilter === "partner" && !isPartner) return false;
+      if (linkFilter === "rival" && !isRival) return false;
+      if (linkFilter === "turns" && !isTurns) return false;
+      if (linkFilter === "mixed" && (isPartner || isRival || isTurns)) return false;
+    }
+
+    return true;
+  });
+
+  // Only include nodes that appear in filtered links (or all nodes if no link filter)
+  const nodesInLinks = new Set(
+    filteredLinks.flatMap((l) => [
+      linkNodeId(l.source),
+      linkNodeId(l.target),
+    ]),
+  );
+
+  const filteredNodes = communityData.nodes.filter((n) => {
+    if (linkFilter !== "all" && !nodesInLinks.has(n.id)) return false;
+    if (query && !matchingNodes.has(n.id)) return false;
+    return true;
+  });
+
+  return { nodes: filteredNodes, links: filteredLinks };
+}
+
+/**
+ * Calculates canvas node radius size from matches played.
+ */
+export function getGraphViewNodeCanvasSize(matchesPlayed: number | null | undefined): number {
+  const matches = Math.max(matchesPlayed || 0, 0);
+  return 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
+}
+
+/**
+ * Returns accessibility ARIA description label for graph filter chips.
+ */
+export function getFilterChipAriaLabel(label: string, active: boolean): string {
+  return active
+    ? `Filtro ${label} activo. Tocar para desactivar.`
+    : `Filtrar por ${label}.`;
+}
+
 export function getGraphViewLoadingText(): string {
   return "Cargando grafo...";
 }

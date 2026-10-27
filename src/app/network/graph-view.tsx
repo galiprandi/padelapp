@@ -40,6 +40,9 @@ import {
   calculateNetworkMultiBelonging,
   calculateNetworkExpansionPotential,
   calculateSelectedNodeGraphMetrics,
+  filterGraphData,
+  getGraphViewNodeCanvasSize,
+  getFilterChipAriaLabel,
   getGraphViewLoadingText,
   getGraphViewEmptyDataProps,
   getGraphViewScopeAriaLabel,
@@ -268,76 +271,13 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
   // Filter data based on community, search and link filter on top of base graph
   const filteredData = useMemo(() => {
-    const communityData = filterNodesAndLinksByCommunity(
-      baseGraphData.nodes,
-      baseGraphData.links,
+    const filtered = filterGraphData(
+      baseGraphData,
+      searchQuery,
+      linkFilter,
       selectedCommunity,
     );
-
-    const trimmedSearch = searchQuery.trim();
-    if (!trimmedSearch && linkFilter === "all") return communityData;
-
-    const query = normalizeSearchQuery(trimmedSearch);
-    const matchingNodes = new Set(
-      communityData.nodes
-        .filter((n) => {
-          if (!query) return true;
-          return (
-            normalizeSearchQuery(n.name || "").includes(query) ||
-            (n.alias ? normalizeSearchQuery(n.alias).includes(query) : false)
-          );
-        })
-        .map((n) => n.id),
-    );
-
-    // If searching, also include connected nodes
-    if (query && matchingNodes.size > 0) {
-      for (const link of communityData.links) {
-        const sourceId = linkNodeId(link.source);
-        const targetId = linkNodeId(link.target);
-        if (matchingNodes.has(sourceId)) matchingNodes.add(targetId);
-        if (matchingNodes.has(targetId)) matchingNodes.add(sourceId);
-      }
-    }
-
-    const filteredLinks = communityData.links.filter((link) => {
-      const sourceId = linkNodeId(link.source);
-      const targetId = linkNodeId(link.target);
-
-      // Node filter
-      if (query && !matchingNodes.has(sourceId) && !matchingNodes.has(targetId)) {
-        return false;
-      }
-
-      // Link type filter
-      if (linkFilter !== "all") {
-        const isPartner = link.partnerMatches > 0 && link.rivalMatches === 0;
-        const isRival = link.rivalMatches > 0 && link.partnerMatches === 0;
-        const isTurns = link.turnsTogether > 0 && link.partnerMatches === 0 && link.rivalMatches === 0;
-        if (linkFilter === "partner" && !isPartner) return false;
-        if (linkFilter === "rival" && !isRival) return false;
-        if (linkFilter === "turns" && !isTurns) return false;
-        if (linkFilter === "mixed" && (isPartner || isRival || isTurns)) return false;
-      }
-
-      return true;
-    });
-
-    // Only include nodes that appear in filtered links (or all nodes if no link filter)
-    const nodesInLinks = new Set(
-      filteredLinks.flatMap((l) => [
-        linkNodeId(l.source),
-        linkNodeId(l.target),
-      ]),
-    );
-
-    const filteredNodes = communityData.nodes.filter((n) => {
-      if (linkFilter !== "all" && !nodesInLinks.has(n.id)) return false;
-      if (query && !matchingNodes.has(n.id)) return false;
-      return true;
-    });
-
-    return { ...baseGraphData, nodes: filteredNodes, links: filteredLinks };
+    return { ...baseGraphData, nodes: filtered.nodes, links: filtered.links };
   }, [baseGraphData, searchQuery, linkFilter, selectedCommunity]);
 
   const graphDensityMetric = useMemo(() => {
@@ -414,7 +354,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     (node: any, ctx: any, globalScale: number) => {
       if (!isFinite(node.x) || !isFinite(node.y)) return;
       const matches = node.matchesPlayed || 0;
-      const baseSize = 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
+      const baseSize = getGraphViewNodeCanvasSize(matches);
       const isHovered = hoveredNode === node.id;
       const isSelected = selectedNode === node.id;
       const isViewer = viewerId === node.id;
@@ -858,8 +798,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         height={dimensions.height}
         nodeVal={(node) => {
           const n = node as GraphNode;
-          const matches = n.matchesPlayed || 0;
-          const r = 5 + Math.min(Math.sqrt(matches) * 1.2, 8);
+          const r = getGraphViewNodeCanvasSize(n.matchesPlayed);
           return r * r;
         }}
         nodeRelSize={1}
@@ -1445,7 +1384,7 @@ function FilterChip({
       onClick={onClick}
       className={getFilterChipClasses(active)}
       aria-pressed={active}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel || getFilterChipAriaLabel(label, active)}
     >
       {dotColor ? (
         <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: dotColor }} />
