@@ -16,6 +16,12 @@ import {
   getCatalogSkeletonMainContentClasses,
   getCatalogSkeletonHeaderClasses,
   getCatalogSkeletonSectionCardClasses,
+  getCatalogSkeletonSidebarSectionClasses,
+  getCatalogSkeletonSidebarTabContainerClasses,
+  getCatalogSkeletonMainContentListClasses,
+  getCatalogSkeletonSectionGroupClasses,
+  getCatalogSkeletonCardSectionClasses,
+  getCatalogSkeletonCardListClasses,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
@@ -215,6 +221,36 @@ describe("nav-utils", () => {
     it("getCatalogSkeletonSectionCardClasses returns section card styling classes", () => {
       expect(getCatalogSkeletonSectionCardClasses()).toContain("p-6 border border-border rounded-xl bg-card space-y-2");
       expect(getCatalogSkeletonSectionCardClasses("custom-card")).toContain("custom-card");
+    });
+
+    it("getCatalogSkeletonSidebarSectionClasses returns sidebar section container styling classes", () => {
+      expect(getCatalogSkeletonSidebarSectionClasses()).toContain("space-y-3");
+      expect(getCatalogSkeletonSidebarSectionClasses("custom-sec")).toContain("custom-sec");
+    });
+
+    it("getCatalogSkeletonSidebarTabContainerClasses returns tab container styling classes", () => {
+      expect(getCatalogSkeletonSidebarTabContainerClasses()).toContain("flex bg-muted rounded-xl p-1 border border-border");
+      expect(getCatalogSkeletonSidebarTabContainerClasses("custom-tabs")).toContain("custom-tabs");
+    });
+
+    it("getCatalogSkeletonMainContentListClasses returns main content list layout classes", () => {
+      expect(getCatalogSkeletonMainContentListClasses()).toContain("space-y-16 max-w-sm mx-auto lg:max-w-none");
+      expect(getCatalogSkeletonMainContentListClasses("custom-list")).toContain("custom-list");
+    });
+
+    it("getCatalogSkeletonSectionGroupClasses returns section group spacing classes", () => {
+      expect(getCatalogSkeletonSectionGroupClasses()).toContain("space-y-6");
+      expect(getCatalogSkeletonSectionGroupClasses("custom-group")).toContain("custom-group");
+    });
+
+    it("getCatalogSkeletonCardSectionClasses returns card section styling classes", () => {
+      expect(getCatalogSkeletonCardSectionClasses()).toContain("p-6 border border-border rounded-xl bg-card space-y-6");
+      expect(getCatalogSkeletonCardSectionClasses("custom-card-sec")).toContain("custom-card-sec");
+    });
+
+    it("getCatalogSkeletonCardListClasses returns card list styling classes", () => {
+      expect(getCatalogSkeletonCardListClasses()).toContain("p-6 border border-border rounded-xl bg-card space-y-4");
+      expect(getCatalogSkeletonCardListClasses("custom-card-list")).toContain("custom-card-list");
     });
   });
 

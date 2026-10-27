@@ -141,6 +141,66 @@ export function getCatalogSkeletonSectionCardClasses(
 }
 
 /**
+ * Genera las clases CSS para una sección contenedora de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarSectionClasses(
+  customClassName?: string,
+): string {
+  return cn("space-y-3", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el contenedor de pestañas en la barra lateral del esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarTabContainerClasses(
+  customClassName?: string,
+): string {
+  return cn("flex bg-muted rounded-xl p-1 border border-border", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la lista de secciones de contenido principal en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonMainContentListClasses(
+  customClassName?: string,
+): string {
+  return cn("space-y-16 max-w-sm mx-auto lg:max-w-none", customClassName);
+}
+
+/**
+ * Genera las clases CSS para un grupo de sección de contenido en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSectionGroupClasses(
+  customClassName?: string,
+): string {
+  return cn("space-y-6", customClassName);
+}
+
+/**
+ * Genera las clases CSS para una tarjeta de sección amplia en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardSectionClasses(
+  customClassName?: string,
+): string {
+  return cn(
+    "p-6 border border-border rounded-xl bg-card space-y-6",
+    customClassName,
+  );
+}
+
+/**
+ * Genera las clases CSS para una tarjeta de sección de lista en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardListClasses(
+  customClassName?: string,
+): string {
+  return cn(
+    "p-6 border border-border rounded-xl bg-card space-y-4",
+    customClassName,
+  );
+}
+
+/**
  * Retorna la lista de ítems principales de navegación de la aplicación.
  */
 export function getNavItems(): NavItem[] {
