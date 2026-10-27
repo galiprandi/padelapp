@@ -27,6 +27,18 @@ import {
   getJoinSlotViewMatchDetailsText,
   formatSlotPositionText,
   getSignInFormLabelForMatch,
+  getJoinSlotMainClasses,
+  getJoinSlotHeaderClasses,
+  getJoinSlotBackButtonClasses,
+  getJoinSlotInvitationCardClasses,
+  getJoinSlotMatchCardClasses,
+  getJoinSlotSlotItemClasses,
+  getJoinSlotSlotNameClasses,
+  getJoinSlotHelperWarningClasses,
+  getJoinSlotFooterContainerClasses,
+  getJoinSlotFooterIconBadgeClasses,
+  getJoinSlotAlreadyJoinedButtonClasses,
+  getJoinSlotDetailLinkClasses,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -262,6 +274,25 @@ describe("join-slot-utils", () => {
       expect(getSignInFormLabelForMatch(null)).toBe(
         "Iniciá sesión para unirte a el partido"
       );
+    });
+
+    it("returns correct CSS class strings for join slot layout and UI elements", () => {
+      expect(getJoinSlotMainClasses()).toBe("mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-48");
+      expect(getJoinSlotHeaderClasses()).toBe("flex items-center gap-4");
+      expect(getJoinSlotBackButtonClasses()).toContain("bg-muted text-muted-foreground");
+      expect(getJoinSlotInvitationCardClasses()).toBe("rounded-xl border border-border bg-card p-4 shadow-xs");
+      expect(getJoinSlotMatchCardClasses()).toBe("rounded-xl border-border bg-card overflow-hidden shadow-xs");
+      expect(getJoinSlotSlotItemClasses(true)).toContain("border-primary font-semibold");
+      expect(getJoinSlotSlotItemClasses(false)).toContain("border-border shadow-xs");
+      expect(getJoinSlotSlotNameClasses(true)).toContain("text-foreground");
+      expect(getJoinSlotSlotNameClasses(false)).toContain("text-muted-foreground italic");
+      expect(getJoinSlotHelperWarningClasses()).toContain("text-destructive");
+      expect(getJoinSlotHelperWarningClasses()).toContain("border-destructive");
+      expect(getJoinSlotFooterContainerClasses()).toContain("fixed bottom-0 left-0 right-0");
+      expect(getJoinSlotFooterIconBadgeClasses()).toContain("bg-primary");
+      expect(getJoinSlotFooterIconBadgeClasses()).toContain("text-primary-foreground");
+      expect(getJoinSlotAlreadyJoinedButtonClasses()).toContain("w-full h-12 rounded-lg");
+      expect(getJoinSlotDetailLinkClasses()).toContain("block text-center text-xs");
     });
   });
 });

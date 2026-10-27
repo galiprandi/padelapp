@@ -35,6 +35,20 @@ import {
   getPublicProfileLastMatchLabel,
   getPublicProfileMatchHistoryHeadingText,
   getPublicProfileEmptyStateProps,
+  getPublicProfileMainClasses,
+  getPublicProfileHeaderClasses,
+  getPublicProfileBackButtonClasses,
+  getPublicProfileHeaderSkeletonClasses,
+  getPublicProfileAvatarBadgeClasses,
+  getPublicProfileStreakBadgeClasses,
+  getPublicProfileStatCardClasses,
+  getPublicProfileNetworkCardClasses,
+  getPublicProfileNetworkBadgeClasses,
+  getPublicProfileH2HCardClasses,
+  getPublicProfileH2HResultClasses,
+  getPublicProfileMiniCourtContainerClasses,
+  getPublicProfileMiniCourtGridClasses,
+  getPublicProfileShareButtonClasses,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -223,6 +237,24 @@ describe("public-profile-utils", () => {
       expect(getMiniCourtIndicatorClasses(false)).toContain("bg-muted");
       expect(getRecentFormDotClasses("W")).toContain("bg-emerald-500");
       expect(getRecentFormDotClasses("L")).toContain("bg-rose-500");
+    });
+
+    it("returns correct CSS class strings for public profile layout and card elements", () => {
+      expect(getPublicProfileMainClasses()).toBe("mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen");
+      expect(getPublicProfileHeaderClasses()).toBe("flex items-center gap-4");
+      expect(getPublicProfileBackButtonClasses()).toContain("bg-muted text-muted-foreground");
+      expect(getPublicProfileHeaderSkeletonClasses()).toContain("bg-muted text-muted-foreground");
+      expect(getPublicProfileAvatarBadgeClasses()).toContain("border-border bg-muted");
+      expect(getPublicProfileStreakBadgeClasses()).toContain("bg-amber-100 text-amber-800");
+      expect(getPublicProfileStatCardClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getPublicProfileNetworkCardClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getPublicProfileNetworkBadgeClasses()).toContain("bg-muted border border-border");
+      expect(getPublicProfileH2HCardClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getPublicProfileH2HResultClasses(true)).toContain("text-emerald-600");
+      expect(getPublicProfileH2HResultClasses(false)).toContain("text-rose-600");
+      expect(getPublicProfileMiniCourtContainerClasses()).toContain("shrink-0 w-10 h-7");
+      expect(getPublicProfileMiniCourtGridClasses()).toContain("grid grid-cols-2");
+      expect(getPublicProfileShareButtonClasses()).toContain("h-8 w-8 text-muted-foreground");
     });
   });
 });
