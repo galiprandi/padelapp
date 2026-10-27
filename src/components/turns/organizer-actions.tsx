@@ -24,6 +24,9 @@ import {
   getRemovePlayerConfirmButtonClasses,
   getRemovePlayerDismissButtonClasses,
   getAssignSubstituteButtonClasses,
+  getRemovePlayerRegionContainerClasses,
+  getRemovePlayerConfirmRegionClasses,
+  getAssignSubstituteRegionContainerClasses,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -57,7 +60,7 @@ export function RemovePlayerButton({
       <div
         role="region"
         aria-label={getRemovePlayerRegionAriaLabel({ playerName, isConfirming: false })}
-        className="inline-flex items-center"
+        className={getRemovePlayerRegionContainerClasses()}
       >
         <button
           onClick={(e) => {
@@ -79,7 +82,7 @@ export function RemovePlayerButton({
       role="region"
       aria-label={getRemovePlayerRegionAriaLabel({ playerName, isConfirming: true })}
       tabIndex={-1}
-      className="inline-flex items-center gap-1.5 focus-visible:outline-none"
+      className={getRemovePlayerConfirmRegionClasses()}
       onKeyDown={(e) => {
         if (e.key === "Escape" && !isPending) {
           e.preventDefault();
@@ -154,7 +157,7 @@ export function AssignSubstituteButton({
     <div
       role="region"
       aria-label={getAssignSubstituteRegionAriaLabel(substituteName)}
-      className="inline-flex items-center"
+      className={getAssignSubstituteRegionContainerClasses()}
     >
       <button
         onClick={(e) => {
