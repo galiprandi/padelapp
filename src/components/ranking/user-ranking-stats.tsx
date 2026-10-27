@@ -15,7 +15,6 @@ import {
   getRankingBreakdownButtonAriaLabel,
   getRankingUserSummaryAriaLabel,
   getRankingRegionAriaLabel,
-  getRankingBreakdownItemLabel,
   getRankingStatLabel,
   getRankingBreakdownErrorText,
   formatRankingPositionText,
@@ -26,6 +25,19 @@ import {
   getRankingDeltaClasses,
   getUserRankingBannerContainerClasses,
   getUserRankingCardContainerClasses,
+  getRankingBreakdownBasePointsLabel,
+  getRankingBreakdownWinsLabel,
+  getRankingBreakdownStreakLabel,
+  getRankingBreakdownSetsLabel,
+  getRankingBreakdownLateLabel,
+  getRankingBreakdownNoShowLabel,
+  getRankingBreakdownDecayLabel,
+  getRankingBreakdownFinalLabel,
+  getRankingBreakdownPointsValueText,
+  getRankingBreakdownDecayMultiplierText,
+  getRankingBreakdownDividerClasses,
+  getRankingBreakdownItemRowClasses,
+  getRankingBreakdownValueClasses,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -83,7 +95,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
   return (
     <div
-      className="mt-3 border-t border-border pt-3"
+      className={getRankingBreakdownDividerClasses()}
       onKeyDown={(e) => {
         if (e.key === "Escape" && isOpen) {
           setIsOpen(false);
@@ -129,70 +141,78 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
           {!isPending && breakdown && (
             <>
-              <div className="flex justify-between items-center text-muted-foreground">
+              <div className={getRankingBreakdownItemRowClasses("default")}>
                 <span className="flex items-center gap-1">
-                  <Award className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("base")}
+                  <Award className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownBasePointsLabel()}
                 </span>
-                <span className="font-bold text-foreground">+{breakdown.basePoints} pts</span>
-              </div>
-
-              <div className="flex justify-between items-center text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("wins", breakdown.wins)}
-                </span>
-                <span className="font-bold text-foreground">
-                  {breakdown.winPoints > 0 ? `+${breakdown.winPoints}` : "0"} pts
+                <span className={getRankingBreakdownValueClasses("default")}>
+                  {getRankingBreakdownPointsValueText(breakdown.basePoints, "+")}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-muted-foreground">
+              <div className={getRankingBreakdownItemRowClasses("default")}>
                 <span className="flex items-center gap-1">
-                  <Flame className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" /> {getRankingBreakdownItemLabel("streak", breakdown.streak)}
+                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownWinsLabel(breakdown.wins)}
                 </span>
-                <span className="font-bold text-foreground">
-                  {breakdown.streakPoints > 0 ? `+${breakdown.streakPoints}` : "0"} pts
+                <span className={getRankingBreakdownValueClasses("default")}>
+                  {getRankingBreakdownPointsValueText(breakdown.winPoints)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-muted-foreground">
+              <div className={getRankingBreakdownItemRowClasses("default")}>
                 <span className="flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" /> {getRankingBreakdownItemLabel("sets")}
+                  <Flame className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" /> {getRankingBreakdownStreakLabel(breakdown.streak)}
                 </span>
-                <span className="font-bold text-foreground">
-                  {breakdown.setsWonBonus > 0 ? `+${breakdown.setsWonBonus}` : "0"} pts
+                <span className={getRankingBreakdownValueClasses("default")}>
+                  {getRankingBreakdownPointsValueText(breakdown.streakPoints)}
+                </span>
+              </div>
+
+              <div className={getRankingBreakdownItemRowClasses("default")}>
+                <span className="flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" /> {getRankingBreakdownSetsLabel()}
+                </span>
+                <span className={getRankingBreakdownValueClasses("default")}>
+                  {getRankingBreakdownPointsValueText(breakdown.setsWonBonus)}
                 </span>
               </div>
 
               {breakdown.lateCount > 0 && (
-                <div className="flex justify-between items-center text-muted-foreground">
+                <div className={getRankingBreakdownItemRowClasses("late")}>
                   <span className="flex items-center gap-1 text-amber-600">
-                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("late", breakdown.lateCount)}
+                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownLateLabel(breakdown.lateCount)}
                   </span>
-                  <span className="font-bold text-amber-600">-{breakdown.latePenalty} pts</span>
+                  <span className={getRankingBreakdownValueClasses("late")}>
+                    -{getRankingBreakdownPointsValueText(breakdown.latePenalty, "")}
+                  </span>
                 </div>
               )}
 
               {breakdown.noShowCount > 0 && (
-                <div className="flex justify-between items-center text-muted-foreground">
+                <div className={getRankingBreakdownItemRowClasses("noShow")}>
                   <span className="flex items-center gap-1 text-rose-600">
-                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("noShow", breakdown.noShowCount)}
+                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownNoShowLabel(breakdown.noShowCount)}
                   </span>
-                  <span className="font-bold text-rose-600">-{breakdown.noShowPenalty} pts</span>
+                  <span className={getRankingBreakdownValueClasses("noShow")}>
+                    -{getRankingBreakdownPointsValueText(breakdown.noShowPenalty, "")}
+                  </span>
                 </div>
               )}
 
               {breakdown.decayFactor < 1.0 && (
-                <div className="flex justify-between items-center text-amber-600 font-semibold">
+                <div className={getRankingBreakdownItemRowClasses("decay")}>
                   <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownItemLabel("decay")}
+                    <Calendar className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownDecayLabel()}
                   </span>
-                  <span>x{breakdown.decayFactor}</span>
+                  <span>{getRankingBreakdownDecayMultiplierText(breakdown.decayFactor)}</span>
                 </div>
               )}
 
-              <div className="pt-2 border-t border-border flex justify-between items-center font-bold text-sm text-foreground">
-                <span>{getRankingBreakdownItemLabel("final")}</span>
-                <span className="text-primary">{Math.round(breakdown.finalScore)} pts</span>
+              <div className={getRankingBreakdownItemRowClasses("final")}>
+                <span>{getRankingBreakdownFinalLabel()}</span>
+                <span className={getRankingBreakdownValueClasses("final")}>
+                  {getRankingBreakdownPointsValueText(breakdown.finalScore, "")}
+                </span>
               </div>
             </>
           )}

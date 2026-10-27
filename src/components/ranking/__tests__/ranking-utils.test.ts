@@ -85,6 +85,23 @@ import {
   getRankingRulesContentClasses,
   getRankingRulesFormulaBoxClasses,
   getRankingFilterContainerClasses,
+  getRankingBreakdownBasePointsLabel,
+  getRankingBreakdownWinsLabel,
+  getRankingBreakdownStreakLabel,
+  getRankingBreakdownSetsLabel,
+  getRankingBreakdownLateLabel,
+  getRankingBreakdownNoShowLabel,
+  getRankingBreakdownDecayLabel,
+  getRankingBreakdownFinalLabel,
+  getRankingBreakdownPointsValueText,
+  getRankingBreakdownDecayMultiplierText,
+  getRankingPodiumScoreText,
+  getRankingPodiumDeltaValueText,
+  getRankingBreakdownDividerClasses,
+  getRankingBreakdownItemRowClasses,
+  getRankingBreakdownValueClasses,
+  getRankingPodiumFlameBadgeClasses,
+  getRankingPodiumDeltaContainerClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -738,6 +755,43 @@ describe("Ranking Helpers", () => {
       expect(getRankingRulesFormulaBoxClasses()).toContain("rounded-lg bg-muted border");
       expect(getRankingRulesFormulaBoxClasses()).toContain("font-mono");
       expect(getRankingFilterContainerClasses()).toBe("space-y-6");
+    });
+
+    it("getRankingBreakdown labels and value formatters return expected strings", () => {
+      expect(getRankingBreakdownBasePointsLabel()).toBe("Puntos base iniciales");
+      expect(getRankingBreakdownWinsLabel(5)).toBe("Victorias (5)");
+      expect(getRankingBreakdownStreakLabel(3)).toBe("Racha actual (3 🔥)");
+      expect(getRankingBreakdownSetsLabel()).toBe("Bonus por sets ganados");
+      expect(getRankingBreakdownLateLabel(2)).toBe("Llegadas tarde (2)");
+      expect(getRankingBreakdownNoShowLabel(1)).toBe("Ausencias sin aviso (1)");
+      expect(getRankingBreakdownDecayLabel()).toBe("Decay por inactividad");
+      expect(getRankingBreakdownFinalLabel()).toBe("Puntaje recalculado");
+
+      expect(getRankingBreakdownPointsValueText(1000, "+")).toBe("+1000 pts");
+      expect(getRankingBreakdownPointsValueText(15)).toBe("+15 pts");
+      expect(getRankingBreakdownPointsValueText(0)).toBe("0 pts");
+      expect(getRankingBreakdownPointsValueText(10, "")).toBe("10 pts");
+
+      expect(getRankingBreakdownDecayMultiplierText(0.5)).toBe("x0.5");
+      expect(getRankingPodiumScoreText(1250.4)).toBe("1250 pts");
+      expect(getRankingPodiumDeltaValueText(3)).toBe("+3");
+      expect(getRankingPodiumDeltaValueText(-2)).toBe("-2");
+    });
+
+    it("getRankingBreakdown and Podium styling class helpers return expected classes", () => {
+      expect(getRankingBreakdownDividerClasses()).toBe("mt-3 border-t border-border pt-3");
+      expect(getRankingBreakdownItemRowClasses("default")).toContain("flex justify-between items-center");
+      expect(getRankingBreakdownItemRowClasses("decay")).toContain("text-amber-600 font-semibold");
+      expect(getRankingBreakdownItemRowClasses("final")).toContain("font-bold text-sm text-foreground");
+
+      expect(getRankingBreakdownValueClasses("default")).toBe("font-bold text-foreground");
+      expect(getRankingBreakdownValueClasses("late")).toBe("font-bold text-amber-600");
+      expect(getRankingBreakdownValueClasses("noShow")).toBe("font-bold text-rose-600");
+      expect(getRankingBreakdownValueClasses("final")).toBe("text-primary");
+
+      expect(getRankingPodiumFlameBadgeClasses()).toContain("font-extrabold text-orange-500");
+      expect(getRankingPodiumDeltaContainerClasses(2)).toContain("font-bold");
+      expect(getRankingPodiumDeltaContainerClasses(0)).toContain("text-muted-foreground/40");
     });
   });
 });

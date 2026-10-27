@@ -13,6 +13,10 @@ import {
   getPodiumAvatarClasses,
   getPodiumBadgeClasses,
   getPodiumPlayerNameClasses,
+  getRankingPodiumScoreText,
+  getRankingPodiumDeltaValueText,
+  getRankingPodiumFlameBadgeClasses,
+  getRankingPodiumDeltaContainerClasses,
 } from "./ranking-utils";
 
 interface PodiumPlayer {
@@ -89,7 +93,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 <span className="truncate">{isSecondViewer ? "Vos" : getRankingPlayerDisplayName(second.displayName, second.alias, "?")}</span>
                 {secondStreak >= 2 && (
                   <span
-                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    className={getRankingPodiumFlameBadgeClasses()}
                     title={getWinStreakTitle(secondStreak)}
                     aria-label={getWinStreakTitle(secondStreak)}
                   >
@@ -99,24 +103,24 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 )}
               </span>
               <span className="text-xs text-muted-foreground">
-                {Math.round(second.rankingScore)} pts
+                {getRankingPodiumScoreText(second.rankingScore)}
               </span>
               {second.rankingDelta !== undefined && second.rankingDelta !== null && second.rankingDelta !== 0 ? (
-                <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
+                <div className={getRankingPodiumDeltaContainerClasses(second.rankingDelta)}>
                   {second.rankingDelta > 0 ? (
                     <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(second.rankingDelta)}>
                       <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>+{second.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(second.rankingDelta)}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(second.rankingDelta)}>
                       <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>{second.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(second.rankingDelta)}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                <div className={getRankingPodiumDeltaContainerClasses(0)} title={getDeltaChangeTitle(0)}>
                   <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>
@@ -156,7 +160,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 <span className="truncate">{isFirstViewer ? "Vos" : getRankingPlayerDisplayName(first.displayName, first.alias, "?")}</span>
                 {firstStreak >= 2 && (
                   <span
-                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    className={getRankingPodiumFlameBadgeClasses()}
                     title={getWinStreakTitle(firstStreak)}
                     aria-label={getWinStreakTitle(firstStreak)}
                   >
@@ -166,24 +170,24 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 )}
               </span>
               <span className="text-xs font-bold text-primary">
-                {Math.round(first.rankingScore)} pts
+                {getRankingPodiumScoreText(first.rankingScore)}
               </span>
               {first.rankingDelta !== undefined && first.rankingDelta !== null && first.rankingDelta !== 0 ? (
-                <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
+                <div className={getRankingPodiumDeltaContainerClasses(first.rankingDelta)}>
                   {first.rankingDelta > 0 ? (
                     <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(first.rankingDelta)}>
                       <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>+{first.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(first.rankingDelta)}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(first.rankingDelta)}>
                       <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>{first.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(first.rankingDelta)}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                <div className={getRankingPodiumDeltaContainerClasses(0)} title={getDeltaChangeTitle(0)}>
                   <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>
@@ -223,7 +227,7 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 <span className="truncate">{isThirdViewer ? "Vos" : getRankingPlayerDisplayName(third.displayName, third.alias, "?")}</span>
                 {thirdStreak >= 2 && (
                   <span
-                    className="inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0"
+                    className={getRankingPodiumFlameBadgeClasses()}
                     title={getWinStreakTitle(thirdStreak)}
                     aria-label={getWinStreakTitle(thirdStreak)}
                   >
@@ -233,24 +237,24 @@ export function RankingPodium({ topThree, viewerId }: RankingPodiumProps) {
                 )}
               </span>
               <span className="text-xs text-muted-foreground">
-                {Math.round(third.rankingScore)} pts
+                {getRankingPodiumScoreText(third.rankingScore)}
               </span>
               {third.rankingDelta !== undefined && third.rankingDelta !== null && third.rankingDelta !== 0 ? (
-                <div className="flex items-center gap-0.5 text-[10px] font-bold mt-0.5">
+                <div className={getRankingPodiumDeltaContainerClasses(third.rankingDelta)}>
                   {third.rankingDelta > 0 ? (
                     <div className="flex items-center gap-0.5 text-primary" title={getDeltaChangeTitle(third.rankingDelta)}>
                       <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>+{third.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(third.rankingDelta)}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-0.5 text-muted-foreground" title={getDeltaChangeTitle(third.rankingDelta)}>
                       <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
-                      <span>{third.rankingDelta}</span>
+                      <span>{getRankingPodiumDeltaValueText(third.rankingDelta)}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5" title={getDeltaChangeTitle(0)}>
+                <div className={getRankingPodiumDeltaContainerClasses(0)} title={getDeltaChangeTitle(0)}>
                   <Minus className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>0</span>
                 </div>

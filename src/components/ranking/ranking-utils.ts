@@ -894,3 +894,164 @@ export function getRankingRulesFormulaBoxClasses(): string {
 export function getRankingFilterContainerClasses(): string {
   return "space-y-6";
 }
+
+/**
+ * Returns item row label text for ranking breakdown base points
+ */
+export function getRankingBreakdownBasePointsLabel(): string {
+  return getRankingBreakdownItemLabel("base");
+}
+
+/**
+ * Returns item row label text for ranking breakdown wins count
+ */
+export function getRankingBreakdownWinsLabel(wins: number): string {
+  return getRankingBreakdownItemLabel("wins", wins);
+}
+
+/**
+ * Returns item row label text for ranking breakdown streak count
+ */
+export function getRankingBreakdownStreakLabel(streak: number): string {
+  return getRankingBreakdownItemLabel("streak", streak);
+}
+
+/**
+ * Returns item row label text for ranking breakdown sets won bonus
+ */
+export function getRankingBreakdownSetsLabel(): string {
+  return getRankingBreakdownItemLabel("sets");
+}
+
+/**
+ * Returns item row label text for ranking breakdown late arrivals penalty
+ */
+export function getRankingBreakdownLateLabel(count: number): string {
+  return getRankingBreakdownItemLabel("late", count);
+}
+
+/**
+ * Returns item row label text for ranking breakdown no-show absences penalty
+ */
+export function getRankingBreakdownNoShowLabel(count: number): string {
+  return getRankingBreakdownItemLabel("noShow", count);
+}
+
+/**
+ * Returns item row label text for ranking breakdown inactivity decay
+ */
+export function getRankingBreakdownDecayLabel(): string {
+  return getRankingBreakdownItemLabel("decay");
+}
+
+/**
+ * Returns item row label text for ranking breakdown final score
+ */
+export function getRankingBreakdownFinalLabel(): string {
+  return getRankingBreakdownItemLabel("final");
+}
+
+/**
+ * Formats points value string for ranking score breakdown items
+ */
+export function getRankingBreakdownPointsValueText(
+  points: number,
+  prefix?: string
+): string {
+  const rounded = Math.round(points);
+  if (prefix !== undefined) {
+    return `${prefix}${rounded} pts`;
+  }
+  if (rounded > 0) {
+    return `+${rounded} pts`;
+  }
+  return `${rounded} pts`;
+}
+
+/**
+ * Formats decay multiplier text for inactivity reduction item
+ */
+export function getRankingBreakdownDecayMultiplierText(factor: number): string {
+  return `x${factor}`;
+}
+
+/**
+ * Formats points text for podium player card
+ */
+export function getRankingPodiumScoreText(score: number): string {
+  return `${Math.round(score)} pts`;
+}
+
+/**
+ * Formats position delta value text for podium player card
+ */
+export function getRankingPodiumDeltaValueText(delta: number): string {
+  if (delta > 0) return `+${delta}`;
+  return `${delta}`;
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown top divider
+ */
+export function getRankingBreakdownDividerClasses(): string {
+  return "mt-3 border-t border-border pt-3";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown item rows
+ */
+export function getRankingBreakdownItemRowClasses(
+  variant: "default" | "late" | "noShow" | "decay" | "final" = "default"
+): string {
+  switch (variant) {
+    case "late":
+    case "noShow":
+      return "flex justify-between items-center text-muted-foreground";
+    case "decay":
+      return "flex justify-between items-center text-amber-600 font-semibold";
+    case "final":
+      return "pt-2 border-t border-border flex justify-between items-center font-bold text-sm text-foreground";
+    case "default":
+    default:
+      return "flex justify-between items-center text-muted-foreground";
+  }
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown value text
+ */
+export function getRankingBreakdownValueClasses(
+  variant: "default" | "late" | "noShow" | "final" = "default"
+): string {
+  switch (variant) {
+    case "late":
+      return "font-bold text-amber-600";
+    case "noShow":
+      return "font-bold text-rose-600";
+    case "final":
+      return "text-primary";
+    case "default":
+    default:
+      return "font-bold text-foreground";
+  }
+}
+
+/**
+ * Returns Tailwind class names for podium streak flame badge
+ */
+export function getRankingPodiumFlameBadgeClasses(): string {
+  return "inline-flex items-center gap-0.5 font-extrabold text-orange-500 shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for podium position delta container
+ */
+export function getRankingPodiumDeltaContainerClasses(delta: number): string {
+  if (delta > 0) {
+    return "flex items-center gap-0.5 text-[10px] font-bold mt-0.5";
+  }
+  if (delta < 0) {
+    return "flex items-center gap-0.5 text-[10px] font-bold mt-0.5";
+  }
+  return "flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5";
+}
