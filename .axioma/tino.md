@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-11 — Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-10 — Extracción de Funciones Helper Puras de Maquetación y Estilos para el Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`) y Refactorización de `CatalogSkeleton` y `CatalogError`
 - [x] 2026-10-09 — Extracción de Funciones Helper Puras de Etiquetas de Botones, Tipografía y Maquetación de Tarjetas de Error (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
 - [x] 2026-10-08 — Extracción de Funciones Helper Puras de Estilos e Íconos para Toast (`src/components/toast/toast-utils.ts`), Tipografía y Esqueletos de Notificaciones (`src/components/navigation/nav-utils.ts`) y Refactorización de Componentes
@@ -80,6 +81,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-11 - Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo
+**Aprendizaje:** Encapsular las clases CSS de maquetación de secciones de la barra lateral (`getCatalogSkeletonSidebarSectionClasses`), contenedores de pestañas (`getCatalogSkeletonSidebarTabContainerClasses`), lista principal (`getCatalogSkeletonMainContentListClasses`), grupos de sección (`getCatalogSkeletonSectionGroupClasses`), y tarjetas de lista/sección (`getCatalogSkeletonCardSectionClasses`, `getCatalogSkeletonCardListClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` elimina cadenas inline de Tailwind en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Esto simplifica el mantenimiento del esqueleto del catálogo de componentes y permite auditar las reglas de estilo mediante unit tests puros.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al extender componentes del catálogo o maquetar esqueletos de carga streaming.
+
 ### 2026-10-10 - Extracción de Funciones Helper Puras de Maquetación y Estilos para Esqueleto del Catálogo y Frontera de Error
 **Aprendizaje:** Encapsular las clases CSS de maquetación de dos columnas, la barra lateral sticky y las tarjetas de sección del esqueleto de carga del catálogo (`getCatalogSkeletonContainerClasses`, `getCatalogSkeletonLayoutClasses`, `getCatalogSkeletonSidebarClasses`, `getCatalogSkeletonSidebarStickyClasses`, `getCatalogSkeletonMainContentClasses`, `getCatalogSkeletonHeaderClasses`, `getCatalogSkeletonSectionCardClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla la maquetación visual de la renderización del componente React en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Asimismo, refactorizar `CatalogError` (`src/app/catalog/error.tsx`) para consumir las utilidades puras de `src/lib/error-utils.ts` asegura coherencia estilística e interfaz accesible en pantallas de error sin tocar archivos auto-generados.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` y `error-utils.ts` al extender el catálogo de componentes o construir esqueletos y vistas de error.
