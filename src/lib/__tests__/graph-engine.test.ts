@@ -571,6 +571,9 @@ import {
   aggregateTopClubsActivity,
   sortRecommendedCandidatesBySkillDiff,
   calculateSelectedNodeGraphMetrics,
+  filterGraphData,
+  getGraphViewNodeCanvasSize,
+  getFilterChipAriaLabel,
   getNetworkErrorResetButtonText,
   getNetworkErrorHomeButtonText,
   getNetworkErrorIconBadgeClasses,
@@ -585,6 +588,74 @@ import {
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
 import type { GraphLink, GraphNode } from "@/app/network/actions";
+
+describe("filterGraphData", () => {
+  const nodes: GraphNode[] = [
+    { id: "p-01", name: "Agustín", alias: "agu", image: null, skillScore: 1100, community: 1, networkSize: 3, matchesPlayed: 10, preferredSide: "RIGHT" },
+    { id: "p-02", name: "Belasteguín", alias: "Bela", image: null, skillScore: 1200, community: 1, networkSize: 3, matchesPlayed: 12, preferredSide: "LEFT" },
+    { id: "p-03", name: "Gerónimo", alias: "Gero", image: null, skillScore: 1050, community: 2, networkSize: 2, matchesPlayed: 5, preferredSide: "RIGHT" },
+    { id: "p-04", name: "Facundo", alias: "Facu", image: null, skillScore: 1020, community: 3, networkSize: 1, matchesPlayed: 0, preferredSide: "LEFT" },
+  ];
+
+  const links: GraphLink[] = [
+    { source: "p-01", target: "p-02", rivalMatches: 0, partnerMatches: 3, winsA: 0, winsB: 0, winsTogether: 2, lossesTogether: 1, turnsTogether: 0, strength: 3 },
+    { source: "p-01", target: "p-03", rivalMatches: 3, partnerMatches: 0, winsA: 2, winsB: 1, winsTogether: 0, lossesTogether: 0, turnsTogether: 0, strength: 3 },
+    { source: "p-01", target: "p-04", rivalMatches: 0, partnerMatches: 0, winsA: 0, winsB: 0, winsTogether: 0, lossesTogether: 0, turnsTogether: 2, strength: 2 },
+  ];
+
+  const baseData = { nodes, links };
+
+  it("returns base data when no search, linkFilter is 'all', and community is null", () => {
+    const result = filterGraphData(baseData, "", "all", null);
+    expect(result.nodes).toHaveLength(4);
+    expect(result.links).toHaveLength(3);
+  });
+
+  it("filters graph by community cluster", () => {
+    const result = filterGraphData(baseData, "", "all", 1);
+    expect(result.nodes).toHaveLength(2);
+    expect(result.nodes.map((n) => n.id)).toEqual(["p-01", "p-02"]);
+    expect(result.links).toHaveLength(1);
+  });
+
+  it("filters graph by search query matching node name or alias", () => {
+    const result = filterGraphData(baseData, "Bela", "all", null);
+    expect(result.nodes.map((n) => n.id)).toContain("p-02");
+    expect(result.nodes.map((n) => n.id)).toContain("p-01"); // connected node included
+  });
+
+  it("filters graph by link type 'partner'", () => {
+    const result = filterGraphData(baseData, "", "partner", null);
+    expect(result.links).toHaveLength(1);
+    expect(result.links[0].source).toBe("p-01");
+    expect(result.links[0].target).toBe("p-02");
+  });
+
+  it("filters graph by link type 'rival'", () => {
+    const result = filterGraphData(baseData, "", "rival", null);
+    expect(result.links).toHaveLength(1);
+    expect(result.links[0].target).toBe("p-03");
+  });
+
+  it("filters graph by link type 'turns'", () => {
+    const result = filterGraphData(baseData, "", "turns", null);
+    expect(result.links).toHaveLength(1);
+    expect(result.links[0].target).toBe("p-04");
+  });
+});
+
+describe("getGraphViewNodeCanvasSize and getFilterChipAriaLabel", () => {
+  it("calculates node canvas radius properly based on matches played", () => {
+    expect(getGraphViewNodeCanvasSize(0)).toBe(5);
+    expect(getGraphViewNodeCanvasSize(null)).toBe(5);
+    expect(getGraphViewNodeCanvasSize(16)).toBe(5 + 4 * 1.2); // 9.8
+  });
+
+  it("formats filter chip ARIA label correctly depending on active state", () => {
+    expect(getFilterChipAriaLabel("Parejas", true)).toBe("Filtro Parejas activo. Tocar para desactivar.");
+    expect(getFilterChipAriaLabel("Rivales", false)).toBe("Filtrar por Rivales.");
+  });
+});
 
 describe("calculateSelectedNodeGraphMetrics", () => {
   const nodes: GraphNode[] = [
