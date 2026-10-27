@@ -2837,6 +2837,111 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for turn public details outer container layout.
+ */
+export function getTurnPublicDetailsContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for turn public details header container layout.
+ */
+export function getTurnPublicDetailsHeaderContainerClasses(): string {
+  return "flex flex-col gap-4";
+}
+
+/**
+ * Format CSS classes for turn public details info grid layout.
+ */
+export function getTurnPublicDetailsGridDividerClasses(): string {
+  return "grid grid-cols-1 gap-px bg-border";
+}
+
+/**
+ * Format CSS classes for turn public details time info card item.
+ */
+export function getTurnPublicDetailsTimeCardClasses(): string {
+  return "bg-card p-4 flex flex-col gap-1";
+}
+
+/**
+ * Format CSS classes for turn public details location info card item.
+ */
+export function getTurnPublicDetailsLocationCardClasses(): string {
+  return "bg-card p-4 flex items-center gap-4 border-t border-border";
+}
+
+/**
+ * Format CSS classes for turn public details location icon badge container.
+ */
+export function getTurnPublicDetailsLocationIconBadgeClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0";
+}
+
+/**
+ * Format CSS classes for turn public details slots progress card item.
+ */
+export function getTurnPublicDetailsSlotsProgressCardClasses(): string {
+  return "bg-card p-4 border-t border-border flex flex-col gap-2";
+}
+
+/**
+ * Format CSS classes for turn public details add to calendar card container.
+ */
+export function getTurnPublicDetailsCalendarContainerClasses(): string {
+  return "p-4 border-t border-border bg-card";
+}
+
+/**
+ * Format CSS classes for turn public details enrolled players section layout.
+ */
+export function getTurnPublicDetailsEnrolledSectionClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Format CSS classes for turn public details enrolled players section header.
+ */
+export function getTurnPublicDetailsEnrolledHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for turn public details suggested contacts section layout.
+ */
+export function getTurnPublicDetailsSuggestedSectionClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Format CSS classes for turn public details suggested contacts section header.
+ */
+export function getTurnPublicDetailsSuggestedHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for remove player region wrapper in organizer actions.
+ */
+export function getRemovePlayerRegionContainerClasses(): string {
+  return "inline-flex items-center";
+}
+
+/**
+ * Format CSS classes for remove player confirm region wrapper in organizer actions.
+ */
+export function getRemovePlayerConfirmRegionClasses(): string {
+  return "inline-flex items-center gap-1.5 focus-visible:outline-none";
+}
+
+/**
+ * Format CSS classes for assign substitute region wrapper in organizer actions.
+ */
+export function getAssignSubstituteRegionContainerClasses(): string {
+  return "inline-flex items-center";
+}
+
+/**
  * Format CSS classes for turn filter section container.
  */
 export function getTurnFilterContainerClasses(): string {

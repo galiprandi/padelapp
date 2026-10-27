@@ -96,6 +96,18 @@ import {
   getTurnPublicDetailsSubstituteItemClasses,
   getTurnShareData,
   getTurnShareText,
+  getTurnPublicDetailsContainerClasses,
+  getTurnPublicDetailsHeaderContainerClasses,
+  getTurnPublicDetailsGridDividerClasses,
+  getTurnPublicDetailsTimeCardClasses,
+  getTurnPublicDetailsLocationCardClasses,
+  getTurnPublicDetailsLocationIconBadgeClasses,
+  getTurnPublicDetailsSlotsProgressCardClasses,
+  getTurnPublicDetailsCalendarContainerClasses,
+  getTurnPublicDetailsEnrolledSectionClasses,
+  getTurnPublicDetailsEnrolledHeaderClasses,
+  getTurnPublicDetailsSuggestedSectionClasses,
+  getTurnPublicDetailsSuggestedHeaderClasses,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -233,8 +245,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   if (isCancelled) {
     const cancelledHeader = getTurnCancelledHeaderProps();
     return (
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
+      <div className={getTurnPublicDetailsContainerClasses()}>
+        <div className={getTurnPublicDetailsHeaderContainerClasses()}>
           <Link
             href={viewerId ? "/me" : "/"}
             prefetch={true}
@@ -280,7 +292,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
   const urgencyText = getTurnUrgencyBadgeText(turn.date, isFull);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={getTurnPublicDetailsContainerClasses()}>
       <div className="flex items-center gap-4">
         <Link
           href={viewerId ? "/me" : "/"}
@@ -361,8 +373,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-px bg-border">
-          <div className="bg-card p-4 flex flex-col gap-1">
+        <div className={getTurnPublicDetailsGridDividerClasses()}>
+          <div className={getTurnPublicDetailsTimeCardClasses()}>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="text-xs font-semibold">{getTurnTimeLabel()}</span>
@@ -372,8 +384,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             </p>
           </div>
 
-          <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0">
+          <div className={getTurnPublicDetailsLocationCardClasses()}>
+            <div className={getTurnPublicDetailsLocationIconBadgeClasses()}>
               <MapPin className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
@@ -384,7 +396,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             </div>
           </div>
 
-          <div className="bg-card p-4 border-t border-border flex flex-col gap-2">
+          <div className={getTurnPublicDetailsSlotsProgressCardClasses()}>
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-muted-foreground">{getTurnCoveredSlotsLabel()}</span>
               <span className="text-xs font-bold text-foreground tabular-nums">
@@ -417,7 +429,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         )}
 
         {(isJoined || isCreator) && (
-          <div className="p-4 border-t border-border bg-card">
+          <div className={getTurnPublicDetailsCalendarContainerClasses()}>
             <AddToCalendarButton
               turnId={id}
               club={turn.club}
@@ -432,9 +444,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
       <section
         role="region"
         aria-label={getTurnEnrolledRegionAriaLabel()}
-        className="space-y-4"
+        className={getTurnPublicDetailsEnrolledSectionClasses()}
       >
-        <div className="flex items-center justify-between">
+        <div className={getTurnPublicDetailsEnrolledHeaderClasses()}>
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             {getTurnEnrolledSectionTitle()}
@@ -559,9 +571,9 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             count: Math.min(suggestedContacts.length, 4),
             openSlots: openSlotsCount,
           })}
-          className="space-y-4"
+          className={getTurnPublicDetailsSuggestedSectionClasses()}
         >
-          <div className="flex items-center justify-between">
+          <div className={getTurnPublicDetailsSuggestedHeaderClasses()}>
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
               {getTurnSuggestedContactsHeaderProps().title}

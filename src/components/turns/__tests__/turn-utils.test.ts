@@ -331,6 +331,21 @@ import {
   getTurnCardStatusBadgeContainerClasses,
   getTurnCardSalvageWrapperClasses,
   getTurnCardShareButtonClasses,
+  getTurnPublicDetailsContainerClasses,
+  getTurnPublicDetailsHeaderContainerClasses,
+  getTurnPublicDetailsGridDividerClasses,
+  getTurnPublicDetailsTimeCardClasses,
+  getTurnPublicDetailsLocationCardClasses,
+  getTurnPublicDetailsLocationIconBadgeClasses,
+  getTurnPublicDetailsSlotsProgressCardClasses,
+  getTurnPublicDetailsCalendarContainerClasses,
+  getTurnPublicDetailsEnrolledSectionClasses,
+  getTurnPublicDetailsEnrolledHeaderClasses,
+  getTurnPublicDetailsSuggestedSectionClasses,
+  getTurnPublicDetailsSuggestedHeaderClasses,
+  getRemovePlayerRegionContainerClasses,
+  getRemovePlayerConfirmRegionClasses,
+  getAssignSubstituteRegionContainerClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1004,6 +1019,29 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("Turn public details and organizer actions pure styling helpers batch", () => {
+  it("returns correct CSS classes for turn public details container layouts and cards", () => {
+    expect(getTurnPublicDetailsContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getTurnPublicDetailsHeaderContainerClasses()).toBe("flex flex-col gap-4");
+    expect(getTurnPublicDetailsGridDividerClasses()).toBe("grid grid-cols-1 gap-px bg-border");
+    expect(getTurnPublicDetailsTimeCardClasses()).toBe("bg-card p-4 flex flex-col gap-1");
+    expect(getTurnPublicDetailsLocationCardClasses()).toBe("bg-card p-4 flex items-center gap-4 border-t border-border");
+    expect(getTurnPublicDetailsLocationIconBadgeClasses()).toBe("flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary shrink-0");
+    expect(getTurnPublicDetailsSlotsProgressCardClasses()).toBe("bg-card p-4 border-t border-border flex flex-col gap-2");
+    expect(getTurnPublicDetailsCalendarContainerClasses()).toBe("p-4 border-t border-border bg-card");
+    expect(getTurnPublicDetailsEnrolledSectionClasses()).toBe("space-y-4");
+    expect(getTurnPublicDetailsEnrolledHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getTurnPublicDetailsSuggestedSectionClasses()).toBe("space-y-4");
+    expect(getTurnPublicDetailsSuggestedHeaderClasses()).toBe("flex items-center justify-between");
+  });
+
+  it("returns correct CSS classes for organizer action region wrappers", () => {
+    expect(getRemovePlayerRegionContainerClasses()).toBe("inline-flex items-center");
+    expect(getRemovePlayerConfirmRegionClasses()).toBe("inline-flex items-center gap-1.5 focus-visible:outline-none");
+    expect(getAssignSubstituteRegionContainerClasses()).toBe("inline-flex items-center");
   });
 });
 
