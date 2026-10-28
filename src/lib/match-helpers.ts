@@ -510,3 +510,150 @@ export function getMatchListPendingConfirmLabel(): string {
 export function getMatchListLoginButtonText(): string {
   return "Ir al login";
 }
+
+/**
+ * Returns CSS classes for the main match list layout container.
+ */
+export function getMatchListMainContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Returns CSS classes for the match list header layout container.
+ */
+export function getMatchListHeaderContainerClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns CSS classes for the match list heading title.
+ */
+export function getMatchListHeadingTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for the match list heading description.
+ */
+export function getMatchListHeadingDescriptionClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for the match summary section card container.
+ */
+export function getMatchListSummaryCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for the match summary metric grid layout container.
+ */
+export function getMatchListSummaryGridClasses(): string {
+  return "grid grid-cols-3 gap-4";
+}
+
+/**
+ * Returns CSS classes for match summary metric labels.
+ */
+export function getMatchListSummaryMetricLabelClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for match summary metric numerical values.
+ */
+export function getMatchListSummaryMetricValueClasses(isHighlight: boolean = false): string {
+  return isHighlight ? "text-xl font-bold text-primary" : "text-xl font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for match summary partner/nemesis relations container.
+ */
+export function getMatchListSummaryRelationsContainerClasses(): string {
+  return "mt-3 pt-3 border-t border-border flex flex-col gap-1.5";
+}
+
+/**
+ * Returns CSS classes for match summary relation partner/nemesis profile link.
+ */
+export function getMatchListSummaryRelationLinkClasses(): string {
+  return "text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]";
+}
+
+/**
+ * Returns CSS classes for pending matches section header container.
+ */
+export function getMatchListPendingHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns CSS classes for pending matches section title and badge group container.
+ */
+export function getMatchListPendingHeaderGroupClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Returns CSS classes for pending matches count badge.
+ */
+export function getMatchListPendingBadgeClasses(): string {
+  return "rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground";
+}
+
+/**
+ * Returns CSS classes for see all notifications link in pending matches.
+ */
+export function getMatchListPendingNotificationsLinkClasses(): string {
+  return "flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all";
+}
+
+/**
+ * Returns CSS classes for pending matches item list container.
+ */
+export function getMatchListPendingListContainerClasses(): string {
+  return "flex flex-col gap-2";
+}
+
+/**
+ * Returns CSS classes for history matches section layout container.
+ */
+export function getMatchListHistoryContainerClasses(): string {
+  return "flex flex-col gap-3";
+}
+
+/**
+ * Returns CSS classes for history matches list container.
+ */
+export function getMatchListHistoryGroupListClasses(): string {
+  return "flex flex-col gap-4";
+}
+
+/**
+ * Returns CSS classes for history matches month group container.
+ */
+export function getMatchListHistoryMonthGroupClasses(): string {
+  return "flex flex-col gap-2";
+}
+
+/**
+ * Returns CSS classes for history matches month title.
+ */
+export function getMatchListHistoryMonthTitleClasses(): string {
+  return "text-xs font-semibold text-muted-foreground capitalize";
+}
+
+/**
+ * Returns CSS classes for match list unauthenticated login prompt container.
+ */
+export function getMatchListAuthPromptContainerClasses(): string {
+  return "rounded-xl border border-border bg-card p-6 text-center shadow-xs";
+}
+
+/**
+ * Returns CSS classes for match list unauthenticated login prompt description text.
+ */
+export function getMatchListAuthPromptDescriptionClasses(): string {
+  return "text-sm text-muted-foreground mb-3";
+}
