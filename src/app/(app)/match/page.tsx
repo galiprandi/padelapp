@@ -34,15 +34,36 @@ import {
   getMatchListPendingScoreLabel,
   getMatchListPendingConfirmLabel,
   getMatchListLoginButtonText,
+  getMatchListMainContainerClasses,
+  getMatchListHeaderContainerClasses,
+  getMatchListHeadingTitleClasses,
+  getMatchListHeadingDescriptionClasses,
+  getMatchListSummaryCardClasses,
+  getMatchListSummaryGridClasses,
+  getMatchListSummaryMetricLabelClasses,
+  getMatchListSummaryMetricValueClasses,
+  getMatchListSummaryRelationsContainerClasses,
+  getMatchListSummaryRelationLinkClasses,
+  getMatchListPendingHeaderClasses,
+  getMatchListPendingHeaderGroupClasses,
+  getMatchListPendingBadgeClasses,
+  getMatchListPendingNotificationsLinkClasses,
+  getMatchListPendingListContainerClasses,
+  getMatchListHistoryContainerClasses,
+  getMatchListHistoryGroupListClasses,
+  getMatchListHistoryMonthGroupClasses,
+  getMatchListHistoryMonthTitleClasses,
+  getMatchListAuthPromptContainerClasses,
+  getMatchListAuthPromptDescriptionClasses,
 } from "@/lib/match-helpers";
 
 export default function MatchListPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className={getMatchListMainContainerClasses()}>
+      <div className={getMatchListHeaderContainerClasses()}>
         <div>
-          <h1 className="text-xl font-bold text-foreground">{getMatchListHeadingTitle()}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className={getMatchListHeadingTitleClasses()}>{getMatchListHeadingTitle()}</h1>
+          <p className={getMatchListHeadingDescriptionClasses()}>
             {getMatchListHeadingDescription()}
           </p>
         </div>
@@ -120,50 +141,50 @@ async function MatchList() {
   const groupedMatches = groupMatchesByMonth(confirmedMatches);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={getMatchListMainContainerClasses()}>
       {viewerId && summaryStats.totalMatches > 0 && (
         <section
           role="region"
           aria-label={getMatchListSectionAriaLabel("summary")}
-          className="rounded-xl border border-border bg-card p-4 shadow-xs"
+          className={getMatchListSummaryCardClasses()}
         >
           <h2 className="text-sm font-bold text-foreground mb-3">{getMatchSummaryHeadingTitle()}</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className={getMatchListSummaryGridClasses()}>
             <div>
-              <p className="text-xs text-muted-foreground">{getMatchSummaryMatchesLabel()}</p>
-              <p className="text-xl font-bold text-foreground">
+              <p className={getMatchListSummaryMetricLabelClasses()}>{getMatchSummaryMatchesLabel()}</p>
+              <p className={getMatchListSummaryMetricValueClasses(false)}>
                 {summaryStats.totalMatches}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{getMatchSummaryWinRateLabel()}</p>
-              <p className="text-xl font-bold text-primary">{summaryStats.winRate}%</p>
+              <p className={getMatchListSummaryMetricLabelClasses()}>{getMatchSummaryWinRateLabel()}</p>
+              <p className={getMatchListSummaryMetricValueClasses(true)}>{summaryStats.winRate}%</p>
             </div>
             {summaryStats.currentStreak >= 2 ? (
               <div>
-                <p className="text-xs text-muted-foreground">{getMatchSummaryStreakLabel()}</p>
-                <p className="text-xl font-bold text-primary">
+                <p className={getMatchListSummaryMetricLabelClasses()}>{getMatchSummaryStreakLabel()}</p>
+                <p className={getMatchListSummaryMetricValueClasses(true)}>
                   {summaryStats.currentStreak}W
                 </p>
               </div>
             ) : (
               <div>
-                <p className="text-xs text-muted-foreground">{getMatchSummaryWinsLabel()}</p>
-                <p className="text-xl font-bold text-foreground">
+                <p className={getMatchListSummaryMetricLabelClasses()}>{getMatchSummaryWinsLabel()}</p>
+                <p className={getMatchListSummaryMetricValueClasses(false)}>
                   {summaryStats.wins}
                 </p>
               </div>
             )}
           </div>
           {(summaryStats.bestPartner || summaryStats.nemesis) && (
-            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-1.5">
+            <div className={getMatchListSummaryRelationsContainerClasses()}>
               {summaryStats.bestPartner && (
-                <p className="text-xs text-muted-foreground">
+                <p className={getMatchListSummaryMetricLabelClasses()}>
                   {getMatchSummaryBestPartnerLabel()}{" "}
                   <Link
                     href={`/p/${summaryStats.bestPartner.id}`}
                     prefetch={true}
-                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]"
+                    className={getMatchListSummaryRelationLinkClasses()}
                   >
                     {summaryStats.bestPartner.name}
                   </Link>{" "}
@@ -171,12 +192,12 @@ async function MatchList() {
                 </p>
               )}
               {summaryStats.nemesis && (
-                <p className="text-xs text-muted-foreground">
+                <p className={getMatchListSummaryMetricLabelClasses()}>
                   {getMatchSummaryNemesisLabel()}{" "}
                   <Link
                     href={`/p/${summaryStats.nemesis.id}`}
                     prefetch={true}
-                    className="text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]"
+                    className={getMatchListSummaryRelationLinkClasses()}
                   >
                     {summaryStats.nemesis.name}
                   </Link>{" "}
@@ -192,12 +213,12 @@ async function MatchList() {
         <section
           role="region"
           aria-label={getMatchListSectionAriaLabel("pending")}
-          className="flex flex-col gap-3"
+          className={getMatchListHistoryContainerClasses()}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className={getMatchListPendingHeaderClasses()}>
+            <div className={getMatchListPendingHeaderGroupClasses()}>
               <h2 className="text-sm font-bold text-foreground">{getMatchListPendingHeadingTitle()}</h2>
-              <span className="rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+              <span className={getMatchListPendingBadgeClasses()}>
                 {pendingActions.length}
               </span>
             </div>
@@ -206,13 +227,13 @@ async function MatchList() {
                 href="/notifications"
                 prefetch={true}
                 aria-label={getMatchListSeeAllNotificationsAriaLabel(pendingActions.length)}
-                className="flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
+                className={getMatchListPendingNotificationsLinkClasses()}
               >
                 {getMatchListSeeAllNotificationsText()} <ChevronRight className="h-3 w-3" aria-hidden="true" />
               </Link>
             )}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className={getMatchListPendingListContainerClasses()}>
             {pendingActions.slice(0, 3).map((match) => {
               const needsScore = !match.score;
               return (
@@ -236,19 +257,19 @@ async function MatchList() {
       <section
         role="region"
         aria-label={getMatchListSectionAriaLabel("history")}
-        className="flex flex-col gap-3"
+        className={getMatchListHistoryContainerClasses()}
       >
         <h2 className="text-sm font-bold text-foreground">{getMatchListHistoryHeadingTitle()}</h2>
         {viewerId ? (
           confirmedMatches.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className={getMatchListHistoryGroupListClasses()}>
               {Object.entries(groupedMatches).map(
                 ([monthYear, monthMatches]) => (
-                  <div key={monthYear} className="flex flex-col gap-2">
-                    <h3 className="text-xs font-semibold text-muted-foreground capitalize">
+                  <div key={monthYear} className={getMatchListHistoryMonthGroupClasses()}>
+                    <h3 className={getMatchListHistoryMonthTitleClasses()}>
                       {monthYear}
                     </h3>
-                    <div className="flex flex-col gap-2">
+                    <div className={getMatchListPendingListContainerClasses()}>
                       {(monthMatches as MatchResultCompactMatch[]).map((match: MatchResultCompactMatch) => (
                         <MatchResultCompact
                           key={match.id}
@@ -278,8 +299,8 @@ async function MatchList() {
             );
           })()
         ) : (
-          <div className="rounded-xl border border-border bg-card p-6 text-center shadow-xs">
-            <p className="text-sm text-muted-foreground mb-3">
+          <div className={getMatchListAuthPromptContainerClasses()}>
+            <p className={getMatchListAuthPromptDescriptionClasses()}>
               {getMatchListAuthPromptText()}
             </p>
             <Button asChild className="w-full">
@@ -298,12 +319,12 @@ function MatchListSkeleton() {
       role="region"
       aria-label={getMatchListSkeletonAriaLabel()}
       aria-busy="true"
-      className="flex flex-col gap-6"
+      className={getMatchListMainContainerClasses()}
     >
       {/* Resumen skeleton */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className={getMatchListSummaryCardClasses()}>
         <Skeleton className="h-4 w-20 mb-3" />
-        <div className="grid grid-cols-3 gap-4">
+        <div className={getMatchListSummaryGridClasses()}>
           <div>
             <Skeleton className="h-3 w-12 mb-1" />
             <Skeleton className="h-6 w-8" />

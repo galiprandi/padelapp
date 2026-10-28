@@ -38,6 +38,27 @@ import {
   getMatchListPendingScoreLabel,
   getMatchListPendingConfirmLabel,
   getMatchListLoginButtonText,
+  getMatchListMainContainerClasses,
+  getMatchListHeaderContainerClasses,
+  getMatchListHeadingTitleClasses,
+  getMatchListHeadingDescriptionClasses,
+  getMatchListSummaryCardClasses,
+  getMatchListSummaryGridClasses,
+  getMatchListSummaryMetricLabelClasses,
+  getMatchListSummaryMetricValueClasses,
+  getMatchListSummaryRelationsContainerClasses,
+  getMatchListSummaryRelationLinkClasses,
+  getMatchListPendingHeaderClasses,
+  getMatchListPendingHeaderGroupClasses,
+  getMatchListPendingBadgeClasses,
+  getMatchListPendingNotificationsLinkClasses,
+  getMatchListPendingListContainerClasses,
+  getMatchListHistoryContainerClasses,
+  getMatchListHistoryGroupListClasses,
+  getMatchListHistoryMonthGroupClasses,
+  getMatchListHistoryMonthTitleClasses,
+  getMatchListAuthPromptContainerClasses,
+  getMatchListAuthPromptDescriptionClasses,
 } from "@/lib/match-helpers";
 import { getMatchWinner } from "@/lib/utils";
 
@@ -340,6 +361,42 @@ describe("assignUserToMatchSlotValidation", () => {
     expect(validateAssignmentInput("org-1", "org-1", "PENDING", "s-1", "u-1")).toEqual({
       status: "ok",
     });
+  });
+});
+
+describe("matchListStylingClassesHelpers", () => {
+  it("returns correct layout container CSS classes", () => {
+    expect(getMatchListMainContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getMatchListHeaderContainerClasses()).toBe("flex items-center justify-between");
+    expect(getMatchListHeadingTitleClasses()).toBe("text-xl font-bold text-foreground");
+    expect(getMatchListHeadingDescriptionClasses()).toBe("text-sm text-muted-foreground");
+  });
+
+  it("returns correct summary card and grid CSS classes", () => {
+    expect(getMatchListSummaryCardClasses()).toBe("rounded-xl border border-border bg-card p-4 shadow-xs");
+    expect(getMatchListSummaryGridClasses()).toBe("grid grid-cols-3 gap-4");
+    expect(getMatchListSummaryMetricLabelClasses()).toBe("text-xs text-muted-foreground");
+    expect(getMatchListSummaryMetricValueClasses(false)).toBe("text-xl font-bold text-foreground");
+    expect(getMatchListSummaryMetricValueClasses(true)).toBe("text-xl font-bold text-primary");
+    expect(getMatchListSummaryRelationsContainerClasses()).toBe("mt-3 pt-3 border-t border-border flex flex-col gap-1.5");
+    expect(getMatchListSummaryRelationLinkClasses()).toBe("text-foreground font-semibold hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98]");
+  });
+
+  it("returns correct pending matches CSS classes", () => {
+    expect(getMatchListPendingHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getMatchListPendingHeaderGroupClasses()).toBe("flex items-center gap-2");
+    expect(getMatchListPendingBadgeClasses()).toBe("rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground");
+    expect(getMatchListPendingNotificationsLinkClasses()).toBe("flex items-center gap-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all");
+    expect(getMatchListPendingListContainerClasses()).toBe("flex flex-col gap-2");
+  });
+
+  it("returns correct history matches and auth prompt CSS classes", () => {
+    expect(getMatchListHistoryContainerClasses()).toBe("flex flex-col gap-3");
+    expect(getMatchListHistoryGroupListClasses()).toBe("flex flex-col gap-4");
+    expect(getMatchListHistoryMonthGroupClasses()).toBe("flex flex-col gap-2");
+    expect(getMatchListHistoryMonthTitleClasses()).toBe("text-xs font-semibold text-muted-foreground capitalize");
+    expect(getMatchListAuthPromptContainerClasses()).toBe("rounded-xl border border-border bg-card p-6 text-center shadow-xs");
+    expect(getMatchListAuthPromptDescriptionClasses()).toBe("text-sm text-muted-foreground mb-3");
   });
 });
 
