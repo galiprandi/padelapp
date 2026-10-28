@@ -14,6 +14,18 @@ import {
   getCatalogSkeletonSectionGroupClasses,
   getCatalogSkeletonCardSectionClasses,
   getCatalogSkeletonCardListClasses,
+  getCatalogSkeletonSidebarHeadingTitleClasses,
+  getCatalogSkeletonSidebarTabButtonClasses,
+  getCatalogSkeletonSidebarItemListClasses,
+  getCatalogSkeletonSidebarItemClasses,
+  getCatalogSkeletonHeaderTitleClasses,
+  getCatalogSkeletonHeaderSubtitleClasses,
+  getCatalogSkeletonSectionTitleClasses,
+  getCatalogSkeletonInputClasses,
+  getCatalogSkeletonButtonClasses,
+  getCatalogSkeletonChipGroupClasses,
+  getCatalogSkeletonChipClasses,
+  getCatalogSkeletonCardItemClasses,
 } from "@/components/navigation/nav-utils";
 
 export function CatalogSkeleton() {
@@ -29,18 +41,18 @@ export function CatalogSkeleton() {
         <aside className={getCatalogSkeletonSidebarClasses()}>
           <div className={getCatalogSkeletonSidebarStickyClasses()}>
             <div className={getCatalogSkeletonSidebarSectionClasses()}>
-              <Skeleton className="h-4 w-12" />
+              <Skeleton className={getCatalogSkeletonSidebarHeadingTitleClasses()} />
               <div className={getCatalogSkeletonSidebarTabContainerClasses()}>
-                <Skeleton className="h-8 flex-1 rounded-lg" />
-                <Skeleton className="h-8 flex-1 rounded-lg" />
+                <Skeleton className={getCatalogSkeletonSidebarTabButtonClasses()} />
+                <Skeleton className={getCatalogSkeletonSidebarTabButtonClasses()} />
               </div>
             </div>
 
             <div className={getCatalogSkeletonSidebarSectionClasses()}>
               <Skeleton className="h-4 w-20" />
-              <div className="space-y-2">
+              <div className={getCatalogSkeletonSidebarItemListClasses()}>
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} className="h-9 w-full rounded-lg" />
+                  <Skeleton key={i} className={getCatalogSkeletonSidebarItemClasses()} />
                 ))}
               </div>
             </div>
@@ -50,14 +62,14 @@ export function CatalogSkeleton() {
         {/* Main Content skeleton */}
         <div className={getCatalogSkeletonMainContentClasses()}>
           <header className={getCatalogSkeletonHeaderClasses()}>
-            <Skeleton className="h-7 w-64" />
-            <Skeleton className="h-4 w-96" />
+            <Skeleton className={getCatalogSkeletonHeaderTitleClasses()} />
+            <Skeleton className={getCatalogSkeletonHeaderSubtitleClasses()} />
           </header>
 
           <div className={getCatalogSkeletonMainContentListClasses()}>
             {/* Encabezados section skeleton */}
             <div className={getCatalogSkeletonSectionGroupClasses()}>
-              <Skeleton className="h-5 w-32" />
+              <Skeleton className={getCatalogSkeletonSectionTitleClasses()} />
               <div className={getCatalogSkeletonSectionCardClasses()}>
                 <Skeleton className="h-7 w-48" />
                 <Skeleton className="h-4 w-64" />
@@ -70,16 +82,16 @@ export function CatalogSkeleton() {
               <div className={getCatalogSkeletonCardSectionClasses()}>
                 <div className={getCatalogSkeletonSidebarSectionClasses()}>
                   <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-12 w-full rounded-lg" />
-                  <Skeleton className="h-10 w-full rounded-lg" />
-                  <Skeleton className="h-10 w-full rounded-lg" />
+                  <Skeleton className={getCatalogSkeletonInputClasses()} />
+                  <Skeleton className={getCatalogSkeletonButtonClasses()} />
+                  <Skeleton className={getCatalogSkeletonButtonClasses()} />
                 </div>
                 <div className={getCatalogSkeletonSidebarSectionClasses()}>
                   <Skeleton className="h-4 w-16" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-6 w-16 rounded-full" />
+                  <div className={getCatalogSkeletonChipGroupClasses()}>
+                    <Skeleton className={getCatalogSkeletonChipClasses()} />
                     <Skeleton className="h-6 w-20 rounded-full" />
-                    <Skeleton className="h-6 w-16 rounded-full" />
+                    <Skeleton className={getCatalogSkeletonChipClasses()} />
                   </div>
                 </div>
               </div>
@@ -89,8 +101,8 @@ export function CatalogSkeleton() {
             <div className={getCatalogSkeletonSectionGroupClasses()}>
               <Skeleton className="h-5 w-28" />
               <div className={getCatalogSkeletonCardListClasses()}>
-                <Skeleton className="h-16 w-full rounded-xl" />
-                <Skeleton className="h-16 w-full rounded-xl" />
+                <Skeleton className={getCatalogSkeletonCardItemClasses()} />
+                <Skeleton className={getCatalogSkeletonCardItemClasses()} />
               </div>
             </div>
           </div>

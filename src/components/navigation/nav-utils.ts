@@ -141,6 +141,114 @@ export function getCatalogSkeletonSectionCardClasses(
 }
 
 /**
+ * Genera las clases CSS para los títulos de encabezado de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarHeadingTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-12", customClassName);
+}
+
+/**
+ * Genera las clases CSS para las pestañas de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarTabButtonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-8 flex-1 rounded-lg", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el contenedor del listado de ítems de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarItemListClasses(
+  customClassName?: string,
+): string {
+  return cn("space-y-2", customClassName);
+}
+
+/**
+ * Genera las clases CSS para cada ítem de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarItemClasses(
+  customClassName?: string,
+): string {
+  return cn("h-9 w-full rounded-lg", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el título principal del encabezado en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonHeaderTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-7 w-64", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el subtítulo del encabezado en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonHeaderSubtitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-96", customClassName);
+}
+
+/**
+ * Genera las clases CSS para los títulos de sección en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSectionTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-5 w-32", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el esqueleto del campo de entrada de texto en el catálogo.
+ */
+export function getCatalogSkeletonInputClasses(
+  customClassName?: string,
+): string {
+  return cn("h-12 w-full rounded-lg", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el esqueleto del botón en el catálogo.
+ */
+export function getCatalogSkeletonButtonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-10 w-full rounded-lg", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el grupo de chips/badges en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonChipGroupClasses(
+  customClassName?: string,
+): string {
+  return cn("flex gap-2", customClassName);
+}
+
+/**
+ * Genera las clases CSS para cada chip/badge en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonChipClasses(
+  customClassName?: string,
+): string {
+  return cn("h-6 w-16 rounded-full", customClassName);
+}
+
+/**
+ * Genera las clases CSS para cada tarjeta de elemento en la lista del esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardItemClasses(
+  customClassName?: string,
+): string {
+  return cn("h-16 w-full rounded-xl", customClassName);
+}
+
+/**
  * Genera las clases CSS para una sección contenedora de la barra lateral en el esqueleto del catálogo.
  */
 export function getCatalogSkeletonSidebarSectionClasses(
