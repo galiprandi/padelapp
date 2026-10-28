@@ -346,6 +346,26 @@ import {
   getRemovePlayerRegionContainerClasses,
   getRemovePlayerConfirmRegionClasses,
   getAssignSubstituteRegionContainerClasses,
+  getTurnsPageContainerClasses,
+  getTurnsPageHeaderClasses,
+  getTurnsListSkeletonContainerClasses,
+  getTurnsListSkeletonTabGridClasses,
+  getTurnsListSkeletonHeaderClasses,
+  getTurnsListSkeletonCardListClasses,
+  getTurnosLoadingContainerClasses,
+  getTurnEditPageContainerClasses,
+  getTurnEditSkeletonContainerClasses,
+  getTurnEditSkeletonHeaderClasses,
+  getTurnEditSkeletonCardClasses,
+  getTurnEditSkeletonCardHeaderClasses,
+  getTurnEditSkeletonCardBodyClasses,
+  getTurnPublicPageMainClasses,
+  getTurnSkeletonContainerClasses,
+  getTurnSkeletonHeaderClasses,
+  getTurnSkeletonCardClasses,
+  getTurnSkeletonCardHeaderClasses,
+  getTurnSkeletonGridClasses,
+  getTurnSkeletonBottomBarClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1551,6 +1571,50 @@ describe("Turn action UI button and container CSS class pure helpers", () => {
     expect(getPlayCasualCancelButtonClasses()).toContain("flex-1 h-10 rounded-lg");
     expect(getPlayCasualConfirmButtonClasses()).toContain("bg-emerald-600");
     expect(getQuickJoinEmptySlotButtonClasses()).toContain("border-primary text-primary hover:bg-primary/10");
+  });
+});
+
+describe("Turn pages and skeleton pure layout styling helpers batch", () => {
+  it("formats getTurnsPageContainerClasses and getTurnsPageHeaderClasses", () => {
+    expect(getTurnsPageContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getTurnsPageHeaderClasses()).toBe("flex items-center justify-between");
+  });
+
+  it("formats getTurnsListSkeletonContainerClasses, getTurnsListSkeletonTabGridClasses, getTurnsListSkeletonHeaderClasses, and getTurnsListSkeletonCardListClasses", () => {
+    expect(getTurnsListSkeletonContainerClasses()).toBe("flex flex-col gap-3");
+    expect(getTurnsListSkeletonTabGridClasses()).toBe("grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl");
+    expect(getTurnsListSkeletonHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getTurnsListSkeletonCardListClasses()).toBe("flex flex-col gap-2");
+  });
+
+  it("formats getTurnosLoadingContainerClasses", () => {
+    expect(getTurnosLoadingContainerClasses()).toBe("flex flex-col gap-6");
+  });
+
+  it("formats getTurnEditPageContainerClasses, getTurnEditSkeletonContainerClasses, getTurnEditSkeletonHeaderClasses, getTurnEditSkeletonCardClasses, getTurnEditSkeletonCardHeaderClasses, and getTurnEditSkeletonCardBodyClasses", () => {
+    expect(getTurnEditPageContainerClasses()).toBe("flex flex-col gap-6 pb-20");
+    expect(getTurnEditSkeletonContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getTurnEditSkeletonHeaderClasses()).toBe("flex items-center gap-4");
+    expect(getTurnEditSkeletonCardClasses()).toBe("rounded-xl border border-border bg-card");
+    expect(getTurnEditSkeletonCardHeaderClasses()).toBe("p-4 border-b border-border");
+    expect(getTurnEditSkeletonCardBodyClasses()).toBe("p-6 flex flex-col gap-6");
+  });
+
+  it("formats getTurnPublicPageMainClasses", () => {
+    expect(getTurnPublicPageMainClasses()).toBe(
+      "mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-40"
+    );
+  });
+
+  it("formats getTurnSkeletonContainerClasses, getTurnSkeletonHeaderClasses, getTurnSkeletonCardClasses, getTurnSkeletonCardHeaderClasses, getTurnSkeletonGridClasses, and getTurnSkeletonBottomBarClasses", () => {
+    expect(getTurnSkeletonContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getTurnSkeletonHeaderClasses()).toBe("flex items-center gap-4");
+    expect(getTurnSkeletonCardClasses()).toBe("rounded-xl border border-border bg-card overflow-hidden");
+    expect(getTurnSkeletonCardHeaderClasses()).toBe("bg-muted border-b border-border px-4 py-3");
+    expect(getTurnSkeletonGridClasses()).toBe("grid grid-cols-1 gap-px bg-border");
+    expect(getTurnSkeletonBottomBarClasses()).toBe(
+      "fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50"
+    );
   });
 });
 

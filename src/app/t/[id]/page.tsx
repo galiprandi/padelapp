@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { TurnPublicDetails } from "./turn-public-details";
 import { TurnSkeleton } from "./turn-skeleton";
 import { getTurnByIdAction } from "@/app/(app)/turnos/actions";
+import { getTurnPublicPageMainClasses } from "@/components/turns/turn-utils";
 import type { Metadata } from "next";
 
 interface TurnPageProps {
@@ -30,7 +31,7 @@ export async function generateMetadata({
 
 export default function TurnPublicPage({ params }: TurnPageProps) {
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-40">
+    <main className={getTurnPublicPageMainClasses()}>
       <Suspense fallback={<TurnSkeleton />}>
         <TurnPublicDetails params={params} />
       </Suspense>

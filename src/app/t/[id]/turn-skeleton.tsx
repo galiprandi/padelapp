@@ -1,6 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
-import { getTurnSkeletonAriaLabel } from "@/components/turns/turn-utils";
+import {
+  getTurnSkeletonAriaLabel,
+  getTurnSkeletonContainerClasses,
+  getTurnSkeletonHeaderClasses,
+  getTurnSkeletonCardClasses,
+  getTurnSkeletonCardHeaderClasses,
+  getTurnSkeletonGridClasses,
+  getTurnSkeletonBottomBarClasses,
+} from "@/components/turns/turn-utils";
 
 export function TurnSkeleton() {
   return (
@@ -8,10 +16,10 @@ export function TurnSkeleton() {
       role="region"
       aria-label={getTurnSkeletonAriaLabel()}
       aria-busy="true"
-      className="flex flex-col gap-6"
+      className={getTurnSkeletonContainerClasses()}
     >
       {/* Header Skeleton */}
-      <div className="flex items-center gap-4">
+      <div className={getTurnSkeletonHeaderClasses()}>
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
           <ChevronLeft className="h-5 w-5 opacity-40" />
         </div>
@@ -22,15 +30,15 @@ export function TurnSkeleton() {
       </div>
 
       {/* Information Card Skeleton */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="bg-muted border-b border-border px-4 py-3">
+      <div className={getTurnSkeletonCardClasses()}>
+        <div className={getTurnSkeletonCardHeaderClasses()}>
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground opacity-40" />
             <Skeleton className="h-4 w-36 inline-block" />
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-px bg-border">
+        <div className={getTurnSkeletonGridClasses()}>
           {/* Horario Row */}
           <div className="bg-card p-4 flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-muted-foreground">
@@ -80,7 +88,7 @@ export function TurnSkeleton() {
       </section>
 
       {/* Fixed Bottom Bar Skeleton */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50">
+      <div className={getTurnSkeletonBottomBarClasses()}>
         <div className="max-w-md mx-auto">
           <Skeleton className="w-full h-12 rounded-lg" />
         </div>

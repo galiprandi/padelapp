@@ -8,6 +8,12 @@ import {
   getTurnosHeadingDescription,
   getTurnosLoadingAriaLabel,
   getTurnCreateButtonText,
+  getTurnsPageContainerClasses,
+  getTurnsPageHeaderClasses,
+  getTurnsListSkeletonContainerClasses,
+  getTurnsListSkeletonTabGridClasses,
+  getTurnsListSkeletonHeaderClasses,
+  getTurnsListSkeletonCardListClasses,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -15,8 +21,8 @@ import { auth } from "@/auth";
 
 export default function TurnsPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className={getTurnsPageContainerClasses()}>
+      <div className={getTurnsPageHeaderClasses()}>
         <div>
           <h1 className="text-xl font-bold text-foreground">
             {getTurnosHeadingTitle()}
@@ -63,19 +69,19 @@ function TurnsListSkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getTurnosLoadingAriaLabel()}
-      className="flex flex-col gap-3"
+      className={getTurnsListSkeletonContainerClasses()}
     >
       {/* Skeleton for tab filter bar */}
-      <div className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl">
+      <div className={getTurnsListSkeletonTabGridClasses()}>
         <Skeleton className="h-10 w-full rounded-lg" />
         <Skeleton className="h-10 w-full rounded-lg" />
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className={getTurnsListSkeletonHeaderClasses()}>
         <Skeleton className="h-4 w-28" />
         <Skeleton className="h-5 w-16 rounded-md" />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={getTurnsListSkeletonCardListClasses()}>
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-24 w-full rounded-xl" />
         ))}

@@ -2837,6 +2837,146 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for TurnsPage outer container layout.
+ */
+export function getTurnsPageContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for TurnsPage header flex bar.
+ */
+export function getTurnsPageHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for TurnsListSkeleton container layout.
+ */
+export function getTurnsListSkeletonContainerClasses(): string {
+  return "flex flex-col gap-3";
+}
+
+/**
+ * Format CSS classes for TurnsListSkeleton tab filter bar grid.
+ */
+export function getTurnsListSkeletonTabGridClasses(): string {
+  return "grid grid-cols-2 gap-2 bg-muted p-1 rounded-xl";
+}
+
+/**
+ * Format CSS classes for TurnsListSkeleton count and status header row.
+ */
+export function getTurnsListSkeletonHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for TurnsListSkeleton card listing flex container.
+ */
+export function getTurnsListSkeletonCardListClasses(): string {
+  return "flex flex-col gap-2";
+}
+
+/**
+ * Format CSS classes for TurnosLoading route loading container.
+ */
+export function getTurnosLoadingContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for EditTurnPage outer container.
+ */
+export function getTurnEditPageContainerClasses(): string {
+  return "flex flex-col gap-6 pb-20";
+}
+
+/**
+ * Format CSS classes for TurnEditSkeleton container layout.
+ */
+export function getTurnEditSkeletonContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for TurnEditSkeleton header row.
+ */
+export function getTurnEditSkeletonHeaderClasses(): string {
+  return "flex items-center gap-4";
+}
+
+/**
+ * Format CSS classes for TurnEditSkeleton card layout.
+ */
+export function getTurnEditSkeletonCardClasses(): string {
+  return "rounded-xl border border-border bg-card";
+}
+
+/**
+ * Format CSS classes for TurnEditSkeleton card header bar.
+ */
+export function getTurnEditSkeletonCardHeaderClasses(): string {
+  return "p-4 border-b border-border";
+}
+
+/**
+ * Format CSS classes for TurnEditSkeleton card body container.
+ */
+export function getTurnEditSkeletonCardBodyClasses(): string {
+  return "p-6 flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for TurnPublicPage main container.
+ */
+export function getTurnPublicPageMainClasses(): string {
+  return "mx-auto min-h-screen w-full max-w-md flex flex-col gap-6 px-6 py-10 pb-40";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton outer container layout.
+ */
+export function getTurnSkeletonContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton header flex row.
+ */
+export function getTurnSkeletonHeaderClasses(): string {
+  return "flex items-center gap-4";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton information card container.
+ */
+export function getTurnSkeletonCardClasses(): string {
+  return "rounded-xl border border-border bg-card overflow-hidden";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton information card header bar.
+ */
+export function getTurnSkeletonCardHeaderClasses(): string {
+  return "bg-muted border-b border-border px-4 py-3";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton information grid container.
+ */
+export function getTurnSkeletonGridClasses(): string {
+  return "grid grid-cols-1 gap-px bg-border";
+}
+
+/**
+ * Format CSS classes for TurnSkeleton fixed bottom action bar container.
+ */
+export function getTurnSkeletonBottomBarClasses(): string {
+  return "fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50";
+}
+
+/**
  * Format CSS classes for turn public details outer container layout.
  */
 export function getTurnPublicDetailsContainerClasses(): string {
