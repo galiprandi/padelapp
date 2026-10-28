@@ -36,6 +36,9 @@ import {
   getPasskeyDeleteButtonClasses,
   getPasskeyRegisterButtonClasses,
   getPasskeyLoginButtonClasses,
+  getPasskeyLoginFingerprintIconClasses,
+  getPasskeyLoginSpinnerClasses,
+  getPasskeyLoginContentClasses,
   getPasskeyOnboardingDismissButtonClasses,
   getPasskeyOnboardingRegisterButtonClasses,
   getPasskeyOnboardingLaterButtonClasses,
@@ -226,6 +229,9 @@ describe("passkey-utils", () => {
       expect(getPasskeyDeleteButtonClasses()).toContain("active:scale-[0.98]");
       expect(getPasskeyRegisterButtonClasses()).toContain("active:scale-[0.98]");
       expect(getPasskeyLoginButtonClasses()).toContain("h-12");
+      expect(getPasskeyLoginFingerprintIconClasses()).toBe("mr-2 h-5 w-5");
+      expect(getPasskeyLoginSpinnerClasses()).toBe("mr-2 h-5 w-5 animate-spin");
+      expect(getPasskeyLoginContentClasses()).toBe("flex items-center justify-center");
       expect(getPasskeyOnboardingDismissButtonClasses()).toContain("absolute");
       expect(getPasskeyOnboardingRegisterButtonClasses()).toContain("flex-1");
       expect(getPasskeyOnboardingLaterButtonClasses()).toContain("text-xs");

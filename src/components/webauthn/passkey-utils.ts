@@ -186,6 +186,18 @@ export function getPasskeyLoginButtonClasses(): string {
   return "h-12 w-full rounded-lg text-base font-semibold active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
 }
 
+export function getPasskeyLoginFingerprintIconClasses(): string {
+  return "mr-2 h-5 w-5";
+}
+
+export function getPasskeyLoginSpinnerClasses(): string {
+  return "mr-2 h-5 w-5 animate-spin";
+}
+
+export function getPasskeyLoginContentClasses(): string {
+  return "flex items-center justify-center";
+}
+
 export function getPasskeyOnboardingDismissButtonClasses(): string {
   return "absolute right-2 top-2 h-8 w-8 rounded-md p-1 text-muted-foreground hover:text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
 }
