@@ -10,6 +10,13 @@ import {
   getEditTurnHeadingDescription,
   getEditTurnLoadingAriaLabel,
   getTurnBackButtonAriaLabel,
+  getTurnEditPageContainerClasses,
+  getTurnEditSkeletonContainerClasses,
+  getTurnEditSkeletonHeaderClasses,
+  getTurnEditSkeletonCardClasses,
+  getTurnEditSkeletonCardHeaderClasses,
+  getTurnEditSkeletonCardBodyClasses,
+  getTurnFormHeaderBackLinkClasses,
 } from "@/components/turns/turn-utils";
 import Link from "next/link";
 
@@ -19,7 +26,7 @@ interface EditTurnPageProps {
 
 export default function EditTurnPage({ params }: EditTurnPageProps) {
   return (
-    <div className="flex flex-col gap-6 pb-20">
+    <div className={getTurnEditPageContainerClasses()}>
       <Suspense fallback={<TurnEditSkeleton />}>
         <TurnEditContent params={params} />
       </Suspense>
@@ -33,9 +40,9 @@ function TurnEditSkeleton() {
       role="region"
       aria-busy="true"
       aria-label={getEditTurnLoadingAriaLabel()}
-      className="flex flex-col gap-6"
+      className={getTurnEditSkeletonContainerClasses()}
     >
-      <div className="flex items-center gap-4">
+      <div className={getTurnEditSkeletonHeaderClasses()}>
         <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
         <div className="space-y-2">
           <Skeleton className="h-6 w-32" />
@@ -43,11 +50,11 @@ function TurnEditSkeleton() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card">
-        <div className="p-4 border-b border-border">
+      <div className={getTurnEditSkeletonCardClasses()}>
+        <div className={getTurnEditSkeletonCardHeaderClasses()}>
           <Skeleton className="h-5 w-40" />
         </div>
-        <div className="p-6 flex flex-col gap-6">
+        <div className={getTurnEditSkeletonCardBodyClasses()}>
           <div className="space-y-2">
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-10 w-full rounded-lg" />
@@ -104,11 +111,11 @@ async function TurnEditContent({ params }: EditTurnPageProps) {
 
   return (
     <>
-      <div className="flex items-center gap-4">
+      <div className={getTurnEditSkeletonHeaderClasses()}>
         <Link
           href={`/t/${id}`}
           prefetch={true}
-          className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-all hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]"
+          className={getTurnFormHeaderBackLinkClasses()}
           aria-label={getTurnBackButtonAriaLabel()}
         >
           <ChevronLeft className="h-5 w-5" />
