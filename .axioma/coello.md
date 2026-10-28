@@ -5,6 +5,10 @@
 ## Estado actual
 
 ### Completado
+- Phase 57 (Graph Engine Rebuild Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-04 — Hecho: Extraídas las funciones puras `getUniquePlayerIdsFromScoresAndCommunities`, `buildPlayerStatsUpdatePayload`, `buildPlayerStatsInsertPayload` y `buildIncrementalPlayerStatsUpdatePayload` en `src/lib/graph/rebuild.ts`.
+  - [x] 2026-10-04 — Hecho: Refactorizadas `recomputeAllStats` y `recomputeStatsForPlayer` en `src/lib/graph/rebuild.ts` para consumir las funciones puras extraídas.
+  - [x] 2026-10-04 — Hecho: Pruebas unitarias extendidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 56 (Graph Engine, Match Edge Update, Player Side Stats & Turn Co-Inscription Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-03 — Hecho: Extraídas las funciones puras `edgeKey` y `calculateMatchEdgeUpdates` en `src/lib/graph/update.ts`.
   - [x] 2026-10-03 — Hecho: Extraídas las funciones puras `calculateAdjustedFeedbackScore` y `calculatePlayerSideWinsAndRates` en `src/lib/graph/engine.ts`.

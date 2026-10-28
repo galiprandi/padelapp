@@ -8,6 +8,13 @@ import {
 } from "@/lib/graph/engine";
 import { calculateMatchEdgeUpdates, edgeKey } from "@/lib/graph/update";
 import { calculateTurnPairEnrollees, type TurnEnrolleeInput } from "@/lib/graph/turn-edges";
+import {
+  getUniquePlayerIdsFromScoresAndCommunities,
+  buildPlayerStatsUpdatePayload,
+  buildPlayerStatsInsertPayload,
+  buildIncrementalPlayerStatsUpdatePayload,
+  type PlayerGraphStatsValues,
+} from "@/lib/graph/rebuild";
 
 vi.mock("next/cache", () => ({
   unstable_cache: (fn: unknown) => fn,
@@ -146,6 +153,88 @@ describe("calculateAdjustedFeedbackScore and calculatePlayerSideWinsAndRates", (
 
     const result = calculatePlayerSideWinsAndRates(matches);
     expect(result.preferredSide).toBeNull();
+  });
+});
+
+describe("getUniquePlayerIdsFromScoresAndCommunities and buildPlayerStatsPayloads", () => {
+  it("aggregates unique player IDs from scores and communities maps", () => {
+    const scores = new Map<string, number>([
+      ["p-01", 1050],
+      ["p-02", 1100],
+    ]);
+    const communities = new Map<string, number>([
+      ["p-02", 1],
+      ["p-03", 2],
+    ]);
+
+    const uniqueIds = getUniquePlayerIdsFromScoresAndCommunities(scores, communities);
+    expect(uniqueIds).toEqual(new Set(["p-01", "p-02", "p-03"]));
+  });
+
+  it("builds player graph stats update payload object accurately", () => {
+    const values: PlayerGraphStatsValues = {
+      skillScore: 1080,
+      community: 1,
+      networkSize: 5,
+      preferredSide: "RIGHT",
+      winRateRight: 0.75,
+      winRateLeft: null,
+    };
+    const testDate = new Date("2026-10-01");
+
+    const payload = buildPlayerStatsUpdatePayload(values, testDate);
+    expect(payload).toEqual({
+      skillScore: 1080,
+      community: 1,
+      networkSize: 5,
+      preferredSide: "RIGHT",
+      winRateRight: 0.75,
+      winRateLeft: null,
+      updatedAt: testDate,
+    });
+  });
+
+  it("builds player graph stats insert payload object accurately", () => {
+    const values: PlayerGraphStatsValues = {
+      skillScore: 1000,
+      community: null,
+      networkSize: 0,
+      preferredSide: null,
+      winRateRight: null,
+      winRateLeft: null,
+    };
+
+    const payload = buildPlayerStatsInsertPayload("p-99", values);
+    expect(payload).toEqual({
+      userId: "p-99",
+      skillScore: 1000,
+      community: null,
+      networkSize: 0,
+      preferredSide: null,
+      winRateRight: null,
+      winRateLeft: null,
+    });
+  });
+
+  it("builds incremental player graph stats update payload object accurately", () => {
+    const testDate = new Date("2026-10-02");
+    const payload = buildIncrementalPlayerStatsUpdatePayload(
+      1120,
+      8,
+      "LEFT",
+      0.5,
+      0.8,
+      testDate,
+    );
+
+    expect(payload).toEqual({
+      skillScore: 1120,
+      networkSize: 8,
+      preferredSide: "LEFT",
+      winRateRight: 0.5,
+      winRateLeft: 0.8,
+      updatedAt: testDate,
+    });
   });
 });
 

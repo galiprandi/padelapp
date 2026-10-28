@@ -13,6 +13,103 @@ import { updateEdgesForMatch } from "./update";
 import { rebuildTurnEdges } from "./turn-edges";
 
 // ---------------------------------------------------------------------------
+// Pure Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Pure helper: aggregates unique player IDs from scores and communities maps.
+ */
+export function getUniquePlayerIdsFromScoresAndCommunities(
+  scores: Map<string, number>,
+  communities: Map<string, number>,
+): Set<string> {
+  return new Set<string>([...scores.keys(), ...communities.keys()]);
+}
+
+export interface PlayerGraphStatsValues {
+  skillScore: number;
+  community: number | null;
+  networkSize: number;
+  preferredSide: "RIGHT" | "LEFT" | null;
+  winRateRight: number | null;
+  winRateLeft: number | null;
+}
+
+export interface PlayerGraphStatsUpdatePayload extends PlayerGraphStatsValues {
+  updatedAt: Date;
+}
+
+export interface PlayerGraphStatsInsertPayload extends PlayerGraphStatsValues {
+  userId: string;
+}
+
+export interface IncrementalPlayerGraphStatsUpdatePayload {
+  skillScore: number;
+  networkSize: number;
+  preferredSide: "RIGHT" | "LEFT" | null;
+  winRateRight: number | null;
+  winRateLeft: number | null;
+  updatedAt: Date;
+}
+
+/**
+ * Pure helper: builds database update payload object for player graph stats.
+ */
+export function buildPlayerStatsUpdatePayload(
+  values: PlayerGraphStatsValues,
+  updatedAt: Date = new Date(),
+): PlayerGraphStatsUpdatePayload {
+  return {
+    skillScore: values.skillScore,
+    community: values.community,
+    networkSize: values.networkSize,
+    preferredSide: values.preferredSide,
+    winRateRight: values.winRateRight,
+    winRateLeft: values.winRateLeft,
+    updatedAt,
+  };
+}
+
+/**
+ * Pure helper: builds database insert payload object for player graph stats.
+ */
+export function buildPlayerStatsInsertPayload(
+  userId: string,
+  values: PlayerGraphStatsValues,
+): PlayerGraphStatsInsertPayload {
+  return {
+    userId,
+    skillScore: values.skillScore,
+    community: values.community,
+    networkSize: values.networkSize,
+    preferredSide: values.preferredSide,
+    winRateRight: values.winRateRight,
+    winRateLeft: values.winRateLeft,
+  };
+}
+
+/**
+ * Pure helper: builds database update payload object for incremental player graph stats.
+ */
+export function buildIncrementalPlayerStatsUpdatePayload(
+  skillScore: number,
+  networkSize: number,
+  preferredSide: "RIGHT" | "LEFT" | null,
+  winRateRight: number | null,
+  winRateLeft: number | null,
+  updatedAt: Date = new Date(),
+): IncrementalPlayerGraphStatsUpdatePayload {
+  return {
+    skillScore,
+    networkSize,
+    preferredSide,
+    winRateRight,
+    winRateLeft,
+    updatedAt,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Rebuild entire graph from scratch
 // ---------------------------------------------------------------------------
 
@@ -67,7 +164,7 @@ export async function recomputeAllStats(): Promise<void> {
   const scores = await computeSkillScores();
   const communities = await computeCommunities();
 
-  const allPlayers = new Set<string>([...scores.keys(), ...communities.keys()]);
+  const allPlayers = getUniquePlayerIdsFromScoresAndCommunities(scores, communities);
 
   for (const userId of allPlayers) {
     const baseScore = scores.get(userId) ?? 1000;
@@ -75,6 +172,15 @@ export async function recomputeAllStats(): Promise<void> {
     const community = communities.get(userId) ?? null;
     const { preferredSide, winRateRight, winRateLeft } = await computePlayerSideStats(userId);
     const networkSize = await computeNetworkSize(userId);
+
+    const statsValues: PlayerGraphStatsValues = {
+      skillScore: adjustedScore,
+      community,
+      networkSize,
+      preferredSide,
+      winRateRight,
+      winRateLeft,
+    };
 
     const existing = await db
       .select()
@@ -85,26 +191,10 @@ export async function recomputeAllStats(): Promise<void> {
     if (existing.length > 0) {
       await db
         .update(playerGraphStats)
-        .set({
-          skillScore: adjustedScore,
-          community,
-          networkSize,
-          preferredSide,
-          winRateRight,
-          winRateLeft,
-          updatedAt: new Date(),
-        })
+        .set(buildPlayerStatsUpdatePayload(statsValues))
         .where(eq(playerGraphStats.userId, userId));
     } else {
-      await db.insert(playerGraphStats).values({
-        userId,
-        skillScore: adjustedScore,
-        community,
-        networkSize,
-        preferredSide,
-        winRateRight,
-        winRateLeft,
-      });
+      await db.insert(playerGraphStats).values(buildPlayerStatsInsertPayload(userId, statsValues));
     }
   }
 }
@@ -120,6 +210,15 @@ export async function recomputeStatsForPlayer(userId: string): Promise<void> {
   const { preferredSide, winRateRight, winRateLeft } = await computePlayerSideStats(userId);
   const networkSize = await computeNetworkSize(userId);
 
+  const statsValues: PlayerGraphStatsValues = {
+    skillScore: adjustedScore,
+    community: null,
+    networkSize,
+    preferredSide,
+    winRateRight,
+    winRateLeft,
+  };
+
   const existing = await db
     .select()
     .from(playerGraphStats)
@@ -129,23 +228,15 @@ export async function recomputeStatsForPlayer(userId: string): Promise<void> {
   if (existing.length > 0) {
     await db
       .update(playerGraphStats)
-      .set({
-        skillScore: adjustedScore,
-        networkSize,
-        preferredSide,
-        winRateRight,
-        winRateLeft,
-        updatedAt: new Date(),
-      })
+      .set(buildIncrementalPlayerStatsUpdatePayload(adjustedScore, networkSize, preferredSide, winRateRight, winRateLeft))
       .where(eq(playerGraphStats.userId, userId));
   } else {
-    await db.insert(playerGraphStats).values({
-      userId,
-      skillScore: adjustedScore,
-      networkSize,
-      preferredSide,
-      winRateRight,
-      winRateLeft,
-    });
+    const existingCommunity = existing[0]?.community ?? null;
+    await db.insert(playerGraphStats).values(
+      buildPlayerStatsInsertPayload(userId, {
+        ...statsValues,
+        community: existingCommunity,
+      }),
+    );
   }
 }
