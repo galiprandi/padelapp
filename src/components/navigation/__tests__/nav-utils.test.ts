@@ -22,6 +22,18 @@ import {
   getCatalogSkeletonSectionGroupClasses,
   getCatalogSkeletonCardSectionClasses,
   getCatalogSkeletonCardListClasses,
+  getCatalogSkeletonSidebarHeadingTitleClasses,
+  getCatalogSkeletonSidebarTabButtonClasses,
+  getCatalogSkeletonSidebarItemListClasses,
+  getCatalogSkeletonSidebarItemClasses,
+  getCatalogSkeletonHeaderTitleClasses,
+  getCatalogSkeletonHeaderSubtitleClasses,
+  getCatalogSkeletonSectionTitleClasses,
+  getCatalogSkeletonInputClasses,
+  getCatalogSkeletonButtonClasses,
+  getCatalogSkeletonChipGroupClasses,
+  getCatalogSkeletonChipClasses,
+  getCatalogSkeletonCardItemClasses,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
@@ -251,6 +263,66 @@ describe("nav-utils", () => {
     it("getCatalogSkeletonCardListClasses returns card list styling classes", () => {
       expect(getCatalogSkeletonCardListClasses()).toContain("p-6 border border-border rounded-xl bg-card space-y-4");
       expect(getCatalogSkeletonCardListClasses("custom-card-list")).toContain("custom-card-list");
+    });
+
+    it("getCatalogSkeletonSidebarHeadingTitleClasses returns sidebar heading title skeleton dimension classes", () => {
+      expect(getCatalogSkeletonSidebarHeadingTitleClasses()).toContain("h-4 w-12");
+      expect(getCatalogSkeletonSidebarHeadingTitleClasses("custom-title")).toContain("custom-title");
+    });
+
+    it("getCatalogSkeletonSidebarTabButtonClasses returns sidebar tab button skeleton dimension classes", () => {
+      expect(getCatalogSkeletonSidebarTabButtonClasses()).toContain("h-8 flex-1 rounded-lg");
+      expect(getCatalogSkeletonSidebarTabButtonClasses("custom-tab")).toContain("custom-tab");
+    });
+
+    it("getCatalogSkeletonSidebarItemListClasses returns sidebar item list container classes", () => {
+      expect(getCatalogSkeletonSidebarItemListClasses()).toContain("space-y-2");
+      expect(getCatalogSkeletonSidebarItemListClasses("custom-item-list")).toContain("custom-item-list");
+    });
+
+    it("getCatalogSkeletonSidebarItemClasses returns sidebar item skeleton dimension classes", () => {
+      expect(getCatalogSkeletonSidebarItemClasses()).toContain("h-9 w-full rounded-lg");
+      expect(getCatalogSkeletonSidebarItemClasses("custom-item")).toContain("custom-item");
+    });
+
+    it("getCatalogSkeletonHeaderTitleClasses returns header title skeleton dimension classes", () => {
+      expect(getCatalogSkeletonHeaderTitleClasses()).toContain("h-7 w-64");
+      expect(getCatalogSkeletonHeaderTitleClasses("custom-hdr-title")).toContain("custom-hdr-title");
+    });
+
+    it("getCatalogSkeletonHeaderSubtitleClasses returns header subtitle skeleton dimension classes", () => {
+      expect(getCatalogSkeletonHeaderSubtitleClasses()).toContain("h-4 w-96");
+      expect(getCatalogSkeletonHeaderSubtitleClasses("custom-hdr-sub")).toContain("custom-hdr-sub");
+    });
+
+    it("getCatalogSkeletonSectionTitleClasses returns section title skeleton dimension classes", () => {
+      expect(getCatalogSkeletonSectionTitleClasses()).toContain("h-5 w-32");
+      expect(getCatalogSkeletonSectionTitleClasses("custom-sec-title")).toContain("custom-sec-title");
+    });
+
+    it("getCatalogSkeletonInputClasses returns input skeleton dimension classes", () => {
+      expect(getCatalogSkeletonInputClasses()).toContain("h-12 w-full rounded-lg");
+      expect(getCatalogSkeletonInputClasses("custom-input")).toContain("custom-input");
+    });
+
+    it("getCatalogSkeletonButtonClasses returns button skeleton dimension classes", () => {
+      expect(getCatalogSkeletonButtonClasses()).toContain("h-10 w-full rounded-lg");
+      expect(getCatalogSkeletonButtonClasses("custom-btn")).toContain("custom-btn");
+    });
+
+    it("getCatalogSkeletonChipGroupClasses returns chip group flex container classes", () => {
+      expect(getCatalogSkeletonChipGroupClasses()).toContain("flex gap-2");
+      expect(getCatalogSkeletonChipGroupClasses("custom-chip-group")).toContain("custom-chip-group");
+    });
+
+    it("getCatalogSkeletonChipClasses returns chip skeleton dimension classes", () => {
+      expect(getCatalogSkeletonChipClasses()).toContain("h-6 w-16 rounded-full");
+      expect(getCatalogSkeletonChipClasses("custom-chip")).toContain("custom-chip");
+    });
+
+    it("getCatalogSkeletonCardItemClasses returns card item skeleton dimension classes", () => {
+      expect(getCatalogSkeletonCardItemClasses()).toContain("h-16 w-full rounded-xl");
+      expect(getCatalogSkeletonCardItemClasses("custom-card-item")).toContain("custom-card-item");
     });
   });
 

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-12 — Extracción de Funciones Helper Puras de Estilos de Elementos del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-11 — Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-10 — Extracción de Funciones Helper Puras de Maquetación y Estilos para el Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`) y Refactorización de `CatalogSkeleton` y `CatalogError`
 - [x] 2026-10-09 — Extracción de Funciones Helper Puras de Etiquetas de Botones, Tipografía y Maquetación de Tarjetas de Error (`src/lib/error-utils.ts`) y Refactorización de `RootError` y `AppError`
@@ -81,6 +82,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-12 - Extracción de Funciones Helper Puras de Estilos de Elementos del Esqueleto del Catálogo
+**Aprendizaje:** Encapsular las clases CSS de dimensiones y maquetación de elementos individuales del esqueleto del catálogo (`getCatalogSkeletonSidebarHeadingTitleClasses`, `getCatalogSkeletonSidebarTabButtonClasses`, `getCatalogSkeletonSidebarItemListClasses`, `getCatalogSkeletonSidebarItemClasses`, `getCatalogSkeletonHeaderTitleClasses`, `getCatalogSkeletonHeaderSubtitleClasses`, `getCatalogSkeletonSectionTitleClasses`, `getCatalogSkeletonInputClasses`, `getCatalogSkeletonButtonClasses`, `getCatalogSkeletonChipGroupClasses`, `getCatalogSkeletonChipClasses`, `getCatalogSkeletonCardItemClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla completamente las reglas de estilos inline de Tailwind de la renderización en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Esto simplifica el mantenimiento del esqueleto del catálogo y permite auditar sus dimensiones y maquetación mediante pruebas unitarias puras e independientes.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al modificar o extender esqueletos de carga streaming en la aplicación.
+
 ### 2026-10-11 - Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo
 **Aprendizaje:** Encapsular las clases CSS de maquetación de secciones de la barra lateral (`getCatalogSkeletonSidebarSectionClasses`), contenedores de pestañas (`getCatalogSkeletonSidebarTabContainerClasses`), lista principal (`getCatalogSkeletonMainContentListClasses`), grupos de sección (`getCatalogSkeletonSectionGroupClasses`), y tarjetas de lista/sección (`getCatalogSkeletonCardSectionClasses`, `getCatalogSkeletonCardListClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` elimina cadenas inline de Tailwind en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Esto simplifica el mantenimiento del esqueleto del catálogo de componentes y permite auditar las reglas de estilo mediante unit tests puros.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al extender componentes del catálogo o maquetar esqueletos de carga streaming.
