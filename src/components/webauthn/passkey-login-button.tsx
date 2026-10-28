@@ -15,6 +15,8 @@ import {
   getPasskeyLoginAriaLabel,
   getPasskeyLoginButtonText,
   getPasskeyLoginButtonClasses,
+  getPasskeyLoginFingerprintIconClasses,
+  getPasskeyLoginSpinnerClasses,
   getPasskeyErrorMessage,
 } from "./passkey-utils";
 
@@ -84,12 +86,12 @@ export function PasskeyLoginButton() {
     >
       {isAuthenticating ? (
         <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+          <Loader2 className={getPasskeyLoginSpinnerClasses()} aria-hidden="true" />
           {getPasskeyLoginButtonText(true)}
         </>
       ) : (
         <>
-          <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
+          <Fingerprint className={getPasskeyLoginFingerprintIconClasses()} aria-hidden="true" />
           {getPasskeyLoginButtonText(false)}
         </>
       )}
