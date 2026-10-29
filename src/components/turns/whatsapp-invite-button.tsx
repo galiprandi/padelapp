@@ -15,6 +15,7 @@ import {
   getWhatsAppGroupInviteVariantClasses,
   getWhatsAppInviteButtonClasses,
   getWhatsAppGroupInviteButtonClasses,
+  getWhatsAppInviteIconClasses,
 } from "@/components/turns/turn-utils";
 import { useToast } from "@/components/toast/use-toast";
 
@@ -62,7 +63,7 @@ export function WhatsAppInviteButton({
       aria-label={getWhatsAppInviteAriaLabel(contactName, club)}
       onClick={handleClick}
     >
-      <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+      <MessageSquare className={getWhatsAppInviteIconClasses()} aria-hidden="true" />
       <span>{getWhatsAppInviteButtonText()}</span>
     </a>
   );
@@ -115,7 +116,7 @@ export function WhatsAppGroupInviteButton({
       aria-label={getWhatsAppGroupInviteAriaLabel(openSlots, club)}
       onClick={handleClick}
     >
-      <MessageSquare className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+      <MessageSquare className={getWhatsAppInviteIconClasses()} aria-hidden="true" />
       <span>{getWhatsAppGroupInviteButtonText()}</span>
     </a>
   );

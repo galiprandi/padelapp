@@ -17,6 +17,18 @@ import {
   getChatSendButtonAriaLabel,
   getChatBubbleClasses,
   getChatCounterTextClasses,
+  getChatLoadingContainerClasses,
+  getChatContainerClasses,
+  getChatLogClasses,
+  getChatSystemMessageBubbleClasses,
+  getChatShortcutsBarClasses,
+  getChatShortcutChipClasses,
+  getChatFormClasses,
+  getChatInputClasses,
+  getChatSendButtonClasses,
+  getChatLoadingSpinnerClasses,
+  getChatSendSpinnerClasses,
+  getChatSendIconClasses,
 } from "../turn-chat-utils";
 
 describe("CHAT_QUICK_SUGGESTIONS", () => {
@@ -200,5 +212,20 @@ describe("Extracted Turn Chat Pure Helpers", () => {
     expect(getChatCounterTextClasses(200)).toBe("text-muted-foreground");
     expect(getChatCounterTextClasses(255)).toBe("text-amber-600 dark:text-amber-400");
     expect(getChatCounterTextClasses(295)).toBe("text-destructive");
+  });
+
+  it("returns pure CSS styling classes for Turn Chat container layouts and control elements", () => {
+    expect(getChatLoadingContainerClasses()).toContain("flex h-48 items-center justify-center");
+    expect(getChatContainerClasses()).toContain("flex flex-col rounded-xl border");
+    expect(getChatLogClasses()).toContain("flex-1 overflow-y-auto p-4");
+    expect(getChatSystemMessageBubbleClasses()).toContain("rounded-lg bg-muted px-3 py-1.5");
+    expect(getChatShortcutsBarClasses()).toContain("px-3 py-2 bg-muted/60");
+    expect(getChatShortcutChipClasses()).toContain("rounded-full bg-card hover:bg-muted");
+    expect(getChatFormClasses()).toContain("border-t border-border p-3 bg-muted");
+    expect(getChatInputClasses()).toContain("h-10 rounded-lg bg-card border-border");
+    expect(getChatSendButtonClasses()).toContain("h-10 w-10 rounded-lg bg-primary");
+    expect(getChatLoadingSpinnerClasses()).toContain("h-6 w-6 animate-spin text-primary");
+    expect(getChatSendSpinnerClasses()).toContain("h-4 w-4 animate-spin");
+    expect(getChatSendIconClasses()).toContain("h-4 w-4");
   });
 });
