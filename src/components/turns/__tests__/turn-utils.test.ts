@@ -270,6 +270,7 @@ import {
   getTurnCardQuickJoinButtonClasses,
   getWhatsAppInviteButtonClasses,
   getWhatsAppGroupInviteButtonClasses,
+  getWhatsAppInviteIconClasses,
   getLeaveTurnTriggerButtonClasses,
   getLeaveTurnLateLeaveCardClasses,
   getLeaveTurnWasFullCardClasses,
@@ -1268,6 +1269,7 @@ describe("TurnCard and WhatsApp invite button CSS class pure helpers", () => {
   it("formats getWhatsAppInviteButtonClasses and getWhatsAppGroupInviteButtonClasses", () => {
     expect(getWhatsAppInviteButtonClasses()).toContain("bg-emerald-600");
     expect(getWhatsAppInviteButtonClasses()).toContain("shadow-xs");
+    expect(getWhatsAppInviteIconClasses()).toBe("h-3.5 w-3.5 fill-current");
 
     const groupClasses = getWhatsAppGroupInviteButtonClasses("bg-amber-600 text-white", "custom-class");
     expect(groupClasses).toContain("bg-amber-600");

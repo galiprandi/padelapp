@@ -2837,6 +2837,13 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for WhatsApp invite button icon.
+ */
+export function getWhatsAppInviteIconClasses(): string {
+  return "h-3.5 w-3.5 fill-current";
+}
+
+/**
  * Format CSS classes for TurnsPage outer container layout.
  */
 export function getTurnsPageContainerClasses(): string {

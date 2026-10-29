@@ -212,3 +212,87 @@ export function getChatCounterTextClasses(currentLength: number): string {
   }
   return "text-muted-foreground";
 }
+
+/**
+ * Returns CSS classes for Turn Chat loading container.
+ */
+export function getChatLoadingContainerClasses(): string {
+  return "flex h-48 items-center justify-center rounded-xl border border-border bg-card shadow-xs";
+}
+
+/**
+ * Returns CSS classes for Turn Chat outer container.
+ */
+export function getChatContainerClasses(): string {
+  return "flex flex-col rounded-xl border border-border bg-card overflow-hidden shadow-xs";
+}
+
+/**
+ * Returns CSS classes for Turn Chat message history log container.
+ */
+export function getChatLogClasses(): string {
+  return "flex-1 overflow-y-auto p-4 space-y-3 max-h-72 min-h-[18rem] bg-card";
+}
+
+/**
+ * Returns CSS classes for Turn Chat system message bubble.
+ */
+export function getChatSystemMessageBubbleClasses(): string {
+  return "rounded-lg bg-muted px-3 py-1.5 border border-border text-[11px] font-semibold text-muted-foreground text-center max-w-[85%] leading-normal shadow-xs";
+}
+
+/**
+ * Returns CSS classes for Turn Chat quick shortcuts bar container.
+ */
+export function getChatShortcutsBarClasses(): string {
+  return "px-3 py-2 bg-muted/60 border-t border-border flex items-center gap-1.5 overflow-x-auto scrollbar-none";
+}
+
+/**
+ * Returns CSS classes for Turn Chat quick suggestion shortcut chip buttons.
+ */
+export function getChatShortcutChipClasses(): string {
+  return "rounded-full bg-card hover:bg-muted border border-border px-2.5 py-1 text-xs font-semibold text-foreground transition-all shrink-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background shadow-xs";
+}
+
+/**
+ * Returns CSS classes for Turn Chat input form.
+ */
+export function getChatFormClasses(): string {
+  return "border-t border-border p-3 bg-muted flex flex-col gap-1.5";
+}
+
+/**
+ * Returns CSS classes for Turn Chat message text input.
+ */
+export function getChatInputClasses(): string {
+  return "h-10 rounded-lg bg-card border-border placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background text-sm flex-1";
+}
+
+/**
+ * Returns CSS classes for Turn Chat send button.
+ */
+export function getChatSendButtonClasses(): string {
+  return "h-10 w-10 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+/**
+ * Returns CSS classes for Turn Chat loading spinner icon.
+ */
+export function getChatLoadingSpinnerClasses(): string {
+  return "h-6 w-6 animate-spin text-primary";
+}
+
+/**
+ * Returns CSS classes for Turn Chat sending spinner icon.
+ */
+export function getChatSendSpinnerClasses(): string {
+  return "h-4 w-4 animate-spin";
+}
+
+/**
+ * Returns CSS classes for Turn Chat send icon.
+ */
+export function getChatSendIconClasses(): string {
+  return "h-4 w-4";
+}
