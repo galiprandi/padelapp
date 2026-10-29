@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-10-03
+## Última actualización: 2026-10-05
 
 ## Estado actual
 
 ### Completado
+- Phase 58 (Raw Graph Nodes/Links & Adoption Metrics Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-05 — Hecho: Extraídas las funciones puras `buildRawGraphNodes`, `buildRawGraphLinks`, `calculateAdoptionNetworkDensity`, `calculateAvgConnectionsPerPlayer` y `filterTopPlayersByNetworkSize` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-10-05 — Hecho: Refactorizadas `fetchGraphDataRaw` y `fetchAdoptionMetricsRaw` (`src/app/network/actions.ts`) para consumir las funciones puras extraídas.
+  - [x] 2026-10-05 — Hecho: Pruebas unitarias extendidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 57 (Graph Engine Rebuild Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-04 — Hecho: Extraídas las funciones puras `getUniquePlayerIdsFromScoresAndCommunities`, `buildPlayerStatsUpdatePayload`, `buildPlayerStatsInsertPayload` y `buildIncrementalPlayerStatsUpdatePayload` en `src/lib/graph/rebuild.ts`.
   - [x] 2026-10-04 — Hecho: Refactorizadas `recomputeAllStats` y `recomputeStatsForPlayer` en `src/lib/graph/rebuild.ts` para consumir las funciones puras extraídas.
