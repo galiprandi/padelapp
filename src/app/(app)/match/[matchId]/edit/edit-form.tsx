@@ -18,6 +18,16 @@ import {
   getEditMatchSuccessToast,
   getEditMatchErrorToast,
   getEditMatchSubmitAriaLabel,
+  getEditMatchCardContainerClasses,
+  getEditMatchRadioOptionClasses,
+  getEditMatchSubmitButtonClasses,
+  getEditMatchSubmitButtonText,
+  getEditMatchFormatDisabledNoticeText,
+  getEditMatchLocationCardTitleText,
+  getEditMatchFormatCardTitleText,
+  getEditMatchNotesCardTitleText,
+  getEditMatchNotesPlaceholderText,
+  formatEditMatchNotesCharacterCount,
 } from "./edit-match-utils";
 
 const MATCH_TYPE_OPTIONS = [
@@ -97,12 +107,14 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       <Card
         role="region"
         aria-label={getEditMatchRegionAriaLabel("location")}
-        className="rounded-xl border border-border bg-card shadow-xs"
+        className={getEditMatchCardContainerClasses()}
       >
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" />
-            <CardTitle className="text-base font-bold">Ubicación y Tiempo</CardTitle>
+            <CardTitle className="text-base font-bold">
+              {getEditMatchLocationCardTitleText()}
+            </CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
@@ -155,12 +167,14 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       <Card
         role="region"
         aria-label={getEditMatchRegionAriaLabel("format")}
-        className="rounded-xl border border-border bg-card shadow-xs"
+        className={getEditMatchCardContainerClasses()}
       >
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
-            <CardTitle className="text-base font-bold">Formato</CardTitle>
+            <CardTitle className="text-base font-bold">
+              {getEditMatchFormatCardTitleText()}
+            </CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
@@ -204,13 +218,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                     tabIndex={isSelected ? 0 : -1}
                     disabled={isClosed}
                     onClick={() => setFormData({ ...formData, matchType: option.value })}
-                    className={cn(
-                      "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
-                      isSelected
-                        ? "bg-primary border-primary text-primary-foreground font-semibold"
-                        : "bg-card border-border text-muted-foreground hover:bg-muted",
-                      isClosed && isSelected && "opacity-50"
-                    )}
+                    className={getEditMatchRadioOptionClasses(isSelected, isClosed)}
                   >
                     {option.label}
                   </button>
@@ -259,13 +267,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
                     tabIndex={isSelected ? 0 : -1}
                     disabled={isClosed}
                     onClick={() => setFormData({ ...formData, sets: option.value })}
-                    className={cn(
-                      "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
-                      isSelected
-                        ? "bg-primary border-primary text-primary-foreground font-semibold"
-                        : "bg-card border-border text-muted-foreground hover:bg-muted",
-                      isClosed && isSelected && "opacity-50"
-                    )}
+                    className={getEditMatchRadioOptionClasses(isSelected, isClosed)}
                   >
                     {option.label}
                   </button>
@@ -279,16 +281,18 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
       <Card
         role="region"
         aria-label={getEditMatchRegionAriaLabel("notes")}
-        className="rounded-xl border border-border bg-card shadow-xs"
+        className={getEditMatchCardContainerClasses()}
       >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
               <Info className="h-4 w-4 text-primary" />
-              <CardTitle className="text-base font-bold">Notas</CardTitle>
+              <CardTitle className="text-base font-bold">
+                {getEditMatchNotesCardTitleText()}
+              </CardTitle>
             </div>
             <span className="text-xs text-muted-foreground">
-              {(formData.notes ?? "").length}/200
+              {formatEditMatchNotesCharacterCount(formData.notes)}
             </span>
           </div>
         </CardHeader>
@@ -298,7 +302,7 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
             maxLength={200}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             className="min-h-[100px] rounded-lg resize-none animate-none"
-            placeholder="Notas adicionales sobre el partido..."
+            placeholder={getEditMatchNotesPlaceholderText()}
           />
         </CardContent>
       </Card>
@@ -308,21 +312,17 @@ export function EditMatchForm({ matchId, initialMatch }: EditMatchFormProps) {
           type="submit"
           aria-busy={isPending}
           aria-label={getEditMatchSubmitAriaLabel(isPending)}
-          className="w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+          className={getEditMatchSubmitButtonClasses()}
           disabled={isPending}
         >
-          {isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-              Guardando...
-            </>
-          ) : (
-            "Guardar cambios"
+          {isPending && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
           )}
+          {getEditMatchSubmitButtonText(isPending)}
         </Button>
         {isClosed && (
           <p className="text-center text-xs text-muted-foreground">
-            El formato no puede editarse en un partido ya confirmado.
+            {getEditMatchFormatDisabledNoticeText()}
           </p>
         )}
       </div>

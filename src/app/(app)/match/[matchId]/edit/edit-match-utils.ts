@@ -135,3 +135,88 @@ export function getEditMatchSubmitAriaLabel(isPending: boolean): string {
 export function getMatchEditSkeletonAriaLabel(): string {
   return "Cargando formulario de edición del partido...";
 }
+
+/**
+ * Returns container CSS classes for match edit cards.
+ */
+export function getEditMatchCardContainerClasses(): string {
+  return "rounded-xl border border-border bg-card shadow-xs";
+}
+
+/**
+ * Returns CSS classes for match edit radio button options.
+ */
+export function getEditMatchRadioOptionClasses(
+  isSelected: boolean,
+  isClosed: boolean,
+): string {
+  return [
+    "flex items-center justify-center h-10 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]",
+    isSelected
+      ? "bg-primary border-primary text-primary-foreground font-semibold"
+      : "bg-card border-border text-muted-foreground hover:bg-muted",
+    isClosed && isSelected ? "opacity-50" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * Returns CSS classes for match edit submit button.
+ */
+export function getEditMatchSubmitButtonClasses(): string {
+  return "w-full h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns display text for match edit submit button based on pending state.
+ */
+export function getEditMatchSubmitButtonText(isPending: boolean): string {
+  return isPending ? "Guardando..." : "Guardar cambios";
+}
+
+/**
+ * Returns localized Argentine Spanish notice text when format editing is disabled for closed matches.
+ */
+export function getEditMatchFormatDisabledNoticeText(): string {
+  return "El formato no puede editarse en un partido ya confirmado.";
+}
+
+/**
+ * Returns localized title text for location card.
+ */
+export function getEditMatchLocationCardTitleText(): string {
+  return "Ubicación y Tiempo";
+}
+
+/**
+ * Returns localized title text for format card.
+ */
+export function getEditMatchFormatCardTitleText(): string {
+  return "Formato";
+}
+
+/**
+ * Returns localized title text for notes card.
+ */
+export function getEditMatchNotesCardTitleText(): string {
+  return "Notas";
+}
+
+/**
+ * Returns localized placeholder text for notes textarea.
+ */
+export function getEditMatchNotesPlaceholderText(): string {
+  return "Notas adicionales sobre el partido...";
+}
+
+/**
+ * Formats notes character count string (e.g. "45/200").
+ */
+export function formatEditMatchNotesCharacterCount(
+  notes?: string | null,
+  maxLength = 200,
+): string {
+  const currentLength = (notes ?? "").length;
+  return `${currentLength}/${maxLength}`;
+}
