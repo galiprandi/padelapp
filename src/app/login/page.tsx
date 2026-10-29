@@ -8,6 +8,7 @@ import {
   getLoginContainerClasses,
   getLoginContentContainerClasses,
   getLoginFallbackContainerClasses,
+  getLoginFallbackSpinnerClasses,
   getLoginFormContainerClasses,
   getLoginHeaderContainerClasses,
   getLoginHeaderTaglineClasses,
@@ -15,11 +16,14 @@ import {
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
   getLoginLogoAltText,
+  getLoginLogoClasses,
   getLoginRegionAriaLabel,
   getLoginTaglineText,
   getLoginTermsNoticeClasses,
   getLoginTermsNoticeText,
+  getLoginTitleGroupClasses,
   getLoginTitleText,
+  getSignInFormClasses,
   safeCallbackUrl,
 } from "@/lib/auth-utils";
 import Image from "next/image";
@@ -41,12 +45,12 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
           <Image
             src="/icon.svg"
             alt={getLoginLogoAltText()}
-            className="h-24 w-24"
+            className={getLoginLogoClasses()}
             width={96}
             height={96}
             unoptimized
           />
-          <div className="space-y-3 text-center">
+          <div className={getLoginTitleGroupClasses()}>
             <h1 className={getLoginHeaderTitleClasses()}>
               {getLoginTitleText()}
             </h1>
@@ -64,7 +68,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
               aria-label={getLoginLoadingAriaLabel()}
               className={getLoginFallbackContainerClasses()}
             >
-              <Loader2 className="h-5 w-5 animate-spin mr-2 text-primary" aria-hidden="true" />
+              <Loader2 className={getLoginFallbackSpinnerClasses()} aria-hidden="true" />
               {getLoginLoadingText()}
             </div>
           }
@@ -106,7 +110,7 @@ async function LoginForm({
 
   return (
     <div className={getLoginFormContainerClasses()}>
-      <form action={handleSignIn} className="w-full">
+      <form action={handleSignIn} className={getSignInFormClasses()}>
         <SignInButton />
       </form>
       <PasskeyLoginButton />

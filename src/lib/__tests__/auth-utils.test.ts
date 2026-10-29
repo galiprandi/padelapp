@@ -4,6 +4,7 @@ import {
   getLoginContainerClasses,
   getLoginContentContainerClasses,
   getLoginFallbackContainerClasses,
+  getLoginFallbackSpinnerClasses,
   getLoginFormContainerClasses,
   getLoginHeaderContainerClasses,
   getLoginHeaderTaglineClasses,
@@ -11,10 +12,12 @@ import {
   getLoginLoadingAriaLabel,
   getLoginLoadingText,
   getLoginLogoAltText,
+  getLoginLogoClasses,
   getLoginRegionAriaLabel,
   getLoginTaglineText,
   getLoginTermsNoticeClasses,
   getLoginTermsNoticeText,
+  getLoginTitleGroupClasses,
   getLoginTitleText,
   getSignInButtonText,
   getSignInContentContainerClasses,
@@ -97,6 +100,24 @@ describe("auth-utils login text helpers", () => {
     expect(classes).toContain("flex-col");
     expect(classes).toContain("items-center");
     expect(classes).toContain("gap-6");
+  });
+
+  it("returns login logo CSS classes", () => {
+    const classes = getLoginLogoClasses();
+    expect(classes).toContain("h-24");
+    expect(classes).toContain("w-24");
+  });
+
+  it("returns login title group CSS classes", () => {
+    const classes = getLoginTitleGroupClasses();
+    expect(classes).toContain("space-y-3");
+    expect(classes).toContain("text-center");
+  });
+
+  it("returns login fallback spinner CSS classes", () => {
+    const classes = getLoginFallbackSpinnerClasses();
+    expect(classes).toContain("animate-spin");
+    expect(classes).toContain("text-primary");
   });
 
   it("returns login header title CSS classes", () => {
