@@ -836,6 +836,69 @@ export function getNotificationsSkeletonItemClasses(customClassName?: string): s
 }
 
 /**
+ * Genera las clases CSS para el título de la etiqueta de sección de la barra lateral en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarSectionLabelClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-20", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el título de tarjeta de sección en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-7 w-48", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el subtítulo de tarjeta de sección en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardSubtitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-64", customClassName);
+}
+
+/**
+ * Genera las clases CSS para el título de subsección secundaria en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSubSectionTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-5 w-28", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la etiqueta pequeña de subsección en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonLabelClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-16", customClassName);
+}
+
+/**
+ * Genera las clases CSS para la variante de chip secundario en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonChipSecondaryClasses(
+  customClassName?: string,
+): string {
+  return cn("h-6 w-20 rounded-full", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el título de la sección de acciones requeridas en el esqueleto de notificaciones.
+ */
+export function getNotificationsSkeletonSectionTitleClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-32", customClassName);
+}
+
+/**
  * Genera el objeto completo de propiedades para el enlace (<Link>) de un ítem de navegación principal.
  */
 export function getNavItemLinkProps(

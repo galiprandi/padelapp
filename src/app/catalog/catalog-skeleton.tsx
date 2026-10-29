@@ -26,6 +26,12 @@ import {
   getCatalogSkeletonChipGroupClasses,
   getCatalogSkeletonChipClasses,
   getCatalogSkeletonCardItemClasses,
+  getCatalogSkeletonSidebarSectionLabelClasses,
+  getCatalogSkeletonCardTitleClasses,
+  getCatalogSkeletonCardSubtitleClasses,
+  getCatalogSkeletonSubSectionTitleClasses,
+  getCatalogSkeletonLabelClasses,
+  getCatalogSkeletonChipSecondaryClasses,
 } from "@/components/navigation/nav-utils";
 
 export function CatalogSkeleton() {
@@ -49,7 +55,7 @@ export function CatalogSkeleton() {
             </div>
 
             <div className={getCatalogSkeletonSidebarSectionClasses()}>
-              <Skeleton className="h-4 w-20" />
+              <Skeleton className={getCatalogSkeletonSidebarSectionLabelClasses()} />
               <div className={getCatalogSkeletonSidebarItemListClasses()}>
                 {Array.from({ length: 8 }).map((_, i) => (
                   <Skeleton key={i} className={getCatalogSkeletonSidebarItemClasses()} />
@@ -71,26 +77,26 @@ export function CatalogSkeleton() {
             <div className={getCatalogSkeletonSectionGroupClasses()}>
               <Skeleton className={getCatalogSkeletonSectionTitleClasses()} />
               <div className={getCatalogSkeletonSectionCardClasses()}>
-                <Skeleton className="h-7 w-48" />
-                <Skeleton className="h-4 w-64" />
+                <Skeleton className={getCatalogSkeletonCardTitleClasses()} />
+                <Skeleton className={getCatalogSkeletonCardSubtitleClasses()} />
               </div>
             </div>
 
             {/* UI Básica section skeleton */}
             <div className={getCatalogSkeletonSectionGroupClasses()}>
-              <Skeleton className="h-5 w-28" />
+              <Skeleton className={getCatalogSkeletonSubSectionTitleClasses()} />
               <div className={getCatalogSkeletonCardSectionClasses()}>
                 <div className={getCatalogSkeletonSidebarSectionClasses()}>
-                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className={getCatalogSkeletonSidebarSectionLabelClasses()} />
                   <Skeleton className={getCatalogSkeletonInputClasses()} />
                   <Skeleton className={getCatalogSkeletonButtonClasses()} />
                   <Skeleton className={getCatalogSkeletonButtonClasses()} />
                 </div>
                 <div className={getCatalogSkeletonSidebarSectionClasses()}>
-                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className={getCatalogSkeletonLabelClasses()} />
                   <div className={getCatalogSkeletonChipGroupClasses()}>
                     <Skeleton className={getCatalogSkeletonChipClasses()} />
-                    <Skeleton className="h-6 w-20 rounded-full" />
+                    <Skeleton className={getCatalogSkeletonChipSecondaryClasses()} />
                     <Skeleton className={getCatalogSkeletonChipClasses()} />
                   </div>
                 </div>
@@ -99,7 +105,7 @@ export function CatalogSkeleton() {
 
             {/* Jugadores section skeleton */}
             <div className={getCatalogSkeletonSectionGroupClasses()}>
-              <Skeleton className="h-5 w-28" />
+              <Skeleton className={getCatalogSkeletonSubSectionTitleClasses()} />
               <div className={getCatalogSkeletonCardListClasses()}>
                 <Skeleton className={getCatalogSkeletonCardItemClasses()} />
                 <Skeleton className={getCatalogSkeletonCardItemClasses()} />

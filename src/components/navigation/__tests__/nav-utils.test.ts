@@ -34,6 +34,13 @@ import {
   getCatalogSkeletonChipGroupClasses,
   getCatalogSkeletonChipClasses,
   getCatalogSkeletonCardItemClasses,
+  getCatalogSkeletonSidebarSectionLabelClasses,
+  getCatalogSkeletonCardTitleClasses,
+  getCatalogSkeletonCardSubtitleClasses,
+  getCatalogSkeletonSubSectionTitleClasses,
+  getCatalogSkeletonLabelClasses,
+  getCatalogSkeletonChipSecondaryClasses,
+  getNotificationsSkeletonSectionTitleClasses,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
   getNotificationsBadgeAriaAttributes,
@@ -323,6 +330,36 @@ describe("nav-utils", () => {
     it("getCatalogSkeletonCardItemClasses returns card item skeleton dimension classes", () => {
       expect(getCatalogSkeletonCardItemClasses()).toContain("h-16 w-full rounded-xl");
       expect(getCatalogSkeletonCardItemClasses("custom-card-item")).toContain("custom-card-item");
+    });
+
+    it("getCatalogSkeletonSidebarSectionLabelClasses returns sidebar section label dimension classes", () => {
+      expect(getCatalogSkeletonSidebarSectionLabelClasses()).toContain("h-4 w-20");
+      expect(getCatalogSkeletonSidebarSectionLabelClasses("custom-sec-label")).toContain("custom-sec-label");
+    });
+
+    it("getCatalogSkeletonCardTitleClasses returns card title skeleton dimension classes", () => {
+      expect(getCatalogSkeletonCardTitleClasses()).toContain("h-7 w-48");
+      expect(getCatalogSkeletonCardTitleClasses("custom-card-title")).toContain("custom-card-title");
+    });
+
+    it("getCatalogSkeletonCardSubtitleClasses returns card subtitle skeleton dimension classes", () => {
+      expect(getCatalogSkeletonCardSubtitleClasses()).toContain("h-4 w-64");
+      expect(getCatalogSkeletonCardSubtitleClasses("custom-card-sub")).toContain("custom-card-sub");
+    });
+
+    it("getCatalogSkeletonSubSectionTitleClasses returns subsection title skeleton dimension classes", () => {
+      expect(getCatalogSkeletonSubSectionTitleClasses()).toContain("h-5 w-28");
+      expect(getCatalogSkeletonSubSectionTitleClasses("custom-subsec-title")).toContain("custom-subsec-title");
+    });
+
+    it("getCatalogSkeletonLabelClasses returns subsection label skeleton dimension classes", () => {
+      expect(getCatalogSkeletonLabelClasses()).toContain("h-4 w-16");
+      expect(getCatalogSkeletonLabelClasses("custom-lbl")).toContain("custom-lbl");
+    });
+
+    it("getCatalogSkeletonChipSecondaryClasses returns secondary chip skeleton dimension classes", () => {
+      expect(getCatalogSkeletonChipSecondaryClasses()).toContain("h-6 w-20 rounded-full");
+      expect(getCatalogSkeletonChipSecondaryClasses("custom-chip-sec")).toContain("custom-chip-sec");
     });
   });
 
@@ -834,6 +871,11 @@ describe("nav-utils", () => {
     it("getNotificationsSkeletonItemClasses returns card item skeleton dimension classes", () => {
       expect(getNotificationsSkeletonItemClasses()).toContain("h-16 w-full rounded-xl");
       expect(getNotificationsSkeletonItemClasses("custom-skel-item")).toContain("custom-skel-item");
+    });
+
+    it("getNotificationsSkeletonSectionTitleClasses returns section title skeleton dimension classes", () => {
+      expect(getNotificationsSkeletonSectionTitleClasses()).toContain("h-4 w-32");
+      expect(getNotificationsSkeletonSectionTitleClasses("custom-skel-sec-title")).toContain("custom-skel-sec-title");
     });
   });
 });

@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-13 — Extracción de Funciones Helper Puras de Dimensiones y Estilos para Elementos de Esqueletos de Catálogo y Notificaciones (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y `NotificationsLoading` y Cobertura de Tests Unitarios
 - [x] 2026-10-12 — Extracción de Funciones Helper Puras de Estilos de Elementos del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-11 — Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-10 — Extracción de Funciones Helper Puras de Maquetación y Estilos para el Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`) y Refactorización de `CatalogSkeleton` y `CatalogError`
@@ -82,6 +83,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-13 - Extracción de Funciones Helper Puras de Dimensiones y Estilos para Elementos de Esqueletos de Catálogo y Notificaciones
+**Aprendizaje:** Encapsular las clases CSS utilitarias de dimensiones de elementos en esqueletos de carga por streaming (`getCatalogSkeletonSidebarSectionLabelClasses`, `getCatalogSkeletonCardTitleClasses`, `getCatalogSkeletonCardSubtitleClasses`, `getCatalogSkeletonSubSectionTitleClasses`, `getCatalogSkeletonLabelClasses`, `getCatalogSkeletonChipSecondaryClasses`, y `getNotificationsSkeletonSectionTitleClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` elimina el 100% de las cadenas de clases inline de Tailwind en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`) y `NotificationsLoading` (`src/app/(app)/notifications/loading.tsx`). Esto resulta en componentes React extremadamente limpios, previene inconsistencias de dimensiones y permite verificar las reglas de maquetación mediante pruebas unitarias puras e independientes.
+**Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al modificar o crear nuevos esqueletos de carga streaming en la aplicación.
+
 ### 2026-10-12 - Extracción de Funciones Helper Puras de Estilos de Elementos del Esqueleto del Catálogo
 **Aprendizaje:** Encapsular las clases CSS de dimensiones y maquetación de elementos individuales del esqueleto del catálogo (`getCatalogSkeletonSidebarHeadingTitleClasses`, `getCatalogSkeletonSidebarTabButtonClasses`, `getCatalogSkeletonSidebarItemListClasses`, `getCatalogSkeletonSidebarItemClasses`, `getCatalogSkeletonHeaderTitleClasses`, `getCatalogSkeletonHeaderSubtitleClasses`, `getCatalogSkeletonSectionTitleClasses`, `getCatalogSkeletonInputClasses`, `getCatalogSkeletonButtonClasses`, `getCatalogSkeletonChipGroupClasses`, `getCatalogSkeletonChipClasses`, `getCatalogSkeletonCardItemClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` desacopla completamente las reglas de estilos inline de Tailwind de la renderización en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Esto simplifica el mantenimiento del esqueleto del catálogo y permite auditar sus dimensiones y maquetación mediante pruebas unitarias puras e independientes.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al modificar o extender esqueletos de carga streaming en la aplicación.
@@ -142,7 +147,7 @@
 **Aprendizaje:** Encapsular la generación de atributos ARIA con `aria-busy="true"` (`getBottomNavSkeletonAriaAttributes`), las clases CSS para íconos/etiquetas de pestañas (`getBottomNavIconClasses`, `getBottomNavLabelClasses`), el botón central FAB (`getFabIconClasses`), y los elementos del esqueleto (`getBottomNavTabIconSkeletonClasses`, `getBottomNavTabLabelSkeletonClasses`, `getBottomNavFabIconSkeletonClasses`) en `src/components/navigation/nav-utils.ts` asegura que la navegación principal comunique accesiblemente su estado de carga por streaming mientras desacopla el diseño de los componentes `BottomNav` y `BottomNavSkeleton`.
 **Acción:** Utilizar siempre las utilidades de `nav-utils.ts` al extender la navegación principal o definir vistas de carga por streaming asociadas a la barra de menú.
 
-### 2026-09-26 - Extracción de Funciones Helper Puras de Clases CSS para Contenedor Interior y Esqueletos de Navegación
+### 2026-09-26 - Extracción de Funciones Helper Puras de Clases CSS para Contenedor Flex Interior y Esqueletos de Navegación
 **Aprendizaje:** Encapsular la composición de clases CSS para el contenedor flex interior (`getBottomNavInnerContainerClasses`), las columnas de pestañas (`getBottomNavTabSkeletonClasses`) y la estructura del botón central FAB (`getBottomNavFabSkeletonClasses`) dentro de `src/components/navigation/nav-utils.ts` desacopla el diseño de maquetación visual de la renderización en `BottomNav` y `BottomNavSkeleton`. Esto simplifica la mantención de la barra de navegación principal, evita la duplicación de clases extensas de Tailwind y permite verificar las reglas de estilo mediante unit tests aislados.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al extender la navegación principal o diseñar marcadores de posición para el menú inferior.
 
