@@ -97,6 +97,27 @@ export function getLoginHeaderContainerClasses(): string {
 }
 
 /**
+ * Returns CSS classes for the login page brand logo image.
+ */
+export function getLoginLogoClasses(): string {
+  return "h-24 w-24";
+}
+
+/**
+ * Returns container CSS classes for the login title and tagline text group.
+ */
+export function getLoginTitleGroupClasses(): string {
+  return "space-y-3 text-center";
+}
+
+/**
+ * Returns CSS classes for the loading spinner inside the login Suspense fallback.
+ */
+export function getLoginFallbackSpinnerClasses(): string {
+  return "h-5 w-5 animate-spin mr-2 text-primary";
+}
+
+/**
  * Returns typography CSS classes for the login page header title (H1).
  */
 export function getLoginHeaderTitleClasses(): string {
