@@ -7,6 +7,7 @@ import {
   getNotificationsSectionHeaderClasses,
   getNotificationsSkeletonHeadingTitleClasses,
   getNotificationsSkeletonHeadingSubtitleClasses,
+  getNotificationsSkeletonSectionTitleClasses,
   getNotificationsSkeletonSectionBadgeClasses,
   getNotificationsSkeletonItemClasses,
 } from "@/components/navigation/nav-utils";
@@ -26,7 +27,7 @@ export default function NotificationsLoading() {
 
       <div className={getNotificationsContainerClasses()}>
         <div className={getNotificationsSectionHeaderClasses()}>
-          <Skeleton className="h-4 w-32" />
+          <Skeleton className={getNotificationsSkeletonSectionTitleClasses()} />
           <Skeleton className={getNotificationsSkeletonSectionBadgeClasses()} />
         </div>
         <div className={getNotificationsListClasses()}>
