@@ -7,6 +7,16 @@ import {
   getEditMatchErrorToast,
   getEditMatchSubmitAriaLabel,
   getMatchEditSkeletonAriaLabel,
+  getEditMatchCardContainerClasses,
+  getEditMatchRadioOptionClasses,
+  getEditMatchSubmitButtonClasses,
+  getEditMatchSubmitButtonText,
+  getEditMatchFormatDisabledNoticeText,
+  getEditMatchLocationCardTitleText,
+  getEditMatchFormatCardTitleText,
+  getEditMatchNotesCardTitleText,
+  getEditMatchNotesPlaceholderText,
+  formatEditMatchNotesCharacterCount,
 } from "../edit-match-utils";
 
 describe("edit-match-utils", () => {
@@ -145,6 +155,79 @@ describe("edit-match-utils", () => {
       expect(getMatchEditSkeletonAriaLabel()).toBe(
         "Cargando formulario de edición del partido...",
       );
+    });
+  });
+
+  describe("getEditMatchCardContainerClasses", () => {
+    it("returns expected container classes", () => {
+      expect(getEditMatchCardContainerClasses()).toContain("rounded-xl");
+      expect(getEditMatchCardContainerClasses()).toContain("border-border");
+      expect(getEditMatchCardContainerClasses()).toContain("bg-card");
+    });
+  });
+
+  describe("getEditMatchRadioOptionClasses", () => {
+    it("returns primary classes when option is selected and not closed", () => {
+      const classes = getEditMatchRadioOptionClasses(true, false);
+      expect(classes).toContain("bg-primary");
+      expect(classes).toContain("text-primary-foreground");
+      expect(classes).not.toContain("opacity-50");
+    });
+
+    it("returns card classes when option is not selected", () => {
+      const classes = getEditMatchRadioOptionClasses(false, false);
+      expect(classes).toContain("bg-card");
+      expect(classes).toContain("text-muted-foreground");
+      expect(classes).not.toContain("opacity-50");
+    });
+
+    it("includes opacity-50 when selected and match is closed", () => {
+      const classes = getEditMatchRadioOptionClasses(true, true);
+      expect(classes).toContain("opacity-50");
+    });
+  });
+
+  describe("getEditMatchSubmitButtonClasses", () => {
+    it("returns expected button classes", () => {
+      const classes = getEditMatchSubmitButtonClasses();
+      expect(classes).toContain("w-full");
+      expect(classes).toContain("h-12");
+      expect(classes).toContain("font-bold");
+    });
+  });
+
+  describe("getEditMatchSubmitButtonText", () => {
+    it("returns loading text when isPending is true", () => {
+      expect(getEditMatchSubmitButtonText(true)).toBe("Guardando...");
+    });
+
+    it("returns default text when isPending is false", () => {
+      expect(getEditMatchSubmitButtonText(false)).toBe("Guardar cambios");
+    });
+  });
+
+  describe("getEditMatchFormatDisabledNoticeText", () => {
+    it("returns expected notice text", () => {
+      expect(getEditMatchFormatDisabledNoticeText()).toBe(
+        "El formato no puede editarse en un partido ya confirmado.",
+      );
+    });
+  });
+
+  describe("getEditMatchCardTitles and placeholders", () => {
+    it("returns expected card titles and placeholder texts", () => {
+      expect(getEditMatchLocationCardTitleText()).toBe("Ubicación y Tiempo");
+      expect(getEditMatchFormatCardTitleText()).toBe("Formato");
+      expect(getEditMatchNotesCardTitleText()).toBe("Notas");
+      expect(getEditMatchNotesPlaceholderText()).toBe(
+        "Notas adicionales sobre el partido...",
+      );
+    });
+
+    it("formats character count correctly", () => {
+      expect(formatEditMatchNotesCharacterCount("Hola", 200)).toBe("4/200");
+      expect(formatEditMatchNotesCharacterCount("", 200)).toBe("0/200");
+      expect(formatEditMatchNotesCharacterCount(null, 200)).toBe("0/200");
     });
   });
 });
