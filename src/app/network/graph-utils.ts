@@ -4369,3 +4369,116 @@ export function getNetworkPageStatsTabLabel(): string {
 export function getNetworkPageGraphTabLabel(): string {
   return "Grafo";
 }
+
+/**
+ * Builds raw GraphNode structures from player IDs, user profile data, and graph statistics maps.
+ */
+export function buildRawGraphNodes(
+  playerIds: string[],
+  playerMap: Map<
+    string,
+    {
+      displayName: string;
+      alias: string | null;
+      image: string | null;
+      matchesPlayed: number | null;
+    }
+  >,
+  statsMap: Map<
+    string,
+    {
+      skillScore: number | null;
+      community: number | null;
+      networkSize: number | null;
+      preferredSide: string | null;
+    }
+  >
+): GraphNode[] {
+  return playerIds.map((id) => {
+    const p = playerMap.get(id);
+    const s = statsMap.get(id);
+    return {
+      id,
+      name: p?.displayName ?? "Unknown",
+      alias: p?.alias ?? null,
+      image: p?.image ?? null,
+      skillScore: s?.skillScore ?? 1000,
+      community: s?.community ?? null,
+      networkSize: s?.networkSize ?? 0,
+      matchesPlayed: p?.matchesPlayed ?? 0,
+      preferredSide: (s?.preferredSide as "RIGHT" | "LEFT" | "BOTH" | null) ?? null,
+    };
+  });
+}
+
+/**
+ * Builds raw GraphLink structures from database playerEdges rows, filtering active edges.
+ */
+export function buildRawGraphLinks(
+  edges: Array<{
+    playerAId: string;
+    playerBId: string;
+    matchesAsRivals: number;
+    matchesAsPartners: number;
+    winsA: number;
+    winsB: number;
+    winsTogether: number;
+    lossesTogether: number;
+    turnsTogether: number;
+  }>
+): GraphLink[] {
+  return edges
+    .filter((e) => e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether > 0)
+    .map((e) => {
+      const totalMatches = e.matchesAsRivals + e.matchesAsPartners;
+      return {
+        source: e.playerAId,
+        target: e.playerBId,
+        rivalMatches: e.matchesAsRivals,
+        partnerMatches: e.matchesAsPartners,
+        winsA: e.winsA,
+        winsB: e.winsB,
+        winsTogether: e.winsTogether,
+        lossesTogether: e.lossesTogether,
+        turnsTogether: e.turnsTogether,
+        strength: totalMatches + e.turnsTogether,
+      };
+    });
+}
+
+/**
+ * Calculates network density ratio totalEdges / (totalNodes * (totalNodes - 1) / 2).
+ */
+export function calculateAdoptionNetworkDensity(
+  totalEdges: number,
+  totalNodes: number
+): number {
+  const maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 0;
+  return maxPossibleEdges > 0 ? totalEdges / maxPossibleEdges : 0;
+}
+
+/**
+ * Calculates average network size per player across playerGraphStats entries.
+ */
+export function calculateAvgConnectionsPerPlayer(
+  stats: Array<{ networkSize: number | null }>
+): number {
+  if (stats.length === 0) return 0;
+  return stats.reduce((sum, s) => sum + (s.networkSize ?? 0), 0) / stats.length;
+}
+
+/**
+ * Filters and sorts top player stats entries by networkSize in descending order.
+ */
+export function filterTopPlayersByNetworkSize(
+  stats: Array<{ userId: string; networkSize: number | null }>,
+  limit = 5
+): Array<{ userId: string; networkSize: number }> {
+  return stats
+    .filter(
+      (s): s is { userId: string; networkSize: number } =>
+        s.networkSize != null && s.networkSize > 0
+    )
+    .sort((a, b) => b.networkSize - a.networkSize)
+    .slice(0, limit);
+}

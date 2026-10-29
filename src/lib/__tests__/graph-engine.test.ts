@@ -655,6 +655,11 @@ import {
   get30dSummaryUsersLabel,
   get30dSummaryTurnsLabel,
   get30dSummaryMatchesLabel,
+  buildRawGraphNodes,
+  buildRawGraphLinks,
+  calculateAdoptionNetworkDensity,
+  calculateAvgConnectionsPerPlayer,
+  filterTopPlayersByNetworkSize,
   calculateAdoptionGrowthRate,
   aggregateTopCommunities,
   aggregateTopClubsActivity,
@@ -1833,5 +1838,122 @@ describe("calculateSideSynergyBreakdown", () => {
     const breakdown = calculateSideSynergyBreakdown(links, nodes, "p-99");
     expect(breakdown.totalPartners).toBe(0);
     expect(breakdown.formattedSynergySummary).toBe("Sin duplas registradas");
+  });
+});
+
+describe("buildRawGraphNodes & buildRawGraphLinks", () => {
+  it("builds GraphNode list from player IDs and Maps correctly", () => {
+    const playerIds = ["p-01", "p-02"];
+    const playerMap = new Map([
+      ["p-01", { displayName: "Agustín", alias: "agu", image: "img1.png", matchesPlayed: 10 }],
+    ]);
+    const statsMap = new Map([
+      ["p-01", { skillScore: 1100, community: 1, networkSize: 5, preferredSide: "RIGHT" }],
+    ]);
+
+    const nodes = buildRawGraphNodes(playerIds, playerMap, statsMap);
+    expect(nodes).toHaveLength(2);
+
+    expect(nodes[0]).toEqual({
+      id: "p-01",
+      name: "Agustín",
+      alias: "agu",
+      image: "img1.png",
+      skillScore: 1100,
+      community: 1,
+      networkSize: 5,
+      matchesPlayed: 10,
+      preferredSide: "RIGHT",
+    });
+
+    // p-02 is missing from maps, gets defaults
+    expect(nodes[1]).toEqual({
+      id: "p-02",
+      name: "Unknown",
+      alias: null,
+      image: null,
+      skillScore: 1000,
+      community: null,
+      networkSize: 0,
+      matchesPlayed: 0,
+      preferredSide: null,
+    });
+  });
+
+  it("builds GraphLink list from active edges correctly", () => {
+    const edges = [
+      {
+        playerAId: "p-01",
+        playerBId: "p-02",
+        matchesAsRivals: 2,
+        matchesAsPartners: 3,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 2,
+        lossesTogether: 1,
+        turnsTogether: 1,
+      },
+      {
+        playerAId: "p-02",
+        playerBId: "p-03",
+        matchesAsRivals: 0,
+        matchesAsPartners: 0,
+        winsA: 0,
+        winsB: 0,
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0, // inactive edge, should be filtered out
+      },
+    ];
+
+    const links = buildRawGraphLinks(edges);
+    expect(links).toHaveLength(1);
+    expect(links[0]).toEqual({
+      source: "p-01",
+      target: "p-02",
+      rivalMatches: 2,
+      partnerMatches: 3,
+      winsA: 1,
+      winsB: 1,
+      winsTogether: 2,
+      lossesTogether: 1,
+      turnsTogether: 1,
+      strength: 6, // 2 + 3 + 1
+    });
+  });
+});
+
+describe("calculateAdoptionNetworkDensity, calculateAvgConnectionsPerPlayer & filterTopPlayersByNetworkSize", () => {
+  it("calculates adoption network density ratio accurately", () => {
+    expect(calculateAdoptionNetworkDensity(3, 4)).toBe(0.5); // 3 edges / (4*3/2 = 6 max) = 0.5
+    expect(calculateAdoptionNetworkDensity(0, 4)).toBe(0);
+    expect(calculateAdoptionNetworkDensity(5, 1)).toBe(0); // 1 node -> 0 max edges
+    expect(calculateAdoptionNetworkDensity(0, 0)).toBe(0);
+  });
+
+  it("calculates average connections per player accurately", () => {
+    expect(calculateAvgConnectionsPerPlayer([])).toBe(0);
+    expect(
+      calculateAvgConnectionsPerPlayer([
+        { networkSize: 4 },
+        { networkSize: 6 },
+        { networkSize: null },
+      ]),
+    ).toBe(10 / 3);
+  });
+
+  it("filters and sorts top players by network size in descending order", () => {
+    const stats = [
+      { userId: "p-01", networkSize: 2 },
+      { userId: "p-02", networkSize: 10 },
+      { userId: "p-03", networkSize: 0 },
+      { userId: "p-04", networkSize: null },
+      { userId: "p-05", networkSize: 7 },
+    ];
+
+    const top = filterTopPlayersByNetworkSize(stats, 2);
+    expect(top).toHaveLength(2);
+    expect(top[0]).toEqual({ userId: "p-02", networkSize: 10 });
+    expect(top[1]).toEqual({ userId: "p-05", networkSize: 7 });
   });
 });

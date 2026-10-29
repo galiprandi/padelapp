@@ -15,7 +15,12 @@ import { inArray, count, gte, lt, and, eq, desc, isNotNull, or, ne } from "drizz
 import {
   aggregateTopClubsActivity,
   aggregateTopCommunities,
+  buildRawGraphLinks,
+  buildRawGraphNodes,
   calculateAdoptionGrowthRate,
+  calculateAdoptionNetworkDensity,
+  calculateAvgConnectionsPerPlayer,
+  filterTopPlayersByNetworkSize,
   sortRecommendedCandidatesBySkillDiff,
 } from "./graph-utils";
 
@@ -188,39 +193,8 @@ async function fetchGraphDataRaw(): Promise<GraphData> {
 
   const playerMap = new Map(players.map((p) => [p.id, p]));
 
-  const nodes: GraphNode[] = playerIdsArray.map((id) => {
-    const p = playerMap.get(id);
-    const s = statsMap.get(id);
-    return {
-      id,
-      name: p?.displayName ?? "Unknown",
-      alias: p?.alias ?? null,
-      image: p?.image ?? null,
-      skillScore: s?.skillScore ?? 1000,
-      community: s?.community ?? null,
-      networkSize: s?.networkSize ?? 0,
-      matchesPlayed: p?.matchesPlayed ?? 0,
-      preferredSide: (s?.preferredSide as "RIGHT" | "LEFT" | "BOTH" | null) ?? null,
-    };
-  });
-
-  const links: GraphLink[] = edges
-    .filter((e) => e.matchesAsRivals + e.matchesAsPartners + e.turnsTogether > 0)
-    .map((e) => {
-      const totalMatches = e.matchesAsRivals + e.matchesAsPartners;
-      return {
-        source: e.playerAId,
-        target: e.playerBId,
-        rivalMatches: e.matchesAsRivals,
-        partnerMatches: e.matchesAsPartners,
-        winsA: e.winsA,
-        winsB: e.winsB,
-        winsTogether: e.winsTogether,
-        lossesTogether: e.lossesTogether,
-        turnsTogether: e.turnsTogether,
-        strength: totalMatches + e.turnsTogether,
-      };
-    });
+  const nodes = buildRawGraphNodes(playerIdsArray, playerMap, statsMap);
+  const links = buildRawGraphLinks(edges);
 
   return { nodes, links, generatedAt: Date.now() };
 }
@@ -449,21 +423,14 @@ async function fetchAdoptionMetricsRaw(): Promise<AdoptionMetrics> {
   const stats = await db.select().from(playerGraphStats);
   const totalEdges = edges.length;
   const totalNodes = new Set([...edges.map((e) => e.playerAId), ...edges.map((e) => e.playerBId)]).size;
-  const maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 0;
-  const networkDensity = maxPossibleEdges > 0 ? totalEdges / maxPossibleEdges : 0;
-  const avgConnections =
-    stats.length > 0
-      ? stats.reduce((sum, s) => sum + (s.networkSize ?? 0), 0) / stats.length
-      : 0;
+  const networkDensity = calculateAdoptionNetworkDensity(totalEdges, totalNodes);
+  const avgConnections = calculateAvgConnectionsPerPlayer(stats);
 
   // Communities
   const communities = aggregateTopCommunities(stats, 5);
 
   // Top players by network size
-  const topStats = stats
-    .filter((s) => s.networkSize != null && s.networkSize > 0)
-    .sort((a, b) => (b.networkSize ?? 0) - (a.networkSize ?? 0))
-    .slice(0, 5);
+  const topStats = filterTopPlayersByNetworkSize(stats, 5);
   const topPlayerIds = topStats.map((s) => s.userId);
   const topPlayersData =
     topPlayerIds.length > 0
