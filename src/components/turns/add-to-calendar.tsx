@@ -22,6 +22,8 @@ import {
   getCalendarTriggerButtonClasses,
   getCalendarOptionsContainerClasses,
   getCalendarOptionButtonClasses,
+  getCalendarHeaderPromptClasses,
+  getCalendarOptionsGridClasses,
 } from "./turn-utils";
 
 interface AddToCalendarButtonProps {
@@ -112,10 +114,10 @@ export function AddToCalendarButton({
           aria-label={getCalendarOptionsAriaLabel(club)}
           className={getCalendarOptionsContainerClasses()}
         >
-          <p className="text-xs font-semibold text-muted-foreground text-center">
+          <p className={getCalendarHeaderPromptClasses()}>
             {getCalendarHeaderPromptText()}
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className={getCalendarOptionsGridClasses()}>
             <Button
               onClick={handleGoogleCalendar}
               variant="secondary"

@@ -51,6 +51,9 @@ import {
   getCancelTurnDismissAriaLabel,
   getPlayCasualDismissAriaLabel,
   getPlayCasualConfirmText,
+  getPlayCasualConfirmNoticeText,
+  getPlayCasualNoticeClasses,
+  getPlayCasualStrongClasses,
   getQuickJoinEmptySlotAriaLabel,
   getQuickJoinEmptySlotText,
   getLeaveSubstituteButtonText,
@@ -496,8 +499,9 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
       aria-busy={isPending}
       className={getPlayCasualConfirmContainerClasses()}
     >
-      <p className="text-xs text-muted-foreground text-center">
-        ¿Marcar como jugado? <strong className="text-foreground">{getPlayCasualConfirmText()}</strong>
+      <p className={getPlayCasualNoticeClasses()}>
+        {getPlayCasualConfirmNoticeText()}{" "}
+        <strong className={getPlayCasualStrongClasses()}>{getPlayCasualConfirmText()}</strong>
       </p>
       <div className="flex gap-2">
         <Button

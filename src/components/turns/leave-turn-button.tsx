@@ -30,6 +30,12 @@ import {
   getLeaveTurnCancelButtonClasses,
   getLeaveTurnConfirmButtonClasses,
   getLeaveTurnWasFullShareButtonClasses,
+  getLeaveTurnConfirmContainerClasses,
+  getLeaveTurnLateLeaveTitleClasses,
+  getLeaveTurnLateLeaveDotClasses,
+  getLeaveTurnLateLeaveDescriptionClasses,
+  getLeaveTurnWasFullPromptClasses,
+  getLeaveTurnActionGroupClasses,
 } from "@/components/turns/turn-utils";
 
 interface LeaveTurnButtonProps {
@@ -84,7 +90,7 @@ export function LeaveTurnButton({
     <div
       role="region"
       aria-label={getLeaveTurnRegionAriaLabel()}
-      className="flex flex-col gap-2"
+      className={getLeaveTurnConfirmContainerClasses()}
       tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape" && !isPending) {
@@ -94,18 +100,18 @@ export function LeaveTurnButton({
     >
       {isLateLeave && (
         <div className={getLeaveTurnLateLeaveCardClasses()}>
-          <p className="text-xs font-bold text-destructive flex items-center gap-1.5">
-            <span className="inline-block h-2 w-2 rounded-full bg-destructive" />
+          <p className={getLeaveTurnLateLeaveTitleClasses()}>
+            <span className={getLeaveTurnLateLeaveDotClasses()} />
             {getLateLeaveWarningTitle()}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className={getLeaveTurnLateLeaveDescriptionClasses()}>
             {getLateLeaveWarningDescription()}
           </p>
         </div>
       )}
       {wasFull && (
         <div className={getLeaveTurnWasFullCardClasses()}>
-          <p className="text-xs text-muted-foreground text-center">
+          <p className={getLeaveTurnWasFullPromptClasses()}>
             {getWasFullSharePromptText()}
           </p>
           <ShareButton
@@ -117,7 +123,7 @@ export function LeaveTurnButton({
           />
         </div>
       )}
-      <div className="flex gap-2">
+      <div className={getLeaveTurnActionGroupClasses()}>
         <Button
           onClick={() => setConfirming(false)}
           variant="outline"
