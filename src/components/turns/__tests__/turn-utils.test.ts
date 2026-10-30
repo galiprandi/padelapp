@@ -367,6 +367,23 @@ import {
   getTurnSkeletonCardHeaderClasses,
   getTurnSkeletonGridClasses,
   getTurnSkeletonBottomBarClasses,
+  getPlayCasualConfirmNoticeText,
+  getPlayCasualNoticeClasses,
+  getPlayCasualStrongClasses,
+  getCalendarHeaderPromptClasses,
+  getCalendarOptionsGridClasses,
+  getLeaveTurnConfirmContainerClasses,
+  getLeaveTurnLateLeaveTitleClasses,
+  getLeaveTurnLateLeaveDotClasses,
+  getLeaveTurnLateLeaveDescriptionClasses,
+  getLeaveTurnWasFullPromptClasses,
+  getLeaveTurnActionGroupClasses,
+  getOpenToNetworkDefaultResultHeaderClasses,
+  getOpenToNetworkDefaultResultDescriptionClasses,
+  getOpenToNetworkErrorClasses,
+  getOpenToNetworkHelperClasses,
+  getTurnCardDateMonthClasses,
+  getTurnCardDateDayClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1634,6 +1651,40 @@ describe("Calendar UI pure helpers", () => {
   it("formats calendar export toast messages in Argentine Spanish", () => {
     expect(getGoogleCalendarToast()).toBe("Abriendo Google Calendar...");
     expect(getIcsCalendarToast()).toBe("Archivo de calendario descargado.");
+  });
+
+  it("formats getCalendarHeaderPromptClasses and getCalendarOptionsGridClasses", () => {
+    expect(getCalendarHeaderPromptClasses()).toBe("text-xs font-semibold text-muted-foreground text-center");
+    expect(getCalendarOptionsGridClasses()).toBe("grid grid-cols-2 gap-2");
+  });
+});
+
+describe("Play casual and card date pure styling helpers", () => {
+  it("formats getPlayCasualConfirmNoticeText, getPlayCasualNoticeClasses, and getPlayCasualStrongClasses", () => {
+    expect(getPlayCasualConfirmNoticeText()).toBe("¿Marcar como jugado?");
+    expect(getPlayCasualNoticeClasses()).toBe("text-xs text-muted-foreground text-center");
+    expect(getPlayCasualStrongClasses()).toBe("text-foreground");
+  });
+
+  it("formats getLeaveTurnConfirmContainerClasses, getLeaveTurnLateLeaveTitleClasses, getLeaveTurnLateLeaveDotClasses, getLeaveTurnLateLeaveDescriptionClasses, getLeaveTurnWasFullPromptClasses, and getLeaveTurnActionGroupClasses", () => {
+    expect(getLeaveTurnConfirmContainerClasses()).toBe("flex flex-col gap-2");
+    expect(getLeaveTurnLateLeaveTitleClasses()).toBe("text-xs font-bold text-destructive flex items-center gap-1.5");
+    expect(getLeaveTurnLateLeaveDotClasses()).toBe("inline-block h-2 w-2 rounded-full bg-destructive");
+    expect(getLeaveTurnLateLeaveDescriptionClasses()).toBe("text-xs text-muted-foreground");
+    expect(getLeaveTurnWasFullPromptClasses()).toBe("text-xs text-muted-foreground text-center");
+    expect(getLeaveTurnActionGroupClasses()).toBe("flex gap-2");
+  });
+
+  it("formats getOpenToNetworkDefaultResultHeaderClasses, getOpenToNetworkDefaultResultDescriptionClasses, getOpenToNetworkErrorClasses, and getOpenToNetworkHelperClasses", () => {
+    expect(getOpenToNetworkDefaultResultHeaderClasses()).toBe("flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold");
+    expect(getOpenToNetworkDefaultResultDescriptionClasses()).toBe("mt-1 text-xs text-muted-foreground");
+    expect(getOpenToNetworkErrorClasses()).toBe("text-xs text-destructive font-semibold text-center");
+    expect(getOpenToNetworkHelperClasses()).toBe("text-xs text-muted-foreground text-center font-medium");
+  });
+
+  it("formats getTurnCardDateMonthClasses and getTurnCardDateDayClasses", () => {
+    expect(getTurnCardDateMonthClasses()).toBe("text-xs font-bold text-muted-foreground leading-none");
+    expect(getTurnCardDateDayClasses()).toBe("text-xl font-bold text-foreground leading-none mt-1 tabular-nums");
   });
 });
 

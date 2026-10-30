@@ -54,6 +54,8 @@ import {
   getTurnCardStatusBadgeContainerClasses,
   getTurnCardSalvageWrapperClasses,
   getTurnCardShareButtonClasses,
+  getTurnCardDateMonthClasses,
+  getTurnCardDateDayClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -182,10 +184,10 @@ export function TurnCard({
         <div className={getTurnCardHeaderContainerClasses()}>
           {/* Date */}
           <div className={getTurnCardDateContainerClasses()}>
-            <span className="text-xs font-bold text-muted-foreground leading-none">
+            <span className={getTurnCardDateMonthClasses()}>
               <LocalMonth date={turn.date} />
             </span>
-            <span className="text-xl font-bold text-foreground leading-none mt-1 tabular-nums">
+            <span className={getTurnCardDateDayClasses()}>
               <LocalDay date={turn.date} />
             </span>
           </div>

@@ -24,6 +24,10 @@ import {
   getOpenToNetworkDefaultResultClasses,
   getOpenToNetworkContainerClasses,
   getOpenToNetworkButtonClasses,
+  getOpenToNetworkDefaultResultHeaderClasses,
+  getOpenToNetworkDefaultResultDescriptionClasses,
+  getOpenToNetworkErrorClasses,
+  getOpenToNetworkHelperClasses,
 } from "@/components/turns/turn-utils";
 
 interface OpenToNetworkButtonProps {
@@ -139,14 +143,14 @@ export function OpenToNetworkButton({
         aria-label={resultAriaLabel}
         className={getOpenToNetworkDefaultResultClasses(className)}
       >
-        <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
+        <div className={getOpenToNetworkDefaultResultHeaderClasses()}>
           <Check className="h-4 w-4" />
           <span>
             {getOpenToNetworkResultSubtitle(result.notified)}
           </span>
         </div>
         {showText && (
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className={getOpenToNetworkDefaultResultDescriptionClasses()}>
             {getOpenToNetworkResultDescription()}
           </p>
         )}
@@ -195,11 +199,11 @@ export function OpenToNetworkButton({
       </Button>
 
       {error && !isIconOnly && (
-        <p role="alert" aria-live="assertive" className="text-xs text-destructive font-semibold text-center">{error}</p>
+        <p role="alert" aria-live="assertive" className={getOpenToNetworkErrorClasses()}>{error}</p>
       )}
 
       {showText && !isIconOnly && (
-        <p className="text-xs text-muted-foreground text-center font-medium">
+        <p className={getOpenToNetworkHelperClasses()}>
           {getOpenToNetworkHelperText(isOnCooldown, minutesRemaining)}
         </p>
       )}

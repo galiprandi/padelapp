@@ -2837,6 +2837,125 @@ export function getTurnShareData({
 }
 
 /**
+ * Format prompt question text for confirming play casual action.
+ */
+export function getPlayCasualConfirmNoticeText(): string {
+  return "¿Marcar como jugado?";
+}
+
+/**
+ * Format CSS classes for play casual notice paragraph.
+ */
+export function getPlayCasualNoticeClasses(): string {
+  return "text-xs text-muted-foreground text-center";
+}
+
+/**
+ * Format CSS classes for play casual notice strong text element.
+ */
+export function getPlayCasualStrongClasses(): string {
+  return "text-foreground";
+}
+
+/**
+ * Format CSS classes for calendar header prompt text.
+ */
+export function getCalendarHeaderPromptClasses(): string {
+  return "text-xs font-semibold text-muted-foreground text-center";
+}
+
+/**
+ * Format CSS classes for calendar options button grid layout.
+ */
+export function getCalendarOptionsGridClasses(): string {
+  return "grid grid-cols-2 gap-2";
+}
+
+/**
+ * Format CSS classes for leave turn confirmation outer container.
+ */
+export function getLeaveTurnConfirmContainerClasses(): string {
+  return "flex flex-col gap-2";
+}
+
+/**
+ * Format CSS classes for late leave penalty title header.
+ */
+export function getLeaveTurnLateLeaveTitleClasses(): string {
+  return "text-xs font-bold text-destructive flex items-center gap-1.5";
+}
+
+/**
+ * Format CSS classes for late leave penalty dot indicator.
+ */
+export function getLeaveTurnLateLeaveDotClasses(): string {
+  return "inline-block h-2 w-2 rounded-full bg-destructive";
+}
+
+/**
+ * Format CSS classes for late leave penalty description text.
+ */
+export function getLeaveTurnLateLeaveDescriptionClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for full turn share prompt text in leave turn view.
+ */
+export function getLeaveTurnWasFullPromptClasses(): string {
+  return "text-xs text-muted-foreground text-center";
+}
+
+/**
+ * Format CSS classes for leave turn action button row layout.
+ */
+export function getLeaveTurnActionGroupClasses(): string {
+  return "flex gap-2";
+}
+
+/**
+ * Format CSS classes for default result header container in OpenToNetworkButton.
+ */
+export function getOpenToNetworkDefaultResultHeaderClasses(): string {
+  return "flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold";
+}
+
+/**
+ * Format CSS classes for default result description text in OpenToNetworkButton.
+ */
+export function getOpenToNetworkDefaultResultDescriptionClasses(): string {
+  return "mt-1 text-xs text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for error alert paragraph in OpenToNetworkButton.
+ */
+export function getOpenToNetworkErrorClasses(): string {
+  return "text-xs text-destructive font-semibold text-center";
+}
+
+/**
+ * Format CSS classes for helper text paragraph in OpenToNetworkButton.
+ */
+export function getOpenToNetworkHelperClasses(): string {
+  return "text-xs text-muted-foreground text-center font-medium";
+}
+
+/**
+ * Format CSS classes for TurnCard month badge label.
+ */
+export function getTurnCardDateMonthClasses(): string {
+  return "text-xs font-bold text-muted-foreground leading-none";
+}
+
+/**
+ * Format CSS classes for TurnCard day badge label.
+ */
+export function getTurnCardDateDayClasses(): string {
+  return "text-xl font-bold text-foreground leading-none mt-1 tabular-nums";
+}
+
+/**
  * Format CSS classes for WhatsApp invite button icon.
  */
 export function getWhatsAppInviteIconClasses(): string {
