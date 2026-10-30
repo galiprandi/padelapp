@@ -95,3 +95,51 @@ export function getOriginTrialMetaProps(
     content: cleanToken,
   };
 }
+
+/**
+ * Determina si hay una prueba de origen (Origin Trial) activa en función de la presencia de un token válido.
+ */
+export function isOriginTrialActive(
+  token?: string | null,
+): boolean {
+  return getOriginTrialMetaProps(token) !== null;
+}
+
+export interface ResourceHintLinkProps {
+  key: string;
+  rel: "preconnect" | "dns-prefetch";
+  href: string;
+}
+
+/**
+ * Genera una lista de objetos listos para renderizar como elementos `<link>` en la cabecera HTML,
+ * incluyendo la clave única JSX `key` y las propiedades `rel` y `href`.
+ */
+export function getResourceHintLinkPropsList(
+  domains: readonly string[] = DEFAULT_RESOURCE_HINT_DOMAINS,
+): ResourceHintLinkProps[] {
+  const hints = getResourceHints(domains);
+  return hints.map((hint, idx) => ({
+    key: getResourceHintKey(hint, idx),
+    ...formatResourceHintLinkProps(hint),
+  }));
+}
+
+export interface RootHeadMetadataProps {
+  resourceHintLinks: ResourceHintLinkProps[];
+  originTrialMeta: OriginTrialMetaProps | null;
+}
+
+/**
+ * Consolida la extracción de metadatos para el tag `<head>` del RootLayout,
+ * devolviendo las pistas de recursos formateadas y las propiedades de la meta etiqueta de Origin Trial.
+ */
+export function getRootHeadMetadataProps(
+  originTrialToken?: string | null,
+  customDomains: readonly string[] = DEFAULT_RESOURCE_HINT_DOMAINS,
+): RootHeadMetadataProps {
+  return {
+    resourceHintLinks: getResourceHintLinkPropsList(customDomains),
+    originTrialMeta: getOriginTrialMetaProps(originTrialToken),
+  };
+}

@@ -7,6 +7,9 @@ import {
   isResourceHintDomainValid,
   getResourceHintKey,
   formatResourceHintLinkProps,
+  isOriginTrialActive,
+  getResourceHintLinkPropsList,
+  getRootHeadMetadataProps,
 } from "../resource-hints";
 
 describe("resource-hints", () => {
@@ -141,6 +144,70 @@ describe("resource-hints", () => {
       expect(getOriginTrialMetaProps(null)).toBeNull();
       expect(getOriginTrialMetaProps("")).toBeNull();
       expect(getOriginTrialMetaProps("   ")).toBeNull();
+    });
+  });
+
+  describe("isOriginTrialActive", () => {
+    it("debe retornar true cuando se provee un token válido", () => {
+      expect(isOriginTrialActive("sample-token")).toBe(true);
+    });
+
+    it("debe retornar false para token indefinido, nulo o vacío", () => {
+      expect(isOriginTrialActive(undefined)).toBe(false);
+      expect(isOriginTrialActive(null)).toBe(false);
+      expect(isOriginTrialActive("")).toBe(false);
+      expect(isOriginTrialActive("   ")).toBe(false);
+    });
+  });
+
+  describe("getResourceHintLinkPropsList", () => {
+    it("debe generar la lista formateada de enlaces de pistas con clave JSX", () => {
+      const list = getResourceHintLinkPropsList();
+      expect(list).toEqual([
+        {
+          key: "preconnect-https://lh3.googleusercontent.com-0",
+          rel: "preconnect",
+          href: "https://lh3.googleusercontent.com",
+        },
+        {
+          key: "dns-prefetch-https://lh3.googleusercontent.com-1",
+          rel: "dns-prefetch",
+          href: "https://lh3.googleusercontent.com",
+        },
+      ]);
+    });
+
+    it("debe soportar dominios personalizados", () => {
+      const list = getResourceHintLinkPropsList(["https://custom.domain.com"]);
+      expect(list).toEqual([
+        {
+          key: "preconnect-https://custom.domain.com-0",
+          rel: "preconnect",
+          href: "https://custom.domain.com",
+        },
+        {
+          key: "dns-prefetch-https://custom.domain.com-1",
+          rel: "dns-prefetch",
+          href: "https://custom.domain.com",
+        },
+      ]);
+    });
+  });
+
+  describe("getRootHeadMetadataProps", () => {
+    it("debe consolidar las pistas de recursos y el token de Origin Trial", () => {
+      const props = getRootHeadMetadataProps("sample-token");
+      expect(props.resourceHintLinks).toHaveLength(2);
+      expect(props.originTrialMeta).toEqual({
+        "http-equiv": "origin-trial",
+        content: "sample-token",
+      });
+    });
+
+    it("debe retornar originTrialMeta nulo si no hay token", () => {
+      const props = getRootHeadMetadataProps(undefined);
+      expect(props.resourceHintLinks).toHaveLength(2);
+      expect(props.originTrialMeta).toBeNull();
     });
   });
 });

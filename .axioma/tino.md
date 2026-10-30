@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-14 — Extracción de Funciones Helper Puras para Metadatos de Cabecera e Indicadores de Origin Trial (`src/lib/resource-hints.ts`), Refactorización de `RootLayout` (`src/app/layout.tsx`) y Cobertura de Tests Unitarios
 - [x] 2026-10-13 — Extracción de Funciones Helper Puras de Dimensiones y Estilos para Elementos de Esqueletos de Catálogo y Notificaciones (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y `NotificationsLoading` y Cobertura de Tests Unitarios
 - [x] 2026-10-12 — Extracción de Funciones Helper Puras de Estilos de Elementos del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-11 — Extracción de Funciones Helper Puras de Maquetación de Secciones y Tarjetas del Esqueleto del Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y Cobertura de Tests Unitarios
@@ -83,6 +84,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-14 - Extracción de Funciones Helper Puras para Metadatos de Cabecera e Indicadores de Origin Trial
+**Aprendizaje:** Encapsular la evaluación de tokens de Origin Trial (`isOriginTrialActive`), la lista formateada de enlaces de pistas de recursos con clave JSX (`getResourceHintLinkPropsList`) y la consolidación completa de metadatos del tag `<head>` (`getRootHeadMetadataProps`) en `src/lib/resource-hints.ts` desacopla la preparación de recursos de conexión temprana de la estructura del componente `RootLayout` (`src/app/layout.tsx`). Esto simplifica el etiquetado HTML del RootLayout y permite verificar las reglas de pistas de recursos y Origin Trial mediante pruebas unitarias rápidas e independientes.
+**Acción:** Reutilizar `getRootHeadMetadataProps` al modificar o verificar las etiquetas de cabecera HTML globales en el RootLayout de la aplicación.
+
 ### 2026-10-13 - Extracción de Funciones Helper Puras de Dimensiones y Estilos para Elementos de Esqueletos de Catálogo y Notificaciones
 **Aprendizaje:** Encapsular las clases CSS utilitarias de dimensiones de elementos en esqueletos de carga por streaming (`getCatalogSkeletonSidebarSectionLabelClasses`, `getCatalogSkeletonCardTitleClasses`, `getCatalogSkeletonCardSubtitleClasses`, `getCatalogSkeletonSubSectionTitleClasses`, `getCatalogSkeletonLabelClasses`, `getCatalogSkeletonChipSecondaryClasses`, y `getNotificationsSkeletonSectionTitleClasses`) en `src/components/navigation/nav-utils.ts` mediante `cn()` elimina el 100% de las cadenas de clases inline de Tailwind en `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`) y `NotificationsLoading` (`src/app/(app)/notifications/loading.tsx`). Esto resulta en componentes React extremadamente limpios, previene inconsistencias de dimensiones y permite verificar las reglas de maquetación mediante pruebas unitarias puras e independientes.
 **Acción:** Reutilizar siempre las utilidades de `nav-utils.ts` al modificar o crear nuevos esqueletos de carga streaming en la aplicación.
