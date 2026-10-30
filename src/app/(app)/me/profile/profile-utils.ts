@@ -398,3 +398,15 @@ export function getProfileRestorePwaButtonText(): string {
 export function getProfileRestorePushButtonText(): string {
   return "Restablecer sugerencia de notificaciones";
 }
+
+export function getProfileSkeletonContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+export function getProfileSkeletonHeaderCardClasses(): string {
+  return "flex items-center gap-4 rounded-xl border border-border bg-card p-4";
+}
+
+export function getProfileSkeletonAccountCardClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3";
+}

@@ -378,3 +378,27 @@ export function getDashboardEmptyRecentResultsDescriptionText(): string {
 export function getDashboardEmptyRecentResultsButtonText(): string {
   return "Ver historial";
 }
+
+export function getDashboardSkeletonContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+export function getDashboardSkeletonGreetingClasses(): string {
+  return "flex items-center gap-4";
+}
+
+export function getDashboardSkeletonStatsGridClasses(): string {
+  return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3";
+}
+
+export function getDashboardSkeletonStatCardClasses(): string {
+  return "flex flex-col gap-1 rounded-xl border border-border bg-card p-4";
+}
+
+export function getDashboardSkeletonHeroContainerClasses(): string {
+  return "space-y-3 rounded-xl border border-border bg-card p-4";
+}
+
+export function getDashboardSkeletonSectionClasses(): string {
+  return "space-y-3";
+}

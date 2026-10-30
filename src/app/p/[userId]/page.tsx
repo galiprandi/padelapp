@@ -79,6 +79,11 @@ import {
   getPublicProfileMiniCourtContainerClasses,
   getPublicProfileMiniCourtGridClasses,
   getPublicProfileShareButtonClasses,
+  getPublicProfileSkeletonContainerClasses,
+  getPublicProfileSkeletonSummaryClasses,
+  getPublicProfileSkeletonBannerClasses,
+  getPublicProfileSkeletonGridClasses,
+  getPublicProfileSkeletonHistoryClasses,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -541,13 +546,13 @@ function MiniCourtIndicator({
 function PublicProfileSkeleton() {
   return (
     <div
-      className="space-y-6"
+      className={getPublicProfileSkeletonContainerClasses()}
       role="region"
       aria-busy="true"
       aria-label={getPublicProfileSkeletonAriaLabel()}
     >
       {/* Profile summary skeleton */}
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div className={getPublicProfileSkeletonSummaryClasses()}>
         <Skeleton className="h-24 w-24 rounded-full" />
         <div className="space-y-2">
           <Skeleton className="h-6 w-32 mx-auto" />
@@ -556,7 +561,7 @@ function PublicProfileSkeleton() {
       </div>
 
       {/* Ranking banner skeleton */}
-      <div className="h-24 rounded-xl bg-card border border-border p-4 shadow-xs">
+      <div className={getPublicProfileSkeletonBannerClasses()}>
         <div className="grid grid-cols-3 gap-4 h-full items-center">
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
@@ -565,13 +570,13 @@ function PublicProfileSkeleton() {
       </div>
 
       {/* Grid skeleton */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className={getPublicProfileSkeletonGridClasses()}>
         <Skeleton className="h-20 w-full rounded-xl" />
         <Skeleton className="h-20 w-full rounded-xl" />
       </div>
 
       {/* History section skeleton */}
-      <div className="space-y-3">
+      <div className={getPublicProfileSkeletonHistoryClasses()}>
         <Skeleton className="h-5 w-32" />
         <div className="space-y-2">
           <Skeleton className="h-16 w-full rounded-xl" />

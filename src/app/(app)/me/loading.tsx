@@ -1,16 +1,24 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getDashboardSkeletonAriaLabel } from "./dashboard-utils";
+import {
+  getDashboardSkeletonAriaLabel,
+  getDashboardSkeletonContainerClasses,
+  getDashboardSkeletonGreetingClasses,
+  getDashboardSkeletonStatsGridClasses,
+  getDashboardSkeletonStatCardClasses,
+  getDashboardSkeletonHeroContainerClasses,
+  getDashboardSkeletonSectionClasses,
+} from "./dashboard-utils";
 
 export default function DashboardLoading() {
   return (
     <div
-      className="flex flex-col gap-6"
+      className={getDashboardSkeletonContainerClasses()}
       role="region"
       aria-busy="true"
       aria-label={getDashboardSkeletonAriaLabel()}
     >
       {/* Greeting */}
-      <div className="flex items-center gap-4">
+      <div className={getDashboardSkeletonGreetingClasses()}>
         <Skeleton className="h-11 w-11 rounded-full" />
         <div className="space-y-1">
           <Skeleton className="h-5 w-40" />
@@ -19,9 +27,9 @@ export default function DashboardLoading() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+      <div className={getDashboardSkeletonStatsGridClasses()}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4">
+          <div key={i} className={getDashboardSkeletonStatCardClasses()}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-5 w-12" />
           </div>
@@ -29,13 +37,13 @@ export default function DashboardLoading() {
       </div>
 
       {/* Hero activity */}
-      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+      <div className={getDashboardSkeletonHeroContainerClasses()}>
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-20 w-full" />
       </div>
 
       {/* Agenda */}
-      <div className="space-y-3">
+      <div className={getDashboardSkeletonSectionClasses()}>
         <Skeleton className="h-4 w-24" />
         <div className="space-y-2">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -45,7 +53,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* Recent results */}
-      <div className="space-y-3">
+      <div className={getDashboardSkeletonSectionClasses()}>
         <Skeleton className="h-4 w-28" />
         <div className="space-y-2">
           {Array.from({ length: 3 }).map((_, i) => (

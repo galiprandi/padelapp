@@ -49,6 +49,11 @@ import {
   getPublicProfileMiniCourtContainerClasses,
   getPublicProfileMiniCourtGridClasses,
   getPublicProfileShareButtonClasses,
+  getPublicProfileSkeletonContainerClasses,
+  getPublicProfileSkeletonSummaryClasses,
+  getPublicProfileSkeletonBannerClasses,
+  getPublicProfileSkeletonGridClasses,
+  getPublicProfileSkeletonHistoryClasses,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -255,6 +260,14 @@ describe("public-profile-utils", () => {
       expect(getPublicProfileMiniCourtContainerClasses()).toContain("shrink-0 w-10 h-7");
       expect(getPublicProfileMiniCourtGridClasses()).toContain("grid grid-cols-2");
       expect(getPublicProfileShareButtonClasses()).toContain("h-8 w-8 text-muted-foreground");
+    });
+
+    it("returns correct CSS class strings for public profile loading skeleton elements", () => {
+      expect(getPublicProfileSkeletonContainerClasses()).toBe("space-y-6");
+      expect(getPublicProfileSkeletonSummaryClasses()).toBe("flex flex-col items-center gap-4 text-center");
+      expect(getPublicProfileSkeletonBannerClasses()).toBe("h-24 rounded-xl bg-card border border-border p-4 shadow-xs");
+      expect(getPublicProfileSkeletonGridClasses()).toBe("grid grid-cols-2 gap-3");
+      expect(getPublicProfileSkeletonHistoryClasses()).toBe("space-y-3");
     });
   });
 });
