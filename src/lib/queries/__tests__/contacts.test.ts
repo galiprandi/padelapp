@@ -19,6 +19,9 @@ import {
   convertEdgesToGraphLinks,
   formatEnrolledPlayersInput,
   buildTurnNetworkContactsList,
+  processDirectEdgesForTurnNetwork,
+  applyCommunityBonusToCandidateScores,
+  applyCandidateProximityAndSideBonuses,
   type PadelContact,
 } from "@/lib/queries/contacts";
 
@@ -685,6 +688,116 @@ describe("buildTurnNetworkContactsList", () => {
     expect(list[0].id).toBe("cand-2");
     expect(list[1].id).toBe("cand-1");
     expect(list[0].displayName).toBe("Candidate Two");
+  });
+});
+
+describe("processDirectEdgesForTurnNetwork", () => {
+  it("processes direct edges, calculates priority scores, and excludes candidates with extreme rival outcome", () => {
+    const edges = [
+      {
+        id: "e1",
+        playerAId: "enrolled-1",
+        playerBId: "candidate-1",
+        matchesAsRivals: 2,
+        matchesAsPartners: 1,
+        winsA: 1,
+        winsB: 1,
+        winsTogether: 1,
+        lossesTogether: 0,
+        turnsTogether: 1,
+        lastMatchAt: new Date("2026-06-01"),
+        lastTurnAt: new Date("2026-06-02"),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "e2",
+        playerAId: "enrolled-1",
+        playerBId: "extreme-candidate",
+        matchesAsRivals: 10,
+        matchesAsPartners: 0,
+        winsA: 9,
+        winsB: 1, // 1/10 = 10% win rate -> extreme outcome
+        winsTogether: 0,
+        lossesTogether: 0,
+        turnsTogether: 0,
+        lastMatchAt: new Date("2026-06-01"),
+        lastTurnAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    const enrolledUserIds = new Set(["enrolled-1"]);
+    const participantUserIds = new Set(["enrolled-1"]);
+
+    const result = processDirectEdgesForTurnNetwork(
+      edges as unknown as Parameters<typeof processDirectEdgesForTurnNetwork>[0],
+      enrolledUserIds,
+      participantUserIds
+    );
+
+    expect(result.candidateScores.has("candidate-1")).toBe(true);
+    expect(result.candidateScores.get("candidate-1")).toBeGreaterThan(0);
+    expect(result.excludedUserIds.has("extreme-candidate")).toBe(true);
+    expect(result.candidateDirectMatches.get("candidate-1")?.matchesTogether).toBe(4);
+  });
+});
+
+describe("applyCommunityBonusToCandidateScores", () => {
+  it("applies +100 bonus to valid candidates in the same community", () => {
+    const communityStats = [
+      { userId: "candidate-1", community: 1 },
+      { userId: "enrolled-1", community: 1 },
+      { userId: "excluded-1", community: 1 },
+    ];
+
+    const participantUserIds = new Set(["enrolled-1"]);
+    const excludedUserIds = new Set(["excluded-1"]);
+    const candidateScores = new Map<string, number>([["candidate-1", 50]]);
+
+    applyCommunityBonusToCandidateScores(
+      communityStats as unknown as Parameters<typeof applyCommunityBonusToCandidateScores>[0],
+      participantUserIds,
+      excludedUserIds,
+      candidateScores
+    );
+
+    expect(candidateScores.get("candidate-1")).toBe(150); // 50 + 100
+    expect(candidateScores.has("enrolled-1")).toBe(false);
+    expect(candidateScores.has("excluded-1")).toBe(false);
+  });
+});
+
+describe("applyCandidateProximityAndSideBonuses", () => {
+  it("applies skill proximity and court side bonuses to active candidates", () => {
+    const activeCandidateIds = ["cand-1"];
+    const candidateStatsMap = new Map([
+      [
+        "cand-1",
+        {
+          userId: "cand-1",
+          skillScore: 1050,
+          preferredSide: "LEFT",
+          community: 1,
+        } as unknown as Parameters<typeof applyCandidateProximityAndSideBonuses>[1] extends Map<string, infer V> ? V : never,
+      ],
+    ]);
+
+    const candidateScores = new Map<string, number>([["cand-1", 100]]);
+
+    // avgEnrolledSkillScore = 1000, candScore = 1050 (diff 50 -> +60 bonus)
+    // neededSide = "LEFT", candidate preferredSide = "LEFT" (+40 bonus)
+    // Total bonus = 100
+    applyCandidateProximityAndSideBonuses(
+      activeCandidateIds,
+      candidateStatsMap,
+      1000,
+      "LEFT",
+      candidateScores
+    );
+
+    expect(candidateScores.get("cand-1")).toBe(200); // 100 + 100
   });
 });
 

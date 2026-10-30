@@ -102,6 +102,136 @@ export function calculateCandidateProximityBonus(
   return proximityScore + sideScore;
 }
 
+export interface ProcessDirectEdgesResult {
+  candidateScores: Map<string, number>;
+  candidateDirectMatches: Map<string, { lastMatchAt: Date; matchesTogether: number }>;
+  validConnectionsForCandidate: Map<string, Set<string>>;
+  excludedUserIds: Set<string>;
+}
+
+/**
+ * Pure helper: processes direct playerEdges involving enrolled turn participants, calculates contact
+ * priority scores, tracks interaction recency/strength, and flags candidate exclusions.
+ */
+export function processDirectEdgesForTurnNetwork(
+  edges: Array<typeof playerEdges.$inferSelect>,
+  enrolledUserIds: Set<string>,
+  participantUserIds: Set<string>
+): ProcessDirectEdgesResult {
+  const candidateScores = new Map<string, number>();
+  const candidateDirectMatches = new Map<string, { lastMatchAt: Date; matchesTogether: number }>();
+  const validConnectionsForCandidate = new Map<string, Set<string>>();
+  const excludedUserIds = new Set<string>();
+
+  for (const edge of edges) {
+    const isPlayerAEnrolled = enrolledUserIds.has(edge.playerAId);
+    const isPlayerBEnrolled = enrolledUserIds.has(edge.playerBId);
+
+    // If both are enrolled, skip
+    if (isPlayerAEnrolled && isPlayerBEnrolled) continue;
+
+    const enrolledId = isPlayerAEnrolled ? edge.playerAId : edge.playerBId;
+    const candidateId = isPlayerAEnrolled ? edge.playerBId : edge.playerAId;
+
+    // Skip if candidate is already part of the turn (either as player or substitute)
+    if (participantUserIds.has(candidateId)) continue;
+
+    // Check extreme outcome exclusion
+    const candidateWins = candidateId === edge.playerAId ? edge.winsA : edge.winsB;
+    if (isExtremeRivalOutcome(candidateWins, edge.matchesAsRivals)) {
+      excludedUserIds.add(candidateId);
+      continue;
+    }
+
+    // Mark as valid connection
+    if (!validConnectionsForCandidate.has(candidateId)) {
+      validConnectionsForCandidate.set(candidateId, new Set());
+    }
+    validConnectionsForCandidate.get(candidateId)!.add(enrolledId);
+
+    const lastInteraction = edge.lastTurnAt && edge.lastMatchAt
+      ? (edge.lastTurnAt > edge.lastMatchAt ? edge.lastTurnAt : edge.lastMatchAt)
+      : (edge.lastTurnAt ?? edge.lastMatchAt);
+
+    const edgeScore = calculateNetworkContactPriorityScore(
+      edge.matchesAsRivals,
+      edge.matchesAsPartners,
+      edge.turnsTogether,
+      lastInteraction
+    );
+
+    const currentScore = candidateScores.get(candidateId) ?? 0;
+    candidateScores.set(candidateId, currentScore + edgeScore);
+
+    // Keep track of total connections (matches + turns) and last interaction date
+    const totalStrength = edge.matchesAsRivals + edge.matchesAsPartners + edge.turnsTogether;
+    const existingDirect = candidateDirectMatches.get(candidateId);
+    const edgeLastDate = lastInteraction ? new Date(lastInteraction) : new Date(0);
+    if (existingDirect) {
+      existingDirect.matchesTogether += totalStrength;
+      if (edgeLastDate > existingDirect.lastMatchAt) {
+        existingDirect.lastMatchAt = edgeLastDate;
+      }
+    } else {
+      candidateDirectMatches.set(candidateId, {
+        lastMatchAt: edgeLastDate,
+        matchesTogether: totalStrength,
+      });
+    }
+  }
+
+  return {
+    candidateScores,
+    candidateDirectMatches,
+    validConnectionsForCandidate,
+    excludedUserIds,
+  };
+}
+
+/**
+ * Pure helper: applies community bonus (+100) to candidate scores for players in the same Louvain cluster.
+ */
+export function applyCommunityBonusToCandidateScores(
+  communityPlayersStats: Array<typeof playerGraphStats.$inferSelect>,
+  participantUserIds: Set<string>,
+  excludedUserIds: Set<string>,
+  candidateScores: Map<string, number>
+): void {
+  for (const stats of communityPlayersStats) {
+    const candidateId = stats.userId;
+    if (participantUserIds.has(candidateId)) continue;
+    if (excludedUserIds.has(candidateId)) continue;
+
+    const currentScore = candidateScores.get(candidateId) ?? 0;
+    candidateScores.set(candidateId, currentScore + 100);
+  }
+}
+
+/**
+ * Pure helper: calculates and applies skill proximity and court side synergy bonuses to active candidate scores.
+ */
+export function applyCandidateProximityAndSideBonuses(
+  activeCandidateIds: string[],
+  candidateStatsMap: Map<string, typeof playerGraphStats.$inferSelect>,
+  avgEnrolledSkillScore: number,
+  neededSide: "RIGHT" | "LEFT" | null,
+  candidateScores: Map<string, number>
+): void {
+  for (const candidateId of activeCandidateIds) {
+    const stats = candidateStatsMap.get(candidateId);
+    const candScore = stats?.skillScore ?? 1000;
+    const proximityBonus = calculateCandidateProximityBonus(
+      candScore,
+      avgEnrolledSkillScore,
+      stats?.preferredSide,
+      neededSide
+    );
+
+    const currentScore = candidateScores.get(candidateId) ?? 0;
+    candidateScores.set(candidateId, currentScore + proximityBonus);
+  }
+}
+
 export interface CandidateFeedbackAdjustmentResult {
   scoreAdjustments: Map<string, number>;
   excludedUserIds: Set<string>;
@@ -529,79 +659,19 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
     : [];
 
   // 4. Score and filter candidates
-  const candidateScores = new Map<string, number>();
-  const candidateDirectMatches = new Map<string, { lastMatchAt: Date; matchesTogether: number }>();
-  const validConnectionsForCandidate = new Map<string, Set<string>>(); // candidateId -> enrolledPlayerIds where connection is valid
-  const excludedUserIds = new Set<string>(); // candidateIds that have an extreme outcome against ANY enrolled player
-
-  // Process direct contacts (edges)
-  for (const edge of edges) {
-    const isPlayerAEnrolled = enrolledUserIds.has(edge.playerAId);
-    const isPlayerBEnrolled = enrolledUserIds.has(edge.playerBId);
-
-    // If both are enrolled, skip
-    if (isPlayerAEnrolled && isPlayerBEnrolled) continue;
-
-    const enrolledId = isPlayerAEnrolled ? edge.playerAId : edge.playerBId;
-    const candidateId = isPlayerAEnrolled ? edge.playerBId : edge.playerAId;
-
-    // Skip if candidate is already part of the turn (either as player or substitute)
-    if (participantUserIds.has(candidateId)) continue;
-
-    // Check extreme outcome exclusion
-    const candidateWins = candidateId === edge.playerAId ? edge.winsA : edge.winsB;
-    if (isExtremeRivalOutcome(candidateWins, edge.matchesAsRivals)) {
-      excludedUserIds.add(candidateId);
-      continue;
-    }
-
-    // Mark as valid connection
-    if (!validConnectionsForCandidate.has(candidateId)) {
-      validConnectionsForCandidate.set(candidateId, new Set());
-    }
-    validConnectionsForCandidate.get(candidateId)!.add(enrolledId);
-
-    const lastInteraction = edge.lastTurnAt && edge.lastMatchAt
-      ? (edge.lastTurnAt > edge.lastMatchAt ? edge.lastTurnAt : edge.lastMatchAt)
-      : (edge.lastTurnAt ?? edge.lastMatchAt);
-
-    const edgeScore = calculateNetworkContactPriorityScore(
-      edge.matchesAsRivals,
-      edge.matchesAsPartners,
-      edge.turnsTogether,
-      lastInteraction
-    );
-
-    const currentScore = candidateScores.get(candidateId) ?? 0;
-    candidateScores.set(candidateId, currentScore + edgeScore);
-
-    // Keep track of total connections (matches + turns) and last interaction date
-    const totalStrength = edge.matchesAsRivals + edge.matchesAsPartners + edge.turnsTogether;
-    const existingDirect = candidateDirectMatches.get(candidateId);
-    const edgeLastDate = lastInteraction ? new Date(lastInteraction) : new Date(0);
-    if (existingDirect) {
-      existingDirect.matchesTogether += totalStrength;
-      if (edgeLastDate > existingDirect.lastMatchAt) {
-        existingDirect.lastMatchAt = edgeLastDate;
-      }
-    } else {
-      candidateDirectMatches.set(candidateId, {
-        lastMatchAt: edgeLastDate,
-        matchesTogether: totalStrength,
-      });
-    }
-  }
+  const {
+    candidateScores,
+    candidateDirectMatches,
+    excludedUserIds,
+  } = processDirectEdgesForTurnNetwork(edges, enrolledUserIds, participantUserIds);
 
   // Process same community players
-  for (const stats of communityPlayersStats) {
-    const candidateId = stats.userId;
-    if (participantUserIds.has(candidateId)) continue;
-    if (excludedUserIds.has(candidateId)) continue;
-
-    // Community bonus
-    const currentScore = candidateScores.get(candidateId) ?? 0;
-    candidateScores.set(candidateId, currentScore + 100);
-  }
+  applyCommunityBonusToCandidateScores(
+    communityPlayersStats,
+    participantUserIds,
+    excludedUserIds,
+    candidateScores
+  );
 
   // Process feedback signal given by enrolled turn participants
   const feedbackAdjustment = calculateCandidateFeedbackAdjustment(feedbackRows, participantUserIds);
@@ -644,19 +714,13 @@ export async function getTurnNetworkContacts(turnId: string): Promise<PadelConta
 
     const neededSide = determineTurnNeededCourtSide(rightCount, leftCount);
 
-    for (const candidateId of activeCandidateIds) {
-      const stats = candidateStatsMap.get(candidateId);
-      const candScore = stats?.skillScore ?? 1000;
-      const proximityBonus = calculateCandidateProximityBonus(
-        candScore,
-        avgEnrolledSkillScore,
-        stats?.preferredSide,
-        neededSide
-      );
-
-      const currentScore = candidateScores.get(candidateId) ?? 0;
-      candidateScores.set(candidateId, currentScore + proximityBonus);
-    }
+    applyCandidateProximityAndSideBonuses(
+      activeCandidateIds,
+      candidateStatsMap,
+      avgEnrolledSkillScore,
+      neededSide,
+      candidateScores
+    );
   }
 
   // We keep candidates that have either:
