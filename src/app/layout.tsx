@@ -5,12 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { formatSpeculationRulesScript } from "@/lib/speculation-rules";
-import {
-  getResourceHints,
-  getOriginTrialMetaProps,
-  getResourceHintKey,
-  formatResourceHintLinkProps,
-} from "@/lib/resource-hints";
+import { getRootHeadMetadataProps } from "@/lib/resource-hints";
 import {
   getRootBodyClasses,
   getRootHtmlAttributes,
@@ -55,16 +50,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const resourceHints = getResourceHints();
-  const originTrialMeta = getOriginTrialMetaProps(
+  const { resourceHintLinks, originTrialMeta } = getRootHeadMetadataProps(
     process.env.NEXT_PUBLIC_INSTALL_ORIGIN_TRIAL_TOKEN,
   );
 
   return (
     <html {...getRootHtmlAttributes()}>
       <head>
-        {resourceHints.map((hint, idx) => (
-          <link key={getResourceHintKey(hint, idx)} {...formatResourceHintLinkProps(hint)} />
+        {resourceHintLinks.map(({ key, ...linkProps }) => (
+          <link key={key} {...linkProps} />
         ))}
         {originTrialMeta && <meta {...originTrialMeta} />}
         <script {...formatSpeculationRulesScript()} />
