@@ -1,28 +1,43 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft } from "lucide-react";
-import { getPublicProfileSkeletonAriaLabel } from "./public-profile-utils";
+import {
+  getPublicProfileSkeletonAriaLabel,
+  getPublicProfileHeaderTitle,
+  getPublicProfileHeaderSubtitle,
+  getPublicProfileMainClasses,
+  getPublicProfileHeaderClasses,
+  getPublicProfileHeaderSkeletonClasses,
+  getPublicProfileSkeletonSummaryClasses,
+  getPublicProfileSkeletonBannerClasses,
+  getPublicProfileSkeletonGridClasses,
+  getPublicProfileSkeletonHistoryClasses,
+} from "./public-profile-utils";
 
 export default function PublicProfileLoading() {
   return (
     <div
-      className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10 pb-20 min-h-screen"
+      className={getPublicProfileMainClasses()}
       role="region"
       aria-busy="true"
       aria-label={getPublicProfileSkeletonAriaLabel()}
     >
       {/* Header with back button */}
-      <div className="flex items-center gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+      <div className={getPublicProfileHeaderClasses()}>
+        <div className={getPublicProfileHeaderSkeletonClasses()}>
           <ChevronLeft className="h-5 w-5" />
         </div>
         <div className="space-y-1">
-          <h1 className="text-xl font-bold text-foreground">Perfil Público</h1>
-          <p className="text-sm text-muted-foreground">Estadísticas de jugador</p>
+          <h1 className="text-xl font-bold text-foreground">
+            {getPublicProfileHeaderTitle()}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {getPublicProfileHeaderSubtitle()}
+          </p>
         </div>
       </div>
 
       {/* Profile summary skeleton */}
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div className={getPublicProfileSkeletonSummaryClasses()}>
         <Skeleton className="h-24 w-24 rounded-full" />
         <div className="space-y-2">
           <Skeleton className="h-7 w-36 mx-auto" />
@@ -31,7 +46,7 @@ export default function PublicProfileLoading() {
       </div>
 
       {/* Ranking banner skeleton */}
-      <div className="h-24 rounded-xl bg-card border border-border p-4">
+      <div className={getPublicProfileSkeletonBannerClasses()}>
         <div className="grid grid-cols-3 gap-4 h-full items-center">
           <Skeleton className="h-10 w-full rounded-lg" />
           <Skeleton className="h-10 w-full rounded-lg" />
@@ -40,28 +55,13 @@ export default function PublicProfileLoading() {
       </div>
 
       {/* Metrics grid skeleton */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className={getPublicProfileSkeletonGridClasses()}>
         <Skeleton className="h-20 w-full rounded-xl" />
         <Skeleton className="h-20 w-full rounded-xl" />
-      </div>
-
-      {/* Network & Position Stats Card skeleton */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-        <Skeleton className="h-4 w-28" />
-        <div className="grid grid-cols-2 gap-4 pt-1">
-          <div className="space-y-2">
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-6 w-16" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-3 w-24" />
-            <Skeleton className="h-6 w-20" />
-          </div>
-        </div>
       </div>
 
       {/* History section skeleton */}
-      <div className="space-y-3">
+      <div className={getPublicProfileSkeletonHistoryClasses()}>
         <div className="flex items-center justify-between">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-6 w-16 rounded-full" />

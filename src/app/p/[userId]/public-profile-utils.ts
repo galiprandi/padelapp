@@ -288,3 +288,23 @@ export function getPublicProfileMiniCourtGridClasses(): string {
 export function getPublicProfileShareButtonClasses(): string {
   return "h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
 }
+
+export function getPublicProfileSkeletonContainerClasses(): string {
+  return "space-y-6";
+}
+
+export function getPublicProfileSkeletonSummaryClasses(): string {
+  return "flex flex-col items-center gap-4 text-center";
+}
+
+export function getPublicProfileSkeletonBannerClasses(): string {
+  return "h-24 rounded-xl bg-card border border-border p-4 shadow-xs";
+}
+
+export function getPublicProfileSkeletonGridClasses(): string {
+  return "grid grid-cols-2 gap-3";
+}
+
+export function getPublicProfileSkeletonHistoryClasses(): string {
+  return "space-y-3";
+}

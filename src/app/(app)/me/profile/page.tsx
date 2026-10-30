@@ -13,6 +13,7 @@ import {
   getProfileSecurityTitle,
   getProfileSecurityDescription,
   getProfileSkeletonAriaLabel,
+  getProfileSkeletonHeaderCardClasses,
 } from "./profile-utils";
 
 export default function ProfilePage() {
@@ -101,7 +102,7 @@ function ProfileFormSkeleton() {
       className="space-y-6"
     >
       {/* Avatar card skeleton */}
-      <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
+      <div className={getProfileSkeletonHeaderCardClasses()}>
         <Skeleton className="h-16 w-16 rounded-xl shrink-0" />
         <div className="flex-1 space-y-1">
           <Skeleton className="h-4 w-32" />

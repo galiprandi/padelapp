@@ -68,6 +68,12 @@ import {
   getDashboardEmptyRecentResultsTitleText,
   getDashboardEmptyRecentResultsDescriptionText,
   getDashboardEmptyRecentResultsButtonText,
+  getDashboardSkeletonContainerClasses,
+  getDashboardSkeletonGreetingClasses,
+  getDashboardSkeletonStatsGridClasses,
+  getDashboardSkeletonStatCardClasses,
+  getDashboardSkeletonHeroContainerClasses,
+  getDashboardSkeletonSectionClasses,
   type DashboardMatch,
   type DashboardTurn,
 } from "../dashboard-utils";
@@ -394,6 +400,15 @@ describe("dashboard-utils", () => {
       expect(getDashboardEmptyRecentResultsTitleText()).toBe("Sin resultados todavía");
       expect(getDashboardEmptyRecentResultsDescriptionText()).toContain("Cuando registres un marcador");
       expect(getDashboardEmptyRecentResultsButtonText()).toBe("Ver historial");
+    });
+
+    it("returns correct CSS class strings for dashboard loading skeleton elements", () => {
+      expect(getDashboardSkeletonContainerClasses()).toBe("flex flex-col gap-6");
+      expect(getDashboardSkeletonGreetingClasses()).toBe("flex items-center gap-4");
+      expect(getDashboardSkeletonStatsGridClasses()).toBe("grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3");
+      expect(getDashboardSkeletonStatCardClasses()).toBe("flex flex-col gap-1 rounded-xl border border-border bg-card p-4");
+      expect(getDashboardSkeletonHeroContainerClasses()).toBe("space-y-3 rounded-xl border border-border bg-card p-4");
+      expect(getDashboardSkeletonSectionClasses()).toBe("space-y-3");
     });
   });
 });

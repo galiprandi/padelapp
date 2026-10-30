@@ -70,6 +70,9 @@ import {
   getProfileRestoreChecklistButtonText,
   getProfileRestorePwaButtonText,
   getProfileRestorePushButtonText,
+  getProfileSkeletonContainerClasses,
+  getProfileSkeletonHeaderCardClasses,
+  getProfileSkeletonAccountCardClasses,
 } from "../profile-utils";
 
 describe("validateAlias", () => {
@@ -317,5 +320,13 @@ describe("Profile notices section helpers", () => {
     expect(getProfileRestoreChecklistButtonText()).toBe("Restablecer guía de bienvenida");
     expect(getProfileRestorePwaButtonText()).toBe("Restablecer sugerencia de instalación");
     expect(getProfileRestorePushButtonText()).toBe("Restablecer sugerencia de notificaciones");
+  });
+});
+
+describe("Profile skeleton loading helpers", () => {
+  it("returns correct CSS class strings for profile loading skeleton elements", () => {
+    expect(getProfileSkeletonContainerClasses()).toBe("flex flex-col gap-6");
+    expect(getProfileSkeletonHeaderCardClasses()).toBe("flex items-center gap-4 rounded-xl border border-border bg-card p-4");
+    expect(getProfileSkeletonAccountCardClasses()).toBe("flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3");
   });
 });
