@@ -4,10 +4,20 @@ import {
   getTurnSkeletonAriaLabel,
   getTurnSkeletonContainerClasses,
   getTurnSkeletonHeaderClasses,
+  getTurnSkeletonHeaderBackBadgeClasses,
+  getTurnSkeletonHeaderTitleContainerClasses,
   getTurnSkeletonCardClasses,
   getTurnSkeletonCardHeaderClasses,
   getTurnSkeletonGridClasses,
+  getTurnSkeletonTimeCardClasses,
+  getTurnSkeletonLocationCardClasses,
+  getTurnSkeletonLocationIconBadgeClasses,
+  getTurnSkeletonPlayersSectionClasses,
+  getTurnSkeletonPlayersHeaderClasses,
+  getTurnSkeletonPlayersListClasses,
+  getTurnSkeletonPlayerItemClasses,
   getTurnSkeletonBottomBarClasses,
+  getTurnSkeletonBottomBarInnerClasses,
 } from "@/components/turns/turn-utils";
 
 export function TurnSkeleton() {
@@ -20,10 +30,10 @@ export function TurnSkeleton() {
     >
       {/* Header Skeleton */}
       <div className={getTurnSkeletonHeaderClasses()}>
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+        <div className={getTurnSkeletonHeaderBackBadgeClasses()}>
           <ChevronLeft className="h-5 w-5 opacity-40" />
         </div>
-        <div className="space-y-2">
+        <div className={getTurnSkeletonHeaderTitleContainerClasses()}>
           <Skeleton className="h-6 w-40" />
           <Skeleton className="h-4 w-52" />
         </div>
@@ -40,7 +50,7 @@ export function TurnSkeleton() {
 
         <div className={getTurnSkeletonGridClasses()}>
           {/* Horario Row */}
-          <div className="bg-card p-4 flex flex-col gap-1.5">
+          <div className={getTurnSkeletonTimeCardClasses()}>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3.5 w-3.5 opacity-40" />
               <Skeleton className="h-3 w-16" />
@@ -49,8 +59,8 @@ export function TurnSkeleton() {
           </div>
 
           {/* Club & Fecha Row */}
-          <div className="bg-card p-4 flex items-center gap-4 border-t border-border">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted shrink-0">
+          <div className={getTurnSkeletonLocationCardClasses()}>
+            <div className={getTurnSkeletonLocationIconBadgeClasses()}>
               <MapPin className="h-5 w-5 text-muted-foreground opacity-40" />
             </div>
             <div className="space-y-2 flex-1">
@@ -62,8 +72,8 @@ export function TurnSkeleton() {
       </div>
 
       {/* Players List Skeleton */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
+      <section className={getTurnSkeletonPlayersSectionClasses()}>
+        <div className={getTurnSkeletonPlayersHeaderClasses()}>
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground opacity-40" />
             <Skeleton className="h-4 w-28" />
@@ -71,11 +81,11 @@ export function TurnSkeleton() {
           <Skeleton className="h-5 w-24 rounded-md" />
         </div>
 
-        <div className="grid gap-2">
+        <div className={getTurnSkeletonPlayersListClasses()}>
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+              className={getTurnSkeletonPlayerItemClasses()}
             >
               <Skeleton className="h-10 w-10 rounded-full" />
               <div className="flex-1">
@@ -89,7 +99,7 @@ export function TurnSkeleton() {
 
       {/* Fixed Bottom Bar Skeleton */}
       <div className={getTurnSkeletonBottomBarClasses()}>
-        <div className="max-w-md mx-auto">
+        <div className={getTurnSkeletonBottomBarInnerClasses()}>
           <Skeleton className="w-full h-12 rounded-lg" />
         </div>
       </div>

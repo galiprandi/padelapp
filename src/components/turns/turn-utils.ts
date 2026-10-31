@@ -2837,6 +2837,202 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for cancelled turn back button in turn public details.
+ */
+export function getTurnPublicDetailsCancelledButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold";
+}
+
+/**
+ * Format CSS classes for empty slot icon badge in turn public details.
+ */
+export function getTurnPublicDetailsEmptySlotIconBadgeClasses(): string {
+  return "h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center";
+}
+
+/**
+ * Format CSS classes for empty slot content container in turn public details.
+ */
+export function getTurnPublicDetailsEmptySlotContentClasses(): string {
+  return "flex-1 flex items-center justify-between min-w-0 gap-2";
+}
+
+/**
+ * Format CSS classes for empty slot text in turn public details.
+ */
+export function getTurnPublicDetailsEmptySlotTextClasses(): string {
+  return "text-xs font-semibold italic opacity-60 truncate";
+}
+
+/**
+ * Format CSS classes for empty slot share button in turn public details.
+ */
+export function getTurnPublicDetailsEmptySlotShareButtonClasses(): string {
+  return "h-8 w-8 rounded-lg shrink-0";
+}
+
+/**
+ * Format CSS classes for substitutes section container in turn public details.
+ */
+export function getTurnPublicDetailsSubstitutesSectionClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Format CSS classes for substitutes header container in turn public details.
+ */
+export function getTurnPublicDetailsSubstitutesHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for substitutes count badge in turn public details.
+ */
+export function getTurnPublicDetailsSubstitutesCountBadgeClasses(): string {
+  return "rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border";
+}
+
+/**
+ * Format CSS classes for substitutes list grid in turn public details.
+ */
+export function getTurnPublicDetailsSubstitutesListClasses(): string {
+  return "grid gap-2";
+}
+
+/**
+ * Format CSS classes for substitute index badge in turn public details.
+ */
+export function getTurnPublicDetailsSubstituteIndexBadgeClasses(): string {
+  return "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for turn chat section container in turn public details.
+ */
+export function getTurnPublicDetailsChatSectionClasses(): string {
+  return "space-y-4 mb-6";
+}
+
+/**
+ * Format CSS classes for max-width container in turn actions bottom bar.
+ */
+export function getTurnActionsInnerContainerClasses(): string {
+  return "max-w-md mx-auto";
+}
+
+/**
+ * Format CSS classes for action stack in turn actions bottom bar.
+ */
+export function getTurnActionsStackClasses(): string {
+  return "flex flex-col gap-3";
+}
+
+/**
+ * Format CSS classes for button group row in turn actions bottom bar.
+ */
+export function getTurnActionsButtonGroupClasses(): string {
+  return "flex gap-2";
+}
+
+/**
+ * Format CSS classes for full-width row with action and share buttons in turn actions bottom bar.
+ */
+export function getTurnActionsFullWidthRowClasses(): string {
+  return "flex gap-2 w-full";
+}
+
+/**
+ * Format CSS classes for sign in form trigger in turn actions bottom bar.
+ */
+export function getTurnActionsSignInFormClasses(): string {
+  return "w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs";
+}
+
+/**
+ * Format CSS classes for small share button (h-10 w-10) in turn actions bottom bar.
+ */
+export function getTurnActionsShareButtonSmallClasses(): string {
+  return "h-10 w-10 rounded-lg shrink-0";
+}
+
+/**
+ * Format CSS classes for large share button (h-12 w-12) in turn actions bottom bar.
+ */
+export function getTurnActionsShareButtonLargeClasses(): string {
+  return "h-12 w-12 rounded-lg shrink-0";
+}
+
+/**
+ * Format CSS classes for header back icon badge in turn skeleton.
+ */
+export function getTurnSkeletonHeaderBackBadgeClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for header title container in turn skeleton.
+ */
+export function getTurnSkeletonHeaderTitleContainerClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Format CSS classes for time info card in turn skeleton.
+ */
+export function getTurnSkeletonTimeCardClasses(): string {
+  return "bg-card p-4 flex flex-col gap-1.5";
+}
+
+/**
+ * Format CSS classes for location info card in turn skeleton.
+ */
+export function getTurnSkeletonLocationCardClasses(): string {
+  return "bg-card p-4 flex items-center gap-4 border-t border-border";
+}
+
+/**
+ * Format CSS classes for location icon badge in turn skeleton.
+ */
+export function getTurnSkeletonLocationIconBadgeClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-muted shrink-0";
+}
+
+/**
+ * Format CSS classes for players section in turn skeleton.
+ */
+export function getTurnSkeletonPlayersSectionClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Format CSS classes for players header container in turn skeleton.
+ */
+export function getTurnSkeletonPlayersHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Format CSS classes for players list grid in turn skeleton.
+ */
+export function getTurnSkeletonPlayersListClasses(): string {
+  return "grid gap-2";
+}
+
+/**
+ * Format CSS classes for player item in turn skeleton.
+ */
+export function getTurnSkeletonPlayerItemClasses(): string {
+  return "flex items-center gap-3 rounded-xl bg-card p-3 border border-border";
+}
+
+/**
+ * Format CSS classes for bottom bar max-width container in turn skeleton.
+ */
+export function getTurnSkeletonBottomBarInnerClasses(): string {
+  return "max-w-md mx-auto";
+}
+
+/**
  * Format prompt question text for confirming play casual action.
  */
 export function getPlayCasualConfirmNoticeText(): string {

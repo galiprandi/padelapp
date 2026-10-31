@@ -108,6 +108,24 @@ import {
   getTurnPublicDetailsEnrolledHeaderClasses,
   getTurnPublicDetailsSuggestedSectionClasses,
   getTurnPublicDetailsSuggestedHeaderClasses,
+  getTurnPublicDetailsCancelledButtonClasses,
+  getTurnPublicDetailsEmptySlotIconBadgeClasses,
+  getTurnPublicDetailsEmptySlotContentClasses,
+  getTurnPublicDetailsEmptySlotTextClasses,
+  getTurnPublicDetailsEmptySlotShareButtonClasses,
+  getTurnPublicDetailsSubstitutesSectionClasses,
+  getTurnPublicDetailsSubstitutesHeaderClasses,
+  getTurnPublicDetailsSubstitutesCountBadgeClasses,
+  getTurnPublicDetailsSubstitutesListClasses,
+  getTurnPublicDetailsSubstituteIndexBadgeClasses,
+  getTurnPublicDetailsChatSectionClasses,
+  getTurnActionsInnerContainerClasses,
+  getTurnActionsStackClasses,
+  getTurnActionsButtonGroupClasses,
+  getTurnActionsFullWidthRowClasses,
+  getTurnActionsSignInFormClasses,
+  getTurnActionsShareButtonSmallClasses,
+  getTurnActionsShareButtonLargeClasses,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -264,7 +282,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             </p>
           </div>
         </div>
-        <Button asChild className="w-full h-12 rounded-lg text-base font-bold">
+        <Button asChild className={getTurnPublicDetailsCancelledButtonClasses()}>
           <Link href="/turnos" prefetch={true}>{cancelledHeader.buttonLabel}</Link>
         </Button>
       </div>
@@ -520,11 +538,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   aria-label={emptySlotsProps.ariaLabel}
                   className={getTurnPublicDetailsEmptySlotClasses()}
                 >
-                  <div className="h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center">
+                  <div className={getTurnPublicDetailsEmptySlotIconBadgeClasses()}>
                     <Users className="h-5 w-5 text-muted-foreground/50" aria-hidden="true" />
                   </div>
-                  <div className="flex-1 flex items-center justify-between min-w-0 gap-2">
-                    <p className="text-xs font-semibold italic opacity-60 truncate">
+                  <div className={getTurnPublicDetailsEmptySlotContentClasses()}>
+                    <p className={getTurnPublicDetailsEmptySlotTextClasses()}>
                       {emptySlotsProps.text}
                     </p>
                     {isJoined || isCreator ? (
@@ -534,7 +552,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                         date={turn.date}
                         openSlots={turn.maxPlayers - turn.players.length}
                         variant="icon"
-                        className="h-8 w-8 rounded-lg shrink-0"
+                        className={getTurnPublicDetailsEmptySlotShareButtonClasses()}
                       />
                     ) : (
                       viewerId && !isSubstitute && turn.status === "OPEN" && (
@@ -657,18 +675,18 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <section
           role="region"
           aria-label={getTurnSubstitutesRegionAriaLabel()}
-          className="space-y-4"
+          className={getTurnPublicDetailsSubstitutesSectionClasses()}
         >
-          <div className="flex items-center justify-between">
+          <div className={getTurnPublicDetailsSubstitutesHeaderClasses()}>
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               {getTurnSubstitutesSectionTitle()}
             </h2>
-            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
+            <span className={getTurnPublicDetailsSubstitutesCountBadgeClasses()}>
               {getTurnSubstitutesCountText(turn.substitutes.length)}
             </span>
           </div>
-          <div className="grid gap-2">
+          <div className={getTurnPublicDetailsSubstitutesListClasses()}>
             {turn.substitutes.map((s, index) => {
               const isContact = contactIds.has(s.userId);
               const name = s.user.alias ?? s.user.displayName;
@@ -680,7 +698,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   aria-label={formatSubstituteListAriaLabel(index, turn.substitutes.length, name)}
                   className={getTurnPublicDetailsSubstituteItemClasses()}
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+                  <span className={getTurnPublicDetailsSubstituteIndexBadgeClasses()}>
                     {index + 1}
                   </span>
                   <PlayerAvatar
@@ -733,7 +751,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         <section
           role="region"
           aria-label={getTurnChatRegionAriaLabel()}
-          className="space-y-4 mb-6"
+          className={getTurnPublicDetailsChatSectionClasses()}
         >
           <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
@@ -759,7 +777,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           openSlots: turn.maxPlayers - turn.players.length,
         })}
       >
-        <div className="max-w-md mx-auto">
+        <div className={getTurnActionsInnerContainerClasses()}>
           <TurnActions
             viewerId={viewerId}
             isSubstitute={isSubstitute}
@@ -814,11 +832,11 @@ function TurnActions({
   // State 1: Not logged in
   if (!viewerId) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={getTurnActionsStackClasses()}>
         <SignInForm
           callbackUrl={`/t/${turnId}`}
           label={getSignInPromptText(club)}
-          className="w-full h-12 rounded-lg text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all shadow-xs"
+          className={getTurnActionsSignInFormClasses()}
         />
         <TurnShareButton shareUrl={shareUrl} club={club} date={date} openSlots={openSlots} />
       </div>
@@ -828,7 +846,7 @@ function TurnActions({
   // State 2: Substitute
   if (isSubstitute) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={getTurnActionsStackClasses()}>
         {hasOpenSlot ? (
           <TakeOpenSlotForm turnId={turnId} />
         ) : (
@@ -852,12 +870,12 @@ function TurnActions({
   // State 3: Full turn
   if (isFull) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={getTurnActionsStackClasses()}>
         {isCreator && !isCompleted && (
           <>
             <StartMatchForm turnId={turnId} />
             <ScheduleNextTurnForm turnId={turnId} />
-            <div className="flex gap-2">
+            <div className={getTurnActionsButtonGroupClasses()}>
               <Button
                 asChild
                 variant="outline"
@@ -912,7 +930,7 @@ function TurnActions({
   // State 4: Joined (not full)
   if (isJoined) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={getTurnActionsStackClasses()}>
         {isCreator && (
           <>
             {playersCount >= 4 && !isCompleted && (
@@ -921,7 +939,7 @@ function TurnActions({
             {playersCount >= 2 && playersCount < 4 && !isCompleted && (
               <PlayCasualForm turnId={turnId} />
             )}
-            <div className="flex gap-2 w-full">
+            <div className={getTurnActionsFullWidthRowClasses()}>
               <div className="flex-1">
                 <ScheduleNextTurnForm turnId={turnId} />
               </div>
@@ -932,11 +950,11 @@ function TurnActions({
                   date={date}
                   openSlots={openSlots}
                   variant="icon"
-                  className="h-10 w-10 rounded-lg shrink-0"
+                  className={getTurnActionsShareButtonSmallClasses()}
                 />
               )}
             </div>
-            <div className="flex gap-2">
+            <div className={getTurnActionsButtonGroupClasses()}>
               <Button
                 asChild
                 variant="outline"
@@ -962,7 +980,7 @@ function TurnActions({
           </>
         )}
         {!isCreator && (
-          <div className="flex gap-2 w-full">
+          <div className={getTurnActionsFullWidthRowClasses()}>
             <div className="flex-1">
               <LeaveTurnButton
                 turnId={turnId}
@@ -978,7 +996,7 @@ function TurnActions({
                 date={date}
                 openSlots={openSlots}
                 variant="icon"
-                className="h-10 w-10 rounded-lg shrink-0"
+                className={getTurnActionsShareButtonSmallClasses()}
               />
             )}
           </div>
@@ -989,14 +1007,14 @@ function TurnActions({
 
   // State 5: Not joined (open turn)
   return (
-    <div className="flex flex-col gap-3">
+    <div className={getTurnActionsStackClasses()}>
       {isCreator && (
         <>
           {playersCount >= 2 && playersCount < 4 && !isCompleted && (
             <PlayCasualForm turnId={turnId} />
           )}
           <ScheduleNextTurnForm turnId={turnId} />
-          <div className="flex gap-2">
+          <div className={getTurnActionsButtonGroupClasses()}>
             <Button
               asChild
               variant="outline"
@@ -1015,7 +1033,7 @@ function TurnActions({
           </div>
         </>
       )}
-      <div className="flex gap-2 w-full">
+      <div className={getTurnActionsFullWidthRowClasses()}>
         <div className="flex-1">
           <Suspense fallback={null}>
             <JoinTurnForm turnId={turnId} />
@@ -1028,7 +1046,7 @@ function TurnActions({
             date={date}
             openSlots={openSlots}
             variant="icon"
-            className="h-12 w-12 rounded-lg shrink-0"
+            className={getTurnActionsShareButtonLargeClasses()}
           />
         )}
       </div>

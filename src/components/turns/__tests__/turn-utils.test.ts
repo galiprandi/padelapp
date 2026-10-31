@@ -344,6 +344,34 @@ import {
   getTurnPublicDetailsEnrolledHeaderClasses,
   getTurnPublicDetailsSuggestedSectionClasses,
   getTurnPublicDetailsSuggestedHeaderClasses,
+  getTurnPublicDetailsCancelledButtonClasses,
+  getTurnPublicDetailsEmptySlotIconBadgeClasses,
+  getTurnPublicDetailsEmptySlotContentClasses,
+  getTurnPublicDetailsEmptySlotTextClasses,
+  getTurnPublicDetailsEmptySlotShareButtonClasses,
+  getTurnPublicDetailsSubstitutesSectionClasses,
+  getTurnPublicDetailsSubstitutesHeaderClasses,
+  getTurnPublicDetailsSubstitutesCountBadgeClasses,
+  getTurnPublicDetailsSubstitutesListClasses,
+  getTurnPublicDetailsSubstituteIndexBadgeClasses,
+  getTurnPublicDetailsChatSectionClasses,
+  getTurnActionsInnerContainerClasses,
+  getTurnActionsStackClasses,
+  getTurnActionsButtonGroupClasses,
+  getTurnActionsFullWidthRowClasses,
+  getTurnActionsSignInFormClasses,
+  getTurnActionsShareButtonSmallClasses,
+  getTurnActionsShareButtonLargeClasses,
+  getTurnSkeletonHeaderBackBadgeClasses,
+  getTurnSkeletonHeaderTitleContainerClasses,
+  getTurnSkeletonTimeCardClasses,
+  getTurnSkeletonLocationCardClasses,
+  getTurnSkeletonLocationIconBadgeClasses,
+  getTurnSkeletonPlayersSectionClasses,
+  getTurnSkeletonPlayersHeaderClasses,
+  getTurnSkeletonPlayersListClasses,
+  getTurnSkeletonPlayerItemClasses,
+  getTurnSkeletonBottomBarInnerClasses,
   getRemovePlayerRegionContainerClasses,
   getRemovePlayerConfirmRegionClasses,
   getAssignSubstituteRegionContainerClasses,
@@ -1634,6 +1662,67 @@ describe("Turn pages and skeleton pure layout styling helpers batch", () => {
     expect(getTurnSkeletonBottomBarClasses()).toBe(
       "fixed bottom-0 left-0 right-0 p-6 bg-background border-t border-border z-50"
     );
+  });
+});
+
+describe("Turn public details, actions and skeleton pure styling helpers", () => {
+  it("formats cancelled button and empty slot pure styling helpers", () => {
+    expect(getTurnPublicDetailsCancelledButtonClasses()).toBe("w-full h-12 rounded-lg text-base font-bold");
+    expect(getTurnPublicDetailsEmptySlotIconBadgeClasses()).toBe(
+      "h-10 w-10 rounded-lg bg-background border border-dashed border-border flex items-center justify-center"
+    );
+    expect(getTurnPublicDetailsEmptySlotContentClasses()).toBe(
+      "flex-1 flex items-center justify-between min-w-0 gap-2"
+    );
+    expect(getTurnPublicDetailsEmptySlotTextClasses()).toBe(
+      "text-xs font-semibold italic opacity-60 truncate"
+    );
+    expect(getTurnPublicDetailsEmptySlotShareButtonClasses()).toBe("h-8 w-8 rounded-lg shrink-0");
+  });
+
+  it("formats substitutes and chat section pure styling helpers", () => {
+    expect(getTurnPublicDetailsSubstitutesSectionClasses()).toBe("space-y-4");
+    expect(getTurnPublicDetailsSubstitutesHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getTurnPublicDetailsSubstitutesCountBadgeClasses()).toBe(
+      "rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border"
+    );
+    expect(getTurnPublicDetailsSubstitutesListClasses()).toBe("grid gap-2");
+    expect(getTurnPublicDetailsSubstituteIndexBadgeClasses()).toBe(
+      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground"
+    );
+    expect(getTurnPublicDetailsChatSectionClasses()).toBe("space-y-4 mb-6");
+  });
+
+  it("formats turn actions layout and button pure styling helpers", () => {
+    expect(getTurnActionsInnerContainerClasses()).toBe("max-w-md mx-auto");
+    expect(getTurnActionsStackClasses()).toBe("flex flex-col gap-3");
+    expect(getTurnActionsButtonGroupClasses()).toBe("flex gap-2");
+    expect(getTurnActionsFullWidthRowClasses()).toBe("flex gap-2 w-full");
+    expect(getTurnActionsSignInFormClasses()).toContain("w-full h-12 rounded-lg text-base font-bold");
+    expect(getTurnActionsSignInFormClasses()).toContain("focus-visible:ring-2");
+    expect(getTurnActionsShareButtonSmallClasses()).toBe("h-10 w-10 rounded-lg shrink-0");
+    expect(getTurnActionsShareButtonLargeClasses()).toBe("h-12 w-12 rounded-lg shrink-0");
+  });
+
+  it("formats turn skeleton layout, card and item pure styling helpers", () => {
+    expect(getTurnSkeletonHeaderBackBadgeClasses()).toBe(
+      "flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+    );
+    expect(getTurnSkeletonHeaderTitleContainerClasses()).toBe("space-y-2");
+    expect(getTurnSkeletonTimeCardClasses()).toBe("bg-card p-4 flex flex-col gap-1.5");
+    expect(getTurnSkeletonLocationCardClasses()).toBe(
+      "bg-card p-4 flex items-center gap-4 border-t border-border"
+    );
+    expect(getTurnSkeletonLocationIconBadgeClasses()).toBe(
+      "flex h-10 w-10 items-center justify-center rounded-lg bg-muted shrink-0"
+    );
+    expect(getTurnSkeletonPlayersSectionClasses()).toBe("space-y-4");
+    expect(getTurnSkeletonPlayersHeaderClasses()).toBe("flex items-center justify-between");
+    expect(getTurnSkeletonPlayersListClasses()).toBe("grid gap-2");
+    expect(getTurnSkeletonPlayerItemClasses()).toBe(
+      "flex items-center gap-3 rounded-xl bg-card p-3 border border-border"
+    );
+    expect(getTurnSkeletonBottomBarInnerClasses()).toBe("max-w-md mx-auto");
   });
 });
 
