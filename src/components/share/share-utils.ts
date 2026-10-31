@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const DEFAULT_SHARE_SUCCESS = "Compartido";
 export const DEFAULT_SHARE_COPY = "Link copiado al portapapeles";
 export const DEFAULT_SHARE_ERROR = "No pudimos compartir el link";
@@ -75,4 +77,42 @@ export function formatShareUrl(
   } catch {
     return urlProp;
   }
+}
+
+/**
+ * Returns standardized CSS classes for the share button trigger.
+ */
+export function getShareButtonClasses(className?: string): string {
+  return cn(
+    "active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    className,
+  );
+}
+
+/**
+ * Returns standardized CSS classes for the loading spinner inside share buttons.
+ */
+export function getShareSpinnerClasses(): string {
+  return "h-4 w-4 animate-spin text-muted-foreground";
+}
+
+/**
+ * Returns standardized CSS classes for the checkmark success icon inside share buttons.
+ */
+export function getShareCheckIconClasses(): string {
+  return "h-4 w-4 text-emerald-500";
+}
+
+/**
+ * Returns standardized CSS classes for default share icon.
+ */
+export function getShareIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Returns standardized CSS layout classes for share button label and icon content.
+ */
+export function getShareContentClasses(): string {
+  return "flex items-center gap-2";
 }

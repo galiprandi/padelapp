@@ -7,6 +7,11 @@ import {
   getShareButtonLabel,
   getShareButtonAriaLabel,
   formatShareUrl,
+  getShareButtonClasses,
+  getShareSpinnerClasses,
+  getShareCheckIconClasses,
+  getShareIconClasses,
+  getShareContentClasses,
 } from "../share-utils";
 
 describe("share-utils", () => {
@@ -82,6 +87,32 @@ describe("share-utils", () => {
 
     it("handles invalid URLs gracefully by returning urlProp", () => {
       expect(formatShareUrl("http://[invalid-host]", "https://padelred.com")).toBe("http://[invalid-host]");
+    });
+  });
+
+  describe("ShareButton UI Styling Helper Functions", () => {
+    it("returns correct button classes including tactile scaling and ring offset", () => {
+      const classes = getShareButtonClasses("custom-class");
+      expect(classes).toContain("active:scale-[0.98]");
+      expect(classes).toContain("focus-visible:ring-2");
+      expect(classes).toContain("ring-offset-background");
+      expect(classes).toContain("custom-class");
+    });
+
+    it("returns correct spinner animation classes", () => {
+      expect(getShareSpinnerClasses()).toBe("h-4 w-4 animate-spin text-muted-foreground");
+    });
+
+    it("returns correct check icon classes", () => {
+      expect(getShareCheckIconClasses()).toBe("h-4 w-4 text-emerald-500");
+    });
+
+    it("returns correct default icon classes", () => {
+      expect(getShareIconClasses()).toBe("h-4 w-4");
+    });
+
+    it("returns correct content layout classes", () => {
+      expect(getShareContentClasses()).toBe("flex items-center gap-2");
     });
   });
 });

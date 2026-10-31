@@ -11,6 +11,19 @@ import {
   getPlayerCardContainerClasses,
   getPairRegionAriaLabel,
   getRankingBadgeAriaLabel,
+  getPlayerRankingBadgeClasses,
+  getPlayerCompactRankingBadgeClasses,
+  getPlayerPreviewManageIconContainerClasses,
+  getPairPreviewContainerClasses,
+  getPairBadgeClasses,
+  getPairPreviewBodyClasses,
+  getPairPreviewLineClasses,
+  getPairPreviewConnectorClasses,
+  getPairInlineContainerClasses,
+  getPairInlineContentClasses,
+  getPairInlinePlayerItemClasses,
+  getPairInlineDividerClasses,
+  getPairInlineAvatarClasses,
 } from "../player-card-utils";
 
 describe("Player Cards Category & Accessibility Utilities", () => {
@@ -192,6 +205,39 @@ describe("Player Cards Category & Accessibility Utilities", () => {
     it("returns formatted ARIA label for ranking position badges", () => {
       expect(getRankingBadgeAriaLabel(1)).toBe("Puesto número 1 en el ranking");
       expect(getRankingBadgeAriaLabel(12)).toBe("Puesto número 12 en el ranking");
+    });
+  });
+
+  describe("Player & Pair UI Styling Helper Functions", () => {
+    it("returns correct ranking badge classes", () => {
+      const normalBadge = getPlayerRankingBadgeClasses();
+      expect(normalBadge).toContain("flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2");
+      expect(normalBadge).toContain("border border-border shadow-xs");
+
+      const compactBadge = getPlayerCompactRankingBadgeClasses();
+      expect(compactBadge).toContain("flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5");
+      expect(compactBadge).toContain("border border-border shadow-xs");
+    });
+
+    it("returns manage icon container classes", () => {
+      const manageClasses = getPlayerPreviewManageIconContainerClasses();
+      expect(manageClasses).toBe("flex h-8 w-8 items-center justify-center text-muted-foreground");
+    });
+
+    it("returns pair preview layout classes", () => {
+      expect(getPairPreviewContainerClasses()).toContain("relative rounded-xl border border-border bg-card mt-8 shadow-xs");
+      expect(getPairBadgeClasses()).toContain("absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background");
+      expect(getPairPreviewBodyClasses()).toContain("relative space-y-3 p-5 pt-6");
+      expect(getPairPreviewLineClasses()).toContain("pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-border");
+      expect(getPairPreviewConnectorClasses()).toContain("pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-border");
+    });
+
+    it("returns pair inline layout classes", () => {
+      expect(getPairInlineContainerClasses()).toContain("relative rounded-xl border border-border bg-card shadow-xs");
+      expect(getPairInlineContentClasses()).toContain("flex items-center gap-4 px-6 py-6 pt-7");
+      expect(getPairInlinePlayerItemClasses()).toContain("flex min-w-0 flex-1 items-center gap-3 group transition-colors");
+      expect(getPairInlineDividerClasses()).toBe("h-8 w-px bg-border");
+      expect(getPairInlineAvatarClasses()).toBe("rounded-lg border border-border shadow-xs");
     });
   });
 });
