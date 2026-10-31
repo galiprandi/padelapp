@@ -182,3 +182,122 @@ export function getManageSlotShareButtonAriaLabel(): string {
 export function getManageSlotShareValidationErrorMessage(): string {
   return "Ingresá un nombre antes de compartir";
 }
+
+/**
+ * Pure CSS class helper functions for ManageSlotModal layout and styling.
+ */
+export function getManageSlotBackdropClasses(): string {
+  return "fixed inset-0 z-[60] flex items-stretch sm:items-center justify-center bg-black/60";
+}
+
+export function getManageSlotDialogClasses(): string {
+  return "w-full max-w-sm flex flex-col bg-card shadow-xs sm:rounded-xl sm:border sm:border-border sm:max-h-[90dvh] h-[100dvh] sm:h-auto";
+}
+
+export function getManageSlotHeaderClasses(): string {
+  return "flex items-center justify-between px-6 pt-6 pb-4 border-b border-border/50 shrink-0";
+}
+
+export function getManageSlotHeaderTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+export function getManageSlotHeaderActionsClasses(): string {
+  return "flex gap-2";
+}
+
+export function getManageSlotSwapButtonClasses(): string {
+  return "text-primary hover:bg-primary/10 rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+export function getManageSlotReleaseButtonClasses(): string {
+  return "text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg h-8 font-semibold text-xs px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+export function getManageSlotContentClasses(): string {
+  return "flex-1 overflow-y-auto px-6 py-4 space-y-4";
+}
+
+export function getManageSlotVerifiedCardClasses(): string {
+  return "flex items-center gap-3 rounded-lg border border-border bg-muted p-4 shadow-xs";
+}
+
+export function getManageSlotVerifiedBadgeClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getManageSlotVerifiedNoticeClasses(): string {
+  return "text-xs font-medium text-muted-foreground/60 leading-relaxed px-1";
+}
+
+export function getManageSlotRecentPlayersHeaderClasses(): string {
+  return "text-xs font-semibold text-muted-foreground flex items-center gap-1.5 px-1";
+}
+
+export function getManageSlotRecentPlayersRadiogroupClasses(): string {
+  return "flex gap-2 overflow-x-auto pb-1 -mx-1 px-1";
+}
+
+export function getManageSlotRecentPlayerButtonClasses(): string {
+  return "flex flex-col items-center gap-1 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-lg active:scale-[0.98] transition-all";
+}
+
+export function getManageSlotRecentPlayerAvatarClasses(): string {
+  return "rounded-full ring-2 ring-border group-hover:ring-primary group-active:ring-primary transition-all";
+}
+
+export function getManageSlotSearchSectionClasses(): string {
+  return "space-y-3";
+}
+
+export function getManageSlotSearchInputWrapperClasses(): string {
+  return "relative h-12";
+}
+
+export function getManageSlotSearchInputClasses(): string {
+  return "h-12 pl-11 pr-11 rounded-lg bg-background border-border text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getManageSlotSearchClearButtonClasses(): string {
+  return "absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-muted-foreground/40 hover:text-foreground transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
+}
+
+export function getManageSlotSearchResultsClasses(): string {
+  return "rounded-lg border border-border bg-muted p-2 space-y-1 shadow-xs";
+}
+
+export function getManageSlotSearchResultItemClasses(): string {
+  return "w-full flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 active:scale-[0.98] transition-all text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getManageSlotNoResultsNoticeClasses(): string {
+  return "text-xs font-medium text-muted-foreground italic px-1";
+}
+
+export function getManageSlotRecentContactsLabelClasses(): string {
+  return "text-xs font-semibold text-muted-foreground px-1";
+}
+
+export function getManageSlotErrorMessageClasses(): string {
+  return "text-xs font-semibold text-destructive px-1";
+}
+
+export function getManageSlotFooterClasses(): string {
+  return "flex flex-col gap-3 px-6 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-border/50 shrink-0";
+}
+
+export function getManageSlotFooterActionsClasses(): string {
+  return "flex gap-2";
+}
+
+export function getManageSlotSaveButtonClasses(): string {
+  return "flex-1 h-12 rounded-lg font-bold text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+export function getManageSlotShareButtonClasses(): string {
+  return "h-12 w-12 rounded-lg border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+export function getManageSlotCloseButtonClasses(): string {
+  return "w-full h-10 rounded-lg font-medium text-muted-foreground text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}

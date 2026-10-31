@@ -22,6 +22,35 @@ import {
   getManageSlotRecentContactsLabel,
   getManageSlotShareButtonAriaLabel,
   getManageSlotShareValidationErrorMessage,
+  getManageSlotBackdropClasses,
+  getManageSlotDialogClasses,
+  getManageSlotHeaderClasses,
+  getManageSlotHeaderTitleClasses,
+  getManageSlotHeaderActionsClasses,
+  getManageSlotSwapButtonClasses,
+  getManageSlotReleaseButtonClasses,
+  getManageSlotContentClasses,
+  getManageSlotVerifiedCardClasses,
+  getManageSlotVerifiedBadgeClasses,
+  getManageSlotVerifiedNoticeClasses,
+  getManageSlotRecentPlayersHeaderClasses,
+  getManageSlotRecentPlayersRadiogroupClasses,
+  getManageSlotRecentPlayerButtonClasses,
+  getManageSlotRecentPlayerAvatarClasses,
+  getManageSlotSearchSectionClasses,
+  getManageSlotSearchInputWrapperClasses,
+  getManageSlotSearchInputClasses,
+  getManageSlotSearchClearButtonClasses,
+  getManageSlotSearchResultsClasses,
+  getManageSlotSearchResultItemClasses,
+  getManageSlotNoResultsNoticeClasses,
+  getManageSlotRecentContactsLabelClasses,
+  getManageSlotErrorMessageClasses,
+  getManageSlotFooterClasses,
+  getManageSlotFooterActionsClasses,
+  getManageSlotSaveButtonClasses,
+  getManageSlotShareButtonClasses,
+  getManageSlotCloseButtonClasses,
 } from "../manage-slot-utils";
 
 describe("manage-slot-utils", () => {
@@ -210,6 +239,55 @@ describe("manage-slot-utils", () => {
       expect(getManageSlotShareValidationErrorMessage()).toBe(
         "Ingresá un nombre antes de compartir",
       );
+    });
+  });
+
+  describe("pure styling and layout classes helpers", () => {
+    it("returns correct backdrop and dialog container classes", () => {
+      expect(getManageSlotBackdropClasses()).toContain("fixed inset-0 z-[60]");
+      expect(getManageSlotDialogClasses()).toContain("w-full max-w-sm flex flex-col bg-card");
+    });
+
+    it("returns correct header, title and action classes", () => {
+      expect(getManageSlotHeaderClasses()).toContain("flex items-center justify-between");
+      expect(getManageSlotHeaderTitleClasses()).toBe("text-xl font-bold text-foreground");
+      expect(getManageSlotHeaderActionsClasses()).toBe("flex gap-2");
+      expect(getManageSlotSwapButtonClasses()).toContain("text-primary hover:bg-primary/10");
+      expect(getManageSlotReleaseButtonClasses()).toContain("text-destructive hover:bg-destructive/10");
+    });
+
+    it("returns correct verified slot card, badge and notice classes", () => {
+      expect(getManageSlotContentClasses()).toBe("flex-1 overflow-y-auto px-6 py-4 space-y-4");
+      expect(getManageSlotVerifiedCardClasses()).toContain("flex items-center gap-3 rounded-lg border");
+      expect(getManageSlotVerifiedBadgeClasses()).toBe("text-xs text-muted-foreground");
+      expect(getManageSlotVerifiedNoticeClasses()).toContain("text-xs font-medium text-muted-foreground/60");
+    });
+
+    it("returns correct recent players section and chip classes", () => {
+      expect(getManageSlotRecentPlayersHeaderClasses()).toContain("text-xs font-semibold text-muted-foreground");
+      expect(getManageSlotRecentPlayersRadiogroupClasses()).toBe("flex gap-2 overflow-x-auto pb-1 -mx-1 px-1");
+      expect(getManageSlotRecentPlayerButtonClasses()).toContain("flex flex-col items-center");
+      expect(getManageSlotRecentPlayerAvatarClasses()).toContain("rounded-full ring-2 ring-border");
+    });
+
+    it("returns correct search input, results and feedback classes", () => {
+      expect(getManageSlotSearchSectionClasses()).toBe("space-y-3");
+      expect(getManageSlotSearchInputWrapperClasses()).toBe("relative h-12");
+      expect(getManageSlotSearchInputClasses()).toContain("h-12 pl-11 pr-11");
+      expect(getManageSlotSearchClearButtonClasses()).toContain("absolute right-4 top-1/2");
+      expect(getManageSlotSearchResultsClasses()).toContain("rounded-lg border border-border bg-muted");
+      expect(getManageSlotSearchResultItemClasses()).toContain("w-full flex items-center gap-3");
+      expect(getManageSlotNoResultsNoticeClasses()).toBe("text-xs font-medium text-muted-foreground italic px-1");
+      expect(getManageSlotRecentContactsLabelClasses()).toBe("text-xs font-semibold text-muted-foreground px-1");
+      expect(getManageSlotErrorMessageClasses()).toBe("text-xs font-semibold text-destructive px-1");
+    });
+
+    it("returns correct footer layout, save, share and close button classes", () => {
+      expect(getManageSlotFooterClasses()).toContain("flex flex-col gap-3 px-6 pt-4");
+      expect(getManageSlotFooterActionsClasses()).toBe("flex gap-2");
+      expect(getManageSlotSaveButtonClasses()).toContain("flex-1 h-12 rounded-lg font-bold");
+      expect(getManageSlotShareButtonClasses()).toContain("h-12 w-12 rounded-lg border-border text-primary");
+      expect(getManageSlotCloseButtonClasses()).toContain("w-full h-10 rounded-lg font-medium text-muted-foreground");
     });
   });
 });
