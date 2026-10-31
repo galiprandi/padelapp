@@ -24,8 +24,10 @@ import {
   getNotificationsHeadingDescriptionClasses,
   getNotificationsSectionHeaderClasses,
   getNotificationsSectionTitleClasses,
+  getNotificationsSkeletonSectionTitleClasses,
   getNotificationsSkeletonSectionBadgeClasses,
   getNotificationsSkeletonItemClasses,
+  getNotificationsSkeletonItemKeys,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsPage() {
@@ -112,6 +114,8 @@ async function NotificationsList() {
 }
 
 function NotificationsListSkeleton() {
+  const itemKeys = getNotificationsSkeletonItemKeys();
+
   return (
     <div
       role="region"
@@ -120,12 +124,12 @@ function NotificationsListSkeleton() {
       className={getNotificationsContainerClasses()}
     >
       <div className={getNotificationsSectionHeaderClasses()}>
-        <Skeleton className="h-4 w-32" />
+        <Skeleton className={getNotificationsSkeletonSectionTitleClasses()} />
         <Skeleton className={getNotificationsSkeletonSectionBadgeClasses()} />
       </div>
       <div className={getNotificationsListClasses()}>
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className={getNotificationsSkeletonItemClasses()} />
+        {itemKeys.map((key) => (
+          <Skeleton key={key} className={getNotificationsSkeletonItemClasses()} />
         ))}
       </div>
     </div>

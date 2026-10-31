@@ -40,6 +40,9 @@ import {
   getCatalogSkeletonSubSectionTitleClasses,
   getCatalogSkeletonLabelClasses,
   getCatalogSkeletonChipSecondaryClasses,
+  getCatalogSkeletonSidebarItemKeys,
+  getCatalogSkeletonCardItemKeys,
+  getNotificationsSkeletonItemKeys,
   getNotificationsSkeletonSectionTitleClasses,
   formatNotificationsAriaLabel,
   formatNotificationsDisplayCount,
@@ -876,6 +879,24 @@ describe("nav-utils", () => {
     it("getNotificationsSkeletonSectionTitleClasses returns section title skeleton dimension classes", () => {
       expect(getNotificationsSkeletonSectionTitleClasses()).toContain("h-4 w-32");
       expect(getNotificationsSkeletonSectionTitleClasses("custom-skel-sec-title")).toContain("custom-skel-sec-title");
+    });
+
+    it("getNotificationsSkeletonItemKeys returns array of numeric keys for notifications skeleton items", () => {
+      const keys = getNotificationsSkeletonItemKeys();
+      expect(keys).toEqual([0, 1, 2, 3]);
+      expect(keys).toHaveLength(4);
+    });
+
+    it("getCatalogSkeletonSidebarItemKeys returns array of numeric keys for catalog sidebar items", () => {
+      const keys = getCatalogSkeletonSidebarItemKeys();
+      expect(keys).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+      expect(keys).toHaveLength(8);
+    });
+
+    it("getCatalogSkeletonCardItemKeys returns array of numeric keys for catalog card items", () => {
+      const keys = getCatalogSkeletonCardItemKeys();
+      expect(keys).toEqual([0, 1]);
+      expect(keys).toHaveLength(2);
     });
   });
 });

@@ -32,9 +32,14 @@ import {
   getCatalogSkeletonSubSectionTitleClasses,
   getCatalogSkeletonLabelClasses,
   getCatalogSkeletonChipSecondaryClasses,
+  getCatalogSkeletonSidebarItemKeys,
+  getCatalogSkeletonCardItemKeys,
 } from "@/components/navigation/nav-utils";
 
 export function CatalogSkeleton() {
+  const sidebarItemKeys = getCatalogSkeletonSidebarItemKeys();
+  const cardItemKeys = getCatalogSkeletonCardItemKeys();
+
   return (
     <div
       role="region"
@@ -57,8 +62,8 @@ export function CatalogSkeleton() {
             <div className={getCatalogSkeletonSidebarSectionClasses()}>
               <Skeleton className={getCatalogSkeletonSidebarSectionLabelClasses()} />
               <div className={getCatalogSkeletonSidebarItemListClasses()}>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} className={getCatalogSkeletonSidebarItemClasses()} />
+                {sidebarItemKeys.map((key) => (
+                  <Skeleton key={key} className={getCatalogSkeletonSidebarItemClasses()} />
                 ))}
               </div>
             </div>
@@ -107,8 +112,9 @@ export function CatalogSkeleton() {
             <div className={getCatalogSkeletonSectionGroupClasses()}>
               <Skeleton className={getCatalogSkeletonSubSectionTitleClasses()} />
               <div className={getCatalogSkeletonCardListClasses()}>
-                <Skeleton className={getCatalogSkeletonCardItemClasses()} />
-                <Skeleton className={getCatalogSkeletonCardItemClasses()} />
+                {cardItemKeys.map((key) => (
+                  <Skeleton key={key} className={getCatalogSkeletonCardItemClasses()} />
+                ))}
               </div>
             </div>
           </div>
