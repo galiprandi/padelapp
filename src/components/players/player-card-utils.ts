@@ -133,3 +133,94 @@ export function getPairRegionAriaLabel(label: string): string {
 export function getRankingBadgeAriaLabel(ranking: number): string {
   return `Puesto número ${ranking} en el ranking`;
 }
+
+/**
+ * Returns standardized CSS badge classes for player ranking display.
+ */
+export function getPlayerRankingBadgeClasses(): string {
+  return "flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2 text-xs font-bold text-foreground border border-border shadow-xs";
+}
+
+/**
+ * Returns standardized CSS badge classes for compact player ranking display.
+ */
+export function getPlayerCompactRankingBadgeClasses(): string {
+  return "flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs";
+}
+
+/**
+ * Returns standardized CSS container classes for player preview management icon slot.
+ */
+export function getPlayerPreviewManageIconContainerClasses(): string {
+  return "flex h-8 w-8 items-center justify-center text-muted-foreground";
+}
+
+/**
+ * Returns standardized CSS container classes for pair preview cards.
+ */
+export function getPairPreviewContainerClasses(): string {
+  return "relative rounded-xl border border-border bg-card mt-8 shadow-xs";
+}
+
+/**
+ * Returns standardized CSS badge classes for pair labels.
+ */
+export function getPairBadgeClasses(): string {
+  return "absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10";
+}
+
+/**
+ * Returns standardized CSS container classes for pair preview body content.
+ */
+export function getPairPreviewBodyClasses(): string {
+  return "relative space-y-3 p-5 pt-6";
+}
+
+/**
+ * Returns standardized CSS classes for pair preview vertical connection line.
+ */
+export function getPairPreviewLineClasses(): string {
+  return "pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-border";
+}
+
+/**
+ * Returns standardized CSS classes for pair preview horizontal player connector.
+ */
+export function getPairPreviewConnectorClasses(): string {
+  return "pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-border";
+}
+
+/**
+ * Returns standardized CSS container classes for inline pair cards.
+ */
+export function getPairInlineContainerClasses(): string {
+  return "relative rounded-xl border border-border bg-card shadow-xs";
+}
+
+/**
+ * Returns standardized CSS container classes for inline pair content layout.
+ */
+export function getPairInlineContentClasses(): string {
+  return "flex items-center gap-4 px-6 py-6 pt-7";
+}
+
+/**
+ * Returns standardized CSS container classes for individual player item in inline pairs.
+ */
+export function getPairInlinePlayerItemClasses(): string {
+  return "flex min-w-0 flex-1 items-center gap-3 group transition-colors";
+}
+
+/**
+ * Returns standardized CSS classes for inline pair vertical divider.
+ */
+export function getPairInlineDividerClasses(): string {
+  return "h-8 w-px bg-border";
+}
+
+/**
+ * Returns standardized CSS classes for player avatar inside inline pair.
+ */
+export function getPairInlineAvatarClasses(): string {
+  return "rounded-lg border border-border shadow-xs";
+}

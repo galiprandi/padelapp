@@ -9,6 +9,19 @@ import {
   getPlayerCardContainerClasses,
   getPairRegionAriaLabel,
   getRankingBadgeAriaLabel,
+  getPlayerRankingBadgeClasses,
+  getPlayerCompactRankingBadgeClasses,
+  getPlayerPreviewManageIconContainerClasses,
+  getPairPreviewContainerClasses,
+  getPairBadgeClasses,
+  getPairPreviewBodyClasses,
+  getPairPreviewLineClasses,
+  getPairPreviewConnectorClasses,
+  getPairInlineContainerClasses,
+  getPairInlineContentClasses,
+  getPairInlinePlayerItemClasses,
+  getPairInlineDividerClasses,
+  getPairInlineAvatarClasses,
 } from "./player-card-utils";
 
 export interface PlayerPreviewProps {
@@ -67,7 +80,7 @@ export function PlayerPreview({
 
       {onManageClick ? (
         <div
-          className="flex h-8 w-8 items-center justify-center text-muted-foreground"
+          className={getPlayerPreviewManageIconContainerClasses()}
           aria-hidden="true"
         >
           {isConfirmed ? (
@@ -118,7 +131,7 @@ export function PlayerWithRanking({
 
       {typeof ranking === "number" ? (
         <span
-          className="flex h-8 min-w-[32px] items-center justify-center rounded-lg bg-muted px-2 text-xs font-bold text-foreground border border-border shadow-xs"
+          className={getPlayerRankingBadgeClasses()}
           aria-label={getRankingBadgeAriaLabel(ranking)}
         >
           #{ranking}
@@ -162,7 +175,7 @@ export function PlayerCompact({
 
       {typeof ranking === "number" ? (
         <span
-          className="flex h-7 min-w-[28px] items-center justify-center rounded-md bg-muted px-1.5 text-xs font-bold text-muted-foreground border border-border shadow-xs"
+          className={getPlayerCompactRankingBadgeClasses()}
           aria-label={getRankingBadgeAriaLabel(ranking)}
         >
           #{ranking}
@@ -186,15 +199,15 @@ export function PairPreview({
     <div
       role="region"
       aria-label={regionAriaLabel}
-      className="relative rounded-xl border border-border bg-card mt-8 shadow-xs"
+      className={getPairPreviewContainerClasses()}
     >
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">
+      <span className={getPairBadgeClasses()}>
         {label}
       </span>
-      <div className="relative space-y-3 p-5 pt-6">
+      <div className={getPairPreviewBodyClasses()}>
         {hasConnector ? (
           <div
-            className="pointer-events-none absolute left-2 top-8 bottom-8 w-px bg-border"
+            className={getPairPreviewLineClasses()}
             aria-hidden="true"
           />
         ) : null}
@@ -202,7 +215,7 @@ export function PairPreview({
           <div key={`pair-${label}-${player.id}`} className="relative">
             {hasConnector ? (
               <span
-                className="pointer-events-none absolute left-[-20px] top-1/2 h-px w-5 -translate-y-1/2 bg-border"
+                className={getPairPreviewConnectorClasses()}
                 aria-hidden="true"
               />
             ) : null}
@@ -227,21 +240,21 @@ export function PairInline({
     <div
       role="region"
       aria-label={regionAriaLabel}
-      className="relative rounded-xl border border-border bg-card shadow-xs"
+      className={getPairInlineContainerClasses()}
     >
-      <span className="absolute left-6 top-0 -translate-y-1/2 rounded-full bg-background border border-border px-3 py-0.5 text-xs font-bold text-muted-foreground shadow-xs z-10">
+      <span className={getPairBadgeClasses()}>
         {label}
       </span>
 
-      <div className="flex items-center gap-4 px-6 py-6 pt-7">
+      <div className={getPairInlineContentClasses()}>
         {players.map((player, index) => {
           return (
             <Fragment key={`pair-inline-${label}-${player.id}`}>
-              <div className="flex min-w-0 flex-1 items-center gap-3 group transition-colors">
+              <div className={getPairInlinePlayerItemClasses()}>
                 <PlayerAvatar
                   name={player.name}
                   image={player.image}
-                  className="rounded-lg border border-border shadow-xs"
+                  className={getPairInlineAvatarClasses()}
                 />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-bold text-foreground">
@@ -255,7 +268,7 @@ export function PairInline({
                 </div>
               </div>
               {index < players.length - 1 ? (
-                <div className="h-8 w-px bg-border" aria-hidden="true" />
+                <div className={getPairInlineDividerClasses()} aria-hidden="true" />
               ) : null}
             </Fragment>
           );

@@ -4,12 +4,17 @@ import { useCallback, useState, useEffect } from "react";
 import { Share2, Check, Loader2 } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToast } from "@/components/toast/use-toast";
-import { getNaturalShareText, type ShareDataPayload, cn } from "@/lib/utils";
+import { getNaturalShareText, type ShareDataPayload } from "@/lib/utils";
 import {
   getShareToastMessages,
   getShareButtonLabel,
   getShareButtonAriaLabel,
   formatShareUrl,
+  getShareButtonClasses,
+  getShareSpinnerClasses,
+  getShareCheckIconClasses,
+  getShareIconClasses,
+  getShareContentClasses,
 } from "./share-utils";
 
 interface ShareButtonProps extends ButtonProps {
@@ -176,29 +181,26 @@ export function ShareButton({
       aria-busy={isSharing}
       aria-live="polite"
       aria-label={dynamicAriaLabel}
-      className={cn(
-        "active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-        className,
-      )}
+      className={getShareButtonClasses(className)}
       {...restButtonProps}
     >
       {iconOnly ? (
         isSharing ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" aria-hidden="true" />
+          <Loader2 className={getShareSpinnerClasses()} aria-hidden="true" />
         ) : isSuccess ? (
-          <Check className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+          <Check className={getShareCheckIconClasses()} aria-hidden="true" />
         ) : (
-          <Share2 className="h-4 w-4" aria-hidden="true" />
+          <Share2 className={getShareIconClasses()} aria-hidden="true" />
         )
       ) : (
         children ?? (
-          <span className="flex items-center gap-2">
+          <span className={getShareContentClasses()}>
             {isSharing ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              <Loader2 className={getShareSpinnerClasses()} aria-hidden="true" />
             ) : isSuccess ? (
-              <Check className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+              <Check className={getShareCheckIconClasses()} aria-hidden="true" />
             ) : (
-              <Share2 className="h-4 w-4" aria-hidden="true" />
+              <Share2 className={getShareIconClasses()} aria-hidden="true" />
             )}
             <span>{buttonLabel}</span>
           </span>

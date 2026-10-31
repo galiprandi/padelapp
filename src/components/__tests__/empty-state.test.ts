@@ -4,6 +4,11 @@ import { EmptyState } from "../empty-state";
 import {
   getEmptyStateAriaLabel,
   getEmptyStateContainerClasses,
+  getEmptyStateIconBadgeClasses,
+  getEmptyStateContentClasses,
+  getEmptyStateTitleClasses,
+  getEmptyStateDescriptionClasses,
+  getEmptyStateActionWrapperClasses,
 } from "../empty-state-utils";
 import { Calendar } from "lucide-react";
 
@@ -34,6 +39,30 @@ describe("EmptyState Helpers", () => {
       expect(classes).toContain("my-8");
       expect(classes).toContain("max-w-md");
       expect(classes).toContain("bg-card");
+    });
+  });
+
+  describe("EmptyState Component Element Styling Helpers", () => {
+    it("returns correct icon badge container classes", () => {
+      const classes = getEmptyStateIconBadgeClasses();
+      expect(classes).toContain("flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground");
+      expect(classes).toContain("border border-border shadow-xs");
+    });
+
+    it("returns correct content classes", () => {
+      expect(getEmptyStateContentClasses()).toBe("flex flex-col gap-1");
+    });
+
+    it("returns correct title classes", () => {
+      expect(getEmptyStateTitleClasses()).toBe("text-sm font-bold text-foreground");
+    });
+
+    it("returns correct description classes", () => {
+      expect(getEmptyStateDescriptionClasses()).toBe("text-xs text-muted-foreground max-w-[280px] mx-auto");
+    });
+
+    it("returns correct action wrapper classes", () => {
+      expect(getEmptyStateActionWrapperClasses()).toBe("mt-4 w-full flex justify-center");
     });
   });
 });
