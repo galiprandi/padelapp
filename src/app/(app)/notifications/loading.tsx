@@ -10,9 +10,12 @@ import {
   getNotificationsSkeletonSectionTitleClasses,
   getNotificationsSkeletonSectionBadgeClasses,
   getNotificationsSkeletonItemClasses,
+  getNotificationsSkeletonItemKeys,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsLoading() {
+  const itemKeys = getNotificationsSkeletonItemKeys();
+
   return (
     <div
       role="region"
@@ -31,8 +34,8 @@ export default function NotificationsLoading() {
           <Skeleton className={getNotificationsSkeletonSectionBadgeClasses()} />
         </div>
         <div className={getNotificationsListClasses()}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className={getNotificationsSkeletonItemClasses()} />
+          {itemKeys.map((key) => (
+            <Skeleton key={key} className={getNotificationsSkeletonItemClasses()} />
           ))}
         </div>
       </div>

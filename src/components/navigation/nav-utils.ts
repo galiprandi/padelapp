@@ -899,6 +899,27 @@ export function getNotificationsSkeletonSectionTitleClasses(
 }
 
 /**
+ * Retorna la lista de identificadores numéricos de ítems para iterar en el esqueleto de notificaciones.
+ */
+export function getNotificationsSkeletonItemKeys(): number[] {
+  return [0, 1, 2, 3];
+}
+
+/**
+ * Retorna la lista de identificadores numéricos de ítems de la barra lateral para iterar en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonSidebarItemKeys(): number[] {
+  return [0, 1, 2, 3, 4, 5, 6, 7];
+}
+
+/**
+ * Retorna la lista de identificadores numéricos de tarjetas de jugador para iterar en el esqueleto del catálogo.
+ */
+export function getCatalogSkeletonCardItemKeys(): number[] {
+  return [0, 1];
+}
+
+/**
  * Genera el objeto completo de propiedades para el enlace (<Link>) de un ítem de navegación principal.
  */
 export function getNavItemLinkProps(
