@@ -82,6 +82,8 @@ import {
   getPlayCasualConfirmContainerClasses,
   getPlayCasualCancelButtonClasses,
   getPlayCasualConfirmButtonClasses,
+  getTurnActionsFormClasses,
+  getPlayCasualConfirmActionsClasses,
   getQuickJoinEmptySlotButtonClasses,
 } from "@/components/turns/turn-utils";
 
@@ -272,7 +274,7 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
   }, [searchParams]);
 
   return (
-    <form onSubmit={handleJoin} className="w-full">
+    <form onSubmit={handleJoin} className={getTurnActionsFormClasses()}>
       <Button
         type="submit"
         disabled={isPending}
@@ -310,7 +312,7 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
   };
 
   return (
-    <form onSubmit={handleJoinSubstitute} className="w-full">
+    <form onSubmit={handleJoinSubstitute} className={getTurnActionsFormClasses()}>
       <Button
         type="submit"
         variant="outline"
@@ -394,7 +396,7 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
   };
 
   return (
-    <form onSubmit={handleTakeSlot} className="w-full">
+    <form onSubmit={handleTakeSlot} className={getTurnActionsFormClasses()}>
       <Button
         type="submit"
         disabled={isPending}
@@ -503,7 +505,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         {getPlayCasualConfirmNoticeText()}{" "}
         <strong className={getPlayCasualStrongClasses()}>{getPlayCasualConfirmText()}</strong>
       </p>
-      <div className="flex gap-2">
+      <div className={getPlayCasualConfirmActionsClasses()}>
         <Button
           type="button"
           onClick={() => setConfirming(false)}

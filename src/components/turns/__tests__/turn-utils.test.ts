@@ -48,6 +48,27 @@ import {
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
   getCalendarButtonText,
+  getTurnPublicDetailsHeaderTitleClasses,
+  getTurnPublicDetailsHeaderSubtitleClasses,
+  getTurnPublicDetailsHeaderRowClasses,
+  getTurnPublicDetailsSectionTitleClasses,
+  getTurnPublicDetailsTimeLabelClasses,
+  getTurnPublicDetailsTimeValueClasses,
+  getTurnPublicDetailsLocationClubClasses,
+  getTurnPublicDetailsLocationDateClasses,
+  getTurnPublicDetailsProgressBarClasses,
+  getTurnPublicDetailsProgressBarFillClasses,
+  getTurnPublicDetailsNotesHeadingClasses,
+  getTurnPublicDetailsSpacerClasses,
+  getTurnPublicDetailsWaitlistNoticeClasses,
+  getTurnActionsFormClasses,
+  getTurnActionsFlexSlotClasses,
+  getPlayCasualConfirmActionsClasses,
+  getTurnsFilterTabsGroupClasses,
+  getTurnsFilterContentContainerClasses,
+  getTurnsFilterEmptyContentClasses,
+  getTurnCardCoverLinkClasses,
+  getAddToCalendarContainerClasses,
   getCalendarButtonAriaLabel,
   getCalendarHeaderPromptText,
   getGoogleButtonText,
@@ -1085,6 +1106,43 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("turn details, actions, and filter pure layout & styling helpers", () => {
+  it("returns correct CSS classes for turn public details header and section elements", () => {
+    expect(getTurnPublicDetailsHeaderTitleClasses()).toBe("text-xl font-bold text-foreground");
+    expect(getTurnPublicDetailsHeaderSubtitleClasses()).toBe("text-sm text-muted-foreground");
+    expect(getTurnPublicDetailsHeaderRowClasses()).toBe("flex items-center gap-4");
+    expect(getTurnPublicDetailsSectionTitleClasses()).toBe("text-sm font-bold text-foreground flex items-center gap-2");
+    expect(getTurnPublicDetailsTimeLabelClasses()).toBe("flex items-center gap-2 text-muted-foreground");
+    expect(getTurnPublicDetailsTimeValueClasses()).toBe("text-lg font-bold");
+    expect(getTurnPublicDetailsLocationClubClasses()).toBe("text-sm font-bold truncate");
+    expect(getTurnPublicDetailsLocationDateClasses()).toBe("text-xs text-muted-foreground");
+    expect(getTurnPublicDetailsProgressBarClasses()).toBe("w-full bg-muted h-2 rounded-full overflow-hidden");
+    expect(getTurnPublicDetailsProgressBarFillClasses()).toBe("bg-primary h-full rounded-full transition-all duration-300");
+    expect(getTurnPublicDetailsNotesHeadingClasses()).toBe("block text-xs font-bold not-italic mb-1 text-foreground");
+    expect(getTurnPublicDetailsSpacerClasses()).toBe("h-64");
+    expect(getTurnPublicDetailsWaitlistNoticeClasses()).toBe("text-xs text-muted-foreground text-center");
+  });
+
+  it("returns correct CSS classes for turn actions forms and slots", () => {
+    expect(getTurnActionsFormClasses()).toBe("w-full");
+    expect(getTurnActionsFlexSlotClasses()).toBe("flex-1");
+    expect(getPlayCasualConfirmActionsClasses()).toBe("flex gap-2");
+  });
+
+  it("returns correct CSS classes for turns filter layout groups", () => {
+    expect(getTurnsFilterTabsGroupClasses()).toBe("flex flex-col gap-1.5");
+    expect(getTurnsFilterContentContainerClasses()).toBe("flex flex-col gap-2");
+    expect(getTurnsFilterEmptyContentClasses()).toBe("flex flex-col gap-2 w-full");
+  });
+
+  it("returns correct CSS classes for turn card cover link and calendar container", () => {
+    expect(getTurnCardCoverLinkClasses()).toBe(
+      "absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    );
+    expect(getAddToCalendarContainerClasses()).toBe("flex flex-col w-full");
   });
 });
 

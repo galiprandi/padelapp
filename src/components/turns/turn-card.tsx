@@ -56,6 +56,7 @@ import {
   getTurnCardShareButtonClasses,
   getTurnCardDateMonthClasses,
   getTurnCardDateDayClasses,
+  getTurnCardCoverLinkClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -178,7 +179,7 @@ export function TurnCard({
       <Link
         href={`/t/${turn.id}`}
         prefetch={true}
-        className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getTurnCardCoverLinkClasses()}
         aria-label={getTurnCardDetailLinkAriaLabel(turn.club)}
       />
         <div className={getTurnCardHeaderContainerClasses()}>

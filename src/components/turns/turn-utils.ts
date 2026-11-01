@@ -2837,6 +2837,153 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for the main page header title in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsHeaderTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+/**
+ * Format CSS classes for the main page header subtitle in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsHeaderSubtitleClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for the top header flex row in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsHeaderRowClasses(): string {
+  return "flex items-center gap-4";
+}
+
+/**
+ * Format CSS classes for section title headings in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsSectionTitleClasses(): string {
+  return "text-sm font-bold text-foreground flex items-center gap-2";
+}
+
+/**
+ * Format CSS classes for the time card label wrapper in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsTimeLabelClasses(): string {
+  return "flex items-center gap-2 text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for the time card display value in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsTimeValueClasses(): string {
+  return "text-lg font-bold";
+}
+
+/**
+ * Format CSS classes for the location card club name in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsLocationClubClasses(): string {
+  return "text-sm font-bold truncate";
+}
+
+/**
+ * Format CSS classes for the location card date label in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsLocationDateClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for the turn slots progress bar container in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsProgressBarClasses(): string {
+  return "w-full bg-muted h-2 rounded-full overflow-hidden";
+}
+
+/**
+ * Format CSS classes for the turn slots progress bar fill indicator in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsProgressBarFillClasses(): string {
+  return "bg-primary h-full rounded-full transition-all duration-300";
+}
+
+/**
+ * Format CSS classes for the notes heading label in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsNotesHeadingClasses(): string {
+  return "block text-xs font-bold not-italic mb-1 text-foreground";
+}
+
+/**
+ * Format CSS classes for the bottom spacing spacer in TurnPublicDetails.
+ */
+export function getTurnPublicDetailsSpacerClasses(): string {
+  return "h-64";
+}
+
+/**
+ * Format CSS classes for the substitute waitlist helper notice in TurnActions.
+ */
+export function getTurnPublicDetailsWaitlistNoticeClasses(): string {
+  return "text-xs text-muted-foreground text-center";
+}
+
+/**
+ * Format CSS classes for form wrapper containers in TurnActions.
+ */
+export function getTurnActionsFormClasses(): string {
+  return "w-full";
+}
+
+/**
+ * Format CSS classes for flexible slot containers in TurnActions.
+ */
+export function getTurnActionsFlexSlotClasses(): string {
+  return "flex-1";
+}
+
+/**
+ * Format CSS classes for play casual confirm buttons row in TurnActions.
+ */
+export function getPlayCasualConfirmActionsClasses(): string {
+  return "flex gap-2";
+}
+
+/**
+ * Format CSS classes for tabs group container in TurnsFilter.
+ */
+export function getTurnsFilterTabsGroupClasses(): string {
+  return "flex flex-col gap-1.5";
+}
+
+/**
+ * Format CSS classes for filter results list container in TurnsFilter.
+ */
+export function getTurnsFilterContentContainerClasses(): string {
+  return "flex flex-col gap-2";
+}
+
+/**
+ * Format CSS classes for empty state column container in TurnsFilter.
+ */
+export function getTurnsFilterEmptyContentClasses(): string {
+  return "flex flex-col gap-2 w-full";
+}
+
+/**
+ * Format CSS classes for invisible overlay card link covering TurnCard.
+ */
+export function getTurnCardCoverLinkClasses(): string {
+  return "absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for container element in AddToCalendarButton.
+ */
+export function getAddToCalendarContainerClasses(): string {
+  return "flex flex-col w-full";
+}
+
+/**
  * Format CSS classes for cancelled turn back button in turn public details.
  */
 export function getTurnPublicDetailsCancelledButtonClasses(): string {
