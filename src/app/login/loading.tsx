@@ -1,32 +1,48 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getLoginLoadingAriaLabel } from "@/lib/auth-utils";
+import {
+  getLoginLoadingAriaLabel,
+  getLoginLoadingMainClasses,
+  getLoginLoadingContentContainerClasses,
+  getLoginLoadingHeaderClasses,
+  getLoginLoadingTextGroupClasses,
+  getLoginLoadingLogoSkeletonClasses,
+  getLoginLoadingTitleSkeletonClasses,
+  getLoginLoadingSubtitleSkeletonClasses,
+  getLoginLoadingCtaContainerClasses,
+  getLoginLoadingCtaButtonSkeletonClasses,
+  getLoginLoadingTermsSkeletonClasses,
+  getLoginLoadingCtaButtonKeys,
+} from "@/lib/auth-utils";
 
 export default function LoginLoading() {
+  const ctaKeys = getLoginLoadingCtaButtonKeys();
+
   return (
     <main
       role="region"
       aria-busy="true"
       aria-label={getLoginLoadingAriaLabel()}
-      className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10"
+      className={getLoginLoadingMainClasses()}
     >
-      <div className="flex w-full max-w-sm flex-col items-center gap-12">
+      <div className={getLoginLoadingContentContainerClasses()}>
         {/* Logo + tagline skeleton */}
-        <div className="flex flex-col items-center gap-6">
-          <Skeleton className="h-24 w-24 rounded-2xl" />
-          <div className="flex flex-col items-center space-y-3 text-center">
-            <Skeleton className="h-8 w-36 rounded-md" />
-            <Skeleton className="h-10 w-60 rounded-md" />
+        <div className={getLoginLoadingHeaderClasses()}>
+          <Skeleton className={getLoginLoadingLogoSkeletonClasses()} />
+          <div className={getLoginLoadingTextGroupClasses()}>
+            <Skeleton className={getLoginLoadingTitleSkeletonClasses()} />
+            <Skeleton className={getLoginLoadingSubtitleSkeletonClasses()} />
           </div>
         </div>
 
         {/* CTA buttons skeleton */}
-        <div className="flex w-full flex-col gap-3">
-          <Skeleton className="h-12 w-full rounded-xl" />
-          <Skeleton className="h-12 w-full rounded-xl" />
+        <div className={getLoginLoadingCtaContainerClasses()}>
+          {ctaKeys.map((key) => (
+            <Skeleton key={key} className={getLoginLoadingCtaButtonSkeletonClasses()} />
+          ))}
         </div>
 
         {/* Terms footer skeleton */}
-        <Skeleton className="h-4 w-56 rounded-md" />
+        <Skeleton className={getLoginLoadingTermsSkeletonClasses()} />
       </div>
     </main>
   );

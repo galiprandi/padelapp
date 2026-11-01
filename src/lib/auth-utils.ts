@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 /**
  * Return a safe relative redirect URL derived from user-controlled input.
  *
@@ -45,6 +47,102 @@ export function getLoginContainerClasses(): string {
  */
 export function getLoginContentContainerClasses(): string {
   return "flex w-full max-w-sm flex-col items-center gap-12";
+}
+
+/**
+ * Returns container CSS classes for the login loading skeleton main wrapper.
+ */
+export function getLoginLoadingMainClasses(customClassName?: string): string {
+  return cn(
+    "relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10",
+    customClassName,
+  );
+}
+
+/**
+ * Returns container CSS classes for the login loading skeleton inner content box.
+ */
+export function getLoginLoadingContentContainerClasses(
+  customClassName?: string,
+): string {
+  return cn("flex w-full max-w-sm flex-col items-center gap-12", customClassName);
+}
+
+/**
+ * Returns container CSS classes for the login loading skeleton header section (logo + titles).
+ */
+export function getLoginLoadingHeaderClasses(customClassName?: string): string {
+  return cn("flex flex-col items-center gap-6", customClassName);
+}
+
+/**
+ * Returns container CSS classes for the login loading skeleton title/subtitle text group.
+ */
+export function getLoginLoadingTextGroupClasses(
+  customClassName?: string,
+): string {
+  return cn("flex flex-col items-center space-y-3 text-center", customClassName);
+}
+
+/**
+ * Returns dimension CSS classes for the login loading logo skeleton.
+ */
+export function getLoginLoadingLogoSkeletonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-24 w-24 rounded-2xl", customClassName);
+}
+
+/**
+ * Returns dimension CSS classes for the login loading title skeleton.
+ */
+export function getLoginLoadingTitleSkeletonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-8 w-36 rounded-md", customClassName);
+}
+
+/**
+ * Returns dimension CSS classes for the login loading subtitle/tagline skeleton.
+ */
+export function getLoginLoadingSubtitleSkeletonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-10 w-60 rounded-md", customClassName);
+}
+
+/**
+ * Returns container CSS classes for the login loading CTA action buttons list.
+ */
+export function getLoginLoadingCtaContainerClasses(
+  customClassName?: string,
+): string {
+  return cn("flex w-full flex-col gap-3", customClassName);
+}
+
+/**
+ * Returns dimension CSS classes for the login loading action button skeleton.
+ */
+export function getLoginLoadingCtaButtonSkeletonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-12 w-full rounded-xl", customClassName);
+}
+
+/**
+ * Returns dimension CSS classes for the login loading terms and conditions notice skeleton.
+ */
+export function getLoginLoadingTermsSkeletonClasses(
+  customClassName?: string,
+): string {
+  return cn("h-4 w-56 rounded-md", customClassName);
+}
+
+/**
+ * Returns numeric keys for iterating over the CTA button skeletons in LoginLoading.
+ */
+export function getLoginLoadingCtaButtonKeys(): number[] {
+  return [0, 1];
 }
 
 /**
