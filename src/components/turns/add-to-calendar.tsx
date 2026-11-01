@@ -24,6 +24,7 @@ import {
   getCalendarOptionButtonClasses,
   getCalendarHeaderPromptClasses,
   getCalendarOptionsGridClasses,
+  getAddToCalendarContainerClasses,
 } from "./turn-utils";
 
 interface AddToCalendarButtonProps {
@@ -93,7 +94,7 @@ export function AddToCalendarButton({
   };
 
   return (
-    <div className="flex flex-col w-full" onKeyDown={handleKeyDown}>
+    <div className={getAddToCalendarContainerClasses()} onKeyDown={handleKeyDown}>
       <Button
         onClick={() => setOpen(!open)}
         variant="outline"

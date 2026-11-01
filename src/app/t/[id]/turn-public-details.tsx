@@ -59,6 +59,20 @@ import {
   getTurnConnectionAriaLabel,
   getTurnBackAriaLabel,
   getTurnUrgencyBadgeAriaLabel,
+  getTurnPublicDetailsHeaderTitleClasses,
+  getTurnPublicDetailsHeaderSubtitleClasses,
+  getTurnPublicDetailsHeaderRowClasses,
+  getTurnPublicDetailsSectionTitleClasses,
+  getTurnPublicDetailsTimeLabelClasses,
+  getTurnPublicDetailsTimeValueClasses,
+  getTurnPublicDetailsLocationClubClasses,
+  getTurnPublicDetailsLocationDateClasses,
+  getTurnPublicDetailsProgressBarClasses,
+  getTurnPublicDetailsProgressBarFillClasses,
+  getTurnPublicDetailsNotesHeadingClasses,
+  getTurnPublicDetailsSpacerClasses,
+  getTurnPublicDetailsWaitlistNoticeClasses,
+  getTurnActionsFlexSlotClasses,
   getTurnContactProfileLinkAriaLabel,
   getTurnContactCompatibilityAriaLabel,
   getTurnContactBadgeAriaLabel,
@@ -274,10 +288,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className={getTurnPublicDetailsHeaderTitleClasses()}>
               {cancelledHeader.title}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className={getTurnPublicDetailsHeaderSubtitleClasses()}>
               {cancelledHeader.description}
             </p>
           </div>
@@ -311,7 +325,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
   return (
     <div className={getTurnPublicDetailsContainerClasses()}>
-      <div className="flex items-center gap-4">
+      <div className={getTurnPublicDetailsHeaderRowClasses()}>
         <Link
           href={viewerId ? "/me" : "/"}
           prefetch={true}
@@ -321,10 +335,10 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className={getTurnPublicDetailsHeaderTitleClasses()}>
             {getTurnDetailsHeading()}
           </h1>
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <p className={getTurnPublicDetailsHeaderSubtitleClasses()}>{subtitle}</p>
         </div>
       </div>
 
@@ -373,7 +387,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         className={getTurnPublicDetailsInfoCardClasses()}
       >
         <div className={getTurnPublicDetailsInfoCardHeaderClasses()}>
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h2 className={getTurnPublicDetailsSectionTitleClasses()}>
             <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
             {getTurnInfoSectionTitle()}
           </h2>
@@ -393,11 +407,11 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
         <div className={getTurnPublicDetailsGridDividerClasses()}>
           <div className={getTurnPublicDetailsTimeCardClasses()}>
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className={getTurnPublicDetailsTimeLabelClasses()}>
               <Clock className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="text-xs font-semibold">{getTurnTimeLabel()}</span>
             </div>
-            <p className="text-lg font-bold">
+            <p className={getTurnPublicDetailsTimeValueClasses()}>
               <LocalTime date={turn.date} />
             </p>
           </div>
@@ -407,8 +421,8 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               <MapPin className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold truncate">{turn.club}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className={getTurnPublicDetailsLocationClubClasses()}>{turn.club}</p>
+              <p className={getTurnPublicDetailsLocationDateClasses()}>
                 <LocalDate date={turn.date} />
               </p>
             </div>
@@ -422,7 +436,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               </span>
             </div>
             <div
-              className="w-full bg-muted h-2 rounded-full overflow-hidden"
+              className={getTurnPublicDetailsProgressBarClasses()}
               role="progressbar"
               aria-valuenow={turn.players.length}
               aria-valuemin={0}
@@ -430,7 +444,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
               aria-label={formatTurnProgressAriaLabel(turn.players.length, turn.maxPlayers)}
             >
               <div
-                className="bg-primary h-full rounded-full transition-all duration-300"
+                className={getTurnPublicDetailsProgressBarFillClasses()}
                 style={{ width: `${formatTurnProgressPercentage(turn.players.length, turn.maxPlayers)}%` }}
               />
             </div>
@@ -439,7 +453,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
 
         {turn.notes && (
           <div className={getTurnPublicDetailsInfoCardNotesClasses()}>
-            <span className="block text-xs font-bold not-italic mb-1 text-foreground">
+            <span className={getTurnPublicDetailsNotesHeadingClasses()}>
               {getTurnNotesTitle()}
             </span>
             &ldquo;{turn.notes}&rdquo;
@@ -465,7 +479,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         className={getTurnPublicDetailsEnrolledSectionClasses()}
       >
         <div className={getTurnPublicDetailsEnrolledHeaderClasses()}>
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h2 className={getTurnPublicDetailsSectionTitleClasses()}>
             <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             {getTurnEnrolledSectionTitle()}
           </h2>
@@ -592,7 +606,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           className={getTurnPublicDetailsSuggestedSectionClasses()}
         >
           <div className={getTurnPublicDetailsSuggestedHeaderClasses()}>
-            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <h2 className={getTurnPublicDetailsSectionTitleClasses()}>
               <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" aria-hidden="true" />
               {getTurnSuggestedContactsHeaderProps().title}
             </h2>
@@ -678,7 +692,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           className={getTurnPublicDetailsSubstitutesSectionClasses()}
         >
           <div className={getTurnPublicDetailsSubstitutesHeaderClasses()}>
-            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <h2 className={getTurnPublicDetailsSectionTitleClasses()}>
               <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               {getTurnSubstitutesSectionTitle()}
             </h2>
@@ -753,7 +767,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           aria-label={getTurnChatRegionAriaLabel()}
           className={getTurnPublicDetailsChatSectionClasses()}
         >
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h2 className={getTurnPublicDetailsSectionTitleClasses()}>
             <MessageSquare className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             {getTurnChatSectionTitle()}
           </h2>
@@ -761,7 +775,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
         </section>
       )}
 
-      <div className="h-64" />
+      <div className={getTurnPublicDetailsSpacerClasses()} />
 
       <div
         className={getTurnActionsContainerClasses()}
@@ -854,7 +868,7 @@ function TurnActions({
             <div className={getTurnActionsSubstituteNoSlotsClasses()}>
               {getSubstituteNoSlotsText()}
             </div>
-            <p className="text-xs text-muted-foreground text-center">
+            <p className={getTurnPublicDetailsWaitlistNoticeClasses()}>
               {getSubstituteWaitlistMessage()}
             </p>
           </>
@@ -940,7 +954,7 @@ function TurnActions({
               <PlayCasualForm turnId={turnId} />
             )}
             <div className={getTurnActionsFullWidthRowClasses()}>
-              <div className="flex-1">
+              <div className={getTurnActionsFlexSlotClasses()}>
                 <ScheduleNextTurnForm turnId={turnId} />
               </div>
               {!isCompleted && (
@@ -981,7 +995,7 @@ function TurnActions({
         )}
         {!isCreator && (
           <div className={getTurnActionsFullWidthRowClasses()}>
-            <div className="flex-1">
+            <div className={getTurnActionsFlexSlotClasses()}>
               <LeaveTurnButton
                 turnId={turnId}
                 club={club}
@@ -1034,7 +1048,7 @@ function TurnActions({
         </>
       )}
       <div className={getTurnActionsFullWidthRowClasses()}>
-        <div className="flex-1">
+        <div className={getTurnActionsFlexSlotClasses()}>
           <Suspense fallback={null}>
             <JoinTurnForm turnId={turnId} />
           </Suspense>

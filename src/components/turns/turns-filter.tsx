@@ -24,6 +24,9 @@ import {
   getTurnFilterBadgeClasses,
   getTurnFilterPrimaryButtonClasses,
   getTurnFilterOutlineButtonClasses,
+  getTurnsFilterTabsGroupClasses,
+  getTurnsFilterContentContainerClasses,
+  getTurnsFilterEmptyContentClasses,
 } from "./turn-utils";
 
 interface TurnListItem {
@@ -67,7 +70,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
   return (
     <section role="region" aria-label={regionAriaLabel} className={getTurnFilterContainerClasses()}>
       {userId && (
-        <div className="flex flex-col gap-1.5">
+        <div className={getTurnsFilterTabsGroupClasses()}>
           <span id="turns-tabs-label" className="sr-only">
             Filtrar turnos
           </span>
@@ -126,7 +129,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
         </span>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className={getTurnsFilterContentContainerClasses()}>
         {filteredTurns.length > 0 ? (
           filteredTurns.map((turn) => {
             const isJoined = turn.players.some((p) => p.userId === userId);
@@ -165,7 +168,7 @@ export function TurnsFilter({ turns, userId, contacts }: TurnsFilterProps) {
             description={emptyProps.description}
             icon={CalendarOff}
             action={
-              <div className="flex flex-col gap-2 w-full">
+              <div className={getTurnsFilterEmptyContentClasses()}>
                 {emptyProps.exploreButtonLabel && (
                   <Button
                     onClick={() => setActiveTab("todos")}
