@@ -20,6 +20,21 @@ import {
   getAttendanceGroupAriaLabel,
   getAttendanceStatusActiveColorClasses,
   getAttendanceStatusButtonClasses,
+  getAttendanceMarkerContainerClasses,
+  getAttendanceMarkerTitleClasses,
+  getAttendanceMarkerDescriptionClasses,
+  getAttendanceMarkerPlayerListClasses,
+  getAttendanceMarkerPlayerCardClasses,
+  getAttendanceMarkerPlayerRowClasses,
+  getAttendanceMarkerPlayerAvatarClasses,
+  getAttendanceMarkerPlayerNameClasses,
+  getAttendanceMarkerStatusRadiogroupClasses,
+  getAttendanceMarkerFeedbackRowClasses,
+  getAttendanceMarkerFeedbackLabelClasses,
+  getAttendanceMarkerFeedbackRadiogroupClasses,
+  getAttendanceMarkerSaveButtonClasses,
+  getAttendanceMarkerSaveButtonContentClasses,
+  getAttendanceMarkerSaveButtonSpinnerClasses,
   ATTENDANCE_STATUS_LABELS,
   ATTENDANCE_BADGE_CLASSES,
 } from "../attendance-utils";
@@ -242,6 +257,37 @@ describe("attendance-utils", () => {
 
       const inactiveClasses = getAttendanceStatusButtonClasses(false, "ATTENDED");
       expect(inactiveClasses).toContain("border-border bg-background text-muted-foreground");
+    });
+
+    it("returns correct CSS classes for attendance marker container and typography", () => {
+      expect(getAttendanceMarkerContainerClasses()).toBe("space-y-4");
+      expect(getAttendanceMarkerTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getAttendanceMarkerDescriptionClasses()).toBe("text-xs text-muted-foreground");
+    });
+
+    it("returns correct CSS classes for attendance marker list, card and player row", () => {
+      expect(getAttendanceMarkerPlayerListClasses()).toBe("space-y-3");
+      expect(getAttendanceMarkerPlayerCardClasses()).toContain("rounded-xl border border-border bg-card p-3 shadow-xs");
+      expect(getAttendanceMarkerPlayerRowClasses()).toBe("flex items-center gap-3");
+      expect(getAttendanceMarkerPlayerAvatarClasses()).toBe("h-9 w-9 shrink-0");
+      expect(getAttendanceMarkerPlayerNameClasses()).toContain("flex-1 text-sm font-semibold text-foreground truncate");
+      expect(getAttendanceMarkerStatusRadiogroupClasses()).toBe("flex gap-1.5 shrink-0");
+    });
+
+    it("returns correct CSS classes for level feedback row and label", () => {
+      expect(getAttendanceMarkerFeedbackRowClasses()).toContain("flex items-center justify-between pt-2 border-t border-border/50");
+      expect(getAttendanceMarkerFeedbackLabelClasses()).toBe("text-xs text-muted-foreground font-medium");
+      expect(getAttendanceMarkerFeedbackRadiogroupClasses()).toBe("flex gap-1.5 shrink-0");
+    });
+
+    it("returns correct CSS classes for attendance save button, content and spinner", () => {
+      const saveBtnClasses = getAttendanceMarkerSaveButtonClasses();
+      expect(saveBtnClasses).toContain("w-full h-12 rounded-lg text-sm font-semibold");
+      expect(saveBtnClasses).toContain("active:scale-[0.98] transition-all");
+      expect(saveBtnClasses).toContain("focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background");
+
+      expect(getAttendanceMarkerSaveButtonContentClasses()).toBe("flex items-center gap-2");
+      expect(getAttendanceMarkerSaveButtonSpinnerClasses()).toBe("h-4 w-4 animate-spin");
     });
   });
 });

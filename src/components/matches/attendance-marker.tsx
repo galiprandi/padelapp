@@ -29,6 +29,21 @@ import {
   getAttendanceHeadingTitle,
   getAttendanceGroupAriaLabel,
   getAttendanceStatusButtonClasses,
+  getAttendanceMarkerContainerClasses,
+  getAttendanceMarkerTitleClasses,
+  getAttendanceMarkerDescriptionClasses,
+  getAttendanceMarkerPlayerListClasses,
+  getAttendanceMarkerPlayerCardClasses,
+  getAttendanceMarkerPlayerRowClasses,
+  getAttendanceMarkerPlayerAvatarClasses,
+  getAttendanceMarkerPlayerNameClasses,
+  getAttendanceMarkerStatusRadiogroupClasses,
+  getAttendanceMarkerFeedbackRowClasses,
+  getAttendanceMarkerFeedbackLabelClasses,
+  getAttendanceMarkerFeedbackRadiogroupClasses,
+  getAttendanceMarkerSaveButtonClasses,
+  getAttendanceMarkerSaveButtonContentClasses,
+  getAttendanceMarkerSaveButtonSpinnerClasses,
   ATTENDANCE_STATUS_LABELS,
 } from "@/components/matches/attendance-utils";
 
@@ -141,35 +156,35 @@ export function AttendanceMarker({
     <section
       role="region"
       aria-label={getAttendanceSectionRegionAriaLabel()}
-      className="space-y-4"
+      className={getAttendanceMarkerContainerClasses()}
     >
       <div>
-        <h2 className="text-sm font-bold text-foreground">{getAttendanceHeadingTitle()}</h2>
-        <p className="text-xs text-muted-foreground">
+        <h2 className={getAttendanceMarkerTitleClasses()}>{getAttendanceHeadingTitle()}</h2>
+        <p className={getAttendanceMarkerDescriptionClasses()}>
           {getAttendanceSummaryText(players.length)}
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className={getAttendanceMarkerPlayerListClasses()}>
         {players.map((player) => {
           const current = statuses[player.id] ?? "ATTENDED";
           return (
             <div
               key={player.id}
-              className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-3 shadow-xs"
+              className={getAttendanceMarkerPlayerCardClasses()}
             >
               {/* Row 1: Player Info & Attendance status */}
-              <div className="flex items-center gap-3">
+              <div className={getAttendanceMarkerPlayerRowClasses()}>
                 <PlayerAvatar
                   name={player.name}
                   image={player.image}
-                  className="h-9 w-9 shrink-0"
+                  className={getAttendanceMarkerPlayerAvatarClasses()}
                 />
-                <span className="flex-1 text-sm font-semibold text-foreground truncate">
+                <span className={getAttendanceMarkerPlayerNameClasses()}>
                   {player.name}
                 </span>
                 <div
-                  className="flex gap-1.5 shrink-0"
+                  className={getAttendanceMarkerStatusRadiogroupClasses()}
                   role="radiogroup"
                   aria-label={getAttendanceGroupAriaLabel(player.name)}
                   onKeyDown={(e) => {
@@ -213,12 +228,12 @@ export function AttendanceMarker({
 
               {/* Row 2: Subtle level feedback (only for other players) */}
               {viewerId && player.userId !== viewerId && (
-                <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                  <span className="text-xs text-muted-foreground font-medium">
+                <div className={getAttendanceMarkerFeedbackRowClasses()}>
+                  <span className={getAttendanceMarkerFeedbackLabelClasses()}>
                     {getPlayerFeedbackHeadingText()}
                   </span>
                   <div
-                    className="flex gap-1.5 shrink-0"
+                    className={getAttendanceMarkerFeedbackRadiogroupClasses()}
                     role="radiogroup"
                     aria-label={getPlayerFeedbackSectionAriaLabel(player.name)}
                     onKeyDown={(e) => {
@@ -291,11 +306,11 @@ export function AttendanceMarker({
         disabled={pending}
         aria-busy={pending}
         aria-label={getAttendanceSaveButtonAriaLabel(pending)}
-        className="w-full h-12 rounded-lg text-sm font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+        className={getAttendanceMarkerSaveButtonClasses()}
       >
         {pending ? (
-          <span className="flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <span className={getAttendanceMarkerSaveButtonContentClasses()}>
+            <Loader2 className={getAttendanceMarkerSaveButtonSpinnerClasses()} aria-hidden="true" />
             <span>{getAttendanceSaveButtonLabel(pending)}</span>
           </span>
         ) : (
