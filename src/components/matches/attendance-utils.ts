@@ -229,3 +229,108 @@ export function getAttendanceStatusButtonClasses(
 
   return `${baseClasses} border-border bg-background text-muted-foreground hover:bg-muted`;
 }
+
+/**
+ * Returns Tailwind CSS class names for the AttendanceMarker root section container.
+ */
+export function getAttendanceMarkerContainerClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Returns Tailwind CSS class names for the AttendanceMarker section heading title.
+ */
+export function getAttendanceMarkerTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind CSS class names for the AttendanceMarker section subtitle description.
+ */
+export function getAttendanceMarkerDescriptionClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind CSS class names for the list of player attendance cards.
+ */
+export function getAttendanceMarkerPlayerListClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns Tailwind CSS class names for an individual player attendance card.
+ */
+export function getAttendanceMarkerPlayerCardClasses(): string {
+  return "flex flex-col gap-2.5 rounded-xl border border-border bg-card p-3 shadow-xs";
+}
+
+/**
+ * Returns Tailwind CSS class names for the first row of a player card (avatar, name, attendance status).
+ */
+export function getAttendanceMarkerPlayerRowClasses(): string {
+  return "flex items-center gap-3";
+}
+
+/**
+ * Returns Tailwind CSS class names for player avatar in attendance card.
+ */
+export function getAttendanceMarkerPlayerAvatarClasses(): string {
+  return "h-9 w-9 shrink-0";
+}
+
+/**
+ * Returns Tailwind CSS class names for player display name in attendance card.
+ */
+export function getAttendanceMarkerPlayerNameClasses(): string {
+  return "flex-1 text-sm font-semibold text-foreground truncate";
+}
+
+/**
+ * Returns Tailwind CSS class names for the attendance status radio group container.
+ */
+export function getAttendanceMarkerStatusRadiogroupClasses(): string {
+  return "flex gap-1.5 shrink-0";
+}
+
+/**
+ * Returns Tailwind CSS class names for the level feedback row.
+ */
+export function getAttendanceMarkerFeedbackRowClasses(): string {
+  return "flex items-center justify-between pt-2 border-t border-border/50";
+}
+
+/**
+ * Returns Tailwind CSS class names for the level feedback label.
+ */
+export function getAttendanceMarkerFeedbackLabelClasses(): string {
+  return "text-xs text-muted-foreground font-medium";
+}
+
+/**
+ * Returns Tailwind CSS class names for the level feedback radio group container.
+ */
+export function getAttendanceMarkerFeedbackRadiogroupClasses(): string {
+  return "flex gap-1.5 shrink-0";
+}
+
+/**
+ * Returns Tailwind CSS class names for the attendance save action button.
+ */
+export function getAttendanceMarkerSaveButtonClasses(): string {
+  return "w-full h-12 rounded-lg text-sm font-semibold active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns Tailwind CSS class names for the save button content container with spinner.
+ */
+export function getAttendanceMarkerSaveButtonContentClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Returns Tailwind CSS class names for the save button loading spinner.
+ */
+export function getAttendanceMarkerSaveButtonSpinnerClasses(): string {
+  return "h-4 w-4 animate-spin";
+}
