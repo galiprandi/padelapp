@@ -44,7 +44,17 @@ import {
   getGraphViewNodeCanvasSize,
   getFilterChipAriaLabel,
   getGraphViewLoadingText,
+  getGraphViewLoadingContainerClasses,
   getGraphViewEmptyDataProps,
+  getGraphViewEmptyDataContainerClasses,
+  getGraphViewEmptyDataIconBadgeClasses,
+  getGraphViewEmptyDataTitleClasses,
+  getGraphViewEmptyDataDescriptionClasses,
+  getGraphViewEmptyDataButtonClasses,
+  getGraphViewContainerClasses,
+  getGraphViewEmptySearchContainerClasses,
+  getGraphViewEmptySearchMessageClasses,
+  getGraphViewEmptySearchResetButtonClasses,
   getGraphViewScopeAriaLabel,
   getGraphViewSearchAriaLabel,
   getGraphViewEmptySearchProps,
@@ -134,7 +144,7 @@ import {
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-[60vh] text-sm text-muted-foreground">
+    <div className={getGraphViewLoadingContainerClasses()}>
       {getGraphViewLoadingText()}
     </div>
   ),
@@ -505,18 +515,18 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   if (graphData.nodes.length === 0) {
     const emptyDataProps = getGraphViewEmptyDataProps();
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] gap-3 text-center px-6">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+      <div className={getGraphViewEmptyDataContainerClasses()}>
+        <div className={getGraphViewEmptyDataIconBadgeClasses()}>
           <CalendarDays className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
-        <p className="text-lg font-bold text-foreground">{emptyDataProps.title}</p>
-        <p className="text-sm text-muted-foreground max-w-xs">
+        <p className={getGraphViewEmptyDataTitleClasses()}>{emptyDataProps.title}</p>
+        <p className={getGraphViewEmptyDataDescriptionClasses()}>
           {emptyDataProps.description}
         </p>
         <Link
           href={emptyDataProps.buttonHref}
           prefetch={true}
-          className="mt-2 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.98]"
+          className={getGraphViewEmptyDataButtonClasses()}
         >
           {emptyDataProps.buttonText}
         </Link>
@@ -531,7 +541,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full bg-muted/30 overflow-hidden"
+      className={getGraphViewContainerClasses()}
       style={{ height: "calc(100dvh - 49px)" }}
     >
       {/* Top bar with search and filters */}
@@ -772,8 +782,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         (() => {
           const emptySearchProps = getGraphViewEmptySearchProps(searchQuery);
           return (
-            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto">
-              <p className="text-sm font-semibold text-muted-foreground">
+            <div className={getGraphViewEmptySearchContainerClasses()}>
+              <p className={getGraphViewEmptySearchMessageClasses()}>
                 {emptySearchProps.message}
               </p>
               <button
@@ -782,7 +792,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   setLinkFilter("all");
                   setSelectedCommunity(null);
                 }}
-                className="text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1"
+                className={getGraphViewEmptySearchResetButtonClasses()}
               >
                 {emptySearchProps.buttonText}
               </button>

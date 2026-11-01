@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-10-05
+## Última actualización: 2026-10-06
 
 ## Estado actual
 
 ### Completado
+- Phase 59 (GraphView & StatsPanel UI Layout & Styling Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-06 — Hecho: Extraídas las funciones puras `getGraphViewLoadingContainerClasses`, `getGraphViewEmptyDataContainerClasses`, `getGraphViewEmptyDataIconBadgeClasses`, `getGraphViewEmptyDataTitleClasses`, `getGraphViewEmptyDataDescriptionClasses`, `getGraphViewEmptyDataButtonClasses`, `getGraphViewContainerClasses`, `getGraphViewEmptySearchContainerClasses`, `getGraphViewEmptySearchMessageClasses`, `getGraphViewEmptySearchResetButtonClasses`, `getStatsPanelHeaderRegionClasses`, `getStatsPanelHeaderTitleClasses`, `getStatsPanelHeaderDescriptionClasses`, `getStatsPanelSectionHeaderClasses`, `getStatsPanelSectionTitleClasses`, `getStatsPanelCommunityProgressItemClasses`, `getStatsPanelRecentSummaryGridClasses`, `getStatsPanelRecentSummaryValueClasses` y `getStatsPanelRecentSummaryLabelClasses` en `src/app/network/graph-utils.ts`.
+  - [x] 2026-10-06 — Hecho: Refactorizados `GraphView` (`src/app/network/graph-view.tsx`) y `StatsPanel` (`src/app/network/stats-panel.tsx`) para consumir las funciones puras de layout, avisos y micro-UX extraídas.
+  - [x] 2026-10-06 — Hecho: Pruebas unitarias extendidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 58 (Raw Graph Nodes/Links & Adoption Metrics Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-05 — Hecho: Extraídas las funciones puras `buildRawGraphNodes`, `buildRawGraphLinks`, `calculateAdoptionNetworkDensity`, `calculateAvgConnectionsPerPlayer` y `filterTopPlayersByNetworkSize` en `src/app/network/graph-utils.ts`.
   - [x] 2026-10-05 — Hecho: Refactorizadas `fetchGraphDataRaw` y `fetchAdoptionMetricsRaw` (`src/app/network/actions.ts`) para consumir las funciones puras extraídas.

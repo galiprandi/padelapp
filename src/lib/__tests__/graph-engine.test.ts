@@ -660,6 +660,26 @@ import {
   calculateAdoptionNetworkDensity,
   calculateAvgConnectionsPerPlayer,
   filterTopPlayersByNetworkSize,
+  getGraphViewLoadingContainerClasses,
+  getGraphViewEmptyDataContainerClasses,
+  getGraphViewEmptyDataIconBadgeClasses,
+  getGraphViewEmptyDataTitleClasses,
+  getGraphViewEmptyDataDescriptionClasses,
+  getGraphViewEmptyDataButtonClasses,
+  getGraphViewContainerClasses,
+  getGraphViewEmptySearchContainerClasses,
+  getGraphViewEmptySearchMessageClasses,
+  getGraphViewEmptySearchResetButtonClasses,
+  getStatsPanelHeaderRegionClasses,
+  getStatsPanelHeaderTitleClasses,
+  getStatsPanelHeaderDescriptionClasses,
+  getStatsPanelSectionHeaderClasses,
+  getStatsPanelSectionTitleClasses,
+  getStatsPanelSectionDescriptionClasses,
+  getStatsPanelCommunityProgressItemClasses,
+  getStatsPanelRecentSummaryGridClasses,
+  getStatsPanelRecentSummaryValueClasses,
+  getStatsPanelRecentSummaryLabelClasses,
   calculateAdoptionGrowthRate,
   aggregateTopCommunities,
   aggregateTopClubsActivity,
@@ -1955,5 +1975,73 @@ describe("calculateAdoptionNetworkDensity, calculateAvgConnectionsPerPlayer & fi
     expect(top).toHaveLength(2);
     expect(top[0]).toEqual({ userId: "p-02", networkSize: 10 });
     expect(top[1]).toEqual({ userId: "p-05", networkSize: 7 });
+  });
+});
+
+describe("GraphView & StatsPanel layout & styling pure helpers", () => {
+  it("returns correct CSS classes for GraphView loading, empty states and container", () => {
+    expect(getGraphViewLoadingContainerClasses()).toBe(
+      "flex items-center justify-center h-[60vh] text-sm text-muted-foreground",
+    );
+    expect(getGraphViewEmptyDataContainerClasses()).toBe(
+      "flex flex-col items-center justify-center h-[60vh] gap-3 text-center px-6",
+    );
+    expect(getGraphViewEmptyDataIconBadgeClasses()).toBe(
+      "flex h-12 w-12 items-center justify-center rounded-xl bg-muted",
+    );
+    expect(getGraphViewEmptyDataTitleClasses()).toBe(
+      "text-lg font-bold text-foreground",
+    );
+    expect(getGraphViewEmptyDataDescriptionClasses()).toBe(
+      "text-sm text-muted-foreground max-w-xs",
+    );
+    expect(getGraphViewEmptyDataButtonClasses()).toBe(
+      "mt-2 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.98]",
+    );
+    expect(getGraphViewContainerClasses()).toBe(
+      "relative w-full bg-muted/30 overflow-hidden",
+    );
+    expect(getGraphViewEmptySearchContainerClasses()).toBe(
+      "absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto",
+    );
+    expect(getGraphViewEmptySearchMessageClasses()).toBe(
+      "text-sm font-semibold text-muted-foreground",
+    );
+    expect(getGraphViewEmptySearchResetButtonClasses()).toBe(
+      "text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1",
+    );
+  });
+
+  it("returns correct CSS classes for StatsPanel header, sections and recent summary", () => {
+    expect(getStatsPanelHeaderRegionClasses()).toBe(
+      "flex items-center gap-3",
+    );
+    expect(getStatsPanelHeaderTitleClasses()).toBe(
+      "text-xl font-bold text-foreground",
+    );
+    expect(getStatsPanelHeaderDescriptionClasses()).toBe(
+      "text-sm text-muted-foreground",
+    );
+    expect(getStatsPanelSectionHeaderClasses()).toBe(
+      "flex items-center gap-2",
+    );
+    expect(getStatsPanelSectionTitleClasses()).toBe(
+      "text-sm font-bold text-foreground",
+    );
+    expect(getStatsPanelSectionDescriptionClasses()).toBe(
+      "text-xs text-muted-foreground",
+    );
+    expect(getStatsPanelCommunityProgressItemClasses()).toBe(
+      "space-y-1.5",
+    );
+    expect(getStatsPanelRecentSummaryGridClasses()).toBe(
+      "grid grid-cols-3 gap-2 text-center",
+    );
+    expect(getStatsPanelRecentSummaryValueClasses()).toBe(
+      "text-lg font-bold tabular-nums text-foreground",
+    );
+    expect(getStatsPanelRecentSummaryLabelClasses()).toBe(
+      "text-xs text-muted-foreground",
+    );
   });
 });
