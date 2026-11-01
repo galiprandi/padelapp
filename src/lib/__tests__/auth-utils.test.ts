@@ -19,6 +19,17 @@ import {
   getLoginTermsNoticeText,
   getLoginTitleGroupClasses,
   getLoginTitleText,
+  getLoginLoadingMainClasses,
+  getLoginLoadingContentContainerClasses,
+  getLoginLoadingHeaderClasses,
+  getLoginLoadingTextGroupClasses,
+  getLoginLoadingLogoSkeletonClasses,
+  getLoginLoadingTitleSkeletonClasses,
+  getLoginLoadingSubtitleSkeletonClasses,
+  getLoginLoadingCtaContainerClasses,
+  getLoginLoadingCtaButtonSkeletonClasses,
+  getLoginLoadingTermsSkeletonClasses,
+  getLoginLoadingCtaButtonKeys,
   getSignInButtonText,
   getSignInContentContainerClasses,
   getSignInFormAriaLabel,
@@ -170,6 +181,64 @@ describe("auth-utils login text helpers", () => {
     expect(classes).toContain("items-center");
     expect(classes).toContain("justify-center");
     expect(classes).toContain("gap-2");
+  });
+});
+
+describe("LoginLoading skeleton layout & dimensions helpers", () => {
+  it("getLoginLoadingMainClasses returns layout classes and handles custom overrides", () => {
+    expect(getLoginLoadingMainClasses()).toContain("relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10");
+    expect(getLoginLoadingMainClasses("custom-main")).toContain("custom-main");
+  });
+
+  it("getLoginLoadingContentContainerClasses returns content wrapper classes and handles custom overrides", () => {
+    expect(getLoginLoadingContentContainerClasses()).toContain("flex w-full max-w-sm flex-col items-center gap-12");
+    expect(getLoginLoadingContentContainerClasses("custom-box")).toContain("custom-box");
+  });
+
+  it("getLoginLoadingHeaderClasses returns header block classes and handles custom overrides", () => {
+    expect(getLoginLoadingHeaderClasses()).toContain("flex flex-col items-center gap-6");
+    expect(getLoginLoadingHeaderClasses("custom-header")).toContain("custom-header");
+  });
+
+  it("getLoginLoadingTextGroupClasses returns text group classes and handles custom overrides", () => {
+    expect(getLoginLoadingTextGroupClasses()).toContain("flex flex-col items-center space-y-3 text-center");
+    expect(getLoginLoadingTextGroupClasses("custom-txt-grp")).toContain("custom-txt-grp");
+  });
+
+  it("getLoginLoadingLogoSkeletonClasses returns logo skeleton dimension classes and handles custom overrides", () => {
+    expect(getLoginLoadingLogoSkeletonClasses()).toContain("h-24 w-24 rounded-2xl");
+    expect(getLoginLoadingLogoSkeletonClasses("custom-logo")).toContain("custom-logo");
+  });
+
+  it("getLoginLoadingTitleSkeletonClasses returns title skeleton dimension classes and handles custom overrides", () => {
+    expect(getLoginLoadingTitleSkeletonClasses()).toContain("h-8 w-36 rounded-md");
+    expect(getLoginLoadingTitleSkeletonClasses("custom-title")).toContain("custom-title");
+  });
+
+  it("getLoginLoadingSubtitleSkeletonClasses returns subtitle skeleton dimension classes and handles custom overrides", () => {
+    expect(getLoginLoadingSubtitleSkeletonClasses()).toContain("h-10 w-60 rounded-md");
+    expect(getLoginLoadingSubtitleSkeletonClasses("custom-sub")).toContain("custom-sub");
+  });
+
+  it("getLoginLoadingCtaContainerClasses returns CTA container classes and handles custom overrides", () => {
+    expect(getLoginLoadingCtaContainerClasses()).toContain("flex w-full flex-col gap-3");
+    expect(getLoginLoadingCtaContainerClasses("custom-cta-box")).toContain("custom-cta-box");
+  });
+
+  it("getLoginLoadingCtaButtonSkeletonClasses returns button skeleton dimension classes and handles custom overrides", () => {
+    expect(getLoginLoadingCtaButtonSkeletonClasses()).toContain("h-12 w-full rounded-xl");
+    expect(getLoginLoadingCtaButtonSkeletonClasses("custom-cta-btn")).toContain("custom-cta-btn");
+  });
+
+  it("getLoginLoadingTermsSkeletonClasses returns terms skeleton dimension classes and handles custom overrides", () => {
+    expect(getLoginLoadingTermsSkeletonClasses()).toContain("h-4 w-56 rounded-md");
+    expect(getLoginLoadingTermsSkeletonClasses("custom-terms")).toContain("custom-terms");
+  });
+
+  it("getLoginLoadingCtaButtonKeys returns array of iteration keys [0, 1]", () => {
+    const keys = getLoginLoadingCtaButtonKeys();
+    expect(keys).toEqual([0, 1]);
+    expect(keys).toHaveLength(2);
   });
 });
 

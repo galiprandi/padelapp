@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-16 — Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading` (`src/lib/auth-utils.ts`), Refactorización de `LoginLoading` y Tests Unitarios
 - [x] 2026-10-15 — Extracción de Funciones Helper Puras de Identificadores e Iteración de Esqueletos de Notificaciones y Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `NotificationsLoading`, `NotificationsListSkeleton` y `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-14 — Extracción de Funciones Helper Puras para Metadatos de Cabecera e Indicadores de Origin Trial (`src/lib/resource-hints.ts`), Refactorización de `RootLayout` (`src/app/layout.tsx`) y Cobertura de Tests Unitarios
 - [x] 2026-10-13 — Extracción de Funciones Helper Puras de Dimensiones y Estilos para Elementos de Esqueletos de Catálogo y Notificaciones (`src/components/navigation/nav-utils.ts`), Refactorización de `CatalogSkeleton` y `NotificationsLoading` y Cobertura de Tests Unitarios
@@ -85,6 +86,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-16 - Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading`
+**Aprendizaje:** Encapsular la maquetación del contenedor principal (`getLoginLoadingMainClasses`), contenedor interior (`getLoginLoadingContentContainerClasses`), bloque de encabezado y textos (`getLoginLoadingHeaderClasses`, `getLoginLoadingTextGroupClasses`), dimensiones de esqueletos de logo, títulos y términos (`getLoginLoadingLogoSkeletonClasses`, `getLoginLoadingTitleSkeletonClasses`, `getLoginLoadingSubtitleSkeletonClasses`, `getLoginLoadingTermsSkeletonClasses`), el contenedor y botones de acción (`getLoginLoadingCtaContainerClasses`, `getLoginLoadingCtaButtonSkeletonClasses`) y la clave de iteración numérica (`getLoginLoadingCtaButtonKeys`) dentro de `src/lib/auth-utils.ts` mediante `cn()` desacopla las clases inline de Tailwind y patrones estáticos de la renderización en `LoginLoading` (`src/app/login/loading.tsx`). Esto simplifica el mantenimiento del esqueleto de carga de inicio de sesión y permite verificar sus reglas de estilo y dimensiones mediante unit tests puros e independientes.
+**Acción:** Reutilizar siempre las utilidades de `src/lib/auth-utils.ts` al extender el flujo de autenticación o sus esqueletos de carga streaming.
+
 ### 2026-10-15 - Extracción de Funciones Helper Puras de Identificadores e Iteración de Esqueletos de Notificaciones y Catálogo
 **Aprendizaje:** Encapsular los arreglos numéricos de claves de iteración de marcadores de posición (`getNotificationsSkeletonItemKeys`, `getCatalogSkeletonSidebarItemKeys`, `getCatalogSkeletonCardItemKeys`) en `src/components/navigation/nav-utils.ts` y sustituir las clases inline por `getNotificationsSkeletonSectionTitleClasses` desacopla completamente los patrones de bucles `Array.from({ length: N })` y repeticiones manuales de la renderización en `NotificationsLoading` (`src/app/(app)/notifications/loading.tsx`), `NotificationsListSkeleton` (`src/app/(app)/notifications/page.tsx`) y `CatalogSkeleton` (`src/app/catalog/catalog-skeleton.tsx`). Esto estandariza la cantidad de elementos simulados en carga streaming y permite verificar las claves mediante pruebas unitarias puras e independientes.
 **Acción:** Reutilizar siempre las funciones helper de iteración al maquetar o extender esqueletos de carga streaming en la aplicación.
