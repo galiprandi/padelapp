@@ -61,10 +61,16 @@ import {
   getStatsPanelBackAriaLabel,
   getStatsPanelBadgeTagClasses,
   getStatsPanelContainerClasses,
+  getStatsPanelHeaderRegionClasses,
+  getStatsPanelHeaderTitleClasses,
+  getStatsPanelHeaderDescriptionClasses,
   getStatsPanelHeaderBackLinkClasses,
   getStatsPanelHeadingDescription,
   getStatsPanelHeadingTitle,
   getStatsPanelOverviewGridClasses,
+  getStatsPanelSectionHeaderClasses,
+  getStatsPanelSectionTitleClasses,
+  getStatsPanelSectionDescriptionClasses,
   getStatsPanelRecentUserItemClasses,
   getStatsPanelRegionAriaLabel,
   getStatsPanelSectionCardClasses,
@@ -74,6 +80,10 @@ import {
   getStatsPanelScoreLabelText,
   getStatsPanelProfileButtonClasses,
   getStatsPanelProfileButtonText,
+  getStatsPanelCommunityProgressItemClasses,
+  getStatsPanelRecentSummaryGridClasses,
+  getStatsPanelRecentSummaryValueClasses,
+  getStatsPanelRecentSummaryLabelClasses,
   getStatsPanelCommunityBarContainerClasses,
   getStatsPanelTopPlayerRankClasses,
   getStatsPanelTopPlayerContactsClasses,
@@ -166,7 +176,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       <div
         role="region"
         aria-label={getStatsPanelRegionAriaLabel("header")}
-        className="flex items-center gap-3"
+        className={getStatsPanelHeaderRegionClasses()}
       >
         <Link
           href="/me"
@@ -177,10 +187,10 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
         <div className="space-y-0.5">
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className={getStatsPanelHeaderTitleClasses()}>
             {getStatsPanelHeadingTitle()}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className={getStatsPanelHeaderDescriptionClasses()}>
             {getStatsPanelHeadingDescription()}
           </p>
         </div>
@@ -227,9 +237,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         aria-label={getStatsPanelRegionAriaLabel("network")}
         className={getStatsPanelSectionCardClasses()}
       >
-        <div className="flex items-center gap-2">
+        <div className={getStatsPanelSectionHeaderClasses()}>
           <Network className="h-4 w-4 text-primary" aria-hidden="true" />
-          <h2 className="text-sm font-bold text-foreground">
+          <h2 className={getStatsPanelSectionTitleClasses()}>
             {getNetworkSectionTitle()}
           </h2>
         </div>
@@ -275,11 +285,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         aria-label={getStatsPanelRegionAriaLabel("recommender")}
         className={getStatsPanelSectionCardClasses()}
       >
-        <div className="flex items-center gap-2">
+        <div className={getStatsPanelSectionHeaderClasses()}>
           <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
           <div className="space-y-0.5">
-            <h2 className="text-sm font-bold text-foreground">{getRecommenderHeadingTitle()}</h2>
-            <p className="text-xs text-muted-foreground">
+            <h2 className={getStatsPanelSectionTitleClasses()}>{getRecommenderHeadingTitle()}</h2>
+            <p className={getStatsPanelSectionDescriptionClasses()}>
               {getRecommenderHeadingDescription()}
             </p>
           </div>
@@ -411,9 +421,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           aria-label={getStatsPanelRegionAriaLabel("users")}
           className={getStatsPanelSectionCardClasses()}
         >
-          <div className="flex items-center gap-2">
+          <div className={getStatsPanelSectionHeaderClasses()}>
             <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
-            <h2 className="text-sm font-bold text-foreground">
+            <h2 className={getStatsPanelSectionTitleClasses()}>
               {getRecentUsersHeadingTitle()}
             </h2>
           </div>
@@ -456,7 +466,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           aria-label={getStatsPanelRegionAriaLabel("communities")}
           className={getStatsPanelSectionCardClasses()}
         >
-          <h2 className="text-sm font-bold text-foreground">{getTopCommunitiesHeadingTitle()}</h2>
+          <h2 className={getStatsPanelSectionTitleClasses()}>{getTopCommunitiesHeadingTitle()}</h2>
           <div className="space-y-2.5">
             {metrics.communities.map((c) => {
               const max = metrics.communities[0]?.size ?? 1;
@@ -471,7 +481,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               return (
                 <div
                   key={c.id}
-                  className="space-y-1.5"
+                  className={getStatsPanelCommunityProgressItemClasses()}
                   aria-label={getCommunityItemAriaLabel(c.id, c.size)}
                 >
                   <div className="flex items-center justify-between text-xs flex-wrap gap-1">
@@ -536,7 +546,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           aria-label={getStatsPanelRegionAriaLabel("top-players")}
           className={getStatsPanelSectionCardClasses()}
         >
-          <h2 className="text-sm font-bold text-foreground">
+          <h2 className={getStatsPanelSectionTitleClasses()}>
             {getTopConnectedHeadingTitle()}
           </h2>
           <div className="space-y-2">
@@ -709,29 +719,29 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         aria-label={getStatsPanelRegionAriaLabel("recent")}
         className={getStatsPanelSummaryCardClasses()}
       >
-        <h2 className="text-sm font-bold text-foreground">{getRecent30DaysHeadingTitle()}</h2>
-        <div className="grid grid-cols-3 gap-2 text-center">
+        <h2 className={getStatsPanelSectionTitleClasses()}>{getRecent30DaysHeadingTitle()}</h2>
+        <div className={getStatsPanelRecentSummaryGridClasses()}>
           <div>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelRecentSummaryValueClasses()}>
               {metrics.newUsers30d}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className={getStatsPanelRecentSummaryLabelClasses()}>
               {get30dSummaryUsersLabel()}
             </p>
           </div>
           <div>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelRecentSummaryValueClasses()}>
               {metrics.newTurns30d}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className={getStatsPanelRecentSummaryLabelClasses()}>
               {get30dSummaryTurnsLabel()}
             </p>
           </div>
           <div>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelRecentSummaryValueClasses()}>
               {metrics.newMatches30d}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className={getStatsPanelRecentSummaryLabelClasses()}>
               {get30dSummaryMatchesLabel()}
             </p>
           </div>
@@ -745,9 +755,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           aria-label={getStatsPanelRegionAriaLabel("clubs")}
           className={getStatsPanelSectionCardClasses()}
         >
-          <div className="flex items-center gap-2">
+          <div className={getStatsPanelSectionHeaderClasses()}>
             <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-            <h2 className="text-sm font-bold text-foreground">
+            <h2 className={getStatsPanelSectionTitleClasses()}>
               {getTopClubsHeadingTitle()}
             </h2>
           </div>

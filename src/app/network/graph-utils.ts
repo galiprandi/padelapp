@@ -510,6 +510,10 @@ export function getGraphViewLoadingText(): string {
   return "Cargando grafo...";
 }
 
+export function getGraphViewLoadingContainerClasses(): string {
+  return "flex items-center justify-center h-[60vh] text-sm text-muted-foreground";
+}
+
 export interface GraphViewEmptyDataProps {
   title: string;
   description: string;
@@ -525,6 +529,42 @@ export function getGraphViewEmptyDataProps(): GraphViewEmptyDataProps {
     buttonText: "Crear partido",
     buttonHref: "/match/new",
   };
+}
+
+export function getGraphViewEmptyDataContainerClasses(): string {
+  return "flex flex-col items-center justify-center h-[60vh] gap-3 text-center px-6";
+}
+
+export function getGraphViewEmptyDataIconBadgeClasses(): string {
+  return "flex h-12 w-12 items-center justify-center rounded-xl bg-muted";
+}
+
+export function getGraphViewEmptyDataTitleClasses(): string {
+  return "text-lg font-bold text-foreground";
+}
+
+export function getGraphViewEmptyDataDescriptionClasses(): string {
+  return "text-sm text-muted-foreground max-w-xs";
+}
+
+export function getGraphViewEmptyDataButtonClasses(): string {
+  return "mt-2 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.98]";
+}
+
+export function getGraphViewContainerClasses(): string {
+  return "relative w-full bg-muted/30 overflow-hidden";
+}
+
+export function getGraphViewEmptySearchContainerClasses(): string {
+  return "absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 text-center space-y-2 pointer-events-auto";
+}
+
+export function getGraphViewEmptySearchMessageClasses(): string {
+  return "text-sm font-semibold text-muted-foreground";
+}
+
+export function getGraphViewEmptySearchResetButtonClasses(): string {
+  return "text-xs font-bold text-primary hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-2 py-1";
 }
 
 export function getGraphViewScopeAriaLabel(scope: "personal" | "global"): string {
@@ -4192,12 +4232,52 @@ export function getStatsPanelContainerClasses(): string {
   return "flex flex-col gap-4";
 }
 
+export function getStatsPanelHeaderRegionClasses(): string {
+  return "flex items-center gap-3";
+}
+
+export function getStatsPanelHeaderTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+export function getStatsPanelHeaderDescriptionClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
 export function getStatsPanelHeaderBackLinkClasses(): string {
   return "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
 }
 
 export function getStatsPanelOverviewGridClasses(): string {
   return "grid grid-cols-2 gap-3";
+}
+
+export function getStatsPanelSectionHeaderClasses(): string {
+  return "flex items-center gap-2";
+}
+
+export function getStatsPanelSectionTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+export function getStatsPanelSectionDescriptionClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getStatsPanelCommunityProgressItemClasses(): string {
+  return "space-y-1.5";
+}
+
+export function getStatsPanelRecentSummaryGridClasses(): string {
+  return "grid grid-cols-3 gap-2 text-center";
+}
+
+export function getStatsPanelRecentSummaryValueClasses(): string {
+  return "text-lg font-bold tabular-nums text-foreground";
+}
+
+export function getStatsPanelRecentSummaryLabelClasses(): string {
+  return "text-xs text-muted-foreground";
 }
 
 export function getStatsPanelSectionCardClasses(): string {
