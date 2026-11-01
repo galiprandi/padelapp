@@ -1,6 +1,7 @@
 /**
  * Pure utility functions for PWA installation guides and platform detection.
  */
+import { cn } from "@/lib/utils";
 
 export type PlatformType = "android" | "ios";
 
@@ -108,15 +109,123 @@ export function getInstallButtonLabel(isInstalling: boolean): string {
 /**
  * Returns standardized CSS classes for the primary PWA install button.
  */
-export function getInstallButtonClasses(): string {
-  return "w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+export function getInstallButtonClasses(customClassName?: string): string {
+  return cn(
+    "w-full h-12 rounded-lg font-semibold text-sm active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    customClassName,
+  );
 }
 
 /**
  * Returns standardized CSS classes for the installed status badge container.
  */
-export function getInstallStatusInstalledClasses(): string {
-  return "flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500";
+export function getInstallStatusInstalledClasses(customClassName?: string): string {
+  return cn("flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-500", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the check icon inside the installed status badge.
+ */
+export function getInstallStatusCheckIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the loading spinner inside the install button.
+ */
+export function getInstallButtonSpinnerClasses(customClassName?: string): string {
+  return cn("h-4 w-4 animate-spin", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the download icon inside the install button.
+ */
+export function getInstallButtonDownloadIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the experimental <install> element wrapper container.
+ */
+export function getInstallElementContainerClasses(customClassName?: string): string {
+  return cn("flex flex-col items-center gap-2 w-full", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the installing status notice inside the experimental <install> wrapper.
+ */
+export function getInstallElementInstallingNoticeClasses(customClassName?: string): string {
+  return cn("flex items-center gap-2 text-sm text-muted-foreground", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the native <install> element tag.
+ */
+export function getInstallElementTagClasses(customClassName?: string): string {
+  return cn("w-full", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the main InstallContent container.
+ */
+export function getInstallContentContainerClasses(customClassName?: string): string {
+  return cn("space-y-6", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the platform selector section wrapper.
+ */
+export function getInstallContentPlatformWrapperClasses(customClassName?: string): string {
+  return cn("space-y-2", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the platform selector radio button grid.
+ */
+export function getInstallContentPlatformGridClasses(customClassName?: string): string {
+  return cn("grid grid-cols-2 gap-2", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the manual installation divider outer wrapper.
+ */
+export function getInstallContentDividerWrapperClasses(customClassName?: string): string {
+  return cn("relative", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the manual installation divider line container.
+ */
+export function getInstallContentDividerLineContainerClasses(customClassName?: string): string {
+  return cn("absolute inset-0 flex items-center", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the manual installation divider horizontal rule line.
+ */
+export function getInstallContentDividerLineClasses(customClassName?: string): string {
+  return cn("w-full border-t border-border", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the manual installation divider centered text container.
+ */
+export function getInstallContentDividerTextContainerClasses(customClassName?: string): string {
+  return cn("relative flex justify-center text-xs", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the platform steps list container.
+ */
+export function getInstallContentStepsContainerClasses(customClassName?: string): string {
+  return cn("space-y-3", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for individual installation step title and description text group.
+ */
+export function getInstallStepTextGroupClasses(customClassName?: string): string {
+  return cn("space-y-0.5", customClassName);
 }
 
 /**
@@ -250,8 +359,15 @@ export function getAlreadyInstalledContainerClasses(): string {
 /**
  * Returns standardized CSS class string for already installed status check icon badge.
  */
-export function getAlreadyInstalledIconBadgeClasses(): string {
-  return "flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30";
+export function getAlreadyInstalledIconBadgeClasses(customClassName?: string): string {
+  return cn("flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-emerald-500/30", customClassName);
+}
+
+/**
+ * Returns standardized CSS classes for the checkmark icon inside the already installed status badge.
+ */
+export function getAlreadyInstalledCheckIconClasses(customClassName?: string): string {
+  return cn("h-6 w-6 text-emerald-500", customClassName);
 }
 
 /**

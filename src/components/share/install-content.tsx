@@ -23,10 +23,20 @@ import {
   getInstallStepIconClasses,
   getInstallStepTitleClasses,
   getInstallStepDescriptionClasses,
+  getInstallStepTextGroupClasses,
   getAlreadyInstalledContainerClasses,
   getAlreadyInstalledIconBadgeClasses,
+  getAlreadyInstalledCheckIconClasses,
   getAlreadyInstalledTitleClasses,
   getAlreadyInstalledDescriptionClasses,
+  getInstallContentContainerClasses,
+  getInstallContentPlatformWrapperClasses,
+  getInstallContentPlatformGridClasses,
+  getInstallContentDividerWrapperClasses,
+  getInstallContentDividerLineContainerClasses,
+  getInstallContentDividerLineClasses,
+  getInstallContentDividerTextContainerClasses,
+  getInstallContentStepsContainerClasses,
   PlatformType,
   InstallStep,
 } from "@/components/share/install-utils";
@@ -61,7 +71,7 @@ export function InstallContent() {
         className={getAlreadyInstalledContainerClasses()}
       >
         <div className={getAlreadyInstalledIconBadgeClasses()}>
-          <Check className="h-6 w-6 text-emerald-500" aria-hidden="true" />
+          <Check className={getAlreadyInstalledCheckIconClasses()} aria-hidden="true" />
         </div>
         <p className={getAlreadyInstalledTitleClasses()}>
           {getAlreadyInstalledTitleText()}
@@ -93,10 +103,10 @@ export function InstallContent() {
     <div
       role="region"
       aria-label={getInstallStatusAriaLabel(false)}
-      className="space-y-6"
+      className={getInstallContentContainerClasses()}
     >
       {/* Platform Toggle (Custom selection button group standardizing h-12 and active:scale-[0.98]) */}
-      <div className="space-y-2">
+      <div className={getInstallContentPlatformWrapperClasses()}>
         <span
           id="platform-selector-label"
           className={getPlatformSelectorHeaderClasses()}
@@ -106,7 +116,7 @@ export function InstallContent() {
         <div
           role="radiogroup"
           aria-labelledby="platform-selector-label"
-          className="grid grid-cols-2 gap-2"
+          className={getInstallContentPlatformGridClasses()}
           onKeyDown={(e) => {
             const next = getNextPlatformValue(platform, e.key);
             if (next !== platform) {
@@ -150,11 +160,11 @@ export function InstallContent() {
           <InstallButton onAvailabilityChange={handleAvailability} />
 
           {hasInstallButton && (
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+            <div className={getInstallContentDividerWrapperClasses()}>
+              <div className={getInstallContentDividerLineContainerClasses()}>
+                <span className={getInstallContentDividerLineClasses()} />
               </div>
-              <div className="relative flex justify-center text-xs">
+              <div className={getInstallContentDividerTextContainerClasses()}>
                 <span className={getManualInstallDividerClasses()}>
                   {getManualInstallDividerText()}
                 </span>
@@ -165,13 +175,13 @@ export function InstallContent() {
       )}
 
       {/* Platform-Specific Steps */}
-      <div className="space-y-3">
+      <div className={getInstallContentStepsContainerClasses()}>
         {steps.map((step) => (
           <div key={step.id} className={getInstallStepContainerClasses()}>
             <div className={getInstallStepIconBadgeClasses()}>
               {renderIcon(step.iconName)}
             </div>
-            <div className="space-y-0.5">
+            <div className={getInstallStepTextGroupClasses()}>
               <p className={getInstallStepTitleClasses()}>{step.title}</p>
               <p className={getInstallStepDescriptionClasses()}>
                 {step.description}
