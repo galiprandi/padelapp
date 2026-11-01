@@ -10,6 +10,12 @@ import {
   getInstallButtonLabel,
   getInstallButtonClasses,
   getInstallStatusInstalledClasses,
+  getInstallStatusCheckIconClasses,
+  getInstallButtonSpinnerClasses,
+  getInstallButtonDownloadIconClasses,
+  getInstallElementContainerClasses,
+  getInstallElementInstallingNoticeClasses,
+  getInstallElementTagClasses,
   getInstallInstalledLabel,
   getInstallSuccessToast,
   getInstallInitErrorToast,
@@ -123,7 +129,7 @@ export function InstallButton({
   if (isInstalled || hasInstalled) {
     return (
       <div className={getInstallStatusInstalledClasses()}>
-        <Check className="h-4 w-4" aria-hidden="true" />
+        <Check className={getInstallStatusCheckIconClasses()} aria-hidden="true" />
         {getInstallInstalledLabel()}
       </div>
     );
@@ -145,9 +151,9 @@ export function InstallButton({
         aria-label={getInstallActionAriaLabel()}
       >
         {isInstalling ? (
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <Loader2 className={getInstallButtonSpinnerClasses()} aria-hidden="true" />
         ) : (
-          <Download className="h-4 w-4" aria-hidden="true" />
+          <Download className={getInstallButtonDownloadIconClasses()} aria-hidden="true" />
         )}
         {getInstallButtonLabel(isInstalling)}
       </Button>
@@ -156,10 +162,10 @@ export function InstallButton({
 
   // <install> element (experimental, origin trial)
   return (
-    <div className="flex flex-col items-center gap-2 w-full">
+    <div className={getInstallElementContainerClasses()}>
       {isInstalling && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+        <div className={getInstallElementInstallingNoticeClasses()}>
+          <Loader2 className={getInstallButtonSpinnerClasses()} aria-hidden="true" />
           {getInstallButtonLabel(true)}
         </div>
       )}
@@ -167,7 +173,7 @@ export function InstallButton({
         ref={installRef}
         {...(installUrl ? { installurl: installUrl } : {})}
         {...(manifestId ? { manifestid: manifestId } : {})}
-        className="w-full"
+        className={getInstallElementTagClasses()}
       >
         <Button
           className={getInstallButtonClasses()}
@@ -175,7 +181,7 @@ export function InstallButton({
           aria-busy={isInstalling}
           aria-label={getInstallActionAriaLabel()}
         >
-          <Download className="h-4 w-4" aria-hidden="true" />
+          <Download className={getInstallButtonDownloadIconClasses()} aria-hidden="true" />
           {getInstallButtonLabel(isInstalling)}
         </Button>
       </install>

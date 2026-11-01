@@ -51,6 +51,22 @@ import {
   getInstallLoadingSubtitleSkeletonClasses,
   getInstallLoadingCardSkeletonClasses,
   getInstallLoadingButtonSkeletonClasses,
+  getInstallStatusCheckIconClasses,
+  getInstallButtonSpinnerClasses,
+  getInstallButtonDownloadIconClasses,
+  getInstallElementContainerClasses,
+  getInstallElementInstallingNoticeClasses,
+  getInstallElementTagClasses,
+  getInstallContentContainerClasses,
+  getInstallContentPlatformWrapperClasses,
+  getInstallContentPlatformGridClasses,
+  getInstallContentDividerWrapperClasses,
+  getInstallContentDividerLineContainerClasses,
+  getInstallContentDividerLineClasses,
+  getInstallContentDividerTextContainerClasses,
+  getInstallContentStepsContainerClasses,
+  getInstallStepTextGroupClasses,
+  getAlreadyInstalledCheckIconClasses,
 } from "../install-utils";
 
 describe("PWA install guide and platform detection logic", () => {
@@ -180,5 +196,64 @@ describe("PWA install guide and platform detection logic", () => {
     expect(getInstallLoadingSubtitleSkeletonClasses()).toBe("h-8 w-64 rounded-md");
     expect(getInstallLoadingCardSkeletonClasses()).toBe("h-56 w-full rounded-xl");
     expect(getInstallLoadingButtonSkeletonClasses()).toBe("h-10 w-full rounded-lg");
+  });
+
+  it("returns standardized CSS classes and supports custom overrides for extracted styling helpers", () => {
+    expect(getInstallButtonClasses()).toContain("w-full h-12 rounded-lg font-semibold");
+    expect(getInstallButtonClasses("custom-install-btn")).toContain("custom-install-btn");
+
+    expect(getInstallStatusInstalledClasses()).toContain("text-emerald-500");
+    expect(getInstallStatusInstalledClasses("custom-status")).toContain("custom-status");
+
+    expect(getInstallStatusCheckIconClasses()).toBe("h-4 w-4");
+    expect(getInstallStatusCheckIconClasses("custom-check")).toContain("custom-check");
+
+    expect(getInstallButtonSpinnerClasses()).toBe("h-4 w-4 animate-spin");
+    expect(getInstallButtonSpinnerClasses("custom-spinner")).toContain("custom-spinner");
+
+    expect(getInstallButtonDownloadIconClasses()).toBe("h-4 w-4");
+    expect(getInstallButtonDownloadIconClasses("custom-download")).toContain("custom-download");
+
+    expect(getInstallElementContainerClasses()).toBe("flex flex-col items-center gap-2 w-full");
+    expect(getInstallElementContainerClasses("custom-element-box")).toContain("custom-element-box");
+
+    expect(getInstallElementInstallingNoticeClasses()).toBe("flex items-center gap-2 text-sm text-muted-foreground");
+    expect(getInstallElementInstallingNoticeClasses("custom-notice")).toContain("custom-notice");
+
+    expect(getInstallElementTagClasses()).toBe("w-full");
+    expect(getInstallElementTagClasses("custom-tag")).toContain("custom-tag");
+
+    expect(getInstallContentContainerClasses()).toBe("space-y-6");
+    expect(getInstallContentContainerClasses("custom-content")).toContain("custom-content");
+
+    expect(getInstallContentPlatformWrapperClasses()).toBe("space-y-2");
+    expect(getInstallContentPlatformWrapperClasses("custom-wrapper")).toContain("custom-wrapper");
+
+    expect(getInstallContentPlatformGridClasses()).toBe("grid grid-cols-2 gap-2");
+    expect(getInstallContentPlatformGridClasses("custom-grid")).toContain("custom-grid");
+
+    expect(getInstallContentDividerWrapperClasses()).toBe("relative");
+    expect(getInstallContentDividerWrapperClasses("custom-divider-wrapper")).toContain("custom-divider-wrapper");
+
+    expect(getInstallContentDividerLineContainerClasses()).toBe("absolute inset-0 flex items-center");
+    expect(getInstallContentDividerLineContainerClasses("custom-line-container")).toContain("custom-line-container");
+
+    expect(getInstallContentDividerLineClasses()).toBe("w-full border-t border-border");
+    expect(getInstallContentDividerLineClasses("custom-line")).toContain("custom-line");
+
+    expect(getInstallContentDividerTextContainerClasses()).toBe("relative flex justify-center text-xs");
+    expect(getInstallContentDividerTextContainerClasses("custom-text-container")).toContain("custom-text-container");
+
+    expect(getInstallContentStepsContainerClasses()).toBe("space-y-3");
+    expect(getInstallContentStepsContainerClasses("custom-steps")).toContain("custom-steps");
+
+    expect(getInstallStepTextGroupClasses()).toBe("space-y-0.5");
+    expect(getInstallStepTextGroupClasses("custom-step-text")).toContain("custom-step-text");
+
+    expect(getAlreadyInstalledIconBadgeClasses()).toContain("rounded-full bg-muted border border-emerald-500/30");
+    expect(getAlreadyInstalledIconBadgeClasses("custom-badge")).toContain("custom-badge");
+
+    expect(getAlreadyInstalledCheckIconClasses()).toBe("h-6 w-6 text-emerald-500");
+    expect(getAlreadyInstalledCheckIconClasses("custom-check-lg")).toContain("custom-check-lg");
   });
 });
