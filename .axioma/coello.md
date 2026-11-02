@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-10-06
+## Última actualización: 2026-10-07
 
 ## Estado actual
 
 ### Completado
+- Phase 60 (Graph Engine Community Detection & Iterative Skill Score Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-07 — Hecho: Extraídas las funciones puras `buildNeighborAdjacencyMap`, `calculateIterativeSkillScores`, `buildCommunityAdjacencyMap` y `detectCommunitiesFromAdjacency` junto a sus interfaces en `src/lib/graph/engine.ts`.
+  - [x] 2026-10-07 — Hecho: Refactorizadas `computeSkillScores` y `computeCommunities` en `src/lib/graph/engine.ts` para consumir las funciones puras desacopladas de base de datos.
+  - [x] 2026-10-07 — Hecho: Pruebas unitarias añadidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 59 (GraphView & StatsPanel UI Layout & Styling Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-06 — Hecho: Extraídas las funciones puras `getGraphViewLoadingContainerClasses`, `getGraphViewEmptyDataContainerClasses`, `getGraphViewEmptyDataIconBadgeClasses`, `getGraphViewEmptyDataTitleClasses`, `getGraphViewEmptyDataDescriptionClasses`, `getGraphViewEmptyDataButtonClasses`, `getGraphViewContainerClasses`, `getGraphViewEmptySearchContainerClasses`, `getGraphViewEmptySearchMessageClasses`, `getGraphViewEmptySearchResetButtonClasses`, `getStatsPanelHeaderRegionClasses`, `getStatsPanelHeaderTitleClasses`, `getStatsPanelHeaderDescriptionClasses`, `getStatsPanelSectionHeaderClasses`, `getStatsPanelSectionTitleClasses`, `getStatsPanelCommunityProgressItemClasses`, `getStatsPanelRecentSummaryGridClasses`, `getStatsPanelRecentSummaryValueClasses` y `getStatsPanelRecentSummaryLabelClasses` en `src/app/network/graph-utils.ts`.
   - [x] 2026-10-06 — Hecho: Refactorizados `GraphView` (`src/app/network/graph-view.tsx`) y `StatsPanel` (`src/app/network/stats-panel.tsx`) para consumir las funciones puras de layout, avisos y micro-UX extraídas.
@@ -249,6 +253,8 @@
 - [x] 2026-09-08 — Extended 2nd-Degree Network Reach Calculation & Solid MDS Badging in Graph View
 
 ## Learnings
+- **Desacoplamiento de Cómputo de Grafos e Iteración de Scores**: Aislar la construcción de mapas de adyacencia de rivales (`buildNeighborAdjacencyMap`) y el bucle de convergencia iterativa de scores de habilidad (`calculateIterativeSkillScores`) de las consultas directas a base de datos permite validar determinísticamente la evolución de scores con aristas sintéticas, comprobando la propagación de habilidad en redes con múltiples saltos y asegurando un comportamiento predecible ante jugadores aislados o con ponderaciones temporales variables.
+- **Detección Pura de Comunidades por BFS sobre Aristas de Interacción**: Extraer la conformación del grafo no dirigido (`buildCommunityAdjacencyMap`) y la partición de clusters por búsqueda en amplitud (`detectCommunitiesFromAdjacency`) permite simular cualquier topología de red (grafos disjuntos, cliques interconectados o aristas inactivas) sin necesidad de interactuar con la base de datos ni depender de mocks asíncronos complejos.
 - **Agregación Acumulativa de Actividad de Clubes Normalizada**: Al agrupar métricas de turnos y partidos por clave normalizada de club (`aggregateTopClubsActivity`), es crítico utilizar asignación aditiva (`entry.turns += t.count`) en lugar de asignación destructiva (`entry.turns = t.count`), garantizando que múltiples registros que mapean a la misma clave normalizada de club (ej. "Padel City" y "padel city") acumulen correctamente la actividad total.
 - **Multipertenencia Comunitaria en Grafos de Pádel**: Evaluar la distribución de interacciones a través de múltiples clusters Louvain (`calculateNetworkMultiBelonging`) permite distinguir a jugadores integrados en un solo núcleo ("Focalizado en grupo 🏛️") de conectores sociales con alcance en múltiples grupos de la red ("Bicomunitario 🔗", "Multicomunitario 🌐"). Renderizar estas insignias sólidas MDS con etiquetas de accesibilidad ARIA en voz argentina tanto en el visor del grafo como en el panel de métricas motiva a los jugadores a expandir sus vínculos sociales.
 - **Puntuación de Puente Comunitario en Grafos de Pádel**: Evaluar cuantitativamente la capacidad de un jugador para unir grupos comunitarios distintos (`calculateCommunityBridgingScore`) mediante la proporción de enlaces puente externos sobre el total de conexiones permite identificar conectores sociales estratégicos ("Puente de red 🌉", "Nexo de grupo 🔗") frente a nodos concentrados ("Núcleo de comunidad 🏛️"). Mostrar estas insignias sólidas MDS con descripciones ARIA en voz argentina enriquece la exploración del grafo y fomenta el cruce entre grupos.

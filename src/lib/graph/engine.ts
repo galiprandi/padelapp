@@ -28,22 +28,45 @@ export interface ConfirmedMatchInfo {
 // Compute skill scores (iterative weighted average)
 // ---------------------------------------------------------------------------
 
-export async function computeSkillScores(): Promise<Map<string, number>> {
-  const edges = await db.select().from(playerEdges);
+export interface SkillScoreNeighbor {
+  id: string;
+  weight: number;
+  outcome: number;
+}
 
-  const neighbors = new Map<
-    string,
-    Array<{ id: string; weight: number; outcome: number }>
-  >();
+export interface SkillScoreEdgeInput {
+  playerAId: string;
+  playerBId: string;
+  matchesAsRivals: number;
+  winsA: number;
+  winsB: number;
+  lastMatchAt: Date | null;
+}
+
+/**
+ * Pure helper: builds rival neighbor adjacency map and collects all unique player IDs.
+ */
+export function buildNeighborAdjacencyMap(
+  edges: SkillScoreEdgeInput[],
+  now: number = Date.now(),
+): {
+  neighbors: Map<string, SkillScoreNeighbor[]>;
+  allPlayers: Set<string>;
+} {
+  const neighbors = new Map<string, SkillScoreNeighbor[]>();
+  const allPlayers = new Set<string>();
 
   for (const edge of edges) {
+    allPlayers.add(edge.playerAId);
+    allPlayers.add(edge.playerBId);
+
     const totalRival = edge.matchesAsRivals;
     if (totalRival === 0) continue;
 
     const outcomeA = edge.winsA / totalRival;
     const outcomeB = edge.winsB / totalRival;
 
-    const recencyWeight = getRecencyWeight(edge.lastMatchAt);
+    const recencyWeight = getRecencyWeight(edge.lastMatchAt, now);
     const frequencyWeight = Math.min(totalRival, 10);
     const weight = recencyWeight * frequencyWeight;
 
@@ -62,19 +85,24 @@ export async function computeSkillScores(): Promise<Map<string, number>> {
     });
   }
 
-  const scores = new Map<string, number>();
-  const allPlayers = new Set<string>();
-  for (const edge of edges) {
-    allPlayers.add(edge.playerAId);
-    allPlayers.add(edge.playerBId);
-  }
+  return { neighbors, allPlayers };
+}
 
+/**
+ * Pure helper: executes iterative weighted average skill score computation
+ * across neighbors until convergence or max iterations reached.
+ */
+export function calculateIterativeSkillScores(
+  neighbors: Map<string, SkillScoreNeighbor[]>,
+  allPlayers: Set<string>,
+  iterations: number = 10,
+): Map<string, number> {
+  const scores = new Map<string, number>();
   for (const p of allPlayers) {
     scores.set(p, 1000);
   }
 
-  const ITERATIONS = 10;
-  for (let iter = 0; iter < ITERATIONS; iter++) {
+  for (let iter = 0; iter < iterations; iter++) {
     const newScores = new Map<string, number>();
     for (const player of allPlayers) {
       const nbrs = neighbors.get(player);
@@ -103,10 +131,19 @@ export async function computeSkillScores(): Promise<Map<string, number>> {
   return scores;
 }
 
-export function getRecencyWeight(lastMatchAt: Date | null): number {
+export async function computeSkillScores(): Promise<Map<string, number>> {
+  const edges = await db.select().from(playerEdges);
+  const { neighbors, allPlayers } = buildNeighborAdjacencyMap(edges);
+  return calculateIterativeSkillScores(neighbors, allPlayers);
+}
+
+export function getRecencyWeight(
+  lastMatchAt: Date | null,
+  now: number = Date.now(),
+): number {
   if (!lastMatchAt) return 0.5;
   const daysSince =
-    (Date.now() - lastMatchAt.getTime()) / (1000 * 60 * 60 * 24);
+    (now - lastMatchAt.getTime()) / (1000 * 60 * 60 * 24);
   if (daysSince < 30) return 1.0;
   if (daysSince < 60) return 0.75;
   if (daysSince < 120) return 0.5;
@@ -117,8 +154,19 @@ export function getRecencyWeight(lastMatchAt: Date | null): number {
 // Community detection (simplified Louvain)
 // ---------------------------------------------------------------------------
 
-export async function computeCommunities(): Promise<Map<string, number>> {
-  const edges = await db.select().from(playerEdges);
+export interface CommunityEdgeInput {
+  playerAId: string;
+  playerBId: string;
+  matchesAsRivals: number;
+  matchesAsPartners: number;
+}
+
+/**
+ * Pure helper: builds undirected adjacency map of players with active match interactions.
+ */
+export function buildCommunityAdjacencyMap(
+  edges: CommunityEdgeInput[],
+): Map<string, Set<string>> {
   const adjacency = new Map<string, Set<string>>();
 
   for (const edge of edges) {
@@ -134,6 +182,15 @@ export async function computeCommunities(): Promise<Map<string, number>> {
     adjacency.get(edge.playerBId)!.add(edge.playerAId);
   }
 
+  return adjacency;
+}
+
+/**
+ * Pure helper: assigns community IDs to connected components using BFS traversal.
+ */
+export function detectCommunitiesFromAdjacency(
+  adjacency: Map<string, Set<string>>,
+): Map<string, number> {
   const communities = new Map<string, number>();
   let nextCommunity = 0;
   const visited = new Set<string>();
@@ -162,6 +219,12 @@ export async function computeCommunities(): Promise<Map<string, number>> {
   }
 
   return communities;
+}
+
+export async function computeCommunities(): Promise<Map<string, number>> {
+  const edges = await db.select().from(playerEdges);
+  const adjacency = buildCommunityAdjacencyMap(edges);
+  return detectCommunitiesFromAdjacency(adjacency);
 }
 
 // ---------------------------------------------------------------------------
