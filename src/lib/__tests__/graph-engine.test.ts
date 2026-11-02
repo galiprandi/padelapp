@@ -4,6 +4,10 @@ import {
   applyFeedbackToScore,
   calculateAdjustedFeedbackScore,
   calculatePlayerSideWinsAndRates,
+  buildNeighborAdjacencyMap,
+  calculateIterativeSkillScores,
+  buildCommunityAdjacencyMap,
+  detectCommunitiesFromAdjacency,
   type ConfirmedMatchInfo,
 } from "@/lib/graph/engine";
 import { calculateMatchEdgeUpdates, edgeKey } from "@/lib/graph/update";
@@ -235,6 +239,113 @@ describe("getUniquePlayerIdsFromScoresAndCommunities and buildPlayerStatsPayload
       winRateLeft: 0.8,
       updatedAt: testDate,
     });
+  });
+});
+
+describe("buildNeighborAdjacencyMap and calculateIterativeSkillScores", () => {
+  it("builds neighbor adjacency map and collects all unique player IDs correctly", () => {
+    const fixedNow = new Date("2026-10-01T12:00:00Z").getTime();
+    const edges = [
+      {
+        playerAId: "p-01",
+        playerBId: "p-02",
+        matchesAsRivals: 4,
+        winsA: 3,
+        winsB: 1,
+        lastMatchAt: new Date("2026-09-25T12:00:00Z"), // 6 days ago -> recency weight 1.0
+      },
+      {
+        playerAId: "p-02",
+        playerBId: "p-03",
+        matchesAsRivals: 0, // 0 rival matches -> should not add neighbor entries
+        winsA: 0,
+        winsB: 0,
+        lastMatchAt: null,
+      },
+    ];
+
+    const { neighbors, allPlayers } = buildNeighborAdjacencyMap(edges, fixedNow);
+    expect(allPlayers).toEqual(new Set(["p-01", "p-02", "p-03"]));
+
+    const p1Neighbors = neighbors.get("p-01");
+    expect(p1Neighbors).toBeDefined();
+    expect(p1Neighbors).toHaveLength(1);
+    expect(p1Neighbors![0].id).toBe("p-02");
+    expect(p1Neighbors![0].outcome).toBe(3 / 4);
+    expect(p1Neighbors![0].weight).toBe(1.0 * 4); // recency (1.0) * min(4, 10)
+
+    const p2Neighbors = neighbors.get("p-02");
+    expect(p2Neighbors).toBeDefined();
+    expect(p2Neighbors).toHaveLength(1);
+    expect(p2Neighbors![0].id).toBe("p-01");
+    expect(p2Neighbors![0].outcome).toBe(1 / 4);
+
+    expect(neighbors.get("p-03")).toBeUndefined();
+  });
+
+  it("calculates iterative skill scores across multi-player network and shows skill adjustments", () => {
+    // When A plays B (100% win) and B plays C (100% win), iterative average propagates relative skill
+    const neighbors = new Map([
+      [
+        "p-01",
+        [{ id: "p-02", weight: 5, outcome: 1.0 }],
+      ],
+      [
+        "p-02",
+        [
+          { id: "p-01", weight: 5, outcome: 0.0 },
+          { id: "p-03", weight: 5, outcome: 1.0 },
+        ],
+      ],
+      [
+        "p-03",
+        [{ id: "p-02", weight: 5, outcome: 0.0 }],
+      ],
+      ["isolated", []],
+    ]);
+    const allPlayers = new Set(["p-01", "p-02", "p-03", "isolated"]);
+
+    const scores = calculateIterativeSkillScores(neighbors, allPlayers, 10);
+    expect(scores.get("p-01")).toBeGreaterThan(scores.get("p-02")!);
+    expect(scores.get("p-02")).toBeGreaterThan(scores.get("p-03")!);
+    expect(scores.get("isolated")).toBe(1000);
+  });
+});
+
+describe("buildCommunityAdjacencyMap and detectCommunitiesFromAdjacency", () => {
+  it("builds undirected community adjacency map ignoring edges with 0 matches", () => {
+    const edges = [
+      { playerAId: "p-01", playerBId: "p-02", matchesAsRivals: 2, matchesAsPartners: 1 },
+      { playerAId: "p-02", playerBId: "p-03", matchesAsRivals: 0, matchesAsPartners: 0 }, // inactive
+      { playerAId: "p-04", playerBId: "p-05", matchesAsRivals: 1, matchesAsPartners: 0 },
+    ];
+
+    const adjacency = buildCommunityAdjacencyMap(edges);
+    expect(adjacency.has("p-01")).toBe(true);
+    expect(adjacency.get("p-01")?.has("p-02")).toBe(true);
+    expect(adjacency.get("p-02")?.has("p-01")).toBe(true);
+    expect(adjacency.get("p-02")?.has("p-03")).toBe(false);
+    expect(adjacency.has("p-03")).toBe(false);
+    expect(adjacency.get("p-04")?.has("p-05")).toBe(true);
+  });
+
+  it("detects disconnected community clusters using BFS traversal", () => {
+    const adjacency = new Map<string, Set<string>>([
+      ["p-01", new Set(["p-02"])],
+      ["p-02", new Set(["p-01"])],
+      ["p-04", new Set(["p-05"])],
+      ["p-05", new Set(["p-04"])],
+    ]);
+
+    const communities = detectCommunitiesFromAdjacency(adjacency);
+    expect(communities.get("p-01")).toBe(communities.get("p-02"));
+    expect(communities.get("p-04")).toBe(communities.get("p-05"));
+    expect(communities.get("p-01")).not.toBe(communities.get("p-04"));
+  });
+
+  it("handles empty adjacency map returning empty communities", () => {
+    const communities = detectCommunitiesFromAdjacency(new Map());
+    expect(communities.size).toBe(0);
   });
 });
 
