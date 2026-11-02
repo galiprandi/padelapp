@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-17 — Extracción de Funciones Helper Puras de Maquetación, Clases CSS e Identificadores para Esqueletos de Ranking (`src/components/ranking/ranking-utils.ts`), Refactorización de `RankingLoading` y `RankingContentSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-16 — Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading` (`src/lib/auth-utils.ts`), Refactorización de `LoginLoading` y Tests Unitarios
 - [x] 2026-10-15 — Extracción de Funciones Helper Puras de Identificadores e Iteración de Esqueletos de Notificaciones y Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `NotificationsLoading`, `NotificationsListSkeleton` y `CatalogSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-14 — Extracción de Funciones Helper Puras para Metadatos de Cabecera e Indicadores de Origin Trial (`src/lib/resource-hints.ts`), Refactorización de `RootLayout` (`src/app/layout.tsx`) y Cobertura de Tests Unitarios
@@ -86,6 +87,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+## 2026-10-17 - Extracción de Funciones Helper Puras de Layout, Clases CSS e Identificadores para Esqueletos de Ranking y Mitigación de Layout Shifts
+**Aprendizaje:** Encapsular la maquetación y dimensiones de los marcadores de posición (`Skeleton`) de la pantalla de ranking (`getRankingSkeletonContainerClasses`, `getRankingSkeletonPodiumCardClasses`, `getRankingSkeletonListItemClasses`, `getRankingSkeletonBannerClasses`, etc.) e iterar sobre claves estables (`getRankingSkeletonPodiumKeys` y `getRankingSkeletonListItemKeys`) en `src/components/ranking/ranking-utils.ts` asegura sincronía y coherencia visual total entre la carga a nivel de ruta (`loading.tsx`) y los límites de Suspense en el contenido de la página (`page.tsx`). Asimismo, agregar `shrink-0` a los avatares circulares en ambos esqueletos previene compresiones no deseadas en viewports móviles reducidos y mitiga los saltos acumulativos de diseño (CLS).
+**Acción:** Reutilizar siempre los helpers de esqueleto e iteradores estables al componer vistas de carga o fallbacks en cascada en Next.js.
+
 ### 2026-10-16 - Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading`
 **Aprendizaje:** Encapsular la maquetación del contenedor principal (`getLoginLoadingMainClasses`), contenedor interior (`getLoginLoadingContentContainerClasses`), bloque de encabezado y textos (`getLoginLoadingHeaderClasses`, `getLoginLoadingTextGroupClasses`), dimensiones de esqueletos de logo, títulos y términos (`getLoginLoadingLogoSkeletonClasses`, `getLoginLoadingTitleSkeletonClasses`, `getLoginLoadingSubtitleSkeletonClasses`, `getLoginLoadingTermsSkeletonClasses`), el contenedor y botones de acción (`getLoginLoadingCtaContainerClasses`, `getLoginLoadingCtaButtonSkeletonClasses`) y la clave de iteración numérica (`getLoginLoadingCtaButtonKeys`) dentro de `src/lib/auth-utils.ts` mediante `cn()` desacopla las clases inline de Tailwind y patrones estáticos de la renderización en `LoginLoading` (`src/app/login/loading.tsx`). Esto simplifica el mantenimiento del esqueleto de carga de inicio de sesión y permite verificar sus reglas de estilo y dimensiones mediante unit tests puros e independientes.
 **Acción:** Reutilizar siempre las utilidades de `src/lib/auth-utils.ts` al extender el flujo de autenticación o sus esqueletos de carga streaming.

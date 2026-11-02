@@ -102,6 +102,30 @@ import {
   getRankingBreakdownValueClasses,
   getRankingPodiumFlameBadgeClasses,
   getRankingPodiumDeltaContainerClasses,
+  getRankingSkeletonContainerClasses,
+  getRankingSkeletonHeaderClasses,
+  getRankingSkeletonTitleClasses,
+  getRankingSkeletonSubtitleClasses,
+  getRankingSkeletonSearchClasses,
+  getRankingSkeletonBannerClasses,
+  getRankingSkeletonBannerAvatarClasses,
+  getRankingSkeletonBannerContentClasses,
+  getRankingSkeletonBannerTitleClasses,
+  getRankingSkeletonBannerSubtitleClasses,
+  getRankingSkeletonPodiumGridClasses,
+  getRankingSkeletonPodiumCardClasses,
+  getRankingSkeletonPodiumAvatarClasses,
+  getRankingSkeletonPodiumTextClasses,
+  getRankingSkeletonPodiumBadgeClasses,
+  getRankingSkeletonListContainerClasses,
+  getRankingSkeletonListItemClasses,
+  getRankingSkeletonListItemPositionClasses,
+  getRankingSkeletonListItemAvatarClasses,
+  getRankingSkeletonListItemContentClasses,
+  getRankingSkeletonListItemNameClasses,
+  getRankingSkeletonListItemScoreClasses,
+  getRankingSkeletonPodiumKeys,
+  getRankingSkeletonListItemKeys,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -792,6 +816,41 @@ describe("Ranking Helpers", () => {
       expect(getRankingPodiumFlameBadgeClasses()).toContain("font-extrabold text-orange-500");
       expect(getRankingPodiumDeltaContainerClasses(2)).toContain("font-bold");
       expect(getRankingPodiumDeltaContainerClasses(0)).toContain("text-muted-foreground/40");
+    });
+
+    it("getRankingSkeleton styling class helpers and key iteration helpers return expected classes and keys", () => {
+      expect(getRankingSkeletonContainerClasses()).toContain("flex flex-col gap-6");
+      expect(getRankingSkeletonContainerClasses("custom-test")).toContain("custom-test");
+
+      expect(getRankingSkeletonHeaderClasses()).toBe("");
+      expect(getRankingSkeletonHeaderClasses("custom-header")).toBe("custom-header");
+
+      expect(getRankingSkeletonTitleClasses()).toContain("h-5 w-24");
+      expect(getRankingSkeletonSubtitleClasses()).toContain("mt-1 h-4 w-56");
+      expect(getRankingSkeletonSearchClasses()).toContain("h-10 w-full rounded-lg");
+
+      expect(getRankingSkeletonBannerClasses()).toContain("rounded-xl border border-border bg-card p-4");
+      expect(getRankingSkeletonBannerAvatarClasses()).toContain("h-12 w-12 rounded-full shrink-0");
+      expect(getRankingSkeletonBannerContentClasses()).toContain("flex-1 space-y-2");
+      expect(getRankingSkeletonBannerTitleClasses()).toContain("h-4 w-32");
+      expect(getRankingSkeletonBannerSubtitleClasses()).toContain("h-3 w-48");
+
+      expect(getRankingSkeletonPodiumGridClasses()).toContain("grid grid-cols-3 gap-3");
+      expect(getRankingSkeletonPodiumCardClasses()).toContain("flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4");
+      expect(getRankingSkeletonPodiumAvatarClasses()).toContain("h-12 w-12 rounded-full shrink-0");
+      expect(getRankingSkeletonPodiumTextClasses()).toContain("h-3 w-20");
+      expect(getRankingSkeletonPodiumBadgeClasses()).toContain("h-4 w-12");
+
+      expect(getRankingSkeletonListContainerClasses()).toContain("space-y-2");
+      expect(getRankingSkeletonListItemClasses()).toContain("flex items-center gap-3 rounded-xl border border-border bg-card p-3");
+      expect(getRankingSkeletonListItemPositionClasses()).toContain("h-4 w-6 shrink-0");
+      expect(getRankingSkeletonListItemAvatarClasses()).toContain("h-10 w-10 rounded-full shrink-0");
+      expect(getRankingSkeletonListItemContentClasses()).toContain("flex-1 space-y-1");
+      expect(getRankingSkeletonListItemNameClasses()).toContain("h-4 w-32");
+      expect(getRankingSkeletonListItemScoreClasses()).toContain("h-3 w-20");
+
+      expect(getRankingSkeletonPodiumKeys()).toEqual([0, 1, 2]);
+      expect(getRankingSkeletonListItemKeys()).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
     });
   });
 });
