@@ -102,6 +102,32 @@ import {
   getRankingBreakdownValueClasses,
   getRankingPodiumFlameBadgeClasses,
   getRankingPodiumDeltaContainerClasses,
+  getRankingPageContainerClasses,
+  getRankingHeadingTitleClasses,
+  getRankingHeadingDescriptionClasses,
+  getRankingSearchSkeletonClasses,
+  getRankingSearchSkeletonAriaLabel,
+  getRankingSkeletonHeaderTitleClasses,
+  getRankingSkeletonHeaderSubtitleClasses,
+  getRankingSkeletonBannerCardClasses,
+  getRankingSkeletonBannerAvatarClasses,
+  getRankingSkeletonBannerTextGroupClasses,
+  getRankingSkeletonBannerNameClasses,
+  getRankingSkeletonBannerSubtitleClasses,
+  getRankingSkeletonPodiumGridClasses,
+  getRankingSkeletonPodiumItemClasses,
+  getRankingSkeletonPodiumAvatarClasses,
+  getRankingSkeletonPodiumNameClasses,
+  getRankingSkeletonPodiumScoreClasses,
+  getRankingSkeletonPodiumKeys,
+  getRankingSkeletonListClasses,
+  getRankingSkeletonListItemClasses,
+  getRankingSkeletonListRankClasses,
+  getRankingSkeletonListAvatarClasses,
+  getRankingSkeletonListTextGroupClasses,
+  getRankingSkeletonListNameClasses,
+  getRankingSkeletonListSubtitleClasses,
+  getRankingSkeletonListItemKeys,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -792,6 +818,50 @@ describe("Ranking Helpers", () => {
       expect(getRankingPodiumFlameBadgeClasses()).toContain("font-extrabold text-orange-500");
       expect(getRankingPodiumDeltaContainerClasses(2)).toContain("font-bold");
       expect(getRankingPodiumDeltaContainerClasses(0)).toContain("text-muted-foreground/40");
+    });
+
+    it("getRankingPage layout and heading styling helpers return expected classes", () => {
+      expect(getRankingPageContainerClasses()).toBe("flex flex-col gap-6");
+      expect(getRankingHeadingTitleClasses()).toBe("text-xl font-bold text-foreground");
+      expect(getRankingHeadingDescriptionClasses()).toBe("text-sm text-muted-foreground");
+      expect(getRankingSearchSkeletonClasses()).toBe("h-12 w-full rounded-xl");
+      expect(getRankingSearchSkeletonAriaLabel()).toBe("Cargando buscador de ranking...");
+    });
+
+    it("getRankingSkeleton header and banner helpers return expected classes", () => {
+      expect(getRankingSkeletonHeaderTitleClasses()).toBe("h-5 w-24");
+      expect(getRankingSkeletonHeaderSubtitleClasses()).toBe("mt-1 h-4 w-56");
+      expect(getRankingSkeletonBannerCardClasses()).toBe(
+        "flex items-center gap-4 rounded-xl border border-border bg-card p-4"
+      );
+      expect(getRankingSkeletonBannerAvatarClasses()).toBe("h-12 w-12 rounded-full shrink-0");
+      expect(getRankingSkeletonBannerTextGroupClasses()).toBe("flex-1 space-y-2");
+      expect(getRankingSkeletonBannerNameClasses()).toBe("h-4 w-32");
+      expect(getRankingSkeletonBannerSubtitleClasses()).toBe("h-3 w-48");
+    });
+
+    it("getRankingSkeleton podium helpers return expected classes and keys", () => {
+      expect(getRankingSkeletonPodiumGridClasses()).toBe("grid grid-cols-3 gap-3");
+      expect(getRankingSkeletonPodiumItemClasses()).toBe(
+        "flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4"
+      );
+      expect(getRankingSkeletonPodiumAvatarClasses()).toBe("h-12 w-12 rounded-full shrink-0");
+      expect(getRankingSkeletonPodiumNameClasses()).toBe("h-3 w-20");
+      expect(getRankingSkeletonPodiumScoreClasses()).toBe("h-4 w-12");
+      expect(getRankingSkeletonPodiumKeys()).toEqual([0, 1, 2]);
+    });
+
+    it("getRankingSkeleton list helpers return expected classes and keys", () => {
+      expect(getRankingSkeletonListClasses()).toBe("space-y-2");
+      expect(getRankingSkeletonListItemClasses()).toBe(
+        "flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+      );
+      expect(getRankingSkeletonListRankClasses()).toBe("h-4 w-6 shrink-0");
+      expect(getRankingSkeletonListAvatarClasses()).toBe("h-10 w-10 rounded-full shrink-0");
+      expect(getRankingSkeletonListTextGroupClasses()).toBe("flex-1 space-y-1");
+      expect(getRankingSkeletonListNameClasses()).toBe("h-4 w-32");
+      expect(getRankingSkeletonListSubtitleClasses()).toBe("h-3 w-20");
+      expect(getRankingSkeletonListItemKeys()).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
     });
   });
 });

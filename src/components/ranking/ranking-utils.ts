@@ -1055,3 +1055,185 @@ export function getRankingPodiumDeltaContainerClasses(delta: number): string {
   }
   return "flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5";
 }
+
+/**
+ * Returns Tailwind class names for ranking page main container
+ */
+export function getRankingPageContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Returns Tailwind class names for ranking page heading title
+ */
+export function getRankingHeadingTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for ranking page heading description
+ */
+export function getRankingHeadingDescriptionClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for ranking search skeleton
+ */
+export function getRankingSearchSkeletonClasses(): string {
+  return "h-12 w-full rounded-xl";
+}
+
+/**
+ * Returns accessible ARIA label for ranking search skeleton
+ */
+export function getRankingSearchSkeletonAriaLabel(): string {
+  return "Cargando buscador de ranking...";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton header title
+ */
+export function getRankingSkeletonHeaderTitleClasses(): string {
+  return "h-5 w-24";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton header subtitle
+ */
+export function getRankingSkeletonHeaderSubtitleClasses(): string {
+  return "mt-1 h-4 w-56";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton banner card container
+ */
+export function getRankingSkeletonBannerCardClasses(): string {
+  return "flex items-center gap-4 rounded-xl border border-border bg-card p-4";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton banner avatar
+ */
+export function getRankingSkeletonBannerAvatarClasses(): string {
+  return "h-12 w-12 rounded-full shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton banner text group
+ */
+export function getRankingSkeletonBannerTextGroupClasses(): string {
+  return "flex-1 space-y-2";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton banner player name
+ */
+export function getRankingSkeletonBannerNameClasses(): string {
+  return "h-4 w-32";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton banner subtitle
+ */
+export function getRankingSkeletonBannerSubtitleClasses(): string {
+  return "h-3 w-48";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium grid
+ */
+export function getRankingSkeletonPodiumGridClasses(): string {
+  return "grid grid-cols-3 gap-3";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium item card
+ */
+export function getRankingSkeletonPodiumItemClasses(): string {
+  return "flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium item avatar
+ */
+export function getRankingSkeletonPodiumAvatarClasses(): string {
+  return "h-12 w-12 rounded-full shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium item player name
+ */
+export function getRankingSkeletonPodiumNameClasses(): string {
+  return "h-3 w-20";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium item score
+ */
+export function getRankingSkeletonPodiumScoreClasses(): string {
+  return "h-4 w-12";
+}
+
+/**
+ * Returns iteration keys for ranking skeleton podium items
+ */
+export function getRankingSkeletonPodiumKeys(): number[] {
+  return [0, 1, 2];
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list container
+ */
+export function getRankingSkeletonListClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item card
+ */
+export function getRankingSkeletonListItemClasses(): string {
+  return "flex items-center gap-3 rounded-xl border border-border bg-card p-3";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item rank
+ */
+export function getRankingSkeletonListRankClasses(): string {
+  return "h-4 w-6 shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item avatar
+ */
+export function getRankingSkeletonListAvatarClasses(): string {
+  return "h-10 w-10 rounded-full shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item text group
+ */
+export function getRankingSkeletonListTextGroupClasses(): string {
+  return "flex-1 space-y-1";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item name
+ */
+export function getRankingSkeletonListNameClasses(): string {
+  return "h-4 w-32";
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item subtitle
+ */
+export function getRankingSkeletonListSubtitleClasses(): string {
+  return "h-3 w-20";
+}
+
+/**
+ * Returns iteration keys for ranking skeleton list items
+ */
+export function getRankingSkeletonListItemKeys(): number[] {
+  return [0, 1, 2, 3, 4, 5, 6, 7];
+}
