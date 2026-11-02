@@ -16,6 +16,26 @@ import {
   getRankingHeadingTitle,
   getRankingHeadingDescription,
   getRankingSkeletonAriaLabel,
+  getRankingSkeletonContainerClasses,
+  getRankingSkeletonBannerClasses,
+  getRankingSkeletonBannerAvatarClasses,
+  getRankingSkeletonBannerContentClasses,
+  getRankingSkeletonBannerTitleClasses,
+  getRankingSkeletonBannerSubtitleClasses,
+  getRankingSkeletonPodiumGridClasses,
+  getRankingSkeletonPodiumCardClasses,
+  getRankingSkeletonPodiumAvatarClasses,
+  getRankingSkeletonPodiumTextClasses,
+  getRankingSkeletonPodiumBadgeClasses,
+  getRankingSkeletonListContainerClasses,
+  getRankingSkeletonListItemClasses,
+  getRankingSkeletonListItemPositionClasses,
+  getRankingSkeletonListItemAvatarClasses,
+  getRankingSkeletonListItemContentClasses,
+  getRankingSkeletonListItemNameClasses,
+  getRankingSkeletonListItemScoreClasses,
+  getRankingSkeletonPodiumKeys,
+  getRankingSkeletonListItemKeys,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingPageProps {
@@ -93,42 +113,45 @@ async function RankingContent({ searchParams }: RankingPageProps) {
 }
 
 function RankingContentSkeleton() {
+  const podiumKeys = getRankingSkeletonPodiumKeys();
+  const listItemKeys = getRankingSkeletonListItemKeys();
+
   return (
     <div
       role="region"
       aria-label={getRankingSkeletonAriaLabel()}
       aria-busy="true"
-      className="flex flex-col gap-6"
+      className={getRankingSkeletonContainerClasses()}
     >
       {/* User banner skeleton */}
-      <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
-        <Skeleton className="h-12 w-12 rounded-full shrink-0" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-3 w-48" />
+      <div className={getRankingSkeletonBannerClasses()}>
+        <Skeleton className={getRankingSkeletonBannerAvatarClasses()} />
+        <div className={getRankingSkeletonBannerContentClasses()}>
+          <Skeleton className={getRankingSkeletonBannerTitleClasses()} />
+          <Skeleton className={getRankingSkeletonBannerSubtitleClasses()} />
         </div>
       </div>
 
       {/* Podium skeleton */}
-      <div className="grid grid-cols-3 gap-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4">
-            <Skeleton className="h-12 w-12 rounded-full shrink-0" />
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-4 w-12" />
+      <div className={getRankingSkeletonPodiumGridClasses()}>
+        {podiumKeys.map((key) => (
+          <div key={key} className={getRankingSkeletonPodiumCardClasses()}>
+            <Skeleton className={getRankingSkeletonPodiumAvatarClasses()} />
+            <Skeleton className={getRankingSkeletonPodiumTextClasses()} />
+            <Skeleton className={getRankingSkeletonPodiumBadgeClasses()} />
           </div>
         ))}
       </div>
 
       {/* List skeleton */}
-      <div className="space-y-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-            <Skeleton className="h-4 w-6 shrink-0" />
-            <Skeleton className="h-10 w-10 rounded-full shrink-0" />
-            <div className="flex-1 space-y-1">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-3 w-20" />
+      <div className={getRankingSkeletonListContainerClasses()}>
+        {listItemKeys.map((key) => (
+          <div key={key} className={getRankingSkeletonListItemClasses()}>
+            <Skeleton className={getRankingSkeletonListItemPositionClasses()} />
+            <Skeleton className={getRankingSkeletonListItemAvatarClasses()} />
+            <div className={getRankingSkeletonListItemContentClasses()}>
+              <Skeleton className={getRankingSkeletonListItemNameClasses()} />
+              <Skeleton className={getRankingSkeletonListItemScoreClasses()} />
             </div>
           </div>
         ))}

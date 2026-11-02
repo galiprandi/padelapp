@@ -1055,3 +1055,180 @@ export function getRankingPodiumDeltaContainerClasses(delta: number): string {
   }
   return "flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/40 mt-0.5";
 }
+
+/**
+ * Returns Tailwind class names for ranking skeleton root container.
+ */
+export function getRankingSkeletonContainerClasses(customClassName?: string): string {
+  return cn("flex flex-col gap-6", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton header container.
+ */
+export function getRankingSkeletonHeaderClasses(customClassName?: string): string {
+  return cn(customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton heading title.
+ */
+export function getRankingSkeletonTitleClasses(customClassName?: string): string {
+  return cn("h-5 w-24", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton heading subtitle/description.
+ */
+export function getRankingSkeletonSubtitleClasses(customClassName?: string): string {
+  return cn("mt-1 h-4 w-56", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton search bar input placeholder.
+ */
+export function getRankingSkeletonSearchClasses(customClassName?: string): string {
+  return cn("h-10 w-full rounded-lg", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton user banner card.
+ */
+export function getRankingSkeletonBannerClasses(customClassName?: string): string {
+  return cn(
+    "flex items-center gap-4 rounded-xl border border-border bg-card p-4",
+    customClassName
+  );
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton user banner avatar.
+ */
+export function getRankingSkeletonBannerAvatarClasses(customClassName?: string): string {
+  return cn("h-12 w-12 rounded-full shrink-0", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton user banner text content wrapper.
+ */
+export function getRankingSkeletonBannerContentClasses(customClassName?: string): string {
+  return cn("flex-1 space-y-2", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton user banner title line.
+ */
+export function getRankingSkeletonBannerTitleClasses(customClassName?: string): string {
+  return cn("h-4 w-32", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton user banner subtitle line.
+ */
+export function getRankingSkeletonBannerSubtitleClasses(customClassName?: string): string {
+  return cn("h-3 w-48", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium 3-column grid container.
+ */
+export function getRankingSkeletonPodiumGridClasses(customClassName?: string): string {
+  return cn("grid grid-cols-3 gap-3", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton individual podium card.
+ */
+export function getRankingSkeletonPodiumCardClasses(customClassName?: string): string {
+  return cn(
+    "flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4",
+    customClassName
+  );
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium player avatar.
+ */
+export function getRankingSkeletonPodiumAvatarClasses(customClassName?: string): string {
+  return cn("h-12 w-12 rounded-full shrink-0", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium player name placeholder.
+ */
+export function getRankingSkeletonPodiumTextClasses(customClassName?: string): string {
+  return cn("h-3 w-20", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton podium score badge placeholder.
+ */
+export function getRankingSkeletonPodiumBadgeClasses(customClassName?: string): string {
+  return cn("h-4 w-12", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list container.
+ */
+export function getRankingSkeletonListContainerClasses(customClassName?: string): string {
+  return cn("space-y-2", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item row.
+ */
+export function getRankingSkeletonListItemClasses(customClassName?: string): string {
+  return cn(
+    "flex items-center gap-3 rounded-xl border border-border bg-card p-3",
+    customClassName
+  );
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item position placeholder.
+ */
+export function getRankingSkeletonListItemPositionClasses(customClassName?: string): string {
+  return cn("h-4 w-6 shrink-0", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item avatar placeholder.
+ */
+export function getRankingSkeletonListItemAvatarClasses(customClassName?: string): string {
+  return cn("h-10 w-10 rounded-full shrink-0", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item text content wrapper.
+ */
+export function getRankingSkeletonListItemContentClasses(customClassName?: string): string {
+  return cn("flex-1 space-y-1", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item player name placeholder.
+ */
+export function getRankingSkeletonListItemNameClasses(customClassName?: string): string {
+  return cn("h-4 w-32", customClassName);
+}
+
+/**
+ * Returns Tailwind class names for ranking skeleton list item score line placeholder.
+ */
+export function getRankingSkeletonListItemScoreClasses(customClassName?: string): string {
+  return cn("h-3 w-20", customClassName);
+}
+
+/**
+ * Returns stable numeric keys for ranking skeleton podium players.
+ */
+export function getRankingSkeletonPodiumKeys(): number[] {
+  return [0, 1, 2];
+}
+
+/**
+ * Returns stable numeric keys for ranking skeleton general classification list items.
+ */
+export function getRankingSkeletonListItemKeys(): number[] {
+  return [0, 1, 2, 3, 4, 5, 6, 7];
+}
