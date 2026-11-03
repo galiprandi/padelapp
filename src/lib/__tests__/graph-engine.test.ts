@@ -640,6 +640,55 @@ import {
   getNetworkSkeletonCardClasses,
   getNetworkSkeletonGridTwoColsClasses,
   getNetworkSkeletonGridThreeColsClasses,
+  getNetworkSkeletonMetricsTabLabel,
+  getNetworkSkeletonGraphTabLabel,
+  getNetworkSkeletonTabIconClasses,
+  getNetworkSkeletonBackIconClasses,
+  getNetworkSkeletonHeaderClasses,
+  getNetworkSkeletonHeaderTextContainerClasses,
+  getNetworkSkeletonHeaderTitleClasses,
+  getNetworkSkeletonHeaderSubtitleClasses,
+  getNetworkSkeletonAdoptionItemKeys,
+  getNetworkSkeletonNetworkStatItemKeys,
+  getNetworkSkeletonEngagementItemKeys,
+  getNetworkSkeletonCommunityItemKeys,
+  getNetworkSkeletonTopPlayerItemKeys,
+  getNetworkSkeletonStatHeaderClasses,
+  getNetworkSkeletonStatLabelClasses,
+  getNetworkSkeletonStatIconClasses,
+  getNetworkSkeletonStatValueGroupClasses,
+  getNetworkSkeletonStatValueClasses,
+  getNetworkSkeletonStatBadgeClasses,
+  getNetworkSkeletonStatSubtextClasses,
+  getNetworkSkeletonNetworkHeaderClasses,
+  getNetworkSkeletonNetworkIconClasses,
+  getNetworkSkeletonNetworkTitleClasses,
+  getNetworkSkeletonNetworkStatItemClasses,
+  getNetworkSkeletonNetworkStatLabelClasses,
+  getNetworkSkeletonNetworkStatValueClasses,
+  getNetworkSkeletonNetworkFooterClasses,
+  getNetworkSkeletonNetworkFooterLabelClasses,
+  getNetworkSkeletonNetworkFooterValueClasses,
+  getNetworkSkeletonEngagementLabelClasses,
+  getNetworkSkeletonEngagementIconClasses,
+  getNetworkSkeletonEngagementValueClasses,
+  getNetworkSkeletonEngagementSubtextClasses,
+  getNetworkSkeletonCommunityTitleClasses,
+  getNetworkSkeletonCommunityListClasses,
+  getNetworkSkeletonCommunityItemClasses,
+  getNetworkSkeletonCommunityRowClasses,
+  getNetworkSkeletonCommunityNameClasses,
+  getNetworkSkeletonCommunitySizeClasses,
+  getNetworkSkeletonCommunityBarClasses,
+  getNetworkSkeletonTopPlayerTitleClasses,
+  getNetworkSkeletonTopPlayerListClasses,
+  getNetworkSkeletonTopPlayerItemClasses,
+  getNetworkSkeletonTopPlayerRankClasses,
+  getNetworkSkeletonTopPlayerAvatarClasses,
+  getNetworkSkeletonTopPlayerInfoClasses,
+  getNetworkSkeletonTopPlayerNameClasses,
+  getNetworkSkeletonTopPlayerSubtextClasses,
+  getNetworkSkeletonTopPlayerScoreClasses,
   getStatsPanelRegionAriaLabel,
   getTopClubTurnsMatchesText,
   getTopPlayerActivityAriaLabel,
@@ -2154,5 +2203,143 @@ describe("GraphView & StatsPanel layout & styling pure helpers", () => {
     expect(getStatsPanelRecentSummaryLabelClasses()).toBe(
       "text-xs text-muted-foreground",
     );
+  });
+});
+
+describe("NetworkSkeleton layout, dimension, tab label & iteration key pure helpers", () => {
+  it("returns correct labels, icon classes and container layout classes", () => {
+    expect(getNetworkSkeletonAriaLabel()).toBe(
+      "Cargando métricas y visualización del grafo de la red de contactos",
+    );
+    expect(getNetworkSkeletonContainerClasses()).toBe(
+      "flex flex-col h-[100dvh] overflow-hidden bg-background",
+    );
+    expect(getNetworkSkeletonTabBarClasses()).toBe(
+      "flex items-center gap-1 border-b border-border bg-card px-4 py-2 shrink-0",
+    );
+    expect(getNetworkSkeletonActiveTabButtonClasses()).toBe(
+      "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold bg-primary text-primary-foreground opacity-50",
+    );
+    expect(getNetworkSkeletonInactiveTabButtonClasses()).toBe(
+      "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-muted-foreground opacity-50",
+    );
+    expect(getNetworkSkeletonMetricsTabLabel()).toBe("Métricas");
+    expect(getNetworkSkeletonGraphTabLabel()).toBe("Grafo");
+    expect(getNetworkSkeletonTabIconClasses()).toBe("h-4 w-4");
+    expect(getNetworkSkeletonBackIconClasses()).toBe("h-5 w-5");
+    expect(getNetworkSkeletonContentClasses()).toBe(
+      "flex-1 overflow-y-auto p-4 pb-24 space-y-4",
+    );
+    expect(getNetworkSkeletonBackButtonClasses()).toBe(
+      "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground opacity-50",
+    );
+    expect(getNetworkSkeletonCardClasses()).toBe(
+      "rounded-xl border border-border bg-card p-4 space-y-3",
+    );
+    expect(getNetworkSkeletonGridTwoColsClasses()).toBe(
+      "grid grid-cols-2 gap-3",
+    );
+    expect(getNetworkSkeletonGridThreeColsClasses()).toBe(
+      "grid grid-cols-3 gap-3",
+    );
+  });
+
+  it("returns correct classes for header and text skeleton dimensions", () => {
+    expect(getNetworkSkeletonHeaderClasses()).toBe("flex items-center gap-3");
+    expect(getNetworkSkeletonHeaderTextContainerClasses()).toBe(
+      "space-y-1.5 flex-1",
+    );
+    expect(getNetworkSkeletonHeaderTitleClasses()).toBe("h-6 w-32");
+    expect(getNetworkSkeletonHeaderSubtitleClasses()).toBe(
+      "h-4 w-full max-w-[240px]",
+    );
+  });
+
+  it("returns correct iteration key arrays for all skeleton sections", () => {
+    expect(getNetworkSkeletonAdoptionItemKeys()).toEqual([
+      "adoption-0",
+      "adoption-1",
+      "adoption-2",
+      "adoption-3",
+    ]);
+    expect(getNetworkSkeletonNetworkStatItemKeys()).toEqual([
+      "netstat-0",
+      "netstat-1",
+      "netstat-2",
+    ]);
+    expect(getNetworkSkeletonEngagementItemKeys()).toEqual([
+      "engagement-0",
+      "engagement-1",
+    ]);
+    expect(getNetworkSkeletonCommunityItemKeys()).toEqual([
+      "community-0",
+      "community-1",
+    ]);
+    expect(getNetworkSkeletonTopPlayerItemKeys()).toEqual([
+      "top-player-0",
+      "top-player-1",
+      "top-player-2",
+    ]);
+  });
+
+  it("returns correct element classes for adoption, network stats, and engagement cards", () => {
+    expect(getNetworkSkeletonStatHeaderClasses()).toBe(
+      "flex items-center justify-between",
+    );
+    expect(getNetworkSkeletonStatLabelClasses()).toBe("h-3 w-16");
+    expect(getNetworkSkeletonStatIconClasses()).toBe("h-4 w-4 rounded-full");
+    expect(getNetworkSkeletonStatValueGroupClasses()).toBe(
+      "flex items-baseline gap-2",
+    );
+    expect(getNetworkSkeletonStatValueClasses()).toBe("h-8 w-12");
+    expect(getNetworkSkeletonStatBadgeClasses()).toBe("h-4 w-8");
+    expect(getNetworkSkeletonStatSubtextClasses()).toBe("h-3 w-24");
+
+    expect(getNetworkSkeletonNetworkHeaderClasses()).toBe(
+      "flex items-center gap-2",
+    );
+    expect(getNetworkSkeletonNetworkIconClasses()).toBe("h-4 w-4 rounded");
+    expect(getNetworkSkeletonNetworkTitleClasses()).toBe("h-4 w-28");
+    expect(getNetworkSkeletonNetworkStatItemClasses()).toBe("space-y-1.5");
+    expect(getNetworkSkeletonNetworkStatLabelClasses()).toBe("h-3 w-12");
+    expect(getNetworkSkeletonNetworkStatValueClasses()).toBe("h-6 w-10");
+    expect(getNetworkSkeletonNetworkFooterClasses()).toBe(
+      "space-y-1.5 pt-2 border-t border-border",
+    );
+    expect(getNetworkSkeletonNetworkFooterLabelClasses()).toBe("h-3 w-40");
+    expect(getNetworkSkeletonNetworkFooterValueClasses()).toBe("h-4 w-12");
+
+    expect(getNetworkSkeletonEngagementLabelClasses()).toBe("h-3 w-20");
+    expect(getNetworkSkeletonEngagementIconClasses()).toBe(
+      "h-4 w-4 rounded-full",
+    );
+    expect(getNetworkSkeletonEngagementValueClasses()).toBe("h-8 w-12");
+    expect(getNetworkSkeletonEngagementSubtextClasses()).toBe("h-3 w-24");
+  });
+
+  it("returns correct classes for community and top connected player skeleton cards", () => {
+    expect(getNetworkSkeletonCommunityTitleClasses()).toBe("h-4 w-24");
+    expect(getNetworkSkeletonCommunityListClasses()).toBe("space-y-3");
+    expect(getNetworkSkeletonCommunityItemClasses()).toBe("space-y-1.5");
+    expect(getNetworkSkeletonCommunityRowClasses()).toBe("flex justify-between");
+    expect(getNetworkSkeletonCommunityNameClasses()).toBe("h-3 w-16");
+    expect(getNetworkSkeletonCommunitySizeClasses()).toBe("h-3 w-12");
+    expect(getNetworkSkeletonCommunityBarClasses()).toBe(
+      "h-2 w-full rounded-full",
+    );
+
+    expect(getNetworkSkeletonTopPlayerTitleClasses()).toBe("h-4 w-28");
+    expect(getNetworkSkeletonTopPlayerListClasses()).toBe("space-y-3");
+    expect(getNetworkSkeletonTopPlayerItemClasses()).toBe(
+      "flex items-center gap-3 p-2",
+    );
+    expect(getNetworkSkeletonTopPlayerRankClasses()).toBe("h-3 w-4");
+    expect(getNetworkSkeletonTopPlayerAvatarClasses()).toBe(
+      "h-8 w-8 rounded-full",
+    );
+    expect(getNetworkSkeletonTopPlayerInfoClasses()).toBe("flex-1 space-y-1.5");
+    expect(getNetworkSkeletonTopPlayerNameClasses()).toBe("h-4 w-24");
+    expect(getNetworkSkeletonTopPlayerSubtextClasses()).toBe("h-3 w-16");
+    expect(getNetworkSkeletonTopPlayerScoreClasses()).toBe("h-4 w-6");
   });
 });

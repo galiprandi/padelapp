@@ -6,11 +6,60 @@ import {
   getNetworkSkeletonTabBarClasses,
   getNetworkSkeletonActiveTabButtonClasses,
   getNetworkSkeletonInactiveTabButtonClasses,
+  getNetworkSkeletonMetricsTabLabel,
+  getNetworkSkeletonGraphTabLabel,
+  getNetworkSkeletonTabIconClasses,
   getNetworkSkeletonContentClasses,
+  getNetworkSkeletonHeaderClasses,
   getNetworkSkeletonBackButtonClasses,
-  getNetworkSkeletonCardClasses,
+  getNetworkSkeletonBackIconClasses,
+  getNetworkSkeletonHeaderTextContainerClasses,
+  getNetworkSkeletonHeaderTitleClasses,
+  getNetworkSkeletonHeaderSubtitleClasses,
   getNetworkSkeletonGridTwoColsClasses,
   getNetworkSkeletonGridThreeColsClasses,
+  getNetworkSkeletonCardClasses,
+  getNetworkSkeletonAdoptionItemKeys,
+  getNetworkSkeletonNetworkStatItemKeys,
+  getNetworkSkeletonEngagementItemKeys,
+  getNetworkSkeletonCommunityItemKeys,
+  getNetworkSkeletonTopPlayerItemKeys,
+  getNetworkSkeletonStatHeaderClasses,
+  getNetworkSkeletonStatLabelClasses,
+  getNetworkSkeletonStatIconClasses,
+  getNetworkSkeletonStatValueGroupClasses,
+  getNetworkSkeletonStatValueClasses,
+  getNetworkSkeletonStatBadgeClasses,
+  getNetworkSkeletonStatSubtextClasses,
+  getNetworkSkeletonNetworkHeaderClasses,
+  getNetworkSkeletonNetworkIconClasses,
+  getNetworkSkeletonNetworkTitleClasses,
+  getNetworkSkeletonNetworkStatItemClasses,
+  getNetworkSkeletonNetworkStatLabelClasses,
+  getNetworkSkeletonNetworkStatValueClasses,
+  getNetworkSkeletonNetworkFooterClasses,
+  getNetworkSkeletonNetworkFooterLabelClasses,
+  getNetworkSkeletonNetworkFooterValueClasses,
+  getNetworkSkeletonEngagementLabelClasses,
+  getNetworkSkeletonEngagementIconClasses,
+  getNetworkSkeletonEngagementValueClasses,
+  getNetworkSkeletonEngagementSubtextClasses,
+  getNetworkSkeletonCommunityTitleClasses,
+  getNetworkSkeletonCommunityListClasses,
+  getNetworkSkeletonCommunityItemClasses,
+  getNetworkSkeletonCommunityRowClasses,
+  getNetworkSkeletonCommunityNameClasses,
+  getNetworkSkeletonCommunitySizeClasses,
+  getNetworkSkeletonCommunityBarClasses,
+  getNetworkSkeletonTopPlayerTitleClasses,
+  getNetworkSkeletonTopPlayerListClasses,
+  getNetworkSkeletonTopPlayerItemClasses,
+  getNetworkSkeletonTopPlayerRankClasses,
+  getNetworkSkeletonTopPlayerAvatarClasses,
+  getNetworkSkeletonTopPlayerInfoClasses,
+  getNetworkSkeletonTopPlayerNameClasses,
+  getNetworkSkeletonTopPlayerSubtextClasses,
+  getNetworkSkeletonTopPlayerScoreClasses,
 } from "./graph-utils";
 
 export function NetworkSkeleton() {
@@ -27,93 +76,93 @@ export function NetworkSkeleton() {
           disabled
           className={getNetworkSkeletonActiveTabButtonClasses()}
         >
-          <BarChart3 className="h-4 w-4" />
-          Métricas
+          <BarChart3 className={getNetworkSkeletonTabIconClasses()} />
+          {getNetworkSkeletonMetricsTabLabel()}
         </button>
         <button
           disabled
           className={getNetworkSkeletonInactiveTabButtonClasses()}
         >
-          <Network className="h-4 w-4" />
-          Grafo
+          <Network className={getNetworkSkeletonTabIconClasses()} />
+          {getNetworkSkeletonGraphTabLabel()}
         </button>
       </div>
 
       {/* Content skeleton */}
       <div className={getNetworkSkeletonContentClasses()}>
         {/* Header skeleton */}
-        <div className="flex items-center gap-3">
+        <div className={getNetworkSkeletonHeaderClasses()}>
           <div className={getNetworkSkeletonBackButtonClasses()}>
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className={getNetworkSkeletonBackIconClasses()} />
           </div>
-          <div className="space-y-1.5 flex-1">
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-4 w-full max-w-[240px]" />
+          <div className={getNetworkSkeletonHeaderTextContainerClasses()}>
+            <Skeleton className={getNetworkSkeletonHeaderTitleClasses()} />
+            <Skeleton className={getNetworkSkeletonHeaderSubtitleClasses()} />
           </div>
         </div>
 
         {/* Adoption stats grid skeleton */}
         <div className={getNetworkSkeletonGridTwoColsClasses()}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className={getNetworkSkeletonCardClasses()}>
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-3 w-16" />
-                <Skeleton className="h-4 w-4 rounded-full" />
+          {getNetworkSkeletonAdoptionItemKeys().map((key) => (
+            <div key={key} className={getNetworkSkeletonCardClasses()}>
+              <div className={getNetworkSkeletonStatHeaderClasses()}>
+                <Skeleton className={getNetworkSkeletonStatLabelClasses()} />
+                <Skeleton className={getNetworkSkeletonStatIconClasses()} />
               </div>
-              <div className="flex items-baseline gap-2">
-                <Skeleton className="h-8 w-12" />
-                <Skeleton className="h-4 w-8" />
+              <div className={getNetworkSkeletonStatValueGroupClasses()}>
+                <Skeleton className={getNetworkSkeletonStatValueClasses()} />
+                <Skeleton className={getNetworkSkeletonStatBadgeClasses()} />
               </div>
-              <Skeleton className="h-3 w-24" />
+              <Skeleton className={getNetworkSkeletonStatSubtextClasses()} />
             </div>
           ))}
         </div>
 
         {/* Network stats skeleton */}
         <div className={getNetworkSkeletonCardClasses()}>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-4 w-4 rounded" />
-            <Skeleton className="h-4 w-28" />
+          <div className={getNetworkSkeletonNetworkHeaderClasses()}>
+            <Skeleton className={getNetworkSkeletonNetworkIconClasses()} />
+            <Skeleton className={getNetworkSkeletonNetworkTitleClasses()} />
           </div>
           <div className={getNetworkSkeletonGridThreeColsClasses()}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-1.5">
-                <Skeleton className="h-3 w-12" />
-                <Skeleton className="h-6 w-10" />
+            {getNetworkSkeletonNetworkStatItemKeys().map((key) => (
+              <div key={key} className={getNetworkSkeletonNetworkStatItemClasses()}>
+                <Skeleton className={getNetworkSkeletonNetworkStatLabelClasses()} />
+                <Skeleton className={getNetworkSkeletonNetworkStatValueClasses()} />
               </div>
             ))}
           </div>
-          <div className="space-y-1.5 pt-2 border-t border-border">
-            <Skeleton className="h-3 w-40" />
-            <Skeleton className="h-4 w-12" />
+          <div className={getNetworkSkeletonNetworkFooterClasses()}>
+            <Skeleton className={getNetworkSkeletonNetworkFooterLabelClasses()} />
+            <Skeleton className={getNetworkSkeletonNetworkFooterValueClasses()} />
           </div>
         </div>
 
         {/* Engagement stats skeleton */}
         <div className={getNetworkSkeletonGridTwoColsClasses()}>
-          {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className={getNetworkSkeletonCardClasses()}>
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-3 w-20" />
-                <Skeleton className="h-4 w-4 rounded-full" />
+          {getNetworkSkeletonEngagementItemKeys().map((key) => (
+            <div key={key} className={getNetworkSkeletonCardClasses()}>
+              <div className={getNetworkSkeletonStatHeaderClasses()}>
+                <Skeleton className={getNetworkSkeletonEngagementLabelClasses()} />
+                <Skeleton className={getNetworkSkeletonEngagementIconClasses()} />
               </div>
-              <Skeleton className="h-8 w-12" />
-              <Skeleton className="h-3 w-24" />
+              <Skeleton className={getNetworkSkeletonEngagementValueClasses()} />
+              <Skeleton className={getNetworkSkeletonEngagementSubtextClasses()} />
             </div>
           ))}
         </div>
 
         {/* Communities skeleton */}
         <div className={getNetworkSkeletonCardClasses()}>
-          <Skeleton className="h-4 w-24" />
-          <div className="space-y-3">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="space-y-1.5">
-                <div className="flex justify-between">
-                  <Skeleton className="h-3 w-16" />
-                  <Skeleton className="h-3 w-12" />
+          <Skeleton className={getNetworkSkeletonCommunityTitleClasses()} />
+          <div className={getNetworkSkeletonCommunityListClasses()}>
+            {getNetworkSkeletonCommunityItemKeys().map((key) => (
+              <div key={key} className={getNetworkSkeletonCommunityItemClasses()}>
+                <div className={getNetworkSkeletonCommunityRowClasses()}>
+                  <Skeleton className={getNetworkSkeletonCommunityNameClasses()} />
+                  <Skeleton className={getNetworkSkeletonCommunitySizeClasses()} />
                 </div>
-                <Skeleton className="h-2 w-full rounded-full" />
+                <Skeleton className={getNetworkSkeletonCommunityBarClasses()} />
               </div>
             ))}
           </div>
@@ -121,17 +170,17 @@ export function NetworkSkeleton() {
 
         {/* Top connected players skeleton */}
         <div className={getNetworkSkeletonCardClasses()}>
-          <Skeleton className="h-4 w-28" />
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-3 p-2">
-                <Skeleton className="h-3 w-4" />
-                <Skeleton className="h-8 w-8 rounded-full" />
-                <div className="flex-1 space-y-1.5">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-16" />
+          <Skeleton className={getNetworkSkeletonTopPlayerTitleClasses()} />
+          <div className={getNetworkSkeletonTopPlayerListClasses()}>
+            {getNetworkSkeletonTopPlayerItemKeys().map((key) => (
+              <div key={key} className={getNetworkSkeletonTopPlayerItemClasses()}>
+                <Skeleton className={getNetworkSkeletonTopPlayerRankClasses()} />
+                <Skeleton className={getNetworkSkeletonTopPlayerAvatarClasses()} />
+                <div className={getNetworkSkeletonTopPlayerInfoClasses()}>
+                  <Skeleton className={getNetworkSkeletonTopPlayerNameClasses()} />
+                  <Skeleton className={getNetworkSkeletonTopPlayerSubtextClasses()} />
                 </div>
-                <Skeleton className="h-4 w-6" />
+                <Skeleton className={getNetworkSkeletonTopPlayerScoreClasses()} />
               </div>
             ))}
           </div>

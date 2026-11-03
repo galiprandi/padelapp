@@ -703,6 +703,202 @@ export function getNetworkSkeletonGridThreeColsClasses(): string {
   return "grid grid-cols-3 gap-3";
 }
 
+export function getNetworkSkeletonMetricsTabLabel(): string {
+  return "Métricas";
+}
+
+export function getNetworkSkeletonGraphTabLabel(): string {
+  return "Grafo";
+}
+
+export function getNetworkSkeletonTabIconClasses(): string {
+  return "h-4 w-4";
+}
+
+export function getNetworkSkeletonBackIconClasses(): string {
+  return "h-5 w-5";
+}
+
+export function getNetworkSkeletonHeaderClasses(): string {
+  return "flex items-center gap-3";
+}
+
+export function getNetworkSkeletonHeaderTextContainerClasses(): string {
+  return "space-y-1.5 flex-1";
+}
+
+export function getNetworkSkeletonHeaderTitleClasses(): string {
+  return "h-6 w-32";
+}
+
+export function getNetworkSkeletonHeaderSubtitleClasses(): string {
+  return "h-4 w-full max-w-[240px]";
+}
+
+export function getNetworkSkeletonAdoptionItemKeys(): string[] {
+  return ["adoption-0", "adoption-1", "adoption-2", "adoption-3"];
+}
+
+export function getNetworkSkeletonNetworkStatItemKeys(): string[] {
+  return ["netstat-0", "netstat-1", "netstat-2"];
+}
+
+export function getNetworkSkeletonEngagementItemKeys(): string[] {
+  return ["engagement-0", "engagement-1"];
+}
+
+export function getNetworkSkeletonCommunityItemKeys(): string[] {
+  return ["community-0", "community-1"];
+}
+
+export function getNetworkSkeletonTopPlayerItemKeys(): string[] {
+  return ["top-player-0", "top-player-1", "top-player-2"];
+}
+
+export function getNetworkSkeletonStatHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+export function getNetworkSkeletonStatLabelClasses(): string {
+  return "h-3 w-16";
+}
+
+export function getNetworkSkeletonStatIconClasses(): string {
+  return "h-4 w-4 rounded-full";
+}
+
+export function getNetworkSkeletonStatValueGroupClasses(): string {
+  return "flex items-baseline gap-2";
+}
+
+export function getNetworkSkeletonStatValueClasses(): string {
+  return "h-8 w-12";
+}
+
+export function getNetworkSkeletonStatBadgeClasses(): string {
+  return "h-4 w-8";
+}
+
+export function getNetworkSkeletonStatSubtextClasses(): string {
+  return "h-3 w-24";
+}
+
+export function getNetworkSkeletonNetworkHeaderClasses(): string {
+  return "flex items-center gap-2";
+}
+
+export function getNetworkSkeletonNetworkIconClasses(): string {
+  return "h-4 w-4 rounded";
+}
+
+export function getNetworkSkeletonNetworkTitleClasses(): string {
+  return "h-4 w-28";
+}
+
+export function getNetworkSkeletonNetworkStatItemClasses(): string {
+  return "space-y-1.5";
+}
+
+export function getNetworkSkeletonNetworkStatLabelClasses(): string {
+  return "h-3 w-12";
+}
+
+export function getNetworkSkeletonNetworkStatValueClasses(): string {
+  return "h-6 w-10";
+}
+
+export function getNetworkSkeletonNetworkFooterClasses(): string {
+  return "space-y-1.5 pt-2 border-t border-border";
+}
+
+export function getNetworkSkeletonNetworkFooterLabelClasses(): string {
+  return "h-3 w-40";
+}
+
+export function getNetworkSkeletonNetworkFooterValueClasses(): string {
+  return "h-4 w-12";
+}
+
+export function getNetworkSkeletonEngagementLabelClasses(): string {
+  return "h-3 w-20";
+}
+
+export function getNetworkSkeletonEngagementIconClasses(): string {
+  return "h-4 w-4 rounded-full";
+}
+
+export function getNetworkSkeletonEngagementValueClasses(): string {
+  return "h-8 w-12";
+}
+
+export function getNetworkSkeletonEngagementSubtextClasses(): string {
+  return "h-3 w-24";
+}
+
+export function getNetworkSkeletonCommunityTitleClasses(): string {
+  return "h-4 w-24";
+}
+
+export function getNetworkSkeletonCommunityListClasses(): string {
+  return "space-y-3";
+}
+
+export function getNetworkSkeletonCommunityItemClasses(): string {
+  return "space-y-1.5";
+}
+
+export function getNetworkSkeletonCommunityRowClasses(): string {
+  return "flex justify-between";
+}
+
+export function getNetworkSkeletonCommunityNameClasses(): string {
+  return "h-3 w-16";
+}
+
+export function getNetworkSkeletonCommunitySizeClasses(): string {
+  return "h-3 w-12";
+}
+
+export function getNetworkSkeletonCommunityBarClasses(): string {
+  return "h-2 w-full rounded-full";
+}
+
+export function getNetworkSkeletonTopPlayerTitleClasses(): string {
+  return "h-4 w-28";
+}
+
+export function getNetworkSkeletonTopPlayerListClasses(): string {
+  return "space-y-3";
+}
+
+export function getNetworkSkeletonTopPlayerItemClasses(): string {
+  return "flex items-center gap-3 p-2";
+}
+
+export function getNetworkSkeletonTopPlayerRankClasses(): string {
+  return "h-3 w-4";
+}
+
+export function getNetworkSkeletonTopPlayerAvatarClasses(): string {
+  return "h-8 w-8 rounded-full";
+}
+
+export function getNetworkSkeletonTopPlayerInfoClasses(): string {
+  return "flex-1 space-y-1.5";
+}
+
+export function getNetworkSkeletonTopPlayerNameClasses(): string {
+  return "h-4 w-24";
+}
+
+export function getNetworkSkeletonTopPlayerSubtextClasses(): string {
+  return "h-3 w-16";
+}
+
+export function getNetworkSkeletonTopPlayerScoreClasses(): string {
+  return "h-4 w-6";
+}
+
 export function getStatsPanelRegionAriaLabel(
   section:
     | "header"
