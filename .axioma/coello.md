@@ -1,10 +1,14 @@
 # Coello — Journal & Backlog
 
-## Última actualización: 2026-10-07
+## Última actualización: 2026-10-08
 
 ## Estado actual
 
 ### Completado
+- Phase 61 (NetworkSkeleton Layout, Dimensions, Tab Labels & Iteration Key Pure Helpers Extraction, Refactoring & Unit Tests):
+  - [x] 2026-10-08 — Hecho: Extraídas las funciones puras `getNetworkSkeletonMetricsTabLabel`, `getNetworkSkeletonGraphTabLabel`, `getNetworkSkeletonTabIconClasses`, `getNetworkSkeletonBackIconClasses`, `getNetworkSkeletonHeaderClasses`, `getNetworkSkeletonHeaderTextContainerClasses`, `getNetworkSkeletonHeaderTitleClasses`, `getNetworkSkeletonHeaderSubtitleClasses`, `getNetworkSkeletonAdoptionItemKeys`, `getNetworkSkeletonNetworkStatItemKeys`, `getNetworkSkeletonEngagementItemKeys`, `getNetworkSkeletonCommunityItemKeys`, `getNetworkSkeletonTopPlayerItemKeys`, y las funciones puras de clases de elementos y dimensiones en `src/app/network/graph-utils.ts`.
+  - [x] 2026-10-08 — Hecho: Refactorizado `NetworkSkeleton` (`src/app/network/network-skeleton.tsx`) para consumir las funciones puras extraídas eliminando clases inline, arrays mágicos y strings directos.
+  - [x] 2026-10-08 — Hecho: Pruebas unitarias añadidas y verificadas en `src/lib/__tests__/graph-engine.test.ts`.
 - Phase 60 (Graph Engine Community Detection & Iterative Skill Score Pure Helpers Extraction, Refactoring & Unit Tests):
   - [x] 2026-10-07 — Hecho: Extraídas las funciones puras `buildNeighborAdjacencyMap`, `calculateIterativeSkillScores`, `buildCommunityAdjacencyMap` y `detectCommunitiesFromAdjacency` junto a sus interfaces en `src/lib/graph/engine.ts`.
   - [x] 2026-10-07 — Hecho: Refactorizadas `computeSkillScores` y `computeCommunities` en `src/lib/graph/engine.ts` para consumir las funciones puras desacopladas de base de datos.
