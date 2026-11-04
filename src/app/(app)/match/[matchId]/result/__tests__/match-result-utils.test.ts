@@ -22,6 +22,39 @@ import {
   getPlayerSidesHeadingTitle,
   getSideOptionButtonLabel,
   getSideOptionButtonClasses,
+  getMatchResultContainerClasses,
+  getMatchResultContentWrapperClasses,
+  getMatchResultClosedCardClasses,
+  getMatchResultClosedTrophyClasses,
+  getMatchResultClosedScoreClasses,
+  getMatchResultClosedDescriptionClasses,
+  getMatchResultClosedButtonClasses,
+  getMatchResultSetsListContainerClasses,
+  getMatchResultSetSectionClasses,
+  getMatchResultSetTitleClasses,
+  getMatchResultSetTeamsListClasses,
+  getMatchResultTeamCardClasses,
+  getMatchResultTeamHeaderClasses,
+  getMatchResultTeamInfoClasses,
+  getMatchResultTeamAvatarsClasses,
+  getMatchResultTeamAvatarClasses,
+  getMatchResultTeamTextGroupClasses,
+  getMatchResultTeamLabelClasses,
+  getMatchResultTeamNamesClasses,
+  getMatchResultTeamScoreBadgeClasses,
+  getMatchResultScoreGridClasses,
+  getMatchResultScoreOptionButtonClasses,
+  getMatchResultSidesSectionClasses,
+  getMatchResultSidesTitleClasses,
+  getMatchResultSidesCardClasses,
+  getMatchResultSidesTeamGroupClasses,
+  getMatchResultSidesTeamLabelClasses,
+  getMatchResultSidesPlayersListClasses,
+  getMatchResultSidesPlayerRowClasses,
+  getMatchResultSidesPlayerInfoClasses,
+  getMatchResultSidesPlayerAvatarClasses,
+  getMatchResultSidesPlayerNameClasses,
+  getMatchResultSidesRadiogroupClasses,
   MatchPlayerInput,
 } from "../match-result-utils";
 
@@ -238,6 +271,54 @@ describe("match-result-utils", () => {
 
       const unselectedClasses = getSideOptionButtonClasses(false);
       expect(unselectedClasses).toContain("text-muted-foreground hover:text-foreground");
+    });
+
+    it("returns correct CSS classes for layout containers and closed state", () => {
+      expect(getMatchResultContainerClasses()).toBe("flex flex-col gap-6");
+      expect(getMatchResultContentWrapperClasses()).toBe("flex flex-col gap-6");
+      expect(getMatchResultClosedCardClasses()).toContain("rounded-xl border border-border bg-card shadow-xs");
+      expect(getMatchResultClosedTrophyClasses()).toContain("text-primary");
+      expect(getMatchResultClosedScoreClasses()).toBe("text-3xl font-bold mb-1");
+      expect(getMatchResultClosedDescriptionClasses()).toBe("text-xs text-muted-foreground mb-6");
+      expect(getMatchResultClosedButtonClasses()).toContain("w-full transition-all active:scale-[0.98]");
+    });
+
+    it("returns correct CSS classes for sets sections and team cards", () => {
+      expect(getMatchResultSetsListContainerClasses()).toBe("flex flex-col gap-6");
+      expect(getMatchResultSetSectionClasses()).toBe("space-y-3");
+      expect(getMatchResultSetTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getMatchResultSetTeamsListClasses()).toBe("flex flex-col gap-4");
+      expect(getMatchResultTeamCardClasses()).toContain("rounded-xl border border-border bg-card p-4 shadow-xs");
+      expect(getMatchResultTeamHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getMatchResultTeamInfoClasses()).toBe("flex items-center gap-2 min-w-0");
+      expect(getMatchResultTeamAvatarsClasses()).toBe("flex -space-x-2");
+      expect(getMatchResultTeamAvatarClasses()).toBe("h-8 w-8 border-2 border-card");
+      expect(getMatchResultTeamTextGroupClasses()).toBe("flex flex-col min-w-0");
+      expect(getMatchResultTeamLabelClasses()).toBe("text-xs text-muted-foreground");
+      expect(getMatchResultTeamNamesClasses()).toBe("text-sm font-semibold text-foreground truncate");
+      expect(getMatchResultTeamScoreBadgeClasses()).toContain("rounded-lg bg-primary text-primary-foreground font-bold");
+    });
+
+    it("returns correct CSS classes for score selector options", () => {
+      expect(getMatchResultScoreGridClasses()).toBe("grid grid-cols-4 gap-2");
+      const selected = getMatchResultScoreOptionButtonClasses(true);
+      expect(selected).toContain("bg-primary border-primary text-primary-foreground shadow-xs");
+      const unselected = getMatchResultScoreOptionButtonClasses(false);
+      expect(unselected).toContain("bg-card border-border text-muted-foreground hover:bg-muted");
+    });
+
+    it("returns correct CSS classes for court sides section and player rows", () => {
+      expect(getMatchResultSidesSectionClasses()).toBe("space-y-3");
+      expect(getMatchResultSidesTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getMatchResultSidesCardClasses()).toContain("rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs");
+      expect(getMatchResultSidesTeamGroupClasses()).toBe("space-y-2");
+      expect(getMatchResultSidesTeamLabelClasses()).toBe("text-xs font-semibold text-muted-foreground block");
+      expect(getMatchResultSidesPlayersListClasses()).toBe("divide-y divide-border");
+      expect(getMatchResultSidesPlayerRowClasses()).toContain("flex items-center justify-between py-2.5");
+      expect(getMatchResultSidesPlayerInfoClasses()).toBe("flex items-center gap-2.5 min-w-0");
+      expect(getMatchResultSidesPlayerAvatarClasses()).toBe("h-8 w-8");
+      expect(getMatchResultSidesPlayerNameClasses()).toBe("text-sm font-semibold text-foreground truncate");
+      expect(getMatchResultSidesRadiogroupClasses()).toBe("flex items-center gap-1 bg-muted p-1 rounded-lg");
     });
   });
 });

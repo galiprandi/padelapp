@@ -262,3 +262,239 @@ export function getSideOptionButtonClasses(isSelected: boolean): string {
   }
   return `${baseClasses} text-muted-foreground hover:text-foreground`;
 }
+
+/**
+ * Returns solid CSS classes for the main MatchResultForm container.
+ */
+export function getMatchResultContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Returns CSS classes for the inner content wrapper of MatchResultForm.
+ */
+export function getMatchResultContentWrapperClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Returns CSS classes for the closed/confirmed match card container.
+ */
+export function getMatchResultClosedCardClasses(): string {
+  return "flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs";
+}
+
+/**
+ * Returns CSS classes for the trophy icon in closed match card.
+ */
+export function getMatchResultClosedTrophyClasses(): string {
+  return "h-8 w-8 text-primary mb-3";
+}
+
+/**
+ * Returns CSS classes for the score heading in closed match card.
+ */
+export function getMatchResultClosedScoreClasses(): string {
+  return "text-3xl font-bold mb-1";
+}
+
+/**
+ * Returns CSS classes for the confirmed notice description in closed match card.
+ */
+export function getMatchResultClosedDescriptionClasses(): string {
+  return "text-xs text-muted-foreground mb-6";
+}
+
+/**
+ * Returns CSS classes for the return to detail button in closed match card.
+ */
+export function getMatchResultClosedButtonClasses(): string {
+  return "w-full transition-all active:scale-[0.98]";
+}
+
+/**
+ * Returns CSS classes for the sets list wrapper container.
+ */
+export function getMatchResultSetsListContainerClasses(): string {
+  return "flex flex-col gap-6";
+}
+
+/**
+ * Returns CSS classes for each set section landmark container.
+ */
+export function getMatchResultSetSectionClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns CSS classes for each set section title heading.
+ */
+export function getMatchResultSetTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for the teams list within a set.
+ */
+export function getMatchResultSetTeamsListClasses(): string {
+  return "flex flex-col gap-4";
+}
+
+/**
+ * Returns CSS classes for each team card within a set.
+ */
+export function getMatchResultTeamCardClasses(): string {
+  return "space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for the team header row.
+ */
+export function getMatchResultTeamHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns CSS classes for the team info (avatars + text) container.
+ */
+export function getMatchResultTeamInfoClasses(): string {
+  return "flex items-center gap-2 min-w-0";
+}
+
+/**
+ * Returns CSS classes for the overlapping avatars group.
+ */
+export function getMatchResultTeamAvatarsClasses(): string {
+  return "flex -space-x-2";
+}
+
+/**
+ * Returns CSS classes for an individual team avatar.
+ */
+export function getMatchResultTeamAvatarClasses(): string {
+  return "h-8 w-8 border-2 border-card";
+}
+
+/**
+ * Returns CSS classes for the team label and names text container.
+ */
+export function getMatchResultTeamTextGroupClasses(): string {
+  return "flex flex-col min-w-0";
+}
+
+/**
+ * Returns CSS classes for the team label text.
+ */
+export function getMatchResultTeamLabelClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for the team player names text.
+ */
+export function getMatchResultTeamNamesClasses(): string {
+  return "text-sm font-semibold text-foreground truncate";
+}
+
+/**
+ * Returns CSS classes for the current set score badge badge.
+ */
+export function getMatchResultTeamScoreBadgeClasses(): string {
+  return "flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xl shrink-0 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for the set score radio group grid.
+ */
+export function getMatchResultScoreGridClasses(): string {
+  return "grid grid-cols-4 gap-2";
+}
+
+/**
+ * Returns CSS classes for the score option button (0-7 games) in a set.
+ */
+export function getMatchResultScoreOptionButtonClasses(isSelected: boolean): string {
+  const baseClasses =
+    "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+  if (isSelected) {
+    return `${baseClasses} bg-primary border-primary text-primary-foreground shadow-xs`;
+  }
+  return `${baseClasses} bg-card border-border text-muted-foreground hover:bg-muted`;
+}
+
+/**
+ * Returns CSS classes for the court sides section container.
+ */
+export function getMatchResultSidesSectionClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns CSS classes for the court sides section title.
+ */
+export function getMatchResultSidesTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for the court sides card container.
+ */
+export function getMatchResultSidesCardClasses(): string {
+  return "rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for each team block in court sides card.
+ */
+export function getMatchResultSidesTeamGroupClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Returns CSS classes for team label inside court sides card.
+ */
+export function getMatchResultSidesTeamLabelClasses(): string {
+  return "text-xs font-semibold text-muted-foreground block";
+}
+
+/**
+ * Returns CSS classes for the players list inside court sides card.
+ */
+export function getMatchResultSidesPlayersListClasses(): string {
+  return "divide-y divide-border";
+}
+
+/**
+ * Returns CSS classes for each player row in court sides list.
+ */
+export function getMatchResultSidesPlayerRowClasses(): string {
+  return "flex items-center justify-between py-2.5 first:pt-0 last:pb-0";
+}
+
+/**
+ * Returns CSS classes for player info (avatar + name) in court sides row.
+ */
+export function getMatchResultSidesPlayerInfoClasses(): string {
+  return "flex items-center gap-2.5 min-w-0";
+}
+
+/**
+ * Returns CSS classes for player avatar in court sides row.
+ */
+export function getMatchResultSidesPlayerAvatarClasses(): string {
+  return "h-8 w-8";
+}
+
+/**
+ * Returns CSS classes for player name in court sides row.
+ */
+export function getMatchResultSidesPlayerNameClasses(): string {
+  return "text-sm font-semibold text-foreground truncate";
+}
+
+/**
+ * Returns CSS classes for the court side selector radiogroup container.
+ */
+export function getMatchResultSidesRadiogroupClasses(): string {
+  return "flex items-center gap-1 bg-muted p-1 rounded-lg";
+}
