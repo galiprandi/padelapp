@@ -11,7 +11,6 @@ import { PlayerAvatar } from "@/components/players/player-avatar";
 import { AttendanceMarker } from "@/components/matches/attendance-marker";
 import { useToast } from "@/components/toast/use-toast";
 import { getNextRadioIndex } from "@/lib/match-helpers";
-import { cn } from "@/lib/utils";
 import {
   parseInitialScores,
   buildScoreString,
@@ -34,6 +33,39 @@ import {
   getPlayerSidesHeadingTitle,
   getSideOptionButtonLabel,
   getSideOptionButtonClasses,
+  getMatchResultContainerClasses,
+  getMatchResultContentWrapperClasses,
+  getMatchResultClosedCardClasses,
+  getMatchResultClosedTrophyClasses,
+  getMatchResultClosedScoreClasses,
+  getMatchResultClosedDescriptionClasses,
+  getMatchResultClosedButtonClasses,
+  getMatchResultSetsListContainerClasses,
+  getMatchResultSetSectionClasses,
+  getMatchResultSetTitleClasses,
+  getMatchResultSetTeamsListClasses,
+  getMatchResultTeamCardClasses,
+  getMatchResultTeamHeaderClasses,
+  getMatchResultTeamInfoClasses,
+  getMatchResultTeamAvatarsClasses,
+  getMatchResultTeamAvatarClasses,
+  getMatchResultTeamTextGroupClasses,
+  getMatchResultTeamLabelClasses,
+  getMatchResultTeamNamesClasses,
+  getMatchResultTeamScoreBadgeClasses,
+  getMatchResultScoreGridClasses,
+  getMatchResultScoreOptionButtonClasses,
+  getMatchResultSidesSectionClasses,
+  getMatchResultSidesTitleClasses,
+  getMatchResultSidesCardClasses,
+  getMatchResultSidesTeamGroupClasses,
+  getMatchResultSidesTeamLabelClasses,
+  getMatchResultSidesPlayersListClasses,
+  getMatchResultSidesPlayerRowClasses,
+  getMatchResultSidesPlayerInfoClasses,
+  getMatchResultSidesPlayerAvatarClasses,
+  getMatchResultSidesPlayerNameClasses,
+  getMatchResultSidesRadiogroupClasses,
   MatchPlayerInput,
 } from "./match-result-utils";
 
@@ -169,72 +201,72 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
       role="region"
       aria-label={regionAriaLabel}
       aria-busy={pending}
-      className="flex flex-col gap-6"
+      className={getMatchResultContainerClasses()}
     >
-      <div className="flex flex-col gap-6">
+      <div className={getMatchResultContentWrapperClasses()}>
         {isClosed ? (
           <section
             role="region"
             aria-label={getFinalScoreRegionAriaLabel(match.score || "")}
-            className="flex flex-col items-center justify-center text-center py-10 rounded-xl border border-border bg-card shadow-xs"
+            className={getMatchResultClosedCardClasses()}
           >
-            <Trophy className="h-8 w-8 text-primary mb-3" />
-            <h2 className="text-3xl font-bold mb-1">{match.score}</h2>
-            <p className="text-xs text-muted-foreground mb-6">
+            <Trophy className={getMatchResultClosedTrophyClasses()} />
+            <h2 className={getMatchResultClosedScoreClasses()}>{match.score}</h2>
+            <p className={getMatchResultClosedDescriptionClasses()}>
               {getConfirmedMatchTitle()}
             </p>
-            <Button asChild className="w-full transition-all active:scale-[0.98]">
+            <Button asChild className={getMatchResultClosedButtonClasses()}>
               <Link href={`/match/${match.id}`} prefetch={true}>{getBackToDetailButtonText()}</Link>
             </Button>
           </section>
         ) : (
           <Fragment>
-            <div className="flex flex-col gap-6">
+            <div className={getMatchResultSetsListContainerClasses()}>
               {Array.from({ length: setsCount }, (_, setIndex) => (
                 <section
                   key={setIndex}
                   role="region"
                   aria-label={getSetScoresRegionAriaLabel(setIndex)}
-                  className="space-y-3"
+                  className={getMatchResultSetSectionClasses()}
                 >
-                  <h2 className="text-sm font-bold text-foreground">
+                  <h2 className={getMatchResultSetTitleClasses()}>
                     {getSetHeaderTitle(setIndex)}
                   </h2>
 
-                  <div className="flex flex-col gap-4">
+                  <div className={getMatchResultSetTeamsListClasses()}>
                     {teams.map((team, teamIndex) => (
                       <div
                         key={team.id}
-                        className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs"
+                        className={getMatchResultTeamCardClasses()}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="flex -space-x-2">
+                        <div className={getMatchResultTeamHeaderClasses()}>
+                          <div className={getMatchResultTeamInfoClasses()}>
+                            <div className={getMatchResultTeamAvatarsClasses()}>
                               {team.players.map((p) => (
                                 <PlayerAvatar
                                   key={p.id}
                                   name={p.name}
                                   image={p.image}
-                                  className="h-8 w-8 border-2 border-card"
+                                  className={getMatchResultTeamAvatarClasses()}
                                 />
                               ))}
                             </div>
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-xs text-muted-foreground">
+                            <div className={getMatchResultTeamTextGroupClasses()}>
+                              <span className={getMatchResultTeamLabelClasses()}>
                                 {team.label}
                               </span>
-                              <span className="text-sm font-semibold text-foreground truncate">
+                              <span className={getMatchResultTeamNamesClasses()}>
                                 {team.players.map((p) => p.name).join(" & ")}
                               </span>
                             </div>
                           </div>
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-xl shrink-0 shadow-xs">
+                          <div className={getMatchResultTeamScoreBadgeClasses()}>
                             {scores[setIndex]?.[teamIndex] ?? 0}
                           </div>
                         </div>
 
                         <div
-                          className="grid grid-cols-4 gap-2"
+                          className={getMatchResultScoreGridClasses()}
                           role="radiogroup"
                           aria-labelledby={`team-${team.id}-set-${setIndex}-label`}
                           onKeyDown={(e) => {
@@ -280,12 +312,7 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
                                     return newScores;
                                   });
                                 }}
-                                className={cn(
-                                  "h-12 rounded-lg border text-lg font-bold transition-all active:scale-[0.98] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-                                  isSelected
-                                    ? "bg-primary border-primary text-primary-foreground shadow-xs"
-                                    : "bg-card border-border text-muted-foreground hover:bg-muted",
-                                )}
+                                className={getMatchResultScoreOptionButtonClasses(isSelected)}
                               >
                                 {num}
                               </button>
@@ -303,26 +330,26 @@ export function MatchResultForm({ match, viewerId }: MatchResultFormProps) {
             <section
               role="region"
               aria-label={getPlayerSidesRegionAriaLabel()}
-              className="space-y-3"
+              className={getMatchResultSidesSectionClasses()}
             >
-              <h2 className="text-sm font-bold text-foreground">
+              <h2 className={getMatchResultSidesTitleClasses()}>
                 {getPlayerSidesHeadingTitle()}
               </h2>
-              <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-xs">
+              <div className={getMatchResultSidesCardClasses()}>
                 {teams.map((team) => (
-                  <div key={team.id} className="space-y-2">
-                    <span className="text-xs font-semibold text-muted-foreground block">
+                  <div key={team.id} className={getMatchResultSidesTeamGroupClasses()}>
+                    <span className={getMatchResultSidesTeamLabelClasses()}>
                       {team.label}
                     </span>
-                    <div className="divide-y divide-border">
+                    <div className={getMatchResultSidesPlayersListClasses()}>
                       {team.players.map((p) => (
-                        <div key={p.id} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <PlayerAvatar name={p.name} image={p.image} className="h-8 w-8" />
-                            <span className="text-sm font-semibold text-foreground truncate">{p.name}</span>
+                        <div key={p.id} className={getMatchResultSidesPlayerRowClasses()}>
+                          <div className={getMatchResultSidesPlayerInfoClasses()}>
+                            <PlayerAvatar name={p.name} image={p.image} className={getMatchResultSidesPlayerAvatarClasses()} />
+                            <span className={getMatchResultSidesPlayerNameClasses()}>{p.name}</span>
                           </div>
                           <div
-                            className="flex items-center gap-1 bg-muted p-1 rounded-lg"
+                            className={getMatchResultSidesRadiogroupClasses()}
                             role="radiogroup"
                             aria-label={getPlayerSideGroupAriaLabel(p.name)}
                             onKeyDown={(e) => {
