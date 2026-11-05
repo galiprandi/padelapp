@@ -2837,6 +2837,164 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for salvage banner sparkles icon.
+ */
+export function getTurnPublicDetailsBannerSparklesClasses(): string {
+  return "h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5";
+}
+
+/**
+ * Format CSS classes for salvage banner text content container.
+ */
+export function getTurnPublicDetailsBannerContentClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+/**
+ * Format CSS classes for salvage banner uppercase title badge.
+ */
+export function getTurnPublicDetailsBannerBadgeClasses(): string {
+  return "text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300";
+}
+
+/**
+ * Format CSS classes for salvage banner description text.
+ */
+export function getTurnPublicDetailsBannerTextClasses(): string {
+  return "text-sm font-semibold mt-0.5 leading-snug";
+}
+
+/**
+ * Format CSS classes for salvage banner action buttons container.
+ */
+export function getTurnPublicDetailsBannerActionsClasses(): string {
+  return "flex items-center gap-1.5 shrink-0";
+}
+
+/**
+ * Format CSS classes for salvage banner WhatsApp group button.
+ */
+export function getTurnPublicDetailsBannerWhatsAppClasses(): string {
+  return "h-9 text-xs font-bold";
+}
+
+/**
+ * Format CSS classes for enrolled players list grid.
+ */
+export function getTurnPublicDetailsPlayerListClasses(): string {
+  return "grid gap-2";
+}
+
+/**
+ * Format CSS classes for enrolled player info container.
+ */
+export function getTurnPublicDetailsPlayerInfoClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+/**
+ * Format CSS classes for enrolled player name text.
+ */
+export function getTurnPublicDetailsPlayerNameClasses(): string {
+  return "font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5";
+}
+
+/**
+ * Format CSS classes for contact badge inside player row.
+ */
+export function getTurnPublicDetailsPlayerContactBadgeClasses(): string {
+  return "text-[10px] px-1.5 py-0 font-normal";
+}
+
+/**
+ * Format CSS classes for connection text description inside player row.
+ */
+export function getTurnPublicDetailsConnectionInfoClasses(): string {
+  return "text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1";
+}
+
+/**
+ * Format CSS classes for connection icon inside player row.
+ */
+export function getTurnPublicDetailsConnectionIconClasses(): string {
+  return "h-3 w-3 shrink-0 text-muted-foreground/60";
+}
+
+/**
+ * Format CSS classes for actions group inside player row.
+ */
+export function getTurnPublicDetailsPlayerActionsClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Format CSS classes for chevron icon inside player row.
+ */
+export function getTurnPublicDetailsPlayerChevronClasses(): string {
+  return "h-4 w-4 text-muted-foreground/30";
+}
+
+/**
+ * Format CSS classes for suggested contacts grid list.
+ */
+export function getTurnPublicDetailsSuggestedListClasses(): string {
+  return "grid gap-2";
+}
+
+/**
+ * Format CSS classes for suggested contact interactive profile link.
+ */
+export function getTurnPublicDetailsSuggestedLinkClasses(): string {
+  return "flex items-center gap-3 flex-1 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Format CSS classes for suggested contact info container.
+ */
+export function getTurnPublicDetailsSuggestedInfoClasses(): string {
+  return "min-w-0";
+}
+
+/**
+ * Format CSS classes for suggested contact name and badges row.
+ */
+export function getTurnPublicDetailsSuggestedNameGroupClasses(): string {
+  return "flex items-center gap-1.5 flex-wrap";
+}
+
+/**
+ * Format CSS classes for suggested contact name paragraph.
+ */
+export function getTurnPublicDetailsSuggestedNameClasses(): string {
+  return "font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors";
+}
+
+/**
+ * Format CSS classes for suggested contact proximity tier badge.
+ */
+export function getTurnPublicDetailsProximityBadgeClasses(badgeStyle?: string): string {
+  return cn(
+    "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+    badgeStyle ??
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+  );
+}
+
+/**
+ * Format CSS classes for suggested contact matches count or summary description.
+ */
+export function getTurnPublicDetailsSuggestedMatchesClasses(): string {
+  return "text-xs text-muted-foreground truncate mt-0.5";
+}
+
+/**
+ * Format CSS classes for substitute contact dot indicator.
+ */
+export function getTurnPublicDetailsSubstituteContactDotClasses(): string {
+  return "h-2 w-2 rounded-full bg-primary";
+}
+
+/**
  * Format CSS classes for the main page header title in TurnPublicDetails.
  */
 export function getTurnPublicDetailsHeaderTitleClasses(): string {
