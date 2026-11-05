@@ -840,6 +840,46 @@ import {
   getStatsPanelRecentSummaryGridClasses,
   getStatsPanelRecentSummaryValueClasses,
   getStatsPanelRecentSummaryLabelClasses,
+  getStatsPanelHeaderTitleContainerClasses,
+  getStatsPanelNetworkStatsGridClasses,
+  getStatsPanelNetworkStatColClasses,
+  getStatsPanelNetworkStatLabelClasses,
+  getStatsPanelNetworkStatValueClasses,
+  getStatsPanelNetworkStatFooterClasses,
+  getStatsPanelNetworkStatFooterValueClasses,
+  getStatsPanelRecommenderTitleGroupClasses,
+  getStatsPanelRecommenderListClasses,
+  getStatsPanelRecommenderRowClasses,
+  getStatsPanelRecommenderPlayerLinkClasses,
+  getStatsPanelRecommenderPlayerInfoClasses,
+  getStatsPanelRecommenderPlayerHeaderClasses,
+  getStatsPanelRecommenderPlayerNameClasses,
+  getStatsPanelRecommenderPlayerSubtextClasses,
+  getStatsPanelRecommenderScoreGroupClasses,
+  getStatsPanelRecommenderScoreTextClasses,
+  getStatsPanelRecommenderSummaryClasses,
+  getStatsPanelRecommenderEmptyTextClasses,
+  getStatsPanelListContainerClasses,
+  getStatsPanelRecentUserInfoClasses,
+  getStatsPanelRecentUserNameClasses,
+  getStatsPanelRecentUserTimeClasses,
+  getStatsPanelCommunityListClasses,
+  getStatsPanelCommunityHeaderClasses,
+  getStatsPanelCommunityTitleGroupClasses,
+  getStatsPanelCommunityNameClasses,
+  getStatsPanelCommunityMembersClasses,
+  getStatsPanelCommunityBarFillClasses,
+  getStatsPanelTopPlayerInfoClasses,
+  getStatsPanelTopPlayerHeaderClasses,
+  getStatsPanelTopPlayerNameClasses,
+  getStatsPanelTopPlayerSubtextClasses,
+  getStatsPanelTopPlayerContactsContainerClasses,
+  getStatsPanelTopClubItemClasses,
+  getStatsPanelTopClubRowClasses,
+  getStatsPanelTopClubNameGroupClasses,
+  getStatsPanelTopClubIndexClasses,
+  getStatsPanelTopClubNameClasses,
+  getStatsPanelTopClubTurnsMatchesClasses,
   calculateAdoptionGrowthRate,
   aggregateTopCommunities,
   aggregateTopClubsActivity,
@@ -2202,6 +2242,122 @@ describe("GraphView & StatsPanel layout & styling pure helpers", () => {
     );
     expect(getStatsPanelRecentSummaryLabelClasses()).toBe(
       "text-xs text-muted-foreground",
+    );
+    expect(getStatsPanelHeaderTitleContainerClasses()).toBe("space-y-0.5");
+  });
+
+  it("returns correct CSS classes for StatsPanel network statistics grid and footer", () => {
+    expect(getStatsPanelNetworkStatsGridClasses()).toBe(
+      "grid grid-cols-3 gap-3",
+    );
+    expect(getStatsPanelNetworkStatColClasses()).toBe("space-y-0.5");
+    expect(getStatsPanelNetworkStatLabelClasses()).toBe(
+      "text-xs text-muted-foreground",
+    );
+    expect(getStatsPanelNetworkStatValueClasses()).toBe(
+      "text-lg font-bold tabular-nums text-foreground",
+    );
+    expect(getStatsPanelNetworkStatFooterClasses()).toBe(
+      "space-y-0.5 pt-2 border-t border-border",
+    );
+    expect(getStatsPanelNetworkStatFooterValueClasses()).toBe(
+      "text-sm font-bold tabular-nums text-foreground",
+    );
+  });
+
+  it("returns correct CSS classes for StatsPanel recommender section and player cards", () => {
+    expect(getStatsPanelRecommenderTitleGroupClasses()).toBe("space-y-0.5");
+    expect(getStatsPanelRecommenderListClasses()).toBe("space-y-2.5 pt-1");
+    expect(getStatsPanelRecommenderRowClasses()).toBe(
+      "flex items-center justify-between gap-2",
+    );
+    expect(getStatsPanelRecommenderPlayerLinkClasses()).toBe(
+      "flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+    );
+    expect(getStatsPanelRecommenderPlayerInfoClasses()).toBe("min-w-0");
+    expect(getStatsPanelRecommenderPlayerHeaderClasses()).toBe(
+      "flex items-center gap-1.5 flex-wrap",
+    );
+    expect(getStatsPanelRecommenderPlayerNameClasses()).toBe(
+      "text-sm font-bold text-foreground truncate",
+    );
+    expect(getStatsPanelRecommenderPlayerSubtextClasses()).toBe(
+      "text-xs text-muted-foreground truncate",
+    );
+    expect(getStatsPanelRecommenderScoreGroupClasses()).toBe(
+      "flex items-center gap-2 shrink-0",
+    );
+    expect(getStatsPanelRecommenderScoreTextClasses()).toBe(
+      "text-xs font-bold tabular-nums text-foreground",
+    );
+    expect(getStatsPanelRecommenderSummaryClasses()).toBe(
+      "text-[11px] font-medium text-muted-foreground/90 pl-11 truncate",
+    );
+    expect(getStatsPanelRecommenderEmptyTextClasses()).toBe(
+      "text-xs text-muted-foreground pt-1 italic",
+    );
+  });
+
+  it("returns correct CSS classes for StatsPanel recent users, community list and top players", () => {
+    expect(getStatsPanelListContainerClasses()).toBe("space-y-2");
+    expect(getStatsPanelRecentUserInfoClasses()).toBe(
+      "flex-1 min-w-0 space-y-0.5",
+    );
+    expect(getStatsPanelRecentUserNameClasses()).toBe(
+      "text-sm font-semibold text-foreground truncate",
+    );
+    expect(getStatsPanelRecentUserTimeClasses()).toBe(
+      "text-xs text-muted-foreground",
+    );
+
+    expect(getStatsPanelCommunityListClasses()).toBe("space-y-2.5");
+    expect(getStatsPanelCommunityHeaderClasses()).toBe(
+      "flex items-center justify-between text-xs flex-wrap gap-1",
+    );
+    expect(getStatsPanelCommunityTitleGroupClasses()).toBe(
+      "flex items-center gap-1.5 flex-wrap",
+    );
+    expect(getStatsPanelCommunityNameClasses()).toBe(
+      "font-semibold text-foreground",
+    );
+    expect(getStatsPanelCommunityMembersClasses()).toBe(
+      "text-muted-foreground tabular-nums text-xs",
+    );
+    expect(getStatsPanelCommunityBarFillClasses()).toBe(
+      "h-full rounded-full bg-primary transition-all duration-500",
+    );
+
+    expect(getStatsPanelTopPlayerInfoClasses()).toBe(
+      "flex-1 min-w-0 space-y-0.5",
+    );
+    expect(getStatsPanelTopPlayerHeaderClasses()).toBe(
+      "flex items-center gap-1.5 flex-wrap",
+    );
+    expect(getStatsPanelTopPlayerNameClasses()).toBe(
+      "text-sm font-semibold text-foreground truncate",
+    );
+    expect(getStatsPanelTopPlayerSubtextClasses()).toBe(
+      "text-xs text-muted-foreground",
+    );
+    expect(getStatsPanelTopPlayerContactsContainerClasses()).toBe(
+      "text-right shrink-0",
+    );
+  });
+
+  it("returns correct CSS classes for StatsPanel top clubs list items", () => {
+    expect(getStatsPanelTopClubItemClasses()).toBe("space-y-1");
+    expect(getStatsPanelTopClubRowClasses()).toBe(
+      "flex items-center justify-between text-xs",
+    );
+    expect(getStatsPanelTopClubNameGroupClasses()).toBe(
+      "flex items-center gap-2 font-semibold text-foreground truncate",
+    );
+    expect(getStatsPanelTopClubIndexClasses()).toBe(
+      "text-muted-foreground tabular-nums w-4",
+    );
+    expect(getStatsPanelTopClubNameClasses()).toBe("truncate");
+    expect(getStatsPanelTopClubTurnsMatchesClasses()).toBe(
+      "text-muted-foreground tabular-nums shrink-0",
     );
   });
 });

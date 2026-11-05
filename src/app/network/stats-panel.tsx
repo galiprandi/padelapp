@@ -64,6 +64,7 @@ import {
   getStatsPanelHeaderRegionClasses,
   getStatsPanelHeaderTitleClasses,
   getStatsPanelHeaderDescriptionClasses,
+  getStatsPanelHeaderTitleContainerClasses,
   getStatsPanelHeaderBackLinkClasses,
   getStatsPanelHeadingDescription,
   getStatsPanelHeadingTitle,
@@ -71,22 +72,61 @@ import {
   getStatsPanelSectionHeaderClasses,
   getStatsPanelSectionTitleClasses,
   getStatsPanelSectionDescriptionClasses,
+  getStatsPanelRecentUserInfoClasses,
   getStatsPanelRecentUserItemClasses,
+  getStatsPanelRecentUserNameClasses,
+  getStatsPanelRecentUserTimeClasses,
   getStatsPanelRegionAriaLabel,
   getStatsPanelSectionCardClasses,
   getStatsPanelSummaryCardClasses,
   getStatsPanelTopPlayerItemClasses,
+  getStatsPanelTopPlayerInfoClasses,
+  getStatsPanelTopPlayerHeaderClasses,
+  getStatsPanelTopPlayerNameClasses,
+  getStatsPanelTopPlayerSubtextClasses,
+  getStatsPanelTopPlayerContactsContainerClasses,
   getStatsPanelScoreBadgeClasses,
   getStatsPanelScoreLabelText,
   getStatsPanelProfileButtonClasses,
   getStatsPanelProfileButtonText,
   getStatsPanelCommunityProgressItemClasses,
+  getStatsPanelCommunityListClasses,
+  getStatsPanelCommunityHeaderClasses,
+  getStatsPanelCommunityTitleGroupClasses,
+  getStatsPanelCommunityNameClasses,
+  getStatsPanelCommunityMembersClasses,
+  getStatsPanelCommunityBarFillClasses,
   getStatsPanelRecentSummaryGridClasses,
   getStatsPanelRecentSummaryValueClasses,
   getStatsPanelRecentSummaryLabelClasses,
   getStatsPanelCommunityBarContainerClasses,
   getStatsPanelTopPlayerRankClasses,
   getStatsPanelTopPlayerContactsClasses,
+  getStatsPanelNetworkStatsGridClasses,
+  getStatsPanelNetworkStatColClasses,
+  getStatsPanelNetworkStatLabelClasses,
+  getStatsPanelNetworkStatValueClasses,
+  getStatsPanelNetworkStatFooterClasses,
+  getStatsPanelNetworkStatFooterValueClasses,
+  getStatsPanelRecommenderTitleGroupClasses,
+  getStatsPanelRecommenderListClasses,
+  getStatsPanelRecommenderRowClasses,
+  getStatsPanelRecommenderPlayerLinkClasses,
+  getStatsPanelRecommenderPlayerInfoClasses,
+  getStatsPanelRecommenderPlayerHeaderClasses,
+  getStatsPanelRecommenderPlayerNameClasses,
+  getStatsPanelRecommenderPlayerSubtextClasses,
+  getStatsPanelRecommenderScoreGroupClasses,
+  getStatsPanelRecommenderScoreTextClasses,
+  getStatsPanelRecommenderSummaryClasses,
+  getStatsPanelRecommenderEmptyTextClasses,
+  getStatsPanelListContainerClasses,
+  getStatsPanelTopClubItemClasses,
+  getStatsPanelTopClubRowClasses,
+  getStatsPanelTopClubNameGroupClasses,
+  getStatsPanelTopClubIndexClasses,
+  getStatsPanelTopClubNameClasses,
+  getStatsPanelTopClubTurnsMatchesClasses,
   getTopClubsHeadingTitle,
   getTopCommunitiesHeadingTitle,
   getTopConnectedHeadingTitle,
@@ -186,7 +226,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
-        <div className="space-y-0.5">
+        <div className={getStatsPanelHeaderTitleContainerClasses()}>
           <h1 className={getStatsPanelHeaderTitleClasses()}>
             {getStatsPanelHeadingTitle()}
           </h1>
@@ -243,37 +283,37 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
             {getNetworkSectionTitle()}
           </h2>
         </div>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">
+        <div className={getStatsPanelNetworkStatsGridClasses()}>
+          <div className={getStatsPanelNetworkStatColClasses()}>
+            <p className={getStatsPanelNetworkStatLabelClasses()}>
               {getNetworkPlayersLabel()}
             </p>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelNetworkStatValueClasses()}>
               {graphNodes}
             </p>
           </div>
-          <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">
+          <div className={getStatsPanelNetworkStatColClasses()}>
+            <p className={getStatsPanelNetworkStatLabelClasses()}>
               {getNetworkConnectionsLabel()}
             </p>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelNetworkStatValueClasses()}>
               {graphLinks}
             </p>
           </div>
-          <div className="space-y-0.5">
-            <p className="text-xs text-muted-foreground">
+          <div className={getStatsPanelNetworkStatColClasses()}>
+            <p className={getStatsPanelNetworkStatLabelClasses()}>
               {getNetworkDensityLabel()}
             </p>
-            <p className="text-lg font-bold tabular-nums text-foreground">
+            <p className={getStatsPanelNetworkStatValueClasses()}>
               {(metrics.networkDensity * 100).toFixed(1)}%
             </p>
           </div>
         </div>
-        <div className="space-y-0.5 pt-2 border-t border-border">
-          <p className="text-xs text-muted-foreground">
+        <div className={getStatsPanelNetworkStatFooterClasses()}>
+          <p className={getStatsPanelNetworkStatLabelClasses()}>
             {getNetworkAvgConnectionsLabel()}
           </p>
-          <p className="text-sm font-bold tabular-nums text-foreground">
+          <p className={getStatsPanelNetworkStatFooterValueClasses()}>
             {metrics.avgConnectionsPerPlayer.toFixed(1)}
           </p>
         </div>
@@ -287,7 +327,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
       >
         <div className={getStatsPanelSectionHeaderClasses()}>
           <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
-          <div className="space-y-0.5">
+          <div className={getStatsPanelRecommenderTitleGroupClasses()}>
             <h2 className={getStatsPanelSectionTitleClasses()}>{getRecommenderHeadingTitle()}</h2>
             <p className={getStatsPanelSectionDescriptionClasses()}>
               {getRecommenderHeadingDescription()}
@@ -295,7 +335,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           </div>
         </div>
         {playersLikeYou.length > 0 ? (
-          <div className="space-y-2.5 pt-1">
+          <div className={getStatsPanelRecommenderListClasses()}>
             {playersLikeYou.map((player) => {
               const effectiveViewerId = viewerId ?? "p-01";
               const viewerNode = graphData?.nodes.find((n) => n.id === effectiveViewerId);
@@ -325,12 +365,12 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   key={player.id}
                   className={getRecommendedPlayerContainerClasses()}
                 >
-                  <div className="flex items-center justify-between gap-2">
+                  <div className={getStatsPanelRecommenderRowClasses()}>
                     <Link
                       href={`/p/${player.id}`}
                       prefetch={true}
                       aria-label={recommendedAriaLabel}
-                      className="flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                      className={getStatsPanelRecommenderPlayerLinkClasses()}
                     >
                       <div aria-label={getRecommendedPlayerAvatarAriaLabel(name)}>
                         <PlayerAvatar
@@ -339,9 +379,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                           size={36}
                         />
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <p className="text-sm font-bold text-foreground truncate">
+                      <div className={getStatsPanelRecommenderPlayerInfoClasses()}>
+                        <div className={getStatsPanelRecommenderPlayerHeaderClasses()}>
+                          <p className={getStatsPanelRecommenderPlayerNameClasses()}>
                             {name}
                           </p>
                           <span
@@ -359,15 +399,15 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                             {similarity.similarityTier}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">
+                        <p className={getStatsPanelRecommenderPlayerSubtextClasses()}>
                           {getTopPlayerMatchesText(player.matchesPlayed)} · {sideText}
                         </p>
                       </div>
                     </Link>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className={getStatsPanelRecommenderScoreGroupClasses()}>
                       <div className={getStatsPanelScoreBadgeClasses()}>
                         <p className="text-[10px] uppercase font-bold text-muted-foreground">{getStatsPanelScoreLabelText()}</p>
-                        <p className="text-xs font-bold tabular-nums text-foreground">
+                        <p className={getStatsPanelRecommenderScoreTextClasses()}>
                           {skillText}
                         </p>
                       </div>
@@ -381,7 +421,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                       </Link>
                     </div>
                   </div>
-                  <p className="text-[11px] font-medium text-muted-foreground/90 pl-11 truncate">
+                  <p className={getStatsPanelRecommenderSummaryClasses()}>
                     {similarity.formattedSummary}
                   </p>
                 </div>
@@ -389,7 +429,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
             })}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground pt-1 italic">
+          <p className={getStatsPanelRecommenderEmptyTextClasses()}>
             {getRecommenderEmptyStateText()}
           </p>
         )}
@@ -427,7 +467,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               {getRecentUsersHeadingTitle()}
             </h2>
           </div>
-          <div className="space-y-2">
+          <div className={getStatsPanelListContainerClasses()}>
             {metrics.recentUsers.map((u) => {
               const userName = capitalizeName(u.name ?? u.alias ?? "?");
               const timeAgoText = formatTimeAgo(u.createdAt);
@@ -444,11 +484,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                     image={u.image ?? undefined}
                     size={32}
                   />
-                  <div className="flex-1 min-w-0 space-y-0.5">
-                    <p className="text-sm font-semibold text-foreground truncate">
+                  <div className={getStatsPanelRecentUserInfoClasses()}>
+                    <p className={getStatsPanelRecentUserNameClasses()}>
                       {userName}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className={getStatsPanelRecentUserTimeClasses()}>
                       {timeAgoText}
                     </p>
                   </div>
@@ -467,7 +507,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           className={getStatsPanelSectionCardClasses()}
         >
           <h2 className={getStatsPanelSectionTitleClasses()}>{getTopCommunitiesHeadingTitle()}</h2>
-          <div className="space-y-2.5">
+          <div className={getStatsPanelCommunityListClasses()}>
             {metrics.communities.map((c) => {
               const max = metrics.communities[0]?.size ?? 1;
               const pct = (c.size / max) * 100;
@@ -484,9 +524,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                   className={getStatsPanelCommunityProgressItemClasses()}
                   aria-label={getCommunityItemAriaLabel(c.id, c.size)}
                 >
-                  <div className="flex items-center justify-between text-xs flex-wrap gap-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="font-semibold text-foreground">
+                  <div className={getStatsPanelCommunityHeaderClasses()}>
+                    <div className={getStatsPanelCommunityTitleGroupClasses()}>
+                      <span className={getStatsPanelCommunityNameClasses()}>
                         {getStatsCardCommunityLabel(c.id)}
                       </span>
                       {cohesion && (
@@ -522,13 +562,13 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                         </span>
                       )}
                     </div>
-                    <span className="text-muted-foreground tabular-nums text-xs">
+                    <span className={getStatsPanelCommunityMembersClasses()}>
                       {getStatsCardCommunityMembersText(c.size)}
                     </span>
                   </div>
                   <div className={getStatsPanelCommunityBarContainerClasses()}>
                     <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      className={getStatsPanelCommunityBarFillClasses()}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -549,7 +589,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           <h2 className={getStatsPanelSectionTitleClasses()}>
             {getTopConnectedHeadingTitle()}
           </h2>
-          <div className="space-y-2">
+          <div className={getStatsPanelListContainerClasses()}>
             {metrics.topPlayers.map((p, i) => {
               const activityTier = getNetworkActivityTier(p.networkSize, p.matchesPlayed);
               const roleInfo = graphData
@@ -589,9 +629,9 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                     image={p.image ?? undefined}
                     size={32}
                   />
-                  <div className="flex-1 min-w-0 space-y-0.5">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <p className="text-sm font-semibold text-foreground truncate">
+                  <div className={getStatsPanelTopPlayerInfoClasses()}>
+                    <div className={getStatsPanelTopPlayerHeaderClasses()}>
+                      <p className={getStatsPanelTopPlayerNameClasses()}>
                         {capitalizeName(p.name ?? p.alias ?? "?")}
                       </p>
                       {roleInfo ? (
@@ -697,11 +737,11 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className={getStatsPanelTopPlayerSubtextClasses()}>
                       {getTopPlayerMatchesText(p.matchesPlayed)}
                     </p>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className={getStatsPanelTopPlayerContactsContainerClasses()}>
                     <span className={getStatsPanelTopPlayerContactsClasses()}>
                       {getTopPlayerContactsText(p.networkSize)}
                     </span>
@@ -761,30 +801,30 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
               {getTopClubsHeadingTitle()}
             </h2>
           </div>
-          <div className="space-y-2">
+          <div className={getStatsPanelListContainerClasses()}>
             {metrics.topClubs.map((c, i) => {
               const max = metrics.topClubs[0]?.total ?? 1;
               const pct = (c.total / max) * 100;
               return (
                 <div
                   key={c.name}
-                  className="space-y-1"
+                  className={getStatsPanelTopClubItemClasses()}
                   aria-label={getTopClubItemAriaLabel(i + 1, c.name, c.turns, c.matches)}
                 >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-2 font-semibold text-foreground truncate">
-                      <span className="text-muted-foreground tabular-nums w-4">
+                  <div className={getStatsPanelTopClubRowClasses()}>
+                    <span className={getStatsPanelTopClubNameGroupClasses()}>
+                      <span className={getStatsPanelTopClubIndexClasses()}>
                         {i + 1}.
                       </span>
-                      <span className="truncate">{c.name}</span>
+                      <span className={getStatsPanelTopClubNameClasses()}>{c.name}</span>
                     </span>
-                    <span className="text-muted-foreground tabular-nums shrink-0">
+                    <span className={getStatsPanelTopClubTurnsMatchesClasses()}>
                       {getTopClubTurnsMatchesText(c.turns, c.matches)}
                     </span>
                   </div>
                   <div className={getStatsPanelCommunityBarContainerClasses()}>
                     <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      className={getStatsPanelCommunityBarFillClasses()}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
