@@ -140,6 +140,28 @@ import {
   getTurnActionsSignInFormClasses,
   getTurnActionsShareButtonSmallClasses,
   getTurnActionsShareButtonLargeClasses,
+  getTurnPublicDetailsBannerSparklesClasses,
+  getTurnPublicDetailsBannerContentClasses,
+  getTurnPublicDetailsBannerBadgeClasses,
+  getTurnPublicDetailsBannerTextClasses,
+  getTurnPublicDetailsBannerActionsClasses,
+  getTurnPublicDetailsBannerWhatsAppClasses,
+  getTurnPublicDetailsPlayerListClasses,
+  getTurnPublicDetailsPlayerInfoClasses,
+  getTurnPublicDetailsPlayerNameClasses,
+  getTurnPublicDetailsPlayerContactBadgeClasses,
+  getTurnPublicDetailsConnectionInfoClasses,
+  getTurnPublicDetailsConnectionIconClasses,
+  getTurnPublicDetailsPlayerActionsClasses,
+  getTurnPublicDetailsPlayerChevronClasses,
+  getTurnPublicDetailsSuggestedListClasses,
+  getTurnPublicDetailsSuggestedLinkClasses,
+  getTurnPublicDetailsSuggestedInfoClasses,
+  getTurnPublicDetailsSuggestedNameGroupClasses,
+  getTurnPublicDetailsSuggestedNameClasses,
+  getTurnPublicDetailsProximityBadgeClasses,
+  getTurnPublicDetailsSuggestedMatchesClasses,
+  getTurnPublicDetailsSubstituteContactDotClasses,
 } from "@/components/turns/turn-utils";
 import {
   CancelTurnForm,
@@ -351,23 +373,23 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           })}
           className={getTurnPublicDetailsBannerContainerClasses()}
         >
-          <Sparkles className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" aria-hidden="true" />
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+          <Sparkles className={getTurnPublicDetailsBannerSparklesClasses()} aria-hidden="true" />
+          <div className={getTurnPublicDetailsBannerContentClasses()}>
+            <p className={getTurnPublicDetailsBannerBadgeClasses()}>
               {getTurnSalvageBannerBadgeText()}
             </p>
-            <p className="text-sm font-semibold mt-0.5 leading-snug">
+            <p className={getTurnPublicDetailsBannerTextClasses()}>
               {salvageBannerText}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className={getTurnPublicDetailsBannerActionsClasses()}>
             <WhatsAppGroupInviteButton
               club={turn.club}
               date={turn.date}
               openSlots={openSlotsCount}
               shareUrl={shareUrl}
               variant="amber"
-              className="h-9 text-xs font-bold"
+              className={getTurnPublicDetailsBannerWhatsAppClasses()}
             />
             <TurnShareButton
               shareUrl={shareUrl}
@@ -488,7 +510,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
           </Badge>
         </div>
 
-        <div className="grid gap-2">
+        <div className={getTurnPublicDetailsPlayerListClasses()}>
           {turn.players.map((p) => {
             const isContact = contactIds.has(p.userId);
             return (
@@ -504,23 +526,23 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                   size={40}
                   aria-hidden="true"
                 />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5">
+                <div className={getTurnPublicDetailsPlayerInfoClasses()}>
+                  <p className={getTurnPublicDetailsPlayerNameClasses()}>
                     {p.user.alias ?? p.user.displayName}
                     {isContact && (
-                      <Badge variant="primary" className="text-[10px] px-1.5 py-0 font-normal">
+                      <Badge variant="primary" className={getTurnPublicDetailsPlayerContactBadgeClasses()}>
                         {getContactBadgeText()}
                       </Badge>
                     )}
                   </p>
                   {connectionMap[p.userId] && (
-                    <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={getTurnConnectionAriaLabel(connectionMap[p.userId])}>
-                      <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+                    <p className={getTurnPublicDetailsConnectionInfoClasses()} aria-label={getTurnConnectionAriaLabel(connectionMap[p.userId])}>
+                      <Info className={getTurnPublicDetailsConnectionIconClasses()} aria-hidden="true" />
                       <span>{getTurnConnectionText(connectionMap[p.userId])}</span>
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className={getTurnPublicDetailsPlayerActionsClasses()}>
                   {p.userId === turn.creatorId && (
                     <Badge variant="primary">
                       {getTurnOrganizerBadgeText()}
@@ -535,7 +557,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                         playerName={p.user.alias ?? p.user.displayName}
                       />
                     )}
-                  <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
+                  <ChevronRight className={getTurnPublicDetailsPlayerChevronClasses()} />
                 </div>
               </Link>
             );
@@ -615,7 +637,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
             </span>
           </div>
 
-          <div className="grid gap-2">
+          <div className={getTurnPublicDetailsSuggestedListClasses()}>
             {suggestedContacts.slice(0, 4).map((contact) => {
               const contactName = contact.alias ?? contact.displayName;
               const ariaLabel = calculatePadelContactAriaLabel(contact);
@@ -632,7 +654,7 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     href={`/p/${contact.id}`}
                     prefetch={true}
                     aria-label={getTurnContactProfileLinkAriaLabel(contactName)}
-                    className="flex items-center gap-3 flex-1 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getTurnPublicDetailsSuggestedLinkClasses()}
                   >
                     <PlayerAvatar
                       name={contactName}
@@ -640,32 +662,30 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                       size={40}
                       aria-hidden="true"
                     />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <p className="font-bold text-sm truncate leading-tight text-foreground hover:text-primary transition-colors">
+                    <div className={getTurnPublicDetailsSuggestedInfoClasses()}>
+                      <div className={getTurnPublicDetailsSuggestedNameGroupClasses()}>
+                        <p className={getTurnPublicDetailsSuggestedNameClasses()}>
                           {contactName}
                         </p>
                         {contact.proximityTier && (
                           <span
-                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${
-                              contact.badgeStyle ?? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-                            }`}
+                            className={getTurnPublicDetailsProximityBadgeClasses(contact.badgeStyle)}
                             title={`Compatibilidad con el turno: ${contact.proximityTier}. ${contact.proximitySummary ?? ""}`}
                             aria-label={getTurnContactCompatibilityAriaLabel(contactName, contact.proximityTier, contact.proximitySummary)}
                           >
                             {contact.proximityTier}
                           </span>
                         )}
-                        <Badge variant="primary" className="text-[10px] px-1.5 py-0 font-normal">
+                        <Badge variant="primary" className={getTurnPublicDetailsPlayerContactBadgeClasses()}>
                           {getContactBadgeText(contact.matchesTogether > 1)}
                         </Badge>
                       </div>
                       {contact.proximitySummary ? (
-                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        <p className={getTurnPublicDetailsSuggestedMatchesClasses()}>
                           {contact.proximitySummary}
                         </p>
                       ) : contact.matchesTogether > 0 ? (
-                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                        <p className={getTurnPublicDetailsSuggestedMatchesClasses()}>
                           {contact.matchesTogether} {contact.matchesTogether === 1 ? "partido compartido" : "partidos compartidos"}
                         </p>
                       ) : null}
@@ -721,20 +741,20 @@ export async function TurnPublicDetails({ params }: TurnPublicDetailsProps) {
                     size={40}
                     aria-hidden="true"
                   />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm truncate leading-tight group-hover:text-primary transition-colors flex items-center gap-1.5">
+                  <div className={getTurnPublicDetailsPlayerInfoClasses()}>
+                    <p className={getTurnPublicDetailsPlayerNameClasses()}>
                       {s.user.alias ?? s.user.displayName}
                       {isContact && (
                         <span
-                          className="h-2 w-2 rounded-full bg-primary"
+                          className={getTurnPublicDetailsSubstituteContactDotClasses()}
                           title="Contacto"
                           aria-label={getTurnContactBadgeAriaLabel("Contacto frecuente")}
                         />
                       )}
                     </p>
                     {connectionMap[s.userId] && (
-                      <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1" aria-label={getTurnConnectionAriaLabel(connectionMap[s.userId])}>
-                        <Info className="h-3 w-3 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+                      <p className={getTurnPublicDetailsConnectionInfoClasses()} aria-label={getTurnConnectionAriaLabel(connectionMap[s.userId])}>
+                        <Info className={getTurnPublicDetailsConnectionIconClasses()} aria-hidden="true" />
                         <span>{getTurnConnectionText(connectionMap[s.userId])}</span>
                       </p>
                     )}

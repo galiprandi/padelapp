@@ -48,6 +48,28 @@ import {
   getIcsCalendarContent,
   getCalendarOptionsAriaLabel,
   getCalendarButtonText,
+  getTurnPublicDetailsBannerSparklesClasses,
+  getTurnPublicDetailsBannerContentClasses,
+  getTurnPublicDetailsBannerBadgeClasses,
+  getTurnPublicDetailsBannerTextClasses,
+  getTurnPublicDetailsBannerActionsClasses,
+  getTurnPublicDetailsBannerWhatsAppClasses,
+  getTurnPublicDetailsPlayerListClasses,
+  getTurnPublicDetailsPlayerInfoClasses,
+  getTurnPublicDetailsPlayerNameClasses,
+  getTurnPublicDetailsPlayerContactBadgeClasses,
+  getTurnPublicDetailsConnectionInfoClasses,
+  getTurnPublicDetailsConnectionIconClasses,
+  getTurnPublicDetailsPlayerActionsClasses,
+  getTurnPublicDetailsPlayerChevronClasses,
+  getTurnPublicDetailsSuggestedListClasses,
+  getTurnPublicDetailsSuggestedLinkClasses,
+  getTurnPublicDetailsSuggestedInfoClasses,
+  getTurnPublicDetailsSuggestedNameGroupClasses,
+  getTurnPublicDetailsSuggestedNameClasses,
+  getTurnPublicDetailsProximityBadgeClasses,
+  getTurnPublicDetailsSuggestedMatchesClasses,
+  getTurnPublicDetailsSubstituteContactDotClasses,
   getTurnPublicDetailsHeaderTitleClasses,
   getTurnPublicDetailsHeaderSubtitleClasses,
   getTurnPublicDetailsHeaderRowClasses,
@@ -1106,6 +1128,94 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
     );
+  });
+});
+
+describe("TurnPublicDetails pure styling and layout helpers", () => {
+  it("returns correct CSS classes for salvage banner elements", () => {
+    const sparkles = getTurnPublicDetailsBannerSparklesClasses();
+    expect(sparkles).toContain("h-5");
+    expect(sparkles).toContain("w-5");
+    expect(sparkles).toContain("text-amber-600");
+
+    const content = getTurnPublicDetailsBannerContentClasses();
+    expect(content).toBe("flex-1 min-w-0");
+
+    const badge = getTurnPublicDetailsBannerBadgeClasses();
+    expect(badge).toContain("text-xs font-bold uppercase");
+    expect(badge).toContain("text-amber-800");
+
+    const text = getTurnPublicDetailsBannerTextClasses();
+    expect(text).toContain("text-sm font-semibold");
+
+    const actions = getTurnPublicDetailsBannerActionsClasses();
+    expect(actions).toBe("flex items-center gap-1.5 shrink-0");
+
+    const wa = getTurnPublicDetailsBannerWhatsAppClasses();
+    expect(wa).toBe("h-9 text-xs font-bold");
+  });
+
+  it("returns correct CSS classes for enrolled player rows and info", () => {
+    const playerList = getTurnPublicDetailsPlayerListClasses();
+    expect(playerList).toBe("grid gap-2");
+
+    const playerInfo = getTurnPublicDetailsPlayerInfoClasses();
+    expect(playerInfo).toBe("flex-1 min-w-0");
+
+    const playerName = getTurnPublicDetailsPlayerNameClasses();
+    expect(playerName).toContain("font-bold text-sm truncate");
+    expect(playerName).toContain("group-hover:text-primary");
+
+    const contactBadge = getTurnPublicDetailsPlayerContactBadgeClasses();
+    expect(contactBadge).toBe("text-[10px] px-1.5 py-0 font-normal");
+
+    const connInfo = getTurnPublicDetailsConnectionInfoClasses();
+    expect(connInfo).toContain("text-xs text-muted-foreground");
+    expect(connInfo).toContain("flex items-center gap-1");
+
+    const connIcon = getTurnPublicDetailsConnectionIconClasses();
+    expect(connIcon).toContain("h-3 w-3 shrink-0");
+
+    const playerActions = getTurnPublicDetailsPlayerActionsClasses();
+    expect(playerActions).toBe("flex items-center gap-2");
+
+    const chevron = getTurnPublicDetailsPlayerChevronClasses();
+    expect(chevron).toBe("h-4 w-4 text-muted-foreground/30");
+  });
+
+  it("returns correct CSS classes for suggested contacts", () => {
+    const suggestedList = getTurnPublicDetailsSuggestedListClasses();
+    expect(suggestedList).toBe("grid gap-2");
+
+    const link = getTurnPublicDetailsSuggestedLinkClasses();
+    expect(link).toContain("flex items-center gap-3");
+    expect(link).toContain("active:scale-[0.98]");
+    expect(link).toContain("focus-visible:ring-2");
+
+    const info = getTurnPublicDetailsSuggestedInfoClasses();
+    expect(info).toBe("min-w-0");
+
+    const nameGroup = getTurnPublicDetailsSuggestedNameGroupClasses();
+    expect(nameGroup).toBe("flex items-center gap-1.5 flex-wrap");
+
+    const name = getTurnPublicDetailsSuggestedNameClasses();
+    expect(name).toContain("font-bold text-sm truncate");
+    expect(name).toContain("hover:text-primary");
+
+    const defaultProximity = getTurnPublicDetailsProximityBadgeClasses();
+    expect(defaultProximity).toContain("text-[10px] font-bold");
+    expect(defaultProximity).toContain("bg-emerald-100 text-emerald-800");
+
+    const customProximity = getTurnPublicDetailsProximityBadgeClasses("bg-amber-100 text-amber-800 border-amber-300");
+    expect(customProximity).toContain("bg-amber-100 text-amber-800 border-amber-300");
+
+    const matches = getTurnPublicDetailsSuggestedMatchesClasses();
+    expect(matches).toBe("text-xs text-muted-foreground truncate mt-0.5");
+  });
+
+  it("returns correct CSS classes for substitute contact indicator dot", () => {
+    const dot = getTurnPublicDetailsSubstituteContactDotClasses();
+    expect(dot).toBe("h-2 w-2 rounded-full bg-primary");
   });
 });
 
