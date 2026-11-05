@@ -4440,6 +4440,10 @@ export function getStatsPanelHeaderDescriptionClasses(): string {
   return "text-sm text-muted-foreground";
 }
 
+export function getStatsPanelHeaderTitleContainerClasses(): string {
+  return "space-y-0.5";
+}
+
 export function getStatsPanelHeaderBackLinkClasses(): string {
   return "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98]";
 }
@@ -4604,6 +4608,162 @@ export function getStatsPanelTopPlayerRankClasses(): string {
 
 export function getStatsPanelTopPlayerContactsClasses(): string {
   return "text-xs font-bold tabular-nums text-primary block";
+}
+
+export function getStatsPanelNetworkStatsGridClasses(): string {
+  return "grid grid-cols-3 gap-3";
+}
+
+export function getStatsPanelNetworkStatColClasses(): string {
+  return "space-y-0.5";
+}
+
+export function getStatsPanelNetworkStatLabelClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getStatsPanelNetworkStatValueClasses(): string {
+  return "text-lg font-bold tabular-nums text-foreground";
+}
+
+export function getStatsPanelNetworkStatFooterClasses(): string {
+  return "space-y-0.5 pt-2 border-t border-border";
+}
+
+export function getStatsPanelNetworkStatFooterValueClasses(): string {
+  return "text-sm font-bold tabular-nums text-foreground";
+}
+
+export function getStatsPanelRecommenderTitleGroupClasses(): string {
+  return "space-y-0.5";
+}
+
+export function getStatsPanelRecommenderListClasses(): string {
+  return "space-y-2.5 pt-1";
+}
+
+export function getStatsPanelRecommenderRowClasses(): string {
+  return "flex items-center justify-between gap-2";
+}
+
+export function getStatsPanelRecommenderPlayerLinkClasses(): string {
+  return "flex items-center gap-3 min-w-0 rounded-lg transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getStatsPanelRecommenderPlayerInfoClasses(): string {
+  return "min-w-0";
+}
+
+export function getStatsPanelRecommenderPlayerHeaderClasses(): string {
+  return "flex items-center gap-1.5 flex-wrap";
+}
+
+export function getStatsPanelRecommenderPlayerNameClasses(): string {
+  return "text-sm font-bold text-foreground truncate";
+}
+
+export function getStatsPanelRecommenderPlayerSubtextClasses(): string {
+  return "text-xs text-muted-foreground truncate";
+}
+
+export function getStatsPanelRecommenderScoreGroupClasses(): string {
+  return "flex items-center gap-2 shrink-0";
+}
+
+export function getStatsPanelRecommenderScoreTextClasses(): string {
+  return "text-xs font-bold tabular-nums text-foreground";
+}
+
+export function getStatsPanelRecommenderSummaryClasses(): string {
+  return "text-[11px] font-medium text-muted-foreground/90 pl-11 truncate";
+}
+
+export function getStatsPanelRecommenderEmptyTextClasses(): string {
+  return "text-xs text-muted-foreground pt-1 italic";
+}
+
+export function getStatsPanelListContainerClasses(): string {
+  return "space-y-2";
+}
+
+export function getStatsPanelRecentUserInfoClasses(): string {
+  return "flex-1 min-w-0 space-y-0.5";
+}
+
+export function getStatsPanelRecentUserNameClasses(): string {
+  return "text-sm font-semibold text-foreground truncate";
+}
+
+export function getStatsPanelRecentUserTimeClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getStatsPanelCommunityListClasses(): string {
+  return "space-y-2.5";
+}
+
+export function getStatsPanelCommunityHeaderClasses(): string {
+  return "flex items-center justify-between text-xs flex-wrap gap-1";
+}
+
+export function getStatsPanelCommunityTitleGroupClasses(): string {
+  return "flex items-center gap-1.5 flex-wrap";
+}
+
+export function getStatsPanelCommunityNameClasses(): string {
+  return "font-semibold text-foreground";
+}
+
+export function getStatsPanelCommunityMembersClasses(): string {
+  return "text-muted-foreground tabular-nums text-xs";
+}
+
+export function getStatsPanelCommunityBarFillClasses(): string {
+  return "h-full rounded-full bg-primary transition-all duration-500";
+}
+
+export function getStatsPanelTopPlayerInfoClasses(): string {
+  return "flex-1 min-w-0 space-y-0.5";
+}
+
+export function getStatsPanelTopPlayerHeaderClasses(): string {
+  return "flex items-center gap-1.5 flex-wrap";
+}
+
+export function getStatsPanelTopPlayerNameClasses(): string {
+  return "text-sm font-semibold text-foreground truncate";
+}
+
+export function getStatsPanelTopPlayerSubtextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getStatsPanelTopPlayerContactsContainerClasses(): string {
+  return "text-right shrink-0";
+}
+
+export function getStatsPanelTopClubItemClasses(): string {
+  return "space-y-1";
+}
+
+export function getStatsPanelTopClubRowClasses(): string {
+  return "flex items-center justify-between text-xs";
+}
+
+export function getStatsPanelTopClubNameGroupClasses(): string {
+  return "flex items-center gap-2 font-semibold text-foreground truncate";
+}
+
+export function getStatsPanelTopClubIndexClasses(): string {
+  return "text-muted-foreground tabular-nums w-4";
+}
+
+export function getStatsPanelTopClubNameClasses(): string {
+  return "truncate";
+}
+
+export function getStatsPanelTopClubTurnsMatchesClasses(): string {
+  return "text-muted-foreground tabular-nums shrink-0";
 }
 
 export function getNetworkErrorResetButtonText(): string {
