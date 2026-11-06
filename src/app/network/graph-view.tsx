@@ -139,6 +139,48 @@ import {
   getCommunityBridgingAriaLabel,
   getInteractionReciprocityAriaLabel,
   getPlayerSimilarityAriaLabel,
+  getGraphViewScopeContainerClasses,
+  getGraphViewDensityWrapperClasses,
+  getGraphViewNodeLinkCountBadgeClasses,
+  getGraphViewActiveCommunityContentClasses,
+  getGraphViewActiveCommunityDotClasses,
+  getGraphViewActiveCommunityTitleClasses,
+  getGraphViewActiveCommunityTextClasses,
+  getGraphViewActiveCommunityClearButtonClasses,
+  getEmptyPersonalNetworkIconContainerClasses,
+  getEmptyPersonalNetworkIconClasses,
+  getEmptyPersonalNetworkTextContainerClasses,
+  getEmptyPersonalNetworkTitleClasses,
+  getEmptyPersonalNetworkDescriptionClasses,
+  getEmptyPersonalNetworkActionsClasses,
+  getEmptyPersonalNetworkSearchTurnsButtonClasses,
+  getEmptyPersonalNetworkViewGlobalButtonClasses,
+  getGraphViewDetailHeaderClasses,
+  getGraphViewDetailImageAvatarClasses,
+  getGraphViewDetailFallbackAvatarClasses,
+  getGraphViewDetailInfoContainerClasses,
+  getGraphViewDetailNameClasses,
+  getGraphViewDetailBadgesContainerClasses,
+  getGraphViewDetailStatsTextClasses,
+  getGraphViewDetailCloseButtonClasses,
+  getGraphViewDetailScoreGridClasses,
+  getGraphViewDetailGroupButtonClasses,
+  getGraphViewDetailGroupEmptyClasses,
+  getGraphViewDetailConnectionsDividerClasses,
+  getGraphViewDetailConnectionsHeaderClasses,
+  getGraphViewDetailConnectionsListClasses,
+  getGraphViewConnectionHeaderRowClasses,
+  getGraphViewConnectionFocusButtonClasses,
+  getGraphViewConnectionNameClasses,
+  getGraphViewConnectionRecordClasses,
+  getGraphViewConnectionSubrowClasses,
+  getSideCompatibilityBadgeClasses,
+  getGraphViewLegendTitleClasses,
+  getGraphViewLegendListClasses,
+  getGraphViewLegendItemClasses,
+  getGraphViewLegendDotClasses,
+  getGraphViewLegendItemTextClasses,
+  getFilterChipCommunityDotClasses,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -547,7 +589,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       {/* Top bar with search and filters */}
       <div className={getGraphViewTopFilterContainerClasses()}>
         {viewerId && (
-          <div className="flex flex-col gap-1.5">
+          <div className={getGraphViewScopeContainerClasses()}>
             <span id="network-scope-label" className="sr-only">
               {getNetworkScopeLabelText()}
             </span>
@@ -662,7 +704,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             />
           ))}
 
-          <div className="ml-auto flex items-center gap-1.5 shrink-0">
+          <div className={getGraphViewDensityWrapperClasses()}>
             <span
               className={cn(
                 "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
@@ -679,7 +721,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             >
               {graphDensityMetric.densityTier}
             </span>
-            <span className="text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0">
+            <span className={getGraphViewNodeLinkCountBadgeClasses()}>
               {filteredData.nodes.length} · {filteredData.links.length}
             </span>
           </div>
@@ -688,15 +730,15 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         {/* Active community summary banner */}
         {activeCommunitySummary && selectedCommunity !== null && (
           <div className={getGraphViewActiveCommunityBannerClasses()}>
-            <div className="flex items-center gap-2 min-w-0 flex-wrap">
+            <div className={getGraphViewActiveCommunityContentClasses()}>
               <span
-                className="h-2.5 w-2.5 rounded-full shrink-0"
+                className={getGraphViewActiveCommunityDotClasses()}
                 style={{
                   backgroundColor:
                     COMMUNITY_COLORS[selectedCommunity % COMMUNITY_COLORS.length],
                 }}
               />
-              <span className="font-bold text-foreground shrink-0">
+              <span className={getGraphViewActiveCommunityTitleClasses()}>
                 Grupo {selectedCommunity}
               </span>
               <span
@@ -731,14 +773,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               >
                 {activeCommunitySummary.balanceInfo.balanceTier}
               </span>
-              <span className="text-muted-foreground truncate">
+              <span className={getGraphViewActiveCommunityTextClasses()}>
                 · {activeCommunitySummary.formattedSummary}
               </span>
             </div>
             <button
               type="button"
               onClick={() => setSelectedCommunity(null)}
-              className="text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto"
+              className={getGraphViewActiveCommunityClearButtonClasses()}
               aria-label={getGraphViewClearCommunityFilterAriaLabel(selectedCommunity)}
             >
               {getGraphViewCommunityClearFilterText()}
@@ -750,26 +792,26 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       {/* Empty personal network notice */}
       {scope === "personal" && viewerNeighbors.size === 0 && (
         <div className={getGraphViewEmptyNetworkNoticeClasses()}>
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <Users2 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          <div className={getEmptyPersonalNetworkIconContainerClasses()}>
+            <Users2 className={getEmptyPersonalNetworkIconClasses()} aria-hidden="true" />
           </div>
-          <div className="space-y-1">
-            <p className="text-sm font-bold text-foreground">{getEmptyPersonalNetworkTitle()}</p>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          <div className={getEmptyPersonalNetworkTextContainerClasses()}>
+            <p className={getEmptyPersonalNetworkTitleClasses()}>{getEmptyPersonalNetworkTitle()}</p>
+            <p className={getEmptyPersonalNetworkDescriptionClasses()}>
               {getEmptyPersonalNetworkDescription()}
             </p>
           </div>
-          <div className="flex gap-2 justify-center">
+          <div className={getEmptyPersonalNetworkActionsClasses()}>
             <Link
               href="/turnos"
             prefetch={true}
-              className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getEmptyPersonalNetworkSearchTurnsButtonClasses()}
             >
               {getEmptyPersonalNetworkSearchTurnsLabel()}
             </Link>
             <button
               onClick={() => setScope("global")}
-              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-bold text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getEmptyPersonalNetworkViewGlobalButtonClasses()}
             >
               {getEmptyPersonalNetworkViewGlobalLabel()}
             </button>
@@ -834,29 +876,29 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
       {/* Detail panel */}
       {selectedNodeData && (
         <div className={getGraphViewSelectedNodeDetailClasses()}>
-          <div className="flex items-center gap-3 mb-3">
+          <div className={getGraphViewDetailHeaderClasses()}>
             {selectedNodeData.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={selectedNodeData.image}
                 alt={selectedNodeData.name}
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-border"
+                className={getGraphViewDetailImageAvatarClasses()}
               />
             ) : (
               <div
-                className="h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
+                className={getGraphViewDetailFallbackAvatarClasses()}
                 style={{ backgroundColor: nodeColor(selectedNodeData) }}
               >
                 {getInitials(selectedNodeData.id === viewerId ? "Vos" : capitalizeName(selectedNodeData.name || selectedNodeData.alias || "?"))}
               </div>
             )}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground truncate">
+            <div className={getGraphViewDetailInfoContainerClasses()}>
+              <p className={getGraphViewDetailNameClasses()}>
                 {getGraphViewNodeName(selectedNodeData.name, selectedNodeData.alias, selectedNodeData.id === viewerId)}
               </p>
-              <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+              <div className={getGraphViewDetailBadgesContainerClasses()}>
                 <p
-                  className="text-xs text-muted-foreground"
+                  className={getGraphViewDetailStatsTextClasses()}
                   aria-label={getGraphViewSelectedNodeAriaLabel(
                     getGraphViewNodeName(selectedNodeData.name, selectedNodeData.alias, selectedNodeData.id === viewerId),
                     selectedNodeData.matchesPlayed,
@@ -1118,14 +1160,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             </div>
             <button
               onClick={() => setSelectedNode(null)}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+              className={getGraphViewDetailCloseButtonClasses()}
               aria-label={getGraphViewDetailPanelCloseAriaLabel()}
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className={getGraphViewDetailScoreGridClasses()}>
             <div className={getGraphViewDetailPanelCardScoreClasses()}>
               <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelScoreLabel()}</p>
               <p className="text-sm tabular-nums font-bold text-foreground">
@@ -1165,7 +1207,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                           : selectedNodeData.community,
                       )
                     }
-                    className="w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
+                    className={getGraphViewDetailGroupButtonClasses()}
                     style={{ color: nodeColor(selectedNodeData) }}
                     title={`Grupo ${selectedNodeData.community}: ${commSummary.formattedSummary}`}
                     aria-label={getGraphViewNodeGroupAriaLabel(
@@ -1179,7 +1221,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 );
               })()
               ) : (
-                <p className="text-sm font-bold text-muted-foreground">—</p>
+                <p className={getGraphViewDetailGroupEmptyClasses()}>—</p>
               )}
             </div>
           </div>
@@ -1192,7 +1234,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             {getGraphViewDetailPanelPublicProfileText()}
           </Link>
 
-          <div className="pt-3 border-t border-border">
+          <div className={getGraphViewDetailConnectionsDividerClasses()}>
             {(() => {
               const summary = calculateNodeConnectionSummary(
                 filteredData.links,
@@ -1233,10 +1275,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               );
             })()}
 
-            <p className="text-xs text-muted-foreground mb-2 font-medium">
+            <p className={getGraphViewDetailConnectionsHeaderClasses()}>
               {getGraphViewDetailPanelConnectionsHeader(selectedLinks.length)}
             </p>
-            <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+            <div className={getGraphViewDetailConnectionsListClasses()}>
               {selectedLinks.map((link, i) => {
                 const otherId =
                   linkNodeId(link.source) === selectedNode
@@ -1261,11 +1303,11 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     key={i}
                     className={getGraphViewConnectionItemClasses()}
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className={getGraphViewConnectionHeaderRowClasses()}>
                     <button
                       type="button"
                       onClick={() => handleSelectAndFocusNode(otherId)}
-                      className="flex items-center gap-2 flex-1 min-w-0 text-left active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+                      className={getGraphViewConnectionFocusButtonClasses()}
                       aria-label={getGraphViewFocusNodeAriaLabel(otherName)}
                     >
                       <span
@@ -1276,10 +1318,10 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       >
                         {getConnectionTypeSymbol(record.type)}
                       </span>
-                      <span className="text-xs font-medium text-foreground truncate">
+                      <span className={getGraphViewConnectionNameClasses()}>
                         {otherName}
                       </span>
-                      <span className="text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1 flex items-center gap-1.5">
+                      <span className={getGraphViewConnectionRecordClasses()}>
                         {record.winRatePercentage !== null && (
                           <span
                             className={getGraphViewWinRateBadgeClasses()}
@@ -1302,7 +1344,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     </Link>
                     </div>
 
-                    <div className="flex items-center gap-1.5 pl-8 flex-wrap">
+                    <div className={getGraphViewConnectionSubrowClasses()}>
                       <span
                         className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
@@ -1317,9 +1359,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         <span
                           className={cn(
                             "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            sideCompatibility.isComplementary
-                              ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
-                              : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+                            getSideCompatibilityBadgeClasses(sideCompatibility.isComplementary)
                           )}
                         >
                           {sideCompatibility.label}
@@ -1348,25 +1388,25 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
         className={getGraphViewLegendContainerClasses()}
         aria-label={getGraphViewLegendAriaLabel()}
       >
-        <p className="text-xs text-muted-foreground mb-1.5 font-medium">
+        <p className={getGraphViewLegendTitleClasses()}>
           {getGraphViewLegendTitle()}
         </p>
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-emerald-500" />
-            <span className="text-xs text-muted-foreground">{getGraphViewLegendPartnerLabel()}</span>
+        <div className={getGraphViewLegendListClasses()}>
+          <div className={getGraphViewLegendItemClasses()}>
+            <div className={getGraphViewLegendDotClasses("bg-emerald-500")} />
+            <span className={getGraphViewLegendItemTextClasses()}>{getGraphViewLegendPartnerLabel()}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-red-500" />
-            <span className="text-xs text-muted-foreground">{getGraphViewLegendRivalLabel()}</span>
+          <div className={getGraphViewLegendItemClasses()}>
+            <div className={getGraphViewLegendDotClasses("bg-red-500")} />
+            <span className={getGraphViewLegendItemTextClasses()}>{getGraphViewLegendRivalLabel()}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-amber-500" />
-            <span className="text-xs text-muted-foreground">{getGraphViewLegendMixedLabel()}</span>
+          <div className={getGraphViewLegendItemClasses()}>
+            <div className={getGraphViewLegendDotClasses("bg-amber-500")} />
+            <span className={getGraphViewLegendItemTextClasses()}>{getGraphViewLegendMixedLabel()}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-slate-500" />
-            <span className="text-xs text-muted-foreground">{getGraphViewLegendTurnsLabel()}</span>
+          <div className={getGraphViewLegendItemClasses()}>
+            <div className={getGraphViewLegendDotClasses("bg-slate-500")} />
+            <span className={getGraphViewLegendItemTextClasses()}>{getGraphViewLegendTurnsLabel()}</span>
           </div>
         </div>
       </div>
@@ -1397,7 +1437,7 @@ function FilterChip({
       aria-label={ariaLabel || getFilterChipAriaLabel(label, active)}
     >
       {dotColor ? (
-        <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: dotColor }} />
+        <div className={getFilterChipCommunityDotClasses()} style={{ backgroundColor: dotColor }} />
       ) : (
         color && <div className={getFilterChipDotClasses(color)} />
       )}
