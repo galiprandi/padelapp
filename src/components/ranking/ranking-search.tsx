@@ -14,6 +14,9 @@ import {
   getRankingSearchContainerClasses,
   getRankingSearchInputClasses,
   getRankingSearchClearButtonClasses,
+  getRankingSearchIconWrapperClasses,
+  getRankingSearchIconClasses,
+  getRankingSearchPendingBarClasses,
 } from "./ranking-utils";
 
 export function RankingSearch() {
@@ -64,11 +67,8 @@ export function RankingSearch() {
         {getRankingSearchStatusAriaLabel(isPending, query)}
       </div>
 
-      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-        <Search className={cn(
-          "h-4 w-4 transition-colors",
-          query || isPending ? "text-primary" : "text-muted-foreground"
-        )} />
+      <div className={getRankingSearchIconWrapperClasses()}>
+        <Search className={getRankingSearchIconClasses(Boolean(query || isPending))} />
       </div>
       <Input
         ref={inputRef}
@@ -98,7 +98,7 @@ export function RankingSearch() {
       )}
 
       {isPending && (
-        <div className="absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors" />
+        <div className={getRankingSearchPendingBarClasses()} />
       )}
     </div>
   );

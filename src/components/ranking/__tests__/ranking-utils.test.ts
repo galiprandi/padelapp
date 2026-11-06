@@ -126,6 +126,52 @@ import {
   getRankingSkeletonListItemScoreClasses,
   getRankingSkeletonPodiumKeys,
   getRankingSkeletonListItemKeys,
+  getPendingConfirmationsHeaderClasses,
+  getPendingConfirmationsHeaderIconClasses,
+  getPendingConfirmationsHeaderTextClasses,
+  getPendingConfirmationsTitleClasses,
+  getPendingConfirmationsCountClasses,
+  getPendingConfirmationsListClasses,
+  getPendingConfirmationInfoClasses,
+  getPendingConfirmationDateRowClasses,
+  getPendingConfirmationCalendarIconClasses,
+  getPendingConfirmationScoreLoadedClasses,
+  getPendingConfirmationScoreValueClasses,
+  getPendingConfirmationScorePendingClasses,
+  getPendingConfirmationActionsClasses,
+  getPendingConfirmationSpinnerIconClasses,
+  getPendingConfirmationCheckIconClasses,
+  getPendingConfirmationChevronIconClasses,
+  getRankingBreakdownSkeletonContainerClasses,
+  getRankingBreakdownSkeletonItemClasses,
+  getRankingBreakdownErrorClasses,
+  getRankingBreakdownLabelGroupClasses,
+  getRankingBreakdownItemIconClasses,
+  getRankingBreakdownSpinnerClasses,
+  getUserRankingBannerRowClasses,
+  getUserRankingBannerLeftGroupClasses,
+  getUserRankingBannerStatColClasses,
+  getUserRankingBannerStatLabelClasses,
+  getUserRankingBannerStatValueClasses,
+  getUserRankingBannerRightGroupClasses,
+  getUserRankingBannerBadgesGroupClasses,
+  getUserRankingBannerBadgeClasses,
+  getUserRankingBannerRecordGroupClasses,
+  getUserRankingBannerRecordTextClasses,
+  getUserRankingCardRowClasses,
+  getUserRankingCardLeftGroupClasses,
+  getUserRankingCardStatColClasses,
+  getUserRankingCardStatLabelClasses,
+  getUserRankingCardPositionValueClasses,
+  getUserRankingCardPointsValueClasses,
+  getUserRankingCardSubBadgesGroupClasses,
+  getUserRankingCardWinRateBadgeClasses,
+  getUserRankingCardReputationBadgeClasses,
+  getUserRankingCardRightGroupClasses,
+  getUserRankingCardRecordTextClasses,
+  getRankingSearchIconWrapperClasses,
+  getRankingSearchIconClasses,
+  getRankingSearchPendingBarClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -851,6 +897,76 @@ describe("Ranking Helpers", () => {
 
       expect(getRankingSkeletonPodiumKeys()).toEqual([0, 1, 2]);
       expect(getRankingSkeletonListItemKeys()).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+    });
+
+    it("pending confirmations alert styling helpers return expected class names", () => {
+      expect(getPendingConfirmationsHeaderClasses()).toContain("flex items-center gap-2");
+      expect(getPendingConfirmationsHeaderIconClasses()).toContain("h-5 w-5 text-primary shrink-0");
+      expect(getPendingConfirmationsHeaderTextClasses()).toContain("flex-1 min-w-0");
+      expect(getPendingConfirmationsTitleClasses()).toContain("text-sm font-bold text-foreground leading-tight");
+      expect(getPendingConfirmationsCountClasses()).toContain("text-xs text-muted-foreground mt-0.5");
+      expect(getPendingConfirmationsListClasses()).toContain("space-y-2.5");
+      expect(getPendingConfirmationInfoClasses()).toContain("flex flex-col gap-1 min-w-0");
+      expect(getPendingConfirmationDateRowClasses()).toContain("flex items-center gap-1.5 text-xs text-muted-foreground");
+      expect(getPendingConfirmationCalendarIconClasses()).toContain("h-3.5 w-3.5 text-muted-foreground/60 shrink-0");
+      expect(getPendingConfirmationScoreLoadedClasses()).toContain("text-sm font-bold text-foreground");
+      expect(getPendingConfirmationScoreValueClasses()).toContain("text-primary tabular-nums");
+      expect(getPendingConfirmationScorePendingClasses()).toContain("text-xs font-semibold text-destructive");
+      expect(getPendingConfirmationActionsClasses()).toContain("flex items-center gap-2 shrink-0");
+      expect(getPendingConfirmationSpinnerIconClasses()).toContain("h-3.5 w-3.5 animate-spin");
+      expect(getPendingConfirmationCheckIconClasses()).toContain("h-3.5 w-3.5");
+      expect(getPendingConfirmationChevronIconClasses("sm")).toBe("h-3.5 w-3.5");
+      expect(getPendingConfirmationChevronIconClasses("md")).toBe("h-4 w-4");
+      expect(getPendingConfirmationChevronIconClasses()).toBe("h-3.5 w-3.5");
+    });
+
+    it("ranking breakdown styling helpers return expected class names", () => {
+      expect(getRankingBreakdownSkeletonContainerClasses()).toContain("space-y-2 py-1");
+      expect(getRankingBreakdownSkeletonItemClasses("full")).toContain("h-4 w-full rounded");
+      expect(getRankingBreakdownSkeletonItemClasses("fiveSixths")).toContain("h-4 w-5/6 rounded");
+      expect(getRankingBreakdownSkeletonItemClasses("fourFifths")).toContain("h-4 w-4/5 rounded");
+      expect(getRankingBreakdownSkeletonItemClasses()).toContain("h-4 w-full rounded");
+      expect(getRankingBreakdownErrorClasses()).toContain("text-rose-500 font-semibold text-center");
+      expect(getRankingBreakdownLabelGroupClasses()).toContain("flex items-center gap-1");
+      expect(getRankingBreakdownItemIconClasses("default")).toBe("h-3.5 w-3.5");
+      expect(getRankingBreakdownItemIconClasses()).toBe("h-3.5 w-3.5");
+      expect(getRankingBreakdownItemIconClasses("orange")).toBe("h-3.5 w-3.5 text-orange-500");
+      expect(getRankingBreakdownItemIconClasses("primary")).toBe("h-3.5 w-3.5 text-primary");
+      expect(getRankingBreakdownItemIconClasses("amber")).toBe("h-3.5 w-3.5 text-amber-600");
+      expect(getRankingBreakdownItemIconClasses("rose")).toBe("h-3.5 w-3.5 text-rose-600");
+      expect(getRankingBreakdownSpinnerClasses()).toBe("h-3 w-3 animate-spin");
+    });
+
+    it("user ranking banner and card styling helpers return expected class names", () => {
+      expect(getUserRankingBannerRowClasses()).toContain("flex items-center justify-between gap-4");
+      expect(getUserRankingBannerLeftGroupClasses()).toContain("flex items-center gap-4");
+      expect(getUserRankingBannerStatColClasses()).toContain("flex flex-col");
+      expect(getUserRankingBannerStatLabelClasses()).toContain("text-xs font-medium text-muted-foreground");
+      expect(getUserRankingBannerStatValueClasses()).toContain("text-2xl font-bold text-foreground");
+      expect(getUserRankingBannerRightGroupClasses()).toContain("flex flex-col items-end gap-2");
+      expect(getUserRankingBannerBadgesGroupClasses()).toContain("flex items-center gap-1.5");
+      expect(getUserRankingBannerBadgeClasses()).toContain("rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground");
+      expect(getUserRankingBannerRecordGroupClasses()).toContain("flex items-center gap-2");
+      expect(getUserRankingBannerRecordTextClasses()).toContain("text-xs font-medium text-muted-foreground");
+
+      expect(getUserRankingCardRowClasses()).toContain("flex items-center justify-between");
+      expect(getUserRankingCardLeftGroupClasses()).toContain("flex items-center gap-4");
+      expect(getUserRankingCardStatColClasses()).toContain("flex flex-col");
+      expect(getUserRankingCardStatLabelClasses()).toContain("text-xs font-medium text-muted-foreground");
+      expect(getUserRankingCardPositionValueClasses()).toContain("text-2xl font-bold text-foreground");
+      expect(getUserRankingCardPointsValueClasses()).toContain("text-xs font-bold text-foreground");
+      expect(getUserRankingCardSubBadgesGroupClasses()).toContain("flex items-center gap-1.5 mt-0.5");
+      expect(getUserRankingCardWinRateBadgeClasses()).toContain("text-xs font-bold text-primary");
+      expect(getUserRankingCardReputationBadgeClasses()).toContain("text-xs font-medium text-muted-foreground");
+      expect(getUserRankingCardRightGroupClasses()).toContain("flex flex-col items-end gap-1.5");
+      expect(getUserRankingCardRecordTextClasses()).toContain("text-xs text-muted-foreground");
+    });
+
+    it("ranking search styling helpers return expected class names", () => {
+      expect(getRankingSearchIconWrapperClasses()).toContain("absolute inset-y-0 left-4 flex items-center pointer-events-none");
+      expect(getRankingSearchIconClasses(true)).toContain("text-primary");
+      expect(getRankingSearchIconClasses(false)).toContain("text-muted-foreground");
+      expect(getRankingSearchPendingBarClasses()).toContain("absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors");
     });
   });
 });

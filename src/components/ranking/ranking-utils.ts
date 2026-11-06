@@ -1232,3 +1232,352 @@ export function getRankingSkeletonPodiumKeys(): number[] {
 export function getRankingSkeletonListItemKeys(): number[] {
   return [0, 1, 2, 3, 4, 5, 6, 7];
 }
+
+/**
+ * Returns Tailwind class names for pending confirmations header row
+ */
+export function getPendingConfirmationsHeaderClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations header icon
+ */
+export function getPendingConfirmationsHeaderIconClasses(): string {
+  return "h-5 w-5 text-primary shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations header text container
+ */
+export function getPendingConfirmationsHeaderTextClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations header title
+ */
+export function getPendingConfirmationsTitleClasses(): string {
+  return "text-sm font-bold text-foreground leading-tight";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations count description text
+ */
+export function getPendingConfirmationsCountClasses(): string {
+  return "text-xs text-muted-foreground mt-0.5";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmations list stack
+ */
+export function getPendingConfirmationsListClasses(): string {
+  return "space-y-2.5";
+}
+
+/**
+ * Returns Tailwind class names for individual pending confirmation info container
+ */
+export function getPendingConfirmationInfoClasses(): string {
+  return "flex flex-col gap-1 min-w-0";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation date display row
+ */
+export function getPendingConfirmationDateRowClasses(): string {
+  return "flex items-center gap-1.5 text-xs text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation calendar icon
+ */
+export function getPendingConfirmationCalendarIconClasses(): string {
+  return "h-3.5 w-3.5 text-muted-foreground/60 shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation score loaded label
+ */
+export function getPendingConfirmationScoreLoadedClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation score numeric value
+ */
+export function getPendingConfirmationScoreValueClasses(): string {
+  return "text-primary tabular-nums";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation score pending notice
+ */
+export function getPendingConfirmationScorePendingClasses(): string {
+  return "text-xs font-semibold text-destructive";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation action buttons group
+ */
+export function getPendingConfirmationActionsClasses(): string {
+  return "flex items-center gap-2 shrink-0";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation loading spinner icon
+ */
+export function getPendingConfirmationSpinnerIconClasses(): string {
+  return "h-3.5 w-3.5 animate-spin";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation check icon
+ */
+export function getPendingConfirmationCheckIconClasses(): string {
+  return "h-3.5 w-3.5";
+}
+
+/**
+ * Returns Tailwind class names for pending confirmation chevron icons
+ */
+export function getPendingConfirmationChevronIconClasses(size: "sm" | "md" = "sm"): string {
+  return size === "md" ? "h-4 w-4" : "h-3.5 w-3.5";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown loading skeleton container
+ */
+export function getRankingBreakdownSkeletonContainerClasses(): string {
+  return "space-y-2 py-1";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown skeleton items by width variant
+ */
+export function getRankingBreakdownSkeletonItemClasses(
+  width: "full" | "fiveSixths" | "fourFifths" = "full"
+): string {
+  switch (width) {
+    case "fiveSixths":
+      return "h-4 w-5/6 rounded";
+    case "fourFifths":
+      return "h-4 w-4/5 rounded";
+    case "full":
+    default:
+      return "h-4 w-full rounded";
+  }
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown error message text
+ */
+export function getRankingBreakdownErrorClasses(): string {
+  return "text-rose-500 font-semibold text-center";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown label container
+ */
+export function getRankingBreakdownLabelGroupClasses(): string {
+  return "flex items-center gap-1";
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown item icons
+ */
+export function getRankingBreakdownItemIconClasses(
+  color: "default" | "orange" | "primary" | "amber" | "rose" = "default"
+): string {
+  switch (color) {
+    case "orange":
+      return "h-3.5 w-3.5 text-orange-500";
+    case "primary":
+      return "h-3.5 w-3.5 text-primary";
+    case "amber":
+      return "h-3.5 w-3.5 text-amber-600";
+    case "rose":
+      return "h-3.5 w-3.5 text-rose-600";
+    case "default":
+    default:
+      return "h-3.5 w-3.5";
+  }
+}
+
+/**
+ * Returns Tailwind class names for ranking breakdown button loading spinner
+ */
+export function getRankingBreakdownSpinnerClasses(): string {
+  return "h-3 w-3 animate-spin";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner main row
+ */
+export function getUserRankingBannerRowClasses(): string {
+  return "flex items-center justify-between gap-4";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner left metrics group
+ */
+export function getUserRankingBannerLeftGroupClasses(): string {
+  return "flex items-center gap-4";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner individual stat column
+ */
+export function getUserRankingBannerStatColClasses(): string {
+  return "flex flex-col";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner stat label text
+ */
+export function getUserRankingBannerStatLabelClasses(): string {
+  return "text-xs font-medium text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner stat value text
+ */
+export function getUserRankingBannerStatValueClasses(): string {
+  return "text-2xl font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner right metrics group
+ */
+export function getUserRankingBannerRightGroupClasses(): string {
+  return "flex flex-col items-end gap-2";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner badges group
+ */
+export function getUserRankingBannerBadgesGroupClasses(): string {
+  return "flex items-center gap-1.5";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner metric badge
+ */
+export function getUserRankingBannerBadgeClasses(): string {
+  return "rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner record group
+ */
+export function getUserRankingBannerRecordGroupClasses(): string {
+  return "flex items-center gap-2";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingBanner record text
+ */
+export function getUserRankingBannerRecordTextClasses(): string {
+  return "text-xs font-medium text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard main row
+ */
+export function getUserRankingCardRowClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard left metrics group
+ */
+export function getUserRankingCardLeftGroupClasses(): string {
+  return "flex items-center gap-4";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard individual stat column
+ */
+export function getUserRankingCardStatColClasses(): string {
+  return "flex flex-col";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard stat label text
+ */
+export function getUserRankingCardStatLabelClasses(): string {
+  return "text-xs font-medium text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard position value text
+ */
+export function getUserRankingCardPositionValueClasses(): string {
+  return "text-2xl font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard points value text
+ */
+export function getUserRankingCardPointsValueClasses(): string {
+  return "text-xs font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard sub-badges group
+ */
+export function getUserRankingCardSubBadgesGroupClasses(): string {
+  return "flex items-center gap-1.5 mt-0.5";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard win rate badge
+ */
+export function getUserRankingCardWinRateBadgeClasses(): string {
+  return "text-xs font-bold text-primary";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard reputation badge
+ */
+export function getUserRankingCardReputationBadgeClasses(): string {
+  return "text-xs font-medium text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard right metrics group
+ */
+export function getUserRankingCardRightGroupClasses(): string {
+  return "flex flex-col items-end gap-1.5";
+}
+
+/**
+ * Returns Tailwind class names for UserRankingCard record text
+ */
+export function getUserRankingCardRecordTextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for RankingSearch icon wrapper
+ */
+export function getRankingSearchIconWrapperClasses(): string {
+  return "absolute inset-y-0 left-4 flex items-center pointer-events-none";
+}
+
+/**
+ * Returns Tailwind class names for RankingSearch icon depending on active state
+ */
+export function getRankingSearchIconClasses(isActive: boolean): string {
+  return cn(
+    "h-4 w-4 transition-colors",
+    isActive ? "text-primary" : "text-muted-foreground"
+  );
+}
+
+/**
+ * Returns Tailwind class names for RankingSearch pending bottom bar
+ */
+export function getRankingSearchPendingBarClasses(): string {
+  return "absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors";
+}
