@@ -38,6 +38,33 @@ import {
   getRankingBreakdownDividerClasses,
   getRankingBreakdownItemRowClasses,
   getRankingBreakdownValueClasses,
+  getRankingBreakdownSkeletonContainerClasses,
+  getRankingBreakdownSkeletonItemClasses,
+  getRankingBreakdownErrorClasses,
+  getRankingBreakdownLabelGroupClasses,
+  getRankingBreakdownItemIconClasses,
+  getRankingBreakdownSpinnerClasses,
+  getUserRankingBannerRowClasses,
+  getUserRankingBannerLeftGroupClasses,
+  getUserRankingBannerStatColClasses,
+  getUserRankingBannerStatLabelClasses,
+  getUserRankingBannerStatValueClasses,
+  getUserRankingBannerRightGroupClasses,
+  getUserRankingBannerBadgesGroupClasses,
+  getUserRankingBannerBadgeClasses,
+  getUserRankingBannerRecordGroupClasses,
+  getUserRankingBannerRecordTextClasses,
+  getUserRankingCardRowClasses,
+  getUserRankingCardLeftGroupClasses,
+  getUserRankingCardStatColClasses,
+  getUserRankingCardStatLabelClasses,
+  getUserRankingCardPositionValueClasses,
+  getUserRankingCardPointsValueClasses,
+  getUserRankingCardSubBadgesGroupClasses,
+  getUserRankingCardWinRateBadgeClasses,
+  getUserRankingCardReputationBadgeClasses,
+  getUserRankingCardRightGroupClasses,
+  getUserRankingCardRecordTextClasses,
 } from "@/components/ranking/ranking-utils";
 
 interface RankingBreakdownData {
@@ -112,7 +139,7 @@ function RankingBreakdown({ userId }: { userId: string }) {
       >
         {isPending ? (
           <>
-            <RefreshCw className="h-3 w-3 animate-spin" aria-hidden="true" />
+            <RefreshCw className={getRankingBreakdownSpinnerClasses()} aria-hidden="true" />
             <span>{buttonText}</span>
           </>
         ) : (
@@ -128,22 +155,22 @@ function RankingBreakdown({ userId }: { userId: string }) {
           className={getRankingBreakdownContainerClasses()}
         >
           {error && (
-            <p className="text-rose-500 font-semibold text-center">{error}</p>
+            <p className={getRankingBreakdownErrorClasses()}>{error}</p>
           )}
 
           {isPending && (
-            <div className="space-y-2 py-1">
-              <Skeleton className="h-4 w-full rounded" />
-              <Skeleton className="h-4 w-5/6 rounded" />
-              <Skeleton className="h-4 w-4/5 rounded" />
+            <div className={getRankingBreakdownSkeletonContainerClasses()}>
+              <Skeleton className={getRankingBreakdownSkeletonItemClasses("full")} />
+              <Skeleton className={getRankingBreakdownSkeletonItemClasses("fiveSixths")} />
+              <Skeleton className={getRankingBreakdownSkeletonItemClasses("fourFifths")} />
             </div>
           )}
 
           {!isPending && breakdown && (
             <>
               <div className={getRankingBreakdownItemRowClasses("default")}>
-                <span className="flex items-center gap-1">
-                  <Award className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownBasePointsLabel()}
+                <span className={getRankingBreakdownLabelGroupClasses()}>
+                  <Award className={getRankingBreakdownItemIconClasses("default")} aria-hidden="true" /> {getRankingBreakdownBasePointsLabel()}
                 </span>
                 <span className={getRankingBreakdownValueClasses("default")}>
                   {getRankingBreakdownPointsValueText(breakdown.basePoints, "+")}
@@ -151,8 +178,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
               </div>
 
               <div className={getRankingBreakdownItemRowClasses("default")}>
-                <span className="flex items-center gap-1">
-                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownWinsLabel(breakdown.wins)}
+                <span className={getRankingBreakdownLabelGroupClasses()}>
+                  <Trophy className={getRankingBreakdownItemIconClasses("default")} aria-hidden="true" /> {getRankingBreakdownWinsLabel(breakdown.wins)}
                 </span>
                 <span className={getRankingBreakdownValueClasses("default")}>
                   {getRankingBreakdownPointsValueText(breakdown.winPoints)}
@@ -160,8 +187,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
               </div>
 
               <div className={getRankingBreakdownItemRowClasses("default")}>
-                <span className="flex items-center gap-1">
-                  <Flame className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" /> {getRankingBreakdownStreakLabel(breakdown.streak)}
+                <span className={getRankingBreakdownLabelGroupClasses()}>
+                  <Flame className={getRankingBreakdownItemIconClasses("orange")} aria-hidden="true" /> {getRankingBreakdownStreakLabel(breakdown.streak)}
                 </span>
                 <span className={getRankingBreakdownValueClasses("default")}>
                   {getRankingBreakdownPointsValueText(breakdown.streakPoints)}
@@ -169,8 +196,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
               </div>
 
               <div className={getRankingBreakdownItemRowClasses("default")}>
-                <span className="flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" /> {getRankingBreakdownSetsLabel()}
+                <span className={getRankingBreakdownLabelGroupClasses()}>
+                  <Sparkles className={getRankingBreakdownItemIconClasses("primary")} aria-hidden="true" /> {getRankingBreakdownSetsLabel()}
                 </span>
                 <span className={getRankingBreakdownValueClasses("default")}>
                   {getRankingBreakdownPointsValueText(breakdown.setsWonBonus)}
@@ -179,8 +206,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
               {breakdown.lateCount > 0 && (
                 <div className={getRankingBreakdownItemRowClasses("late")}>
-                  <span className="flex items-center gap-1 text-amber-600">
-                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownLateLabel(breakdown.lateCount)}
+                  <span className={getRankingBreakdownLabelGroupClasses()}>
+                    <AlertTriangle className={getRankingBreakdownItemIconClasses("amber")} aria-hidden="true" /> {getRankingBreakdownLateLabel(breakdown.lateCount)}
                   </span>
                   <span className={getRankingBreakdownValueClasses("late")}>
                     -{getRankingBreakdownPointsValueText(breakdown.latePenalty, "")}
@@ -190,8 +217,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
               {breakdown.noShowCount > 0 && (
                 <div className={getRankingBreakdownItemRowClasses("noShow")}>
-                  <span className="flex items-center gap-1 text-rose-600">
-                    <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownNoShowLabel(breakdown.noShowCount)}
+                  <span className={getRankingBreakdownLabelGroupClasses()}>
+                    <AlertTriangle className={getRankingBreakdownItemIconClasses("rose")} aria-hidden="true" /> {getRankingBreakdownNoShowLabel(breakdown.noShowCount)}
                   </span>
                   <span className={getRankingBreakdownValueClasses("noShow")}>
                     -{getRankingBreakdownPointsValueText(breakdown.noShowPenalty, "")}
@@ -201,8 +228,8 @@ function RankingBreakdown({ userId }: { userId: string }) {
 
               {breakdown.decayFactor < 1.0 && (
                 <div className={getRankingBreakdownItemRowClasses("decay")}>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" aria-hidden="true" /> {getRankingBreakdownDecayLabel()}
+                  <span className={getRankingBreakdownLabelGroupClasses()}>
+                    <Calendar className={getRankingBreakdownItemIconClasses("default")} aria-hidden="true" /> {getRankingBreakdownDecayLabel()}
                   </span>
                   <span>{getRankingBreakdownDecayMultiplierText(breakdown.decayFactor)}</span>
                 </div>
@@ -258,35 +285,35 @@ export function UserRankingBanner({
       aria-label={summaryAriaLabel}
       className={getUserRankingBannerContainerClasses(className)}
     >
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("position")}</span>
-            <span className="text-2xl font-bold text-foreground">
+      <div className={getUserRankingBannerRowClasses()}>
+        <div className={getUserRankingBannerLeftGroupClasses()}>
+          <div className={getUserRankingBannerStatColClasses()}>
+            <span className={getUserRankingBannerStatLabelClasses()}>{getRankingStatLabel("position")}</span>
+            <span className={getUserRankingBannerStatValueClasses()}>
               {formatRankingPositionText(position, "S/P")}
             </span>
           </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("points")}</span>
-            <span className="text-2xl font-bold text-foreground">
+          <div className={getUserRankingBannerStatColClasses()}>
+            <span className={getUserRankingBannerStatLabelClasses()}>{getRankingStatLabel("points")}</span>
+            <span className={getUserRankingBannerStatValueClasses()}>
               {Math.round(score)}
             </span>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-1.5">
+        <div className={getUserRankingBannerRightGroupClasses()}>
+          <div className={getUserRankingBannerBadgesGroupClasses()}>
             {matchesPlayed > 0 && (
-              <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">
+              <span className={getUserRankingBannerBadgeClasses()}>
                 {winRate}% WR
               </span>
             )}
-            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">
+            <span className={getUserRankingBannerBadgeClasses()}>
               {reputationPercent}% Rep
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">
+          <div className={getUserRankingBannerRecordGroupClasses()}>
+            <span className={getUserRankingBannerRecordTextClasses()}>
               {formatMatchRecordText(wins, losses)}
             </span>
             {delta > 0 ? (
@@ -365,30 +392,30 @@ export function UserRankingCard({
       aria-label={summaryAriaLabel}
       className={getUserRankingCardContainerClasses(className)}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-muted-foreground">{getRankingStatLabel("myPosition")}</span>
-            <span className="text-2xl font-bold text-foreground">
+      <div className={getUserRankingCardRowClasses()}>
+        <div className={getUserRankingCardLeftGroupClasses()}>
+          <div className={getUserRankingCardStatColClasses()}>
+            <span className={getUserRankingCardStatLabelClasses()}>{getRankingStatLabel("myPosition")}</span>
+            <span className={getUserRankingCardPositionValueClasses()}>
               {formatRankingPositionText(position, "--")}
             </span>
           </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-foreground">
+          <div className={getUserRankingCardStatColClasses()}>
+            <span className={getUserRankingCardPointsValueClasses()}>
               {Math.round(score ?? 1000)} pts
             </span>
-            <div className="flex items-center gap-1.5 mt-0.5">
+            <div className={getUserRankingCardSubBadgesGroupClasses()}>
               {matchesPlayed > 0 && (
-                <span className="text-xs font-bold text-primary">{winRate}% WR</span>
+                <span className={getUserRankingCardWinRateBadgeClasses()}>{winRate}% WR</span>
               )}
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className={getUserRankingCardReputationBadgeClasses()}>
                 {reputationPercent}% Rep
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1.5">
+        <div className={getUserRankingCardRightGroupClasses()}>
           {delta && delta > 0 ? (
             <div
               className={getRankingDeltaClasses(delta)}
@@ -415,7 +442,7 @@ export function UserRankingCard({
             </div>
           )}
           {matchesPlayed > 0 && (
-            <span className="text-xs text-muted-foreground">
+            <span className={getUserRankingCardRecordTextClasses()}>
               {formatMatchRecordText(wins, losses)}
             </span>
           )}

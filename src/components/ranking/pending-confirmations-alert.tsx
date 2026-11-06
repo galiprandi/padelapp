@@ -27,6 +27,22 @@ import {
   getPendingMatchConfirmButtonClasses,
   getPendingMatchResultButtonClasses,
   getPendingMatchDetailButtonClasses,
+  getPendingConfirmationsHeaderClasses,
+  getPendingConfirmationsHeaderIconClasses,
+  getPendingConfirmationsHeaderTextClasses,
+  getPendingConfirmationsTitleClasses,
+  getPendingConfirmationsCountClasses,
+  getPendingConfirmationsListClasses,
+  getPendingConfirmationInfoClasses,
+  getPendingConfirmationDateRowClasses,
+  getPendingConfirmationCalendarIconClasses,
+  getPendingConfirmationScoreLoadedClasses,
+  getPendingConfirmationScoreValueClasses,
+  getPendingConfirmationScorePendingClasses,
+  getPendingConfirmationActionsClasses,
+  getPendingConfirmationSpinnerIconClasses,
+  getPendingConfirmationCheckIconClasses,
+  getPendingConfirmationChevronIconClasses,
 } from "./ranking-utils";
 
 interface PendingPlayer {
@@ -97,19 +113,19 @@ export function PendingConfirmationsAlert({
       aria-label={getRankingRegionAriaLabel("pending")}
       className={getPendingConfirmationsContainerClasses()}
     >
-      <div className="flex items-center gap-2">
-        <AlertCircle className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold text-foreground leading-tight">
+      <div className={getPendingConfirmationsHeaderClasses()}>
+        <AlertCircle className={getPendingConfirmationsHeaderIconClasses()} aria-hidden="true" />
+        <div className={getPendingConfirmationsHeaderTextClasses()}>
+          <h3 className={getPendingConfirmationsTitleClasses()}>
             {getPendingConfirmationsTitle()}
           </h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className={getPendingConfirmationsCountClasses()}>
             {getPendingConfirmationsCountText(pendingActions.length)}
           </p>
         </div>
       </div>
 
-      <div className="space-y-2.5">
+      <div className={getPendingConfirmationsListClasses()}>
         {pendingActions.map((match) => {
           const hasScore = !!match.score;
           const matchDateValue = match.date || match.createdAt;
@@ -122,24 +138,24 @@ export function PendingConfirmationsAlert({
               key={match.id}
               className={getPendingConfirmationsItemClasses()}
             >
-              <div className="flex flex-col gap-1 min-w-0">
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" aria-hidden="true" />
+              <div className={getPendingConfirmationInfoClasses()}>
+                <div className={getPendingConfirmationDateRowClasses()}>
+                  <Calendar className={getPendingConfirmationCalendarIconClasses()} aria-hidden="true" />
                   <span className="tabular-nums">{formattedDate}</span>
                 </div>
                 {hasScore ? (
-                  <p className="text-sm font-bold text-foreground">
+                  <p className={getPendingConfirmationScoreLoadedClasses()}>
                     {getPendingMatchScoreLoadedLabel()}{" "}
-                    <span className="text-primary tabular-nums">{match.score}</span>
+                    <span className={getPendingConfirmationScoreValueClasses()}>{match.score}</span>
                   </p>
                 ) : (
-                  <p className="text-xs font-semibold text-destructive">
+                  <p className={getPendingConfirmationScorePendingClasses()}>
                     {getPendingMatchScorePendingText()}
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className={getPendingConfirmationActionsClasses()}>
                 {hasScore ? (
                   <button
                     type="button"
@@ -150,9 +166,9 @@ export function PendingConfirmationsAlert({
                     className={getPendingMatchConfirmButtonClasses()}
                   >
                     {isThisConfirming ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                      <Loader2 className={getPendingConfirmationSpinnerIconClasses()} aria-hidden="true" />
                     ) : (
-                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                      <Check className={getPendingConfirmationCheckIconClasses()} aria-hidden="true" />
                     )}
                     {getPendingMatchConfirmButtonText()}
                   </button>
@@ -164,7 +180,7 @@ export function PendingConfirmationsAlert({
                     className={getPendingMatchResultButtonClasses()}
                   >
                     {getPendingMatchResultButtonText()}
-                    <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ChevronRight className={getPendingConfirmationChevronIconClasses("sm")} aria-hidden="true" />
                   </Link>
                 )}
                 <Link
@@ -173,7 +189,7 @@ export function PendingConfirmationsAlert({
                   aria-label={getPendingMatchDetailAriaLabel(formattedDate)}
                   className={getPendingMatchDetailButtonClasses()}
                 >
-                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  <ChevronRight className={getPendingConfirmationChevronIconClasses("md")} aria-hidden="true" />
                 </Link>
               </div>
             </div>
