@@ -26,6 +26,33 @@ import {
   getOnboardingDismissButtonClasses,
   getOnboardingStepBadgeClasses,
   getOnboardingStepButtonClasses,
+  getOnboardingHeaderClasses,
+  getOnboardingHeaderTextContainerClasses,
+  getOnboardingHeaderTitleClasses,
+  getOnboardingHeaderDescriptionClasses,
+  getOnboardingDismissIconClasses,
+  getOnboardingProgressContainerClasses,
+  getOnboardingProgressHeaderClasses,
+  getOnboardingProgressTitleClasses,
+  getOnboardingProgressValueClasses,
+  getOnboardingProgressBarBackgroundClasses,
+  getOnboardingProgressBarFillClasses,
+  getOnboardingStepsListClasses,
+  getOnboardingStepItemClasses,
+  getOnboardingStepBadgeColumnClasses,
+  getOnboardingStepConnectorLineClasses,
+  getOnboardingStepContentClasses,
+  getOnboardingStepHeaderRowClasses,
+  getOnboardingStepTitleClasses,
+  getOnboardingStepDescriptionClasses,
+  getOnboardingStepActionWrapperClasses,
+  getOnboardingStepCheckIconClasses,
+  getOnboardingStepActionSpinnerClasses,
+  getOnboardingStepActionDeviceIconClasses,
+  getOnboardingStepActionBellIconClasses,
+  getOnboardingUnsupportedNoticeClasses,
+  getOnboardingSuccessBannerClasses,
+  getOnboardingSuccessTextClasses,
 } from "../onboarding-checklist-utils";
 
 describe("calculateOnboardingProgress", () => {
@@ -162,6 +189,104 @@ describe("Onboarding text and ARIA pure helpers", () => {
 
   it("returns correct onboarding step CTA button CSS classes", () => {
     expect(getOnboardingStepButtonClasses()).toContain("h-9 text-xs font-bold border-border");
+  });
+});
+
+describe("Onboarding pure layout and styling helpers", () => {
+  it("returns correct header classes and merges custom class names", () => {
+    expect(getOnboardingHeaderClasses()).toBe("flex items-start justify-between gap-4");
+    expect(getOnboardingHeaderClasses("custom-header")).toContain("custom-header");
+
+    expect(getOnboardingHeaderTextContainerClasses()).toBe("space-y-1");
+    expect(getOnboardingHeaderTextContainerClasses("custom-container")).toContain("custom-container");
+
+    expect(getOnboardingHeaderTitleClasses()).toBe("text-base font-bold text-foreground");
+    expect(getOnboardingHeaderTitleClasses("custom-title")).toContain("custom-title");
+
+    expect(getOnboardingHeaderDescriptionClasses()).toBe("text-xs text-muted-foreground leading-normal");
+    expect(getOnboardingHeaderDescriptionClasses("custom-desc")).toContain("custom-desc");
+
+    expect(getOnboardingDismissIconClasses()).toBe("h-4 w-4");
+    expect(getOnboardingDismissIconClasses("custom-icon")).toContain("custom-icon");
+  });
+
+  it("returns correct progress container and bar classes", () => {
+    expect(getOnboardingProgressContainerClasses()).toBe("space-y-2");
+    expect(getOnboardingProgressContainerClasses("custom-progress")).toContain("custom-progress");
+
+    expect(getOnboardingProgressHeaderClasses()).toBe("flex justify-between items-center text-xs");
+    expect(getOnboardingProgressHeaderClasses("custom-pheader")).toContain("custom-pheader");
+
+    expect(getOnboardingProgressTitleClasses()).toBe("font-semibold text-foreground");
+    expect(getOnboardingProgressTitleClasses("custom-ptitle")).toContain("custom-ptitle");
+
+    expect(getOnboardingProgressValueClasses()).toBe("font-bold text-primary tabular-nums");
+    expect(getOnboardingProgressValueClasses("custom-pvalue")).toContain("custom-pvalue");
+
+    expect(getOnboardingProgressBarBackgroundClasses()).toBe("h-1.5 w-full bg-muted rounded-full overflow-hidden");
+    expect(getOnboardingProgressBarBackgroundClasses("custom-barbg")).toContain("custom-barbg");
+
+    expect(getOnboardingProgressBarFillClasses()).toBe("h-full bg-primary transition-all duration-500 ease-out rounded-full");
+    expect(getOnboardingProgressBarFillClasses("custom-barfill")).toContain("custom-barfill");
+  });
+
+  it("returns correct steps list, item and connector line classes", () => {
+    expect(getOnboardingStepsListClasses()).toBe("space-y-4 pt-1");
+    expect(getOnboardingStepsListClasses("custom-list")).toContain("custom-list");
+
+    expect(getOnboardingStepItemClasses()).toBe("flex gap-3");
+    expect(getOnboardingStepItemClasses("custom-item")).toContain("custom-item");
+
+    expect(getOnboardingStepBadgeColumnClasses()).toBe("flex flex-col items-center");
+    expect(getOnboardingStepBadgeColumnClasses("custom-badgecol")).toContain("custom-badgecol");
+
+    expect(getOnboardingStepConnectorLineClasses()).toBe("w-px flex-1 bg-border my-1 min-h-[16px]");
+    expect(getOnboardingStepConnectorLineClasses("custom-line")).toContain("custom-line");
+  });
+
+  it("returns correct step content classes with conditional padding", () => {
+    expect(getOnboardingStepContentClasses(false)).toBe("flex-1 space-y-1");
+    expect(getOnboardingStepContentClasses(true)).toBe("flex-1 space-y-1 pb-2");
+    expect(getOnboardingStepContentClasses(true, "custom-content")).toContain("custom-content");
+  });
+
+  it("returns correct step header, title, description and action wrapper classes", () => {
+    expect(getOnboardingStepHeaderRowClasses()).toBe("flex items-baseline justify-between gap-2");
+    expect(getOnboardingStepHeaderRowClasses("custom-row")).toContain("custom-row");
+
+    expect(getOnboardingStepTitleClasses()).toBe("text-xs font-bold text-foreground");
+    expect(getOnboardingStepTitleClasses("custom-stitle")).toContain("custom-stitle");
+
+    expect(getOnboardingStepDescriptionClasses()).toBe("text-xs text-muted-foreground leading-normal");
+    expect(getOnboardingStepDescriptionClasses("custom-sdesc")).toContain("custom-sdesc");
+
+    expect(getOnboardingStepActionWrapperClasses()).toBe("pt-1.5");
+    expect(getOnboardingStepActionWrapperClasses("custom-action")).toContain("custom-action");
+  });
+
+  it("returns correct step icon and spinner classes", () => {
+    expect(getOnboardingStepCheckIconClasses()).toBe("h-4 w-4");
+    expect(getOnboardingStepCheckIconClasses("custom-check")).toContain("custom-check");
+
+    expect(getOnboardingStepActionSpinnerClasses()).toBe("h-3.5 w-3.5 animate-spin mr-1");
+    expect(getOnboardingStepActionSpinnerClasses("custom-spin")).toContain("custom-spin");
+
+    expect(getOnboardingStepActionDeviceIconClasses()).toBe("h-3.5 w-3.5 mr-1");
+    expect(getOnboardingStepActionDeviceIconClasses("custom-dev")).toContain("custom-dev");
+
+    expect(getOnboardingStepActionBellIconClasses()).toBe("h-3.5 w-3.5 mr-1");
+    expect(getOnboardingStepActionBellIconClasses("custom-bell")).toContain("custom-bell");
+  });
+
+  it("returns correct unsupported notice and success banner classes", () => {
+    expect(getOnboardingUnsupportedNoticeClasses()).toBe("text-xs text-muted-foreground font-medium");
+    expect(getOnboardingUnsupportedNoticeClasses("custom-unsup")).toContain("custom-unsup");
+
+    expect(getOnboardingSuccessBannerClasses()).toBe("rounded-lg bg-muted border border-primary p-3 text-center shadow-xs");
+    expect(getOnboardingSuccessBannerClasses("custom-banner")).toContain("custom-banner");
+
+    expect(getOnboardingSuccessTextClasses()).toBe("text-xs font-bold text-foreground");
+    expect(getOnboardingSuccessTextClasses("custom-stext")).toContain("custom-stext");
   });
 });
 

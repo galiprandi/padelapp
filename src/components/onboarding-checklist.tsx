@@ -36,6 +36,33 @@ import {
   getOnboardingDismissButtonClasses,
   getOnboardingStepBadgeClasses,
   getOnboardingStepButtonClasses,
+  getOnboardingHeaderClasses,
+  getOnboardingHeaderTextContainerClasses,
+  getOnboardingHeaderTitleClasses,
+  getOnboardingHeaderDescriptionClasses,
+  getOnboardingDismissIconClasses,
+  getOnboardingProgressContainerClasses,
+  getOnboardingProgressHeaderClasses,
+  getOnboardingProgressTitleClasses,
+  getOnboardingProgressValueClasses,
+  getOnboardingProgressBarBackgroundClasses,
+  getOnboardingProgressBarFillClasses,
+  getOnboardingStepsListClasses,
+  getOnboardingStepItemClasses,
+  getOnboardingStepBadgeColumnClasses,
+  getOnboardingStepConnectorLineClasses,
+  getOnboardingStepContentClasses,
+  getOnboardingStepHeaderRowClasses,
+  getOnboardingStepTitleClasses,
+  getOnboardingStepDescriptionClasses,
+  getOnboardingStepActionWrapperClasses,
+  getOnboardingStepCheckIconClasses,
+  getOnboardingStepActionSpinnerClasses,
+  getOnboardingStepActionDeviceIconClasses,
+  getOnboardingStepActionBellIconClasses,
+  getOnboardingUnsupportedNoticeClasses,
+  getOnboardingSuccessBannerClasses,
+  getOnboardingSuccessTextClasses,
   type OnboardingStepsState,
 } from "@/components/onboarding-checklist-utils";
 
@@ -152,12 +179,12 @@ export function OnboardingChecklist({
       className={getOnboardingContainerClasses()}
     >
       {/* Header section with progress bar */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h2 className="text-base font-bold text-foreground">
+      <div className={getOnboardingHeaderClasses()}>
+        <div className={getOnboardingHeaderTextContainerClasses()}>
+          <h2 className={getOnboardingHeaderTitleClasses()}>
             {getOnboardingTitleText()}
           </h2>
-          <p className="text-xs text-muted-foreground leading-normal">
+          <p className={getOnboardingHeaderDescriptionClasses()}>
             {getOnboardingDescriptionText()}
           </p>
         </div>
@@ -168,56 +195,56 @@ export function OnboardingChecklist({
           aria-label={getOnboardingDismissAriaLabel()}
           className={getOnboardingDismissButtonClasses()}
         >
-          <X className="h-4 w-4" aria-hidden="true" />
+          <X className={getOnboardingDismissIconClasses()} aria-hidden="true" />
         </Button>
       </div>
 
       {/* Progress display */}
-      <div className="space-y-2">
-        <div className="flex justify-between items-center text-xs">
-          <span className="font-semibold text-foreground">
+      <div className={getOnboardingProgressContainerClasses()}>
+        <div className={getOnboardingProgressHeaderClasses()}>
+          <span className={getOnboardingProgressTitleClasses()}>
             {getOnboardingProgressTitleText()}
           </span>
-          <span className="font-bold text-primary tabular-nums">
+          <span className={getOnboardingProgressValueClasses()}>
             {getOnboardingProgressText(completedCount, progressPercent)}
           </span>
         </div>
-        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+        <div className={getOnboardingProgressBarBackgroundClasses()}>
           <div
-            className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+            className={getOnboardingProgressBarFillClasses()}
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
       {/* Steps List */}
-      <div className="space-y-4 pt-1">
+      <div className={getOnboardingStepsListClasses()}>
         {/* Step 1: Profile Alias */}
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
+        <div className={getOnboardingStepItemClasses()}>
+          <div className={getOnboardingStepBadgeColumnClasses()}>
             <div
               aria-label={getStepStatusAriaLabel(1, getOnboardingStepTitleText("alias"), stepAliasCompleted)}
               className={getOnboardingStepBadgeClasses(stepAliasCompleted)}
             >
               {stepAliasCompleted ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
+                <Check className={getOnboardingStepCheckIconClasses()} aria-hidden="true" />
               ) : (
                 "1"
               )}
             </div>
-            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
+            <div className={getOnboardingStepConnectorLineClasses()} />
           </div>
-          <div className="flex-1 space-y-1 pb-2">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-xs font-bold text-foreground">
+          <div className={getOnboardingStepContentClasses(true)}>
+            <div className={getOnboardingStepHeaderRowClasses()}>
+              <h3 className={getOnboardingStepTitleClasses()}>
                 {getOnboardingStepTitleText("alias")}
               </h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-normal">
+            <p className={getOnboardingStepDescriptionClasses()}>
               {getOnboardingStepDescriptionText("alias")}
             </p>
             {!stepAliasCompleted && (
-              <div className="pt-1.5">
+              <div className={getOnboardingStepActionWrapperClasses()}>
                 <Button
                   variant="outline"
                   size="sm"
@@ -233,31 +260,31 @@ export function OnboardingChecklist({
         </div>
 
         {/* Step 2: First Turn (aha moment) */}
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
+        <div className={getOnboardingStepItemClasses()}>
+          <div className={getOnboardingStepBadgeColumnClasses()}>
             <div
               aria-label={getStepStatusAriaLabel(2, getOnboardingStepTitleText("activity"), stepActivityCompleted)}
               className={getOnboardingStepBadgeClasses(stepActivityCompleted)}
             >
               {stepActivityCompleted ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
+                <Check className={getOnboardingStepCheckIconClasses()} aria-hidden="true" />
               ) : (
                 "2"
               )}
             </div>
-            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
+            <div className={getOnboardingStepConnectorLineClasses()} />
           </div>
-          <div className="flex-1 space-y-1 pb-2">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-xs font-bold text-foreground">
+          <div className={getOnboardingStepContentClasses(true)}>
+            <div className={getOnboardingStepHeaderRowClasses()}>
+              <h3 className={getOnboardingStepTitleClasses()}>
                 {getOnboardingStepTitleText("activity")}
               </h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-normal">
+            <p className={getOnboardingStepDescriptionClasses()}>
               {getOnboardingStepDescriptionText("activity")}
             </p>
             {!stepActivityCompleted && (
-              <div className="pt-1.5">
+              <div className={getOnboardingStepActionWrapperClasses()}>
                 <Button
                   variant="outline"
                   size="sm"
@@ -273,31 +300,31 @@ export function OnboardingChecklist({
         </div>
 
         {/* Step 3: Install App (PWA) */}
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
+        <div className={getOnboardingStepItemClasses()}>
+          <div className={getOnboardingStepBadgeColumnClasses()}>
             <div
               aria-label={getStepStatusAriaLabel(3, getOnboardingStepTitleText("pwa"), stepPwaCompleted)}
               className={getOnboardingStepBadgeClasses(stepPwaCompleted)}
             >
               {stepPwaCompleted ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
+                <Check className={getOnboardingStepCheckIconClasses()} aria-hidden="true" />
               ) : (
                 "3"
               )}
             </div>
-            <div className="w-px flex-1 bg-border my-1 min-h-[16px]" />
+            <div className={getOnboardingStepConnectorLineClasses()} />
           </div>
-          <div className="flex-1 space-y-1 pb-2">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-xs font-bold text-foreground">
+          <div className={getOnboardingStepContentClasses(true)}>
+            <div className={getOnboardingStepHeaderRowClasses()}>
+              <h3 className={getOnboardingStepTitleClasses()}>
                 {getOnboardingStepTitleText("pwa")}
               </h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-normal">
+            <p className={getOnboardingStepDescriptionClasses()}>
               {getOnboardingStepDescriptionText("pwa")}
             </p>
             {!stepPwaCompleted && (
-              <div className="pt-1.5">
+              <div className={getOnboardingStepActionWrapperClasses()}>
                 {deferredPrompt ? (
                   <Button
                     variant="outline"
@@ -309,9 +336,9 @@ export function OnboardingChecklist({
                     aria-label={getOnboardingStepButtonAriaLabel("pwa-install", isInstalling)}
                   >
                     {isInstalling ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
+                      <Loader2 className={getOnboardingStepActionSpinnerClasses()} aria-hidden="true" />
                     ) : (
-                      <Smartphone className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+                      <Smartphone className={getOnboardingStepActionDeviceIconClasses()} aria-hidden="true" />
                     )}
                     {getOnboardingStepButtonText("pwa-install")}
                   </Button>
@@ -332,32 +359,32 @@ export function OnboardingChecklist({
         </div>
 
         {/* Step 4: Enable Push Notifications */}
-        <div className="flex gap-3">
-          <div className="flex flex-col items-center">
+        <div className={getOnboardingStepItemClasses()}>
+          <div className={getOnboardingStepBadgeColumnClasses()}>
             <div
               aria-label={getStepStatusAriaLabel(4, getOnboardingStepTitleText("notifications"), stepNotificationsCompleted)}
               className={getOnboardingStepBadgeClasses(stepNotificationsCompleted)}
             >
               {stepNotificationsCompleted ? (
-                <Check className="h-4 w-4" aria-hidden="true" />
+                <Check className={getOnboardingStepCheckIconClasses()} aria-hidden="true" />
               ) : (
                 "4"
               )}
             </div>
           </div>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-xs font-bold text-foreground">
+          <div className={getOnboardingStepContentClasses(false)}>
+            <div className={getOnboardingStepHeaderRowClasses()}>
+              <h3 className={getOnboardingStepTitleClasses()}>
                 {getOnboardingStepTitleText("notifications")}
               </h3>
             </div>
-            <p className="text-xs text-muted-foreground leading-normal">
+            <p className={getOnboardingStepDescriptionClasses()}>
               {getOnboardingStepDescriptionText("notifications")}
             </p>
             {!stepNotificationsCompleted && (
-              <div className="pt-1.5">
+              <div className={getOnboardingStepActionWrapperClasses()}>
                 {permission === "unsupported" ? (
-                  <span className="text-xs text-muted-foreground font-medium">
+                  <span className={getOnboardingUnsupportedNoticeClasses()}>
                     {getOnboardingNotificationToastMessage("unsupported")}
                   </span>
                 ) : (
@@ -378,9 +405,9 @@ export function OnboardingChecklist({
                     aria-label={getOnboardingStepButtonAriaLabel("notifications", notificationLoading)}
                   >
                     {notificationLoading ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" aria-hidden="true" />
+                      <Loader2 className={getOnboardingStepActionSpinnerClasses()} aria-hidden="true" />
                     ) : (
-                      <Bell className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+                      <Bell className={getOnboardingStepActionBellIconClasses()} aria-hidden="true" />
                     )}
                     {getOnboardingStepButtonText("notifications")}
                   </Button>
@@ -393,8 +420,8 @@ export function OnboardingChecklist({
 
       {/* Congratulatory / All Done Message */}
       {completedCount === 4 && (
-        <div className="rounded-lg bg-muted border border-primary p-3 text-center shadow-xs">
-          <p className="text-xs font-bold text-foreground">
+        <div className={getOnboardingSuccessBannerClasses()}>
+          <p className={getOnboardingSuccessTextClasses()}>
             {getOnboardingCompletedSuccessText()}
           </p>
         </div>

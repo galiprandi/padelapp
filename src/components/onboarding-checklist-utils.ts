@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const ONBOARDING_CHECKLIST_DISMISS_KEY = "onboarding-checklist-dismissed";
 export const ONBOARDING_REDIRECT_KEY = "onboarding-redirected";
 
@@ -235,4 +237,112 @@ export function getOnboardingStepBadgeClasses(isCompleted: boolean): string {
  */
 export function getOnboardingStepButtonClasses(): string {
   return "h-9 text-xs font-bold border-border hover:bg-muted text-foreground active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getOnboardingHeaderClasses(customClassName?: string): string {
+  return cn("flex items-start justify-between gap-4", customClassName);
+}
+
+export function getOnboardingHeaderTextContainerClasses(customClassName?: string): string {
+  return cn("space-y-1", customClassName);
+}
+
+export function getOnboardingHeaderTitleClasses(customClassName?: string): string {
+  return cn("text-base font-bold text-foreground", customClassName);
+}
+
+export function getOnboardingHeaderDescriptionClasses(customClassName?: string): string {
+  return cn("text-xs text-muted-foreground leading-normal", customClassName);
+}
+
+export function getOnboardingDismissIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4", customClassName);
+}
+
+export function getOnboardingProgressContainerClasses(customClassName?: string): string {
+  return cn("space-y-2", customClassName);
+}
+
+export function getOnboardingProgressHeaderClasses(customClassName?: string): string {
+  return cn("flex justify-between items-center text-xs", customClassName);
+}
+
+export function getOnboardingProgressTitleClasses(customClassName?: string): string {
+  return cn("font-semibold text-foreground", customClassName);
+}
+
+export function getOnboardingProgressValueClasses(customClassName?: string): string {
+  return cn("font-bold text-primary tabular-nums", customClassName);
+}
+
+export function getOnboardingProgressBarBackgroundClasses(customClassName?: string): string {
+  return cn("h-1.5 w-full bg-muted rounded-full overflow-hidden", customClassName);
+}
+
+export function getOnboardingProgressBarFillClasses(customClassName?: string): string {
+  return cn("h-full bg-primary transition-all duration-500 ease-out rounded-full", customClassName);
+}
+
+export function getOnboardingStepsListClasses(customClassName?: string): string {
+  return cn("space-y-4 pt-1", customClassName);
+}
+
+export function getOnboardingStepItemClasses(customClassName?: string): string {
+  return cn("flex gap-3", customClassName);
+}
+
+export function getOnboardingStepBadgeColumnClasses(customClassName?: string): string {
+  return cn("flex flex-col items-center", customClassName);
+}
+
+export function getOnboardingStepConnectorLineClasses(customClassName?: string): string {
+  return cn("w-px flex-1 bg-border my-1 min-h-[16px]", customClassName);
+}
+
+export function getOnboardingStepContentClasses(hasPaddingBottom = false, customClassName?: string): string {
+  return cn("flex-1 space-y-1", hasPaddingBottom && "pb-2", customClassName);
+}
+
+export function getOnboardingStepHeaderRowClasses(customClassName?: string): string {
+  return cn("flex items-baseline justify-between gap-2", customClassName);
+}
+
+export function getOnboardingStepTitleClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-foreground", customClassName);
+}
+
+export function getOnboardingStepDescriptionClasses(customClassName?: string): string {
+  return cn("text-xs text-muted-foreground leading-normal", customClassName);
+}
+
+export function getOnboardingStepActionWrapperClasses(customClassName?: string): string {
+  return cn("pt-1.5", customClassName);
+}
+
+export function getOnboardingStepCheckIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4", customClassName);
+}
+
+export function getOnboardingStepActionSpinnerClasses(customClassName?: string): string {
+  return cn("h-3.5 w-3.5 animate-spin mr-1", customClassName);
+}
+
+export function getOnboardingStepActionDeviceIconClasses(customClassName?: string): string {
+  return cn("h-3.5 w-3.5 mr-1", customClassName);
+}
+
+export function getOnboardingStepActionBellIconClasses(customClassName?: string): string {
+  return cn("h-3.5 w-3.5 mr-1", customClassName);
+}
+
+export function getOnboardingUnsupportedNoticeClasses(customClassName?: string): string {
+  return cn("text-xs text-muted-foreground font-medium", customClassName);
+}
+
+export function getOnboardingSuccessBannerClasses(customClassName?: string): string {
+  return cn("rounded-lg bg-muted border border-primary p-3 text-center shadow-xs", customClassName);
+}
+
+export function getOnboardingSuccessTextClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-foreground", customClassName);
 }
