@@ -689,6 +689,48 @@ import {
   getNetworkSkeletonTopPlayerNameClasses,
   getNetworkSkeletonTopPlayerSubtextClasses,
   getNetworkSkeletonTopPlayerScoreClasses,
+  getGraphViewScopeContainerClasses,
+  getGraphViewDensityWrapperClasses,
+  getGraphViewNodeLinkCountBadgeClasses,
+  getGraphViewActiveCommunityContentClasses,
+  getGraphViewActiveCommunityDotClasses,
+  getGraphViewActiveCommunityTitleClasses,
+  getGraphViewActiveCommunityTextClasses,
+  getGraphViewActiveCommunityClearButtonClasses,
+  getEmptyPersonalNetworkIconContainerClasses,
+  getEmptyPersonalNetworkIconClasses,
+  getEmptyPersonalNetworkTextContainerClasses,
+  getEmptyPersonalNetworkTitleClasses,
+  getEmptyPersonalNetworkDescriptionClasses,
+  getEmptyPersonalNetworkActionsClasses,
+  getEmptyPersonalNetworkSearchTurnsButtonClasses,
+  getEmptyPersonalNetworkViewGlobalButtonClasses,
+  getGraphViewDetailHeaderClasses,
+  getGraphViewDetailImageAvatarClasses,
+  getGraphViewDetailFallbackAvatarClasses,
+  getGraphViewDetailInfoContainerClasses,
+  getGraphViewDetailNameClasses,
+  getGraphViewDetailBadgesContainerClasses,
+  getGraphViewDetailStatsTextClasses,
+  getGraphViewDetailCloseButtonClasses,
+  getGraphViewDetailScoreGridClasses,
+  getGraphViewDetailGroupButtonClasses,
+  getGraphViewDetailGroupEmptyClasses,
+  getGraphViewDetailConnectionsDividerClasses,
+  getGraphViewDetailConnectionsHeaderClasses,
+  getGraphViewDetailConnectionsListClasses,
+  getGraphViewConnectionHeaderRowClasses,
+  getGraphViewConnectionFocusButtonClasses,
+  getGraphViewConnectionNameClasses,
+  getGraphViewConnectionRecordClasses,
+  getGraphViewConnectionSubrowClasses,
+  getSideCompatibilityBadgeClasses,
+  getGraphViewLegendTitleClasses,
+  getGraphViewLegendListClasses,
+  getGraphViewLegendItemClasses,
+  getGraphViewLegendDotClasses,
+  getGraphViewLegendItemTextClasses,
+  getFilterChipCommunityDotClasses,
   getStatsPanelRegionAriaLabel,
   getTopClubTurnsMatchesText,
   getTopPlayerActivityAriaLabel,
@@ -2497,5 +2539,81 @@ describe("NetworkSkeleton layout, dimension, tab label & iteration key pure help
     expect(getNetworkSkeletonTopPlayerNameClasses()).toBe("h-4 w-24");
     expect(getNetworkSkeletonTopPlayerSubtextClasses()).toBe("h-3 w-16");
     expect(getNetworkSkeletonTopPlayerScoreClasses()).toBe("h-4 w-6");
+  });
+
+  it("returns correct CSS classes for GraphView pure styling helpers", () => {
+    expect(getGraphViewScopeContainerClasses()).toBe("flex flex-col gap-1.5");
+    expect(getGraphViewDensityWrapperClasses()).toBe("ml-auto flex items-center gap-1.5 shrink-0");
+    expect(getGraphViewNodeLinkCountBadgeClasses()).toBe(
+      "text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0"
+    );
+
+    expect(getGraphViewActiveCommunityContentClasses()).toBe("flex items-center gap-2 min-w-0 flex-wrap");
+    expect(getGraphViewActiveCommunityDotClasses()).toBe("h-2.5 w-2.5 rounded-full shrink-0");
+    expect(getGraphViewActiveCommunityTitleClasses()).toBe("font-bold text-foreground shrink-0");
+    expect(getGraphViewActiveCommunityTextClasses()).toBe("text-muted-foreground truncate");
+    expect(getGraphViewActiveCommunityClearButtonClasses()).toBe(
+      "text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto"
+    );
+
+    expect(getEmptyPersonalNetworkIconContainerClasses()).toBe(
+      "mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted"
+    );
+    expect(getEmptyPersonalNetworkIconClasses()).toBe("h-5 w-5 text-muted-foreground");
+    expect(getEmptyPersonalNetworkTextContainerClasses()).toBe("space-y-1");
+    expect(getEmptyPersonalNetworkTitleClasses()).toBe("text-sm font-bold text-foreground");
+    expect(getEmptyPersonalNetworkDescriptionClasses()).toBe("text-xs text-muted-foreground max-w-sm mx-auto");
+    expect(getEmptyPersonalNetworkActionsClasses()).toBe("flex gap-2 justify-center");
+    expect(getEmptyPersonalNetworkSearchTurnsButtonClasses()).toBe(
+      "inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    );
+    expect(getEmptyPersonalNetworkViewGlobalButtonClasses()).toBe(
+      "inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-bold text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    );
+
+    expect(getGraphViewDetailHeaderClasses()).toBe("flex items-center gap-3 mb-3");
+    expect(getGraphViewDetailImageAvatarClasses()).toBe("h-12 w-12 rounded-full object-cover ring-2 ring-border");
+    expect(getGraphViewDetailFallbackAvatarClasses()).toBe(
+      "h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border"
+    );
+    expect(getGraphViewDetailInfoContainerClasses()).toBe("flex-1 min-w-0");
+    expect(getGraphViewDetailNameClasses()).toBe("text-sm font-bold text-foreground truncate");
+    expect(getGraphViewDetailBadgesContainerClasses()).toBe("flex items-center gap-1.5 flex-wrap mt-0.5");
+    expect(getGraphViewDetailStatsTextClasses()).toBe("text-xs text-muted-foreground");
+    expect(getGraphViewDetailCloseButtonClasses()).toBe(
+      "text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    );
+    expect(getGraphViewDetailScoreGridClasses()).toBe("grid grid-cols-3 gap-2 mb-3");
+    expect(getGraphViewDetailGroupButtonClasses()).toBe(
+      "w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md"
+    );
+    expect(getGraphViewDetailGroupEmptyClasses()).toBe("text-sm font-bold text-muted-foreground");
+    expect(getGraphViewDetailConnectionsDividerClasses()).toBe("pt-3 border-t border-border");
+    expect(getGraphViewDetailConnectionsHeaderClasses()).toBe("text-xs text-muted-foreground mb-2 font-medium");
+    expect(getGraphViewDetailConnectionsListClasses()).toBe("space-y-1.5 max-h-44 overflow-y-auto pr-1");
+
+    expect(getGraphViewConnectionHeaderRowClasses()).toBe("flex items-center justify-between gap-2");
+    expect(getGraphViewConnectionFocusButtonClasses()).toBe(
+      "flex items-center gap-2 flex-1 min-w-0 text-left active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md"
+    );
+    expect(getGraphViewConnectionNameClasses()).toBe("text-xs font-medium text-foreground truncate");
+    expect(getGraphViewConnectionRecordClasses()).toBe(
+      "text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1 flex items-center gap-1.5"
+    );
+    expect(getGraphViewConnectionSubrowClasses()).toBe("flex items-center gap-1.5 pl-8 flex-wrap");
+
+    expect(getSideCompatibilityBadgeClasses(true)).toBe(
+      "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+    );
+    expect(getSideCompatibilityBadgeClasses(false)).toBe(
+      "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800"
+    );
+
+    expect(getGraphViewLegendTitleClasses()).toBe("text-xs text-muted-foreground mb-1.5 font-medium");
+    expect(getGraphViewLegendListClasses()).toBe("flex flex-col gap-1.5");
+    expect(getGraphViewLegendItemClasses()).toBe("flex items-center gap-2");
+    expect(getGraphViewLegendDotClasses("bg-red-500")).toBe("h-3 w-3 rounded-full bg-red-500");
+    expect(getGraphViewLegendItemTextClasses()).toBe("text-xs text-muted-foreground");
+    expect(getFilterChipCommunityDotClasses()).toBe("h-2 w-2 rounded-full shrink-0");
   });
 });

@@ -4918,3 +4918,177 @@ export function filterTopPlayersByNetworkSize(
     .sort((a, b) => b.networkSize - a.networkSize)
     .slice(0, limit);
 }
+
+// -----------------------------------------------------------------------------
+// GraphView UI Styling & Layout Pure Helpers
+// -----------------------------------------------------------------------------
+
+export function getGraphViewScopeContainerClasses(): string {
+  return "flex flex-col gap-1.5";
+}
+
+export function getGraphViewDensityWrapperClasses(): string {
+  return "ml-auto flex items-center gap-1.5 shrink-0";
+}
+
+export function getGraphViewNodeLinkCountBadgeClasses(): string {
+  return "text-xs text-muted-foreground tabular-nums bg-card px-2 py-1 rounded-md border border-border shrink-0";
+}
+
+export function getGraphViewActiveCommunityContentClasses(): string {
+  return "flex items-center gap-2 min-w-0 flex-wrap";
+}
+
+export function getGraphViewActiveCommunityDotClasses(): string {
+  return "h-2.5 w-2.5 rounded-full shrink-0";
+}
+
+export function getGraphViewActiveCommunityTitleClasses(): string {
+  return "font-bold text-foreground shrink-0";
+}
+
+export function getGraphViewActiveCommunityTextClasses(): string {
+  return "text-muted-foreground truncate";
+}
+
+export function getGraphViewActiveCommunityClearButtonClasses(): string {
+  return "text-xs font-bold text-primary hover:underline shrink-0 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md px-1.5 py-0.5 ml-auto";
+}
+
+export function getEmptyPersonalNetworkIconContainerClasses(): string {
+  return "mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted";
+}
+
+export function getEmptyPersonalNetworkIconClasses(): string {
+  return "h-5 w-5 text-muted-foreground";
+}
+
+export function getEmptyPersonalNetworkTextContainerClasses(): string {
+  return "space-y-1";
+}
+
+export function getEmptyPersonalNetworkTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+export function getEmptyPersonalNetworkDescriptionClasses(): string {
+  return "text-xs text-muted-foreground max-w-sm mx-auto";
+}
+
+export function getEmptyPersonalNetworkActionsClasses(): string {
+  return "flex gap-2 justify-center";
+}
+
+export function getEmptyPersonalNetworkSearchTurnsButtonClasses(): string {
+  return "inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getEmptyPersonalNetworkViewGlobalButtonClasses(): string {
+  return "inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-bold text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getGraphViewDetailHeaderClasses(): string {
+  return "flex items-center gap-3 mb-3";
+}
+
+export function getGraphViewDetailImageAvatarClasses(): string {
+  return "h-12 w-12 rounded-full object-cover ring-2 ring-border";
+}
+
+export function getGraphViewDetailFallbackAvatarClasses(): string {
+  return "h-12 w-12 rounded-full flex items-center justify-center text-base font-bold text-white ring-2 ring-border";
+}
+
+export function getGraphViewDetailInfoContainerClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+export function getGraphViewDetailNameClasses(): string {
+  return "text-sm font-bold text-foreground truncate";
+}
+
+export function getGraphViewDetailBadgesContainerClasses(): string {
+  return "flex items-center gap-1.5 flex-wrap mt-0.5";
+}
+
+export function getGraphViewDetailStatsTextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getGraphViewDetailCloseButtonClasses(): string {
+  return "text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getGraphViewDetailScoreGridClasses(): string {
+  return "grid grid-cols-3 gap-2 mb-3";
+}
+
+export function getGraphViewDetailGroupButtonClasses(): string {
+  return "w-full text-center font-bold text-sm hover:underline active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-md";
+}
+
+export function getGraphViewDetailGroupEmptyClasses(): string {
+  return "text-sm font-bold text-muted-foreground";
+}
+
+export function getGraphViewDetailConnectionsDividerClasses(): string {
+  return "pt-3 border-t border-border";
+}
+
+export function getGraphViewDetailConnectionsHeaderClasses(): string {
+  return "text-xs text-muted-foreground mb-2 font-medium";
+}
+
+export function getGraphViewDetailConnectionsListClasses(): string {
+  return "space-y-1.5 max-h-44 overflow-y-auto pr-1";
+}
+
+export function getGraphViewConnectionHeaderRowClasses(): string {
+  return "flex items-center justify-between gap-2";
+}
+
+export function getGraphViewConnectionFocusButtonClasses(): string {
+  return "flex items-center gap-2 flex-1 min-w-0 text-left active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-md";
+}
+
+export function getGraphViewConnectionNameClasses(): string {
+  return "text-xs font-medium text-foreground truncate";
+}
+
+export function getGraphViewConnectionRecordClasses(): string {
+  return "text-muted-foreground text-xs font-semibold tabular-nums ml-auto shrink-0 pr-1 flex items-center gap-1.5";
+}
+
+export function getGraphViewConnectionSubrowClasses(): string {
+  return "flex items-center gap-1.5 pl-8 flex-wrap";
+}
+
+export function getSideCompatibilityBadgeClasses(isComplementary: boolean): string {
+  return isComplementary
+    ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+    : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-800";
+}
+
+export function getGraphViewLegendTitleClasses(): string {
+  return "text-xs text-muted-foreground mb-1.5 font-medium";
+}
+
+export function getGraphViewLegendListClasses(): string {
+  return "flex flex-col gap-1.5";
+}
+
+export function getGraphViewLegendItemClasses(): string {
+  return "flex items-center gap-2";
+}
+
+export function getGraphViewLegendDotClasses(colorClass: string): string {
+  return `h-3 w-3 rounded-full ${colorClass}`;
+}
+
+export function getGraphViewLegendItemTextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getFilterChipCommunityDotClasses(): string {
+  return "h-2 w-2 rounded-full shrink-0";
+}
