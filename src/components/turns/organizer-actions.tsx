@@ -27,6 +27,11 @@ import {
   getRemovePlayerRegionContainerClasses,
   getRemovePlayerConfirmRegionClasses,
   getAssignSubstituteRegionContainerClasses,
+  getRemovePlayerTriggerIconClasses,
+  getRemovePlayerConfirmSpinnerClasses,
+  getRemovePlayerDismissIconClasses,
+  getAssignSubstituteSpinnerClasses,
+  getAssignSubstituteIconClasses,
 } from "@/components/turns/turn-utils";
 
 export function RemovePlayerButton({
@@ -71,7 +76,7 @@ export function RemovePlayerButton({
           className={getRemovePlayerTriggerButtonClasses()}
           aria-label={getRemovePlayerAriaLabel({ playerName })}
         >
-          <UserMinus className="h-4 w-4" />
+          <UserMinus className={getRemovePlayerTriggerIconClasses()} />
         </button>
       </div>
     );
@@ -107,7 +112,7 @@ export function RemovePlayerButton({
         })}
       >
         {isPending ? (
-          <Loader2 className="h-3 w-3 animate-spin" />
+          <Loader2 className={getRemovePlayerConfirmSpinnerClasses()} />
         ) : (
           getRemovePlayerConfirmText()
         )}
@@ -122,7 +127,7 @@ export function RemovePlayerButton({
         className={getRemovePlayerDismissButtonClasses()}
         aria-label={getRemovePlayerCancelAriaLabel(playerName)}
       >
-        <X className="h-3.5 w-3.5" />
+        <X className={getRemovePlayerDismissIconClasses()} />
       </button>
     </div>
   );
@@ -174,9 +179,9 @@ export function AssignSubstituteButton({
         })}
       >
         {isPending ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <Loader2 className={getAssignSubstituteSpinnerClasses()} />
         ) : (
-          <UserCheck className="h-3.5 w-3.5" />
+          <UserCheck className={getAssignSubstituteIconClasses()} />
         )}
         {getAssignSubstituteButtonText(isPending)}
       </button>

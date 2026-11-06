@@ -2837,6 +2837,335 @@ export function getTurnShareData({
 }
 
 /**
+ * Format CSS classes for cancel turn trash icon.
+ */
+export function getCancelTurnTrashIconClasses(): string {
+  return "mr-2 h-4 w-4";
+}
+
+/**
+ * Format CSS classes for cancel turn dismiss icon.
+ */
+export function getCancelTurnDismissIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Format CSS classes for cancel turn pending spinner.
+ */
+export function getCancelTurnSpinnerClasses(): string {
+  return "mr-1.5 h-3.5 w-3.5 animate-spin";
+}
+
+/**
+ * Format CSS classes for cancel turn confirm trash icon.
+ */
+export function getCancelTurnConfirmTrashIconClasses(): string {
+  return "mr-1.5 h-3.5 w-3.5";
+}
+
+/**
+ * Format CSS classes for quick join pending spinner.
+ */
+export function getQuickJoinSpinnerClasses(): string {
+  return "mr-1 h-3.5 w-3.5 animate-spin";
+}
+
+/**
+ * Format CSS classes for start match pending spinner.
+ */
+export function getStartMatchSpinnerClasses(): string {
+  return "mr-2 h-5 w-5 animate-spin";
+}
+
+/**
+ * Format CSS classes for start match play icon.
+ */
+export function getStartMatchPlayIconClasses(): string {
+  return "mr-2 h-5 w-5 fill-current";
+}
+
+/**
+ * Format CSS classes for join turn pending spinner.
+ */
+export function getJoinTurnSpinnerClasses(): string {
+  return "mr-2 h-5 w-5 animate-spin";
+}
+
+/**
+ * Format CSS classes for join turn user icon.
+ */
+export function getJoinTurnUserIconClasses(): string {
+  return "mr-2 h-5 w-5";
+}
+
+/**
+ * Format CSS classes for join substitute pending spinner.
+ */
+export function getJoinSubstituteSpinnerClasses(): string {
+  return "mr-2 h-5 w-5 animate-spin";
+}
+
+/**
+ * Format CSS classes for join substitute user icon.
+ */
+export function getJoinSubstituteUserIconClasses(): string {
+  return "mr-2 h-5 w-5";
+}
+
+/**
+ * Format CSS classes for leave substitute pending spinner.
+ */
+export function getLeaveSubstituteSpinnerClasses(): string {
+  return "mr-2 h-4 w-4 animate-spin";
+}
+
+/**
+ * Format CSS classes for leave substitute logout icon.
+ */
+export function getLeaveSubstituteLogOutIconClasses(): string {
+  return "mr-2 h-4 w-4";
+}
+
+/**
+ * Format CSS classes for take open slot pending spinner.
+ */
+export function getTakeOpenSlotSpinnerClasses(): string {
+  return "mr-2 h-5 w-5 animate-spin";
+}
+
+/**
+ * Format CSS classes for take open slot play icon.
+ */
+export function getTakeOpenSlotPlayIconClasses(): string {
+  return "mr-2 h-5 w-5 fill-current";
+}
+
+/**
+ * Format CSS classes for schedule next turn pending spinner.
+ */
+export function getScheduleNextTurnSpinnerClasses(): string {
+  return "mr-2 h-4 w-4 animate-spin";
+}
+
+/**
+ * Format CSS classes for schedule next turn calendar icon.
+ */
+export function getScheduleNextTurnCalendarIconClasses(): string {
+  return "mr-2 h-4 w-4";
+}
+
+/**
+ * Format CSS classes for play casual trigger play icon.
+ */
+export function getPlayCasualTriggerPlayIconClasses(): string {
+  return "mr-2 h-5 w-5";
+}
+
+/**
+ * Format CSS classes for play casual cancel dismiss icon.
+ */
+export function getPlayCasualCancelDismissIconClasses(): string {
+  return "mr-2 h-4 w-4";
+}
+
+/**
+ * Format CSS classes for play casual confirm pending spinner.
+ */
+export function getPlayCasualConfirmSpinnerClasses(): string {
+  return "mr-2 h-4 w-4 animate-spin";
+}
+
+/**
+ * Format CSS classes for play casual confirm play icon.
+ */
+export function getPlayCasualConfirmPlayIconClasses(): string {
+  return "mr-2 h-4 w-4 fill-current";
+}
+
+/**
+ * Format CSS classes for turn card quick join pending spinner.
+ */
+export function getTurnCardQuickJoinSpinnerClasses(): string {
+  return "h-3.5 w-3.5 animate-spin";
+}
+
+/**
+ * Format CSS classes for turn card clock meta icon.
+ */
+export function getTurnCardClockIconClasses(): string {
+  return "h-3 w-3";
+}
+
+/**
+ * Format CSS classes for turn card users meta icon.
+ */
+export function getTurnCardUsersIconClasses(): string {
+  return "h-3 w-3";
+}
+
+/**
+ * Format CSS classes for remove player trigger icon.
+ */
+export function getRemovePlayerTriggerIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Format CSS classes for remove player confirm pending spinner.
+ */
+export function getRemovePlayerConfirmSpinnerClasses(): string {
+  return "h-3 w-3 animate-spin";
+}
+
+/**
+ * Format CSS classes for remove player dismiss icon.
+ */
+export function getRemovePlayerDismissIconClasses(): string {
+  return "h-3.5 w-3.5";
+}
+
+/**
+ * Format CSS classes for assign substitute pending spinner.
+ */
+export function getAssignSubstituteSpinnerClasses(): string {
+  return "h-3.5 w-3.5 animate-spin";
+}
+
+/**
+ * Format CSS classes for assign substitute user check icon.
+ */
+export function getAssignSubstituteIconClasses(): string {
+  return "h-3.5 w-3.5";
+}
+
+/**
+ * Format CSS classes for add player trigger icon.
+ */
+export function getAddPlayerTriggerIconClasses(): string {
+  return "h-5 w-5";
+}
+
+/**
+ * Format CSS classes for add player trigger text container.
+ */
+export function getAddPlayerTriggerTextContainerClasses(): string {
+  return "flex-1 text-left";
+}
+
+/**
+ * Format CSS classes for add player trigger title.
+ */
+export function getAddPlayerTriggerTitleClasses(): string {
+  return "text-sm font-bold";
+}
+
+/**
+ * Format CSS classes for add player trigger subtitle.
+ */
+export function getAddPlayerTriggerSubtitleClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Format CSS classes for add player search input wrapper.
+ */
+export function getAddPlayerSearchInputWrapperClasses(): string {
+  return "relative flex-1";
+}
+
+/**
+ * Format CSS classes for add player search decorative icon.
+ */
+export function getAddPlayerSearchIconClasses(): string {
+  return "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none";
+}
+
+/**
+ * Format CSS classes for add player search spinner.
+ */
+export function getAddPlayerSearchSpinnerClasses(): string {
+  return "absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin";
+}
+
+/**
+ * Format CSS classes for add player search clear icon.
+ */
+export function getAddPlayerSearchClearIconClasses(): string {
+  return "h-4 w-4";
+}
+
+/**
+ * Format CSS classes for add player search cancel icon.
+ */
+export function getAddPlayerSearchCancelIconClasses(): string {
+  return "h-5 w-5";
+}
+
+/**
+ * Format CSS classes for add player search results container.
+ */
+export function getAddPlayerSearchResultsContainerClasses(): string {
+  return "max-h-64 overflow-y-auto";
+}
+
+/**
+ * Format CSS classes for add player search results list.
+ */
+export function getAddPlayerSearchResultsListClasses(): string {
+  return "p-2 space-y-1";
+}
+
+/**
+ * Format CSS classes for add player search result info container.
+ */
+export function getAddPlayerSearchResultInfoClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+/**
+ * Format CSS classes for add player search result player name text.
+ */
+export function getAddPlayerSearchResultNameClasses(): string {
+  return "text-sm font-bold truncate flex items-center gap-1.5";
+}
+
+/**
+ * Format CSS classes for add player search result player email text.
+ */
+export function getAddPlayerSearchResultEmailClasses(): string {
+  return "text-xs text-muted-foreground truncate";
+}
+
+/**
+ * Format CSS classes for add player search result pending spinner.
+ */
+export function getAddPlayerSearchResultSpinnerClasses(): string {
+  return "h-4 w-4 text-primary animate-spin";
+}
+
+/**
+ * Format CSS classes for add player search result check icon.
+ */
+export function getAddPlayerSearchResultCheckIconClasses(): string {
+  return "h-4 w-4 text-primary";
+}
+
+/**
+ * Format CSS classes for add player empty results notice text.
+ */
+export function getAddPlayerEmptyResultsNoticeClasses(): string {
+  return "text-xs text-muted-foreground italic p-4 text-center";
+}
+
+/**
+ * Format CSS classes for add player search prompt notice text.
+ */
+export function getAddPlayerPromptNoticeClasses(): string {
+  return "text-xs text-muted-foreground p-4 text-center";
+}
+
+/**
  * Format CSS classes for salvage banner sparkles icon.
  */
 export function getTurnPublicDetailsBannerSparklesClasses(): string {

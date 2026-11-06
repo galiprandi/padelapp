@@ -57,6 +57,9 @@ import {
   getTurnCardDateMonthClasses,
   getTurnCardDateDayClasses,
   getTurnCardCoverLinkClasses,
+  getTurnCardQuickJoinSpinnerClasses,
+  getTurnCardClockIconClasses,
+  getTurnCardUsersIconClasses,
 } from "@/components/turns/turn-utils";
 
 interface TurnCardProps {
@@ -210,11 +213,11 @@ export function TurnCard({
 
             <div className={getTurnCardMetaContainerClasses()}>
               <span className={getTurnCardMetaItemClasses()}>
-                <Clock className="h-3 w-3" />
+                <Clock className={getTurnCardClockIconClasses()} />
                 <LocalTime date={turn.date} />
               </span>
               <span className={getTurnCardMetaItemClasses()}>
-                <Users className="h-3 w-3" />
+                <Users className={getTurnCardUsersIconClasses()} />
                 {turn.players.length}/{turn.maxPlayers}
                 {turn.substitutes && turn.substitutes.length > 0 && (
                   <span className={getTurnCardSubstitutesTextClasses()}>
@@ -336,7 +339,7 @@ export function TurnCard({
                 className={getTurnCardQuickJoinButtonClasses()}
               >
                 {isPending ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className={getTurnCardQuickJoinSpinnerClasses()} />
                 ) : (
                   getTurnCardQuickJoinText({ isSubstitute: canJoinAsSubstitute })
                 )}

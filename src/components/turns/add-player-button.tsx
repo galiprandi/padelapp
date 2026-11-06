@@ -31,6 +31,24 @@ import {
   getAddPlayerSearchClearButtonClasses,
   getAddPlayerSearchCancelButtonClasses,
   getAddPlayerSearchResultItemClasses,
+  getAddPlayerTriggerIconClasses,
+  getAddPlayerTriggerTextContainerClasses,
+  getAddPlayerTriggerTitleClasses,
+  getAddPlayerTriggerSubtitleClasses,
+  getAddPlayerSearchInputWrapperClasses,
+  getAddPlayerSearchIconClasses,
+  getAddPlayerSearchSpinnerClasses,
+  getAddPlayerSearchClearIconClasses,
+  getAddPlayerSearchCancelIconClasses,
+  getAddPlayerSearchResultsContainerClasses,
+  getAddPlayerSearchResultsListClasses,
+  getAddPlayerSearchResultInfoClasses,
+  getAddPlayerSearchResultNameClasses,
+  getAddPlayerSearchResultEmailClasses,
+  getAddPlayerSearchResultSpinnerClasses,
+  getAddPlayerSearchResultCheckIconClasses,
+  getAddPlayerEmptyResultsNoticeClasses,
+  getAddPlayerPromptNoticeClasses,
   type PlayerOption,
 } from "@/components/turns/turn-utils";
 
@@ -125,11 +143,11 @@ export function AddPlayerButton({
         aria-label={getAddPlayerRegionAriaLabel()}
       >
         <div className={getAddPlayerTriggerIconBadgeClasses()}>
-          <UserPlus className="h-5 w-5" />
+          <UserPlus className={getAddPlayerTriggerIconClasses()} />
         </div>
-        <div className="flex-1 text-left">
-          <p className="text-sm font-bold">{getAddPlayerButtonTitle()}</p>
-          <p className="text-xs text-muted-foreground">
+        <div className={getAddPlayerTriggerTextContainerClasses()}>
+          <p className={getAddPlayerTriggerTitleClasses()}>{getAddPlayerButtonTitle()}</p>
+          <p className={getAddPlayerTriggerSubtitleClasses()}>
             {getAddPlayerButtonSubtitle()}
           </p>
         </div>
@@ -156,8 +174,8 @@ export function AddPlayerButton({
 
       {/* Search header */}
       <div className={getAddPlayerSearchHeaderClasses()}>
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <div className={getAddPlayerSearchInputWrapperClasses()}>
+          <Search className={getAddPlayerSearchIconClasses()} />
           <label htmlFor="player-search-input" className="sr-only">
             {getAddPlayerInputLabelText()}
           </label>
@@ -173,7 +191,7 @@ export function AddPlayerButton({
             className={getAddPlayerSearchInputClasses()}
           />
           {isSearching && (
-            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
+            <Loader2 className={getAddPlayerSearchSpinnerClasses()} />
           )}
           {query && !isSearching && (
             <button
@@ -185,7 +203,7 @@ export function AddPlayerButton({
               aria-label={getAddPlayerClearSearchAriaLabel()}
               className={getAddPlayerSearchClearButtonClasses()}
             >
-              <X className="h-4 w-4" />
+              <X className={getAddPlayerSearchClearIconClasses()} />
             </button>
           )}
         </div>
@@ -198,15 +216,15 @@ export function AddPlayerButton({
           className={getAddPlayerSearchCancelButtonClasses()}
           aria-label={getAddPlayerCancelSearchAriaLabel()}
         >
-          <X className="h-5 w-5" />
+          <X className={getAddPlayerSearchCancelIconClasses()} />
         </button>
       </div>
 
       {/* Results */}
       {query.trim().length >= 2 && (
-        <div className="max-h-64 overflow-y-auto" role="region" aria-label={getAddPlayerSearchResultsRegionAriaLabel()}>
+        <div className={getAddPlayerSearchResultsContainerClasses()} role="region" aria-label={getAddPlayerSearchResultsRegionAriaLabel()}>
           {results.length > 0 ? (
-            <div className="p-2 space-y-1">
+            <div className={getAddPlayerSearchResultsListClasses()}>
               {results.map((player) => (
                 <button
                   key={player.id}
@@ -222,8 +240,8 @@ export function AddPlayerButton({
                     size={32}
                     aria-hidden="true"
                   />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate flex items-center gap-1.5">
+                  <div className={getAddPlayerSearchResultInfoClasses()}>
+                    <p className={getAddPlayerSearchResultNameClasses()}>
                       {player.displayName}
                       {player.isContact && (
                         <Badge variant="primary">
@@ -232,22 +250,22 @@ export function AddPlayerButton({
                       )}
                     </p>
                     {player.email && (
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p className={getAddPlayerSearchResultEmailClasses()}>
                         {player.email}
                       </p>
                     )}
                   </div>
                   {addingId === player.id ? (
-                    <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                    <Loader2 className={getAddPlayerSearchResultSpinnerClasses()} />
                   ) : (
-                    <Check className="h-4 w-4 text-primary" />
+                    <Check className={getAddPlayerSearchResultCheckIconClasses()} />
                   )}
                 </button>
               ))}
             </div>
           ) : (
             !isSearching && (
-              <p className="text-xs text-muted-foreground italic p-4 text-center">
+              <p className={getAddPlayerEmptyResultsNoticeClasses()}>
                 {getAddPlayerEmptyResultsText()}
               </p>
             )
@@ -256,7 +274,7 @@ export function AddPlayerButton({
       )}
 
       {query.trim().length < 2 && (
-        <p className="text-xs text-muted-foreground p-4 text-center">
+        <p className={getAddPlayerPromptNoticeClasses()}>
           {getAddPlayerPromptText()}
         </p>
       )}
