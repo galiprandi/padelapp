@@ -455,6 +455,53 @@ import {
   getOpenToNetworkHelperClasses,
   getTurnCardDateMonthClasses,
   getTurnCardDateDayClasses,
+  getCancelTurnTrashIconClasses,
+  getCancelTurnDismissIconClasses,
+  getCancelTurnSpinnerClasses,
+  getCancelTurnConfirmTrashIconClasses,
+  getQuickJoinSpinnerClasses,
+  getStartMatchSpinnerClasses,
+  getStartMatchPlayIconClasses,
+  getJoinTurnSpinnerClasses,
+  getJoinTurnUserIconClasses,
+  getJoinSubstituteSpinnerClasses,
+  getJoinSubstituteUserIconClasses,
+  getLeaveSubstituteSpinnerClasses,
+  getLeaveSubstituteLogOutIconClasses,
+  getTakeOpenSlotSpinnerClasses,
+  getTakeOpenSlotPlayIconClasses,
+  getScheduleNextTurnSpinnerClasses,
+  getScheduleNextTurnCalendarIconClasses,
+  getPlayCasualTriggerPlayIconClasses,
+  getPlayCasualCancelDismissIconClasses,
+  getPlayCasualConfirmSpinnerClasses,
+  getPlayCasualConfirmPlayIconClasses,
+  getTurnCardQuickJoinSpinnerClasses,
+  getTurnCardClockIconClasses,
+  getTurnCardUsersIconClasses,
+  getRemovePlayerTriggerIconClasses,
+  getRemovePlayerConfirmSpinnerClasses,
+  getRemovePlayerDismissIconClasses,
+  getAssignSubstituteSpinnerClasses,
+  getAssignSubstituteIconClasses,
+  getAddPlayerTriggerIconClasses,
+  getAddPlayerTriggerTextContainerClasses,
+  getAddPlayerTriggerTitleClasses,
+  getAddPlayerTriggerSubtitleClasses,
+  getAddPlayerSearchInputWrapperClasses,
+  getAddPlayerSearchIconClasses,
+  getAddPlayerSearchSpinnerClasses,
+  getAddPlayerSearchClearIconClasses,
+  getAddPlayerSearchCancelIconClasses,
+  getAddPlayerSearchResultsContainerClasses,
+  getAddPlayerSearchResultsListClasses,
+  getAddPlayerSearchResultInfoClasses,
+  getAddPlayerSearchResultNameClasses,
+  getAddPlayerSearchResultEmailClasses,
+  getAddPlayerSearchResultSpinnerClasses,
+  getAddPlayerSearchResultCheckIconClasses,
+  getAddPlayerEmptyResultsNoticeClasses,
+  getAddPlayerPromptNoticeClasses,
 } from "../turn-utils";
 
 describe("formatWhatsAppInviteMessage", () => {
@@ -1127,6 +1174,84 @@ describe("formatTurnProgressPercentage and formatTurnProgressAriaLabel", () => {
     );
     expect(formatTurnProgressAriaLabel(4, 4)).toBe(
       "Progreso de inscripción: 4 de 4 jugadores (100% completado)"
+    );
+  });
+});
+
+describe("Turn action icons, spinners, and add-player layout pure helpers", () => {
+  it("formats cancel turn action icon and spinner classes", () => {
+    expect(getCancelTurnTrashIconClasses()).toBe("mr-2 h-4 w-4");
+    expect(getCancelTurnDismissIconClasses()).toBe("h-4 w-4");
+    expect(getCancelTurnSpinnerClasses()).toBe("mr-1.5 h-3.5 w-3.5 animate-spin");
+    expect(getCancelTurnConfirmTrashIconClasses()).toBe("mr-1.5 h-3.5 w-3.5");
+  });
+
+  it("formats turn actions spinners and icon classes", () => {
+    expect(getQuickJoinSpinnerClasses()).toBe("mr-1 h-3.5 w-3.5 animate-spin");
+    expect(getStartMatchSpinnerClasses()).toBe("mr-2 h-5 w-5 animate-spin");
+    expect(getStartMatchPlayIconClasses()).toBe("mr-2 h-5 w-5 fill-current");
+    expect(getJoinTurnSpinnerClasses()).toBe("mr-2 h-5 w-5 animate-spin");
+    expect(getJoinTurnUserIconClasses()).toBe("mr-2 h-5 w-5");
+    expect(getJoinSubstituteSpinnerClasses()).toBe("mr-2 h-5 w-5 animate-spin");
+    expect(getJoinSubstituteUserIconClasses()).toBe("mr-2 h-5 w-5");
+    expect(getLeaveSubstituteSpinnerClasses()).toBe("mr-2 h-4 w-4 animate-spin");
+    expect(getLeaveSubstituteLogOutIconClasses()).toBe("mr-2 h-4 w-4");
+    expect(getTakeOpenSlotSpinnerClasses()).toBe("mr-2 h-5 w-5 animate-spin");
+    expect(getTakeOpenSlotPlayIconClasses()).toBe("mr-2 h-5 w-5 fill-current");
+    expect(getScheduleNextTurnSpinnerClasses()).toBe("mr-2 h-4 w-4 animate-spin");
+    expect(getScheduleNextTurnCalendarIconClasses()).toBe("mr-2 h-4 w-4");
+    expect(getPlayCasualTriggerPlayIconClasses()).toBe("mr-2 h-5 w-5");
+    expect(getPlayCasualCancelDismissIconClasses()).toBe("mr-2 h-4 w-4");
+    expect(getPlayCasualConfirmSpinnerClasses()).toBe("mr-2 h-4 w-4 animate-spin");
+    expect(getPlayCasualConfirmPlayIconClasses()).toBe("mr-2 h-4 w-4 fill-current");
+  });
+
+  it("formats turn card meta icons and quick join spinner classes", () => {
+    expect(getTurnCardQuickJoinSpinnerClasses()).toBe("h-3.5 w-3.5 animate-spin");
+    expect(getTurnCardClockIconClasses()).toBe("h-3 w-3");
+    expect(getTurnCardUsersIconClasses()).toBe("h-3 w-3");
+  });
+
+  it("formats organizer actions icons and spinner classes", () => {
+    expect(getRemovePlayerTriggerIconClasses()).toBe("h-4 w-4");
+    expect(getRemovePlayerConfirmSpinnerClasses()).toBe("h-3 w-3 animate-spin");
+    expect(getRemovePlayerDismissIconClasses()).toBe("h-3.5 w-3.5");
+    expect(getAssignSubstituteSpinnerClasses()).toBe("h-3.5 w-3.5 animate-spin");
+    expect(getAssignSubstituteIconClasses()).toBe("h-3.5 w-3.5");
+  });
+
+  it("formats add player trigger and search UI classes", () => {
+    expect(getAddPlayerTriggerIconClasses()).toBe("h-5 w-5");
+    expect(getAddPlayerTriggerTextContainerClasses()).toBe("flex-1 text-left");
+    expect(getAddPlayerTriggerTitleClasses()).toBe("text-sm font-bold");
+    expect(getAddPlayerTriggerSubtitleClasses()).toBe("text-xs text-muted-foreground");
+    expect(getAddPlayerSearchInputWrapperClasses()).toBe("relative flex-1");
+    expect(getAddPlayerSearchIconClasses()).toBe(
+      "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
+    );
+    expect(getAddPlayerSearchSpinnerClasses()).toBe(
+      "absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin"
+    );
+    expect(getAddPlayerSearchClearIconClasses()).toBe("h-4 w-4");
+    expect(getAddPlayerSearchCancelIconClasses()).toBe("h-5 w-5");
+    expect(getAddPlayerSearchResultsContainerClasses()).toBe("max-h-64 overflow-y-auto");
+    expect(getAddPlayerSearchResultsListClasses()).toBe("p-2 space-y-1");
+    expect(getAddPlayerSearchResultInfoClasses()).toBe("flex-1 min-w-0");
+    expect(getAddPlayerSearchResultNameClasses()).toBe(
+      "text-sm font-bold truncate flex items-center gap-1.5"
+    );
+    expect(getAddPlayerSearchResultEmailClasses()).toBe(
+      "text-xs text-muted-foreground truncate"
+    );
+    expect(getAddPlayerSearchResultSpinnerClasses()).toBe(
+      "h-4 w-4 text-primary animate-spin"
+    );
+    expect(getAddPlayerSearchResultCheckIconClasses()).toBe("h-4 w-4 text-primary");
+    expect(getAddPlayerEmptyResultsNoticeClasses()).toBe(
+      "text-xs text-muted-foreground italic p-4 text-center"
+    );
+    expect(getAddPlayerPromptNoticeClasses()).toBe(
+      "text-xs text-muted-foreground p-4 text-center"
     );
   });
 });

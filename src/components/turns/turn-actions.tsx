@@ -85,6 +85,27 @@ import {
   getTurnActionsFormClasses,
   getPlayCasualConfirmActionsClasses,
   getQuickJoinEmptySlotButtonClasses,
+  getCancelTurnTrashIconClasses,
+  getCancelTurnDismissIconClasses,
+  getCancelTurnSpinnerClasses,
+  getCancelTurnConfirmTrashIconClasses,
+  getQuickJoinSpinnerClasses,
+  getStartMatchSpinnerClasses,
+  getStartMatchPlayIconClasses,
+  getJoinTurnSpinnerClasses,
+  getJoinTurnUserIconClasses,
+  getJoinSubstituteSpinnerClasses,
+  getJoinSubstituteUserIconClasses,
+  getLeaveSubstituteSpinnerClasses,
+  getLeaveSubstituteLogOutIconClasses,
+  getTakeOpenSlotSpinnerClasses,
+  getTakeOpenSlotPlayIconClasses,
+  getScheduleNextTurnSpinnerClasses,
+  getScheduleNextTurnCalendarIconClasses,
+  getPlayCasualTriggerPlayIconClasses,
+  getPlayCasualCancelDismissIconClasses,
+  getPlayCasualConfirmSpinnerClasses,
+  getPlayCasualConfirmPlayIconClasses,
 } from "@/components/turns/turn-utils";
 
 export function CancelTurnForm({ turnId }: { turnId: string }) {
@@ -115,7 +136,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         className={getCancelTurnTriggerButtonClasses()}
         aria-label={getCancelTurnAriaLabel({})}
       >
-        <Trash2 className="mr-2 h-4 w-4" />
+        <Trash2 className={getCancelTurnTrashIconClasses()} />
         {getCancelTurnButtonText()}
       </Button>
     );
@@ -142,7 +163,7 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         className={getCancelTurnDismissButtonClasses()}
         aria-label={getCancelTurnDismissAriaLabel()}
       >
-        <X className="h-4 w-4" />
+        <X className={getCancelTurnDismissIconClasses()} />
       </Button>
       <Button
         type="button"
@@ -154,9 +175,9 @@ export function CancelTurnForm({ turnId }: { turnId: string }) {
         aria-label={getCancelTurnAriaLabel({ isPending, isConfirming: true })}
       >
         {isPending ? (
-          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+          <Loader2 className={getCancelTurnSpinnerClasses()} />
         ) : (
-          <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+          <Trash2 className={getCancelTurnConfirmTrashIconClasses()} />
         )}
         {getCancelTurnConfirmButtonText(isPending)}
       </Button>
@@ -195,7 +216,7 @@ export function QuickJoinEmptySlotButton({ turnId }: { turnId: string }) {
     >
       {isPending ? (
         <>
-          <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+          <Loader2 className={getQuickJoinSpinnerClasses()} aria-hidden="true" />
           <span>{getQuickJoinEmptySlotButtonText(true)}</span>
         </>
       ) : (
@@ -233,9 +254,9 @@ export function StartMatchForm({ turnId }: { turnId: string }) {
         aria-label={getStartMatchAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className={getStartMatchSpinnerClasses()} />
         ) : (
-          <Play className="mr-2 h-5 w-5 fill-current" />
+          <Play className={getStartMatchPlayIconClasses()} />
         )}
         {getStartMatchButtonText(isPending)}
       </Button>
@@ -283,9 +304,9 @@ export function JoinTurnForm({ turnId }: { turnId: string }) {
         aria-label={getJoinTurnAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className={getJoinTurnSpinnerClasses()} />
         ) : (
-          <UserPlus className="mr-2 h-5 w-5" />
+          <UserPlus className={getJoinTurnUserIconClasses()} />
         )}
         {getJoinTurnButtonText(isPending)}
       </Button>
@@ -322,9 +343,9 @@ export function JoinSubstituteForm({ turnId }: { turnId: string }) {
         aria-label={getJoinSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className={getJoinSubstituteSpinnerClasses()} />
         ) : (
-          <UserPlus className="mr-2 h-5 w-5" />
+          <UserPlus className={getJoinSubstituteUserIconClasses()} />
         )}
         {getJoinSubstituteButtonText(isPending)}
       </Button>
@@ -367,9 +388,9 @@ export function LeaveSubstituteForm({
         aria-label={getLeaveSubstituteAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className={getLeaveSubstituteSpinnerClasses()} />
         ) : (
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className={getLeaveSubstituteLogOutIconClasses()} />
         )}
         {getLeaveSubstituteButtonText({ isPending, hasOpenSlot })}
       </Button>
@@ -405,9 +426,9 @@ export function TakeOpenSlotForm({ turnId }: { turnId: string }) {
         aria-label={getTakeOpenSlotAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+          <Loader2 className={getTakeOpenSlotSpinnerClasses()} />
         ) : (
-          <Play className="mr-2 h-5 w-5 fill-current" />
+          <Play className={getTakeOpenSlotPlayIconClasses()} />
         )}
         {getTakeOpenSlotButtonText(isPending)}
       </Button>
@@ -444,9 +465,9 @@ export function ScheduleNextTurnForm({ turnId }: { turnId: string }) {
         aria-label={getScheduleNextTurnAriaLabel({ isPending })}
       >
         {isPending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className={getScheduleNextTurnSpinnerClasses()} />
         ) : (
-          <CalendarPlus className="mr-2 h-4 w-4" />
+          <CalendarPlus className={getScheduleNextTurnCalendarIconClasses()} />
         )}
         {getScheduleNextTurnButtonText(isPending)}
       </Button>
@@ -481,7 +502,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
         className={getPlayCasualTriggerButtonClasses()}
         aria-label={getPlayCasualAriaLabel({})}
       >
-        <Play className="mr-2 h-5 w-5" />
+        <Play className={getPlayCasualTriggerPlayIconClasses()} />
         {getPlayCasualButtonText()}
       </Button>
     );
@@ -514,7 +535,7 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           className={getPlayCasualCancelButtonClasses()}
           aria-label={getPlayCasualDismissAriaLabel()}
         >
-          <X className="mr-2 h-4 w-4" />
+          <X className={getPlayCasualCancelDismissIconClasses()} />
           {getPlayCasualCancelButtonText()}
         </Button>
         <Button
@@ -527,9 +548,9 @@ export function PlayCasualForm({ turnId }: { turnId: string }) {
           aria-label={getPlayCasualAriaLabel({ isPending, isConfirming: true })}
         >
           {isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className={getPlayCasualConfirmSpinnerClasses()} />
           ) : (
-            <Play className="mr-2 h-4 w-4 fill-current" />
+            <Play className={getPlayCasualConfirmPlayIconClasses()} />
           )}
           {getPlayCasualConfirmButtonText(isPending)}
         </Button>
