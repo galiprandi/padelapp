@@ -14,6 +14,17 @@ import {
   getRankingListItemNameClasses,
   getRecentFormDotClasses,
   getRankingDeltaClasses,
+  getRankingListItemMainGroupClasses,
+  getRankingListItemAvatarClasses,
+  getRankingListItemContentClasses,
+  getRankingListItemHeaderRowClasses,
+  getRankingListItemStreakBadgeClasses,
+  getRankingListItemMetricsRowClasses,
+  getRankingListItemRecordTextClasses,
+  getRankingListItemRecentFormContainerClasses,
+  getRankingListItemScoreColClasses,
+  getRankingListItemScoreValueClasses,
+  getRankingListItemDeltaGroupClasses,
 } from "./ranking-utils";
 
 interface RankingListItemProps {
@@ -77,22 +88,22 @@ export function RankingListItem({
         {positionNum}
       </div>
 
-      <div className="flex items-center gap-2 flex-1 min-w-0" aria-hidden="true">
+      <div className={getRankingListItemMainGroupClasses()} aria-hidden="true">
         <PlayerAvatar
           name={displayName}
           image={player.image ?? undefined}
           size={36}
-          className="rounded-lg"
+          className={getRankingListItemAvatarClasses()}
           aria-hidden="true"
         />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
+        <div className={getRankingListItemContentClasses()}>
+          <div className={getRankingListItemHeaderRowClasses()}>
             <p className={getRankingListItemNameClasses(isViewer)}>
               {displayName}
             </p>
             {winStreak >= 2 && (
               <div
-                className="flex items-center gap-0.5 text-xs font-extrabold text-orange-500"
+                className={getRankingListItemStreakBadgeClasses()}
                 title={getWinStreakTitle(winStreak)}
               >
                 <Flame className="h-3.5 w-3.5 fill-orange-500 text-orange-500" aria-hidden="true" />
@@ -105,13 +116,13 @@ export function RankingListItem({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-muted-foreground/80">
+          <div className={getRankingListItemMetricsRowClasses()}>
+            <span className={getRankingListItemRecordTextClasses()}>
               {player.wins}V-{player.losses}D
             </span>
             {recentForm.length > 0 && (
               <div
-                className="flex gap-0.5"
+                className={getRankingListItemRecentFormContainerClasses()}
                 title={formatRecentFormTitle(recentForm)}
               >
                 {recentForm.map((result, i) => (
@@ -127,11 +138,11 @@ export function RankingListItem({
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-0.5" aria-hidden="true">
-        <span className="text-sm font-bold text-foreground">
+      <div className={getRankingListItemScoreColClasses()} aria-hidden="true">
+        <span className={getRankingListItemScoreValueClasses()}>
           {Math.round(player.rankingScore)}
         </span>
-        <div className="flex items-center gap-0.5">
+        <div className={getRankingListItemDeltaGroupClasses()}>
           {player.rankingDelta > 0 ? (
             <div className={getRankingDeltaClasses(player.rankingDelta)} title={getDeltaChangeTitle(player.rankingDelta)}>
               <TrendingUp className="h-3 w-3" aria-hidden="true" />
