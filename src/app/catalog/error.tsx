@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import {
   formatErrorDetails,
   getErrorIconContainerClasses,
+  getErrorAlertIconClasses,
+  getErrorActionButtonIconClasses,
+  getErrorTextGroupClasses,
   getErrorHeadingTitleClasses,
   getErrorMessageDescriptionClasses,
   getErrorActionGroupClasses,
@@ -40,9 +43,9 @@ export default function CatalogError({
       className={details.containerClasses}
     >
       <div className={getErrorIconContainerClasses()}>
-        <AlertCircle className="h-6 w-6 text-destructive" aria-hidden="true" />
+        <AlertCircle className={getErrorAlertIconClasses()} aria-hidden="true" />
       </div>
-      <div className="space-y-1">
+      <div className={getErrorTextGroupClasses()}>
         <h1 className={getErrorHeadingTitleClasses()}>{details.title}</h1>
         <p className={getErrorMessageDescriptionClasses()}>
           {details.message}
@@ -56,7 +59,7 @@ export default function CatalogError({
           aria-label={details.retryAriaLabel}
           className={getErrorActionButtonClasses()}
         >
-          <RotateCw className="mr-1.5 h-4 w-4" aria-hidden="true" />
+          <RotateCw className={getErrorActionButtonIconClasses()} aria-hidden="true" />
           {getErrorRetryButtonText()}
         </Button>
         <Button
@@ -70,7 +73,7 @@ export default function CatalogError({
             prefetch={true}
             aria-label={details.homeAriaLabel}
           >
-            <Home className="mr-1.5 h-4 w-4" aria-hidden="true" />
+            <Home className={getErrorActionButtonIconClasses()} aria-hidden="true" />
             {getErrorHomeButtonText()}
           </Link>
         </Button>
