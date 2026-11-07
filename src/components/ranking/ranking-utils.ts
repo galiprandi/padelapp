@@ -1581,3 +1581,131 @@ export function getRankingSearchIconClasses(isActive: boolean): string {
 export function getRankingSearchPendingBarClasses(): string {
   return "absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors";
 }
+
+/**
+ * Returns Tailwind class names for RankingListItem main info container
+ */
+export function getRankingListItemMainGroupClasses(): string {
+  return "flex items-center gap-2 flex-1 min-w-0";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem avatar
+ */
+export function getRankingListItemAvatarClasses(): string {
+  return "rounded-lg";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem column content
+ */
+export function getRankingListItemContentClasses(): string {
+  return "flex-1 min-w-0";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem header row
+ */
+export function getRankingListItemHeaderRowClasses(): string {
+  return "flex items-center gap-1.5";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem win streak badge
+ */
+export function getRankingListItemStreakBadgeClasses(): string {
+  return "flex items-center gap-0.5 text-xs font-extrabold text-orange-500";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem metrics row
+ */
+export function getRankingListItemMetricsRowClasses(): string {
+  return "flex items-center gap-2 mt-0.5";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem record text
+ */
+export function getRankingListItemRecordTextClasses(): string {
+  return "text-xs text-muted-foreground/80";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem recent form dots wrapper
+ */
+export function getRankingListItemRecentFormContainerClasses(): string {
+  return "flex gap-0.5";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem score column container
+ */
+export function getRankingListItemScoreColClasses(): string {
+  return "flex flex-col items-end gap-0.5";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem score value text
+ */
+export function getRankingListItemScoreValueClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for RankingListItem delta icon & text group
+ */
+export function getRankingListItemDeltaGroupClasses(): string {
+  return "flex items-center gap-0.5";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium section wrapper
+ */
+export function getRankingPodiumSectionClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium heading title
+ */
+export function getRankingPodiumTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium 3-column grid
+ */
+export function getRankingPodiumGridClasses(): string {
+  return "grid grid-cols-3 items-end gap-2";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium player avatar relative container
+ */
+export function getRankingPodiumAvatarContainerClasses(): string {
+  return "relative";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium player details wrapper
+ */
+export function getRankingPodiumPlayerInfoClasses(): string {
+  return "flex flex-col items-center min-w-0 w-full animate-none";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium player score text
+ */
+export function getRankingPodiumScoreClasses(isFirst: boolean): string {
+  return isFirst ? "text-xs font-bold text-primary" : "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns Tailwind class names for RankingPodium delta item with icon and text
+ */
+export function getRankingPodiumDeltaItemClasses(delta: number): string {
+  return delta > 0
+    ? "flex items-center gap-0.5 text-primary"
+    : "flex items-center gap-0.5 text-muted-foreground";
+}

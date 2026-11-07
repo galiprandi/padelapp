@@ -172,6 +172,24 @@ import {
   getRankingSearchIconWrapperClasses,
   getRankingSearchIconClasses,
   getRankingSearchPendingBarClasses,
+  getRankingListItemMainGroupClasses,
+  getRankingListItemAvatarClasses,
+  getRankingListItemContentClasses,
+  getRankingListItemHeaderRowClasses,
+  getRankingListItemStreakBadgeClasses,
+  getRankingListItemMetricsRowClasses,
+  getRankingListItemRecordTextClasses,
+  getRankingListItemRecentFormContainerClasses,
+  getRankingListItemScoreColClasses,
+  getRankingListItemScoreValueClasses,
+  getRankingListItemDeltaGroupClasses,
+  getRankingPodiumSectionClasses,
+  getRankingPodiumTitleClasses,
+  getRankingPodiumGridClasses,
+  getRankingPodiumAvatarContainerClasses,
+  getRankingPodiumPlayerInfoClasses,
+  getRankingPodiumScoreClasses,
+  getRankingPodiumDeltaItemClasses,
 } from "../ranking-utils";
 
 describe("Ranking Helpers", () => {
@@ -967,6 +985,33 @@ describe("Ranking Helpers", () => {
       expect(getRankingSearchIconClasses(true)).toContain("text-primary");
       expect(getRankingSearchIconClasses(false)).toContain("text-muted-foreground");
       expect(getRankingSearchPendingBarClasses()).toContain("absolute -bottom-px left-6 right-6 h-0.5 bg-primary overflow-hidden rounded-full transition-colors");
+    });
+
+    it("ranking list item styling helpers return expected class names", () => {
+      expect(getRankingListItemMainGroupClasses()).toBe("flex items-center gap-2 flex-1 min-w-0");
+      expect(getRankingListItemAvatarClasses()).toBe("rounded-lg");
+      expect(getRankingListItemContentClasses()).toBe("flex-1 min-w-0");
+      expect(getRankingListItemHeaderRowClasses()).toBe("flex items-center gap-1.5");
+      expect(getRankingListItemStreakBadgeClasses()).toBe("flex items-center gap-0.5 text-xs font-extrabold text-orange-500");
+      expect(getRankingListItemMetricsRowClasses()).toBe("flex items-center gap-2 mt-0.5");
+      expect(getRankingListItemRecordTextClasses()).toBe("text-xs text-muted-foreground/80");
+      expect(getRankingListItemRecentFormContainerClasses()).toBe("flex gap-0.5");
+      expect(getRankingListItemScoreColClasses()).toBe("flex flex-col items-end gap-0.5");
+      expect(getRankingListItemScoreValueClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getRankingListItemDeltaGroupClasses()).toBe("flex items-center gap-0.5");
+    });
+
+    it("ranking podium styling helpers return expected class names", () => {
+      expect(getRankingPodiumSectionClasses()).toBe("space-y-3");
+      expect(getRankingPodiumTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getRankingPodiumGridClasses()).toBe("grid grid-cols-3 items-end gap-2");
+      expect(getRankingPodiumAvatarContainerClasses()).toBe("relative");
+      expect(getRankingPodiumPlayerInfoClasses()).toBe("flex flex-col items-center min-w-0 w-full animate-none");
+      expect(getRankingPodiumScoreClasses(true)).toBe("text-xs font-bold text-primary");
+      expect(getRankingPodiumScoreClasses(false)).toBe("text-xs text-muted-foreground");
+      expect(getRankingPodiumDeltaItemClasses(2)).toBe("flex items-center gap-0.5 text-primary");
+      expect(getRankingPodiumDeltaItemClasses(-1)).toBe("flex items-center gap-0.5 text-muted-foreground");
+      expect(getRankingPodiumDeltaItemClasses(0)).toBe("flex items-center gap-0.5 text-muted-foreground");
     });
   });
 });
