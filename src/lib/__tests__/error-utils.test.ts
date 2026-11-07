@@ -9,6 +9,9 @@ import {
   getRootErrorContainerClasses,
   getAppErrorContainerClasses,
   getErrorIconContainerClasses,
+  getErrorAlertIconClasses,
+  getErrorActionButtonIconClasses,
+  getErrorTextGroupClasses,
   getErrorActionButtonClasses,
   getErrorRetryButtonText,
   getErrorHomeButtonText,
@@ -145,6 +148,46 @@ describe("error-utils", () => {
     it("appends custom class names if provided", () => {
       const classes = getErrorIconContainerClasses("custom-icon-bg");
       expect(classes).toContain("custom-icon-bg");
+    });
+  });
+
+  describe("getErrorAlertIconClasses", () => {
+    it("returns default dimension and destructive color classes for alert icon", () => {
+      const classes = getErrorAlertIconClasses();
+      expect(classes).toContain("h-6");
+      expect(classes).toContain("w-6");
+      expect(classes).toContain("text-destructive");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorAlertIconClasses("custom-alert-icon");
+      expect(classes).toContain("custom-alert-icon");
+    });
+  });
+
+  describe("getErrorActionButtonIconClasses", () => {
+    it("returns margin right and dimension classes for button action icons", () => {
+      const classes = getErrorActionButtonIconClasses();
+      expect(classes).toContain("mr-1.5");
+      expect(classes).toContain("h-4");
+      expect(classes).toContain("w-4");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorActionButtonIconClasses("custom-action-icon");
+      expect(classes).toContain("custom-action-icon");
+    });
+  });
+
+  describe("getErrorTextGroupClasses", () => {
+    it("returns vertical spacing classes for error text group container", () => {
+      const classes = getErrorTextGroupClasses();
+      expect(classes).toContain("space-y-1");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getErrorTextGroupClasses("custom-text-group");
+      expect(classes).toContain("custom-text-group");
     });
   });
 

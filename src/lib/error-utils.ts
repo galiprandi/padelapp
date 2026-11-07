@@ -89,6 +89,27 @@ export function getErrorIconContainerClasses(customClassName?: string): string {
 }
 
 /**
+ * Retorna las clases CSS para el ícono de alerta destructiva en pantallas de error.
+ */
+export function getErrorAlertIconClasses(customClassName?: string): string {
+  return cn("h-6 w-6 text-destructive", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para los íconos interiores de los botones de acción en pantallas de error.
+ */
+export function getErrorActionButtonIconClasses(customClassName?: string): string {
+  return cn("mr-1.5 h-4 w-4", customClassName);
+}
+
+/**
+ * Retorna las clases CSS para el contenedor del grupo de textos (título y descripción) en pantallas de error.
+ */
+export function getErrorTextGroupClasses(customClassName?: string): string {
+  return cn("space-y-1", customClassName);
+}
+
+/**
  * Retorna el texto localizado para el botón de reintento en vistas de error.
  */
 export function getErrorRetryButtonText(): string {

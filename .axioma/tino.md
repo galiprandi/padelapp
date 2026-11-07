@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-18 — Extracción de Funciones Helper Puras de Íconos de Alerta, Botones y Contenedor de Textos para Fronteras de Error (`src/lib/error-utils.ts`), Refactorización de `RootError`, `AppError`, `CatalogError`, `LoginError` e `InstallGuideError` y Cobertura de Tests Unitarios
 - [x] 2026-10-17 — Extracción de Funciones Helper Puras de Maquetación, Clases CSS e Identificadores para Esqueletos de Ranking (`src/components/ranking/ranking-utils.ts`), Refactorización de `RankingLoading` y `RankingContentSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-16 — Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading` (`src/lib/auth-utils.ts`), Refactorización de `LoginLoading` y Tests Unitarios
 - [x] 2026-10-15 — Extracción de Funciones Helper Puras de Identificadores e Iteración de Esqueletos de Notificaciones y Catálogo (`src/components/navigation/nav-utils.ts`), Refactorización de `NotificationsLoading`, `NotificationsListSkeleton` y `CatalogSkeleton` y Cobertura de Tests Unitarios
@@ -202,6 +203,10 @@
 ### 2026-09-17 - Extracción de Funciones Helper Puras de Clases CSS para Contenedores y Respuesta Táctil en `BottomNav` y `BottomNavSkeleton`
 **Aprendizaje:** Encapsular la lógica de clases CSS para el contenedor exterior de la barra de navegación principal (`getBottomNavContainerClasses`), ítems de enlace con área táctil accesible de 48px y estado activo (`getNavItemClasses`), el botón de acción flotante central (`getFabClasses`), y el indicador de notificaciones pendientes (`getNotificationsBadgeClasses`) en `src/components/navigation/nav-utils.ts` estandariza el estilo visual, los anillos de foco accesibles y la respuesta al toque (`active:scale-[0.98] transition-all`) en toda la navegación, reduciendo código duplicado y facilitando verificaciones aisladas mediante tests unitarios.
 **Acción:** Reutilizar siempre los helpers de clases de navegación de `src/components/navigation/nav-utils.ts` al modificar o extender la barra de navegación o sus esqueletos.
+
+### 2026-10-18 - Extracción de Helpers Puros de Íconos y Grupo de Textos en Fronteras de Error Transversales
+**Aprendizaje:** Abstraer las clases del ícono de alerta destructiva (`getErrorAlertIconClasses`), de los íconos interiores en botones de acción (`getErrorActionButtonIconClasses`) y del contenedor vertical de títulos y descripción (`getErrorTextGroupClasses`) en `src/lib/error-utils.ts` asegura una jerarquía visual homogénea y táctil en todos los error boundaries de la aplicación (`RootError`, `AppError`, `CatalogError`, `LoginError`, `InstallGuideError`), permitiendo testear las clases de presentación en aislamiento y desacoplando la renderización JSX de las definiciones de estilo.
+**Acción:** Reutilizar siempre estos helpers puros al crear o refactorizar límites de error en rutas nuevas o existentes.
 
 ### 2026-09-16 - Extracción de Funciones Helper Puras de Accesibilidad ARIA, Clases CSS y Etiquetas Localizadas para Componente `Skeleton`
 **Aprendizaje:** Encapsular la lógica de evaluación de atributos de accesibilidad (`isAccessibleSkeletonContainer`, `getSkeletonAriaAttributes`), combinación de clases CSS base y personalizadas (`getSkeletonClasses`), y formateo de etiquetas ARIA en español para áreas de carga por streaming (`getSkeletonRegionAriaLabel`) en `src/components/ui/skeleton-utils.ts` permite desacoplar los cálculos de accesibilidad de la renderización del componente UI `Skeleton`, asegurando consistencia y facilitando pruebas unitarias directas.
