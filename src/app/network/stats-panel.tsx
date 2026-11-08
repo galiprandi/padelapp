@@ -157,6 +157,13 @@ import {
   getTurnsOverviewCardTitle,
   getUsersOverviewCardSubtext,
   getUsersOverviewCardTitle,
+  getGrowthBadgeIconClasses,
+  getStatCardIconClasses,
+  getStatsPanelBackIconClasses,
+  getStatsPanelSectionIconClasses,
+  getStatsPanelClockIconClasses,
+  getStatsPanelMapPinIconClasses,
+  getStatsPanelScoreLabelClasses,
 } from "./graph-utils";
 
 interface StatsPanelProps {
@@ -173,7 +180,7 @@ function GrowthBadge({ rate }: { rate: number }) {
   const Icon = isPositive ? TrendingUp : TrendingDown;
   return (
     <span className={getGrowthBadgeClasses(rate)}>
-      <Icon className="h-3 w-3" aria-hidden="true" />
+      <Icon className={getGrowthBadgeIconClasses()} aria-hidden="true" />
       {formatGrowthRateText(rate)}
     </span>
   );
@@ -196,7 +203,7 @@ function StatCard({
     <div className={getStatCardContainerClasses()}>
       <div className={getStatCardHeaderClasses()}>
         <span className={getStatCardLabelClasses()}>{label}</span>
-        <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+        <Icon className={getStatCardIconClasses()} aria-hidden="true" />
       </div>
       <div className={getStatCardValueGroupClasses()}>
         <span className={getStatCardValueClasses()}>
@@ -224,7 +231,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           className={getStatsPanelHeaderBackLinkClasses()}
           aria-label={getStatsPanelBackAriaLabel()}
         >
-          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          <ChevronLeft className={getStatsPanelBackIconClasses()} aria-hidden="true" />
         </Link>
         <div className={getStatsPanelHeaderTitleContainerClasses()}>
           <h1 className={getStatsPanelHeaderTitleClasses()}>
@@ -278,7 +285,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         className={getStatsPanelSectionCardClasses()}
       >
         <div className={getStatsPanelSectionHeaderClasses()}>
-          <Network className="h-4 w-4 text-primary" aria-hidden="true" />
+          <Network className={getStatsPanelSectionIconClasses()} aria-hidden="true" />
           <h2 className={getStatsPanelSectionTitleClasses()}>
             {getNetworkSectionTitle()}
           </h2>
@@ -326,7 +333,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
         className={getStatsPanelSectionCardClasses()}
       >
         <div className={getStatsPanelSectionHeaderClasses()}>
-          <Network className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+          <Network className={getStatsPanelSectionIconClasses(true)} aria-hidden="true" />
           <div className={getStatsPanelRecommenderTitleGroupClasses()}>
             <h2 className={getStatsPanelSectionTitleClasses()}>{getRecommenderHeadingTitle()}</h2>
             <p className={getStatsPanelSectionDescriptionClasses()}>
@@ -406,7 +413,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
                     </Link>
                     <div className={getStatsPanelRecommenderScoreGroupClasses()}>
                       <div className={getStatsPanelScoreBadgeClasses()}>
-                        <p className="text-[10px] uppercase font-bold text-muted-foreground">{getStatsPanelScoreLabelText()}</p>
+                        <p className={getStatsPanelScoreLabelClasses()}>{getStatsPanelScoreLabelText()}</p>
                         <p className={getStatsPanelRecommenderScoreTextClasses()}>
                           {skillText}
                         </p>
@@ -462,7 +469,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           className={getStatsPanelSectionCardClasses()}
         >
           <div className={getStatsPanelSectionHeaderClasses()}>
-            <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
+            <Clock className={getStatsPanelClockIconClasses()} aria-hidden="true" />
             <h2 className={getStatsPanelSectionTitleClasses()}>
               {getRecentUsersHeadingTitle()}
             </h2>
@@ -796,7 +803,7 @@ export function StatsPanel({ metrics, graphNodes, graphLinks, playersLikeYou, gr
           className={getStatsPanelSectionCardClasses()}
         >
           <div className={getStatsPanelSectionHeaderClasses()}>
-            <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+            <MapPin className={getStatsPanelMapPinIconClasses()} aria-hidden="true" />
             <h2 className={getStatsPanelSectionTitleClasses()}>
               {getTopClubsHeadingTitle()}
             </h2>

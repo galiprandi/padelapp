@@ -15,6 +15,7 @@ import {
   getNetworkPageTabListAriaLabel,
   getNetworkPageStatsTabLabel,
   getNetworkPageGraphTabLabel,
+  getNetworkPageTabIconClasses,
 } from "./graph-utils";
 import type { AdoptionMetrics, GraphData, RecommendedPlayer } from "./actions";
 
@@ -101,7 +102,7 @@ function TabButton({
       aria-label={getNetworkPageTabAriaLabel(tab)}
       className={getNetworkPageTabButtonClasses(active)}
     >
-      <Icon className="h-4 w-4" aria-hidden="true" />
+      <Icon className={getNetworkPageTabIconClasses()} aria-hidden="true" />
       {label}
     </button>
   );

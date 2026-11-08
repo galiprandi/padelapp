@@ -5092,3 +5092,115 @@ export function getGraphViewLegendItemTextClasses(): string {
 export function getFilterChipCommunityDotClasses(): string {
   return "h-2 w-2 rounded-full shrink-0";
 }
+
+export function getGraphViewBadgeTagClasses(badgeStyle?: string): string {
+  return cn(
+    "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+    badgeStyle,
+  );
+}
+
+export function getGraphViewConnectionBadgeIndicatorClasses(
+  type: "partner" | "rival" | "mixed" | "turns",
+): string {
+  return cn(
+    "inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0 border",
+    getConnectionBadgeClasses(type),
+  );
+}
+
+export function getGraphViewSearchRowClasses(): string {
+  return "flex items-center gap-2";
+}
+
+export function getGraphViewSearchInputClasses(): string {
+  return "flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0";
+}
+
+export function getGraphViewClearSearchButtonClasses(): string {
+  return "text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0";
+}
+
+export function getGraphViewCenterButtonClasses(): string {
+  return "rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+export function getGraphViewDetailCloseIconClasses(): string {
+  return "h-4 w-4";
+}
+
+export function getGraphViewDetailCardLabelClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getGraphViewDetailCardValueClasses(): string {
+  return "text-sm tabular-nums font-bold text-foreground";
+}
+
+export function getGraphViewDetailCardSideValueClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+export function getGraphViewSummaryCardHeaderClasses(): string {
+  return "flex items-center justify-between gap-1";
+}
+
+export function getGraphViewSummaryCardTitleClasses(): string {
+  return "font-semibold text-foreground text-[11px]";
+}
+
+export function getGraphViewSummaryCardTotalClasses(): string {
+  return "text-[10px] font-bold text-muted-foreground";
+}
+
+export function getGraphViewSummaryCardDescriptionClasses(): string {
+  return "text-muted-foreground text-[11px] truncate";
+}
+
+export function getGraphViewSummaryCardSynergyClasses(): string {
+  return "text-[10px] font-bold text-emerald-700 dark:text-emerald-400 break-words leading-tight pt-0.5 border-t border-border/50";
+}
+
+export function getGraphViewSearchIconClasses(): string {
+  return "h-4 w-4 text-muted-foreground shrink-0";
+}
+
+export function getGraphViewScopeIconClasses(): string {
+  return "h-3.5 w-3.5";
+}
+
+export function getGraphViewEmptyDataIconClasses(): string {
+  return "h-6 w-6 text-muted-foreground";
+}
+
+export function getNetworkPageTabIconClasses(): string {
+  return "h-4 w-4";
+}
+
+export function getGrowthBadgeIconClasses(): string {
+  return "h-3 w-3";
+}
+
+export function getStatCardIconClasses(): string {
+  return "h-4 w-4 text-muted-foreground";
+}
+
+export function getStatsPanelBackIconClasses(): string {
+  return "h-5 w-5";
+}
+
+export function getStatsPanelSectionIconClasses(shrink?: boolean): string {
+  return shrink ? "h-4 w-4 text-primary shrink-0" : "h-4 w-4 text-primary";
+}
+
+export function getStatsPanelClockIconClasses(): string {
+  return "h-4 w-4 text-primary";
+}
+
+export function getStatsPanelMapPinIconClasses(): string {
+  return "h-4 w-4 text-primary";
+}
+
+export function getStatsPanelScoreLabelClasses(): string {
+  return "text-[10px] uppercase font-bold text-muted-foreground";
+}

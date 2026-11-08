@@ -181,6 +181,24 @@ import {
   getGraphViewLegendDotClasses,
   getGraphViewLegendItemTextClasses,
   getFilterChipCommunityDotClasses,
+  getGraphViewBadgeTagClasses,
+  getGraphViewConnectionBadgeIndicatorClasses,
+  getGraphViewSearchRowClasses,
+  getGraphViewSearchInputClasses,
+  getGraphViewClearSearchButtonClasses,
+  getGraphViewCenterButtonClasses,
+  getGraphViewDetailCloseIconClasses,
+  getGraphViewDetailCardLabelClasses,
+  getGraphViewDetailCardValueClasses,
+  getGraphViewDetailCardSideValueClasses,
+  getGraphViewSummaryCardHeaderClasses,
+  getGraphViewSummaryCardTitleClasses,
+  getGraphViewSummaryCardTotalClasses,
+  getGraphViewSummaryCardDescriptionClasses,
+  getGraphViewSummaryCardSynergyClasses,
+  getGraphViewSearchIconClasses,
+  getGraphViewScopeIconClasses,
+  getGraphViewEmptyDataIconClasses,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -559,7 +577,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
     return (
       <div className={getGraphViewEmptyDataContainerClasses()}>
         <div className={getGraphViewEmptyDataIconBadgeClasses()}>
-          <CalendarDays className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
+          <CalendarDays className={getGraphViewEmptyDataIconClasses()} aria-hidden="true" />
         </div>
         <p className={getGraphViewEmptyDataTitleClasses()}>{emptyDataProps.title}</p>
         <p className={getGraphViewEmptyDataDescriptionClasses()}>
@@ -606,7 +624,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 className={getNetworkScopeButtonClasses(scope === "personal")}
                 aria-label={getGraphViewScopeAriaLabel("personal")}
               >
-                <Users2 className="h-3.5 w-3.5" aria-hidden="true" />
+                <Users2 className={getGraphViewScopeIconClasses()} aria-hidden="true" />
                 {getNetworkScopeButtonText("personal")}
               </button>
               <button
@@ -617,32 +635,32 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 className={getNetworkScopeButtonClasses(scope === "global")}
                 aria-label={getGraphViewScopeAriaLabel("global")}
               >
-                <Globe2 className="h-3.5 w-3.5" aria-hidden="true" />
+                <Globe2 className={getGraphViewScopeIconClasses()} aria-hidden="true" />
                 {getNetworkScopeButtonText("global")}
               </button>
             </div>
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className={getGraphViewSearchRowClasses()}>
           {/* Search */}
           <div className={getGraphViewSearchContainerClasses()}>
-            <Search className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+            <Search className={getGraphViewSearchIconClasses()} aria-hidden="true" />
             <input
               type="text"
               placeholder={getGraphViewSearchInputPlaceholder()}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
+              className={getGraphViewSearchInputClasses()}
               aria-label={getGraphViewSearchAriaLabel()}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+                className={getGraphViewClearSearchButtonClasses()}
                 aria-label={getGraphViewClearSearchAriaLabel()}
               >
-                <X className="h-4 w-4" aria-hidden="true" />
+                <X className={getGraphViewDetailCloseIconClasses()} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -650,7 +668,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
             onClick={() => {
               if (fgRef.current) fgRef.current.zoomToFit(300, 50);
             }}
-            className="rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+            className={getGraphViewCenterButtonClasses()}
             aria-label={getGraphViewCenterButtonAriaLabel()}
           >
             {getGraphViewCenterButtonText()}
@@ -706,10 +724,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
           <div className={getGraphViewDensityWrapperClasses()}>
             <span
-              className={cn(
-                "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                graphDensityMetric.badgeStyle,
-              )}
+              className={getGraphViewBadgeTagClasses(graphDensityMetric.badgeStyle)}
               title={getGraphViewGraphDensityTitle(
                 graphDensityMetric.densityTier,
                 graphDensityMetric.formattedSummary,
@@ -742,10 +757,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 Grupo {selectedCommunity}
               </span>
               <span
-                className={cn(
-                  "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                  activeCommunitySummary.cohesion.badgeStyle,
-                )}
+                className={getGraphViewBadgeTagClasses(activeCommunitySummary.cohesion.badgeStyle)}
                 title={getGraphViewCommunityCohesionTitle(
                   activeCommunitySummary.cohesion.cohesionTier,
                   activeCommunitySummary.cohesion.formattedCohesionSummary,
@@ -758,10 +770,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                 {activeCommunitySummary.cohesion.cohesionTier}
               </span>
               <span
-                className={cn(
-                  "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                  activeCommunitySummary.balanceInfo.badgeStyle,
-                )}
+                className={getGraphViewBadgeTagClasses(activeCommunitySummary.balanceInfo.badgeStyle)}
                 title={getGraphViewCommunityBalanceTitle(
                   activeCommunitySummary.balanceInfo.balanceTier,
                   activeCommunitySummary.balanceInfo.formattedBalanceSummary,
@@ -919,10 +928,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     <>
                       {metrics.similarityInfo && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                            metrics.similarityInfo.badgeStyle,
-                          )}
+                          className={getGraphViewBadgeTagClasses(metrics.similarityInfo.badgeStyle)}
                           title={getPlayerSimilarityAriaLabel(
                             metrics.similarityInfo.similarityTier,
                             metrics.similarityInfo.formattedSummary,
@@ -936,10 +942,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         </span>
                       )}
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.expansionPotential.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.expansionPotential.badgeStyle)}
                         title={getPlayerExpansionAriaLabel(
                           metrics.expansionPotential.expansionTier,
                           metrics.expansionPotential.formattedSummary,
@@ -952,10 +955,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.expansionPotential.expansionTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.concentration.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.concentration.badgeStyle)}
                         title={getInteractionConcentrationAriaLabel(
                           metrics.concentration.concentrationTier,
                           metrics.concentration.formattedSummary,
@@ -968,10 +968,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.concentration.concentrationTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.multiBelonging.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.multiBelonging.badgeStyle)}
                         title={getMultiBelongingAriaLabel(
                           metrics.multiBelonging.multiBelongingTier,
                           metrics.multiBelonging.formattedSummary,
@@ -984,10 +981,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.multiBelonging.multiBelongingTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.complementarity.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.complementarity.badgeStyle)}
                         title={getMatchComplementarityAriaLabel(
                           metrics.complementarity.complementarityTier,
                           metrics.complementarity.formattedSummary,
@@ -1000,10 +994,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.complementarity.complementarityTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.stability.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.stability.badgeStyle)}
                         title={getPartnershipStabilityAriaLabel(
                           metrics.stability.stabilityTier,
                           metrics.stability.formattedSummary,
@@ -1016,10 +1007,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.stability.stabilityTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.localClustering.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.localClustering.badgeStyle)}
                         title={getLocalClusteringAriaLabel(
                           metrics.localClustering.clusteringTier,
                           metrics.localClustering.formattedSummary,
@@ -1032,20 +1020,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.localClustering.clusteringTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.activityTier.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.activityTier.badgeStyle)}
                         title={getGraphViewNodeActivityTitle(metrics.activityTier.label)}
                         aria-label={getGraphViewNodeActivityAriaLabel(metrics.activityTier.label)}
                       >
                         {metrics.activityTier.label}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.centrality.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.centrality.badgeStyle)}
                         title={getNetworkCentralityAriaLabel(
                           metrics.centrality.centralityTier,
                           metrics.centrality.formattedSummary,
@@ -1058,10 +1040,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.centrality.centralityTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.roleInfo.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.roleInfo.badgeStyle)}
                         title={getNetworkRoleAriaLabel(
                           metrics.roleInfo.roleLabel,
                           metrics.roleInfo.description,
@@ -1074,10 +1053,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.roleInfo.roleLabel}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.bridging.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.bridging.badgeStyle)}
                         title={getCommunityBridgingAriaLabel(
                           metrics.bridging.bridgingTier,
                           metrics.bridging.formattedSummary,
@@ -1090,10 +1066,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.bridging.bridgingTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.diversity.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.diversity.badgeStyle)}
                         title={getNetworkDiversityAriaLabel(
                           metrics.diversity.diversityTier,
                           metrics.diversity.formattedSummary,
@@ -1106,10 +1079,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.diversity.diversityTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.crossRivalry.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.crossRivalry.badgeStyle)}
                         title={getCrossRivalryAriaLabel(
                           metrics.crossRivalry.rivalryTier,
                           metrics.crossRivalry.formattedSummary,
@@ -1122,10 +1092,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.crossRivalry.rivalryTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.reach.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.reach.badgeStyle)}
                         title={getPlayerGraphReachAriaLabel(
                           metrics.reach.reachTier,
                           metrics.reach.formattedSummary,
@@ -1138,10 +1105,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                         {metrics.reach.reachTier}
                       </span>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          metrics.reciprocity.badgeStyle,
-                        )}
+                        className={getGraphViewBadgeTagClasses(metrics.reciprocity.badgeStyle)}
                         title={getInteractionReciprocityAriaLabel(
                           metrics.reciprocity.reciprocityTier,
                           metrics.reciprocity.formattedSummary,
@@ -1163,14 +1127,14 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               className={getGraphViewDetailCloseButtonClasses()}
               aria-label={getGraphViewDetailPanelCloseAriaLabel()}
             >
-              <X className="h-4 w-4" />
+              <X className={getGraphViewDetailCloseIconClasses()} />
             </button>
           </div>
 
           <div className={getGraphViewDetailScoreGridClasses()}>
             <div className={getGraphViewDetailPanelCardScoreClasses()}>
-              <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelScoreLabel()}</p>
-              <p className="text-sm tabular-nums font-bold text-foreground">
+              <p className={getGraphViewDetailCardLabelClasses()}>{getGraphViewDetailPanelScoreLabel()}</p>
+              <p className={getGraphViewDetailCardValueClasses()}>
                 {selectedNodeData.skillScore}
               </p>
             </div>
@@ -1182,15 +1146,15 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                   title={sideInfo.label}
                   aria-label={sideInfo.label}
                 >
-                  <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelSideLabel()}</p>
-                  <p className="text-sm font-bold text-foreground">
+                  <p className={getGraphViewDetailCardLabelClasses()}>{getGraphViewDetailPanelSideLabel()}</p>
+                  <p className={getGraphViewDetailCardSideValueClasses()}>
                     {sideInfo.shortLabel}
                   </p>
                 </div>
               );
             })()}
             <div className={getGraphViewDetailPanelCardScoreClasses()}>
-              <p className="text-xs text-muted-foreground">{getGraphViewDetailPanelGroupLabel()}</p>
+              <p className={getGraphViewDetailCardLabelClasses()}>{getGraphViewDetailPanelGroupLabel()}</p>
               {selectedNodeData.community !== null ? (
               (() => {
                 const commSummary = calculateCommunitySummary(
@@ -1255,19 +1219,19 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                     synergyBreakdown.formattedSynergySummary,
                   )}
                 >
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="font-semibold text-foreground text-[11px]">
+                  <div className={getGraphViewSummaryCardHeaderClasses()}>
+                    <p className={getGraphViewSummaryCardTitleClasses()}>
                       {getGraphViewSummaryCardTitleText()}
                     </p>
-                    <span className="text-[10px] font-bold text-muted-foreground">
+                    <span className={getGraphViewSummaryCardTotalClasses()}>
                       {getGraphViewSummaryCardTotalText(summary.totalConnections)}
                     </span>
                   </div>
-                  <p className="text-muted-foreground text-[11px] truncate">
+                  <p className={getGraphViewSummaryCardDescriptionClasses()}>
                     {summary.formattedSummary}
                   </p>
                   {synergyBreakdown.totalPartners > 0 && (
-                    <p className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 break-words leading-tight pt-0.5 border-t border-border/50">
+                    <p className={getGraphViewSummaryCardSynergyClasses()}>
                       {getGraphViewSummaryCardSynergyText(synergyBreakdown.formattedSynergySummary)}
                     </p>
                   )}
@@ -1311,10 +1275,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       aria-label={getGraphViewFocusNodeAriaLabel(otherName)}
                     >
                       <span
-                        className={cn(
-                          "inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0 border",
-                          getConnectionBadgeClasses(record.type),
-                        )}
+                        className={getGraphViewConnectionBadgeIndicatorClasses(record.type)}
                       >
                         {getConnectionTypeSymbol(record.type)}
                       </span>
@@ -1346,10 +1307,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
                     <div className={getGraphViewConnectionSubrowClasses()}>
                       <span
-                        className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
-                          affinity.badgeStyle
-                        )}
+                        className={getGraphViewBadgeTagClasses(affinity.badgeStyle)}
                         title={getGraphViewAffinityTitle(affinity.label)}
                         aria-label={getGraphViewAffinityTitle(affinity.label)}
                       >
@@ -1357,8 +1315,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
                       </span>
                       {sideCompatibility && (record.type === "partner" || record.type === "mixed") && (
                         <span
-                          className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                          className={getGraphViewBadgeTagClasses(
                             getSideCompatibilityBadgeClasses(sideCompatibility.isComplementary)
                           )}
                         >

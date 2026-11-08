@@ -940,6 +940,32 @@ import {
   getNetworkPageTabListAriaLabel,
   getNetworkPageStatsTabLabel,
   getNetworkPageGraphTabLabel,
+  getGraphViewBadgeTagClasses,
+  getGraphViewConnectionBadgeIndicatorClasses,
+  getGraphViewSearchRowClasses,
+  getGraphViewSearchInputClasses,
+  getGraphViewClearSearchButtonClasses,
+  getGraphViewCenterButtonClasses,
+  getGraphViewDetailCloseIconClasses,
+  getGraphViewDetailCardLabelClasses,
+  getGraphViewDetailCardValueClasses,
+  getGraphViewDetailCardSideValueClasses,
+  getGraphViewSummaryCardHeaderClasses,
+  getGraphViewSummaryCardTitleClasses,
+  getGraphViewSummaryCardTotalClasses,
+  getGraphViewSummaryCardDescriptionClasses,
+  getGraphViewSummaryCardSynergyClasses,
+  getGraphViewSearchIconClasses,
+  getGraphViewScopeIconClasses,
+  getGraphViewEmptyDataIconClasses,
+  getNetworkPageTabIconClasses,
+  getGrowthBadgeIconClasses,
+  getStatCardIconClasses,
+  getStatsPanelBackIconClasses,
+  getStatsPanelSectionIconClasses,
+  getStatsPanelClockIconClasses,
+  getStatsPanelMapPinIconClasses,
+  getStatsPanelScoreLabelClasses,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -2615,5 +2641,46 @@ describe("NetworkSkeleton layout, dimension, tab label & iteration key pure help
     expect(getGraphViewLegendDotClasses("bg-red-500")).toBe("h-3 w-3 rounded-full bg-red-500");
     expect(getGraphViewLegendItemTextClasses()).toBe("text-xs text-muted-foreground");
     expect(getFilterChipCommunityDotClasses()).toBe("h-2 w-2 rounded-full shrink-0");
+  });
+
+  it("returns correct CSS classes for GraphView, StatsPanel and NetworkPage pure styling and icon helpers", () => {
+    expect(getGraphViewBadgeTagClasses("bg-primary text-primary-foreground")).toBe(
+      "text-[10px] font-bold px-1.5 py-0.5 rounded-md border shrink-0 bg-primary text-primary-foreground"
+    );
+    expect(getGraphViewConnectionBadgeIndicatorClasses("partner")).toContain("inline-flex items-center justify-center w-6 h-6 rounded-full");
+    expect(getGraphViewConnectionBadgeIndicatorClasses("partner")).toContain("bg-emerald-100");
+    expect(getGraphViewSearchRowClasses()).toBe("flex items-center gap-2");
+    expect(getGraphViewSearchInputClasses()).toBe(
+      "flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
+    );
+    expect(getGraphViewClearSearchButtonClasses()).toBe(
+      "text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-all active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+    );
+    expect(getGraphViewCenterButtonClasses()).toBe(
+      "rounded-xl bg-card px-3 py-2 text-xs font-semibold text-foreground border border-border shadow-sm transition-all hover:bg-muted active:scale-[0.98] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+    );
+    expect(getGraphViewDetailCloseIconClasses()).toBe("h-4 w-4");
+    expect(getGraphViewDetailCardLabelClasses()).toBe("text-xs text-muted-foreground");
+    expect(getGraphViewDetailCardValueClasses()).toBe("text-sm tabular-nums font-bold text-foreground");
+    expect(getGraphViewDetailCardSideValueClasses()).toBe("text-sm font-bold text-foreground");
+    expect(getGraphViewSummaryCardHeaderClasses()).toBe("flex items-center justify-between gap-1");
+    expect(getGraphViewSummaryCardTitleClasses()).toBe("font-semibold text-foreground text-[11px]");
+    expect(getGraphViewSummaryCardTotalClasses()).toBe("text-[10px] font-bold text-muted-foreground");
+    expect(getGraphViewSummaryCardDescriptionClasses()).toBe("text-muted-foreground text-[11px] truncate");
+    expect(getGraphViewSummaryCardSynergyClasses()).toBe(
+      "text-[10px] font-bold text-emerald-700 dark:text-emerald-400 break-words leading-tight pt-0.5 border-t border-border/50"
+    );
+    expect(getGraphViewSearchIconClasses()).toBe("h-4 w-4 text-muted-foreground shrink-0");
+    expect(getGraphViewScopeIconClasses()).toBe("h-3.5 w-3.5");
+    expect(getGraphViewEmptyDataIconClasses()).toBe("h-6 w-6 text-muted-foreground");
+    expect(getNetworkPageTabIconClasses()).toBe("h-4 w-4");
+    expect(getGrowthBadgeIconClasses()).toBe("h-3 w-3");
+    expect(getStatCardIconClasses()).toBe("h-4 w-4 text-muted-foreground");
+    expect(getStatsPanelBackIconClasses()).toBe("h-5 w-5");
+    expect(getStatsPanelSectionIconClasses()).toBe("h-4 w-4 text-primary");
+    expect(getStatsPanelSectionIconClasses(true)).toBe("h-4 w-4 text-primary shrink-0");
+    expect(getStatsPanelClockIconClasses()).toBe("h-4 w-4 text-primary");
+    expect(getStatsPanelMapPinIconClasses()).toBe("h-4 w-4 text-primary");
+    expect(getStatsPanelScoreLabelClasses()).toBe("text-[10px] uppercase font-bold text-muted-foreground");
   });
 });
