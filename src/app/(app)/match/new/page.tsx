@@ -20,6 +20,9 @@ import {
   getSuggestPairingsErrorToast,
   getFormErrorAlertAriaLabel,
   formatFormErrorMessage,
+  getNewMatchErrorBannerContainerClasses,
+  getNewMatchErrorBannerCardClasses,
+  getNewMatchErrorBannerTextClasses,
 } from "./new-match-utils";
 
 function RegisterMatchInner() {
@@ -213,10 +216,10 @@ function RegisterMatchInner() {
         <div
           role="region"
           aria-label={getFormErrorAlertAriaLabel()}
-          className="fixed bottom-32 left-0 right-0 px-6"
+          className={getNewMatchErrorBannerContainerClasses()}
         >
-          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 bg-card shadow-xs">
-            <p className="text-sm font-bold text-destructive text-center">
+          <div className={getNewMatchErrorBannerCardClasses()}>
+            <p className={getNewMatchErrorBannerTextClasses()}>
               {formatFormErrorMessage(formError)}
             </p>
           </div>
