@@ -39,6 +39,65 @@ import {
   getJoinSlotFooterIconBadgeClasses,
   getJoinSlotAlreadyJoinedButtonClasses,
   getJoinSlotDetailLinkClasses,
+  getJoinSlotModalidadLabel,
+  getJoinSlotEstadoLabel,
+  formatMatchSetsText,
+  getJoinSlotOrganizerFallbackName,
+  formatFallbackSlotName,
+  getJoinSlotInvitationCardInnerClasses,
+  getJoinSlotInvitationAvatarClasses,
+  getJoinSlotInvitationTextContainerClasses,
+  getJoinSlotInvitationTitleClasses,
+  getJoinSlotInvitationMessageClasses,
+  getJoinSlotMatchCardHeaderClasses,
+  getJoinSlotMatchCardTitleClasses,
+  getJoinSlotMatchCardContentClasses,
+  getJoinSlotMatchCardMetricCellClasses,
+  getJoinSlotMatchCardMetricHeaderClasses,
+  getJoinSlotMatchCardMetricTitleClasses,
+  getJoinSlotMatchCardMetricValueClasses,
+  getJoinSlotMatchCardBadgeContainerClasses,
+  getJoinSlotMatchCardStatusBadgeClasses,
+  getJoinSlotMatchCardClubRowClasses,
+  getJoinSlotMatchCardClubIconContainerClasses,
+  getJoinSlotMatchCardClubIconClasses,
+  getJoinSlotMatchCardClubInfoClasses,
+  getJoinSlotMatchCardClubTitleClasses,
+  getJoinSlotMatchCardClubSubtitleClasses,
+  getJoinSlotFormationSectionClasses,
+  getJoinSlotFormationHeaderClasses,
+  getJoinSlotFormationTitleClasses,
+  getJoinSlotFormationIconClasses,
+  getJoinSlotFormationGridClasses,
+  getJoinSlotFormationTeamGroupClasses,
+  getJoinSlotFormationTeamHeaderClasses,
+  getJoinSlotFormationTeamLabelClasses,
+  getJoinSlotFormationTeamDividerClasses,
+  getJoinSlotFormationTeamSlotsGridClasses,
+  getJoinSlotFormationSlotAvatarClasses,
+  getJoinSlotFormationSlotInfoClasses,
+  getJoinSlotFormationSlotPositionClasses,
+  getJoinSlotFormationSlotBadgeClasses,
+  getJoinSlotFooterContentClasses,
+  getJoinSlotFooterLayoutClasses,
+  getJoinSlotFooterUserBadgeRowClasses,
+  getJoinSlotFooterIconClasses,
+  getJoinSlotFooterUserBadgeInfoClasses,
+  getJoinSlotFooterUserBadgeTitleClasses,
+  getJoinSlotFooterUserBadgeTeamClasses,
+  getJoinSlotFooterWarningIconClasses,
+  getJoinSlotFooterWarningTextClasses,
+  getJoinSlotFooterActionStackClasses,
+  getJoinSlotSignInFormClasses,
+  getJoinSlotSkeletonCardClasses,
+  getJoinSlotSkeletonCardHeaderClasses,
+  getJoinSlotSkeletonCardContentClasses,
+  getJoinSlotSkeletonCardCellClasses,
+  getJoinSlotSkeletonFormationClasses,
+  getJoinSlotSkeletonFormationHeaderClasses,
+  getJoinSlotSkeletonFormationGroupClasses,
+  getJoinSlotSkeletonFormationTeamClasses,
+  getJoinSlotSkeletonFormationSlotsGridClasses,
 } from "../join-slot-utils";
 
 describe("join-slot-utils", () => {
@@ -293,6 +352,88 @@ describe("join-slot-utils", () => {
       expect(getJoinSlotFooterIconBadgeClasses()).toContain("text-primary-foreground");
       expect(getJoinSlotAlreadyJoinedButtonClasses()).toContain("w-full h-12 rounded-lg");
       expect(getJoinSlotDetailLinkClasses()).toContain("block text-center text-xs");
+    });
+
+    it("formats match sets, labels, and fallback names", () => {
+      expect(getJoinSlotModalidadLabel()).toBe("Modalidad");
+      expect(getJoinSlotEstadoLabel()).toBe("Estado");
+      expect(formatMatchSetsText(3)).toBe("3 sets");
+      expect(getJoinSlotOrganizerFallbackName()).toBe("Organizador");
+      expect(formatFallbackSlotName(1)).toBe("Cupo 2");
+    });
+
+    it("returns correct invitation layout class strings and handles custom classes", () => {
+      expect(getJoinSlotInvitationCardInnerClasses()).toBe("flex items-center gap-3");
+      expect(getJoinSlotInvitationCardInnerClasses("extra")).toBe("flex items-center gap-3 extra");
+      expect(getJoinSlotInvitationAvatarClasses()).toBe("border border-border shrink-0");
+      expect(getJoinSlotInvitationTextContainerClasses()).toBe("flex-1 min-w-0");
+      expect(getJoinSlotInvitationTitleClasses()).toBe("text-xs font-bold text-muted-foreground");
+      expect(getJoinSlotInvitationMessageClasses()).toBe("text-sm font-semibold text-foreground leading-snug");
+    });
+
+    it("returns correct match card layout and metric class strings", () => {
+      expect(getJoinSlotMatchCardHeaderClasses()).toBe("pb-4 pt-6 border-b border-border bg-muted");
+      expect(getJoinSlotMatchCardTitleClasses()).toBe("text-xs font-bold text-muted-foreground");
+      expect(getJoinSlotMatchCardContentClasses()).toBe("grid grid-cols-2 gap-px bg-border p-0");
+      expect(getJoinSlotMatchCardMetricCellClasses()).toBe("bg-card p-4 flex flex-col gap-1");
+      expect(getJoinSlotMatchCardMetricHeaderClasses()).toBe("flex items-center gap-2 text-muted-foreground");
+      expect(getJoinSlotMatchCardMetricTitleClasses()).toBe("text-xs font-semibold");
+      expect(getJoinSlotMatchCardMetricValueClasses()).toBe("text-lg font-bold");
+      expect(getJoinSlotMatchCardBadgeContainerClasses()).toBe("flex items-center pt-1");
+      expect(getJoinSlotMatchCardStatusBadgeClasses()).toBe("text-xs font-bold px-2 py-0.5 rounded border-border");
+    });
+
+    it("returns correct match card club row and info class strings", () => {
+      expect(getJoinSlotMatchCardClubRowClasses()).toBe("col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border");
+      expect(getJoinSlotMatchCardClubIconContainerClasses()).toBe("flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shrink-0");
+      expect(getJoinSlotMatchCardClubIconClasses()).toBe("h-5 w-5");
+      expect(getJoinSlotMatchCardClubInfoClasses()).toBe("min-w-0");
+      expect(getJoinSlotMatchCardClubTitleClasses()).toBe("text-sm font-bold truncate");
+      expect(getJoinSlotMatchCardClubSubtitleClasses()).toBe("text-xs text-muted-foreground");
+    });
+
+    it("returns correct formation section and slot layout class strings", () => {
+      expect(getJoinSlotFormationSectionClasses()).toBe("space-y-4");
+      expect(getJoinSlotFormationHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getJoinSlotFormationTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getJoinSlotFormationIconClasses()).toBe("h-4 w-4 text-muted-foreground");
+      expect(getJoinSlotFormationGridClasses()).toBe("grid gap-6");
+      expect(getJoinSlotFormationTeamGroupClasses()).toBe("space-y-3");
+      expect(getJoinSlotFormationTeamHeaderClasses()).toBe("flex items-center gap-2");
+      expect(getJoinSlotFormationTeamLabelClasses()).toBe("text-xs font-bold text-muted-foreground");
+      expect(getJoinSlotFormationTeamDividerClasses()).toBe("h-px flex-1 bg-border");
+      expect(getJoinSlotFormationTeamSlotsGridClasses()).toBe("grid gap-2");
+      expect(getJoinSlotFormationSlotAvatarClasses(true)).toBe("border border-border shrink-0");
+      expect(getJoinSlotFormationSlotAvatarClasses(false)).toContain("opacity-50");
+      expect(getJoinSlotFormationSlotInfoClasses()).toBe("flex-1 min-w-0");
+      expect(getJoinSlotFormationSlotPositionClasses()).toBe("text-xs text-muted-foreground mt-0.5");
+      expect(getJoinSlotFormationSlotBadgeClasses("bg-emerald-100")).toBe("text-xs font-bold px-2 py-0.5 rounded bg-emerald-100");
+    });
+
+    it("returns correct footer layout, user badge, warning, and action class strings", () => {
+      expect(getJoinSlotFooterContentClasses()).toBe("max-w-md mx-auto");
+      expect(getJoinSlotFooterLayoutClasses()).toBe("flex flex-col gap-4");
+      expect(getJoinSlotFooterUserBadgeRowClasses()).toBe("flex items-center gap-4");
+      expect(getJoinSlotFooterIconClasses()).toBe("h-6 w-6");
+      expect(getJoinSlotFooterUserBadgeInfoClasses()).toBe("flex-1 min-w-0");
+      expect(getJoinSlotFooterUserBadgeTitleClasses()).toBe("text-xs font-bold text-muted-foreground leading-none mb-1");
+      expect(getJoinSlotFooterUserBadgeTeamClasses()).toBe("text-xl font-bold text-foreground truncate");
+      expect(getJoinSlotFooterWarningIconClasses()).toBe("h-4 w-4 shrink-0");
+      expect(getJoinSlotFooterWarningTextClasses()).toBe("text-xs font-bold");
+      expect(getJoinSlotFooterActionStackClasses()).toBe("space-y-3");
+      expect(getJoinSlotSignInFormClasses()).toBe("w-full h-12 rounded-lg text-base font-bold");
+    });
+
+    it("returns correct skeleton card and formation layout class strings", () => {
+      expect(getJoinSlotSkeletonCardClasses()).toBe("rounded-xl border border-border bg-card overflow-hidden");
+      expect(getJoinSlotSkeletonCardHeaderClasses()).toBe("h-10 bg-muted border-b border-border flex items-center px-4");
+      expect(getJoinSlotSkeletonCardContentClasses()).toBe("grid grid-cols-2 gap-px bg-border");
+      expect(getJoinSlotSkeletonCardCellClasses()).toBe("bg-card p-4 space-y-2");
+      expect(getJoinSlotSkeletonFormationClasses()).toBe("space-y-4");
+      expect(getJoinSlotSkeletonFormationHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getJoinSlotSkeletonFormationGroupClasses()).toBe("space-y-4");
+      expect(getJoinSlotSkeletonFormationTeamClasses()).toBe("space-y-2");
+      expect(getJoinSlotSkeletonFormationSlotsGridClasses()).toBe("grid gap-2");
     });
   });
 });

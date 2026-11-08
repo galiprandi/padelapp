@@ -276,3 +276,239 @@ export function getJoinSlotAlreadyJoinedButtonClasses(): string {
 export function getJoinSlotDetailLinkClasses(): string {
   return "block text-center text-xs font-bold text-muted-foreground hover:text-primary transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-sm";
 }
+
+export function getJoinSlotModalidadLabel(): string {
+  return "Modalidad";
+}
+
+export function getJoinSlotEstadoLabel(): string {
+  return "Estado";
+}
+
+export function formatMatchSetsText(sets: number): string {
+  return `${sets} sets`;
+}
+
+export function getJoinSlotOrganizerFallbackName(): string {
+  return "Organizador";
+}
+
+export function formatFallbackSlotName(position: number): string {
+  return `Cupo ${position + 1}`;
+}
+
+export function getJoinSlotInvitationCardInnerClasses(customClassName?: string): string {
+  return cn("flex items-center gap-3", customClassName);
+}
+
+export function getJoinSlotInvitationAvatarClasses(customClassName?: string): string {
+  return cn("border border-border shrink-0", customClassName);
+}
+
+export function getJoinSlotInvitationTextContainerClasses(customClassName?: string): string {
+  return cn("flex-1 min-w-0", customClassName);
+}
+
+export function getJoinSlotInvitationTitleClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotInvitationMessageClasses(customClassName?: string): string {
+  return cn("text-sm font-semibold text-foreground leading-snug", customClassName);
+}
+
+export function getJoinSlotMatchCardHeaderClasses(customClassName?: string): string {
+  return cn("pb-4 pt-6 border-b border-border bg-muted", customClassName);
+}
+
+export function getJoinSlotMatchCardTitleClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotMatchCardContentClasses(customClassName?: string): string {
+  return cn("grid grid-cols-2 gap-px bg-border p-0", customClassName);
+}
+
+export function getJoinSlotMatchCardMetricCellClasses(customClassName?: string): string {
+  return cn("bg-card p-4 flex flex-col gap-1", customClassName);
+}
+
+export function getJoinSlotMatchCardMetricHeaderClasses(customClassName?: string): string {
+  return cn("flex items-center gap-2 text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotMatchCardMetricTitleClasses(customClassName?: string): string {
+  return cn("text-xs font-semibold", customClassName);
+}
+
+export function getJoinSlotMatchCardMetricValueClasses(customClassName?: string): string {
+  return cn("text-lg font-bold", customClassName);
+}
+
+export function getJoinSlotMatchCardBadgeContainerClasses(customClassName?: string): string {
+  return cn("flex items-center pt-1", customClassName);
+}
+
+export function getJoinSlotMatchCardStatusBadgeClasses(customClassName?: string): string {
+  return cn("text-xs font-bold px-2 py-0.5 rounded border-border", customClassName);
+}
+
+export function getJoinSlotMatchCardClubRowClasses(customClassName?: string): string {
+  return cn("col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border", customClassName);
+}
+
+export function getJoinSlotMatchCardClubIconContainerClasses(customClassName?: string): string {
+  return cn("flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shrink-0", customClassName);
+}
+
+export function getJoinSlotMatchCardClubIconClasses(customClassName?: string): string {
+  return cn("h-5 w-5", customClassName);
+}
+
+export function getJoinSlotMatchCardClubInfoClasses(customClassName?: string): string {
+  return cn("min-w-0", customClassName);
+}
+
+export function getJoinSlotMatchCardClubTitleClasses(customClassName?: string): string {
+  return cn("text-sm font-bold truncate", customClassName);
+}
+
+export function getJoinSlotMatchCardClubSubtitleClasses(customClassName?: string): string {
+  return cn("text-xs text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotFormationSectionClasses(customClassName?: string): string {
+  return cn("space-y-4", customClassName);
+}
+
+export function getJoinSlotFormationHeaderClasses(customClassName?: string): string {
+  return cn("flex items-center justify-between", customClassName);
+}
+
+export function getJoinSlotFormationTitleClasses(customClassName?: string): string {
+  return cn("text-sm font-bold text-foreground", customClassName);
+}
+
+export function getJoinSlotFormationIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4 text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotFormationGridClasses(customClassName?: string): string {
+  return cn("grid gap-6", customClassName);
+}
+
+export function getJoinSlotFormationTeamGroupClasses(customClassName?: string): string {
+  return cn("space-y-3", customClassName);
+}
+
+export function getJoinSlotFormationTeamHeaderClasses(customClassName?: string): string {
+  return cn("flex items-center gap-2", customClassName);
+}
+
+export function getJoinSlotFormationTeamLabelClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-muted-foreground", customClassName);
+}
+
+export function getJoinSlotFormationTeamDividerClasses(customClassName?: string): string {
+  return cn("h-px flex-1 bg-border", customClassName);
+}
+
+export function getJoinSlotFormationTeamSlotsGridClasses(customClassName?: string): string {
+  return cn("grid gap-2", customClassName);
+}
+
+export function getJoinSlotFormationSlotAvatarClasses(isOccupied: boolean, customClassName?: string): string {
+  return cn("border border-border shrink-0", !isOccupied && "opacity-50", customClassName);
+}
+
+export function getJoinSlotFormationSlotInfoClasses(customClassName?: string): string {
+  return cn("flex-1 min-w-0", customClassName);
+}
+
+export function getJoinSlotFormationSlotPositionClasses(customClassName?: string): string {
+  return cn("text-xs text-muted-foreground mt-0.5", customClassName);
+}
+
+export function getJoinSlotFormationSlotBadgeClasses(customClassName?: string): string {
+  return cn("text-xs font-bold px-2 py-0.5 rounded", customClassName);
+}
+
+export function getJoinSlotFooterContentClasses(customClassName?: string): string {
+  return cn("max-w-md mx-auto", customClassName);
+}
+
+export function getJoinSlotFooterLayoutClasses(customClassName?: string): string {
+  return cn("flex flex-col gap-4", customClassName);
+}
+
+export function getJoinSlotFooterUserBadgeRowClasses(customClassName?: string): string {
+  return cn("flex items-center gap-4", customClassName);
+}
+
+export function getJoinSlotFooterIconClasses(customClassName?: string): string {
+  return cn("h-6 w-6", customClassName);
+}
+
+export function getJoinSlotFooterUserBadgeInfoClasses(customClassName?: string): string {
+  return cn("flex-1 min-w-0", customClassName);
+}
+
+export function getJoinSlotFooterUserBadgeTitleClasses(customClassName?: string): string {
+  return cn("text-xs font-bold text-muted-foreground leading-none mb-1", customClassName);
+}
+
+export function getJoinSlotFooterUserBadgeTeamClasses(customClassName?: string): string {
+  return cn("text-xl font-bold text-foreground truncate", customClassName);
+}
+
+export function getJoinSlotFooterWarningIconClasses(customClassName?: string): string {
+  return cn("h-4 w-4 shrink-0", customClassName);
+}
+
+export function getJoinSlotFooterWarningTextClasses(customClassName?: string): string {
+  return cn("text-xs font-bold", customClassName);
+}
+
+export function getJoinSlotFooterActionStackClasses(customClassName?: string): string {
+  return cn("space-y-3", customClassName);
+}
+
+export function getJoinSlotSignInFormClasses(customClassName?: string): string {
+  return cn("w-full h-12 rounded-lg text-base font-bold", customClassName);
+}
+
+export function getJoinSlotSkeletonCardClasses(customClassName?: string): string {
+  return cn("rounded-xl border border-border bg-card overflow-hidden", customClassName);
+}
+
+export function getJoinSlotSkeletonCardHeaderClasses(customClassName?: string): string {
+  return cn("h-10 bg-muted border-b border-border flex items-center px-4", customClassName);
+}
+
+export function getJoinSlotSkeletonCardContentClasses(customClassName?: string): string {
+  return cn("grid grid-cols-2 gap-px bg-border", customClassName);
+}
+
+export function getJoinSlotSkeletonCardCellClasses(customClassName?: string): string {
+  return cn("bg-card p-4 space-y-2", customClassName);
+}
+
+export function getJoinSlotSkeletonFormationClasses(customClassName?: string): string {
+  return cn("space-y-4", customClassName);
+}
+
+export function getJoinSlotSkeletonFormationHeaderClasses(customClassName?: string): string {
+  return cn("flex items-center justify-between", customClassName);
+}
+
+export function getJoinSlotSkeletonFormationGroupClasses(customClassName?: string): string {
+  return cn("space-y-4", customClassName);
+}
+
+export function getJoinSlotSkeletonFormationTeamClasses(customClassName?: string): string {
+  return cn("space-y-2", customClassName);
+}
+
+export function getJoinSlotSkeletonFormationSlotsGridClasses(customClassName?: string): string {
+  return cn("grid gap-2", customClassName);
+}
