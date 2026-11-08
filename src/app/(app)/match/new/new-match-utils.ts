@@ -355,6 +355,265 @@ export function getScoreOptionButtonClasses(isSelected: boolean): string {
 }
 
 /**
+ * Returns CSS classes for step base container.
+ */
+export function getStepBaseContainerClasses(): string {
+  return "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
+}
+
+/**
+ * Returns CSS classes for vertical content stack within steps.
+ */
+export function getStepContentStackClasses(): string {
+  return "space-y-6";
+}
+
+/**
+ * Returns CSS classes for step heading title.
+ */
+export function getStepHeadingTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for step heading description.
+ */
+export function getStepHeadingDescriptionClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for score selector component container.
+ */
+export function getScoreSelectorContainerClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns CSS classes for score selector header row.
+ */
+export function getScoreSelectorHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns CSS classes for score selector label container group.
+ */
+export function getScoreSelectorLabelGroupClasses(): string {
+  return "flex flex-col gap-0.5 min-w-0";
+}
+
+/**
+ * Returns CSS classes for score selector label text.
+ */
+export function getScoreSelectorLabelClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for score selector radiogroup grid.
+ */
+export function getScoreSelectorRadiogroupClasses(): string {
+  return "grid grid-cols-4 gap-2";
+}
+
+/**
+ * Returns CSS classes for recent clubs section container.
+ */
+export function getRecentClubsContainerClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Returns CSS classes for recent clubs section label.
+ */
+export function getRecentClubsLabelClasses(): string {
+  return "text-xs font-semibold text-muted-foreground flex items-center gap-1.5";
+}
+
+/**
+ * Returns CSS classes for recent clubs radiogroup horizontal scroll list.
+ */
+export function getRecentClubsRadiogroupClasses(): string {
+  return "flex gap-2 overflow-x-auto pb-1";
+}
+
+/**
+ * Returns CSS classes for suggest pairings card title.
+ */
+export function getSuggestPairingsTitleClasses(): string {
+  return "text-sm font-semibold text-foreground flex items-center gap-1.5";
+}
+
+/**
+ * Returns CSS classes for suggest pairings card description.
+ */
+export function getSuggestPairingsDescriptionClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for suggest pairings help text.
+ */
+export function getSuggestPairingsHelpClasses(): string {
+  return "text-xs text-muted-foreground text-center";
+}
+
+/**
+ * Returns CSS classes for a team section container in step 0.
+ */
+export function getTeamSectionContainerClasses(): string {
+  return "space-y-3";
+}
+
+/**
+ * Returns CSS classes for a team section header row.
+ */
+export function getTeamSectionHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+/**
+ * Returns CSS classes for a team section title.
+ */
+export function getTeamSectionTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+/**
+ * Returns CSS classes for swap sides button in step 0.
+ */
+export function getTeamSectionSwapButtonClasses(): string {
+  return "flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-all active:scale-[0.98] rounded-lg px-2 py-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background";
+}
+
+/**
+ * Returns CSS classes for slots grid inside a team section.
+ */
+export function getTeamSectionSlotsGridClasses(): string {
+  return "grid gap-2";
+}
+
+/**
+ * Returns CSS classes for versus divider between teams.
+ */
+export function getTeamVsDividerClasses(): string {
+  return "space-y-1";
+}
+
+/**
+ * Returns CSS classes for switch and radiogroup cards in format step.
+ */
+export function getFormatStepCardClasses(): string {
+  return "flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for an option card in format step.
+ */
+export function getFormatStepOptionCardClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Returns CSS classes for option text container in format step.
+ */
+export function getFormatStepOptionTextClasses(): string {
+  return "space-y-1";
+}
+
+/**
+ * Returns CSS classes for option title in format step.
+ */
+export function getFormatStepOptionTitleClasses(): string {
+  return "text-sm font-semibold";
+}
+
+/**
+ * Returns CSS classes for option description in format step.
+ */
+export function getFormatStepOptionDescClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+/**
+ * Returns CSS classes for match type radiogroup grid.
+ */
+export function getFormatStepRadiogroupClasses(): string {
+  return "grid grid-cols-1 sm:grid-cols-2 gap-2";
+}
+
+/**
+ * Returns CSS classes for sets count radiogroup grid.
+ */
+export function getSetsCountRadiogroupClasses(): string {
+  return "grid grid-cols-3 gap-2";
+}
+
+/**
+ * Returns CSS classes for score step selectors grid.
+ */
+export function getScoreStepSelectorsGridClasses(): string {
+  return "grid gap-4";
+}
+
+/**
+ * @deprecated Use getSetsCountRadiogroupClasses instead.
+ */
+export function getFormatStepHeaderClasses(): string {
+  return getSetsCountRadiogroupClasses();
+}
+
+/**
+ * Returns CSS classes for match details form container in step 2.
+ */
+export function getMatchDetailsFormClasses(): string {
+  return "space-y-4";
+}
+
+/**
+ * Returns CSS classes for input group in match details.
+ */
+export function getMatchDetailsInputGroupClasses(): string {
+  return "space-y-2";
+}
+
+/**
+ * Returns CSS classes for input label in match details.
+ */
+export function getMatchDetailsLabelClasses(): string {
+  return "text-sm font-semibold";
+}
+
+/**
+ * Returns CSS classes for score step set card.
+ */
+export function getScoresStepSetsContainerClasses(): string {
+  return "space-y-4 rounded-xl border border-border bg-card p-4 shadow-xs";
+}
+
+/**
+ * Returns CSS classes for new match floating error banner container.
+ */
+export function getNewMatchErrorBannerContainerClasses(): string {
+  return "fixed bottom-32 left-0 right-0 px-6";
+}
+
+/**
+ * Returns CSS classes for new match floating error banner card.
+ */
+export function getNewMatchErrorBannerCardClasses(): string {
+  return "bg-destructive/10 border border-destructive/20 rounded-xl p-4 bg-card shadow-xs";
+}
+
+/**
+ * Returns CSS classes for new match floating error banner text.
+ */
+export function getNewMatchErrorBannerTextClasses(): string {
+  return "text-sm font-bold text-destructive text-center";
+}
+
+/**
  * Returns CSS classes for suggest pairings container card.
  */
 export function getSuggestPairingsCardClasses(): string {

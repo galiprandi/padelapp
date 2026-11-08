@@ -40,6 +40,38 @@ import {
   getRecentClubOptionClasses,
   getMatchTypeOptionClasses,
   getSetOptionButtonClasses,
+  getStepBaseContainerClasses,
+  getStepContentStackClasses,
+  getStepHeadingTitleClasses,
+  getStepHeadingDescriptionClasses,
+  getScoreSelectorContainerClasses,
+  getScoreSelectorHeaderClasses,
+  getScoreSelectorLabelGroupClasses,
+  getScoreSelectorLabelClasses,
+  getScoreSelectorRadiogroupClasses,
+  getRecentClubsContainerClasses,
+  getRecentClubsLabelClasses,
+  getRecentClubsRadiogroupClasses,
+  getSuggestPairingsTitleClasses,
+  getSuggestPairingsDescriptionClasses,
+  getSuggestPairingsHelpClasses,
+  getTeamSectionContainerClasses,
+  getTeamSectionHeaderClasses,
+  getTeamSectionTitleClasses,
+  getTeamSectionSwapButtonClasses,
+  getTeamSectionSlotsGridClasses,
+  getFormatStepCardClasses,
+  getFormatStepOptionCardClasses,
+  getFormatStepOptionTextClasses,
+  getFormatStepOptionTitleClasses,
+  getFormatStepOptionDescClasses,
+  getFormatStepRadiogroupClasses,
+  getSetsCountRadiogroupClasses,
+  getScoreStepSelectorsGridClasses,
+  getMatchDetailsFormClasses,
+  getMatchDetailsInputGroupClasses,
+  getMatchDetailsLabelClasses,
+  getScoresStepSetsContainerClasses,
 } from "@/app/(app)/match/new/new-match-utils";
 import { Check, ArrowUpDown, MapPin } from "lucide-react";
 
@@ -112,10 +144,10 @@ function ScoreSelector({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <span id={groupLabelId} className="text-xs text-muted-foreground">
+    <div className={getScoreSelectorContainerClasses()}>
+      <div className={getScoreSelectorHeaderClasses()}>
+        <div className={getScoreSelectorLabelGroupClasses()}>
+          <span id={groupLabelId} className={getScoreSelectorLabelClasses()}>
             {getScoreSelectorGroupLabel(teamLabel, players)}
           </span>
         </div>
@@ -134,7 +166,7 @@ function ScoreSelector({
         role="radiogroup"
         aria-labelledby={groupLabelId}
         onKeyDown={handleKeyDown}
-        className="grid grid-cols-4 gap-2"
+        className={getScoreSelectorRadiogroupClasses()}
       >
         {options.map((num) => {
           const isSelected = currentValue === num;
@@ -214,8 +246,8 @@ function RecentClubs({
   };
 
   return (
-    <div className="space-y-2">
-      <Label id="recent-clubs-label" className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+    <div className={getRecentClubsContainerClasses()}>
+      <Label id="recent-clubs-label" className={getRecentClubsLabelClasses()}>
         <MapPin className="h-3 w-3" />
         {getRecentClubsHeaderLabel()}
       </Label>
@@ -223,7 +255,7 @@ function RecentClubs({
         role="radiogroup"
         aria-labelledby="recent-clubs-label"
         onKeyDown={handleKeyDown}
-        className="flex gap-2 overflow-x-auto pb-1"
+        className={getRecentClubsRadiogroupClasses()}
       >
         {recentClubs.map((item) => {
           const label = getRecentClubLabel(item.club, item.courtNumber);
@@ -298,8 +330,7 @@ export function StepContent({
   isSuggesting = false,
   onSuggestPairings,
 }: StepContentProps) {
-  const baseClass =
-    "flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6";
+  const baseClass = getStepBaseContainerClasses();
   const stepAriaLabel = getStepRegionAriaLabel(currentStep);
 
   if (currentStep === 0) {
@@ -312,20 +343,20 @@ export function StepContent({
         aria-label={stepAriaLabel}
         className={baseClass}
       >
-        <div className="space-y-6">
+        <div className={getStepContentStackClasses()}>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{getStepHeadingTitle(0)}</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className={getStepHeadingTitleClasses()}>{getStepHeadingTitle(0)}</h1>
+            <p className={getStepHeadingDescriptionClasses()}>
               {getStepHeadingDescription(0)}
             </p>
           </div>
 
           <div className={getSuggestPairingsCardClasses()}>
-            <div className="space-y-1">
-              <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+            <div className={getFormatStepOptionTextClasses()}>
+              <h3 className={getSuggestPairingsTitleClasses()}>
                 <span>{getPairingSuggestionTitle()}</span>
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className={getSuggestPairingsDescriptionClasses()}>
                 {getPairingSuggestionDescription()}
               </p>
             </div>
@@ -339,28 +370,28 @@ export function StepContent({
               {getSuggestPairingsButtonText(isSuggesting)}
             </button>
             {!canSuggest && (
-              <p className="text-xs text-muted-foreground text-center">
+              <p className={getSuggestPairingsHelpClasses()}>
                 {getSuggestPairingsHelpText(uniqueUserIds.length)}
               </p>
             )}
           </div>
 
-          <div className="space-y-6">
+          <div className={getStepContentStackClasses()}>
             {(["A", "B"] as const).map((team) => (
-              <div key={team} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-foreground">Pareja {team}</h2>
+              <div key={team} className={getTeamSectionContainerClasses()}>
+                <div className={getTeamSectionHeaderClasses()}>
+                  <h2 className={getTeamSectionTitleClasses()}>Pareja {team}</h2>
                   <button
                     type="button"
                     onClick={() => onSwapSides(team)}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-all active:scale-[0.98] rounded-lg px-2 py-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background"
+                    className={getTeamSectionSwapButtonClasses()}
                     aria-label={getSwapSidesButtonAriaLabel(team)}
                   >
                     <ArrowUpDown className="h-3.5 w-3.5" />
                     Cambiar lados
                   </button>
                 </div>
-                <div className="grid gap-2">
+                <div className={getTeamSectionSlotsGridClasses()}>
                   {([0, 1] as const).map((index) => (
                     <SlotDisplay
                       key={`${team}-${index}`}
@@ -443,23 +474,23 @@ export function StepContent({
         aria-label={stepAriaLabel}
         className={baseClass}
       >
-        <div className="space-y-6">
+        <div className={getStepContentStackClasses()}>
           <div>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className={getStepHeadingTitleClasses()}>
               {getStepHeadingTitle(1)}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className={getStepHeadingDescriptionClasses()}>
               {getStepHeadingDescription(1)}
             </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
-              <div className="space-y-1">
-                <Label htmlFor="record-score" className="text-sm font-semibold">
+          <div className={getStepContentStackClasses()}>
+            <div className={getFormatStepCardClasses()}>
+              <div className={getFormatStepOptionTextClasses()}>
+                <Label htmlFor="record-score" className={getFormatStepOptionTitleClasses()}>
                   {getRecordScoreNowLabel()}
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className={getFormatStepOptionDescClasses()}>
                   {getRecordScoreNowDescription()}
                 </p>
               </div>
@@ -470,15 +501,15 @@ export function StepContent({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label id="match-type-label" className="text-sm font-semibold">
+            <div className={getFormatStepOptionCardClasses()}>
+              <Label id="match-type-label" className={getFormatStepOptionTitleClasses()}>
                 Tipo de formato
               </Label>
               <div
                 role="radiogroup"
                 aria-labelledby="match-type-label"
                 onKeyDown={handleMatchTypeKeyDown}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                className={getFormatStepRadiogroupClasses()}
               >
                 {MATCH_TYPE_OPTIONS.map((option) => {
                   const isSelected = matchType === option.value;
@@ -503,15 +534,15 @@ export function StepContent({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label id="sets-count-label" className="text-sm font-semibold">
+            <div className={getFormatStepOptionCardClasses()}>
+              <Label id="sets-count-label" className={getFormatStepOptionTitleClasses()}>
                 Cantidad de sets
               </Label>
               <div
                 role="radiogroup"
                 aria-labelledby="sets-count-label"
                 onKeyDown={handleSetsKeyDown}
-                className="grid grid-cols-3 gap-2"
+                className={getSetsCountRadiogroupClasses()}
               >
                 {SETS_OPTIONS.map((option) => {
                   const isSelected = sets === option;
@@ -535,15 +566,15 @@ export function StepContent({
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
-              <div className="space-y-1">
+            <div className={getFormatStepCardClasses()}>
+              <div className={getFormatStepOptionTextClasses()}>
                 <Label
                   htmlFor="counts-ranking"
-                  className="text-sm font-semibold"
+                  className={getFormatStepOptionTitleClasses()}
                 >
                   {getRankingToggleLabel()}
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className={getFormatStepOptionDescClasses()}>
                   {getRankingToggleDescription()}
                 </p>
               </div>
@@ -574,25 +605,25 @@ export function StepContent({
         aria-label={stepAriaLabel}
         className={baseClass}
       >
-        <div className="space-y-6">
+        <div className={getStepContentStackClasses()}>
           <div>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className={getStepHeadingTitleClasses()}>
               {getStepHeadingTitle(2)}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className={getStepHeadingDescriptionClasses()}>
               {getStepHeadingDescription(2)}
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className={getMatchDetailsFormClasses()}>
             <RecentClubs
               currentClub={club}
               currentCourt={courtNumber}
               onClubChange={onClubChange}
               onCourtChange={onCourtNumberChange}
             />
-            <div className="space-y-2">
-              <Label htmlFor="club" className="text-sm font-semibold">
+            <div className={getMatchDetailsInputGroupClasses()}>
+              <Label htmlFor="club" className={getMatchDetailsLabelClasses()}>
                 Club (opcional)
               </Label>
               <ClubInput
@@ -603,8 +634,8 @@ export function StepContent({
                 onCourtChange={onCourtNumberChange}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="court" className="text-sm font-semibold">
+            <div className={getMatchDetailsInputGroupClasses()}>
+              <Label htmlFor="court" className={getMatchDetailsLabelClasses()}>
                 Número de cancha (opcional)
               </Label>
               <Input
@@ -649,25 +680,25 @@ export function StepContent({
       aria-label={stepAriaLabel}
       className={baseClass}
     >
-      <div className="space-y-6">
+      <div className={getStepContentStackClasses()}>
         <div>
-          <h1 className="text-xl font-bold text-foreground">{getStepHeadingTitle(3)}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className={getStepHeadingTitleClasses()}>{getStepHeadingTitle(3)}</h1>
+          <p className={getStepHeadingDescriptionClasses()}>
             {getStepHeadingDescription(3)}
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className={getStepContentStackClasses()}>
           {Array.from({ length: setsCount }, (_, setIndex) => (
             <div
               key={setIndex}
-              className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-xs"
+              className={getScoresStepSetsContainerClasses()}
             >
-              <h2 className="text-sm font-bold text-foreground">
+              <h2 className={getTeamSectionTitleClasses()}>
                 Set {setIndex + 1}
               </h2>
 
-              <div className="grid gap-4">
+              <div className={getScoreStepSelectorsGridClasses()}>
                 <ScoreSelector
                   setIndex={setIndex}
                   teamIndex={0}

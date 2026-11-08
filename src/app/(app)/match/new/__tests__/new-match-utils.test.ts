@@ -37,6 +37,43 @@ import {
   getRecentClubOptionClasses,
   getMatchTypeOptionClasses,
   getSetOptionButtonClasses,
+  getStepBaseContainerClasses,
+  getStepContentStackClasses,
+  getStepHeadingTitleClasses,
+  getStepHeadingDescriptionClasses,
+  getScoreSelectorContainerClasses,
+  getScoreSelectorHeaderClasses,
+  getScoreSelectorLabelGroupClasses,
+  getScoreSelectorLabelClasses,
+  getScoreSelectorRadiogroupClasses,
+  getRecentClubsContainerClasses,
+  getRecentClubsLabelClasses,
+  getRecentClubsRadiogroupClasses,
+  getSuggestPairingsTitleClasses,
+  getSuggestPairingsDescriptionClasses,
+  getSuggestPairingsHelpClasses,
+  getTeamSectionContainerClasses,
+  getTeamSectionHeaderClasses,
+  getTeamSectionTitleClasses,
+  getTeamSectionSwapButtonClasses,
+  getTeamSectionSlotsGridClasses,
+  getTeamVsDividerClasses,
+  getFormatStepCardClasses,
+  getFormatStepOptionCardClasses,
+  getFormatStepOptionTextClasses,
+  getFormatStepOptionTitleClasses,
+  getFormatStepOptionDescClasses,
+  getFormatStepRadiogroupClasses,
+  getFormatStepHeaderClasses,
+  getSetsCountRadiogroupClasses,
+  getScoreStepSelectorsGridClasses,
+  getMatchDetailsFormClasses,
+  getMatchDetailsInputGroupClasses,
+  getMatchDetailsLabelClasses,
+  getScoresStepSetsContainerClasses,
+  getNewMatchErrorBannerContainerClasses,
+  getNewMatchErrorBannerCardClasses,
+  getNewMatchErrorBannerTextClasses,
 } from "../new-match-utils";
 import type { TeamState, PlayerOption } from "@/lib/match-types";
 
@@ -396,6 +433,67 @@ describe("new-match-utils", () => {
 
       expect(getSetOptionButtonClasses(true)).toContain("bg-primary border-primary");
       expect(getSetOptionButtonClasses(false)).toContain("bg-card border-border");
+    });
+
+    it("returns correct layout and typography classes for step containers and headings", () => {
+      expect(getStepBaseContainerClasses()).toBe("flex min-h-[calc(100dvh-160px)] flex-col justify-between gap-6");
+      expect(getStepContentStackClasses()).toBe("space-y-6");
+      expect(getStepHeadingTitleClasses()).toBe("text-xl font-bold text-foreground");
+      expect(getStepHeadingDescriptionClasses()).toBe("text-sm text-muted-foreground");
+    });
+
+    it("returns correct score selector layout classes", () => {
+      expect(getScoreSelectorContainerClasses()).toBe("space-y-3");
+      expect(getScoreSelectorHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getScoreSelectorLabelGroupClasses()).toBe("flex flex-col gap-0.5 min-w-0");
+      expect(getScoreSelectorLabelClasses()).toBe("text-xs text-muted-foreground");
+      expect(getScoreSelectorRadiogroupClasses()).toBe("grid grid-cols-4 gap-2");
+    });
+
+    it("returns correct recent clubs section layout classes", () => {
+      expect(getRecentClubsContainerClasses()).toBe("space-y-2");
+      expect(getRecentClubsLabelClasses()).toBe("text-xs font-semibold text-muted-foreground flex items-center gap-1.5");
+      expect(getRecentClubsRadiogroupClasses()).toBe("flex gap-2 overflow-x-auto pb-1");
+    });
+
+    it("returns correct suggest pairings card layout classes", () => {
+      expect(getSuggestPairingsTitleClasses()).toBe("text-sm font-semibold text-foreground flex items-center gap-1.5");
+      expect(getSuggestPairingsDescriptionClasses()).toBe("text-xs text-muted-foreground");
+      expect(getSuggestPairingsHelpClasses()).toBe("text-xs text-muted-foreground text-center");
+    });
+
+    it("returns correct team section layout and button classes", () => {
+      expect(getTeamSectionContainerClasses()).toBe("space-y-3");
+      expect(getTeamSectionHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getTeamSectionTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getTeamSectionSwapButtonClasses()).toContain("flex items-center gap-1.5");
+      expect(getTeamSectionSlotsGridClasses()).toBe("grid gap-2");
+      expect(getTeamVsDividerClasses()).toBe("space-y-1");
+    });
+
+    it("returns correct format step card and option classes", () => {
+      expect(getFormatStepCardClasses()).toContain("rounded-xl border border-border bg-card");
+      expect(getFormatStepOptionCardClasses()).toBe("space-y-2");
+      expect(getFormatStepOptionTextClasses()).toBe("space-y-1");
+      expect(getFormatStepOptionTitleClasses()).toBe("text-sm font-semibold");
+      expect(getFormatStepOptionDescClasses()).toBe("text-xs text-muted-foreground");
+      expect(getFormatStepRadiogroupClasses()).toBe("grid grid-cols-1 sm:grid-cols-2 gap-2");
+      expect(getFormatStepHeaderClasses()).toBe("grid grid-cols-3 gap-2");
+      expect(getSetsCountRadiogroupClasses()).toBe("grid grid-cols-3 gap-2");
+    });
+
+    it("returns correct match details and scores step layout classes", () => {
+      expect(getMatchDetailsFormClasses()).toBe("space-y-4");
+      expect(getMatchDetailsInputGroupClasses()).toBe("space-y-2");
+      expect(getMatchDetailsLabelClasses()).toBe("text-sm font-semibold");
+      expect(getScoreStepSelectorsGridClasses()).toBe("grid gap-4");
+      expect(getScoresStepSetsContainerClasses()).toContain("rounded-xl border border-border bg-card");
+    });
+
+    it("returns correct floating error banner classes", () => {
+      expect(getNewMatchErrorBannerContainerClasses()).toBe("fixed bottom-32 left-0 right-0 px-6");
+      expect(getNewMatchErrorBannerCardClasses()).toContain("bg-destructive/10 border border-destructive/20 rounded-xl");
+      expect(getNewMatchErrorBannerTextClasses()).toBe("text-sm font-bold text-destructive text-center");
     });
   });
 });
