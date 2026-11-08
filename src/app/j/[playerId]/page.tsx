@@ -7,7 +7,6 @@ import { JoinSlotButton } from "./join-slot-button";
 import { getCachedMatchSlotDetails } from "@/lib/queries";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, UserCheck, Trophy, MapPin, Users, ChevronLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,6 +48,65 @@ import {
   getJoinSlotFooterIconBadgeClasses,
   getJoinSlotAlreadyJoinedButtonClasses,
   getJoinSlotDetailLinkClasses,
+  getJoinSlotModalidadLabel,
+  getJoinSlotEstadoLabel,
+  formatMatchSetsText,
+  getJoinSlotOrganizerFallbackName,
+  formatFallbackSlotName,
+  getJoinSlotInvitationCardInnerClasses,
+  getJoinSlotInvitationAvatarClasses,
+  getJoinSlotInvitationTextContainerClasses,
+  getJoinSlotInvitationTitleClasses,
+  getJoinSlotInvitationMessageClasses,
+  getJoinSlotMatchCardHeaderClasses,
+  getJoinSlotMatchCardTitleClasses,
+  getJoinSlotMatchCardContentClasses,
+  getJoinSlotMatchCardMetricCellClasses,
+  getJoinSlotMatchCardMetricHeaderClasses,
+  getJoinSlotMatchCardMetricTitleClasses,
+  getJoinSlotMatchCardMetricValueClasses,
+  getJoinSlotMatchCardBadgeContainerClasses,
+  getJoinSlotMatchCardStatusBadgeClasses,
+  getJoinSlotMatchCardClubRowClasses,
+  getJoinSlotMatchCardClubIconContainerClasses,
+  getJoinSlotMatchCardClubIconClasses,
+  getJoinSlotMatchCardClubInfoClasses,
+  getJoinSlotMatchCardClubTitleClasses,
+  getJoinSlotMatchCardClubSubtitleClasses,
+  getJoinSlotFormationSectionClasses,
+  getJoinSlotFormationHeaderClasses,
+  getJoinSlotFormationTitleClasses,
+  getJoinSlotFormationIconClasses,
+  getJoinSlotFormationGridClasses,
+  getJoinSlotFormationTeamGroupClasses,
+  getJoinSlotFormationTeamHeaderClasses,
+  getJoinSlotFormationTeamLabelClasses,
+  getJoinSlotFormationTeamDividerClasses,
+  getJoinSlotFormationTeamSlotsGridClasses,
+  getJoinSlotFormationSlotAvatarClasses,
+  getJoinSlotFormationSlotInfoClasses,
+  getJoinSlotFormationSlotPositionClasses,
+  getJoinSlotFormationSlotBadgeClasses,
+  getJoinSlotFooterContentClasses,
+  getJoinSlotFooterLayoutClasses,
+  getJoinSlotFooterUserBadgeRowClasses,
+  getJoinSlotFooterIconClasses,
+  getJoinSlotFooterUserBadgeInfoClasses,
+  getJoinSlotFooterUserBadgeTitleClasses,
+  getJoinSlotFooterUserBadgeTeamClasses,
+  getJoinSlotFooterWarningIconClasses,
+  getJoinSlotFooterWarningTextClasses,
+  getJoinSlotFooterActionStackClasses,
+  getJoinSlotSignInFormClasses,
+  getJoinSlotSkeletonCardClasses,
+  getJoinSlotSkeletonCardHeaderClasses,
+  getJoinSlotSkeletonCardContentClasses,
+  getJoinSlotSkeletonCardCellClasses,
+  getJoinSlotSkeletonFormationClasses,
+  getJoinSlotSkeletonFormationHeaderClasses,
+  getJoinSlotSkeletonFormationGroupClasses,
+  getJoinSlotSkeletonFormationTeamClasses,
+  getJoinSlotSkeletonFormationSlotsGridClasses,
 } from "./join-slot-utils";
 
 interface JoinSlotPageProps {
@@ -204,18 +262,18 @@ async function JoinSlotContent({
         aria-label={getJoinSlotRegionAriaLabel("invitation")}
         className={getJoinSlotInvitationCardClasses()}
       >
-        <div className="flex items-center gap-3">
+        <div className={getJoinSlotInvitationCardInnerClasses()}>
           <PlayerAvatar
-            name={creatorName ?? "Organizador"}
+            name={creatorName ?? getJoinSlotOrganizerFallbackName()}
             image={match.creator?.image ?? undefined}
             size={40}
-            className="border border-border shrink-0"
+            className={getJoinSlotInvitationAvatarClasses()}
           />
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-muted-foreground">
+          <div className={getJoinSlotInvitationTextContainerClasses()}>
+            <p className={getJoinSlotInvitationTitleClasses()}>
               {getJoinSlotInvitationLabel()}
             </p>
-            <p className="text-sm font-semibold text-foreground leading-snug">
+            <p className={getJoinSlotInvitationMessageClasses()}>
               {invitationMessage}
             </p>
           </div>
@@ -227,43 +285,43 @@ async function JoinSlotContent({
         aria-label={getJoinSlotRegionAriaLabel("match-detail")}
         className={getJoinSlotMatchCardClasses()}
       >
-        <CardHeader className="pb-4 pt-6 border-b border-border bg-muted">
-          <CardTitle className="text-xs font-bold text-muted-foreground">
+        <CardHeader className={getJoinSlotMatchCardHeaderClasses()}>
+          <CardTitle className={getJoinSlotMatchCardTitleClasses()}>
             {getJoinSlotMatchDetailTitle()}
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-px bg-border p-0">
-          <div className="bg-card p-4 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
+        <CardContent className={getJoinSlotMatchCardContentClasses()}>
+          <div className={getJoinSlotMatchCardMetricCellClasses()}>
+            <div className={getJoinSlotMatchCardMetricHeaderClasses()}>
               <Trophy className="h-4 w-4" aria-hidden="true" />
-              <span className="text-xs font-semibold">Modalidad</span>
+              <span className={getJoinSlotMatchCardMetricTitleClasses()}>{getJoinSlotModalidadLabel()}</span>
             </div>
-            <p className="text-lg font-bold">{match.sets} sets</p>
+            <p className={getJoinSlotMatchCardMetricValueClasses()}>{formatMatchSetsText(match.sets)}</p>
           </div>
-          <div className="bg-card p-4 flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <span className="text-xs font-semibold">Estado</span>
+          <div className={getJoinSlotMatchCardMetricCellClasses()}>
+            <div className={getJoinSlotMatchCardMetricHeaderClasses()}>
+              <span className={getJoinSlotMatchCardMetricTitleClasses()}>{getJoinSlotEstadoLabel()}</span>
             </div>
-            <div className="flex items-center pt-1">
+            <div className={getJoinSlotMatchCardBadgeContainerClasses()}>
               <Badge
                 variant={match.status === "CONFIRMED" ? "success" : "default"}
-                className="text-xs font-bold px-2 py-0.5 rounded border-border"
+                className={getJoinSlotMatchCardStatusBadgeClasses()}
               >
                 {formatStatus(match.status)}
               </Badge>
             </div>
           </div>
           {match.club && (
-            <div className="col-span-2 bg-card p-4 flex items-center gap-4 border-t border-border">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground border border-border shrink-0">
-                <MapPin className="h-5 w-5" aria-hidden="true" />
+            <div className={getJoinSlotMatchCardClubRowClasses()}>
+              <div className={getJoinSlotMatchCardClubIconContainerClasses()}>
+                <MapPin className={getJoinSlotMatchCardClubIconClasses()} aria-hidden="true" />
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold truncate">
+              <div className={getJoinSlotMatchCardClubInfoClasses()}>
+                <p className={getJoinSlotMatchCardClubTitleClasses()}>
                   {match.club}{" "}
                   {getJoinSlotCourtText(match.courtNumber)}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className={getJoinSlotMatchCardClubSubtitleClasses()}>
                   {getJoinSlotClubSubtext()}
                 </p>
               </div>
@@ -275,15 +333,15 @@ async function JoinSlotContent({
       <section
         role="region"
         aria-label={getJoinSlotRegionAriaLabel("formation")}
-        className="space-y-4"
+        className={getJoinSlotFormationSectionClasses()}
       >
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground">
+        <div className={getJoinSlotFormationHeaderClasses()}>
+          <h2 className={getJoinSlotFormationTitleClasses()}>
             {getJoinSlotFormationTitle()}
           </h2>
-          <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <Users className={getJoinSlotFormationIconClasses()} aria-hidden="true" />
         </div>
-        <div className="grid gap-6">
+        <div className={getJoinSlotFormationGridClasses()}>
           {(["A", "B"] as const).map((key) => {
             const slots = teamGroups[key];
             if (slots.length === 0) return null;
@@ -291,20 +349,20 @@ async function JoinSlotContent({
               slots[0]?.team?.label ?? defaultTeamLabel(key, totalPlayers);
 
             return (
-              <div key={key} className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-muted-foreground">
+              <div key={key} className={getJoinSlotFormationTeamGroupClasses()}>
+                <div className={getJoinSlotFormationTeamHeaderClasses()}>
+                  <span className={getJoinSlotFormationTeamLabelClasses()}>
                     {label}
                   </span>
-                  <div className="h-px flex-1 bg-border" />
+                  <div className={getJoinSlotFormationTeamDividerClasses()} />
                 </div>
-                <div className="grid gap-2">
+                <div className={getJoinSlotFormationTeamSlotsGridClasses()}>
                   {slots.map((slot) => {
                     const name =
                       slot.user?.alias ??
                       slot.user?.displayName ??
                       slot.displayName ??
-                      `Cupo ${slot.position + 1}`;
+                      formatFallbackSlotName(slot.position);
                     const isOccupied = Boolean(slot.userId);
                     const isViewer = slot.userId === viewerId;
                     const badgeProps = getSlotStatusBadgeProps(slot.resultConfirmed);
@@ -318,26 +376,20 @@ async function JoinSlotContent({
                           name={name}
                           image={slot.user?.image ?? undefined}
                           size={40}
-                          className={cn(
-                            "border border-border shrink-0",
-                            !isOccupied && "opacity-50"
-                          )}
+                          className={getJoinSlotFormationSlotAvatarClasses(isOccupied)}
                         />
-                        <div className="flex-1 min-w-0">
+                        <div className={getJoinSlotFormationSlotInfoClasses()}>
                           <p className={getJoinSlotSlotNameClasses(isOccupied)}>
                             {name}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
+                          <p className={getJoinSlotFormationSlotPositionClasses()}>
                             {formatSlotPositionText(slot.position)}
                           </p>
                         </div>
                         {isOccupied && (
                           <Badge
                             variant="outline"
-                            className={cn(
-                              "text-xs font-bold px-2 py-0.5 rounded",
-                              badgeProps.className
-                            )}
+                            className={getJoinSlotFormationSlotBadgeClasses(badgeProps.className)}
                           >
                             {badgeProps.text}
                           </Badge>
@@ -357,17 +409,17 @@ async function JoinSlotContent({
         aria-label={getJoinSlotRegionAriaLabel("footer")}
         className={getJoinSlotFooterContainerClasses()}
       >
-        <div className="max-w-md mx-auto">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
+        <div className={getJoinSlotFooterContentClasses()}>
+          <div className={getJoinSlotFooterLayoutClasses()}>
+            <div className={getJoinSlotFooterUserBadgeRowClasses()}>
               <div className={getJoinSlotFooterIconBadgeClasses()}>
-                <UserCheck className="h-6 w-6" aria-hidden="true" />
+                <UserCheck className={getJoinSlotFooterIconClasses()} aria-hidden="true" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-muted-foreground leading-none mb-1">
+              <div className={getJoinSlotFooterUserBadgeInfoClasses()}>
+                <p className={getJoinSlotFooterUserBadgeTitleClasses()}>
                   {getJoinSlotJoiningAsLabel()}
                 </p>
-                <p className="text-xl font-bold text-foreground truncate">
+                <p className={getJoinSlotFooterUserBadgeTeamClasses()}>
                   {teamLabel}
                 </p>
               </div>
@@ -375,17 +427,17 @@ async function JoinSlotContent({
 
             {helperMessage && (
               <div className={getJoinSlotHelperWarningClasses()}>
-                <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <p className="text-xs font-bold">{helperMessage}</p>
+                <AlertCircle className={getJoinSlotFooterWarningIconClasses()} aria-hidden="true" />
+                <p className={getJoinSlotFooterWarningTextClasses()}>{helperMessage}</p>
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className={getJoinSlotFooterActionStackClasses()}>
               {!session?.user ? (
                 <SignInForm
                   callbackUrl={`/j/${playerId}`}
                   label={getSignInFormLabelForMatch(match.club)}
-                  className="w-full h-12 rounded-lg text-base font-bold"
+                  className={getJoinSlotSignInFormClasses()}
                 />
               ) : slotTakenByViewer ? (
                 <Button
@@ -430,16 +482,16 @@ export function JoinSlotSkeleton() {
       className="space-y-6"
     >
       {/* Detail card skeleton */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="h-10 bg-muted border-b border-border flex items-center px-4">
+      <div className={getJoinSlotSkeletonCardClasses()}>
+        <div className={getJoinSlotSkeletonCardHeaderClasses()}>
           <Skeleton className="h-4 w-28" />
         </div>
-        <div className="grid grid-cols-2 gap-px bg-border">
-          <div className="bg-card p-4 space-y-2">
+        <div className={getJoinSlotSkeletonCardContentClasses()}>
+          <div className={getJoinSlotSkeletonCardCellClasses()}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-6 w-24" />
           </div>
-          <div className="bg-card p-4 space-y-2">
+          <div className={getJoinSlotSkeletonCardCellClasses()}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-6 w-24" />
           </div>
@@ -447,16 +499,16 @@ export function JoinSlotSkeleton() {
       </div>
 
       {/* Formation skeleton */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
+      <div className={getJoinSlotSkeletonFormationClasses()}>
+        <div className={getJoinSlotSkeletonFormationHeaderClasses()}>
           <Skeleton className="h-4 w-28" />
           <Skeleton className="h-4 w-4" />
         </div>
-        <div className="space-y-4">
+        <div className={getJoinSlotSkeletonFormationGroupClasses()}>
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="space-y-2">
+            <div key={i} className={getJoinSlotSkeletonFormationTeamClasses()}>
               <Skeleton className="h-3 w-16" />
-              <div className="grid gap-2">
+              <div className={getJoinSlotSkeletonFormationSlotsGridClasses()}>
                 <Skeleton className="h-16 w-full rounded-xl" />
                 <Skeleton className="h-16 w-full rounded-xl" />
               </div>
