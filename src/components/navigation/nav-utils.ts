@@ -75,6 +75,15 @@ export function getCatalogSkeletonAriaLabel(): string {
 }
 
 /**
+ * Retorna las clases CSS para el botón de acción dentro del estado vacío de notificaciones.
+ */
+export function getNotificationsEmptyStateButtonClasses(
+  customClassName?: string,
+): string {
+  return cn("w-full", customClassName);
+}
+
+/**
  * Genera las clases CSS para el contenedor exterior del esqueleto de carga del catálogo.
  */
 export function getCatalogSkeletonContainerClasses(

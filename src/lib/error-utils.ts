@@ -59,6 +59,16 @@ export function getErrorContainerClasses(customClassName?: string): string {
 }
 
 /**
+ * Retorna las clases CSS para la etiqueta principal exterior de la vista de error de inicio de sesión.
+ */
+export function getLoginErrorMainClasses(customClassName?: string): string {
+  return cn(
+    "flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10",
+    customClassName,
+  );
+}
+
+/**
  * Retorna las clases CSS para el contenedor de pantalla completa de RootError.
  */
 export function getRootErrorContainerClasses(customClassName?: string): string {

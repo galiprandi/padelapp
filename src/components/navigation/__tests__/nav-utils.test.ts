@@ -96,6 +96,7 @@ import {
   getNotificationsSkeletonHeadingSubtitleClasses,
   getNotificationsSkeletonSectionBadgeClasses,
   getNotificationsSkeletonItemClasses,
+  getNotificationsEmptyStateButtonClasses,
 } from "../nav-utils";
 
 describe("nav-utils", () => {
@@ -758,6 +759,11 @@ describe("nav-utils", () => {
         actionText: "Volver al inicio",
         actionHref: "/me",
       });
+    });
+
+    it("getNotificationsEmptyStateButtonClasses returns w-full class", () => {
+      expect(getNotificationsEmptyStateButtonClasses()).toBe("w-full");
+      expect(getNotificationsEmptyStateButtonClasses("custom-btn")).toBe("w-full custom-btn");
     });
 
     it("shouldRenderNotificationsBadge returns true if count > 0", () => {

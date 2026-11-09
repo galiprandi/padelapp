@@ -1,6 +1,7 @@
 ## 📋 BACKLOG
 
 ## ✅ DONE
+- [x] 2026-10-19 — Extracción de Funciones Helper Puras de Clases CSS y Maquetación en `NotificationsError`, `LoginError` y `NotificationsPage` (`src/lib/error-utils.ts` y `src/components/navigation/nav-utils.ts`), Refactorización y Cobertura de Tests Unitarios
 - [x] 2026-10-18 — Extracción de Funciones Helper Puras de Íconos de Alerta, Botones y Contenedor de Textos para Fronteras de Error (`src/lib/error-utils.ts`), Refactorización de `RootError`, `AppError`, `CatalogError`, `LoginError` e `InstallGuideError` y Cobertura de Tests Unitarios
 - [x] 2026-10-17 — Extracción de Funciones Helper Puras de Maquetación, Clases CSS e Identificadores para Esqueletos de Ranking (`src/components/ranking/ranking-utils.ts`), Refactorización de `RankingLoading` y `RankingContentSkeleton` y Cobertura de Tests Unitarios
 - [x] 2026-10-16 — Extracción de Funciones Helper Puras de Maquetación y Dimensiones en `LoginLoading` (`src/lib/auth-utils.ts`), Refactorización de `LoginLoading` y Tests Unitarios
@@ -88,6 +89,10 @@
 - [x] 2026-07-17 — Setup inicial del agente (sistema .ants created)
 
 ## 🧠 APRENDIZAJES
+### 2026-10-19 - Extracción de Funciones Helper Puras de Clases CSS y Maquetación en `NotificationsError`, `LoginError` y `NotificationsPage`
+**Aprendizaje:** Refactorizar la frontera de error de notificaciones (`NotificationsError`) para reutilizar exhaustivamente los helpers puros estandarizados de `src/lib/error-utils.ts` (`getErrorIconContainerClasses`, `getErrorAlertIconClasses`, `getErrorActionButtonIconClasses`, `getErrorTextGroupClasses`, `getErrorHeadingTitleClasses`, `getErrorMessageDescriptionClasses`, `getErrorActionGroupClasses`, `getErrorActionButtonClasses`, `getErrorRetryButtonText`, `getErrorHomeButtonText`), abstraer la maquetación exterior de `LoginError` en `getLoginErrorMainClasses()` y encapsular la clase del botón de acción del estado vacío de notificaciones en `getNotificationsEmptyStateButtonClasses()` en `src/components/navigation/nav-utils.ts` elimina el 100% de las clases inline de Tailwind y textos hardcodeados. Esto garantiza coherencia visual, táctil y de accesibilidad idéntica en todas las fronteras de error y pantallas de carga o estados vacíos de la aplicación, permitiendo auditar y verificar sus reglas de estilo mediante pruebas unitarias puras e independientes.
+**Acción:** Reutilizar siempre los helpers puros de `error-utils.ts` y `nav-utils.ts` al extender pantallas de error o notificaciones en el App Router.
+
 ## 2026-10-17 - Extracción de Funciones Helper Puras de Layout, Clases CSS e Identificadores para Esqueletos de Ranking y Mitigación de Layout Shifts
 **Aprendizaje:** Encapsular la maquetación y dimensiones de los marcadores de posición (`Skeleton`) de la pantalla de ranking (`getRankingSkeletonContainerClasses`, `getRankingSkeletonPodiumCardClasses`, `getRankingSkeletonListItemClasses`, `getRankingSkeletonBannerClasses`, etc.) e iterar sobre claves estables (`getRankingSkeletonPodiumKeys` y `getRankingSkeletonListItemKeys`) en `src/components/ranking/ranking-utils.ts` asegura sincronía y coherencia visual total entre la carga a nivel de ruta (`loading.tsx`) y los límites de Suspense en el contenido de la página (`page.tsx`). Asimismo, agregar `shrink-0` a los avatares circulares en ambos esqueletos previene compresiones no deseadas en viewports móviles reducidos y mitiga los saltos acumulativos de diseño (CLS).
 **Acción:** Reutilizar siempre los helpers de esqueleto e iteradores estables al componer vistas de carga o fallbacks en cascada en Next.js.

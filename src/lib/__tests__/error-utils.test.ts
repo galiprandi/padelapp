@@ -8,6 +8,7 @@ import {
   getErrorContainerClasses,
   getRootErrorContainerClasses,
   getAppErrorContainerClasses,
+  getLoginErrorMainClasses,
   getErrorIconContainerClasses,
   getErrorAlertIconClasses,
   getErrorActionButtonIconClasses,
@@ -133,6 +134,24 @@ describe("error-utils", () => {
     it("appends custom class names if provided", () => {
       const classes = getAppErrorContainerClasses("custom-app-error");
       expect(classes).toContain("custom-app-error");
+    });
+  });
+
+  describe("getLoginErrorMainClasses", () => {
+    it("returns full viewport height, background and padding classes for login error view", () => {
+      const classes = getLoginErrorMainClasses();
+      expect(classes).toContain("flex");
+      expect(classes).toContain("min-h-[100dvh]");
+      expect(classes).toContain("flex-col");
+      expect(classes).toContain("items-center");
+      expect(classes).toContain("justify-center");
+      expect(classes).toContain("bg-background");
+      expect(classes).toContain("px-6 py-10");
+    });
+
+    it("appends custom class names if provided", () => {
+      const classes = getLoginErrorMainClasses("custom-login-error");
+      expect(classes).toContain("custom-login-error");
     });
   });
 
