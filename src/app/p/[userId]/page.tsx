@@ -84,6 +84,68 @@ import {
   getPublicProfileSkeletonBannerClasses,
   getPublicProfileSkeletonGridClasses,
   getPublicProfileSkeletonHistoryClasses,
+  getPublicProfileHeaderTitleClasses,
+  getPublicProfileHeaderSubtitleClasses,
+  getPublicProfileBackIconClasses,
+  getPublicProfileContentSectionClasses,
+  getPublicProfileAvatarSectionClasses,
+  getPublicProfileAvatarWrapperClasses,
+  getPublicProfileAvatarClasses,
+  getPublicProfileDetailsContainerClasses,
+  getPublicProfileNameRowClasses,
+  getPublicProfileNameClasses,
+  getPublicProfileShareWrapperClasses,
+  getPublicProfileBadgesContainerClasses,
+  getPublicProfileStatsGridClasses,
+  getPublicProfileCardLabelClasses,
+  getPublicProfileCardValueRowClasses,
+  getPublicProfileCardValueClasses,
+  getPublicProfileCardUnitClasses,
+  getPublicProfileRecentFormContainerClasses,
+  getPublicProfileRecentFormEmptyClasses,
+  getPublicProfileNetworkGridClasses,
+  getPublicProfileNetworkColClasses,
+  getPublicProfileNetworkLabelClasses,
+  getPublicProfileNetworkIconClasses,
+  getPublicProfileNetworkValueRowClasses,
+  getPublicProfileNetworkValueClasses,
+  getPublicProfileNetworkSubtextClasses,
+  getPublicProfilePreferredSideRowClasses,
+  getPublicProfilePreferredSideTextGroupClasses,
+  getPublicProfilePreferredSideValueClasses,
+  getPublicProfilePreferredSideSummaryClasses,
+  getPublicProfileNetworkListContainerClasses,
+  getPublicProfileNetworkItemRowClasses,
+  getPublicProfileNetworkItemInfoClasses,
+  getPublicProfileNetworkItemLabelClasses,
+  getPublicProfileNetworkItemLinkClasses,
+  getPublicProfileNetworkItemAvatarClasses,
+  getPublicProfileNetworkItemNameClasses,
+  getPublicProfileH2HGridClasses,
+  getPublicProfileH2HColClasses,
+  getPublicProfileH2HLabelClasses,
+  getPublicProfileH2HIconClasses,
+  getPublicProfileH2HValueRowClasses,
+  getPublicProfileH2HValueClasses,
+  getPublicProfileH2HTotalClasses,
+  getPublicProfileH2HLastMatchRowClasses,
+  getPublicProfileH2HLastMatchInfoClasses,
+  getPublicProfileH2HLastMatchButtonClasses,
+  getPublicProfileHistorySectionClasses,
+  getPublicProfileHistoryHeaderClasses,
+  getPublicProfileHistoryTitleClasses,
+  getPublicProfileHistoryBadgeClasses,
+  getPublicProfileHistoryBadgeIconClasses,
+  getPublicProfileHistoryListClasses,
+  getPublicProfileSkeletonSummaryAvatarClasses,
+  getPublicProfileSkeletonSummaryGroupClasses,
+  getPublicProfileSkeletonSummaryNameClasses,
+  getPublicProfileSkeletonSummaryBadgeClasses,
+  getPublicProfileSkeletonBannerGridClasses,
+  getPublicProfileSkeletonBannerItemClasses,
+  getPublicProfileSkeletonGridItemClasses,
+  getPublicProfileSkeletonHistoryTitleClasses,
+  getPublicProfileSkeletonHistoryItemClasses,
 } from "./public-profile-utils";
 
 interface PublicProfilePageProps {
@@ -101,17 +163,17 @@ export default function PublicProfilePage({
         <Suspense
           fallback={
             <div className={getPublicProfileHeaderSkeletonClasses()}>
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className={getPublicProfileBackIconClasses()} />
             </div>
           }
         >
           <DynamicBackButton searchParams={searchParams} />
         </Suspense>
         <div>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className={getPublicProfileHeaderTitleClasses()}>
             {getPublicProfileHeaderTitle()}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className={getPublicProfileHeaderSubtitleClasses()}>
             {getPublicProfileHeaderSubtitle()}
           </p>
         </div>
@@ -138,7 +200,7 @@ async function DynamicBackButton({
       aria-label={getPublicProfileBackAriaLabel()}
       className={getPublicProfileBackButtonClasses()}
     >
-      <ChevronLeft className="h-5 w-5" />
+      <ChevronLeft className={getPublicProfileBackIconClasses()} />
     </Link>
   );
 }
@@ -206,23 +268,23 @@ async function PublicProfileContent({
 
   return (
     <>
-      <section className="space-y-6" role="region" aria-label={getPublicProfileHeaderAriaLabel(displayName)}>
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="relative">
+      <section className={getPublicProfileContentSectionClasses()} role="region" aria-label={getPublicProfileHeaderAriaLabel(displayName)}>
+        <div className={getPublicProfileAvatarSectionClasses()}>
+          <div className={getPublicProfileAvatarWrapperClasses()}>
             <PlayerAvatar
               name={displayName}
               image={user.image ?? undefined}
               size={96}
-              className="border-2 border-border shadow-xs"
+              className={getPublicProfileAvatarClasses()}
             />
           </div>
 
-          <div className="space-y-1">
-            <div className="relative flex items-center justify-center w-full min-h-[32px]">
-              <h2 className="text-2xl font-bold text-foreground px-10 truncate max-w-full">
+          <div className={getPublicProfileDetailsContainerClasses()}>
+            <div className={getPublicProfileNameRowClasses()}>
+              <h2 className={getPublicProfileNameClasses()}>
                 {displayName}
               </h2>
-              <div className="absolute right-0">
+              <div className={getPublicProfileShareWrapperClasses()}>
                 <ShareButton
                   url={`/p/${userId}`}
                   title={getPublicProfileShareTitle(displayName)}
@@ -234,7 +296,7 @@ async function PublicProfileContent({
                 />
               </div>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className={getPublicProfileBadgesContainerClasses()}>
               <Badge variant="outline" className={getPublicProfileAvatarBadgeClasses()}>
                 {getLevelBadgeLabel(user.level)}
               </Badge>
@@ -261,31 +323,31 @@ async function PublicProfileContent({
           lastMatchAt={user.lastMatchAt}
         />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className={getPublicProfileStatsGridClasses()}>
           <div
             className={getPublicProfileStatCardClasses()}
             aria-label={getWinRateAriaLabel(winRate, user.matchesPlayed)}
           >
-            <div className="text-xs font-bold text-muted-foreground">
+            <div className={getPublicProfileCardLabelClasses()}>
               {getPublicProfileWinRateLabel()}
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold">
+            <div className={getPublicProfileCardValueRowClasses()}>
+              <span className={getPublicProfileCardValueClasses()}>
                 {winRate}%
               </span>
-              <span className="text-xs font-semibold text-muted-foreground">
+              <span className={getPublicProfileCardUnitClasses()}>
                 WR
               </span>
             </div>
           </div>
 
           <div className={getPublicProfileStatCardClasses()}>
-            <div className="text-xs font-bold text-muted-foreground">
+            <div className={getPublicProfileCardLabelClasses()}>
               {getPublicProfileRecentFormLabel()}
             </div>
             {recentForm.length > 0 ? (
               <div
-                className="flex gap-1.5 pt-1"
+                className={getPublicProfileRecentFormContainerClasses()}
                 aria-label={getRecentFormAriaLabel(recentForm)}
               >
                 {recentForm.map((result, i) => (
@@ -297,8 +359,8 @@ async function PublicProfileContent({
                 ))}
               </div>
             ) : (
-              <div className="flex gap-1.5 pt-1" aria-label="Sin partidos">
-                <span className="text-xs font-semibold text-muted-foreground" aria-hidden="true">
+              <div className={getPublicProfileRecentFormContainerClasses()} aria-label="Sin partidos">
+                <span className={getPublicProfileRecentFormEmptyClasses()} aria-hidden="true">
                   —
                 </span>
               </div>
@@ -312,35 +374,35 @@ async function PublicProfileContent({
           aria-label={getNetworkPositionRegionAriaLabel()}
           className={getPublicProfileNetworkCardClasses()}
         >
-          <h3 className="text-xs font-bold text-muted-foreground">
+          <h3 className={getPublicProfileCardLabelClasses()}>
             Red y Posición
           </h3>
 
-          <div className="grid grid-cols-2 gap-4 pt-1">
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                <Network className="h-3.5 w-3.5 text-primary" />
+          <div className={getPublicProfileNetworkGridClasses()}>
+            <div className={getPublicProfileNetworkColClasses()}>
+              <div className={getPublicProfileNetworkLabelClasses()}>
+                <Network className={getPublicProfileNetworkIconClasses()} />
                 {getPublicProfileNetworkContactsLabel()}
               </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-bold">
+              <div className={getPublicProfileNetworkValueRowClasses()}>
+                <span className={getPublicProfileNetworkValueClasses()}>
                   {networkStats.networkSize}
                 </span>
-                <span className="text-xs text-muted-foreground">jugadores</span>
+                <span className={getPublicProfileNetworkSubtextClasses()}>jugadores</span>
               </div>
             </div>
 
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                <Activity className="h-3.5 w-3.5 text-primary" />
+            <div className={getPublicProfileNetworkColClasses()}>
+              <div className={getPublicProfileNetworkLabelClasses()}>
+                <Activity className={getPublicProfileNetworkIconClasses()} />
                 {getPublicProfilePreferredSideHeadingText()}
               </div>
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex flex-col min-w-0">
-                  <span className="text-base font-bold text-foreground leading-tight">
+              <div className={getPublicProfilePreferredSideRowClasses()}>
+                <div className={getPublicProfilePreferredSideTextGroupClasses()}>
+                  <span className={getPublicProfilePreferredSideValueClasses()}>
                     {getPublicProfileSideLabel(networkStats.preferredSide)}
                   </span>
-                  <span className="text-[10px] text-muted-foreground leading-normal mt-0.5">
+                  <span className={getPublicProfilePreferredSideSummaryClasses()}>
                     {formatSideWinRateSummary(
                       networkStats.winRateRight,
                       networkStats.winRateLeft,
@@ -353,23 +415,23 @@ async function PublicProfileContent({
           </div>
 
           {(networkStats.successfulPartner || networkStats.frequentRival) && (
-            <div className="pt-3 border-t border-border space-y-3">
+            <div className={getPublicProfileNetworkListContainerClasses()}>
               {networkStats.successfulPartner && networkStats.successfulPartner.user && (
-                <div className="flex items-center justify-between gap-3 text-xs">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-muted-foreground">{getPublicProfileSuccessfulPartnerLabel()}</span>
+                <div className={getPublicProfileNetworkItemRowClasses()}>
+                  <div className={getPublicProfileNetworkItemInfoClasses()}>
+                    <span className={getPublicProfileNetworkItemLabelClasses()}>{getPublicProfileSuccessfulPartnerLabel()}</span>
                     <Link
                       href={`/p/${networkStats.successfulPartner.user.id}?backUrl=/p/${userId}`}
                       prefetch={true}
-                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
+                      className={getPublicProfileNetworkItemLinkClasses()}
                     >
                       <PlayerAvatar
                         name={networkStats.successfulPartner.user.alias ?? networkStats.successfulPartner.user.displayName}
                         image={networkStats.successfulPartner.user.image ?? undefined}
                         size={20}
-                        className="group-hover:scale-105 transition-transform"
+                        className={getPublicProfileNetworkItemAvatarClasses()}
                       />
-                      <span className="font-bold text-primary">
+                      <span className={getPublicProfileNetworkItemNameClasses()}>
                         {networkStats.successfulPartner.user.alias ?? networkStats.successfulPartner.user.displayName}
                       </span>
                     </Link>
@@ -381,21 +443,21 @@ async function PublicProfileContent({
               )}
 
               {networkStats.frequentRival && networkStats.frequentRival.user && (
-                <div className="flex items-center justify-between gap-3 text-xs">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-muted-foreground">{getPublicProfileFrequentRivalLabel()}</span>
+                <div className={getPublicProfileNetworkItemRowClasses()}>
+                  <div className={getPublicProfileNetworkItemInfoClasses()}>
+                    <span className={getPublicProfileNetworkItemLabelClasses()}>{getPublicProfileFrequentRivalLabel()}</span>
                     <Link
                       href={`/p/${networkStats.frequentRival.user.id}?backUrl=/p/${userId}`}
                       prefetch={true}
-                      className="flex items-center gap-2 hover:underline text-foreground group mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all"
+                      className={getPublicProfileNetworkItemLinkClasses()}
                     >
                       <PlayerAvatar
                         name={networkStats.frequentRival.user.alias ?? networkStats.frequentRival.user.displayName}
                         image={networkStats.frequentRival.user.image ?? undefined}
                         size={20}
-                        className="group-hover:scale-105 transition-transform"
+                        className={getPublicProfileNetworkItemAvatarClasses()}
                       />
-                      <span className="font-bold text-primary">
+                      <span className={getPublicProfileNetworkItemNameClasses()}>
                         {networkStats.frequentRival.user.alias ?? networkStats.frequentRival.user.displayName}
                       </span>
                     </Link>
@@ -415,36 +477,36 @@ async function PublicProfileContent({
             aria-label={getHeadToHeadRegionAriaLabel()}
             className={getPublicProfileH2HCardClasses()}
           >
-            <h3 className="text-xs font-bold text-muted-foreground">
+            <h3 className={getPublicProfileCardLabelClasses()}>
               {getPublicProfileHeadToHeadHeadingText()}
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                  <Users className="h-3.5 w-3.5" />
+            <div className={getPublicProfileH2HGridClasses()}>
+              <div className={getPublicProfileH2HColClasses()}>
+                <div className={getPublicProfileH2HLabelClasses()}>
+                  <Users className={getPublicProfileH2HIconClasses()} />
                   {getPublicProfileAsPartnersLabel()}
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-bold">
+                <div className={getPublicProfileH2HValueRowClasses()}>
+                  <span className={getPublicProfileH2HValueClasses()}>
                     {h2h.together.wins}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className={getPublicProfileH2HTotalClasses()}>
                     / {h2h.together.total}
                   </span>
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                  <Swords className="h-3.5 w-3.5" />
+              <div className={getPublicProfileH2HColClasses()}>
+                <div className={getPublicProfileH2HLabelClasses()}>
+                  <Swords className={getPublicProfileH2HIconClasses()} />
                   {getPublicProfileAsRivalsLabel()}
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-bold text-primary">
+                <div className={getPublicProfileH2HValueRowClasses()}>
+                  <span className={getPublicProfileH2HValueClasses(true)}>
                     {h2h.against.wins}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className={getPublicProfileH2HTotalClasses()}>
                     / {h2h.against.total}
                   </span>
                 </div>
@@ -452,9 +514,9 @@ async function PublicProfileContent({
             </div>
 
             {h2h.lastMatch && (
-              <div className="pt-3 border-t border-border flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-muted-foreground">
+              <div className={getPublicProfileH2HLastMatchRowClasses()}>
+                <div className={getPublicProfileH2HLastMatchInfoClasses()}>
+                  <span className={getPublicProfileCardLabelClasses()}>
                     {getPublicProfileLastMatchLabel()}
                   </span>
                   <span
@@ -471,7 +533,7 @@ async function PublicProfileContent({
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all"
+                  className={getPublicProfileH2HLastMatchButtonClasses()}
                   asChild
                 >
                   <Link href={`/match/${h2h.lastMatch.id}`} prefetch={true}>Detalle</Link>
@@ -482,17 +544,17 @@ async function PublicProfileContent({
         )}
       </section>
 
-      <section className="space-y-4" role="region" aria-label={getMatchHistoryRegionAriaLabel()}>
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-foreground">
+      <section className={getPublicProfileHistorySectionClasses()} role="region" aria-label={getMatchHistoryRegionAriaLabel()}>
+        <div className={getPublicProfileHistoryHeaderClasses()}>
+          <h2 className={getPublicProfileHistoryTitleClasses()}>
             {getPublicProfileMatchHistoryHeadingText()}
           </h2>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border shadow-xs">
-            <Zap className="h-3 w-3 text-primary fill-current" aria-hidden="true" />
+          <div className={getPublicProfileHistoryBadgeClasses()}>
+            <Zap className={getPublicProfileHistoryBadgeIconClasses()} aria-hidden="true" />
             {winRate}% WR
           </div>
         </div>
-        <div className="grid gap-3">
+        <div className={getPublicProfileHistoryListClasses()}>
           {formattedMatches.length > 0 ? (
             formattedMatches.map((match) => (
               <MatchResultCompact
@@ -553,34 +615,34 @@ function PublicProfileSkeleton() {
     >
       {/* Profile summary skeleton */}
       <div className={getPublicProfileSkeletonSummaryClasses()}>
-        <Skeleton className="h-24 w-24 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-6 w-32 mx-auto" />
-          <Skeleton className="h-4 w-20 mx-auto" />
+        <Skeleton className={getPublicProfileSkeletonSummaryAvatarClasses()} />
+        <div className={getPublicProfileSkeletonSummaryGroupClasses()}>
+          <Skeleton className={getPublicProfileSkeletonSummaryNameClasses()} />
+          <Skeleton className={getPublicProfileSkeletonSummaryBadgeClasses()} />
         </div>
       </div>
 
       {/* Ranking banner skeleton */}
       <div className={getPublicProfileSkeletonBannerClasses()}>
-        <div className="grid grid-cols-3 gap-4 h-full items-center">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
+        <div className={getPublicProfileSkeletonBannerGridClasses()}>
+          <Skeleton className={getPublicProfileSkeletonBannerItemClasses()} />
+          <Skeleton className={getPublicProfileSkeletonBannerItemClasses()} />
+          <Skeleton className={getPublicProfileSkeletonBannerItemClasses()} />
         </div>
       </div>
 
       {/* Grid skeleton */}
       <div className={getPublicProfileSkeletonGridClasses()}>
-        <Skeleton className="h-20 w-full rounded-xl" />
-        <Skeleton className="h-20 w-full rounded-xl" />
+        <Skeleton className={getPublicProfileSkeletonGridItemClasses()} />
+        <Skeleton className={getPublicProfileSkeletonGridItemClasses()} />
       </div>
 
       {/* History section skeleton */}
       <div className={getPublicProfileSkeletonHistoryClasses()}>
-        <Skeleton className="h-5 w-32" />
-        <div className="space-y-2">
-          <Skeleton className="h-16 w-full rounded-xl" />
-          <Skeleton className="h-16 w-full rounded-xl" />
+        <Skeleton className={getPublicProfileSkeletonHistoryTitleClasses()} />
+        <div className={getPublicProfileSkeletonSummaryGroupClasses()}>
+          <Skeleton className={getPublicProfileSkeletonHistoryItemClasses()} />
+          <Skeleton className={getPublicProfileSkeletonHistoryItemClasses()} />
         </div>
       </div>
     </div>

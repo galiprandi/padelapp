@@ -54,6 +54,68 @@ import {
   getPublicProfileSkeletonBannerClasses,
   getPublicProfileSkeletonGridClasses,
   getPublicProfileSkeletonHistoryClasses,
+  getPublicProfileHeaderTitleClasses,
+  getPublicProfileHeaderSubtitleClasses,
+  getPublicProfileBackIconClasses,
+  getPublicProfileContentSectionClasses,
+  getPublicProfileAvatarSectionClasses,
+  getPublicProfileAvatarWrapperClasses,
+  getPublicProfileAvatarClasses,
+  getPublicProfileDetailsContainerClasses,
+  getPublicProfileNameRowClasses,
+  getPublicProfileNameClasses,
+  getPublicProfileShareWrapperClasses,
+  getPublicProfileBadgesContainerClasses,
+  getPublicProfileStatsGridClasses,
+  getPublicProfileCardLabelClasses,
+  getPublicProfileCardValueRowClasses,
+  getPublicProfileCardValueClasses,
+  getPublicProfileCardUnitClasses,
+  getPublicProfileRecentFormContainerClasses,
+  getPublicProfileRecentFormEmptyClasses,
+  getPublicProfileNetworkGridClasses,
+  getPublicProfileNetworkColClasses,
+  getPublicProfileNetworkLabelClasses,
+  getPublicProfileNetworkIconClasses,
+  getPublicProfileNetworkValueRowClasses,
+  getPublicProfileNetworkValueClasses,
+  getPublicProfileNetworkSubtextClasses,
+  getPublicProfilePreferredSideRowClasses,
+  getPublicProfilePreferredSideTextGroupClasses,
+  getPublicProfilePreferredSideValueClasses,
+  getPublicProfilePreferredSideSummaryClasses,
+  getPublicProfileNetworkListContainerClasses,
+  getPublicProfileNetworkItemRowClasses,
+  getPublicProfileNetworkItemInfoClasses,
+  getPublicProfileNetworkItemLabelClasses,
+  getPublicProfileNetworkItemLinkClasses,
+  getPublicProfileNetworkItemAvatarClasses,
+  getPublicProfileNetworkItemNameClasses,
+  getPublicProfileH2HGridClasses,
+  getPublicProfileH2HColClasses,
+  getPublicProfileH2HLabelClasses,
+  getPublicProfileH2HIconClasses,
+  getPublicProfileH2HValueRowClasses,
+  getPublicProfileH2HValueClasses,
+  getPublicProfileH2HTotalClasses,
+  getPublicProfileH2HLastMatchRowClasses,
+  getPublicProfileH2HLastMatchInfoClasses,
+  getPublicProfileH2HLastMatchButtonClasses,
+  getPublicProfileHistorySectionClasses,
+  getPublicProfileHistoryHeaderClasses,
+  getPublicProfileHistoryTitleClasses,
+  getPublicProfileHistoryBadgeClasses,
+  getPublicProfileHistoryBadgeIconClasses,
+  getPublicProfileHistoryListClasses,
+  getPublicProfileSkeletonSummaryAvatarClasses,
+  getPublicProfileSkeletonSummaryGroupClasses,
+  getPublicProfileSkeletonSummaryNameClasses,
+  getPublicProfileSkeletonSummaryBadgeClasses,
+  getPublicProfileSkeletonBannerGridClasses,
+  getPublicProfileSkeletonBannerItemClasses,
+  getPublicProfileSkeletonGridItemClasses,
+  getPublicProfileSkeletonHistoryTitleClasses,
+  getPublicProfileSkeletonHistoryItemClasses,
 } from "../public-profile-utils";
 
 describe("public-profile-utils", () => {
@@ -268,6 +330,90 @@ describe("public-profile-utils", () => {
       expect(getPublicProfileSkeletonBannerClasses()).toBe("h-24 rounded-xl bg-card border border-border p-4 shadow-xs");
       expect(getPublicProfileSkeletonGridClasses()).toBe("grid grid-cols-2 gap-3");
       expect(getPublicProfileSkeletonHistoryClasses()).toBe("space-y-3");
+    });
+
+    it("returns correct CSS class strings for header typography and icons", () => {
+      expect(getPublicProfileHeaderTitleClasses()).toBe("text-xl font-bold text-foreground");
+      expect(getPublicProfileHeaderSubtitleClasses()).toBe("text-sm text-muted-foreground");
+      expect(getPublicProfileBackIconClasses()).toBe("h-5 w-5");
+    });
+
+    it("returns correct CSS class strings for avatar, name, and badges presentation", () => {
+      expect(getPublicProfileContentSectionClasses()).toBe("space-y-6");
+      expect(getPublicProfileAvatarSectionClasses()).toBe("flex flex-col items-center gap-4 text-center");
+      expect(getPublicProfileAvatarWrapperClasses()).toBe("relative");
+      expect(getPublicProfileAvatarClasses()).toBe("border-2 border-border shadow-xs");
+      expect(getPublicProfileDetailsContainerClasses()).toBe("space-y-1");
+      expect(getPublicProfileNameRowClasses()).toBe("relative flex items-center justify-center w-full min-h-[32px]");
+      expect(getPublicProfileNameClasses()).toBe("text-2xl font-bold text-foreground px-10 truncate max-w-full");
+      expect(getPublicProfileShareWrapperClasses()).toBe("absolute right-0");
+      expect(getPublicProfileBadgesContainerClasses()).toBe("flex flex-wrap items-center justify-center gap-2");
+    });
+
+    it("returns correct CSS class strings for stats grid and cards layout", () => {
+      expect(getPublicProfileStatsGridClasses()).toBe("grid grid-cols-2 gap-3");
+      expect(getPublicProfileCardLabelClasses()).toBe("text-xs font-bold text-muted-foreground");
+      expect(getPublicProfileCardValueRowClasses()).toBe("flex items-baseline gap-1");
+      expect(getPublicProfileCardValueClasses()).toBe("text-2xl font-bold");
+      expect(getPublicProfileCardUnitClasses()).toBe("text-xs font-semibold text-muted-foreground");
+      expect(getPublicProfileRecentFormContainerClasses()).toBe("flex gap-1.5 pt-1");
+      expect(getPublicProfileRecentFormEmptyClasses()).toBe("text-xs font-semibold text-muted-foreground");
+    });
+
+    it("returns correct CSS class strings for network and position elements", () => {
+      expect(getPublicProfileNetworkGridClasses()).toBe("grid grid-cols-2 gap-4 pt-1");
+      expect(getPublicProfileNetworkColClasses()).toBe("space-y-1");
+      expect(getPublicProfileNetworkLabelClasses()).toBe("flex items-center gap-1.5 text-xs font-semibold text-muted-foreground");
+      expect(getPublicProfileNetworkIconClasses()).toBe("h-3.5 w-3.5 text-primary");
+      expect(getPublicProfileNetworkValueRowClasses()).toBe("flex items-baseline gap-1.5");
+      expect(getPublicProfileNetworkValueClasses()).toBe("text-xl font-bold");
+      expect(getPublicProfileNetworkSubtextClasses()).toBe("text-xs text-muted-foreground");
+      expect(getPublicProfilePreferredSideRowClasses()).toBe("flex items-center justify-between gap-2");
+      expect(getPublicProfilePreferredSideTextGroupClasses()).toBe("flex flex-col min-w-0");
+      expect(getPublicProfilePreferredSideValueClasses()).toBe("text-base font-bold text-foreground leading-tight");
+      expect(getPublicProfilePreferredSideSummaryClasses()).toBe("text-[10px] text-muted-foreground leading-normal mt-0.5");
+      expect(getPublicProfileNetworkListContainerClasses()).toBe("pt-3 border-t border-border space-y-3");
+      expect(getPublicProfileNetworkItemRowClasses()).toBe("flex items-center justify-between gap-3 text-xs");
+      expect(getPublicProfileNetworkItemInfoClasses()).toBe("flex flex-col gap-0.5");
+      expect(getPublicProfileNetworkItemLabelClasses()).toBe("font-semibold text-muted-foreground");
+      expect(getPublicProfileNetworkItemLinkClasses()).toContain("hover:underline text-foreground group mt-0.5");
+      expect(getPublicProfileNetworkItemAvatarClasses()).toBe("group-hover:scale-105 transition-transform");
+      expect(getPublicProfileNetworkItemNameClasses()).toBe("font-bold text-primary");
+    });
+
+    it("returns correct CSS class strings for head-to-head elements", () => {
+      expect(getPublicProfileH2HGridClasses()).toBe("grid grid-cols-2 gap-4");
+      expect(getPublicProfileH2HColClasses()).toBe("space-y-1");
+      expect(getPublicProfileH2HLabelClasses()).toBe("flex items-center gap-1.5 text-xs font-semibold text-muted-foreground");
+      expect(getPublicProfileH2HIconClasses()).toBe("h-3.5 w-3.5");
+      expect(getPublicProfileH2HValueRowClasses()).toBe("flex items-baseline gap-1.5");
+      expect(getPublicProfileH2HValueClasses(false)).toBe("text-xl font-bold");
+      expect(getPublicProfileH2HValueClasses(true)).toBe("text-xl font-bold text-primary");
+      expect(getPublicProfileH2HTotalClasses()).toBe("text-xs text-muted-foreground");
+      expect(getPublicProfileH2HLastMatchRowClasses()).toBe("pt-3 border-t border-border flex items-center justify-between");
+      expect(getPublicProfileH2HLastMatchInfoClasses()).toBe("flex flex-col");
+      expect(getPublicProfileH2HLastMatchButtonClasses()).toContain("h-8 rounded-lg text-xs font-bold");
+    });
+
+    it("returns correct CSS class strings for history section elements", () => {
+      expect(getPublicProfileHistorySectionClasses()).toBe("space-y-4");
+      expect(getPublicProfileHistoryHeaderClasses()).toBe("flex items-center justify-between");
+      expect(getPublicProfileHistoryTitleClasses()).toBe("text-sm font-bold text-foreground");
+      expect(getPublicProfileHistoryBadgeClasses()).toContain("bg-muted px-2.5 py-1 rounded-full border border-border shadow-xs");
+      expect(getPublicProfileHistoryBadgeIconClasses()).toBe("h-3 w-3 text-primary fill-current");
+      expect(getPublicProfileHistoryListClasses()).toBe("grid gap-3");
+    });
+
+    it("returns correct CSS class strings for skeleton sub-elements", () => {
+      expect(getPublicProfileSkeletonSummaryAvatarClasses()).toBe("h-24 w-24 rounded-full");
+      expect(getPublicProfileSkeletonSummaryGroupClasses()).toBe("space-y-2");
+      expect(getPublicProfileSkeletonSummaryNameClasses()).toBe("h-6 w-32 mx-auto");
+      expect(getPublicProfileSkeletonSummaryBadgeClasses()).toBe("h-4 w-20 mx-auto");
+      expect(getPublicProfileSkeletonBannerGridClasses()).toBe("grid grid-cols-3 gap-4 h-full items-center");
+      expect(getPublicProfileSkeletonBannerItemClasses()).toBe("h-10 w-full");
+      expect(getPublicProfileSkeletonGridItemClasses()).toBe("h-20 w-full rounded-xl");
+      expect(getPublicProfileSkeletonHistoryTitleClasses()).toBe("h-5 w-32");
+      expect(getPublicProfileSkeletonHistoryItemClasses()).toBe("h-16 w-full rounded-xl");
     });
   });
 });

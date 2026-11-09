@@ -308,3 +308,251 @@ export function getPublicProfileSkeletonGridClasses(): string {
 export function getPublicProfileSkeletonHistoryClasses(): string {
   return "space-y-3";
 }
+
+export function getPublicProfileHeaderTitleClasses(): string {
+  return "text-xl font-bold text-foreground";
+}
+
+export function getPublicProfileHeaderSubtitleClasses(): string {
+  return "text-sm text-muted-foreground";
+}
+
+export function getPublicProfileBackIconClasses(): string {
+  return "h-5 w-5";
+}
+
+export function getPublicProfileContentSectionClasses(): string {
+  return "space-y-6";
+}
+
+export function getPublicProfileAvatarSectionClasses(): string {
+  return "flex flex-col items-center gap-4 text-center";
+}
+
+export function getPublicProfileAvatarWrapperClasses(): string {
+  return "relative";
+}
+
+export function getPublicProfileAvatarClasses(): string {
+  return "border-2 border-border shadow-xs";
+}
+
+export function getPublicProfileDetailsContainerClasses(): string {
+  return "space-y-1";
+}
+
+export function getPublicProfileNameRowClasses(): string {
+  return "relative flex items-center justify-center w-full min-h-[32px]";
+}
+
+export function getPublicProfileNameClasses(): string {
+  return "text-2xl font-bold text-foreground px-10 truncate max-w-full";
+}
+
+export function getPublicProfileShareWrapperClasses(): string {
+  return "absolute right-0";
+}
+
+export function getPublicProfileBadgesContainerClasses(): string {
+  return "flex flex-wrap items-center justify-center gap-2";
+}
+
+export function getPublicProfileStatsGridClasses(): string {
+  return "grid grid-cols-2 gap-3";
+}
+
+export function getPublicProfileCardLabelClasses(): string {
+  return "text-xs font-bold text-muted-foreground";
+}
+
+export function getPublicProfileCardValueRowClasses(): string {
+  return "flex items-baseline gap-1";
+}
+
+export function getPublicProfileCardValueClasses(): string {
+  return "text-2xl font-bold";
+}
+
+export function getPublicProfileCardUnitClasses(): string {
+  return "text-xs font-semibold text-muted-foreground";
+}
+
+export function getPublicProfileRecentFormContainerClasses(): string {
+  return "flex gap-1.5 pt-1";
+}
+
+export function getPublicProfileRecentFormEmptyClasses(): string {
+  return "text-xs font-semibold text-muted-foreground";
+}
+
+export function getPublicProfileNetworkGridClasses(): string {
+  return "grid grid-cols-2 gap-4 pt-1";
+}
+
+export function getPublicProfileNetworkColClasses(): string {
+  return "space-y-1";
+}
+
+export function getPublicProfileNetworkLabelClasses(): string {
+  return "flex items-center gap-1.5 text-xs font-semibold text-muted-foreground";
+}
+
+export function getPublicProfileNetworkIconClasses(): string {
+  return "h-3.5 w-3.5 text-primary";
+}
+
+export function getPublicProfileNetworkValueRowClasses(): string {
+  return "flex items-baseline gap-1.5";
+}
+
+export function getPublicProfileNetworkValueClasses(): string {
+  return "text-xl font-bold";
+}
+
+export function getPublicProfileNetworkSubtextClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getPublicProfilePreferredSideRowClasses(): string {
+  return "flex items-center justify-between gap-2";
+}
+
+export function getPublicProfilePreferredSideTextGroupClasses(): string {
+  return "flex flex-col min-w-0";
+}
+
+export function getPublicProfilePreferredSideValueClasses(): string {
+  return "text-base font-bold text-foreground leading-tight";
+}
+
+export function getPublicProfilePreferredSideSummaryClasses(): string {
+  return "text-[10px] text-muted-foreground leading-normal mt-0.5";
+}
+
+export function getPublicProfileNetworkListContainerClasses(): string {
+  return "pt-3 border-t border-border space-y-3";
+}
+
+export function getPublicProfileNetworkItemRowClasses(): string {
+  return "flex items-center justify-between gap-3 text-xs";
+}
+
+export function getPublicProfileNetworkItemInfoClasses(): string {
+  return "flex flex-col gap-0.5";
+}
+
+export function getPublicProfileNetworkItemLabelClasses(): string {
+  return "font-semibold text-muted-foreground";
+}
+
+export function getPublicProfileNetworkItemLinkClasses(): string {
+  return "flex items-center gap-2 hover:underline text-foreground group mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background rounded-xs active:scale-[0.98] transition-all";
+}
+
+export function getPublicProfileNetworkItemAvatarClasses(): string {
+  return "group-hover:scale-105 transition-transform";
+}
+
+export function getPublicProfileNetworkItemNameClasses(): string {
+  return "font-bold text-primary";
+}
+
+export function getPublicProfileH2HGridClasses(): string {
+  return "grid grid-cols-2 gap-4";
+}
+
+export function getPublicProfileH2HColClasses(): string {
+  return "space-y-1";
+}
+
+export function getPublicProfileH2HLabelClasses(): string {
+  return "flex items-center gap-1.5 text-xs font-semibold text-muted-foreground";
+}
+
+export function getPublicProfileH2HIconClasses(): string {
+  return "h-3.5 w-3.5";
+}
+
+export function getPublicProfileH2HValueRowClasses(): string {
+  return "flex items-baseline gap-1.5";
+}
+
+export function getPublicProfileH2HValueClasses(isPrimary: boolean = false): string {
+  return cn("text-xl font-bold", isPrimary && "text-primary");
+}
+
+export function getPublicProfileH2HTotalClasses(): string {
+  return "text-xs text-muted-foreground";
+}
+
+export function getPublicProfileH2HLastMatchRowClasses(): string {
+  return "pt-3 border-t border-border flex items-center justify-between";
+}
+
+export function getPublicProfileH2HLastMatchInfoClasses(): string {
+  return "flex flex-col";
+}
+
+export function getPublicProfileH2HLastMatchButtonClasses(): string {
+  return "h-8 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background active:scale-[0.98] transition-all";
+}
+
+export function getPublicProfileHistorySectionClasses(): string {
+  return "space-y-4";
+}
+
+export function getPublicProfileHistoryHeaderClasses(): string {
+  return "flex items-center justify-between";
+}
+
+export function getPublicProfileHistoryTitleClasses(): string {
+  return "text-sm font-bold text-foreground";
+}
+
+export function getPublicProfileHistoryBadgeClasses(): string {
+  return "flex items-center gap-1.5 text-xs font-bold text-foreground bg-muted px-2.5 py-1 rounded-full border border-border shadow-xs";
+}
+
+export function getPublicProfileHistoryBadgeIconClasses(): string {
+  return "h-3 w-3 text-primary fill-current";
+}
+
+export function getPublicProfileHistoryListClasses(): string {
+  return "grid gap-3";
+}
+
+export function getPublicProfileSkeletonSummaryAvatarClasses(): string {
+  return "h-24 w-24 rounded-full";
+}
+
+export function getPublicProfileSkeletonSummaryGroupClasses(): string {
+  return "space-y-2";
+}
+
+export function getPublicProfileSkeletonSummaryNameClasses(): string {
+  return "h-6 w-32 mx-auto";
+}
+
+export function getPublicProfileSkeletonSummaryBadgeClasses(): string {
+  return "h-4 w-20 mx-auto";
+}
+
+export function getPublicProfileSkeletonBannerGridClasses(): string {
+  return "grid grid-cols-3 gap-4 h-full items-center";
+}
+
+export function getPublicProfileSkeletonBannerItemClasses(): string {
+  return "h-10 w-full";
+}
+
+export function getPublicProfileSkeletonGridItemClasses(): string {
+  return "h-20 w-full rounded-xl";
+}
+
+export function getPublicProfileSkeletonHistoryTitleClasses(): string {
+  return "h-5 w-32";
+}
+
+export function getPublicProfileSkeletonHistoryItemClasses(): string {
+  return "h-16 w-full rounded-xl";
+}
