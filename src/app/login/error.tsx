@@ -16,6 +16,7 @@ import {
   getErrorActionButtonClasses,
   getErrorRetryButtonText,
   getErrorHomeButtonText,
+  getLoginErrorMainClasses,
 } from "@/lib/error-utils";
 
 export default function LoginError({
@@ -37,7 +38,7 @@ export default function LoginError({
   });
 
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 py-10">
+    <main className={getLoginErrorMainClasses()}>
       <div
         role="region"
         aria-label={details.regionAriaLabel}

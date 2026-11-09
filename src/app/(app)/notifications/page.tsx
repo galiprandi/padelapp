@@ -28,6 +28,7 @@ import {
   getNotificationsSkeletonSectionBadgeClasses,
   getNotificationsSkeletonItemClasses,
   getNotificationsSkeletonItemKeys,
+  getNotificationsEmptyStateButtonClasses,
 } from "@/components/navigation/nav-utils";
 
 export default function NotificationsPage() {
@@ -101,7 +102,7 @@ async function NotificationsList() {
           title={emptyStateProps.title}
           description={emptyStateProps.description}
           action={
-            <Button asChild className="w-full">
+            <Button asChild className={getNotificationsEmptyStateButtonClasses()}>
               <Link href={emptyStateProps.actionHref} prefetch={true}>
                 {emptyStateProps.actionText}
               </Link>
