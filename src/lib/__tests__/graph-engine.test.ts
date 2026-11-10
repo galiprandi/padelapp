@@ -966,6 +966,12 @@ import {
   getStatsPanelClockIconClasses,
   getStatsPanelMapPinIconClasses,
   getStatsPanelScoreLabelClasses,
+  COMMUNITY_COLORS,
+  getCommunityColor,
+  getGraphViewLinkWidth,
+  getGraphViewLinkColor,
+  getGraphViewNodeStrokeColor,
+  getGraphViewNodeStrokeWidth,
   type TurnRescueCandidateInput,
   type EnrolledTurnPlayerInput,
 } from "@/app/network/graph-utils";
@@ -2682,5 +2688,57 @@ describe("NetworkSkeleton layout, dimension, tab label & iteration key pure help
     expect(getStatsPanelClockIconClasses()).toBe("h-4 w-4 text-primary");
     expect(getStatsPanelMapPinIconClasses()).toBe("h-4 w-4 text-primary");
     expect(getStatsPanelScoreLabelClasses()).toBe("text-[10px] uppercase font-bold text-muted-foreground");
+  });
+
+  it("returns correct community colors and canvas / link styling for GraphView", () => {
+    expect(COMMUNITY_COLORS.length).toBe(12);
+    expect(COMMUNITY_COLORS[0]).toBe("#3b82f6");
+    expect(getCommunityColor(0)).toBe("#3b82f6");
+    expect(getCommunityColor(1)).toBe("#10b981");
+    expect(getCommunityColor(null)).toBe("#3b82f6");
+    expect(getCommunityColor(undefined)).toBe("#3b82f6");
+    expect(getCommunityColor(12)).toBe("#3b82f6");
+    expect(getCommunityColor(13)).toBe("#10b981");
+
+    // Link width
+    const baseWidth0 = getGraphViewLinkWidth(0, false);
+    expect(baseWidth0).toBeCloseTo(0.8);
+    expect(getGraphViewLinkWidth(0, true)).toBeCloseTo(1.6);
+    expect(getGraphViewLinkWidth(10, false)).toBeGreaterThan(0.8);
+    expect(getGraphViewLinkWidth(10, true)).toBe(getGraphViewLinkWidth(10, false) * 2);
+
+    // Link color - selected
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 2, rivalMatches: 0, turnsTogether: 0 }, true, false)
+    ).toBe("rgba(16, 185, 129, 0.8)");
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 0, rivalMatches: 3, turnsTogether: 0 }, true, false)
+    ).toBe("rgba(239, 68, 68, 0.8)");
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 0, rivalMatches: 0, turnsTogether: 2 }, true, false)
+    ).toBe("rgba(100, 116, 139, 0.8)");
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 2, rivalMatches: 1, turnsTogether: 0 }, true, false)
+    ).toBe("rgba(245, 158, 11, 0.8)");
+
+    // Link color - hovered and unselected
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 0, rivalMatches: 0, turnsTogether: 0 }, false, true)
+    ).toBe("rgba(100, 116, 139, 0.5)");
+    expect(
+      getGraphViewLinkColor({ partnerMatches: 0, rivalMatches: 0, turnsTogether: 0 }, false, false)
+    ).toBe("rgba(148, 163, 184, 0.25)");
+
+    // Node stroke color
+    expect(getGraphViewNodeStrokeColor(true, false, false, "#3b82f6")).toBe("#3b82f6");
+    expect(getGraphViewNodeStrokeColor(false, true, false, "#3b82f6")).toBe("rgba(255, 255, 255, 0.6)");
+    expect(getGraphViewNodeStrokeColor(false, false, true, "#3b82f6")).toBe("#eab308");
+    expect(getGraphViewNodeStrokeColor(false, false, false, "#3b82f6")).toBe("rgba(255, 255, 255, 0.5)");
+
+    // Node stroke width
+    expect(getGraphViewNodeStrokeWidth(true, false, false)).toBe(3);
+    expect(getGraphViewNodeStrokeWidth(false, true, false)).toBe(2);
+    expect(getGraphViewNodeStrokeWidth(false, false, true)).toBe(2.5);
+    expect(getGraphViewNodeStrokeWidth(false, false, false)).toBe(1.5);
   });
 });
