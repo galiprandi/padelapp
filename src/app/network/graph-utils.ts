@@ -3463,7 +3463,7 @@ export interface CommunityFilterOption {
   ariaLabel: string;
 }
 
-const COMMUNITY_COLORS = [
+export const COMMUNITY_COLORS = [
   "#3b82f6",
   "#10b981",
   "#f59e0b",
@@ -3477,6 +3477,86 @@ const COMMUNITY_COLORS = [
   "#14b8a6",
   "#e11d48",
 ];
+
+export function getCommunityColor(communityId: number | null | undefined): string {
+  const comm = communityId ?? 0;
+  return COMMUNITY_COLORS[Math.abs(comm) % COMMUNITY_COLORS.length];
+}
+
+export function getGraphViewLinkWidth(strength: number, isSelected: boolean): number {
+  const base = 0.8 + Math.min(Math.log(Math.max(0, strength) + 1) * 1.2, 4);
+  return isSelected ? base * 2 : base;
+}
+
+export interface GraphViewLinkMatchesInput {
+  partnerMatches?: number | null;
+  rivalMatches?: number | null;
+  turnsTogether?: number | null;
+}
+
+export function getGraphViewLinkColor(
+  link: GraphViewLinkMatchesInput,
+  isSelected: boolean,
+  isHovered: boolean,
+): string {
+  const partnerMatches = link.partnerMatches ?? 0;
+  const rivalMatches = link.rivalMatches ?? 0;
+  const turnsTogether = link.turnsTogether ?? 0;
+
+  if (isSelected) {
+    if (partnerMatches > 0 && rivalMatches === 0) {
+      return "rgba(16, 185, 129, 0.8)";
+    }
+    if (rivalMatches > 0 && partnerMatches === 0) {
+      return "rgba(239, 68, 68, 0.8)";
+    }
+    if (turnsTogether > 0 && partnerMatches === 0 && rivalMatches === 0) {
+      return "rgba(100, 116, 139, 0.8)";
+    }
+    return "rgba(245, 158, 11, 0.8)";
+  }
+
+  if (isHovered) {
+    return "rgba(100, 116, 139, 0.5)";
+  }
+
+  return "rgba(148, 163, 184, 0.25)";
+}
+
+export function getGraphViewNodeStrokeColor(
+  isSelected: boolean,
+  isHovered: boolean,
+  isViewer: boolean,
+  communityColor: string,
+): string {
+  if (isSelected) {
+    return communityColor;
+  }
+  if (isHovered) {
+    return "rgba(255, 255, 255, 0.6)";
+  }
+  if (isViewer) {
+    return "#eab308";
+  }
+  return "rgba(255, 255, 255, 0.5)";
+}
+
+export function getGraphViewNodeStrokeWidth(
+  isSelected: boolean,
+  isHovered: boolean,
+  isViewer: boolean,
+): number {
+  if (isSelected) {
+    return 3;
+  }
+  if (isHovered) {
+    return 2;
+  }
+  if (isViewer) {
+    return 2.5;
+  }
+  return 1.5;
+}
 
 /**
  * Calculates community filter chip options with member counts, cluster colors, and cohesion information.

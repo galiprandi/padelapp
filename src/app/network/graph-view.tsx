@@ -199,6 +199,11 @@ import {
   getGraphViewSearchIconClasses,
   getGraphViewScopeIconClasses,
   getGraphViewEmptyDataIconClasses,
+  getCommunityColor,
+  getGraphViewLinkWidth,
+  getGraphViewLinkColor,
+  getGraphViewNodeStrokeColor,
+  getGraphViewNodeStrokeWidth,
 } from "./graph-utils";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -209,21 +214,6 @@ const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
     </div>
   ),
 });
-
-const COMMUNITY_COLORS = [
-  "#3b82f6",
-  "#10b981",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#ec4899",
-  "#06b6d4",
-  "#f97316",
-  "#84cc16",
-  "#6366f1",
-  "#14b8a6",
-  "#e11d48",
-];
 
 function preloadImages(nodes: GraphNode[]): Map<string, HTMLImageElement> {
   const imageMap = new Map<string, HTMLImageElement>();
@@ -377,19 +367,18 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeColor = useCallback((node: any) => {
-    const community = node.community ?? 0;
-    return COMMUNITY_COLORS[community % COMMUNITY_COLORS.length];
+    return getCommunityColor(node.community);
   }, []);
 
    
   const linkWidth = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d mutates link source/target to node objects at runtime
     (link: any) => {
-      const isSelected =
+      const isSelected = Boolean(
         selectedNode &&
-        (link.source?.id === selectedNode || link.target?.id === selectedNode);
-      const base = 0.8 + Math.min(Math.log(link.strength + 1) * 1.2, 4);
-      return isSelected ? base * 2 : base;
+        (link.source?.id === selectedNode || link.target?.id === selectedNode)
+      );
+      return getGraphViewLinkWidth(link.strength, isSelected);
     },
     [selectedNode],
   );
@@ -398,23 +387,15 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
   const linkColor = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-force-graph-2d mutates link source/target to node objects at runtime
     (link: any) => {
-      const isSelected =
+      const isSelected = Boolean(
         selectedNode &&
-        (link.source?.id === selectedNode || link.target?.id === selectedNode);
-      const isHovered =
+        (link.source?.id === selectedNode || link.target?.id === selectedNode)
+      );
+      const isHovered = Boolean(
         hoveredNode &&
-        (link.source?.id === hoveredNode || link.target?.id === hoveredNode);
-      if (isSelected) {
-        if (link.partnerMatches > 0 && link.rivalMatches === 0)
-          return "rgba(16, 185, 129, 0.8)";
-        if (link.rivalMatches > 0 && link.partnerMatches === 0)
-          return "rgba(239, 68, 68, 0.8)";
-        if (link.turnsTogether > 0 && link.partnerMatches === 0 && link.rivalMatches === 0)
-          return "rgba(100, 116, 139, 0.8)";
-        return "rgba(245, 158, 11, 0.8)";
-      }
-      if (isHovered) return "rgba(100, 116, 139, 0.5)";
-      return "rgba(148, 163, 184, 0.25)";
+        (link.source?.id === hoveredNode || link.target?.id === hoveredNode)
+      );
+      return getGraphViewLinkColor(link, isSelected, isHovered);
     },
     [selectedNode, hoveredNode],
   );
@@ -469,14 +450,8 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
 
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = isSelected
-        ? color
-        : isHovered
-          ? "rgba(255,255,255,0.6)"
-          : isViewer
-            ? "#eab308"
-            : "rgba(255, 255, 255, 0.5)";
-      ctx.lineWidth = (isSelected ? 3 : isHovered ? 2 : isViewer ? 2.5 : 1.5) / globalScale;
+      ctx.strokeStyle = getGraphViewNodeStrokeColor(isSelected, isHovered, isViewer, color);
+      ctx.lineWidth = getGraphViewNodeStrokeWidth(isSelected, isHovered, isViewer) / globalScale;
       ctx.stroke();
 
       if (isSelected) {
@@ -749,8 +724,7 @@ export function GraphView({ graphData, viewerId }: GraphViewProps) {
               <span
                 className={getGraphViewActiveCommunityDotClasses()}
                 style={{
-                  backgroundColor:
-                    COMMUNITY_COLORS[selectedCommunity % COMMUNITY_COLORS.length],
+                  backgroundColor: getCommunityColor(selectedCommunity),
                 }}
               />
               <span className={getGraphViewActiveCommunityTitleClasses()}>
