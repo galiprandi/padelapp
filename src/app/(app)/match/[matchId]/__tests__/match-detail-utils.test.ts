@@ -32,6 +32,32 @@ import {
   getMatchAttendanceHeadingTitle,
   getMatchTeamsHeadingTitle,
   getMatchOrganizerNotesHeadingTitle,
+  getMatchDetailSkeletonContainerClasses,
+  getMatchDetailNotFoundContainerClasses,
+  getMatchDetailCancelledContainerClasses,
+  getMatchDetailMainContainerClasses,
+  getMatchStatusBadgeClasses,
+  getMatchDetailInfoSectionClasses,
+  getMatchDetailClubCardClasses,
+  getMatchDetailOrganizerCardClasses,
+  getMatchDetailActionsSectionClasses,
+  getMatchDetailPrimaryActionButtonClasses,
+  getMatchDetailSecondaryActionButtonClasses,
+  getMatchDetailScoreSummaryCardClasses,
+  getMatchDetailScoreSetsGridClasses,
+  getMatchDetailScoreSetItemClasses,
+  getMatchDetailPlayerAvatarOverlayClasses,
+  getMatchDetailPlayerAvatarLinkClasses,
+  getMatchDetailConfirmationsCardClasses,
+  getMatchDetailPlayerConfirmationItemClasses,
+  getMatchDetailPlayerConfirmationNameClasses,
+  getMatchDetailPlayerConfirmationStatusClasses,
+  getMatchDetailStickyBannerContainerClasses,
+  getMatchDetailStickyBannerCardClasses,
+  getMatchDetailStickyBannerIconBadgeClasses,
+  getMatchDetailProcessedNoticeClasses,
+  getMatchDetailAttendanceCardClasses,
+  getMatchDetailNotesCardClasses,
 } from "../match-detail-utils";
 
 describe("match-detail-utils", () => {
@@ -133,5 +159,91 @@ describe("match-detail-utils", () => {
   it("returns player confirmation status text", () => {
     expect(getPlayerConfirmationStatusText(true)).toBe("Confirmado");
     expect(getPlayerConfirmationStatusText(false)).toBe("Pendiente");
+  });
+
+  describe("UI styling and layout CSS classes helpers", () => {
+    it("returns correct skeleton container classes", () => {
+      expect(getMatchDetailSkeletonContainerClasses()).toBe("flex flex-col gap-6");
+    });
+
+    it("returns correct not found and cancelled container classes", () => {
+      expect(getMatchDetailNotFoundContainerClasses()).toBe("flex flex-col gap-4");
+      expect(getMatchDetailCancelledContainerClasses()).toBe("flex flex-col gap-4");
+    });
+
+    it("returns correct main container classes with and without confirm padding", () => {
+      expect(getMatchDetailMainContainerClasses(true)).toBe("flex flex-col gap-6 pb-32");
+      expect(getMatchDetailMainContainerClasses(false)).toBe("flex flex-col gap-6");
+      expect(getMatchDetailMainContainerClasses()).toBe("flex flex-col gap-6");
+    });
+
+    it("returns correct match status badge classes", () => {
+      expect(getMatchStatusBadgeClasses("CONFIRMED")).toContain("bg-emerald-100 text-emerald-800");
+      expect(getMatchStatusBadgeClasses("PENDING")).toContain("bg-muted text-muted-foreground");
+      expect(getMatchStatusBadgeClasses("CANCELLED")).toContain("bg-muted text-muted-foreground");
+      expect(getMatchStatusBadgeClasses(null)).toContain("bg-muted text-muted-foreground");
+    });
+
+    it("returns correct info section and club card classes", () => {
+      expect(getMatchDetailInfoSectionClasses()).toBe("space-y-2");
+      expect(getMatchDetailClubCardClasses()).toContain("rounded-xl border border-border bg-card shadow-xs p-3");
+    });
+
+    it("returns correct organizer card classes for link and static variants", () => {
+      const linkClasses = getMatchDetailOrganizerCardClasses(true);
+      expect(linkClasses).toContain("transition-all hover:bg-muted active:scale-[0.98]");
+      expect(linkClasses).toContain("focus-visible:ring-2");
+
+      const staticClasses = getMatchDetailOrganizerCardClasses(false);
+      expect(staticClasses).toContain("flex items-center gap-2 rounded-xl border border-border bg-card shadow-xs p-3");
+      expect(staticClasses).not.toContain("active:scale-[0.98]");
+    });
+
+    it("returns correct actions section and action button classes", () => {
+      expect(getMatchDetailActionsSectionClasses()).toBe("flex flex-col gap-2");
+      expect(getMatchDetailPrimaryActionButtonClasses()).toContain("w-full h-12 active:scale-[0.98]");
+      expect(getMatchDetailSecondaryActionButtonClasses()).toContain("flex-1 h-10 active:scale-[0.98]");
+    });
+
+    it("returns correct score summary card, sets grid and item classes", () => {
+      expect(getMatchDetailScoreSummaryCardClasses()).toContain("py-10 rounded-xl border border-border bg-card shadow-xs");
+      expect(getMatchDetailScoreSetsGridClasses()).toBe("flex flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4");
+      expect(getMatchDetailScoreSetItemClasses()).toBe("text-5xl font-bold text-foreground leading-none");
+    });
+
+    it("returns correct player avatar overlay and link classes", () => {
+      expect(getMatchDetailPlayerAvatarOverlayClasses()).toContain("border-2 border-card transition-all hover:opacity-80 active:scale-[0.95]");
+      expect(getMatchDetailPlayerAvatarLinkClasses()).toContain("rounded-full z-10 hover:z-20 relative");
+    });
+
+    it("returns correct confirmations section card and item classes", () => {
+      expect(getMatchDetailConfirmationsCardClasses()).toBe("space-y-4 rounded-xl border border-border bg-card shadow-xs p-4");
+
+      const confirmedItem = getMatchDetailPlayerConfirmationItemClasses(true);
+      expect(confirmedItem).toContain("bg-card border-primary font-semibold");
+
+      const pendingItem = getMatchDetailPlayerConfirmationItemClasses(false);
+      expect(pendingItem).toContain("bg-muted/50 border-border opacity-70");
+    });
+
+    it("returns correct player confirmation name and status text classes", () => {
+      expect(getMatchDetailPlayerConfirmationNameClasses(true)).toContain("text-foreground");
+      expect(getMatchDetailPlayerConfirmationNameClasses(false)).toContain("text-muted-foreground");
+
+      expect(getMatchDetailPlayerConfirmationStatusClasses(true)).toBe("text-xs font-semibold text-primary");
+      expect(getMatchDetailPlayerConfirmationStatusClasses(false)).toBe("text-xs font-semibold text-muted-foreground/60");
+    });
+
+    it("returns correct sticky banner container, card and badge classes", () => {
+      expect(getMatchDetailStickyBannerContainerClasses()).toBe("fixed bottom-20 left-0 right-0 z-30 px-5 pb-4");
+      expect(getMatchDetailStickyBannerCardClasses()).toContain("rounded-xl border border-primary/20 bg-card p-4 shadow-sm");
+      expect(getMatchDetailStickyBannerIconBadgeClasses()).toContain("bg-primary text-primary-foreground font-bold shadow-xs");
+    });
+
+    it("returns correct processed notice, attendance and notes card classes", () => {
+      expect(getMatchDetailProcessedNoticeClasses()).toContain("bg-emerald-100 text-emerald-800 border border-emerald-300");
+      expect(getMatchDetailAttendanceCardClasses()).toBe("space-y-3 rounded-xl border border-border bg-card shadow-xs p-4");
+      expect(getMatchDetailNotesCardClasses()).toBe("rounded-xl border border-border bg-card shadow-xs p-4");
+    });
   });
 });
