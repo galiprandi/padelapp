@@ -52,3 +52,7 @@ public/workbox-*.js
 
 # Playwright verification outputs
 verification/videos/
+
+# acp-connector runtime state
+.acp-connector/state.json
+.acp-connector/*.migrated
